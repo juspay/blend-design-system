@@ -9,7 +9,6 @@ import {
     ArrowLineLeftIcon,
     ArrowLineRightIcon,
     FunnelSimpleIcon,
-    ArrowsDownUpIcon,
 } from '@phosphor-icons/react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
@@ -44,6 +43,9 @@ import MobileFilterDrawer from './MobileFilterDrawer'
 import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
 import { VirtualListItem } from '../../VirtualList'
+import DateRangePicker from '../../DateRangePicker/DateRangePicker'
+import { DateRange } from '../../DateRangePicker/types'
+import { parseDateLike, toLocalDateString } from '../utils'
 
 const FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT = 40
 const FILTER_VIRTUAL_LIST_MAX_HEIGHT = 220
@@ -173,14 +175,81 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
     }
 )
 
+const renderSortOption = (
+    tableToken: TableTokenType,
+    icon: React.ReactNode,
+    label: string,
+    onClick: () => void,
+    isActive: boolean,
+    checkColor?: string
+) => (
+    <Block
+        display="flex"
+        alignItems="center"
+        gap={tableToken.dataTable.table.header.filter.itemGap}
+        padding={tableToken.dataTable.table.header.filter.sortOption.padding}
+        borderRadius={
+            tableToken.dataTable.table.header.filter.sortOption.borderRadius
+        }
+        cursor="pointer"
+        backgroundColor={
+            isActive
+                ? tableToken.dataTable.table.header.filter.sortOption
+                      .hoverBackground
+                : 'transparent'
+        }
+        _hover={{
+            backgroundColor:
+                tableToken.dataTable.table.header.filter.sortOption
+                    .hoverBackground,
+        }}
+        onClick={onClick}
+        onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                e.stopPropagation()
+                onClick()
+            }
+        }}
+        tabIndex={0}
+        role="menuitem"
+        _focus={{ outline: 'none' }}
+        _focusVisible={{
+            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+            outlineOffset: '2px',
+        }}
+    >
+        {icon}
+        <PrimitiveText
+            style={{
+                fontSize:
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .fontSize,
+                color: tableToken.dataTable.table.header.filter.sortOption
+                    .textColor,
+                fontWeight:
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .fontWeight,
+                flexGrow: 1,
+            }}
+        >
+            {label}
+        </PrimitiveText>
+        {isActive && (
+            <Check
+                size={FOUNDATION_THEME.unit[16]}
+                color={checkColor || FOUNDATION_THEME.colors.gray[900]}
+            />
+        )}
+    </Block>
+)
+
 export const SortOptions: React.FC<{
     column: ColumnDefinition<Record<string, unknown>>
     fieldKey: string
     tableToken: TableTokenType
     sortHandlers: SortHandlers
     sortState: SortState
-    nestedSortOpen: boolean
-    setNestedSortOpen: (open: boolean) => void
     onFilterApplied?: () => void
     onPopoverClose?: () => void
 }> = ({
@@ -189,8 +258,6 @@ export const SortOptions: React.FC<{
     tableToken,
     sortHandlers,
     sortState,
-    nestedSortOpen,
-    setNestedSortOpen,
     onFilterApplied,
     onPopoverClose,
 }) => {
@@ -219,187 +286,72 @@ export const SortOptions: React.FC<{
         currentDirection === SortDirection.DESCENDING &&
         currentSortType === 'delta'
 
-    const renderSortOption = (
-        icon: React.ReactNode,
-        label: string,
-        onClick: () => void,
-        isActive: boolean,
-        checkColor?: string
-    ) => (
-        <Block
-            display="flex"
-            alignItems="center"
-            gap={tableToken.dataTable.table.header.filter.itemGap}
-            padding={
-                tableToken.dataTable.table.header.filter.sortOption.padding
-            }
-            borderRadius={
-                tableToken.dataTable.table.header.filter.sortOption.borderRadius
-            }
-            cursor="pointer"
-            backgroundColor={
-                isActive
-                    ? tableToken.dataTable.table.header.filter.sortOption
-                          .hoverBackground
-                    : 'transparent'
-            }
-            _hover={{
-                backgroundColor:
-                    tableToken.dataTable.table.header.filter.sortOption
-                        .hoverBackground,
-            }}
-            onClick={onClick}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    onClick()
-                }
-            }}
-            tabIndex={0}
-            role="menuitem"
-            _focus={{ outline: 'none' }}
-            _focusVisible={{
-                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                outlineOffset: '2px',
-            }}
-        >
-            {icon}
-            <PrimitiveText
-                style={{
-                    fontSize:
-                        tableToken.dataTable.table.header.filter.sortOption
-                            .fontSize,
-                    color: tableToken.dataTable.table.header.filter.sortOption
-                        .textColor,
-                    fontWeight:
-                        tableToken.dataTable.table.header.filter.sortOption
-                            .fontWeight,
-                    flexGrow: 1,
-                }}
-            >
-                {label}
-            </PrimitiveText>
-            {isActive && (
-                <Check
-                    size={FOUNDATION_THEME.unit[16]}
-                    color={checkColor || FOUNDATION_THEME.colors.gray[900]}
-                />
-            )}
-        </Block>
-    )
-
-    const sortTriggerIcon = (
-        <ArrowsDownUpIcon
-            size={FOUNDATION_THEME.unit[16]}
-            color={FOUNDATION_THEME.colors.gray[400]}
-            weight="bold"
-        />
-    )
-
-    const sortTrigger = (
-        <Block
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-            gap={tableToken.dataTable.table.header.filter.itemGap}
-            cursor="pointer"
-            backgroundColor="transparent"
-            _hover={{
-                backgroundColor:
-                    tableToken.dataTable.table.header.filter.sortOption
-                        .hoverBackground,
-            }}
-            padding={
-                tableToken.dataTable.table.header.filter.sortOption.padding
-            }
-            borderRadius={
-                tableToken.dataTable.table.header.filter.sortOption.borderRadius
-            }
-            role="menuitem"
-            aria-haspopup="menu"
-            aria-expanded={nestedSortOpen}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    setNestedSortOpen(!nestedSortOpen)
-                }
-            }}
-            tabIndex={0}
-            _focus={{ outline: 'none' }}
-        >
-            <Block
-                display="flex"
-                alignItems="center"
-                gap={tableToken.dataTable.table.header.filter.itemGap}
-            >
-                {sortTriggerIcon}
-                <PrimitiveText
-                    style={{
-                        fontSize:
-                            tableToken.dataTable.table.header.filter.sortOption
-                                .fontSize,
-                        color: tableToken.dataTable.table.header.filter
-                            .sortOption.textColor,
-                        fontWeight:
-                            tableToken.dataTable.table.header.filter.sortOption
-                                .fontWeight,
-                        flexGrow: 1,
-                    }}
-                >
-                    Sort
-                </PrimitiveText>
-            </Block>
-            <ChevronRight
-                size={FOUNDATION_THEME.unit[16]}
-                color={FOUNDATION_THEME.colors.gray[400]}
-            />
-        </Block>
-    )
-
     return (
-        <Popover
-            trigger={sortTrigger}
-            maxWidth={220}
-            minWidth={220}
-            side="right"
-            align="start"
-            sideOffset={10}
-            open={nestedSortOpen}
-            onOpenChange={(open) => {
-                setNestedSortOpen(open)
-            }}
+        <Block
+            display="flex"
+            flexDirection="column"
+            gap={FOUNDATION_THEME.unit[2]}
         >
-            <Block
-                display="flex"
-                flexDirection="column"
-                paddingBottom={FOUNDATION_THEME.unit[2]}
-                role="menu"
-            >
-                <Block
-                    display="flex"
-                    flexDirection="column"
-                    gap={FOUNDATION_THEME.unit[2]}
-                >
-                    {hasDeltaSort && (
-                        <PrimitiveText
-                            style={{
-                                fontSize:
-                                    tableToken.dataTable.table.header.filter
-                                        .groupLabelFontSize,
-                                color: tableToken.dataTable.table.header.filter
-                                    .groupLabelColor,
-                                fontWeight: 600,
-                                padding: `${FOUNDATION_THEME.unit[4]} ${tableToken.dataTable.table.header.filter.sortOption.padding}`,
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.5px',
-                            }}
-                        >
-                            Value
-                        </PrimitiveText>
-                    )}
+            {renderSortOption(
+                tableToken,
+                <ArrowUp
+                    size={FOUNDATION_THEME.unit[16]}
+                    color={
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .iconColor
+                    }
+                />,
+                'Sort Ascending',
+                () => {
+                    sortHandlers.handleSortAscending(fieldKey, 'primary')
+                    onFilterApplied?.()
+                    onPopoverClose?.()
+                },
+                isPrimaryAscendingActive,
+                FOUNDATION_THEME.colors.gray[900]
+            )}
+            {renderSortOption(
+                tableToken,
+                <ArrowDown
+                    size={FOUNDATION_THEME.unit[16]}
+                    color={
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .iconColor
+                    }
+                />,
+                'Sort Descending',
+                () => {
+                    sortHandlers.handleSortDescending(fieldKey, 'primary')
+                    onFilterApplied?.()
+                    onPopoverClose?.()
+                },
+                isPrimaryDescendingActive,
+                FOUNDATION_THEME.colors.green[900]
+            )}
+            {hasDeltaSort && (
+                <>
+                    <Block
+                        height="1px"
+                        backgroundColor={FOUNDATION_THEME.colors.gray[200]}
+                        marginY={FOUNDATION_THEME.unit[4]}
+                    />
+                    <PrimitiveText
+                        style={{
+                            fontSize:
+                                tableToken.dataTable.table.header.filter
+                                    .groupLabelFontSize,
+                            color: tableToken.dataTable.table.header.filter
+                                .groupLabelColor,
+                            fontWeight: 600,
+                            padding: `${FOUNDATION_THEME.unit[4]} ${tableToken.dataTable.table.header.filter.sortOption.padding}`,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px',
+                        }}
+                    >
+                        Delta
+                    </PrimitiveText>
                     {renderSortOption(
+                        tableToken,
                         <ArrowUp
                             size={FOUNDATION_THEME.unit[16]}
                             color={
@@ -409,18 +361,15 @@ export const SortOptions: React.FC<{
                         />,
                         'Sort Ascending',
                         () => {
-                            setNestedSortOpen(false)
-                            sortHandlers.handleSortAscending(
-                                fieldKey,
-                                'primary'
-                            )
+                            sortHandlers.handleSortAscending(fieldKey, 'delta')
                             onFilterApplied?.()
                             onPopoverClose?.()
                         },
-                        isPrimaryAscendingActive,
+                        isDeltaAscendingActive,
                         FOUNDATION_THEME.colors.gray[900]
                     )}
                     {renderSortOption(
+                        tableToken,
                         <ArrowDown
                             size={FOUNDATION_THEME.unit[16]}
                             color={
@@ -430,92 +379,16 @@ export const SortOptions: React.FC<{
                         />,
                         'Sort Descending',
                         () => {
-                            setNestedSortOpen(false)
-                            sortHandlers.handleSortDescending(
-                                fieldKey,
-                                'primary'
-                            )
+                            sortHandlers.handleSortDescending(fieldKey, 'delta')
                             onFilterApplied?.()
                             onPopoverClose?.()
                         },
-                        isPrimaryDescendingActive,
+                        isDeltaDescendingActive,
                         FOUNDATION_THEME.colors.green[900]
                     )}
-                </Block>
-                {hasDeltaSort && (
-                    <>
-                        <Block
-                            height="1px"
-                            backgroundColor={FOUNDATION_THEME.colors.gray[200]}
-                            marginY={FOUNDATION_THEME.unit[4]}
-                        />
-                        <Block
-                            display="flex"
-                            flexDirection="column"
-                            gap={FOUNDATION_THEME.unit[2]}
-                        >
-                            <PrimitiveText
-                                style={{
-                                    fontSize:
-                                        tableToken.dataTable.table.header.filter
-                                            .groupLabelFontSize,
-                                    color: tableToken.dataTable.table.header
-                                        .filter.groupLabelColor,
-                                    fontWeight: 600,
-                                    padding: `${FOUNDATION_THEME.unit[4]} ${tableToken.dataTable.table.header.filter.sortOption.padding}`,
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '0.5px',
-                                }}
-                            >
-                                Delta
-                            </PrimitiveText>
-                            {renderSortOption(
-                                <ArrowUp
-                                    size={FOUNDATION_THEME.unit[16]}
-                                    color={
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.iconColor
-                                    }
-                                />,
-                                'Sort Ascending',
-                                () => {
-                                    setNestedSortOpen(false)
-                                    sortHandlers.handleSortAscending(
-                                        fieldKey,
-                                        'delta'
-                                    )
-                                    onFilterApplied?.()
-                                    onPopoverClose?.()
-                                },
-                                isDeltaAscendingActive,
-                                FOUNDATION_THEME.colors.gray[900]
-                            )}
-                            {renderSortOption(
-                                <ArrowDown
-                                    size={FOUNDATION_THEME.unit[16]}
-                                    color={
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.iconColor
-                                    }
-                                />,
-                                'Sort Descending',
-                                () => {
-                                    setNestedSortOpen(false)
-                                    sortHandlers.handleSortDescending(
-                                        fieldKey,
-                                        'delta'
-                                    )
-                                    onFilterApplied?.()
-                                    onPopoverClose?.()
-                                },
-                                isDeltaDescendingActive,
-                                FOUNDATION_THEME.colors.green[900]
-                            )}
-                        </Block>
-                    </>
-                )}
-            </Block>
-        </Popover>
+                </>
+            )}
+        </Block>
     )
 }
 
@@ -1220,6 +1093,117 @@ export const SliderFilter: React.FC<{
     )
 }
 
+export const DateFilter: React.FC<{
+    column: ColumnDefinition<Record<string, unknown>>
+    fieldKey: string
+    tableToken: TableTokenType
+    filterState: FilterState
+    onColumnFilter?: ColumnFilterHandler
+}> = ({ column, fieldKey, tableToken, filterState, onColumnFilter }) => {
+    const selectedValue = filterState.columnSelectedValues[fieldKey]
+    const selectedRange = Array.isArray(selectedValue)
+        ? selectedValue
+        : typeof selectedValue === 'string' && selectedValue
+          ? [selectedValue, selectedValue]
+          : []
+
+    const pickerValue: DateRange | undefined = (() => {
+        if (selectedRange.length === 0 || !selectedRange[0]) return undefined
+        const start = parseDateLike(selectedRange[0])
+        if (!start) return undefined
+        const end = parseDateLike(selectedRange[1] || selectedRange[0]) || start
+        return { startDate: start, endDate: end }
+    })()
+    const hasActiveDateRange = selectedRange.length > 0
+
+    return (
+        <Block display="flex" flexDirection="column">
+            <DateRangePicker
+                value={pickerValue}
+                onChange={(range) => {
+                    const start = toLocalDateString(range.startDate)
+                    const end = toLocalDateString(
+                        range.endDate || range.startDate
+                    )
+                    onColumnFilter?.(
+                        String(column.field),
+                        FilterType.DATE,
+                        [start, end],
+                        'range'
+                    )
+                }}
+                showDateTimePicker={false}
+                showDateInput={false}
+                showPresets={false}
+                allowSingleDateSelection={false}
+                useDrawerOnMobile={false}
+                popoverConfig={{
+                    side: 'right',
+                    align: 'start',
+                    sideOffset: 10,
+                }}
+                triggerConfig={{
+                    style: { width: '100%' },
+                    renderTrigger: ({ onClick }) => (
+                        <MenuItem
+                            icon={
+                                <FunnelSimpleIcon
+                                    size={FOUNDATION_THEME.unit[16]}
+                                    color={
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.iconColor
+                                    }
+                                    weight="bold"
+                                />
+                            }
+                            label="Filter"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                onClick()
+                            }}
+                            trailingIcon={
+                                <ChevronRight
+                                    size={FOUNDATION_THEME.unit[16]}
+                                    color={
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.iconColor
+                                    }
+                                />
+                            }
+                            tableToken={tableToken}
+                            style={{ width: '100%' }}
+                        />
+                    ),
+                }}
+            />
+            {hasActiveDateRange && (
+                <MenuItem
+                    icon={
+                        <TrashSimpleIcon
+                            size={FOUNDATION_THEME.unit[16]}
+                            color={FOUNDATION_THEME.colors.red[600]}
+                            weight="bold"
+                        />
+                    }
+                    label="Clear Filter"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onColumnFilter?.(
+                            String(column.field),
+                            FilterType.DATE,
+                            [],
+                            'range'
+                        )
+                    }}
+                    isDestructive
+                    tableToken={tableToken}
+                    style={{ width: '100%' }}
+                />
+            )}
+        </Block>
+    )
+}
+
 export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     column,
     data,
@@ -1242,7 +1226,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
     const fieldKey = String(column.field)
     const [nestedFilterOpen, setNestedFilterOpen] = useState(false)
-    const [nestedSortOpen, setNestedSortOpen] = useState(false)
     const hasFiltering = columnConfig.supportsFiltering
     const menuRef = useRef<HTMLDivElement>(null)
     const [focusedIndex, setFocusedIndex] = useState<number>(-1)
@@ -1309,10 +1292,10 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     }
 
     useEffect(() => {
-        if (nestedFilterOpen || nestedSortOpen) {
+        if (nestedFilterOpen) {
             setFocusedIndex(-1)
         }
-    }, [nestedFilterOpen, nestedSortOpen])
+    }, [nestedFilterOpen])
 
     if (isMobile) {
         return (
@@ -1342,7 +1325,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
             _focus={{ outline: 'none' }}
             _focusVisible={{ outline: 'none' }}
         >
-            {/* Sort — nested popover */}
+            {/* Sort — direct options */}
             {isSortingEnabled && (
                 <SortOptions
                     column={column}
@@ -1350,18 +1333,23 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     tableToken={tableToken}
                     sortHandlers={sortHandlers}
                     sortState={sortState}
-                    nestedSortOpen={nestedSortOpen}
-                    setNestedSortOpen={(open) => {
-                        if (open) setNestedFilterOpen(false)
-                        setNestedSortOpen(open)
-                    }}
                     onFilterApplied={onFilterApplied}
                     onPopoverClose={onPopoverClose}
                 />
             )}
 
-            {/* Filter — nested popover */}
-            {hasFiltering && (
+            {/* Filter — direct for date range, nested for others */}
+            {hasFiltering && columnConfig.filterComponent === 'dateRange' && (
+                <DateFilter
+                    column={column}
+                    fieldKey={fieldKey}
+                    tableToken={tableToken}
+                    filterState={filterState}
+                    onColumnFilter={onColumnFilter}
+                />
+            )}
+
+            {hasFiltering && columnConfig.filterComponent !== 'dateRange' && (
                 <Popover
                     trigger={
                         <MenuItem
@@ -1390,7 +1378,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     sideOffset={10}
                     open={nestedFilterOpen}
                     onOpenChange={(open) => {
-                        if (open) setNestedSortOpen(false)
                         setNestedFilterOpen(open)
                     }}
                 >
@@ -1467,7 +1454,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     label="Operations"
                     onClick={() => {
                         setNestedFilterOpen(false)
-                        setNestedSortOpen(false)
                         onOperations()
                         onPopoverClose?.()
                     }}
@@ -1491,7 +1477,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     label="Rename"
                     onClick={() => {
                         setNestedFilterOpen(false)
-                        setNestedSortOpen(false)
                         onRenameHeader()
                         onPopoverClose?.()
                     }}
@@ -1512,7 +1497,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     label="Insert Left"
                     onClick={() => {
                         setNestedFilterOpen(false)
-                        setNestedSortOpen(false)
                         onInsertLeft()
                         onPopoverClose?.()
                     }}
@@ -1532,7 +1516,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     label="Insert Right"
                     onClick={() => {
                         setNestedFilterOpen(false)
-                        setNestedSortOpen(false)
                         onInsertRight()
                         onPopoverClose?.()
                     }}
@@ -1555,7 +1538,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     isDestructive
                     onClick={() => {
                         setNestedFilterOpen(false)
-                        setNestedSortOpen(false)
                         onDeleteColumn()
                         onPopoverClose?.()
                     }}

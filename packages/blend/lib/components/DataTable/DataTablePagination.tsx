@@ -14,6 +14,7 @@ type DataTablePaginationProps = {
     currentPage: number
     pageSize: number
     totalRows: number
+    visibleRows?: number
     pageSizeOptions: number[]
     isLoading?: boolean
     hasData?: boolean
@@ -27,6 +28,7 @@ export function DataTablePagination({
     pageSize,
     totalRows,
     pageSizeOptions,
+    visibleRows = 0,
     isLoading = false,
     hasData = true,
     isNarrowContainer = false,
@@ -39,6 +41,9 @@ export function DataTablePagination({
     const PAGINATION_ITEM_HEIGHT = 33
 
     const totalPages = Math.ceil(totalRows / pageSize)
+    const hasVisibleRows = hasData && visibleRows > 0
+    const rangeStart = hasVisibleRows ? (currentPage - 1) * pageSize + 1 : 0
+    const rangeEnd = hasVisibleRows ? rangeStart + visibleRows - 1 : 0
 
     const getPageNumbers = () => {
         const pages = []
@@ -254,6 +259,25 @@ export function DataTablePagination({
                         disabled={!hasData || isLoading}
                     />
                 </Block>
+                <PrimitiveText
+                    as="span"
+                    fontSize={
+                        tableToken.dataTable.table.footer.pagination.pageText
+                            .fontSize
+                    }
+                    color={
+                        tableToken.dataTable.table.footer.pagination.pageText
+                            .color
+                    }
+                    style={{
+                        whiteSpace: 'nowrap',
+                        flexShrink: 0,
+                    }}
+                >
+                    {hasVisibleRows
+                        ? `${rangeStart}-${rangeEnd} of ${totalRows}`
+                        : `0 of ${totalRows}`}
+                </PrimitiveText>
             </Block>
 
             <Block

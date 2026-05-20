@@ -5,8 +5,9 @@ import {
     ChartV2SeriesOptionsType,
 } from './chartV2.types'
 import Highcharts from 'highcharts'
-import HighchartsReact, {
-    HighchartsReactProps,
+import {
+    HighchartsReact,
+    type HighchartsReactProps,
 } from 'highcharts-react-official'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { ChartV2TokensType } from './chartV2.tokens'

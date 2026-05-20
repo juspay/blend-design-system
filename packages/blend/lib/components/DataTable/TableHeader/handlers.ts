@@ -10,7 +10,7 @@ export type FilterState = {
     columnSearchValues: Record<string, string>
     columnSelectedValues: Record<
         string,
-        string[] | { min: number; max: number }
+        string | string[] | { min: number; max: number }
     >
 }
 

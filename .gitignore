@@ -180,3 +180,5 @@ packages/blend/dist/*
 
 .claude/
 .blend-telemetry/
+# Generated route tree
+routeTree.gen.ts

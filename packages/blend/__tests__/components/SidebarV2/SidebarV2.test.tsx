@@ -192,7 +192,7 @@ describe('SidebarV2', () => {
     })
 
     it('renders custom topbar slot', () => {
-        render(
+        const { container } = render(
             <SidebarV2
                 data={createMockDirectoryData()}
                 topbar={<div data-testid="custom-topbar">Custom Topbar</div>}
@@ -201,6 +201,9 @@ describe('SidebarV2', () => {
             </SidebarV2>
         )
 
+        expect(
+            container.querySelector('[data-topbar="topbar"]')
+        ).toBeInTheDocument()
         expect(screen.getByTestId('custom-topbar')).toBeInTheDocument()
     })
 
@@ -320,7 +323,7 @@ describe('SidebarV2', () => {
         ).toBeInTheDocument()
     })
 
-    it('accepts right actions prop without errors', () => {
+    it('does not render topbar rightActions when topbar is omitted', () => {
         const { container } = render(
             <SidebarV2
                 data={createMockDirectoryData()}
@@ -330,10 +333,60 @@ describe('SidebarV2', () => {
             </SidebarV2>
         )
 
-        // Verify component renders without errors when rightActions is provided
         expect(
             container.querySelector('[data-sidebar="sidebar"]')
         ).toBeInTheDocument()
+        expect(
+            screen.queryByRole('button', { name: 'Action Button' })
+        ).not.toBeInTheDocument()
+    })
+
+    it('omits the directory panel when data is null and the sidebar is expanded', () => {
+        const { container } = render(
+            <SidebarV2 data={null} defaultIsExpanded>
+                <div data-testid="main-content">Content</div>
+            </SidebarV2>
+        )
+
+        expect(
+            container.querySelector('[data-sidebar="sidebar"]')
+        ).toBeInTheDocument()
+        expect(screen.getByTestId('main-content')).toBeInTheDocument()
+        expect(
+            container.querySelector('[data-directory-container]')
+        ).not.toBeInTheDocument()
+    })
+
+    it('omits the directory panel when data is empty and the sidebar is expanded', () => {
+        const { container } = render(
+            <SidebarV2 data={[]} defaultIsExpanded>
+                <div>Content</div>
+            </SidebarV2>
+        )
+
+        expect(
+            container.querySelector('[data-sidebar="sidebar"]')
+        ).toBeInTheDocument()
+        expect(
+            container.querySelector('[data-directory-container]')
+        ).not.toBeInTheDocument()
+    })
+
+    it('still renders the secondary rail when data is empty but secondarySidebar is set', () => {
+        const secondarySidebar = createMockSecondarySidebar()
+
+        render(
+            <SidebarV2
+                data={[]}
+                defaultIsExpanded
+                secondarySidebar={secondarySidebar}
+            >
+                <div>Content</div>
+            </SidebarV2>
+        )
+
+        expect(screen.getByTestId('app1-icon')).toBeInTheDocument()
+        expect(screen.getByTestId('app2-icon')).toBeInTheDocument()
     })
 })
 
@@ -365,6 +418,18 @@ describe('SidebarV2 Mobile Navigation', () => {
         expect(screen.getByRole('main')).toBeInTheDocument()
     })
 
+    it('does not render bottom app navigation when there are no mobile directory items', () => {
+        render(
+            <SidebarV2 data={[]}>
+                <div>Content</div>
+            </SidebarV2>
+        )
+
+        expect(
+            screen.queryByRole('navigation', { name: /app navigation/i })
+        ).not.toBeInTheDocument()
+    })
+
     it('renders bottom mobile navigation when items are marked showOnMobile', () => {
         render(
             <SidebarV2 data={createMockDirectoryData()}>
@@ -378,6 +443,22 @@ describe('SidebarV2 Mobile Navigation', () => {
         expect(screen.getByRole('button', { name: 'Home' })).toBeInTheDocument()
         expect(
             screen.getByRole('button', { name: 'Preferences' })
+        ).toBeInTheDocument()
+    })
+
+    it('renders topbar rightActions on mobile when topbar is provided', () => {
+        render(
+            <SidebarV2
+                data={createMockDirectoryData()}
+                topbar={<span>Page title</span>}
+                rightActions={<button>Action Button</button>}
+            >
+                <div>Content</div>
+            </SidebarV2>
+        )
+
+        expect(
+            screen.getByRole('button', { name: 'Action Button' })
         ).toBeInTheDocument()
     })
 

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { RequireAuth } from '@/components/auth/RequireAuth'
 import { ThemeProvider } from '@juspay/blend-design-system'
 import { resolveBrandTokens } from '@juspay/blend-design-system/tokens'
@@ -15,13 +15,19 @@ import {
     Spinner,
     WarningCircle,
 } from '@phosphor-icons/react'
+import { normalizeReturnPath } from '@/lib/return-path'
 
 export const Route = createFileRoute('/studio/preview/$branchId')({
     component: PreviewPage,
+    validateSearch: (search: Record<string, unknown>) => ({
+        from: normalizeReturnPath(search.from),
+    }),
 })
 
 function PreviewPage() {
     const { branchId } = Route.useParams()
+    const { from } = Route.useSearch()
+    const navigate = useNavigate()
     const { branch, loading, error } = useBranchWithMock(branchId)
     const { theme: globalTheme } = useTheme()
     const [copied, setCopied] = useState(false)
@@ -41,6 +47,15 @@ function PreviewPage() {
         navigator.clipboard.writeText(shareUrl)
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
+    }
+
+    const handleBack = () => {
+        if (typeof window !== 'undefined' && window.history.length > 1) {
+            window.history.back()
+            return
+        }
+
+        navigate({ to: from ?? '/studio' })
     }
 
     if (loading) {
@@ -65,12 +80,13 @@ function PreviewPage() {
                     <p className="text-sm text-gray-500 mb-4">
                         {error || `No branch with ID "${branchId}"`}
                     </p>
-                    <Link
-                        to="/studio"
+                    <button
+                        type="button"
+                        onClick={handleBack}
                         className="text-sm text-blue-600 hover:underline"
                     >
                         ← Back to Studio
-                    </Link>
+                    </button>
                 </div>
             </div>
         )
@@ -85,12 +101,14 @@ function PreviewPage() {
                 {/* ── Header ── */}
                 <header className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 shrink-0">
                     <div className="flex items-center gap-3">
-                        <Link
-                            to="/studio"
+                        <button
+                            type="button"
+                            onClick={handleBack}
                             className="p-1.5 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                            aria-label="Back"
                         >
                             <ArrowLeft className="w-5 h-5" />
-                        </Link>
+                        </button>
 
                         {/* Color dot + name */}
                         <div

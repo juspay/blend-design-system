@@ -86,11 +86,24 @@ export const getSearchInputV2SlotWrapperStyle = (
     color: slot.color[inputStateKey],
 })
 
+type SearchInputV2PrimitiveInputChrome = {
+    borderBottom: CSSProperties['borderBottom']
+    color: CSSProperties['color']
+    hover: {
+        borderBottom: CSSProperties['borderBottom']
+        color: CSSProperties['color']
+    }
+    focus: {
+        borderBottom: CSSProperties['borderBottom']
+        color: CSSProperties['color']
+    }
+}
+
 export const getSearchInputV2PrimitiveInputChrome = (
     ic: SearchInputV2TokensType['inputContainer'],
     disabled: boolean,
     error: boolean
-) => ({
+): SearchInputV2PrimitiveInputChrome => ({
     borderBottom: disabled
         ? ic.borderBottom.disabled
         : error

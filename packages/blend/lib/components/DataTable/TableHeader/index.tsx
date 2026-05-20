@@ -205,6 +205,7 @@ const TableHeader = forwardRef<
             selectAll,
             sortConfig,
             enableInlineEdit = false,
+            showActionsColumn = true,
             enableColumnManager = true,
             enableColumnReordering = false,
             showSkeleton = false,
@@ -296,10 +297,10 @@ const TableHeader = forwardRef<
 
         const extractFilterValues = (
             filters: typeof columnFilters
-        ): Record<string, string[] | { min: number; max: number }> => {
+        ): Record<string, string | string[] | { min: number; max: number }> => {
             const values: Record<
                 string,
-                string[] | { min: number; max: number }
+                string | string[] | { min: number; max: number }
             > = {}
 
             filters.forEach((filter) => {
@@ -320,7 +321,7 @@ const TableHeader = forwardRef<
                 ) {
                     values[filter.field] = filter.value
                 } else if (typeof filter.value === 'string') {
-                    values[filter.field] = [filter.value]
+                    values[filter.field] = filter.value
                 }
             })
 
@@ -438,8 +439,8 @@ const TableHeader = forwardRef<
             const handleScrollOrWheel = (e: Event) => {
                 if (!scrollCloseEnabled.current) return
 
-                const target = e.target as Element
-                if (target) {
+                const target = e.target
+                if (target && target instanceof Element) {
                     const popoverContent =
                         target.closest('[data-radix-popper-content-wrapper]') ||
                         target.closest('[role="dialog"]') ||
@@ -775,6 +776,9 @@ const TableHeader = forwardRef<
                             if (Array.isArray(selectedValues)) {
                                 return selectedValues.length > 0
                             }
+                            if (typeof selectedValues === 'string') {
+                                return selectedValues.trim() !== ''
+                            }
                             if (
                                 typeof selectedValues === 'object' &&
                                 selectedValues !== null &&
@@ -820,6 +824,7 @@ const TableHeader = forwardRef<
                         const isLastColumn =
                             !enableColumnManager &&
                             !(
+                                showActionsColumn &&
                                 (enableInlineEdit || rowActions) &&
                                 !(
                                     mobileConfig?.isMobile &&
@@ -1877,7 +1882,8 @@ const TableHeader = forwardRef<
                         )
                     })}
 
-                    {(enableInlineEdit || rowActions) &&
+                    {showActionsColumn &&
+                        (enableInlineEdit || rowActions) &&
                         !(
                             mobileConfig?.isMobile &&
                             mobileConfig?.enableColumnOverflow
