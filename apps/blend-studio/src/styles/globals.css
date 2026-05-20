@@ -6,6 +6,14 @@ body {
     @apply antialiased;
 }
 
+.title {
+    @apply text-base font-semibold leading-6 text-gray-800;
+}
+
+.subtitle {
+    @apply text-sm font-medium leading-5 text-gray-500;
+}
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 .hide-scrollbar::-webkit-scrollbar {
     display: none;

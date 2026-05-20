@@ -80,6 +80,8 @@ import {
     PlayIcon,
     SlidersIcon,
     DownloadIcon,
+    PaletteIcon,
+    BezierCurveIcon,
 } from '@phosphor-icons/react'
 import { SidebarV2 } from '@juspay/blend-design-system'
 import { getCurrentReturnPath } from '@/lib/return-path'
@@ -107,8 +109,9 @@ export const Route = createFileRoute('/studio/editor/$branchId')({
 
 interface TabConfig {
     id: EditorTabId
-    icon: React.ComponentType<{ className?: string }>
+    icon: React.ComponentType<{ className?: string; color?: string }>
     label: string
+    color?: string
 }
 
 // ---------------------------------------------------------------------------
@@ -116,21 +119,21 @@ interface TabConfig {
 // ---------------------------------------------------------------------------
 
 const EDITOR_TABS: TabConfig[] = [
-    { id: 'colors', icon: Palette, label: 'Colors' },
-    { id: 'typography', icon: TextAa, label: 'Type' },
-    { id: 'radius', icon: Sliders, label: 'Radius' },
-    { id: 'shadows', icon: Stack, label: 'Shadows' },
-    { id: 'darkmode', icon: Moon, label: 'Dark' },
-    { id: 'components', icon: Repeat, label: 'Components' },
-    { id: 'json', icon: Code, label: 'JSON' },
+    { id: 'colors', icon: PaletteIcon, label: 'Colors', color: '#99A0AE' },
+    { id: 'typography', icon: TextAa, label: 'Type', color: '#99A0AE' },
+    { id: 'radius', icon: BezierCurveIcon, label: 'Radius', color: '#99A0AE' },
+    { id: 'shadows', icon: Stack, label: 'Shadows', color: '#99A0AE' },
+    { id: 'darkmode', icon: Moon, label: 'Dark', color: '#99A0AE' },
+    { id: 'components', icon: Repeat, label: 'Components', color: '#99A0AE' },
+    { id: 'json', icon: Code, label: 'JSON', color: '#99A0AE' },
 ]
 
 /** Tab switcher items aligned with `EDITOR_TABS` (e.g. secondary rail / panel). */
-const sidebarItems = EDITOR_TABS.map(({ id, icon: Icon, label }) => ({
+const sidebarItems = EDITOR_TABS.map(({ id, icon: Icon, label, color }) => ({
     label,
     value: id,
     showInPanel: true,
-    icon: <Icon className="h-4 w-4" aria-hidden />,
+    icon: <Icon className="h-4 w-4" color={color} aria-hidden />,
 }))
 
 // ---------------------------------------------------------------------------
@@ -443,7 +446,10 @@ function EditorPage() {
                                             <ToggleButton
                                                 noContainer={true}
                                                 icon={
-                                                    <SidebarIcon className="h-3.5 w-3.5" />
+                                                    <SidebarIcon
+                                                        className="h-3.5 w-3.5"
+                                                        color={'#99A0AE'}
+                                                    />
                                                 }
                                                 title="Light preview"
                                                 onClick={() =>
@@ -458,11 +464,12 @@ function EditorPage() {
                                                     icon={
                                                         <LaptopIcon
                                                             className="h-3.5 w-3.5"
-                                                            weight={
-                                                                true
-                                                                    ? 'fill'
-                                                                    : 'regular'
+                                                            color={
+                                                                isMobile
+                                                                    ? '#99A0AE'
+                                                                    : '#000000'
                                                             }
+                                                            weight="fill"
                                                         />
                                                     }
                                                     title="Light preview"
@@ -475,11 +482,12 @@ function EditorPage() {
                                                     icon={
                                                         <DeviceMobileSpeakerIcon
                                                             className="h-3.5 w-3.5"
-                                                            weight={
-                                                                false
-                                                                    ? 'fill'
-                                                                    : 'regular'
+                                                            color={
+                                                                !isMobile
+                                                                    ? '#99A0AE'
+                                                                    : '#000000'
                                                             }
+                                                            weight="fill"
                                                         />
                                                     }
                                                     title="Dark preview"
@@ -494,12 +502,13 @@ function EditorPage() {
                                                     icon={
                                                         <Sun
                                                             className="h-3.5 w-3.5"
-                                                            weight={
+                                                            color={
                                                                 previewTheme ===
                                                                 'light'
-                                                                    ? 'fill'
-                                                                    : 'regular'
+                                                                    ? '#99A0AE'
+                                                                    : '#000000'
                                                             }
+                                                            weight="fill"
                                                         />
                                                     }
                                                     title="Light preview"
@@ -514,12 +523,13 @@ function EditorPage() {
                                                     icon={
                                                         <MoonStarsIcon
                                                             className="h-3.5 w-3.5"
-                                                            weight={
+                                                            color={
                                                                 previewTheme ===
                                                                 'dark'
-                                                                    ? 'fill'
-                                                                    : 'regular'
+                                                                    ? '#99A0AE'
+                                                                    : '#000000'
                                                             }
+                                                            weight="fill"
                                                         />
                                                     }
                                                     title="Dark preview"
@@ -547,6 +557,7 @@ function EditorPage() {
                                                                     className="h-3.5 w-3.5"
                                                                     weight="fill"
                                                                     aria-hidden
+                                                                    color="#99A0AE"
                                                                 />
                                                             ),
                                                         }}
@@ -567,6 +578,7 @@ function EditorPage() {
                                                                         <DownloadIcon
                                                                             className="h-3.5 w-3.5"
                                                                             weight="fill"
+                                                                            color="#99A0AE"
                                                                         />
                                                                     ),
                                                                 },
@@ -607,6 +619,7 @@ function EditorPage() {
                                                             className="h-3.5 w-3.5"
                                                             weight="fill"
                                                             aria-hidden
+                                                            color="#99A0AE"
                                                         />
                                                     ),
                                                 }}
