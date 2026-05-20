@@ -264,8 +264,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         }, [shouldRenderMobileNavigation])
 
         useEffect(() => {
-            const directoryContainer = document.querySelector(
+            const allContainers = document.querySelectorAll(
                 '[data-directory-container]'
+            )
+            const directoryContainer = (
+                isHovering
+                    ? allContainers[allContainers.length - 1]
+                    : allContainers[0]
             ) as HTMLElement | null
             if (!directoryContainer) return
 
@@ -325,7 +330,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 scrollingElement.removeEventListener('scroll', updateBlurState)
                 window.removeEventListener('resize', handleResize)
             }
-        }, [isExpanded, data])
+        }, [isExpanded, data, isHovering])
 
         return (
             <SectionStateContext.Provider value={sectionStateValue}>
