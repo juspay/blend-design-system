@@ -14,3 +14,6 @@ export * from './constants'
 
 // Cn utility export
 export { cn } from './utils/cn'
+
+// Canvas utilities export
+export * from './canvas-utils'
