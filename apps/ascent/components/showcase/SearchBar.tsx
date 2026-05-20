@@ -3,9 +3,9 @@
 import {
     MagnifyingGlassIcon,
     XIcon,
-    SlidersIcon,
+    SlidersHorizontalIcon,
     CheckIcon,
-    ArrowDownIcon,
+    CaretDownIcon,
 } from '@phosphor-icons/react/dist/ssr'
 import { AnimatePresence, motion, Variants } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -17,12 +17,12 @@ interface SearchBarProps {
     onCategoryChange?: (category: string | null) => void
 }
 
-const dropupVariants: Variants = {
+const dropdownVariants: Variants = {
     hidden: {
         opacity: 0,
-        y: 10,
-        scale: 0.96,
-        filter: 'blur(5px)',
+        y: 8,
+        scale: 0.97,
+        filter: 'blur(4px)',
     },
     visible: {
         opacity: 1,
@@ -38,11 +38,11 @@ const dropupVariants: Variants = {
     },
     exit: {
         opacity: 0,
-        y: 8,
-        scale: 0.96,
-        filter: 'blur(5px)',
+        y: 6,
+        scale: 0.97,
+        filter: 'blur(4px)',
         transition: {
-            duration: 0.16,
+            duration: 0.14,
             ease: [0.4, 0, 1, 1] as [number, number, number, number],
         },
     },
@@ -56,11 +56,12 @@ export default function SearchBar({
 }: SearchBarProps) {
     const [searchQuery, setSearchQuery] = useState('')
     const [isExpanded, setIsExpanded] = useState(false)
-    const [dropupOpen, setDropupOpen] = useState(false)
+    const [dropdownOpen, setDropdownOpen] = useState(false)
 
     const inputRef = useRef<HTMLInputElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
-    const dropupRef = useRef<HTMLDivElement>(null)
+    const dropdownRef = useRef<HTMLDivElement>(null)
+    const filterBtnRef = useRef<HTMLButtonElement>(null)
 
     const expand = useCallback(() => {
         setIsExpanded(true)
@@ -74,36 +75,42 @@ export default function SearchBar({
         inputRef.current?.blur()
     }, [onSearch])
 
-    const closeDropup = useCallback(() => setDropupOpen(false), [])
-    const toggleDropup = useCallback(() => setDropupOpen((v) => !v), [])
+    const closeDropdown = useCallback(() => setDropdownOpen(false), [])
+    const toggleDropdown = useCallback(() => setDropdownOpen((v) => !v), [])
 
     const handleCategorySelect = useCallback(
         (cat: string | null) => {
             onCategoryChange?.(cat)
-            setTimeout(closeDropup, 100)
+            setTimeout(closeDropdown, 100)
         },
-        [onCategoryChange, closeDropup]
+        [onCategoryChange, closeDropdown]
     )
 
+    // Keyboard shortcuts
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            const isTyping =
+                e.target instanceof HTMLInputElement ||
+                e.target instanceof HTMLTextAreaElement
+
+            if ((e.key === 'f' || e.key === 'F') && !isTyping) {
                 e.preventDefault()
                 if (isExpanded) {
-                    collapse()
+                    inputRef.current?.focus()
                 } else {
                     expand()
                 }
             }
             if (e.key === 'Escape') {
-                if (dropupOpen) closeDropup()
+                if (dropdownOpen) closeDropdown()
                 else if (isExpanded) collapse()
             }
         }
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [isExpanded, dropupOpen, expand, collapse, closeDropup])
+    }, [isExpanded, dropdownOpen, expand, collapse, closeDropdown])
 
+    // Click-outside to close
     useEffect(() => {
         const pointerDownPos = { x: 0, y: 0 }
 
@@ -119,8 +126,12 @@ export default function SearchBar({
 
             const target = e.target as HTMLElement
 
-            if (dropupOpen && !dropupRef.current?.contains(target)) {
-                closeDropup()
+            if (
+                dropdownOpen &&
+                !dropdownRef.current?.contains(target) &&
+                !filterBtnRef.current?.contains(target)
+            ) {
+                closeDropdown()
             }
 
             if (!isExpanded) return
@@ -136,27 +147,25 @@ export default function SearchBar({
             document.removeEventListener('pointerdown', handlePointerDown)
             document.removeEventListener('pointerup', handlePointerUp)
         }
-    }, [isExpanded, dropupOpen, collapse, closeDropup])
+    }, [isExpanded, dropdownOpen, collapse, closeDropdown])
 
+    const activeCount = selectedCategory !== null ? 1 : 0
     const activeLabel = selectedCategory === null ? 'All' : selectedCategory
 
     return (
-        <div
-            className="pointer-events-auto"
-            onPointerDown={(e) => e.stopPropagation()}
-        >
-            <div className="flex items-center gap-3 bg-background/85 backdrop-blur-xl border border-border/60 rounded-2xl px-2 sm:px-4 py-2 sm:py-3 shadow-xl">
-                {/* Search input */}
+        <div className="pointer-events-auto w-full">
+            <div className="flex items-center gap-2 bg-background dark:border border-border/80 rounded-2xl py-2.5 px-3  w-full shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+                {/* Search input — only this animates width */}
                 <motion.div
                     ref={containerRef}
-                    animate={{ width: isExpanded ? 300 : 250 }}
+                    animate={{ width: isExpanded ? 220 : 180 }}
                     initial={false}
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    className="flex items-center gap-2 border py-2.5 px-3.5 rounded-[10px] border-border/60 bg-background/90 cursor-text overflow-hidden"
+                    className="flex items-center gap-2 border border-border/75 py-2 px-3 rounded-xl cursor-text overflow-hidden shrink-0"
                     onClick={expand}
                 >
                     <MagnifyingGlassIcon
-                        size={16}
+                        size={15}
                         className="text-muted-foreground shrink-0"
                     />
 
@@ -168,7 +177,10 @@ export default function SearchBar({
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                onSearch?.(searchQuery.trim())
+                                const val = searchQuery.trim()
+                                onSearch?.(val)
+                                // collapse resets isExpanded so F can re-trigger expand()
+                                setIsExpanded(false)
                                 inputRef.current?.blur()
                             }
                             if (e.key === 'Escape') collapse()
@@ -177,151 +189,159 @@ export default function SearchBar({
                         className="bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground flex-1 min-w-0"
                     />
 
-                    <AnimatePresence mode="wait" initial={false}>
-                        {isExpanded && searchQuery ? (
-                            <motion.button
-                                key="clear"
-                                initial={{ opacity: 0, scale: 0.6 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.6 }}
-                                transition={{ duration: 0.12 }}
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    setSearchQuery('')
-                                    onSearch?.('')
-                                    inputRef.current?.focus()
-                                }}
-                                className="shrink-0 text-muted-foreground hover:text-foreground transition-colors"
-                                aria-label="Clear search"
-                            >
-                                <XIcon size={14} />
-                            </motion.button>
-                        ) : (
-                            <motion.div
-                                key="shortcut"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.12 }}
-                                aria-hidden="true"
-                                className="flex items-center gap-1 text-sm text-muted-foreground px-2 shrink-0"
-                            >
-                                <span className="font-medium">&#8984;</span>
-                                <span>+</span>
-                                <span className="font-medium">K</span>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    {/* Fixed-size slot prevents height reflow during clear ↔ shortcut swap */}
+                    <div className="shrink-0 flex items-center justify-center h-6 w-6">
+                        <AnimatePresence mode="wait" initial={false}>
+                            {isExpanded && searchQuery ? (
+                                <motion.button
+                                    key="clear"
+                                    initial={{ opacity: 0, scale: 0.6 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.6 }}
+                                    transition={{ duration: 0.1 }}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        setSearchQuery('')
+                                        onSearch?.('')
+                                        inputRef.current?.focus()
+                                    }}
+                                    className="text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded-md hover:bg-border/40"
+                                    aria-label="Clear search"
+                                >
+                                    <XIcon size={13} />
+                                </motion.button>
+                            ) : (
+                                <motion.div
+                                    key="shortcut"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.1 }}
+                                    aria-hidden="true"
+                                >
+                                    <span className="flex items-center text-[11px] text-muted-foreground bg-secondary/50 border border-border/50 rounded-md px-1.5 py-0.5">
+                                        F
+                                    </span>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </motion.div>
 
-                {/* Category dropup — only renders if categories are provided */}
+                {/* Divider */}
                 {categories.length > 0 && (
-                    <>
-                        <div className="w-px h-6 bg-border/60 mx-1.5 hidden sm:block" />
+                    <div className="w-px h-5 bg-border/90 shrink-0 ml-2" />
+                )}
 
-                        <div ref={dropupRef} className="relative">
-                            {/* Trigger pill */}
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation()
-                                    toggleDropup()
-                                }}
-                                aria-haspopup="listbox"
-                                aria-expanded={dropupOpen}
-                                className={`
-                                    flex items-center gap-2 px-3.5 py-2 rounded-full text-sm
-                                    border transition-colors duration-150 select-none
-                                    ${
-                                        dropupOpen
-                                            ? 'border-border bg-muted text-foreground'
-                                            : 'border-border/60 bg-background/90 text-foreground hover:bg-muted/60'
-                                    }
-                                `}
-                            >
-                                <SlidersIcon
-                                    size={14}
-                                    className="text-muted-foreground"
-                                />
-                                <span className="text-foreground/50">
-                                    {activeLabel}
-                                </span>
-                                <motion.span
-                                    animate={{ rotate: dropupOpen ? 180 : 0 }}
-                                    transition={{
-                                        duration: 0.22,
-                                        ease: [0.4, 0, 0.2, 1] as [
-                                            number,
-                                            number,
-                                            number,
-                                            number,
-                                        ],
-                                    }}
-                                    className="inline-flex"
-                                >
-                                    <ArrowDownIcon
-                                        size={13}
-                                        className="text-muted-foreground"
-                                    />
-                                </motion.span>
-                            </button>
+                {/* Filter button */}
+                {categories.length > 0 && (
+                    <div className="relative shrink-0">
+                        <button
+                            ref={filterBtnRef}
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                toggleDropdown()
+                            }}
+                            aria-haspopup="listbox"
+                            aria-expanded={dropdownOpen}
+                            className={`
+                                flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm
+                                transition-colors duration-150 select-none
+                                ${
+                                    dropdownOpen
+                                        ? 'bg-muted text-foreground'
+                                        : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+                                }
+                            `}
+                        >
+                            <SlidersHorizontalIcon
+                                size={14}
+                                className="shrink-0"
+                            />
 
-                            {/* Dropup panel */}
-                            <AnimatePresence>
-                                {dropupOpen && (
-                                    <motion.div
-                                        key="dropup"
-                                        role="listbox"
-                                        aria-label="Category filter"
-                                        variants={dropupVariants}
-                                        initial="hidden"
-                                        animate="visible"
-                                        exit="exit"
-                                        style={{
-                                            transformOrigin: 'bottom left',
-                                        }}
-                                        className="
-                                            absolute bottom-[calc(100%+10px)] left-0 z-50
-                                            min-w-50 rounded-xl
-                                            bg-background backdrop-blur-xl
-                                            border border-border/60
-                                            shadow-xl shadow-black/10
-                                            p-1.5 flex flex-col gap-0.5
-                                        "
-                                        onPointerDown={(e) =>
-                                            e.stopPropagation()
-                                        }
+                            <span className="hidden sm:inline text-foreground/70 text-[13px]">
+                                {activeLabel}
+                            </span>
+
+                            <AnimatePresence initial={false}>
+                                {activeCount > 0 && (
+                                    <motion.span
+                                        key="badge"
+                                        initial={{ opacity: 0, scale: 0.6 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.6 }}
+                                        transition={{ duration: 0.12 }}
+                                        className="flex items-center justify-center text-xxs font-medium bg-foreground text-background rounded-full w-4 h-4 leading-none sm:hidden"
                                     >
-                                        <p className="text-xxs uppercase tracking-widest text-muted-foreground px-2.5 pt-1 pb-1.5">
-                                            Filter by
-                                        </p>
-
-                                        <CategoryItem
-                                            label="All items"
-                                            isActive={selectedCategory === null}
-                                            onClick={() =>
-                                                handleCategorySelect(null)
-                                            }
-                                        />
-
-                                        <div className="h-px bg-border/40 mx-1.5 my-1" />
-
-                                        {categories.map((cat) => (
-                                            <CategoryItem
-                                                key={cat}
-                                                label={cat}
-                                                isActive={
-                                                    selectedCategory === cat
-                                                }
-                                                onClick={() =>
-                                                    handleCategorySelect(cat)
-                                                }
-                                            />
-                                        ))}
-                                    </motion.div>
+                                        {activeCount}
+                                    </motion.span>
                                 )}
                             </AnimatePresence>
-                        </div>
-                    </>
+
+                            <motion.span
+                                animate={{ rotate: dropdownOpen ? 0 : 180 }}
+                                transition={{
+                                    duration: 0.18,
+                                    ease: [0.4, 0, 0.2, 1],
+                                }}
+                                className="inline-flex"
+                            >
+                                <CaretDownIcon
+                                    size={12}
+                                    className="text-muted-foreground"
+                                />
+                            </motion.span>
+                        </button>
+
+                        <AnimatePresence>
+                            {dropdownOpen && (
+                                <motion.div
+                                    key="dropdown"
+                                    ref={dropdownRef}
+                                    role="listbox"
+                                    aria-label="Category filter"
+                                    variants={dropdownVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    exit="exit"
+                                    style={{ transformOrigin: 'bottom right' }}
+                                    className="
+                                        absolute bottom-[calc(100%+16px)] -right-3 z-50
+                                        min-w-60 rounded-xl
+                                        bg-background dark:border dark:border-border
+                                        shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]
+                                        p-1.5 flex flex-col gap-0.5
+                                    "
+                                    onPointerDown={(e) => e.stopPropagation()}
+                                >
+                                    <p className="text-xxs uppercase tracking-widest text-muted-foreground px-2.5 pt-1 pb-1.5">
+                                        Filter by
+                                    </p>
+
+                                    <CategoryItem
+                                        label="All items"
+                                        isActive={selectedCategory === null}
+                                        onClick={() =>
+                                            handleCategorySelect(null)
+                                        }
+                                    />
+
+                                    <div className="h-px bg-border/40 mx-1.5 my-1" />
+
+                                    {categories.map((cat) => (
+                                        <CategoryItem
+                                            key={cat}
+                                            label={cat}
+                                            isActive={selectedCategory === cat}
+                                            onClick={() =>
+                                                handleCategorySelect(cat)
+                                            }
+                                        />
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 )}
             </div>
         </div>
@@ -343,7 +363,7 @@ function CategoryItem({
             aria-selected={isActive}
             onClick={onClick}
             className={`
-                flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-sm
+                flex items-center gap-2 w-full px-2.5 py-2 rounded-lg text-[13px]
                 transition-colors duration-100 text-left
                 ${
                     isActive
@@ -352,6 +372,11 @@ function CategoryItem({
                 }
             `}
         >
+            <span
+                className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-150 ${
+                    isActive ? 'bg-foreground' : 'bg-border'
+                }`}
+            />
             <span className="flex-1">{label}</span>
             <AnimatePresence initial={false}>
                 {isActive && (
@@ -359,9 +384,9 @@ function CategoryItem({
                         initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.5 }}
-                        transition={{ duration: 0.12 }}
+                        transition={{ duration: 0.1 }}
                     >
-                        <CheckIcon size={13} className="text-foreground" />
+                        <CheckIcon size={12} className="text-foreground" />
                     </motion.span>
                 )}
             </AnimatePresence>
