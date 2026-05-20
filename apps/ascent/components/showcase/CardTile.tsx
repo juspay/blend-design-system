@@ -24,20 +24,25 @@ export function CardTile({
         : 'text-foreground/75 font-medium text-xs leading-snug font-manrope tracking-wide'
 
     return (
-        <div
+        <button
             {...(isFiltered ? { 'data-showcase-card': true } : {})}
             onClick={onClick}
+            aria-label={title}
             style={{
                 position: 'absolute',
                 cursor: 'pointer',
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                textAlign: 'left',
                 ...style,
             }}
         >
-            <div className="relative w-full h-full group hover:scale-110 duration-75 hover:shadow-lg transition-all ease-out overflow-hidden border border-border/60">
+            <div className="relative w-full h-full group hover:scale-110 duration-75 hover:shadow-lg transition-all ease-out overflow-hidden border border-border/60 focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                 <div className={skeletonClass} />
                 <img
                     src={image}
-                    alt={title}
+                    alt=""
                     loading="lazy"
                     decoding="async"
                     draggable={false}
@@ -47,9 +52,11 @@ export function CardTile({
                     }}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-white via-white/40 to-transparent dark:from-black/70 dark:via-black/20 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-2.5">
-                    <p className={titleClass}>{title}</p>
+                    <p className={titleClass} aria-hidden="true">
+                        {title}
+                    </p>
                 </div>
             </div>
-        </div>
+        </button>
     )
 }

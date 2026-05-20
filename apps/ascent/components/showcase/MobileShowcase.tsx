@@ -1,9 +1,9 @@
 'use client'
-
 import { useRouter } from 'next/navigation'
 import { showcaseData, showcaseCategories } from '@/lib/showcase-data'
 import SearchBar from './SearchBar'
 import { WelcomeCard } from './WelcomeCard'
+import { CardTile } from './CardTile'
 
 interface MobileShowcaseProps {
     query?: string
@@ -29,10 +29,6 @@ export function MobileShowcase({
         return matchesCategory && matchesQuery
     })
 
-    const handleClick = (item: (typeof showcaseData)[0]) => {
-        router.push(`/showcase/${encodeURIComponent(item.id)}`)
-    }
-
     return (
         <main className="w-full min-h-screen bg-background overflow-y-auto">
             <WelcomeCard
@@ -42,24 +38,24 @@ export function MobileShowcase({
             />
 
             <div className="flex flex-col gap-6 px-4 pt-4">
-                {items.map((item, idx) => (
+                {items.map((item) => (
+                    // CardTile is position:absolute, so it needs a relative container
+                    // that defines the actual dimensions in the flow
                     <div
-                        key={idx}
-                        onClick={() => handleClick(item)}
-                        className="relative w-full overflow-hidden active:opacity-80 transition-opacity border border-border/60"
+                        key={item.id}
+                        className="relative w-full"
                         style={{ height: 220 }}
                     >
-                        <div className="absolute inset-0 bg-muted animate-pulse" />
-                        <img
-                            src={item.image}
-                            alt={item.title}
-                            loading="lazy"
-                            draggable={false}
-                            className="absolute inset-0 w-full h-full object-cover dark:invert dark:hue-rotate-180 dark:saturate-150 dark:brightness-105"
-                            onError={(e) => {
-                                ;(e.target as HTMLImageElement).style.display =
-                                    'none'
-                            }}
+                        <CardTile
+                            image={item.image}
+                            title={item.title}
+                            variant="filtered"
+                            style={{ inset: 0 }}
+                            onClick={() =>
+                                router.push(
+                                    `/showcase/${encodeURIComponent(item.id)}`
+                                )
+                            }
                         />
                     </div>
                 ))}

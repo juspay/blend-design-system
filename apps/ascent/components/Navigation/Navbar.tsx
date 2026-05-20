@@ -1,17 +1,8 @@
 'use client'
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import {
-    XIcon,
-    ListIcon,
-    CaretDownIcon,
-    ClockCounterClockwiseIcon,
-    NotepadIcon,
-    LayoutIcon,
-    BookOpenIcon,
-    SquaresFourIcon,
-} from '@phosphor-icons/react/dist/ssr'
+import { XIcon, ListIcon, CaretDownIcon } from '@phosphor-icons/react/dist/ssr'
 import { Drawer } from 'vaul'
 import { motion, AnimatePresence } from 'motion/react'
 import { GitHubIcon, FigmaIcon } from '../../icons'
@@ -33,62 +24,101 @@ const MOBILE_NAV_LABELS = [
     'Showcase',
 ]
 
-const MORE_META: Record<string, { icon: React.ReactNode; desc: string }> = {
+const MORE_META: Record<string, { desc: string }> = {
     Docs: {
-        icon: <BookOpenIcon className="h-4.5 w-4.5" />,
-        desc: 'Documentation',
+        desc: 'Documentation for Blend and related tools',
     },
     Storybook: {
-        icon: <SquaresFourIcon className="h-4.5 w-4.5" />,
-        desc: 'Component library',
+        desc: 'Component library and examples',
     },
     Blogs: {
-        icon: <NotepadIcon className="h-4.5 w-4.5" />,
-        desc: 'Guides & updates',
+        desc: 'Guides & updates from the team',
     },
     Changelog: {
-        icon: <ClockCounterClockwiseIcon className="h-4.5 w-4.5" />,
-        desc: "What's new",
+        desc: "What's new with Blend",
     },
     Showcase: {
-        icon: <LayoutIcon className="h-4.5 w-4.5" />,
-        desc: 'Built with Blend',
+        desc: 'Built with Blend by the community',
     },
+}
+
+// Derived once at module level — never changes
+const primaryLinks = HEADER_NAV_LINKS.filter((l) =>
+    PRIMARY_NAV_LABELS.includes(l.label)
+)
+const moreLinks = HEADER_NAV_LINKS.filter((l) =>
+    MORE_NAV_LABELS.includes(l.label)
+)
+const mobileLinks = HEADER_NAV_LINKS.filter((l) =>
+    MOBILE_NAV_LABELS.includes(l.label)
+)
+
+function NavLink({
+    href,
+    external,
+    label,
+    isActive,
+}: {
+    href: string
+    external?: boolean
+    label: string
+    isActive: boolean
+}) {
+    return (
+        <Link
+            href={href}
+            target={external ? '_blank' : undefined}
+            rel={external ? 'noopener noreferrer' : undefined}
+            className={cn(
+                'text-sm transition-colors p-1',
+                isActive
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+            )}
+        >
+            {label}
+        </Link>
+    )
+}
+
+function IconBar() {
+    return (
+        <div className="flex items-center border border-border px-1.5 py-0.5">
+            <Link
+                href={EXTERNAL_LINKS.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                aria-label="GitHub"
+            >
+                <GitHubIcon />
+            </Link>
+            <div className="w-px h-4 bg-border mx-2" />
+            <Link
+                href={EXTERNAL_LINKS.figma}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                aria-label="Figma"
+            >
+                <FigmaIcon />
+            </Link>
+        </div>
+    )
 }
 
 export default function Navbar() {
     const pathname = usePathname()
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const [moreOpen, setMoreOpen] = useState(false)
-    const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-    const primaryLinks = HEADER_NAV_LINKS.filter((l) =>
-        PRIMARY_NAV_LABELS.includes(l.label)
-    )
-    const moreLinks = HEADER_NAV_LINKS.filter((l) =>
-        MORE_NAV_LABELS.includes(l.label)
-    )
-    const mobileLinks = HEADER_NAV_LINKS.filter((l) =>
-        MOBILE_NAV_LABELS.includes(l.label)
-    )
 
     const isMoreActive = moreLinks.some(
         (l) => pathname === l.href || pathname.startsWith(l.href + '/')
     )
 
-    const handleMouseEnter = useCallback(() => {
-        if (timeoutRef.current) clearTimeout(timeoutRef.current)
-        setMoreOpen(true)
-    }, [])
-
-    const handleMouseLeave = useCallback(() => {
-        timeoutRef.current = setTimeout(() => setMoreOpen(false), 120)
-    }, [])
-
     return (
         <header className="lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto relative z-100">
             <div className="mx-auto px-4 sm:px-6.25 py-5 h-15 flex items-center justify-between border-x border-border">
-                {/* Logo */}
                 <Link
                     href={ROUTES.home}
                     className="flex items-center font-semibold text-foreground"
@@ -97,43 +127,29 @@ export default function Navbar() {
                     Blend
                 </Link>
 
-                {/* Desktop Navigation */}
+                {/* Desktop */}
                 <div className="hidden md:flex items-center gap-4">
                     <nav className="flex items-center gap-3">
-                        {primaryLinks.map((link) => {
-                            const isActive =
-                                pathname === link.href ||
-                                pathname.startsWith(link.href + '/')
-                            return (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    target={
-                                        link.external ? '_blank' : undefined
-                                    }
-                                    rel={
-                                        link.external
-                                            ? 'noopener noreferrer'
-                                            : undefined
-                                    }
-                                    className={cn(
-                                        'text-sm transition-colors p-1',
-                                        isActive
-                                            ? 'text-primary'
-                                            : 'text-muted-foreground hover:text-foreground'
-                                    )}
-                                >
-                                    {link.label}
-                                </Link>
-                            )
-                        })}
+                        {primaryLinks.map((link) => (
+                            <NavLink
+                                key={link.href}
+                                {...link}
+                                isActive={
+                                    pathname === link.href ||
+                                    pathname.startsWith(link.href + '/')
+                                }
+                            />
+                        ))}
 
-                        {/* More — hover-triggered dropdown */}
+                        {/* More dropdown */}
                         <div
-                            className="relative"
-                            onMouseEnter={handleMouseEnter}
-                            onMouseLeave={handleMouseLeave}
+                            className="relative group"
+                            onMouseEnter={() => setMoreOpen(true)}
+                            onMouseLeave={() => setMoreOpen(false)}
                         >
+                            {/* Invisible bridge fills the mt gap so hover doesn't break */}
+                            <div className="absolute top-full left-0 right-0 h-3.5" />
+
                             <button
                                 className={cn(
                                     'flex items-center gap-1 text-sm transition-colors p-1 select-none cursor-default',
@@ -143,11 +159,8 @@ export default function Navbar() {
                                 )}
                                 aria-expanded={moreOpen}
                                 aria-haspopup="true"
-                                tabIndex={0}
                                 onFocus={() => setMoreOpen(true)}
-                                onBlur={() =>
-                                    setTimeout(() => setMoreOpen(false), 150)
-                                }
+                                onBlur={() => setMoreOpen(false)}
                             >
                                 More
                                 <motion.span
@@ -188,12 +201,9 @@ export default function Navbar() {
                                             duration: 0.4,
                                             ease: [0.16, 1, 0.3, 1],
                                         }}
-                                        className="absolute top-full left-1/2 -translate-x-1/2 mt-3.5 w-60 origin-top"
+                                        className="absolute top-full left-1/2 -translate-x-1/2 mt-3.5 w-64 origin-top"
                                     >
-                                        {/* Arrow pointer */}
-                                        {/* <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-background border-l border-t border-border rotate-45 z-10" /> */}
-
-                                        <div className="relative bg-background backdrop-blur-xl border border-border shadow-xl shadow-black/5 overflow-hidden mt-0.5">
+                                        <div className="relative bg-background border border-border shadow-xl shadow-black/5 overflow-hidden mt-0.5">
                                             {moreLinks.map((link, i) => {
                                                 const isActive =
                                                     pathname === link.href ||
@@ -202,7 +212,6 @@ export default function Navbar() {
                                                     )
                                                 const meta =
                                                     MORE_META[link.label]
-
                                                 return (
                                                     <motion.div
                                                         key={link.href}
@@ -244,21 +253,9 @@ export default function Navbar() {
                                                                 'group flex items-center gap-3 px-3.5 py-3 transition-all duration-150',
                                                                 isActive
                                                                     ? 'bg-primary/5 text-primary'
-                                                                    : 'text-foreground hover:bg-muted/60'
+                                                                    : 'text-foreground hover:bg-primary/3'
                                                             )}
                                                         >
-                                                            {meta?.icon && (
-                                                                <span
-                                                                    className={cn(
-                                                                        'shrink-0 w-9 h-9 flex items-center justify-center bg-secondary/50 border border-dotted border-border/60 transition-colors duration-150',
-                                                                        isActive
-                                                                            ? 'text-primary'
-                                                                            : 'text-muted-foreground group-hover:text-foreground'
-                                                                    )}
-                                                                >
-                                                                    {meta.icon}
-                                                                </span>
-                                                            )}
                                                             <span className="flex flex-col gap-1.5 min-w-0">
                                                                 <span className="text-sm font-medium leading-none tracking-wide text-foreground/90">
                                                                     {link.label}
@@ -289,54 +286,13 @@ export default function Navbar() {
                         </div>
                     </nav>
 
-                    <div className="flex items-center border border-border px-1.5 py-0.5">
-                        <Link
-                            href={EXTERNAL_LINKS.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                            aria-label="GitHub"
-                        >
-                            <GitHubIcon />
-                        </Link>
-                        <div className="w-px h-4 bg-border mx-2" />
-                        <Link
-                            href={EXTERNAL_LINKS.figma}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                            aria-label="Figma"
-                        >
-                            <FigmaIcon />
-                        </Link>
-                    </div>
-
+                    <IconBar />
                     <ThemeToggle />
                 </div>
 
-                {/* Mobile Navigation */}
+                {/* Mobile */}
                 <div className="flex md:hidden items-center gap-2">
-                    <div className="flex items-center border border-border px-1.5 py-0.5">
-                        <Link
-                            href={EXTERNAL_LINKS.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                            aria-label="GitHub"
-                        >
-                            <GitHubIcon />
-                        </Link>
-                        <div className="w-px h-4 bg-border mx-2" />
-                        <Link
-                            href={EXTERNAL_LINKS.figma}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                            aria-label="Figma"
-                        >
-                            <FigmaIcon />
-                        </Link>
-                    </div>
+                    <IconBar />
                     <ThemeToggle />
 
                     <Drawer.Root
@@ -377,7 +333,6 @@ export default function Navbar() {
                                                     link.href + '/'
                                                 )
                                             const meta = MORE_META[link.label]
-
                                             return (
                                                 <Link
                                                     key={link.href}
@@ -402,18 +357,6 @@ export default function Navbar() {
                                                             : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                                     )}
                                                 >
-                                                    {meta?.icon && (
-                                                        <span
-                                                            className={cn(
-                                                                'shrink-0 w-7 h-7 flex items-center justify-center border',
-                                                                isActive
-                                                                    ? 'bg-primary/10 border-primary/20 text-primary'
-                                                                    : 'bg-muted border-border text-muted-foreground'
-                                                            )}
-                                                        >
-                                                            {meta.icon}
-                                                        </span>
-                                                    )}
                                                     <span className="flex flex-col gap-0.5">
                                                         <span className="font-medium text-foreground">
                                                             {link.label}

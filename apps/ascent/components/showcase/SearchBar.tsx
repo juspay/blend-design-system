@@ -7,6 +7,7 @@ import {
     CheckIcon,
     CaretDownIcon,
 } from '@phosphor-icons/react/dist/ssr'
+import * as Popover from '@radix-ui/react-popover'
 import { AnimatePresence, motion, Variants } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
@@ -60,8 +61,6 @@ export default function SearchBar({
 
     const inputRef = useRef<HTMLInputElement>(null)
     const containerRef = useRef<HTMLDivElement>(null)
-    const dropdownRef = useRef<HTMLDivElement>(null)
-    const filterBtnRef = useRef<HTMLButtonElement>(null)
 
     const expand = useCallback(() => {
         setIsExpanded(true)
@@ -75,15 +74,13 @@ export default function SearchBar({
         inputRef.current?.blur()
     }, [onSearch])
 
-    const closeDropdown = useCallback(() => setDropdownOpen(false), [])
-    const toggleDropdown = useCallback(() => setDropdownOpen((v) => !v), [])
-
     const handleCategorySelect = useCallback(
         (cat: string | null) => {
             onCategoryChange?.(cat)
-            setTimeout(closeDropdown, 100)
+            // Small delay so the check animation is visible before closing
+            setTimeout(() => setDropdownOpen(false), 100)
         },
-        [onCategoryChange, closeDropdown]
+        [onCategoryChange]
     )
 
     // Keyboard shortcuts
@@ -101,17 +98,25 @@ export default function SearchBar({
                     expand()
                 }
             }
+
             if (e.key === 'Escape') {
-                if (dropdownOpen) closeDropdown()
-                else if (isExpanded) collapse()
+                if (dropdownOpen) {
+                    setDropdownOpen(false)
+                } else if (isExpanded) {
+                    collapse()
+                }
             }
         }
+
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [isExpanded, dropdownOpen, expand, collapse, closeDropdown])
+    }, [isExpanded, dropdownOpen, expand, collapse])
 
-    // Click-outside to close
+    // Click-outside to collapse search input only.
+    // The dropdown click-outside is handled entirely by Radix Popover.
     useEffect(() => {
+        if (!isExpanded) return
+
         const pointerDownPos = { x: 0, y: 0 }
 
         const handlePointerDown = (e: PointerEvent) => {
@@ -122,20 +127,15 @@ export default function SearchBar({
         const handlePointerUp = (e: PointerEvent) => {
             const dx = e.clientX - pointerDownPos.x
             const dy = e.clientY - pointerDownPos.y
+            // Ignore drags
             if (Math.sqrt(dx * dx + dy * dy) > 5) return
 
             const target = e.target as HTMLElement
 
-            if (
-                dropdownOpen &&
-                !dropdownRef.current?.contains(target) &&
-                !filterBtnRef.current?.contains(target)
-            ) {
-                closeDropdown()
-            }
-
-            if (!isExpanded) return
+            // Stay expanded if click is inside the search container,
+            // the Radix popover content (rendered in a portal), or a showcase card
             if (containerRef.current?.contains(target)) return
+            if (target.closest('[data-radix-popper-content-wrapper]')) return
             if (target.closest('[data-showcase-card]')) return
 
             collapse()
@@ -147,21 +147,22 @@ export default function SearchBar({
             document.removeEventListener('pointerdown', handlePointerDown)
             document.removeEventListener('pointerup', handlePointerUp)
         }
-    }, [isExpanded, dropdownOpen, collapse, closeDropdown])
+        // Only re-attach when isExpanded changes — collapse/expand are stable refs
+    }, [isExpanded, collapse])
 
     const activeCount = selectedCategory !== null ? 1 : 0
     const activeLabel = selectedCategory === null ? 'All' : selectedCategory
 
     return (
         <div className="pointer-events-auto w-full">
-            <div className="flex items-center gap-2 bg-background dark:border border-border/80 rounded-2xl py-2.5 px-3  w-full shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
-                {/* Search input — only this animates width */}
+            <div className="flex items-center justify-between gap-2 bg-background dark:border border-border/80 rounded-2xl py-2.5 px-3 w-full shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
+                {/* Search input */}
                 <motion.div
                     ref={containerRef}
                     animate={{ width: isExpanded ? 220 : 180 }}
                     initial={false}
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    className="flex items-center gap-2 border border-border/75 py-2 px-3 rounded-xl cursor-text overflow-hidden shrink-0"
+                    className="flex items-center gap-2 border border-border/75 py-2 px-3 rounded-xl cursor-text overflow-hidden shrink-0 flex-1"
                     onClick={expand}
                 >
                     <MagnifyingGlassIcon
@@ -177,9 +178,7 @@ export default function SearchBar({
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                const val = searchQuery.trim()
-                                onSearch?.(val)
-                                // collapse resets isExpanded so F can re-trigger expand()
+                                onSearch?.(searchQuery.trim())
                                 setIsExpanded(false)
                                 inputRef.current?.blur()
                             }
@@ -233,115 +232,131 @@ export default function SearchBar({
                     <div className="w-px h-5 bg-border/90 shrink-0 ml-2" />
                 )}
 
-                {/* Filter button */}
+                {/* Filter — Radix Popover handles click-outside, focus trap, portal, a11y */}
                 {categories.length > 0 && (
-                    <div className="relative shrink-0">
-                        <button
-                            ref={filterBtnRef}
-                            onClick={(e) => {
-                                e.stopPropagation()
-                                toggleDropdown()
-                            }}
-                            aria-haspopup="listbox"
-                            aria-expanded={dropdownOpen}
-                            className={`
-                                flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm
-                                transition-colors duration-150 select-none
-                                ${
-                                    dropdownOpen
-                                        ? 'bg-muted text-foreground'
-                                        : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
-                                }
-                            `}
-                        >
-                            <SlidersHorizontalIcon
-                                size={14}
-                                className="shrink-0"
-                            />
-
-                            <span className="hidden sm:inline text-foreground/70 text-[13px]">
-                                {activeLabel}
-                            </span>
-
-                            <AnimatePresence initial={false}>
-                                {activeCount > 0 && (
-                                    <motion.span
-                                        key="badge"
-                                        initial={{ opacity: 0, scale: 0.6 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.6 }}
-                                        transition={{ duration: 0.12 }}
-                                        className="flex items-center justify-center text-xxs font-medium bg-foreground text-background rounded-full w-4 h-4 leading-none sm:hidden"
-                                    >
-                                        {activeCount}
-                                    </motion.span>
-                                )}
-                            </AnimatePresence>
-
-                            <motion.span
-                                animate={{ rotate: dropdownOpen ? 0 : 180 }}
-                                transition={{
-                                    duration: 0.18,
-                                    ease: [0.4, 0, 0.2, 1],
-                                }}
-                                className="inline-flex"
+                    <Popover.Root
+                        open={dropdownOpen}
+                        onOpenChange={setDropdownOpen}
+                    >
+                        <Popover.Trigger asChild>
+                            <button
+                                aria-label="Filter by category"
+                                className={`
+                                    flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm
+                                    transition-colors duration-150 select-none
+                                    ${
+                                        dropdownOpen
+                                            ? 'bg-muted text-foreground'
+                                            : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+                                    }
+                                `}
                             >
-                                <CaretDownIcon
-                                    size={12}
-                                    className="text-muted-foreground"
+                                <SlidersHorizontalIcon
+                                    size={14}
+                                    className="shrink-0"
                                 />
-                            </motion.span>
-                        </button>
+
+                                <span className="hidden sm:inline text-foreground/70 text-[13px]">
+                                    {activeLabel}
+                                </span>
+
+                                <AnimatePresence initial={false}>
+                                    {activeCount > 0 && (
+                                        <motion.span
+                                            key="badge"
+                                            initial={{ opacity: 0, scale: 0.6 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.6 }}
+                                            transition={{ duration: 0.12 }}
+                                            className="flex items-center justify-center text-xxs font-medium bg-foreground text-background rounded-full w-4 h-4 leading-none sm:hidden"
+                                        >
+                                            {activeCount}
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
+
+                                <motion.span
+                                    animate={{ rotate: dropdownOpen ? 0 : 180 }}
+                                    transition={{
+                                        duration: 0.18,
+                                        ease: [0.4, 0, 0.2, 1],
+                                    }}
+                                    className="inline-flex"
+                                >
+                                    <CaretDownIcon
+                                        size={12}
+                                        className="text-muted-foreground"
+                                    />
+                                </motion.span>
+                            </button>
+                        </Popover.Trigger>
 
                         <AnimatePresence>
                             {dropdownOpen && (
-                                <motion.div
-                                    key="dropdown"
-                                    ref={dropdownRef}
-                                    role="listbox"
-                                    aria-label="Category filter"
-                                    variants={dropdownVariants}
-                                    initial="hidden"
-                                    animate="visible"
-                                    exit="exit"
-                                    style={{ transformOrigin: 'bottom right' }}
-                                    className="
-                                        absolute bottom-[calc(100%+16px)] -right-3 z-50
-                                        min-w-60 rounded-xl
-                                        bg-background dark:border dark:border-border
-                                        shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]
-                                        p-1.5 flex flex-col gap-0.5
-                                    "
-                                    onPointerDown={(e) => e.stopPropagation()}
-                                >
-                                    <p className="text-xxs uppercase tracking-widest text-muted-foreground px-2.5 pt-1 pb-1.5">
-                                        Filter by
-                                    </p>
-
-                                    <CategoryItem
-                                        label="All items"
-                                        isActive={selectedCategory === null}
-                                        onClick={() =>
-                                            handleCategorySelect(null)
+                                <Popover.Portal forceMount>
+                                    <Popover.Content
+                                        side="top"
+                                        align="end"
+                                        sideOffset={16}
+                                        alignOffset={-10}
+                                        onOpenAutoFocus={(e) =>
+                                            e.preventDefault()
                                         }
-                                    />
+                                        asChild
+                                    >
+                                        <motion.div
+                                            role="listbox"
+                                            aria-label="Category filter"
+                                            variants={dropdownVariants}
+                                            initial="hidden"
+                                            animate="visible"
+                                            exit="exit"
+                                            style={{
+                                                transformOrigin: 'bottom right',
+                                            }}
+                                            className="
+                                                z-50 min-w-60 rounded-xl
+                                                bg-background dark:border dark:border-border
+                                                shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]
+                                                p-1.5 flex flex-col gap-0.5
+                                            "
+                                        >
+                                            <p className="text-xxs uppercase tracking-widest text-muted-foreground px-2.5 pt-1 pb-1.5">
+                                                Filter by
+                                            </p>
 
-                                    <div className="h-px bg-border/40 mx-1.5 my-1" />
+                                            <CategoryItem
+                                                label="All items"
+                                                isActive={
+                                                    selectedCategory === null
+                                                }
+                                                onClick={() =>
+                                                    handleCategorySelect(null)
+                                                }
+                                            />
 
-                                    {categories.map((cat) => (
-                                        <CategoryItem
-                                            key={cat}
-                                            label={cat}
-                                            isActive={selectedCategory === cat}
-                                            onClick={() =>
-                                                handleCategorySelect(cat)
-                                            }
-                                        />
-                                    ))}
-                                </motion.div>
+                                            <div className="h-px bg-border/40 mx-1.5 my-1" />
+
+                                            {categories.map((cat) => (
+                                                <CategoryItem
+                                                    key={cat}
+                                                    label={cat}
+                                                    isActive={
+                                                        selectedCategory === cat
+                                                    }
+                                                    onClick={() =>
+                                                        handleCategorySelect(
+                                                            cat
+                                                        )
+                                                    }
+                                                />
+                                            ))}
+                                        </motion.div>
+                                    </Popover.Content>
+                                </Popover.Portal>
                             )}
                         </AnimatePresence>
-                    </div>
+                    </Popover.Root>
                 )}
             </div>
         </div>

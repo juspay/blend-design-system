@@ -5,7 +5,7 @@ import { TOCItem } from '../Navigation/TableOfContents'
 import { DynamicSnackbar } from '../ui/DynamicSnackBar'
 import { CommandSearch } from '../ui/CommandSearch'
 import { Navbar } from '../Navigation'
-import { cn } from '@/lib'
+import { cn } from '@/lib/utils/cn'
 
 export interface SharedLayoutProps {
     baseRoute: string

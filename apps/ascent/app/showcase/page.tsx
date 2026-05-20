@@ -1,8 +1,7 @@
-import React from 'react'
 import { AsideStyle, PageBreadcrumb, SharedLayout } from '@/components'
 import Showcase from '@/components/showcase/Showcase'
 
-function page() {
+function Page() {
     const breadcrumbItems = [
         { label: 'Home', href: '/' },
         { label: 'Showcase', href: '/showcase' },
@@ -15,4 +14,4 @@ function page() {
     )
 }
 
-export default page
+export default Page
