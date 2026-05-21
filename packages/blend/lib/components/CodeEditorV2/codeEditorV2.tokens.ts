@@ -1,10 +1,10 @@
 import type { CSSObject } from 'styled-components'
-import { DiffLineType } from './codeEditorV2.types'
 import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { darkCodeEditorV2Tokens } from './codeEditorV2.dark.tokens'
 import { lightCodeEditorV2Tokens } from './codeEditorV2.light.token'
 import { Theme } from '../../context/theme.enum'
+import { CodeEditorV2DiffLineType } from './codeEditorV2.types'
 
 export type CodeEditorV2Tokens = {
     backgroundColor: CSSObject['backgroundColor']
@@ -44,13 +44,13 @@ export type CodeEditorV2Tokens = {
             width: CSSObject['width']
             color: CSSObject['color']
             backgroundColor: {
-                [key in DiffLineType]: CSSObject['backgroundColor']
+                [key in CodeEditorV2DiffLineType]: CSSObject['backgroundColor']
             }
             borderLeft: {
-                [key in DiffLineType]: CSSObject['borderLeft']
+                [key in CodeEditorV2DiffLineType]: CSSObject['borderLeft']
             }
             borderColor: {
-                [key in DiffLineType]: CSSObject['color']
+                [key in CodeEditorV2DiffLineType]: CSSObject['color']
             }
         }
         // Code tokens
@@ -66,7 +66,7 @@ export type CodeEditorV2Tokens = {
         // Highlighted line tokens (for diff mode and code highlighting)
         highlightedLine: {
             backgroundColor: {
-                [key in DiffLineType]: CSSObject['backgroundColor']
+                [key in CodeEditorV2DiffLineType]: CSSObject['backgroundColor']
             }
         }
         // Syntax highlighting tokens

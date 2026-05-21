@@ -12,7 +12,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Skeleton from '../Skeleton/Skeleton'
 import { renderButtonContent } from './ButtonV2'
 import {
-    getBorderRadius,
+    getButtonV2BorderRadius,
     getButtonHeight,
     getButtonStatus,
     getSkeletonBorderRadius,
@@ -60,7 +60,7 @@ const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
         )
         const buttonStatus = getButtonStatus(isLoading, isDisabled)
 
-        const borderRadius = getBorderRadius(
+        const borderRadius = getButtonV2BorderRadius(
             size,
             buttonType,
             subType,

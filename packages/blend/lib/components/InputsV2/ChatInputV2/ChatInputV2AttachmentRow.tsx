@@ -10,7 +10,7 @@ import {
 } from 'react'
 import Block from '../../Primitives/Block/Block'
 import TooltipV2 from '../../TooltipV2/TooltipV2'
-import type { AttachedFile } from './ChatInputV2.types'
+import type { ChatInputV2AttachedFile } from './ChatInputV2.types'
 import { useClickOutside } from '../../../hooks/useClickOutside'
 import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import type { CSSObject } from 'styled-components'
@@ -26,8 +26,8 @@ import {
     reduceCutoffForFileCountChange,
     removePxFromValue,
     shouldExpandCutoffToMeasureAllChips,
-    sliceOverflowAttachedFiles,
-    sliceVisibleAttachedFiles,
+    sliceOverflowChatInputV2AttachedFiles,
+    sliceVisibleChatInputV2AttachedFiles,
     truncateFileNameForTag,
 } from './utils'
 import { ButtonV2 } from '../../ButtonV2'
@@ -39,9 +39,9 @@ import {
 import { PlusIcon } from '@phosphor-icons/react'
 
 export type ChatInputV2AttachmentRowProps = {
-    attachedFiles: AttachedFile[]
+    attachedFiles: ChatInputV2AttachedFile[]
     onFileRemove: (fileId: string) => void
-    onFileClick: (file: AttachedFile) => void
+    onFileClick: (file: ChatInputV2AttachedFile) => void
     outerContainerRef: RefObject<HTMLElement | null>
     gap: NonNullable<CSSObject['gap']>
     tokens: ChatInputV2TokensType
@@ -68,11 +68,11 @@ export default function ChatInputV2AttachmentRow({
     const overflowMenuContainerRef = useRef<HTMLDivElement>(null)
 
     const visibleFiles = useMemo(
-        () => sliceVisibleAttachedFiles(attachedFiles, cutOffIndex),
+        () => sliceVisibleChatInputV2AttachedFiles(attachedFiles, cutOffIndex),
         [attachedFiles, cutOffIndex]
     )
     const hiddenFiles = useMemo(
-        () => sliceOverflowAttachedFiles(attachedFiles, cutOffIndex),
+        () => sliceOverflowChatInputV2AttachedFiles(attachedFiles, cutOffIndex),
         [attachedFiles, cutOffIndex]
     )
     const hasOverflow = hiddenFiles.length > 0

@@ -34,12 +34,6 @@ export enum PaddingDirection {
     LEFT = 'left',
 }
 
-// Legacy exports for backward compatibility
-export const ButtonType = ButtonV2Type
-export const ButtonSize = ButtonV2Size
-export const ButtonSubType = ButtonV2SubType
-export const ButtonState = ButtonV2State
-
 export type ButtonSlot = {
     slot: React.ReactNode
     maxHeight?: string | number

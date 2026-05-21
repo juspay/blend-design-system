@@ -1,3 +1,5 @@
 export { default as RadioV2 } from './RadioV2'
+export { RadioV2Content } from './RadioV2'
+export { StyledRadioV2Root } from './StyledRadioV2'
 export * from './radioV2.types'
 export * from './radioV2.tokens'

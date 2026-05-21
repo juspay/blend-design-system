@@ -22,7 +22,7 @@ export const getSelectAllState = (
     return { allSelected, someSelected }
 }
 
-export const getValueLabelMap = (
+export const getMultiSelectV2ValueLabelMap = (
     groups: MultiSelectV2GroupType[]
 ): Record<string, string> => {
     const valueLabelMap: Record<string, string> = {}
@@ -124,7 +124,7 @@ export const getFilteredMenuItem = (
     return matches ? item : null
 }
 
-export const filterMenuGroups = (
+export const filterMultiSelectV2MenuGroups = (
     groups: MultiSelectV2GroupType[],
     searchText: string
 ): MultiSelectV2GroupType[] => {

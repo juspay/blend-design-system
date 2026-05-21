@@ -62,7 +62,7 @@ export type AccessibilitySetupResult = {
     ariaAttributes: AriaAttributes
 }
 
-export function getBorderRadius(
+export function getSingleSelectV2BorderRadius(
     size: SingleSelectV2Size,
     variant: SingleSelectV2Variant,
     singleSelectGroupPosition: 'center' | 'left' | 'right' | undefined,
@@ -102,7 +102,7 @@ export function getBorderRadius(
     }
 }
 
-export function getValueLabelMap(
+export function getSingleSelectV2ValueLabelMap(
     groups: SingleSelectV2GroupType[]
 ): Record<string, string> {
     const map: Record<string, string> = {}
@@ -147,7 +147,7 @@ export const generateAccessibilityIds = (
     }
 }
 
-export const extractAriaProps = (
+export const extractSingleSelectV2AriaProps = (
     rest: Record<string, unknown> | undefined
 ): ExtractedAriaProps => {
     const {
@@ -170,7 +170,7 @@ export const extractAriaProps = (
     }
 }
 
-export const mergeAriaDescribedBy = (
+export const mergeSingleSelectV2AriaDescribedBy = (
     ...ids: (string | undefined)[]
 ): string | undefined => {
     const merged = ids.filter(Boolean).join(' ')
@@ -226,9 +226,9 @@ export const setupAccessibility = (
         'aria-label': ariaLabel,
         'aria-labelledby': customAriaLabelledBy,
         restProps,
-    } = extractAriaProps(rest)
+    } = extractSingleSelectV2AriaProps(rest)
 
-    const ariaDescribedBy = mergeAriaDescribedBy(
+    const ariaDescribedBy = mergeSingleSelectV2AriaDescribedBy(
         customAriaDescribedBy,
         hintTextId,
         errorMessageId
@@ -291,7 +291,7 @@ export function flattenGroups(
     return flattened
 }
 
-export function filterMenuGroups(
+export function filterSingleSelectV2MenuGroups(
     groups: SingleSelectV2GroupType[],
     searchText: string
 ): SingleSelectV2GroupType[] {
@@ -300,7 +300,7 @@ export function filterMenuGroups(
     return groups
         .map((group) => {
             const filteredItems = group.items
-                .map((item) => filterMenuItem(item, lower))
+                .map((item) => filterSingleSelectV2Item(item, lower))
                 .filter(Boolean) as SingleSelectV2ItemType[]
             if (filteredItems.length === 0) return null
             return { ...group, items: filteredItems }
@@ -308,7 +308,7 @@ export function filterMenuGroups(
         .filter(Boolean) as SingleSelectV2GroupType[]
 }
 
-export function filterMenuItem(
+export function filterSingleSelectV2Item(
     item: SingleSelectV2ItemType,
     lower: string
 ): SingleSelectV2ItemType | null {
@@ -317,7 +317,7 @@ export function filterMenuItem(
         (item.subLabel && item.subLabel.toLowerCase().includes(lower))
     if (item.subMenu) {
         const filteredSub = item.subMenu
-            .map((sub) => filterMenuItem(sub, lower))
+            .map((sub) => filterSingleSelectV2Item(sub, lower))
             .filter(Boolean) as SingleSelectV2ItemType[]
         if (filteredSub.length > 0 || matches) {
             return { ...item, subMenu: filteredSub }

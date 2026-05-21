@@ -2,15 +2,15 @@ import Block from '../../Primitives/Block/Block'
 import { InputStateV2 } from '../inputV2.types'
 import ChatInputTagV2 from './ChatInputTagV2'
 import { ChatInputV2TokensType } from './ChatInputV2.tokens'
-import { AttachedFile } from './ChatInputV2.types'
+import { ChatInputV2AttachedFile } from './ChatInputV2.types'
 import { truncateFileNameForTag } from './utils'
 
 type AttachmentDropdownV2Props = {
     id?: string
-    files: AttachedFile[]
+    files: ChatInputV2AttachedFile[]
     onFileRemove: (fileId: string) => void
     tokens: ChatInputV2TokensType
-    onFileClick: (file: AttachedFile) => void
+    onFileClick: (file: ChatInputV2AttachedFile) => void
 }
 
 const AttachmentDropdownV2 = ({

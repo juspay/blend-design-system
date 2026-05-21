@@ -1,4 +1,7 @@
 export { default as AccordionV2 } from './AccordionV2'
 export { AccordionV2Item } from './AccordionV2Item'
+export { AccordionV2Chevron } from './AccordionV2Chevron'
+export { AccordionV2TriggerContent } from './AccordionV2TriggerContent'
+export * from './accordionV2.animations'
 export * from './accordionV2.tokens'
 export * from './accordionV2.types'

@@ -1,6 +1,6 @@
 import type { CSSObject } from 'styled-components'
 import {
-    TextOverflowMode,
+    KeyValuePairV2TextOverflowMode,
     KeyValuePairV2StateType,
 } from './keyValuePairV2.types'
 import { KeyValuePairV2TokensType } from './keyValuePairV2.tokens'
@@ -8,8 +8,8 @@ import { KeyValuePairV2TokensType } from './keyValuePairV2.tokens'
 /**
  * Get container styles based on text overflow mode and max width
  */
-export const getContainerStyles = (
-    textOverflow: TextOverflowMode,
+export const getKeyValuePairV2ContainerStyles = (
+    textOverflow: KeyValuePairV2TextOverflowMode,
     maxWidth: string
 ): CSSObject => {
     return {

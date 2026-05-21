@@ -9,7 +9,10 @@ import {
 } from './progressBarV2.types'
 import type { ProgressBarV2TokenType } from './progressBarV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { extractAriaProps, generateDefaultAriaLabel } from './utils'
+import {
+    extractProgressBarV2AriaProps,
+    generateDefaultAriaLabel,
+} from './utils'
 import { LinearProgressBarV2 } from './LinearProgressBarV2'
 import { CircularProgressBarV2 } from './CircularProgressBarV2'
 import { filterBlockedProps } from '../../utils/prop-helpers'
@@ -34,7 +37,7 @@ const ProgressBarV2 = forwardRef<HTMLDivElement, ProgressBarV2Props>(
             'aria-label': ariaLabel,
             'aria-labelledby': ariaLabelledby,
             restProps,
-        } = extractAriaProps(rest)
+        } = extractProgressBarV2AriaProps(rest)
         const filteredRest = filterBlockedProps(restProps)
 
         const defaultAriaLabel = useMemo(() => {

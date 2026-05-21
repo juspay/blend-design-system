@@ -19,7 +19,7 @@ import {
     MultiSelectV2Variant,
 } from './multiSelectV2.types'
 import {
-    filterMenuGroups,
+    filterMultiSelectV2MenuGroups,
     flattenMenuGroups,
     getAllAvailableValues,
 } from './utils'
@@ -164,7 +164,10 @@ const MultiSelectV2Menu = ({
     useScrollLock(isOpen)
 
     const filteredItems = useMemo(() => {
-        const baseFilteredItems = filterMenuGroups(items, searchText)
+        const baseFilteredItems = filterMultiSelectV2MenuGroups(
+            items,
+            searchText
+        )
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,

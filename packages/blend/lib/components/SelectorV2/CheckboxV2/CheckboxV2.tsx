@@ -12,7 +12,7 @@ import { getErrorShakeStyle } from '../../common/error.animations'
 import { useErrorShake } from '../../common/useErrorShake'
 import {
     getSubtextId,
-    mergeAriaDescribedBy,
+    mergeCheckboxV2AriaDescribedBy,
     getCheckboxIconColor,
     handleCheckboxKeyDown,
     getCheckboxState,
@@ -59,7 +59,7 @@ const CheckboxV2 = forwardRef<HTMLButtonElement, CheckboxV2Props>(
         const ariaAttributes = {
             'aria-required': required ? true : undefined,
             'aria-invalid': error ? true : undefined,
-            'aria-describedby': mergeAriaDescribedBy(
+            'aria-describedby': mergeCheckboxV2AriaDescribedBy(
                 subLabelId,
                 customAriaDescribedBy
             ),

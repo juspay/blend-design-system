@@ -98,7 +98,7 @@ export const isDiffEditorMode = (
 /**
  * Calculates container styles with min/max height
  */
-export const getContainerStyles = (
+export const getCodeEditorV2ContainerStyles = (
     minHeight?: string | number,
     maxHeight?: string | number
 ): React.CSSProperties => {

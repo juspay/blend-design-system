@@ -7,5 +7,5 @@ export type { ResponsiveTextProps } from '../KeyValuePairV2/ResponsiveText'
 export {
     getTextStyles,
     getPrimitiveTextStyles,
-    type TextOverflowMode,
+    type KeyValuePairV2TextOverflowMode,
 } from '../KeyValuePairV2/responsiveTextStyles'

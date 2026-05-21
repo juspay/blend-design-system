@@ -99,7 +99,7 @@ export type MultiSelectV2MenuProps = {
     menuId?: string
 }
 
-export type MenuRootProps = SelectV2MenuRootPropsBase & {
+export type MultiSelectV2MenuRootProps = SelectV2MenuRootPropsBase & {
     onInteractOutside?: (e: Event) => void
     onPointerDownOutside?: (e: Event) => void
 }

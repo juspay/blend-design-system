@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import {
     TextInputV2,
-    DropdownPosition,
+    TextInputV2DropdownPosition,
 } from '../../../../packages/blend/lib/components/InputsV2/TextInputV2'
 import { TextInput } from '../../../../packages/blend/lib/main'
 import { InputSizeV2 } from '../../../../packages/blend/lib/components/InputsV2/inputV2.types'
@@ -245,7 +245,7 @@ const TextInputV2Demo = () => {
                                               ? [
                                                     {
                                                         position:
-                                                            DropdownPosition.LEFT,
+                                                            TextInputV2DropdownPosition.LEFT,
                                                         items: selectDemoItems,
                                                         selected: selectValue,
                                                         onSelect: (v: string) =>
@@ -265,7 +265,7 @@ const TextInputV2Demo = () => {
                                               ? [
                                                     {
                                                         position:
-                                                            DropdownPosition.RIGHT,
+                                                            TextInputV2DropdownPosition.RIGHT,
                                                         items: rightSelectDemoItems,
                                                         selected:
                                                             rightSelectValue,
