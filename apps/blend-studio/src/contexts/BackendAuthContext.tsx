@@ -8,6 +8,7 @@ import React, {
 } from 'react'
 import { featureFlags } from '@/lib/feature-flags'
 import { mockUserStore } from '@/lib/mock-user'
+import { fetchWithCsrf } from '@/lib/csrf'
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || ''
 const COOKIE_SESSION_TOKEN = '__cookie_session__'
@@ -185,9 +186,8 @@ export function BackendAuthProvider({
         setRealUser(null)
 
         try {
-            await fetch(`${API_URL}/api/auth/logout`, {
+            await fetchWithCsrf(API_URL, '/api/auth/logout', {
                 method: 'POST',
-                credentials: 'include',
             })
         } catch {
             // Cookie clearing happens server-side; best-effort call

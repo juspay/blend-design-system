@@ -8,6 +8,7 @@
  */
 
 import { featureFlags } from '@/lib/feature-flags'
+import { fetchWithCsrf } from '@/lib/csrf'
 import type {
     Branch,
     BrandConfig,
@@ -91,7 +92,6 @@ async function fetchWithAuth<T>(
 ): Promise<T> {
     const flags = featureFlags.get()
     const baseUrl = flags.apiBaseUrl || ''
-    const url = `${baseUrl}${endpoint}`
 
     const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -102,10 +102,9 @@ async function fetchWithAuth<T>(
         headers.Authorization = `Bearer ${token}`
     }
 
-    const response = await fetch(url, {
+    const response = await fetchWithCsrf(baseUrl, endpoint, {
         ...options,
         headers,
-        credentials: 'include',
     })
 
     if (!response.ok) {
