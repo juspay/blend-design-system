@@ -48,8 +48,15 @@ export const ComponentShowcase = forwardRef<
     HTMLDivElement,
     ComponentShowcaseProps
 >(({ theme = 'light', className = '', isMobile = false }, ref) => {
-    const { surface, card, mutedText, betaNotice } =
-        getShowcaseClassNames(theme)
+    const {
+        surface,
+        card,
+        cardHeader,
+        title,
+        subtitle,
+        mutedText,
+        betaNotice,
+    } = getShowcaseClassNames(theme)
 
     return (
         <div
@@ -57,15 +64,19 @@ export const ComponentShowcase = forwardRef<
             className={`min-h-full rounded-[28px] ${surface} ${className}`}
         >
             <div className={getShowcaseGridClassNames(isMobile)}>
-                <div className={`rounded-[12px] border ${card} shadow-sm`}>
-                    <div className="flex items-center justify-between border-b px-[16px] py-[12px]">
+                <article
+                    className={`flex min-h-[184px] flex-col overflow-hidden rounded-2xl border shadow-sm ${card}`}
+                >
+                    <div
+                        className={`flex items-center justify-between border-b px-[16px] py-[12px] ${cardHeader}`}
+                    >
                         <div className="flex flex-row items-center gap-2">
                             <img
                                 src={checkoutIconUrl}
                                 alt="Hyper Checkout"
                                 className="block h-5 w-5 shrink-0"
                             />
-                            <span className="text-sm font-semibold leading-none">
+                            <span className={`title ${title}`}>
                                 Hyper Checkout
                             </span>
                             <TagV2
@@ -114,7 +125,7 @@ export const ComponentShowcase = forwardRef<
                                 />
                             </div>
                         </div>
-                        <p className={`text-xs leading-5 ${mutedText}`}>
+                        <p className={`subtitle inter-display ${subtitle}`}>
                             Accept payments across 50+ gateways with a single
                             integration. Built for conversion, with smart
                             retries and fallback routing out of the box.
@@ -126,10 +137,12 @@ export const ComponentShowcase = forwardRef<
                             Read Details &gt;
                         </button>
                     </div>
-                </div>
+                </article>
 
                 <PreviewCard
                     className={card}
+                    titleClassName={title}
+                    subtitleClassName={subtitle}
                     media={
                         <img
                             src={nodeConfigurationUrl}
@@ -180,6 +193,8 @@ export const ComponentShowcase = forwardRef<
 
                 <PreviewCard
                     className={card}
+                    titleClassName={title}
+                    subtitleClassName={subtitle}
                     title="Embedded Messaging"
                     eyebrow={
                         <TagV2
@@ -203,6 +218,8 @@ export const ComponentShowcase = forwardRef<
 
                 <PreviewCard
                     className={card}
+                    titleClassName={title}
+                    subtitleClassName={subtitle}
                     title="EMI Suite"
                     eyebrow={
                         <TagV2
@@ -257,6 +274,8 @@ export const ComponentShowcase = forwardRef<
 
                 <PreviewCard
                     className={card}
+                    titleClassName={title}
+                    subtitleClassName={subtitle}
                     media={
                         <div className="p-[16px]">
                             <img
@@ -268,8 +287,8 @@ export const ComponentShowcase = forwardRef<
                     }
                 >
                     <div className="flex flex-col justify-center">
-                        <div className="flex items-center justify-center gap-2">
-                            <h3 className="text-sm font-semibold">
+                        <div className="flex items-center justify-center gap-2 mb-[14px]">
+                            <h3 className={`title inter-display ${title}`}>
                                 Cost-Effective Processing
                             </h3>
                             <TagV2
@@ -278,7 +297,7 @@ export const ComponentShowcase = forwardRef<
                             />
                         </div>
                         <p
-                            className={`mb-[24px] text-xs leading-5 ${mutedText}`}
+                            className={`mb-[24px] subtitle inter-display ${subtitle}`}
                         >
                             Compare processors side by side and find the best
                             fit for your transaction volume. Cut costs without
@@ -302,6 +321,8 @@ ComponentShowcase.displayName = 'ComponentShowcase'
 interface PreviewCardProps {
     title?: string
     description?: ReactNode
+    titleClassName?: string
+    subtitleClassName?: string
     mutedTextClassName?: string
     className?: string
     children: ReactNode
@@ -315,6 +336,8 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
         {
             title,
             description,
+            titleClassName = '',
+            subtitleClassName = '',
             mutedTextClassName,
             className = '',
             children,
@@ -332,14 +355,16 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
                 className={`flex min-h-[184px] flex-col overflow-hidden rounded-2xl border shadow-sm ${className}`}
             >
                 {media}
-                <div className="flex flex-1 flex-col gap-4 p-4">
+                <div className="flex flex-1 flex-col gap-[14px] p-4">
                     {hasHeader && (
-                        <div className="shrink-0">
+                        <div className="shrink-0 flex flex-col gap-[14px]">
                             <div className="flex items-start justify-between gap-3">
                                 <div className="flex min-w-0 flex-wrap items-center gap-2">
                                     {icon}
                                     {title && (
-                                        <h3 className="text-sm font-semibold tracking-[-0.01em]">
+                                        <h3
+                                            className={`title inter-display ${titleClassName}`}
+                                        >
                                             {title}
                                         </h3>
                                     )}
@@ -348,7 +373,7 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
                             </div>
                             {description && (
                                 <p
-                                    className={`text-xs leading-5 ${mutedTextClassName ?? ''}`}
+                                    className={`subtitle inter-display ${subtitleClassName}`}
                                 >
                                     {description}
                                 </p>

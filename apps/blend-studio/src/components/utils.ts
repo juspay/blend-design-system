@@ -1,4 +1,49 @@
+import type { CSSProperties } from 'react'
 import { generateColorScale } from '@juspay/blend-design-system/tokens'
+
+export const TYPOGRAPHY_PREVIEW_FONTS_LINK_ID =
+    'typography-preview-google-fonts'
+
+/** Build a CSS font-family value with proper quoting and fallbacks. */
+export function getFontFamilyStyle(family: string): CSSProperties {
+    const trimmed = family.trim()
+    if (!trimmed) return { fontFamily: 'sans-serif' }
+
+    if (trimmed.toLowerCase() === 'system ui') {
+        return { fontFamily: 'system-ui, sans-serif' }
+    }
+
+    return { fontFamily: `"${trimmed}", sans-serif` }
+}
+
+/** Load Google Fonts used by the typography editor preview. */
+export function loadTypographyPreviewFonts(families: readonly string[]): void {
+    if (typeof document === 'undefined') return
+
+    const webFonts = families.filter(
+        (family) => family.trim().toLowerCase() !== 'system ui'
+    )
+    if (webFonts.length === 0) return
+
+    const href = `https://fonts.googleapis.com/css2?${webFonts
+        .map((family) => `family=${family.trim().replace(/\s+/g, '+')}`)
+        .join('&')}&display=swap`
+
+    let link = document.getElementById(
+        TYPOGRAPHY_PREVIEW_FONTS_LINK_ID
+    ) as HTMLLinkElement | null
+
+    if (!link) {
+        link = document.createElement('link')
+        link.id = TYPOGRAPHY_PREVIEW_FONTS_LINK_ID
+        link.rel = 'stylesheet'
+        document.head.appendChild(link)
+    }
+
+    if (link.href !== href) {
+        link.href = href
+    }
+}
 
 export const SHADE_KEYS = [
     '50',
@@ -100,9 +145,7 @@ export function isDarkTheme(theme: ShowcaseTheme = 'light'): boolean {
 export function getShowcaseSurfaceClassNames(
     theme: ShowcaseTheme = 'light'
 ): string {
-    return isDarkTheme(theme)
-        ? 'bg-slate-950 text-white'
-        : 'bg-[#f8fafc] text-slate-950'
+    return isDarkTheme(theme) ? 'text-white' : 'bg-[#f8fafc] text-slate-950'
 }
 
 export function getShowcaseCardClassNames(
@@ -138,10 +181,31 @@ export function getShowcaseBetaNoticeClassNames(
     }
 }
 
+export function getShowcaseCardHeaderClassNames(
+    theme: ShowcaseTheme = 'light'
+): string {
+    return isDarkTheme(theme) ? 'border-slate-800' : 'border-slate-200/80'
+}
+
+export function getShowcaseTitleClassNames(
+    theme: ShowcaseTheme = 'light'
+): string {
+    return isDarkTheme(theme) ? 'text-slate-100' : 'text-gray-800'
+}
+
+export function getShowcaseSubtitleClassNames(
+    theme: ShowcaseTheme = 'light'
+): string {
+    return isDarkTheme(theme) ? 'text-slate-400' : 'text-gray-500'
+}
+
 export function getShowcaseClassNames(theme: ShowcaseTheme = 'light') {
     return {
         surface: getShowcaseSurfaceClassNames(theme),
         card: getShowcaseCardClassNames(theme),
+        cardHeader: getShowcaseCardHeaderClassNames(theme),
+        title: getShowcaseTitleClassNames(theme),
+        subtitle: getShowcaseSubtitleClassNames(theme),
         mutedText: getShowcaseMutedTextClassNames(theme),
         betaNotice: getShowcaseBetaNoticeClassNames(theme),
     }
