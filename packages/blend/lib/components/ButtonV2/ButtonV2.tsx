@@ -15,7 +15,7 @@ import Skeleton from '../Skeleton/Skeleton'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { VisuallyHidden } from './VisuallyHidden'
 import {
-    getBorderRadius,
+    getButtonV2BorderRadius,
     getButtonHeight,
     getButtonStatus,
     getButtonTabIndex,
@@ -208,7 +208,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
             onClick?.(event)
         }
 
-        const borderRadius = getBorderRadius(
+        const borderRadius = getButtonV2BorderRadius(
             size,
             buttonType,
             subType,

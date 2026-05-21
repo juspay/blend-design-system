@@ -11,7 +11,7 @@ export const getItemSlots = (item: MenuV2ItemType): [ReactNode?] => {
     return [item.label.leftSlot]
 }
 
-export const filterMenuItem = (
+export const filterMenuV2Item = (
     item: MenuV2ItemType,
     lower: string
 ): MenuV2ItemType | null => {
@@ -20,7 +20,7 @@ export const filterMenuItem = (
         (item.subLabel && item.subLabel.toLowerCase().includes(lower))
     if (item.subMenu) {
         const filteredSub = item.subMenu
-            .map((sub) => filterMenuItem(sub, lower))
+            .map((sub) => filterMenuV2Item(sub, lower))
             .filter(Boolean) as MenuV2ItemType[]
         if (filteredSub.length > 0 || matches) {
             return { ...item, subMenu: filteredSub }
@@ -138,7 +138,7 @@ export const flattenMenuV2Groups = (
     return rows
 }
 
-export const filterMenuGroups = (
+export const filterMenuV2Groups = (
     groups: MenuV2GroupType[],
     searchText: string
 ): MenuV2GroupType[] => {
@@ -147,7 +147,7 @@ export const filterMenuGroups = (
     return groups
         .map((group) => {
             const filteredItems = group.items
-                .map((item) => filterMenuItem(item, lower))
+                .map((item) => filterMenuV2Item(item, lower))
                 .filter(Boolean) as MenuV2ItemType[]
             if (filteredItems.length === 0) return null
             return { ...group, items: filteredItems }

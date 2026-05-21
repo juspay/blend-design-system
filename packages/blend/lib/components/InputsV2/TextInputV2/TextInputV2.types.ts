@@ -7,7 +7,7 @@ import type {
 } from '../../SingleSelectV2/singleSelectV2.types'
 import type { SelectV2Alignment } from '../../SelectV2/selectV2.shared.types'
 
-export enum DropdownPosition {
+export enum TextInputV2DropdownPosition {
     LEFT = 'left',
     RIGHT = 'right',
 }
@@ -17,7 +17,7 @@ export enum DropdownPosition {
  * All `SingleSelectV2` props are forwarded; the host applies embed defaults (e.g. `NO_CONTAINER`, `inline`, input-linked `size`/`disabled`, merged `menuPosition`).
  */
 export type TextInputV2Dropdown = SingleSelectV2Props & {
-    position: DropdownPosition
+    position: TextInputV2DropdownPosition
 }
 
 export type TextInputV2Props = {

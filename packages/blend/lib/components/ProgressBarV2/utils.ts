@@ -55,7 +55,7 @@ export const parseTokenValue = (
     return isNaN(parsed) ? fallback : parsed
 }
 
-export const extractAriaProps = (
+export const extractProgressBarV2AriaProps = (
     rest: Record<string, unknown> | undefined
 ): {
     'aria-label'?: string

@@ -4,7 +4,7 @@ import { render, screen, act } from '../../test-utils'
 import TextInputV2 from '../../../lib/components/InputsV2/TextInputV2/TextInputV2'
 import {
     type EmbeddedSingleSelectOptions,
-    DropdownPosition,
+    TextInputV2DropdownPosition,
 } from '../../../lib/components/InputsV2/TextInputV2/TextInputV2.types'
 import { toEmbeddedSingleSelectV2Props } from '../../../lib/components/InputsV2/TextInputV2/utils'
 import { SelectV2Alignment } from '../../../lib/components/SelectV2/selectV2.shared.types'
@@ -408,7 +408,7 @@ describe('TextInputV2 Component', () => {
         })
     })
 
-    describe('Embedded selects (dropdown + DropdownPosition)', () => {
+    describe('Embedded selects (dropdown + TextInputV2DropdownPosition)', () => {
         const originalResizeObserver = globalThis.ResizeObserver
 
         beforeEach(() => {
@@ -434,7 +434,7 @@ describe('TextInputV2 Component', () => {
                     value=""
                     onChange={() => {}}
                     dropdown={{
-                        position: DropdownPosition.LEFT,
+                        position: TextInputV2DropdownPosition.LEFT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -457,7 +457,7 @@ describe('TextInputV2 Component', () => {
                     leftSlot={{ slot: <MockIcon />, maxHeight: 16 }}
                     rightSlot={{ slot: <MockIcon />, maxHeight: 16 }}
                     dropdown={{
-                        position: DropdownPosition.LEFT,
+                        position: TextInputV2DropdownPosition.LEFT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -482,7 +482,7 @@ describe('TextInputV2 Component', () => {
                     value="10"
                     onChange={() => {}}
                     dropdown={{
-                        position: DropdownPosition.RIGHT,
+                        position: TextInputV2DropdownPosition.RIGHT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -505,7 +505,7 @@ describe('TextInputV2 Component', () => {
                     leftSlot={{ slot: <MockIcon />, maxHeight: 16 }}
                     rightSlot={{ slot: <MockIcon />, maxHeight: 16 }}
                     dropdown={{
-                        position: DropdownPosition.RIGHT,
+                        position: TextInputV2DropdownPosition.RIGHT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -531,7 +531,7 @@ describe('TextInputV2 Component', () => {
                     onChange={() => {}}
                     dropdown={[
                         {
-                            position: DropdownPosition.LEFT,
+                            position: TextInputV2DropdownPosition.LEFT,
                             items: EMBEDDED_SELECT_ITEMS,
                             selected: 'a',
                             onSelect: () => {},
@@ -539,7 +539,7 @@ describe('TextInputV2 Component', () => {
                             'aria-label': 'Left select',
                         },
                         {
-                            position: DropdownPosition.RIGHT,
+                            position: TextInputV2DropdownPosition.RIGHT,
                             items: EMBEDDED_SELECT_ITEMS,
                             selected: 'b',
                             onSelect: () => {},
@@ -564,7 +564,7 @@ describe('TextInputV2 Component', () => {
                     onChange={() => {}}
                     disabled
                     dropdown={{
-                        position: DropdownPosition.RIGHT,
+                        position: TextInputV2DropdownPosition.RIGHT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -586,7 +586,7 @@ describe('TextInputV2 Component', () => {
                     onChange={() => {}}
                     label="L"
                     dropdown={{
-                        position: DropdownPosition.LEFT,
+                        position: TextInputV2DropdownPosition.LEFT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect,
@@ -624,7 +624,7 @@ describe('TextInputV2 Component', () => {
                     onChange={() => {}}
                     disabled
                     dropdown={{
-                        position: DropdownPosition.RIGHT,
+                        position: TextInputV2DropdownPosition.RIGHT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -645,7 +645,7 @@ describe('TextInputV2 Component', () => {
                     value=""
                     onChange={() => {}}
                     dropdown={{
-                        position: DropdownPosition.LEFT,
+                        position: TextInputV2DropdownPosition.LEFT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},
@@ -667,7 +667,7 @@ describe('TextInputV2 Component', () => {
                     onChange={() => {}}
                     dropdown={[
                         {
-                            position: DropdownPosition.LEFT,
+                            position: TextInputV2DropdownPosition.LEFT,
                             items: EMBEDDED_SELECT_ITEMS,
                             selected: 'a',
                             onSelect: () => {},
@@ -675,7 +675,7 @@ describe('TextInputV2 Component', () => {
                             'aria-label': 'First left',
                         },
                         {
-                            position: DropdownPosition.LEFT,
+                            position: TextInputV2DropdownPosition.LEFT,
                             items: EMBEDDED_SELECT_ITEMS,
                             selected: 'a',
                             onSelect: () => {},
@@ -700,7 +700,7 @@ describe('TextInputV2 Component', () => {
                     value=""
                     onChange={() => {}}
                     dropdown={{
-                        position: DropdownPosition.LEFT,
+                        position: TextInputV2DropdownPosition.LEFT,
                         items: EMBEDDED_SELECT_ITEMS,
                         selected: 'a',
                         onSelect: () => {},

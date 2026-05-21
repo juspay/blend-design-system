@@ -3,7 +3,7 @@ import { useState } from 'react'
 import {
     KeyValuePairV2Size,
     KeyValuePairV2StateType,
-    TextOverflowMode,
+    KeyValuePairV2TextOverflowMode,
 } from '../../../../packages/blend/lib/components/KeyValuePairV2/keyValuePairV2.types'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
@@ -28,7 +28,7 @@ const KeyValuePairV2Demo = () => {
     const [showValueLeftSlot, setShowValueLeftSlot] = useState(false)
     const [showValueRightSlot, setShowValueRightSlot] = useState(false)
     const [textOverflow, setTextOverflow] =
-        useState<TextOverflowMode>('truncate')
+        useState<KeyValuePairV2TextOverflowMode>('truncate')
     const [maxLines, setMaxLines] = useState(2)
     const [showTooltip, setShowTooltip] = useState(true)
 
@@ -119,7 +119,9 @@ const KeyValuePairV2Demo = () => {
                             items={[{ items: textOverflowOptions }]}
                             selected={textOverflow}
                             onSelect={(value) =>
-                                setTextOverflow(value as TextOverflowMode)
+                                setTextOverflow(
+                                    value as KeyValuePairV2TextOverflowMode
+                                )
                             }
                             placeholder="Select overflow mode"
                         />

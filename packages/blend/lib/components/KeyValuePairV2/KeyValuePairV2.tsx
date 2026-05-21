@@ -8,7 +8,11 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { KeyValuePairV2TokensType } from './keyValuePairV2.tokens'
 import { ResponsiveText } from './ResponsiveText'
 import { KeyValuePairLayout } from './KeyValuePairLayout'
-import { getContainerStyles, getLayoutStyles, getSlotStyles } from './utils'
+import {
+    getKeyValuePairV2ContainerStyles,
+    getLayoutStyles,
+    getSlotStyles,
+} from './utils'
 
 /**
  * Orchestrator: composes tokens, layout, and ResponsiveText.
@@ -40,7 +44,7 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
 
         const containerStyles = {
             ...getLayoutStyles(keyValuePairState, keyValuePairTokens),
-            ...getContainerStyles(textOverflow, maxWidth),
+            ...getKeyValuePairV2ContainerStyles(textOverflow, maxWidth),
         } as React.CSSProperties
 
         const keyContainerStyles: React.CSSProperties = {

@@ -8,7 +8,7 @@ import {
     FileIcon,
 } from '@phosphor-icons/react'
 import { ChatInputV2TokensType } from './ChatInputV2.tokens'
-import { AttachedFile } from './ChatInputV2.types'
+import { ChatInputV2AttachedFile } from './ChatInputV2.types'
 import {
     ButtonV2,
     ButtonV2Size,
@@ -23,7 +23,7 @@ type ChatInputTagV2Props = {
     onRemove: () => void
     /** Fired after the file-name control handles `preventDefault` / `stopPropagation` (button). */
     onFileClick: () => void
-    file: AttachedFile
+    file: ChatInputV2AttachedFile
 }
 
 const ChatInputTagV2 = ({
@@ -33,7 +33,7 @@ const ChatInputTagV2 = ({
     onRemove,
     onFileClick,
 }: ChatInputTagV2Props) => {
-    const getFileTypeIcon = (fileType: AttachedFile['type']) => {
+    const getFileTypeIcon = (fileType: ChatInputV2AttachedFile['type']) => {
         switch (fileType) {
             case 'image':
                 return <FileImageIcon size={16} color={tokens.text.color} />

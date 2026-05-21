@@ -8,7 +8,7 @@ import {
     copyToClipboardWithTemporaryFeedback,
     isDiffEditorMode,
     shouldShowLineNumbers,
-    getContainerStyles,
+    getCodeEditorV2ContainerStyles,
     toCssValue,
 } from './utils'
 import { CodeEditorV2Header } from './CodeEditorV2Header'
@@ -91,7 +91,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
         const resolvedEditorHeight = toCssValue(height)
         const hasFixedEditorHeight = Boolean(resolvedEditorHeight)
         const editorMinHeight = hasFixedEditorHeight ? height! : minHeight
-        const containerStyles = getContainerStyles(
+        const containerStyles = getCodeEditorV2ContainerStyles(
             hasFixedEditorHeight ? undefined : minHeight,
             maxHeight
         )

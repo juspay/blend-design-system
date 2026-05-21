@@ -2,7 +2,7 @@ import type { ChangeEvent, MutableRefObject, Ref } from 'react'
 import { filterDuplicateFiles } from '../../ChatInput/utils'
 import { addSnackbarV2 } from '../../SnackbarV2'
 import { SnackbarV2Variant } from '../../SnackbarV2/snackbarV2.types'
-import type { AttachedFile } from './ChatInputV2.types'
+import type { ChatInputV2AttachedFile } from './ChatInputV2.types'
 
 export const FILE_NAME_TAG_MAX_LEN = 8
 
@@ -128,17 +128,17 @@ export function computeAttachmentRowCutoff({
     return newCutoff
 }
 
-export function sliceVisibleAttachedFiles(
-    attachedFiles: AttachedFile[],
+export function sliceVisibleChatInputV2AttachedFiles(
+    attachedFiles: ChatInputV2AttachedFile[],
     cutOffIndex: number
-): AttachedFile[] {
+): ChatInputV2AttachedFile[] {
     return attachedFiles.slice(0, cutOffIndex)
 }
 
-export function sliceOverflowAttachedFiles(
-    attachedFiles: AttachedFile[],
+export function sliceOverflowChatInputV2AttachedFiles(
+    attachedFiles: ChatInputV2AttachedFile[],
     cutOffIndex: number
-): AttachedFile[] {
+): ChatInputV2AttachedFile[] {
     return attachedFiles.slice(cutOffIndex)
 }
 
@@ -189,7 +189,7 @@ export function notifyChatInputV2DuplicateFiles(
 /** Hidden file input: filters duplicates vs `attachedFiles`, shows SnackbarV2, forwards new files. Resets input value. */
 export function handleChatInputV2FileInputChange(
     e: ChangeEvent<HTMLInputElement>,
-    attachedFiles: AttachedFile[],
+    attachedFiles: ChatInputV2AttachedFile[],
     onAttachFiles: (files: File[]) => void
 ): void {
     const files = Array.from(e.target.files || [])

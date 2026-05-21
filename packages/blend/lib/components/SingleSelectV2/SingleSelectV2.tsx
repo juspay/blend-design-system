@@ -15,7 +15,11 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import MobileSingleSelectV2 from './MobileSingleSelectV2'
-import { getBorderRadius, getValueLabelMap, setupAccessibility } from './utils'
+import {
+    getSingleSelectV2BorderRadius,
+    getSingleSelectV2ValueLabelMap,
+    setupAccessibility,
+} from './utils'
 import { useDropdownInteractionLock } from '../../hooks'
 
 const SingleSelectV2 = ({
@@ -93,7 +97,10 @@ const SingleSelectV2 = ({
         [controlledOpen, onControlledOpenChange]
     )
 
-    const valueLabelMap = useMemo(() => getValueLabelMap(items), [items])
+    const valueLabelMap = useMemo(
+        () => getSingleSelectV2ValueLabelMap(items),
+        [items]
+    )
     const safeItems = items ?? []
     const isItemSelected = Boolean(selected)
     const isSmallScreenWithLargeSize =
@@ -127,7 +134,7 @@ const SingleSelectV2 = ({
         'aria-invalid': ariaAttributes['aria-invalid'] as boolean | undefined,
     }
 
-    const borderConfig = getBorderRadius(
+    const borderConfig = getSingleSelectV2BorderRadius(
         size,
         variant,
         singleSelectGroupPosition,
