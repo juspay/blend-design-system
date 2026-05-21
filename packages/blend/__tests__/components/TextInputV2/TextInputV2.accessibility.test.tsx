@@ -4,7 +4,7 @@ import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Mail } from 'lucide-react'
 import TextInputV2 from '../../../lib/components/InputsV2/TextInputV2/TextInputV2'
-import { DropdownPosition } from '../../../lib/components/InputsV2/TextInputV2/TextInputV2.types'
+import { TextInputV2DropdownPosition } from '../../../lib/components/InputsV2/TextInputV2/TextInputV2.types'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 
 const A11Y_SELECT_ITEMS = [
@@ -16,7 +16,10 @@ const A11Y_SELECT_ITEMS = [
     },
 ]
 
-const embeddedSelectA11y = (ariaLabel: string, position: DropdownPosition) => ({
+const embeddedSelectA11y = (
+    ariaLabel: string,
+    position: TextInputV2DropdownPosition
+) => ({
     position,
     items: A11Y_SELECT_ITEMS,
     selected: 'a',
@@ -458,7 +461,7 @@ describe('TextInputV2 Accessibility', () => {
                     onChange={() => {}}
                     dropdown={embeddedSelectA11y(
                         'Country code',
-                        DropdownPosition.LEFT
+                        TextInputV2DropdownPosition.LEFT
                     )}
                 />
             )
@@ -474,7 +477,7 @@ describe('TextInputV2 Accessibility', () => {
                     onChange={() => {}}
                     dropdown={embeddedSelectA11y(
                         'Unit of measure',
-                        DropdownPosition.RIGHT
+                        TextInputV2DropdownPosition.RIGHT
                     )}
                 />
             )
@@ -489,8 +492,14 @@ describe('TextInputV2 Accessibility', () => {
                     value="x"
                     onChange={() => {}}
                     dropdown={[
-                        embeddedSelectA11y('Prefix', DropdownPosition.LEFT),
-                        embeddedSelectA11y('Suffix', DropdownPosition.RIGHT),
+                        embeddedSelectA11y(
+                            'Prefix',
+                            TextInputV2DropdownPosition.LEFT
+                        ),
+                        embeddedSelectA11y(
+                            'Suffix',
+                            TextInputV2DropdownPosition.RIGHT
+                        ),
                     ]}
                 />
             )
@@ -506,8 +515,14 @@ describe('TextInputV2 Accessibility', () => {
                     onChange={() => {}}
                     disabled
                     dropdown={[
-                        embeddedSelectA11y('Prefix', DropdownPosition.LEFT),
-                        embeddedSelectA11y('Suffix', DropdownPosition.RIGHT),
+                        embeddedSelectA11y(
+                            'Prefix',
+                            TextInputV2DropdownPosition.LEFT
+                        ),
+                        embeddedSelectA11y(
+                            'Suffix',
+                            TextInputV2DropdownPosition.RIGHT
+                        ),
                     ]}
                 />
             )
@@ -524,9 +539,12 @@ describe('TextInputV2 Accessibility', () => {
                     dropdown={[
                         embeddedSelectA11y(
                             'Country code',
-                            DropdownPosition.LEFT
+                            TextInputV2DropdownPosition.LEFT
                         ),
-                        embeddedSelectA11y('Unit', DropdownPosition.RIGHT),
+                        embeddedSelectA11y(
+                            'Unit',
+                            TextInputV2DropdownPosition.RIGHT
+                        ),
                     ]}
                 />
             )
@@ -732,11 +750,11 @@ describe('TextInputV2 Accessibility', () => {
                     dropdown={[
                         embeddedSelectA11y(
                             'Prefix selector',
-                            DropdownPosition.LEFT
+                            TextInputV2DropdownPosition.LEFT
                         ),
                         embeddedSelectA11y(
                             'Unit selector',
-                            DropdownPosition.RIGHT
+                            TextInputV2DropdownPosition.RIGHT
                         ),
                     ]}
                 />

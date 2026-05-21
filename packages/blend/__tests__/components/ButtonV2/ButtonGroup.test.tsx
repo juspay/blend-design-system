@@ -9,7 +9,7 @@ import {
 import { axe } from 'jest-axe'
 import { ButtonGroupV2 } from '../../../lib/components/ButtonV2/ButtonGroupV2'
 import { ButtonV2 } from '../../../lib/components/ButtonV2'
-import { ButtonType } from '../../../lib/components/ButtonV2/buttonV2.types'
+import { ButtonV2Type } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
 function getCurrentTestName(): string {
@@ -274,10 +274,13 @@ describe('ButtonGroupV2', () => {
         it('meets WCAG standards for horizontal group', async () => {
             const { container } = render(
                 <ButtonGroupV2>
-                    <ButtonV2 text="Primary" buttonType={ButtonType.PRIMARY} />
+                    <ButtonV2
+                        text="Primary"
+                        buttonType={ButtonV2Type.PRIMARY}
+                    />
                     <ButtonV2
                         text="Secondary"
-                        buttonType={ButtonType.SECONDARY}
+                        buttonType={ButtonV2Type.SECONDARY}
                     />
                 </ButtonGroupV2>
             )
