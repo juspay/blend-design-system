@@ -48,15 +48,8 @@ export const ComponentShowcase = forwardRef<
     HTMLDivElement,
     ComponentShowcaseProps
 >(({ theme = 'light', className = '', isMobile = false }, ref) => {
-    const {
-        surface,
-        card,
-        cardHeader,
-        title,
-        subtitle,
-        mutedText,
-        betaNotice,
-    } = getShowcaseClassNames(theme)
+    const { surface, card, cardHeader, title, subtitle, betaNotice } =
+        getShowcaseClassNames(theme)
 
     return (
         <div
@@ -167,7 +160,6 @@ export const ComponentShowcase = forwardRef<
                         />
                     }
                     description="Connect your stack across languages and services. Visualise how your payment nodes talk to each other and configure routing logic per environment."
-                    mutedTextClassName={mutedText}
                 >
                     <div className="flex flex-wrap gap-2">
                         <TagV2
@@ -204,7 +196,6 @@ export const ComponentShowcase = forwardRef<
                         />
                     }
                     description="Drop a support channel directly into your checkout flow. Resolve payment queries without redirecting customers away from the page."
-                    mutedTextClassName={mutedText}
                 >
                     <div className="flex h-full items-end">
                         <ButtonV2
@@ -242,7 +233,6 @@ export const ComponentShowcase = forwardRef<
                             </a>
                         </>
                     }
-                    mutedTextClassName={mutedText}
                 >
                     <div className="flex h-full items-end">
                         <div
@@ -323,7 +313,6 @@ interface PreviewCardProps {
     description?: ReactNode
     titleClassName?: string
     subtitleClassName?: string
-    mutedTextClassName?: string
     className?: string
     children: ReactNode
     eyebrow?: ReactNode
@@ -338,7 +327,6 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
             description,
             titleClassName = '',
             subtitleClassName = '',
-            mutedTextClassName,
             className = '',
             children,
             eyebrow,
