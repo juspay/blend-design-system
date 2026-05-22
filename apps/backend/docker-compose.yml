@@ -11,7 +11,7 @@
 #
 # Connect to PostgreSQL:
 #   Host:     localhost
-#   Port:     5432
+#   Port:     5433
 #   User:     blend
 #   Password: blend_secret
 #   Database: blend_studio
@@ -31,7 +31,7 @@ services:
         container_name: blend_studio_postgres
         restart: unless-stopped
         ports:
-            - '5432:5432'
+            - '5433:5432'
         environment:
             POSTGRES_USER: blend
             POSTGRES_PASSWORD: blend_secret

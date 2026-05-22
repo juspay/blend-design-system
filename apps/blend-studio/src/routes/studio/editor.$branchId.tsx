@@ -23,6 +23,7 @@ import {
     TagV2Color,
     TagV2Size,
     ThemeProvider,
+    TooltipV2,
 } from '@juspay/blend-design-system'
 import {
     Panel,
@@ -68,7 +69,6 @@ import {
     Moon,
     Code,
     TextAa,
-    GitBranch,
     Repeat,
     Stack,
     LaptopIcon,
@@ -80,6 +80,8 @@ import {
     DownloadIcon,
     PaletteIcon,
     BezierCurveIcon,
+    GitBranchIcon,
+    CaretLeftIcon,
 } from '@phosphor-icons/react'
 import { SidebarV2 } from '@juspay/blend-design-system'
 import { getCurrentReturnPath } from '@/lib/return-path'
@@ -167,7 +169,7 @@ function EditorPage() {
     const [selectedComponent, setSelectedComponent] = useState<string | null>(
         null
     )
-    const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false)
+    const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true)
     const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const leftPanelRef = useRef<PanelImperativeHandle | null>(null)
     const leftPanelOuterElRef = useRef<HTMLDivElement | null>(null)
@@ -327,15 +329,38 @@ function EditorPage() {
                                 className="min-h-0 flex flex-col"
                             >
                                 <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
-                                    <div className="bg-white border-b border-gray-200 h-[52px] flex items-center justify-between px-4">
-                                        <div className="flex items-center gap-2">
-                                            <GitBranch className="w-4 h-4 text-gray-400" />
-                                            <span className="truncate text-sm font-semibold text-gray-900">
-                                                {branch.name}
-                                            </span>
-                                            <span className="hidden max-w-[180px] truncate text-xs font-mono text-gray-400 lg:inline">
-                                                {branch.id}
-                                            </span>
+                                    <div className="bg-white border-b border-gray-200 h-[52px] flex min-w-[280px] items-center justify-between gap-3 px-4">
+                                        <ButtonV2
+                                            onClick={() =>
+                                                navigate({ to: '/studio' })
+                                            }
+                                            buttonType={ButtonV2Type.SECONDARY}
+                                            subType={ButtonV2SubType.INLINE}
+                                            leftSlot={{
+                                                slot: (
+                                                    <CaretLeftIcon
+                                                        className="size-4 shrink-0 text-gray-400"
+                                                        size={16}
+                                                        weight="bold"
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                        <div className="flex min-w-0 flex-1 items-center gap-2">
+                                            <GitBranchIcon
+                                                className="size-4 shrink-0 text-gray-400"
+                                                size={16}
+                                            />
+                                            <TooltipV2 content={branch.name}>
+                                                <span className="truncate text-sm font-semibold text-gray-900">
+                                                    {branch.name}
+                                                </span>
+                                            </TooltipV2>
+                                            <TooltipV2 content={branch.id}>
+                                                <span className="hidden max-w-[180px] truncate text-xs font-mono text-gray-400 lg:inline">
+                                                    {branch.id}
+                                                </span>
+                                            </TooltipV2>
                                             {hasChanges && (
                                                 <TagV2
                                                     text={'Unsaved'}
@@ -345,11 +370,13 @@ function EditorPage() {
                                             )}
                                         </div>
                                         {diffs.length > 0 && (
-                                            <TagV2
-                                                text={`${diffs.length} Changes`}
-                                                size={TagV2Size.SM}
-                                                color={TagV2Color.WARNING}
-                                            />
+                                            <span className="shrink-0">
+                                                <TagV2
+                                                    text={`${diffs.length} Changes`}
+                                                    size={TagV2Size.SM}
+                                                    color={TagV2Color.WARNING}
+                                                />
+                                            </span>
                                         )}
                                     </div>
                                     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -441,6 +468,30 @@ function EditorPage() {
                                 <div className="h-full flex flex-col overflow-hidden bg-[#f8fafc]">
                                     <div className="bg-white border-b border-gray-200 h-[52px] flex items-center justify-between">
                                         <div className="flex items-center px-4 gap-2 h-[34px]">
+                                            {!isLeftPanelOpen && (
+                                                <ButtonV2
+                                                    onClick={() =>
+                                                        navigate({
+                                                            to: '/studio',
+                                                        })
+                                                    }
+                                                    buttonType={
+                                                        ButtonV2Type.SECONDARY
+                                                    }
+                                                    subType={
+                                                        ButtonV2SubType.INLINE
+                                                    }
+                                                    leftSlot={{
+                                                        slot: (
+                                                            <CaretLeftIcon
+                                                                className="size-4 shrink-0 text-gray-400"
+                                                                size={16}
+                                                                weight="bold"
+                                                            />
+                                                        ),
+                                                    }}
+                                                />
+                                            )}
                                             <ToggleButton
                                                 noContainer={true}
                                                 icon={
