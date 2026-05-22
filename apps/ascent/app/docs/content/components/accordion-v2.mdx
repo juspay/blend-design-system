@@ -1,0 +1,340 @@
+---
+version: 2
+title: Accordion
+description: The AccordionV2 component is a vertically collapsing container for organizing content into expandable sections with flexible layout options.
+category: Layout
+tags:
+    - accordion
+    - component
+    - collapse
+    - expand
+    - content
+RepoFolderName: AccordionV2
+StorybookLink: components-accordion-accordionv2--docs
+---
+
+<AccordionV2Preview />
+
+## Usage
+
+```tsx
+import {
+    AccordionV2,
+    AccordionV2Item,
+    AccordionV2Type,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <AccordionV2 accordionType={AccordionV2Type.BORDER}>
+            <AccordionV2Item value="item-1" title="Section 1">
+                Content for section 1
+            </AccordionV2Item>
+            <AccordionV2Item value="item-2" title="Section 2">
+                Content for section 2
+            </AccordionV2Item>
+        </AccordionV2>
+    )
+}
+```
+
+## API Reference
+
+### AccordionV2 Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'children',
+                hintText:
+                    'Required. AccordionV2Item components that define the collapsible sections.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'AccordionV2Item elements',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'accordionType',
+                hintText:
+                    'Visual style of the accordion. BORDER shows borders between items, NO_BORDER removes borders for a cleaner look.',
+            },
+            {
+                content: 'AccordionV2Type',
+                hintText: 'Enum that determines the visual style',
+            },
+            { content: 'BORDER, NO_BORDER' },
+        ],
+        [
+            {
+                content: 'defaultValue',
+                hintText:
+                    'Initial expanded item value(s) for uncontrolled mode. String for single item, array for multiple.',
+            },
+            {
+                content: 'string | string[]',
+                hintText: 'Value(s) of items to expand by default',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText:
+                    'Controlled expanded item value(s). Use with onValueChange for controlled state.',
+            },
+            {
+                content: 'string | string[]',
+                hintText: 'Currently expanded item value(s)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isMultiple',
+                hintText:
+                    'When true, multiple items can be expanded simultaneously. When false, only one item can be expanded at a time.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true allows multiple expanded items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onValueChange',
+                hintText:
+                    'Callback fired when the expanded item(s) change. Receives the new value(s).',
+            },
+            {
+                content: '(value: string | string[]) => void',
+                hintText: 'Function called when expansion changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText: 'Custom width for the accordion container.',
+            },
+            {
+                content: 'CSSObject["width"]',
+                hintText: 'CSS width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText:
+                    'Maximum width constraint for the accordion container.',
+            },
+            {
+                content: 'CSSObject["maxWidth"]',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText:
+                    'Minimum width constraint for the accordion container.',
+            },
+            {
+                content: 'CSSObject["minWidth"]',
+                hintText: 'CSS min-width value',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+### AccordionV2Item Props
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText:
+                    'Required. Unique identifier for the accordion item. Used for tracking expanded state.',
+            },
+            {
+                content: 'string',
+                hintText: 'Unique value for the item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'title',
+                hintText:
+                    'Required. Display title shown in the accordion header.',
+            },
+            {
+                content: 'string',
+                hintText: 'Title text for the item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText:
+                    'Required. Content displayed when the item is expanded.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Content to show when expanded',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subtext',
+                hintText: 'Optional secondary text displayed below the title.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary descriptive text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText:
+                    'Optional content displayed on the left side of the header.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Icon or element for the left side',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText:
+                    'Optional content displayed on the right side of the header (opposite to chevron).',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Element for the right side',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subtextSlot',
+                hintText: 'Optional content displayed alongside subtext.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Additional subtext element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isDisabled',
+                hintText: 'When true, the item cannot be expanded/collapsed.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'chevronPosition',
+                hintText:
+                    'Position of the expand/collapse chevron. LEFT places it before title, RIGHT places it after.',
+            },
+            {
+                content: 'AccordionV2ChevronPosition',
+                hintText: 'Enum for chevron position',
+            },
+            { content: 'LEFT, RIGHT' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the AccordionV2 component using the following tokens:
+
+```tsx
+export type AccordionV2TokensType = {
+    gap: {
+        [key in AccordionV2Type]: CSSObject['gap']
+    }
+    borderRadius: {
+        [key in AccordionV2Type]: CSSObject['borderRadius']
+    }
+    trigger: {
+        content: {
+            gap: CSSObject['gap']
+        }
+        backgroundColor: {
+            [key in AccordionV2Type]: {
+                [key in AccordionV2State]: CSSObject['backgroundColor']
+            }
+        }
+        border: {
+            [key in AccordionV2Type]: {
+                [key in AccordionV2State]: CSSObject['border']
+            }
+        }
+        padding: {
+            [key in AccordionV2Type]: CSSObject['padding']
+        }
+        text: {
+            gap: CSSObject['gap']
+            title: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                lineHeight: CSSObject['lineHeight']
+                color: {
+                    [key in AccordionV2State]: CSSObject['color']
+                }
+            }
+            subtext: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                lineHeight: CSSObject['lineHeight']
+                gap: CSSObject['gap']
+                color: {
+                    [key in AccordionV2State]: CSSObject['color']
+                }
+            }
+        }
+        slot: {
+            height: CSSObject['height']
+        }
+    }
+    separator: {
+        color: {
+            [key in AccordionV2Type]: CSSObject['color']
+        }
+    }
+    chevron: {
+        height: CSSObject['height']
+        color: {
+            [key in AccordionV2State]: CSSObject['color']
+        }
+    }
+}
+```

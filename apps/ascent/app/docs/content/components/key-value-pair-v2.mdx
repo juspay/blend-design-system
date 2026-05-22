@@ -1,0 +1,175 @@
+---
+version: 2
+title: Key Value Pair
+description: The KeyValuePairV2 component displays labeled data in horizontal or vertical layouts with responsive text handling.
+category: Data
+tags:
+    - key-value-pair
+    - component
+    - data-display
+    - label
+    - value
+RepoFolderName: KeyValuePairV2
+StorybookLink: components-keyvaluepair-keyvaluepairv2--docs
+---
+
+<KeyValuePairV2Preview />
+
+## Usage
+
+```tsx
+import {
+    KeyValuePairV2,
+    KeyValuePairV2Size,
+    KeyValuePairV2StateType,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <KeyValuePairV2
+            keyString="Email Address"
+            value="user@example.com"
+            size={KeyValuePairV2Size.MD}
+            keyValuePairState={KeyValuePairV2StateType.horizontal}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'keyString',
+                hintText: 'Required. Label text describing the data field.',
+            },
+            {
+                content: 'string',
+                hintText: 'Key/label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'Display value associated with the key.',
+            },
+            {
+                content: 'string',
+                hintText: 'Value text content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Controls the text sizing and spacing of the component.',
+            },
+            {
+                content: 'KeyValuePairV2Size',
+                hintText: 'Enum for component sizes',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'keyValuePairState',
+                hintText: 'Layout orientation of the key and value.',
+            },
+            {
+                content: 'KeyValuePairV2StateType',
+                hintText: 'Enum for layout orientation',
+            },
+            { content: 'horizontal, vertical' },
+        ],
+        [
+            {
+                content: 'slots',
+                hintText: 'Custom elements to display alongside key and value.',
+            },
+            {
+                content: 'object',
+                hintText: 'key, value.left, value.right slots',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width constraint for the component.',
+            },
+            {
+                content: 'string',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'textOverflow',
+                hintText: 'Behavior when content exceeds available space.',
+            },
+            {
+                content: 'TextOverflowMode',
+                hintText: 'Truncate, wrap, or clamp text',
+            },
+            { content: 'truncate, wrap, wrap-clamp' },
+        ],
+        [
+            {
+                content: 'maxLines',
+                hintText: 'Maximum number of lines when using wrap-clamp mode.',
+            },
+            {
+                content: 'number',
+                hintText: 'Line clamp count',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showTooltipOnTruncate',
+                hintText:
+                    'When true, shows a tooltip with full text on hover when truncated.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables tooltip on truncation',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the KeyValuePairV2 component using the following tokens:
+
+```tsx
+export type KeyValuePairV2TokensType = {
+    gap: {
+        vertical: CSSObject['gap']
+        horizontal: CSSObject['gap']
+    }
+    key: {
+        color: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
+    }
+    value: {
+        color: CSSObject['color']
+        fontSize: {
+            [key in KeyValuePairV2Size]: CSSObject['fontSize']
+        }
+        fontWeight: CSSObject['fontWeight']
+        gap: CSSObject['gap']
+    }
+}
+```

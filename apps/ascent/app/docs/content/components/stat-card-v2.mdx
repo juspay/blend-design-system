@@ -1,0 +1,414 @@
+---
+version: 2
+title: Stat Card
+description: The StatCardV2 component displays statistics with optional charts, progress bars, and trend indicators in a card format.
+category: Data
+tags:
+    - stat-card
+    - component
+    - data-display
+    - metrics
+    - dashboard
+RepoFolderName: StatCardV2
+StorybookLink: components-statcard-statcardv2--docs
+---
+
+<StatCardV2Preview />
+
+## Usage
+
+```tsx
+import {
+    StatCardV2,
+    StatCardV2Variant,
+    StatCardV2ChangeType,
+    StatCardV2ArrowDirection,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <StatCardV2
+            title="Total Revenue"
+            variant={StatCardV2Variant.NUMBER}
+            value="$48,352"
+            subtitle="Last 30 days"
+            change={{
+                value: '12.5%',
+                changeType: StatCardV2ChangeType.INCREASE,
+                arrowDirection: StatCardV2ArrowDirection.UP,
+            }}
+        />
+    )
+}
+```
+
+## With Chart
+
+```tsx
+import { StatCardV2, StatCardV2Variant } from '@juspay/blend-design-system'
+;<StatCardV2
+    title="Sales Overview"
+    variant={StatCardV2Variant.CHART}
+    options={{
+        chart: { type: 'line' },
+        series: [{ data: [1, 2, 3, 4, 5] }],
+    }}
+/>
+```
+
+## With Progress
+
+```tsx
+import { StatCardV2, StatCardV2Variant } from '@juspay/blend-design-system'
+;<StatCardV2
+    title="Storage Used"
+    variant={StatCardV2Variant.PROGRESS_BAR}
+    value="75 GB"
+    progressValue={75}
+    subtitle="of 100 GB total"
+/>
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'title',
+                hintText: 'Required. Main title of the stat card.',
+            },
+            {
+                content: 'string',
+                hintText: 'Card title text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'Display format for the statistic.',
+            },
+            {
+                content: 'StatCardV2Variant',
+                hintText: 'Enum for card type',
+            },
+            { content: 'chart, progress, number' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText:
+                    'Main numeric value to display (for NUMBER and PROGRESS_BAR variants).',
+            },
+            {
+                content: 'string',
+                hintText: 'Formatted value string',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'progressValue',
+                hintText:
+                    'Numeric progress value 0-100 (for PROGRESS_BAR variant).',
+            },
+            {
+                content: 'number',
+                hintText: 'Progress percentage',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'options',
+                hintText: 'Highcharts configuration (for CHART variant).',
+            },
+            {
+                content: 'ChartV2Options',
+                hintText: 'Highcharts options object',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subtitle',
+                hintText: 'Secondary text displayed below the main value.',
+            },
+            {
+                content: 'string',
+                hintText: 'Subtitle text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconText',
+                hintText: 'Tooltip text for the help icon.',
+            },
+            {
+                content: 'string',
+                hintText: 'Help tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'change',
+                hintText:
+                    'Trend indicator configuration showing change over time.',
+            },
+            {
+                content: 'StatCardV2Change',
+                hintText: 'value, changeType, arrowDirection, tooltip, symbols',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'titleIcon',
+                hintText: 'Icon displayed next to the title.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Title icon element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actionIcon',
+                hintText: 'Action icon displayed in the header.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Action icon element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText: 'Configuration for skeleton loading state.',
+            },
+            {
+                content: 'StatCardV2SkeletonProps',
+                hintText: 'show, variant, height, widths',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'dropdownProps',
+                hintText: 'Configuration for header dropdown selector.',
+            },
+            {
+                content: 'SingleSelectProps',
+                hintText: 'Single select component props',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText: 'Custom width for the card.',
+            },
+            {
+                content: 'CSSObject["width"]',
+                hintText: 'CSS width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width constraint.',
+            },
+            {
+                content: 'CSSObject["maxWidth"]',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText: 'Minimum width constraint.',
+            },
+            {
+                content: 'CSSObject["minWidth"]',
+                hintText: 'CSS min-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'height',
+                hintText: 'Custom height for the card.',
+            },
+            {
+                content: 'CSSObject["height"]',
+                hintText: 'CSS height value',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Change Configuration
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'change.value',
+                hintText: 'Text value of the change (e.g., "12.5%").',
+            },
+            {
+                content: 'string',
+                hintText: 'Change percentage or value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'change.changeType',
+                hintText: 'Direction of change affecting color.',
+            },
+            {
+                content: 'StatCardV2ChangeType',
+                hintText: 'Enum for change direction',
+            },
+            { content: 'increase, decrease' },
+        ],
+        [
+            {
+                content: 'change.arrowDirection',
+                hintText: 'Arrow icon direction.',
+            },
+            {
+                content: 'StatCardV2ArrowDirection',
+                hintText: 'Enum for arrow direction',
+            },
+            { content: 'up, down' },
+        ],
+        [
+            {
+                content: 'change.leftSymbol',
+                hintText: 'Symbol placed before value (e.g., "+").',
+            },
+            {
+                content: 'string',
+                hintText: 'Prefix symbol',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'change.rightSymbol',
+                hintText: 'Symbol placed after value (e.g., "%").',
+            },
+            {
+                content: 'string',
+                hintText: 'Suffix symbol',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'change.tooltip',
+                hintText: 'Tooltip content for the change indicator.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Tooltip element or text',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the StatCardV2 component using the following tokens:
+
+```tsx
+export type StatCardV2TokensType = {
+    height: CSSObject['height']
+    width: CSSObject['width']
+    maxWidth: CSSObject['maxWidth']
+    minWidth: CSSObject['minWidth']
+    paddingTop: CSSObject['paddingTop']
+    paddingBottom: CSSObject['paddingBottom']
+    paddingLeft: CSSObject['paddingLeft']
+    paddingRight: CSSObject['paddingRight']
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
+    backgroundColor: CSSObject['backgroundColor']
+    boxShadow: CSSObject['boxShadow']
+    topContainer: {
+        gap: CSSObject['gap']
+        dataContainer: {
+            gap: CSSObject['gap']
+            titleContainer: {
+                gap: CSSObject['gap']
+                title: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    color: CSSObject['color']
+                    lineHeight: CSSObject['lineHeight']
+                }
+                helpIcon: {
+                    width: CSSObject['width']
+                    height: CSSObject['height']
+                    color: {
+                        default: CSSObject['color']
+                        hover: CSSObject['color']
+                    }
+                }
+            }
+            statsContainer: {
+                gap: CSSObject['gap']
+                value: {
+                    [key in StatCardV2Variant]: {
+                        fontSize: CSSObject['fontSize']
+                        fontWeight: CSSObject['fontWeight']
+                        color: CSSObject['color']
+                        lineHeight: CSSObject['lineHeight']
+                    }
+                }
+                changeContainer: {
+                    gap: CSSObject['gap']
+                    change: {
+                        fontSize: CSSObject['fontSize']
+                        fontWeight: CSSObject['fontWeight']
+                        color: {
+                            [key in StatCardV2ChangeType]: CSSObject['color']
+                        }
+                        lineHeight: CSSObject['lineHeight']
+                    }
+                    arrow: {
+                        width: CSSObject['width']
+                        height: CSSObject['height']
+                        color: {
+                            [key in StatCardV2ChangeType]: CSSObject['color']
+                        }
+                    }
+                }
+            }
+            subtitle: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                color: CSSObject['color']
+                lineHeight: CSSObject['lineHeight']
+            }
+        }
+    }
+}
+```

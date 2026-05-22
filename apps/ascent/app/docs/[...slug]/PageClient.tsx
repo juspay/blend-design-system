@@ -4,7 +4,7 @@ import { XIcon, SidebarSimpleIcon } from '@phosphor-icons/react/dist/ssr'
 import { Drawer } from 'vaul'
 import { TOCItem } from '../../../components/Navigation/TableOfContents'
 import { DocItem } from '../utils'
-import Sidebar from '@/components/docs/Sidebar'
+import { Sidebar } from '@/components/docs'
 
 type PageClientProps = {
     headings: TOCItem[]

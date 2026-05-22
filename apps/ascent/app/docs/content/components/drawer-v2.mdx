@@ -1,0 +1,142 @@
+---
+version: 2
+title: Drawer
+description: The DrawerV2 component provides a sliding panel for displaying content from the edge of the screen.
+category: Feedback
+tags:
+    - drawer
+    - component
+    - panel
+    - slide
+    - overlay
+RepoFolderName: DrawerV2
+StorybookLink: components-drawer-drawerv2--docs
+---
+
+<DrawerV2Preview />
+
+## Usage
+
+```tsx
+import {
+    DrawerV2,
+    DrawerV2Content,
+    DrawerV2Overlay,
+    DrawerV2Portal,
+    DrawerV2Title,
+    DrawerV2Trigger,
+    ButtonV2,
+    ButtonV2Type,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <DrawerV2>
+            <DrawerV2Trigger asChild>
+                <ButtonV2
+                    text="Open Drawer"
+                    buttonType={ButtonV2Type.PRIMARY}
+                />
+            </DrawerV2Trigger>
+            <DrawerV2Portal>
+                <DrawerV2Overlay />
+                <DrawerV2Content>
+                    <DrawerV2Title>Drawer Title</DrawerV2Title>
+                    <div>
+                        <p>Your content here</p>
+                    </div>
+                </DrawerV2Content>
+            </DrawerV2Portal>
+        </DrawerV2>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'open',
+                hintText: 'Controls whether the drawer is visible.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows the drawer',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onOpenChange',
+                hintText: 'Callback fired when the drawer open state changes.',
+            },
+            {
+                content: '(open: boolean) => void',
+                hintText: 'State change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'direction',
+                hintText: 'Edge of the screen from which the drawer slides.',
+            },
+            {
+                content: 'string',
+                hintText: 'Slide direction',
+            },
+            { content: 'left, right, top, bottom' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Width or height of the drawer depending on direction.',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS dimension value',
+            },
+            { content: 'sm, md, lg, xl, or custom value' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText: 'Content displayed inside the drawer panel.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Drawer content',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the DrawerV2 component using the following tokens:
+
+```tsx
+export type DrawerV2TokensType = {
+    overlay: {
+        backgroundColor: CSSObject['backgroundColor']
+        backdropFilter: CSSObject['backdropFilter']
+    }
+    content: {
+        backgroundColor: CSSObject['backgroundColor']
+        boxShadow: CSSObject['boxShadow']
+    }
+    sizes: {
+        sm: CSSObject['width']
+        md: CSSObject['width']
+        lg: CSSObject['width']
+        xl: CSSObject['width']
+    }
+}
+```

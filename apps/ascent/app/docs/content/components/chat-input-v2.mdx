@@ -1,0 +1,346 @@
+---
+version: 2
+title: Chat Input
+description: The ChatInputV2 component provides a specialized input for chat interfaces with send button and attachment support.
+category: Form Input
+tags:
+    - chat-input
+    - component
+    - input
+    - chat
+    - message
+RepoFolderName: ChatInputV2
+StorybookLink: components-inputs-chatinputv2--docs
+---
+
+<ChatInputV2Preview />
+
+## Usage
+
+```tsx
+import { ChatInputV2 } from '@juspay/blend-design-system'
+import { PaperPlaneRight } from '@phosphor-icons/react'
+
+function MyComponent() {
+    const [message, setMessage] = useState('')
+
+    return (
+        <ChatInputV2
+            placeholder="Type a message..."
+            value={message}
+            onChange={(value) => setMessage(value)}
+            onEnter={() => console.log('Sending:', message)}
+            secondaryAction={<PaperPlaneRight size={16} />}
+            onSecondaryActionClick={() => console.log('Sending:', message)}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Current message value.',
+            },
+            {
+                content: 'string',
+                hintText: 'Message value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback fired when message changes.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Change handler with string value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onEnter',
+                hintText: 'Callback fired when Enter key is pressed.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Enter key handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text when empty.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, input is non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondaryAction',
+                hintText:
+                    'Custom element for the secondary action button (e.g., send icon).',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Action button content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSecondaryActionClick',
+                hintText:
+                    'Callback fired when secondary action button is clicked.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Secondary action handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'topContent',
+                hintText:
+                    'Content rendered above the input field (e.g., context, filters, banners).',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Top content element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'topQueries',
+                hintText:
+                    'Array of suggested queries displayed above the input.',
+            },
+            {
+                content: 'TopQuery[]',
+                hintText: 'Array of {id, text} objects',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onTopQuerySelect',
+                hintText: 'Callback fired when a top query is selected.',
+            },
+            {
+                content: '(query: TopQuery) => void',
+                hintText: 'Query selection handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'topQueriesMaxHeight',
+                hintText: 'Maximum height for the top queries container.',
+            },
+            {
+                content: 'number',
+                hintText: 'Height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'textareaMaxHeight',
+                hintText:
+                    'Maximum height for the textarea (ChatGPT-style auto-grow).',
+            },
+            {
+                content: 'number',
+                hintText: 'Height in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'attachedFiles',
+                hintText: 'Array of files currently attached to the input.',
+            },
+            {
+                content: 'AttachedFile[]',
+                hintText: 'Array of file objects',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onAttachFiles',
+                hintText:
+                    'Callback fired when new files are selected for attachment.',
+            },
+            {
+                content: '(files: File[]) => void',
+                hintText: 'File attachment handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFileRemove',
+                hintText: 'Callback fired when an attached file is removed.',
+            },
+            {
+                content: '(fileId: string) => void',
+                hintText: 'File removal handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFileClick',
+                hintText: 'Callback fired when an attached file is clicked.',
+            },
+            {
+                content: '(file: AttachedFile) => void',
+                hintText: 'File click handler',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the ChatInputV2 component using the following tokens:
+
+```tsx
+export type ChatInputV2TokensType = {
+    container: {
+        backgroundColor: {
+            [key in InputStateV2]: CSSObject['backgroundColor']
+        }
+        borderRadius: CSSObject['borderRadius']
+        border: {
+            [key in InputStateV2]: CSSObject['border']
+        }
+        gap: CSSObject['gap']
+        paddingTop: CSSObject['paddingTop']
+        paddingRight: CSSObject['paddingRight']
+        paddingBottom: CSSObject['paddingBottom']
+        paddingLeft: CSSObject['paddingLeft']
+        attachedFilesContainer: {
+            gap: CSSObject['gap']
+            overflowMenu: {
+                gap: CSSObject['gap']
+                backgroundColor: {
+                    [key in InputStateV2]: CSSObject['backgroundColor']
+                }
+                borderRadius: CSSObject['borderRadius']
+                padding: CSSObject['padding']
+                top: CSSObject['top']
+                right: CSSObject['right']
+                maxHeight: CSSObject['maxHeight']
+            }
+        }
+        tagContainer: {
+            gap: CSSObject['gap']
+            borderRadius: CSSObject['borderRadius']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+            border: CSSObject['border']
+            backgroundColor: CSSObject['backgroundColor']
+            text: {
+                color: CSSObject['color']
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+            }
+        }
+        inputContainer: {
+            outline: {
+                [key in InputStateV2]: CSSObject['outline']
+            }
+            boxShadow: { [key in InputStateV2]: CSSObject['boxShadow'] }
+            gap: CSSObject['gap']
+            borderRadius: CSSObject['borderRadius']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+            border: CSSObject['border']
+            backgroundColor: CSSObject['backgroundColor']
+            input: {
+                color: CSSObject['color']
+                placeholder: CSSObject['color']
+                paddingTop: CSSObject['paddingTop']
+                paddingRight: CSSObject['paddingRight']
+                paddingLeft: CSSObject['paddingLeft']
+                minHeight: CSSObject['minHeight']
+                maxHeight: CSSObject['maxHeight']
+            }
+            actionContainer: {
+                paddingRight: CSSObject['paddingRight']
+                paddingBottom: CSSObject['paddingBottom']
+                paddingLeft: CSSObject['paddingLeft']
+            }
+            topQueriesContainer: {
+                marginRight: CSSObject['marginRight']
+                marginLeft: CSSObject['marginLeft']
+                paddingTop: CSSObject['paddingTop']
+                paddingRight: CSSObject['paddingRight']
+                paddingBottom: CSSObject['paddingBottom']
+                paddingLeft: CSSObject['paddingLeft']
+                borderTop: CSSObject['borderTop']
+                header: {
+                    color: CSSObject['color']
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    textTransform: CSSObject['textTransform']
+                    paddingTop: CSSObject['paddingTop']
+                    paddingRight: CSSObject['paddingRight']
+                    paddingBottom: CSSObject['paddingBottom']
+                    paddingLeft: CSSObject['paddingLeft']
+                    backgroundColor: CSSObject['backgroundColor']
+                }
+                item: {
+                    backgroundColor: {
+                        [key in InputStateV2]: CSSObject['backgroundColor']
+                    }
+                    color: { [key in InputStateV2]: CSSObject['color'] }
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    paddingTop: CSSObject['paddingTop']
+                    paddingRight: CSSObject['paddingRight']
+                    paddingBottom: CSSObject['paddingBottom']
+                    paddingLeft: CSSObject['paddingLeft']
+                    border: CSSObject['border']
+                    transition: CSSObject['transition']
+                    cursor: CSSObject['cursor']
+                    opacity: { [key in InputStateV2]: CSSObject['opacity'] }
+                }
+            }
+        }
+    }
+}
+```
