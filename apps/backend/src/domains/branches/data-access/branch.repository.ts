@@ -19,6 +19,10 @@ export interface BranchRow {
     brandConfig: BrandConfig
     publishedVersions: number
     latestVersion: string | null
+    isProtected: boolean
+    protectionRequireApproval: boolean | null
+    protectionMinApprovals: number | null
+    protectionAllowedApprovers: string | null
     createdBy: string
     createdByName: string
     createdAt: Date
@@ -60,6 +64,10 @@ export const createBranch = async (
         | 'publishedVersions'
         | 'latestVersion'
         | 'deletedAt'
+        | 'isProtected'
+        | 'protectionRequireApproval'
+        | 'protectionMinApprovals'
+        | 'protectionAllowedApprovers'
         | 'tags'
     > & { organizationId: string | null }
 ): Promise<BranchRow> => {
@@ -73,6 +81,10 @@ export const createBranch = async (
             status: data.status || 'draft',
             visibility: data.visibility || 'private',
             brandConfig: data.brandConfig as any,
+            isProtected: false,
+            protectionRequireApproval: null,
+            protectionMinApprovals: null,
+            protectionAllowedApprovers: null,
             createdBy: data.createdBy,
             createdByName: data.createdByName,
         },
@@ -165,6 +177,10 @@ export const updateBranch = async (
             | 'status'
             | 'visibility'
             | 'latestVersion'
+            | 'isProtected'
+            | 'protectionRequireApproval'
+            | 'protectionMinApprovals'
+            | 'protectionAllowedApprovers'
         >
     >
 ): Promise<BranchRow | null> => {

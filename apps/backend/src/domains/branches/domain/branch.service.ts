@@ -7,16 +7,27 @@ import type {
     Branch,
     CreateBranchDTO,
     UpdateBranchDTO,
+    UpdateBranchProtectionDTO,
     PublishBranchDTO,
+    PublishBranchResult,
     BrandConfig,
     BranchVersion,
 } from './branch.types.js'
 import * as branchRepo from '../data-access/branch.repository.js'
+import * as publishRequestRepo from '../data-access/publish-request.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 import * as tagRepo from '@/domains/tags/data-access/tag.repository.js'
 import * as userRepo from '@/domains/users/data-access/user.repository.js'
 import * as lockRepo from '@/domains/locks/data-access/lock.repository.js'
 import * as orgRepo from '@/domains/organizations/data-access/organization.repository.js'
+import {
+    canBypassApproval,
+    canDirectlyUpdateBranch,
+    resolvePublishApprovalPolicy,
+    resolveMergeApprovalPolicy,
+    type OrgApprovalSettings,
+} from '@/domains/shared/approval-policy.service.js'
+import { getOrganizationRole } from '@/domains/organizations/domain/org-permissions.service.js'
 import {
     resolveWithInheritance,
     validateAgainstLocks,
@@ -213,6 +224,34 @@ const getOrgParentContext = async (
     }
 }
 
+const toOrgApprovalSettings = (
+    organization: Awaited<ReturnType<typeof orgRepo.getOrganizationById>>
+): OrgApprovalSettings | null => {
+    if (!organization) {
+        return null
+    }
+
+    return {
+        defaultBranchId: organization.defaultBranchId,
+        requireApprovalForMerge: organization.requireApprovalForMerge,
+        requireApprovalForPublish: organization.requireApprovalForPublish,
+        allowedApprovers: organization.allowedApprovers,
+        minApprovals: organization.minApprovals,
+        allowAdminBypass: organization.allowAdminBypass,
+    }
+}
+
+const getRoleForBranchContext = async (
+    branch: Branch,
+    userId: string
+): Promise<'admin' | 'editor' | 'viewer'> => {
+    if (!branch.organizationId) {
+        return branch.createdBy === userId ? 'admin' : 'viewer'
+    }
+
+    return await getOrganizationRole(branch.organizationId, userId, 'viewer')
+}
+
 export const resolveEffectiveBrandConfig = async (
     branch: Branch,
     baseConfig: BrandConfig
@@ -367,8 +406,34 @@ export const updateBranch = async (
 ): Promise<Branch> => {
     const branch = await getBranch(branchId)
 
-    if (branch.createdBy !== userId) {
-        throw new ForbiddenError('Only the creator can update this branch')
+    const [organization, userRole] = await Promise.all([
+        branch.organizationId ? orgRepo.getOrganizationById(branch.organizationId) : null,
+        getRoleForBranchContext(branch, userId),
+    ])
+
+    const canUpdate = canDirectlyUpdateBranch(
+        branch,
+        toOrgApprovalSettings(organization),
+        userId,
+        userRole
+    )
+
+    if (!canUpdate) {
+        const isDefaultBranch = Boolean(
+            organization?.defaultBranchId && organization.defaultBranchId === branch.id
+        )
+
+        if (isDefaultBranch) {
+            throw new ForbiddenError(
+                'Default branch is protected. Submit a merge request instead'
+            )
+        }
+        if (branch.isProtected) {
+            throw new ForbiddenError(
+                'Protected branch cannot be directly updated. Submit a merge request instead'
+            )
+        }
+        throw new ForbiddenError('Only the creator or an admin can update this branch')
     }
 
     const mergedBrandConfig = dto.brandConfig
@@ -515,17 +580,87 @@ export const publishBranch = async (
     userId: string,
     userName: string,
     userEmail: string
-): Promise<BranchVersion> => {
+): Promise<PublishBranchResult> => {
     const branch = await getBranch(branchId)
 
-    if (branch.createdBy !== userId) {
-        throw new ForbiddenError('Only the creator can publish this branch')
+    const [organization, userRole] = await Promise.all([
+        branch.organizationId ? orgRepo.getOrganizationById(branch.organizationId) : null,
+        getRoleForBranchContext(branch, userId),
+    ])
+
+    const isCreator = branch.createdBy === userId
+    const isAdmin = userRole === 'admin'
+    if (!isCreator && !isAdmin) {
+        throw new ForbiddenError('Only the creator or an admin can publish this branch')
     }
 
     if (!dto.version?.match(/^\d+\.\d+\.\d+$/)) {
         throw new ValidationError(
             'Version must be in format: x.x.x (e.g., 1.0.0)'
         )
+    }
+
+    const policy = resolvePublishApprovalPolicy(
+        branch,
+        toOrgApprovalSettings(organization)
+    )
+    const bypassAllowed = canBypassApproval(policy, userRole)
+
+    if (policy.requireApproval && !bypassAllowed) {
+        const publishRequest = await publishRequestRepo.createPublishRequest({
+            organizationId: branch.organizationId,
+            branchId: branch.id,
+            branchName: branch.name,
+            version: dto.version,
+            changelog: dto.changelog,
+            isBreaking: dto.isBreaking,
+            isPrerelease: dto.isPrerelease,
+            requestedBy: userId,
+            requestedByName: userName,
+        })
+
+        if (branch.organizationId) {
+            await auditLogRepo.createAuditLog({
+                organizationId: branch.organizationId,
+                action: 'publish_request_created',
+                actorId: userId,
+                actorEmail: userEmail,
+                targetType: 'publish_request',
+                targetId: publishRequest.id,
+                metadata: {
+                    branchId,
+                    branchName: branch.name,
+                    version: dto.version,
+                },
+            })
+        }
+
+        return {
+            mode: 'approval_required',
+            publishRequest: {
+                id: publishRequest.id,
+                status: publishRequest.status,
+            },
+        }
+    }
+
+    if (policy.requireApproval && bypassAllowed && branch.organizationId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: branch.organizationId,
+            action: 'publish_request_published_admin_bypass',
+            actorId: userId,
+            actorEmail: userEmail,
+            targetType: 'branch',
+            targetId: branch.id,
+            metadata: {
+                branchId,
+                branchName: branch.name,
+                version: dto.version,
+                usedAdminBypass: true,
+                approvalCount: 0,
+                minRequired: policy.minApprovals,
+            },
+        })
     }
 
     const version = await branchRepo.createVersion(branchId, {
@@ -554,8 +689,132 @@ export const publishBranch = async (
         })
     }
 
-    return version as unknown as BranchVersion
+    return {
+        mode: 'published',
+        version: version as unknown as BranchVersion,
+    }
 }
+
+export const updateBranchProtection = async (
+    branchId: string,
+    dto: UpdateBranchProtectionDTO,
+    userId: string,
+    userEmail: string
+): Promise<Branch> => {
+    const branch = await getBranch(branchId)
+
+    const userRole = await getRoleForBranchContext(branch, userId)
+    const isAdmin = userRole === 'admin'
+    if (!isAdmin) {
+        throw new ForbiddenError('Only admins can update branch protection settings')
+    }
+
+    const updates: Record<string, unknown> = {}
+
+    if (dto.isProtected !== undefined) {
+        updates.isProtected = dto.isProtected
+    }
+
+    if (dto.requireApproval !== undefined) {
+        updates.protectionRequireApproval = dto.requireApproval
+    }
+
+    if (dto.minApprovals !== undefined) {
+        updates.protectionMinApprovals = dto.minApprovals
+    }
+
+    if (dto.allowedApproverIds !== undefined) {
+        updates.protectionAllowedApprovers = dto.allowedApproverIds
+            ? dto.allowedApproverIds.join(',')
+            : null
+    }
+
+    if (dto.isProtected === false) {
+        updates.protectionRequireApproval = null
+        updates.protectionMinApprovals = null
+        updates.protectionAllowedApprovers = null
+    }
+
+    const updated = await branchRepo.updateBranch(branchId, updates as any)
+    if (!updated) {
+        throw new NotFoundError('Branch')
+    }
+
+    if (branch.organizationId) {
+        const action = dto.isProtected === true
+            ? 'branch_protection_enabled'
+            : dto.isProtected === false
+              ? 'branch_protection_disabled'
+              : 'branch_protection_updated'
+
+        await auditLogRepo.createAuditLog({
+            organizationId: branch.organizationId,
+            action,
+            actorId: userId,
+            actorEmail: userEmail,
+            targetType: 'branch',
+            targetId: branch.id,
+            metadata: {
+                branchId: branch.id,
+                isProtected: updated.isProtected,
+                requireApproval: updated.protectionRequireApproval,
+                minApprovals: updated.protectionMinApprovals,
+                hasCustomApprovers: Boolean(updated.protectionAllowedApprovers),
+            },
+        })
+    }
+
+    return updated as unknown as Branch
+}
+
+export const getBranchApprovalSettings = async (
+    branchId: string,
+    userId: string,
+    context: 'merge' | 'publish'
+) => {
+    const branch = await getBranch(branchId)
+    const organization = branch.organizationId
+        ? await orgRepo.getOrganizationById(branch.organizationId)
+        : null
+
+    const userRole = await getRoleForBranchContext(branch, userId)
+    const orgSettings = toOrgApprovalSettings(organization)
+    const policy =
+        context === 'publish'
+            ? resolvePublishApprovalPolicy(branch, orgSettings)
+            : resolveMergeApprovalPolicy(branch, orgSettings)
+
+    return {
+        branchId: branch.id,
+        context,
+        isDefaultBranch: Boolean(
+            organization?.defaultBranchId && organization.defaultBranchId === branch.id
+        ),
+        branch: {
+            isProtected: branch.isProtected,
+            protectionRequireApproval: branch.protectionRequireApproval,
+            protectionMinApprovals: branch.protectionMinApprovals,
+            protectionAllowedApprovers: branch.protectionAllowedApprovers,
+        },
+        organization: organization
+            ? {
+                  requireApprovalForMerge: organization.requireApprovalForMerge,
+                  requireApprovalForPublish: organization.requireApprovalForPublish,
+                  allowedApprovers: organization.allowedApprovers,
+                  minApprovals: organization.minApprovals,
+                  allowAdminBypass: organization.allowAdminBypass,
+              }
+            : null,
+        effectivePolicy: policy,
+        currentUser: {
+            id: userId,
+            role: userRole,
+            canAdminBypass: canBypassApproval(policy, userRole),
+        },
+    }
+}
+
+export { canDirectlyUpdateBranch } from '@/domains/shared/approval-policy.service.js'
 
 export const listVersions = async (branchId: string) => {
     await getBranch(branchId)

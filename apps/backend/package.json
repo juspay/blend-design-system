@@ -9,6 +9,8 @@
         "dev": "tsx watch src/server.ts",
         "build": "tsc && tsc-alias",
         "start": "node dist/server.js",
+        "test": "vitest run",
+        "test:watch": "vitest",
         "typecheck": "tsc --noEmit",
         "lint": "eslint src/**/*.ts",
         "db:generate": "prisma generate",
@@ -48,7 +50,8 @@
         "@types/swagger-ui-express": "^4.1.7",
         "tsc-alias": "^1.8.10",
         "tsx": "^4.19.2",
-        "typescript": "~5.8.3"
+        "typescript": "~5.8.3",
+        "vitest": "^3.2.4"
     },
     "engines": {
         "node": ">=20.0.0"

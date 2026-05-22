@@ -18,6 +18,7 @@ import tagRoutes from '@/domains/tags/entry-points/tag.routes.js'
 import apiKeyRoutes from '@/domains/apikeys/entry-points/apikey.routes.js'
 import lockRoutes from '@/domains/locks/entry-points/lock.routes.js'
 import mergeRequestRoutes from '@/domains/mergerequests/entry-points/merge-request.routes.js'
+import publishRequestRoutes from '@/domains/branches/entry-points/publish-request.routes.js'
 // (callback route is mounted via /api/auth router)
 import type { NextFunction, Request, Response } from 'express'
 
@@ -189,6 +190,7 @@ app.use('/api/users', apiLimiter, userRoutes)
 app.use('/api/organizations', apiLimiter, orgRoutes)
 app.use('/api/organizations', apiLimiter, lockRoutes)
 app.use('/api/merge-requests', apiLimiter, mergeRequestRoutes)
+app.use('/api/publish-requests', apiLimiter, publishRequestRoutes)
 app.use('/api/tags', apiLimiter, tagRoutes)
 app.use('/api/api-keys', apiLimiter, apiKeyRoutes)
 app.use('/api', apiLimiter, tokenRoutes)

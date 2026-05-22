@@ -44,6 +44,10 @@ export interface Branch {
     brandConfig: BrandConfig
     publishedVersions: number
     latestVersion: string | null
+    isProtected: boolean
+    protectionRequireApproval: boolean | null
+    protectionMinApprovals: number | null
+    protectionAllowedApprovers: string | null
     createdBy: string
     createdByName: string
     createdAt: Date
@@ -100,12 +104,32 @@ export interface UpdateBranchDTO {
     visibility?: BranchVisibility
 }
 
+export interface UpdateBranchProtectionDTO {
+    isProtected?: boolean
+    requireApproval?: boolean
+    minApprovals?: number
+    allowedApproverIds?: string[]
+}
+
 export interface PublishBranchDTO {
     version: string
     changelog?: string
     isBreaking?: boolean
     isPrerelease?: boolean
 }
+
+export type PublishBranchResult =
+    | {
+          mode: 'published'
+          version: BranchVersion
+      }
+    | {
+          mode: 'approval_required'
+          publishRequest: {
+              id: string
+              status: string
+          }
+      }
 
 export interface ResolvedTokensResponse {
     success: boolean

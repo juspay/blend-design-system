@@ -8,6 +8,11 @@ export interface OrganizationRow {
     defaultBranchId: string | null
     blendVersion: string | null
     wcagEnforcement: string
+    requireApprovalForMerge: boolean
+    requireApprovalForPublish: boolean
+    allowedApprovers: string
+    minApprovals: number
+    allowAdminBypass: boolean
     createdAt: Date
     updatedAt: Date
 }
@@ -78,6 +83,11 @@ export const updateOrganization = async (
         defaultBranchId?: string | null
         blendVersion?: string | null
         wcagEnforcement?: string
+        requireApprovalForMerge?: boolean
+        requireApprovalForPublish?: boolean
+        allowedApprovers?: string
+        minApprovals?: number
+        allowAdminBypass?: boolean
     }
 ): Promise<OrganizationRow | null> => {
     const org = await prisma.organization.update({

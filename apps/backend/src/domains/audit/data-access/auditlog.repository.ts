@@ -30,6 +30,17 @@ export type AuditAction =
     | 'merge_request_approved'
     | 'merge_request_rejected'
     | 'merge_request_merged'
+    | 'merge_request_merged_admin_bypass'
+    | 'publish_request_created'
+    | 'publish_request_approved'
+    | 'publish_request_rejected'
+    | 'publish_request_cancelled'
+    | 'publish_request_published'
+    | 'publish_request_published_admin_bypass'
+    | 'organization_settings_updated'
+    | 'branch_protection_enabled'
+    | 'branch_protection_updated'
+    | 'branch_protection_disabled'
 
 // ===========================================================================
 // Structured Metadata — typed per action so callers can't pass random shapes
@@ -151,6 +162,41 @@ export interface MergeRequestMergedMeta {
     targetBranchId: string
 }
 
+export interface MergeRequestMergedBypassMeta {
+    sourceBranchId: string
+    targetBranchId: string
+    usedAdminBypass: boolean
+    approvalCount: number
+    minRequired: number
+}
+
+export interface PublishRequestMeta {
+    publishRequestId?: string
+    branchId: string
+    branchName: string
+    version: string
+    reviewComment?: string | null
+    usedAdminBypass?: boolean
+    approvalCount?: number
+    minRequired?: number
+}
+
+export interface OrganizationSettingsUpdatedMeta {
+    requireApprovalForMerge?: boolean
+    requireApprovalForPublish?: boolean
+    allowedApprovers?: string
+    minApprovals?: number
+    allowAdminBypass?: boolean
+}
+
+export interface BranchProtectionMeta {
+    branchId: string
+    isProtected: boolean
+    requireApproval: boolean | null
+    minApprovals: number | null
+    hasCustomApprovers: boolean
+}
+
 export type AuditMetadata =
     | BranchCreatedMeta
     | BranchUpdatedMeta
@@ -174,6 +220,10 @@ export type AuditMetadata =
     | MergeRequestCreatedMeta
     | MergeRequestReviewedMeta
     | MergeRequestMergedMeta
+    | MergeRequestMergedBypassMeta
+    | PublishRequestMeta
+    | OrganizationSettingsUpdatedMeta
+    | BranchProtectionMeta
 
 // ===========================================================================
 // Target types — constrained set of entities that can be audit-logged
@@ -190,6 +240,7 @@ export type AuditTargetType =
     | 'organization'
     | 'token_lock'
     | 'merge_request'
+    | 'publish_request'
 
 // ===========================================================================
 // Create input — typed, no `any` leaks

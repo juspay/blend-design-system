@@ -61,17 +61,6 @@ router.post(
             req.body.organizationId ||
             req.user!.organizationId
 
-        if (!orgId) {
-            res.status(400).json({
-                success: false,
-                error: {
-                    code: 'VALIDATION_ERROR',
-                    message: 'Organization ID is required',
-                },
-            })
-            return
-        }
-
         const mr = await mrService.createMR(
             orgId,
             req.body.sourceBranchId,

@@ -1,9 +1,18 @@
 import { prisma } from '@/config/database.js'
 import { logger } from '@/utils/logger.js'
 
+export interface MergeRequestApprovalRow {
+    id: string
+    mergeRequestId: string
+    userId: string
+    userName: string
+    userRole: string
+    approvedAt: Date
+}
+
 export interface MergeRequestRow {
     id: string
-    organizationId: string
+    organizationId: string | null
     sourceBranchId: string
     sourceBranchName: string
     targetBranchId: string
@@ -11,8 +20,8 @@ export interface MergeRequestRow {
     title: string
     description: string | null
     status: string
-    diff: any
-    lockViolations: any
+    diff: unknown
+    lockViolations: unknown
     requestedBy: string
     reviewedBy: string | null
     reviewedAt: Date | null
@@ -20,18 +29,27 @@ export interface MergeRequestRow {
     mergedAt: Date | null
     createdAt: Date
     updatedAt: Date
+    approvals: MergeRequestApprovalRow[]
+}
+
+const includeApprovals = {
+    approvals: {
+        orderBy: {
+            approvedAt: 'asc' as const,
+        },
+    },
 }
 
 export const createMergeRequest = async (data: {
-    organizationId: string
+    organizationId: string | null
     sourceBranchId: string
     sourceBranchName: string
     targetBranchId: string
     targetBranchName: string
     title: string
     description?: string
-    diff: any
-    lockViolations?: any
+    diff: unknown
+    lockViolations?: unknown
     requestedBy: string
 }): Promise<MergeRequestRow> => {
     const mr = await prisma.mergeRequest.create({
@@ -43,10 +61,11 @@ export const createMergeRequest = async (data: {
             targetBranchName: data.targetBranchName,
             title: data.title,
             description: data.description || null,
-            diff: data.diff,
-            lockViolations: data.lockViolations || null,
+            diff: data.diff as any,
+            lockViolations: (data.lockViolations ?? null) as any,
             requestedBy: data.requestedBy,
         },
+        include: includeApprovals,
     })
     logger.info(
         { mrId: mr.id, orgId: data.organizationId },
@@ -58,7 +77,10 @@ export const createMergeRequest = async (data: {
 export const getMergeRequest = async (
     id: string
 ): Promise<MergeRequestRow | null> => {
-    const mr = await prisma.mergeRequest.findUnique({ where: { id } })
+    const mr = await prisma.mergeRequest.findUnique({
+        where: { id },
+        include: includeApprovals,
+    })
     return mr as unknown as MergeRequestRow | null
 }
 
@@ -67,20 +89,25 @@ export const listMergeRequests = async (
         organizationId?: string
         status?: string
         requestedBy?: string
+        sourceBranchId?: string
+        targetBranchId?: string
         limit?: number
         cursor?: string
     } = {}
 ): Promise<{ mergeRequests: MergeRequestRow[]; nextCursor?: string }> => {
     const limit = options.limit || 20
-    const where: any = {}
+    const where: Record<string, unknown> = {}
 
     if (options.organizationId) where.organizationId = options.organizationId
     if (options.status) where.status = options.status
     if (options.requestedBy) where.requestedBy = options.requestedBy
+    if (options.sourceBranchId) where.sourceBranchId = options.sourceBranchId
+    if (options.targetBranchId) where.targetBranchId = options.targetBranchId
     if (options.cursor) where.id = { lt: options.cursor }
 
     const mergeRequests = await prisma.mergeRequest.findMany({
-        where,
+        where: where as any,
+        include: includeApprovals,
         orderBy: { createdAt: 'desc' },
         take: limit + 1,
     })
@@ -97,6 +124,34 @@ export const listMergeRequests = async (
     }
 }
 
+export const addMergeRequestApproval = async (
+    mergeRequestId: string,
+    data: {
+        userId: string
+        userName: string
+        userRole: string
+    }
+): Promise<MergeRequestApprovalRow> => {
+    const approval = await prisma.mergeRequestApproval.create({
+        data: {
+            mergeRequestId,
+            userId: data.userId,
+            userName: data.userName,
+            userRole: data.userRole,
+        },
+    })
+
+    logger.info(
+        {
+            mergeRequestId,
+            userId: data.userId,
+        },
+        'Merge request approval recorded'
+    )
+
+    return approval as unknown as MergeRequestApprovalRow
+}
+
 export const updateMergeRequestStatus = async (
     id: string,
     data: {
@@ -105,7 +160,7 @@ export const updateMergeRequestStatus = async (
         reviewComment?: string
     }
 ): Promise<MergeRequestRow | null> => {
-    const updateData: any = { status: data.status }
+    const updateData: Record<string, unknown> = { status: data.status }
 
     if (data.reviewedBy) updateData.reviewedBy = data.reviewedBy
     if (data.reviewComment !== undefined)
@@ -122,7 +177,8 @@ export const updateMergeRequestStatus = async (
 
     const mr = await prisma.mergeRequest.update({
         where: { id },
-        data: updateData,
+        data: updateData as any,
+        include: includeApprovals,
     })
 
     logger.info(
@@ -138,6 +194,7 @@ export const cancelMergeRequest = async (
     const mr = await prisma.mergeRequest.update({
         where: { id },
         data: { status: 'cancelled' },
+        include: includeApprovals,
     })
     logger.info({ mrId: id }, 'Merge request cancelled')
     return mr as unknown as MergeRequestRow | null

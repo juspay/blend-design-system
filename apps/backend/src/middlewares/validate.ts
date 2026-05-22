@@ -155,6 +155,13 @@ export const updateOrgSchema = z.object({
     defaultBranchId: z.string().max(255).nullable().optional(),
     blendVersion: z.string().max(50).nullable().optional(),
     wcagEnforcement: z.enum(['none', 'warn', 'block']).optional(),
+    requireApprovalForMerge: z.boolean().optional(),
+    requireApprovalForPublish: z.boolean().optional(),
+    allowedApprovers: z
+        .enum(['admins', 'admins-and-editors', 'custom'])
+        .optional(),
+    minApprovals: z.number().int().min(1).max(10).optional(),
+    allowAdminBypass: z.boolean().optional(),
 })
 
 export const addMemberSchema = z.object({
@@ -199,6 +206,13 @@ export const updateBranchSchema = z.object({
     brandConfig: z.record(z.unknown()).optional(),
     visibility: z.enum(['private', 'team', 'public']).optional(),
     status: z.enum(['draft', 'published', 'archived']).optional(),
+})
+
+export const updateBranchProtectionSchema = z.object({
+    isProtected: z.boolean().optional(),
+    requireApproval: z.boolean().nullable().optional(),
+    minApprovals: z.number().int().min(1).max(10).nullable().optional(),
+    allowedApproverIds: z.array(z.string().uuid()).max(12).nullable().optional(),
 })
 
 export const publishBranchSchema = z.object({
@@ -305,4 +319,13 @@ export const createMergeRequestSchema = z.object({
 
 export const reviewMergeRequestSchema = z.object({
     reviewComment: z.string().max(5000).optional(),
+})
+
+export const listPublishRequestsSchema = z.object({
+    organizationId: queryStringOptional,
+    branchId: queryStringOptional,
+    status: queryStringOptional,
+    requestedBy: queryStringOptional,
+    limit: queryStringOptional,
+    cursor: queryStringOptional,
 })

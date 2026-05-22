@@ -9,6 +9,7 @@ import {
     resolveTokensSchema,
     createSnapshotSchema,
     forkBranchSchema,
+    updateBranchProtectionSchema,
 } from '@/middlewares/validate.js'
 import * as branchService from '../domain/branch.service.js'
 import * as branchRepo from '../data-access/branch.repository.js'
@@ -196,17 +197,67 @@ router.post(
     authenticate,
     validate({ body: publishBranchSchema }),
     asyncHandler(async (req: Request, res: Response) => {
-        const version = await branchService.publishBranch(
+        const result = await branchService.publishBranch(
             req.params.branchId,
             req.body,
             req.user!.id,
             req.user!.displayName || req.user!.email,
             req.user!.email
         )
+        if (result.mode === 'approval_required') {
+            res.status(202).json({
+                success: true,
+                data: {
+                    publishRequest: result.publishRequest,
+                },
+                message: 'Publish request submitted for approval',
+            })
+            return
+        }
+
         res.json({
             success: true,
-            data: { version },
+            data: { version: result.version },
             message: 'Branch published successfully',
+        })
+    })
+)
+
+// ---------------------------------------------------------------------------
+// Branch Protection
+// ---------------------------------------------------------------------------
+router.patch(
+    '/:branchId/protection',
+    authenticate,
+    validate({ body: updateBranchProtectionSchema }),
+    asyncHandler(async (req: Request, res: Response) => {
+        const branch = await branchService.updateBranchProtection(
+            req.params.branchId,
+            req.body,
+            req.user!.id,
+            req.user!.email
+        )
+        res.json({
+            success: true,
+            data: { branch },
+            message: 'Branch protection updated successfully',
+        })
+    })
+)
+
+router.get(
+    '/:branchId/approval-settings',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response) => {
+        const context = req.query.context === 'publish' ? 'publish' : 'merge'
+        const settings = await branchService.getBranchApprovalSettings(
+            req.params.branchId,
+            req.user!.id,
+            context
+        )
+        res.json({
+            success: true,
+            data: { settings },
         })
     })
 )

@@ -11,6 +11,10 @@ import {
 import * as orgRepo from '../data-access/organization.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 import { maskEmail, maskDisplayName } from '@/utils/crypto.js'
+import { NotFoundError } from '@/errors/AppError.js'
+import {
+    requireOrganizationRole,
+} from '@/domains/organizations/domain/org-permissions.service.js'
 
 const router: IRouter = Router()
 
@@ -132,6 +136,52 @@ router.patch(
             return
         }
         res.json({ success: true, data: { organization: org } })
+    })
+)
+
+router.patch(
+    '/:id/approval-settings',
+    authenticate,
+    validate({ body: updateOrgSchema }),
+    asyncHandler(async (req: Request, res: Response) => {
+        await requireOrganizationRole(
+            req.params.id,
+            req.user!.id,
+            ['admin'],
+            'Only organization admins can update approval settings'
+        )
+
+        const updatePayload = {
+            requireApprovalForMerge: req.body.requireApprovalForMerge,
+            requireApprovalForPublish: req.body.requireApprovalForPublish,
+            allowedApprovers: req.body.allowedApprovers,
+            minApprovals: req.body.minApprovals,
+            allowAdminBypass: req.body.allowAdminBypass,
+        }
+
+        const organization = await orgRepo.updateOrganization(
+            req.params.id,
+            updatePayload
+        )
+        if (!organization) {
+            throw new NotFoundError('Organization')
+        }
+
+        await auditLogRepo.createAuditLog({
+            organizationId: req.params.id,
+            action: 'organization_settings_updated',
+            actorId: req.user!.id,
+            actorEmail: req.user!.email,
+            targetType: 'organization',
+            targetId: req.params.id,
+            metadata: updatePayload,
+        })
+
+        res.json({
+            success: true,
+            data: { organization },
+            message: 'Organization approval settings updated',
+        })
     })
 )
 
