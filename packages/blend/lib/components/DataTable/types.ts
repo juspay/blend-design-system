@@ -368,6 +368,25 @@ export type RowSelectionConfig<T extends Record<string, unknown>> = {
     disabledText?: (row: T, index: number) => string
 }
 
+export type RowAnimationConfig = {
+    /** Transition type for layout animations. @default 'bezier' */
+    transitionType?: 'spring' | 'bezier'
+    /** Spring stiffness. @default 320 */
+    stiffness?: number
+    /** Spring damping. @default 32 */
+    damping?: number
+    /** Spring mass. @default 1 */
+    mass?: number
+    /** Bezier duration in seconds. @default 0.3 */
+    duration?: number
+    /** Bezier easing curve as [x1, y1, x2, y2] cubic-bezier control points. @default [0, 0.2, 0, 1] */
+    bezier?: [number, number, number, number]
+    /** Enter animation duration in seconds. @default 0.65 */
+    enterDuration?: number
+    /** Enter animation Y offset in pixels. @default 34 */
+    enterOffset?: number
+}
+
 export type DataTableProps<T extends Record<string, unknown>> = {
     data: T[]
     columns: ColumnDefinition<T>[]
@@ -476,6 +495,9 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onDeleteColumn?: (field: keyof T) => void
 
     getRowStyle?: (row: T, index: number) => React.CSSProperties
+
+    enableRowAnimation?: boolean
+    rowAnimationConfig?: RowAnimationConfig
 
     tableBodyHeight?: string | number
 

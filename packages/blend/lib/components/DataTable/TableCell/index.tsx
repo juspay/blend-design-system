@@ -576,8 +576,8 @@ const TableCell = forwardRef<
                     column.type === ColumnType.REACT_ELEMENT ||
                     (isEditing && column.isEditable)
                 }
-                $isFirstRow={isFirstRow}
                 $customBackgroundColor={customBackgroundColor}
+                $isFirstRow={isFirstRow}
                 $hasCustomBackground={hasCustomBackground}
                 data-row-index={dataRowIndex}
                 data-col-index={dataColIndex}
