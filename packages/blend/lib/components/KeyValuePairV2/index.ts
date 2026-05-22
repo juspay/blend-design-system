@@ -1,3 +1,6 @@
 export { default as KeyValuePairV2 } from './KeyValuePairV2'
+export { KeyValuePairLayout } from './KeyValuePairLayout'
+export { ResponsiveText } from './ResponsiveText'
 export * from './keyValuePairV2.types'
 export * from './keyValuePairV2.tokens'
+export * from './utils'

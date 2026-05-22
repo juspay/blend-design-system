@@ -21,7 +21,7 @@ import {
 } from '../Select/selectUtils'
 import {
     flattenGroups,
-    filterMenuGroups,
+    filterSingleSelectV2MenuGroups,
     getVirtualRowEstimate,
     defaultSingleSelectV2Skeleton,
     MENU_SCROLL_SELECTORS,
@@ -106,7 +106,9 @@ const SingleSelectV2Menu = ({
     )
 
     const filteredItems = useMemo(() => {
-        const base = searchText ? filterMenuGroups(items, searchText) : items
+        const base = searchText
+            ? filterSingleSelectV2MenuGroups(items, searchText)
+            : items
         return getFilteredItemsWithCustomValue(
             base,
             searchText,

@@ -26,6 +26,7 @@ vi.mock('highcharts-react-official', () => {
     }
     return {
         __esModule: true,
+        HighchartsReact: MockHighchartsReact,
         default: MockHighchartsReact,
     }
 })

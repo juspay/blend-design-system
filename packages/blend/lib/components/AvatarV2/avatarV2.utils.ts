@@ -174,7 +174,7 @@ export function getStatusPositionStyles(
             return { top, right }
     }
 }
-export function createKeyboardHandler(
+export function createAvatarKeyboardHandler(
     onClick: ((event: React.MouseEvent<HTMLDivElement>) => void) | undefined
 ) {
     if (!onClick) {

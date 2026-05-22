@@ -31,7 +31,7 @@ import MobileMultiSelectV2 from './MobileMultiSelectV2'
 import {
     getMultiSelectBorderRadius,
     getMultiSelectCrossBorderRadius,
-    getValueLabelMap,
+    getMultiSelectV2ValueLabelMap,
     handleSelectAll,
 } from './utils'
 
@@ -109,7 +109,7 @@ const MultiSelectV2 = ({
     const [open, setOpen] = useState(false)
     const safeItems = items ?? []
     const valueLabelMap = useMemo(
-        () => getValueLabelMap(safeItems),
+        () => getMultiSelectV2ValueLabelMap(safeItems),
         [safeItems]
     )
     const shouldVirtualize = enableVirtualization && safeItems.length > 20

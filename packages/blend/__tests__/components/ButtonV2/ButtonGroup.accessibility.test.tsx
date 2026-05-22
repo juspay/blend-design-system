@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { ButtonGroupV2, ButtonV2 } from '../../../lib/components/ButtonV2'
-import { ButtonType } from '../../../lib/components/ButtonV2/buttonV2.types'
+import { ButtonV2Type } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('ButtonGroupV2 Accessibility', () => {
@@ -11,10 +11,13 @@ describe('ButtonGroupV2 Accessibility', () => {
         it('passes axe-core validation for horizontal group', async () => {
             const { container } = render(
                 <ButtonGroupV2>
-                    <ButtonV2 text="Primary" buttonType={ButtonType.PRIMARY} />
+                    <ButtonV2
+                        text="Primary"
+                        buttonType={ButtonV2Type.PRIMARY}
+                    />
                     <ButtonV2
                         text="Secondary"
-                        buttonType={ButtonType.SECONDARY}
+                        buttonType={ButtonV2Type.SECONDARY}
                     />
                 </ButtonGroupV2>
             )

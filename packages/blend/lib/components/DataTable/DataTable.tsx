@@ -1,4 +1,4 @@
-import {
+import React, {
     useState,
     useEffect,
     useMemo,
@@ -61,6 +61,8 @@ import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnDrawer from './MobileColumnDrawer'
+import PivotTableModal from './PivotTableModal'
+import type { PivotTableConfig } from './PivotTableModal/types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import styled from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -115,6 +117,7 @@ const DataTable = forwardRef(
             showSettings = false,
             showFooter = true,
             enableInlineEdit = false,
+            showActionsColumn = true,
             enableRowExpansion = false,
             enableRowSelection = false,
             rowSelectionConfig,
@@ -153,6 +156,8 @@ const DataTable = forwardRef(
             getRowStyle,
             tableBodyHeight,
             mobileColumnsToShow,
+            enablePivotTable = false,
+            pivotTableConfig,
             ...rest
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
@@ -314,6 +319,7 @@ const DataTable = forwardRef(
         >({})
 
         const [isFormatEnabled, setIsFormatEnabled] = useState<boolean>(true)
+        const [isPivotModalOpen, setIsPivotModalOpen] = useState<boolean>(false)
 
         const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false)
         const [selectedRowForDrawer, setSelectedRowForDrawer] =
@@ -650,6 +656,37 @@ const DataTable = forwardRef(
             pagination?.currentPage,
             pagination?.pageSize,
         ])
+
+        // Stable row ID list for the current page. Used for selection state and
+        // as a cheap signal to remount the tbody when results change (e.g. server-side search).
+        const currentPageRowIds = useMemo(() => {
+            return currentData.map((row) => String(row[idField]))
+        }, [currentData, idField])
+
+        // Monotonically increasing "dataVersion" for the current page's row IDs.
+        // This avoids expensive per-character hashing in TableBody while still
+        // forcing a remount when IDs change but length/first/last stay the same.
+        const [tbodyDataVersion, setTbodyDataVersion] = useState(0)
+        const prevPageRowIdsRef = useRef<string[] | null>(null)
+        useEffect(() => {
+            const prev = prevPageRowIdsRef.current
+            let changed =
+                prev == null || prev.length !== currentPageRowIds.length
+
+            if (!changed && prev) {
+                for (let i = 0; i < prev.length; i++) {
+                    if (prev[i] !== currentPageRowIds[i]) {
+                        changed = true
+                        break
+                    }
+                }
+            }
+
+            if (changed) {
+                setTbodyDataVersion((v) => v + 1)
+            }
+            prevPageRowIdsRef.current = currentPageRowIds
+        }, [currentPageRowIds])
 
         const updateSelectAllState = (
             selectedRowsState: Record<string, boolean>
@@ -1241,7 +1278,8 @@ const DataTable = forwardRef(
             effectiveVisibleColumns.length +
             (enableRowSelection ? 1 : 0) +
             (enableRowExpansion ? 1 : 0) +
-            ((enableInlineEdit || rowActions) &&
+            (showActionsColumn &&
+            (enableInlineEdit || rowActions) &&
             !(mobileConfig.isMobile && mobileConfig.enableColumnOverflow)
                 ? 1
                 : 0) +
@@ -1394,6 +1432,53 @@ const DataTable = forwardRef(
             [ref]
         )
 
+        const pivotTriggerSlot = pivotTableConfig?.triggerSlot || 2
+
+        const pivotTriggerButton = useMemo(() => {
+            if (!enablePivotTable || !pivotTableConfig?.triggerButton) {
+                return null
+            }
+
+            const triggerNode = pivotTableConfig.triggerButton
+            if (!React.isValidElement(triggerNode)) {
+                return triggerNode
+            }
+
+            const existingOnClick = (
+                triggerNode.props as { onClick?: (event: unknown) => void }
+            ).onClick
+
+            return React.cloneElement(
+                triggerNode as React.ReactElement<{
+                    onClick?: (event: unknown) => void
+                }>,
+                {
+                    onClick: (event: unknown) => {
+                        existingOnClick?.(event)
+                        setIsPivotModalOpen(true)
+                    },
+                }
+            )
+        }, [enablePivotTable, pivotTableConfig?.triggerButton])
+
+        const effectiveHeaderSlot1 =
+            pivotTriggerSlot === 1 && pivotTriggerButton
+                ? pivotTriggerButton
+                : headerSlot1
+        const effectiveHeaderSlot2 =
+            pivotTriggerSlot === 2 && pivotTriggerButton
+                ? pivotTriggerButton
+                : headerSlot2
+        const effectiveHeaderSlot3 =
+            pivotTriggerSlot === 3 ? (
+                <>
+                    {headerSlot2}
+                    {pivotTriggerButton}
+                </>
+            ) : (
+                effectiveHeaderSlot2
+            )
+
         return (
             <Block
                 ref={containerRefCallback}
@@ -1474,8 +1559,8 @@ const DataTable = forwardRef(
                             </>
                         ) : null
                     }
-                    headerSlot2={headerSlot1}
-                    headerSlot3={headerSlot2}
+                    headerSlot2={effectiveHeaderSlot1}
+                    headerSlot3={effectiveHeaderSlot3}
                     {...rest}
                 />
 
@@ -1615,6 +1700,9 @@ const DataTable = forwardRef(
                                             selectAll={selectAll}
                                             sortConfig={sortConfig}
                                             enableInlineEdit={enableInlineEdit}
+                                            showActionsColumn={
+                                                showActionsColumn
+                                            }
                                             enableColumnManager={
                                                 effectiveEnableColumnManager
                                             }
@@ -1715,6 +1803,7 @@ const DataTable = forwardRef(
                                         {currentData.length > 0 && (
                                             <TableBodyComponent
                                                 currentData={currentData}
+                                                dataVersion={tbodyDataVersion}
                                                 visibleColumns={
                                                     effectiveVisibleColumns as ColumnDefinition<
                                                         Record<string, unknown>
@@ -1739,6 +1828,9 @@ const DataTable = forwardRef(
                                                 expandedRows={expandedRows}
                                                 enableInlineEdit={
                                                     enableInlineEdit
+                                                }
+                                                showActionsColumn={
+                                                    showActionsColumn
                                                 }
                                                 enableColumnManager={
                                                     effectiveEnableColumnManager
@@ -2004,6 +2096,58 @@ const DataTable = forwardRef(
                         />
                     )}
                 </Block>
+
+                {enablePivotTable && (
+                    <PivotTableModal
+                        isOpen={isPivotModalOpen}
+                        onClose={() => setIsPivotModalOpen(false)}
+                        data={processedData as Record<string, unknown>[]}
+                        columns={
+                            visibleColumns as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        title={pivotTableConfig?.title}
+                        description={pivotTableConfig?.description}
+                        showExport={pivotTableConfig?.showExport}
+                        previewColumns={pivotTableConfig?.previewColumns}
+                        previewRows={
+                            pivotTableConfig?.previewRows as
+                                | ({
+                                      __pivotId: string
+                                  } & Record<string, unknown>)[]
+                                | undefined
+                        }
+                        availableAggregations={
+                            pivotTableConfig?.availableAggregations
+                        }
+                        initialConfig={
+                            pivotTableConfig?.initialConfig as
+                                | Partial<
+                                      PivotTableConfig<Record<string, unknown>>
+                                  >
+                                | undefined
+                        }
+                        onConfigChange={
+                            pivotTableConfig?.onConfigChange as
+                                | ((
+                                      config: PivotTableConfig<
+                                          Record<string, unknown>
+                                      >
+                                  ) => void)
+                                | undefined
+                        }
+                        onExport={
+                            pivotTableConfig?.onExport as
+                                | ((
+                                      config: PivotTableConfig<
+                                          Record<string, unknown>
+                                      >
+                                  ) => void)
+                                | undefined
+                        }
+                    />
+                )}
 
                 {mobileConfig.enableColumnOverflow && selectedRowForDrawer && (
                     <MobileColumnDrawer

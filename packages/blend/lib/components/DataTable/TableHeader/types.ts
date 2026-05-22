@@ -13,6 +13,7 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     selectAll: boolean | 'indeterminate'
     sortConfig?: SortConfig | null
     enableInlineEdit?: boolean
+    showActionsColumn?: boolean
     enableColumnManager?: boolean
     enableColumnReordering?: boolean
     showSkeleton?: boolean

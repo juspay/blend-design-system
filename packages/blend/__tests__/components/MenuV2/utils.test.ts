@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
-    filterMenuGroups,
-    filterMenuItem,
+    filterMenuV2Groups,
+    filterMenuV2Item,
     getItemSlots,
     flattenMenuV2Groups,
 } from '../../../lib/components/MenuV2/menuV2.utils'
@@ -99,20 +99,20 @@ describe('MenuV2 utils', () => {
         })
     })
 
-    it('filterMenuItem returns item when label matches search', () => {
+    it('filterMenuV2Item returns item when label matches search', () => {
         const item = createItem({ label: { text: 'Profile' } })
-        const result = filterMenuItem(item, 'pro')
+        const result = filterMenuV2Item(item, 'pro')
         expect(result).not.toBeNull()
         expect(result?.label.text).toBe('Profile')
     })
 
-    it('filterMenuItem returns null when no match and no submenu', () => {
+    it('filterMenuV2Item returns null when no match and no submenu', () => {
         const item = createItem({ label: { text: 'Settings' } })
-        const result = filterMenuItem(item, 'xyz')
+        const result = filterMenuV2Item(item, 'xyz')
         expect(result).toBeNull()
     })
 
-    it('filterMenuItem filters nested submenu items and preserves parent when any child matches', () => {
+    it('filterMenuV2Item filters nested submenu items and preserves parent when any child matches', () => {
         const item: MenuV2ItemType = {
             label: { text: 'Parent' },
             subMenu: [
@@ -122,22 +122,22 @@ describe('MenuV2 utils', () => {
             ],
         }
 
-        const result = filterMenuItem(item, 'york')
+        const result = filterMenuV2Item(item, 'york')
         expect(result).not.toBeNull()
         expect(result?.subMenu).toHaveLength(1)
         expect(result?.subMenu?.[0].label.text).toBe('New York')
     })
 
-    it('filterMenuGroups returns original groups when search text is empty', () => {
+    it('filterMenuV2Groups returns original groups when search text is empty', () => {
         const groups: MenuV2GroupType[] = [
             { label: 'Group', items: [createItem({ label: { text: 'A' } })] },
         ]
 
-        const result = filterMenuGroups(groups, '')
+        const result = filterMenuV2Groups(groups, '')
         expect(result).toEqual(groups)
     })
 
-    it('filterMenuGroups filters out groups with no matching items', () => {
+    it('filterMenuV2Groups filters out groups with no matching items', () => {
         const groups: MenuV2GroupType[] = [
             {
                 label: 'First',
@@ -149,7 +149,7 @@ describe('MenuV2 utils', () => {
             },
         ]
 
-        const result = filterMenuGroups(groups, 'beta')
+        const result = filterMenuV2Groups(groups, 'beta')
         expect(result).toHaveLength(1)
         expect(result[0].label).toBe('Second')
         expect(result[0].items[0].label.text).toBe('Beta')

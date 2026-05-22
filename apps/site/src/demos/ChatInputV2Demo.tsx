@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-    AttachedFile,
+    ChatInputV2AttachedFile,
     ChatInputV2,
 } from '../../../../packages/blend/lib/components/InputsV2/ChatInputV2'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
@@ -13,11 +13,13 @@ const ChatInputV2Demo = () => {
     // Playground state
     const [playgroundMessage, setPlaygroundMessage] = useState('')
     const [playgroundDisabled, setPlaygroundDisabled] = useState(false)
-    const [playgroundFiles, setPlaygroundFiles] = useState<AttachedFile[]>([])
+    const [playgroundFiles, setPlaygroundFiles] = useState<
+        ChatInputV2AttachedFile[]
+    >([])
     const [staticExampleMessage, setStaticExampleMessage] = useState('')
 
     // File type utilities
-    const getFileType = (file: File): AttachedFile['type'] => {
+    const getFileType = (file: File): ChatInputV2AttachedFile['type'] => {
         if (file.type.startsWith('image/')) return 'image'
         if (file.type === 'application/pdf') return 'pdf'
         if (file.type === 'text/csv' || file.name.endsWith('.csv')) return 'csv'
@@ -25,7 +27,7 @@ const ChatInputV2Demo = () => {
         return 'other'
     }
 
-    const createSampleFiles = (): AttachedFile[] => [
+    const createSampleFiles = (): ChatInputV2AttachedFile[] => [
         {
             id: 'sample-1',
             name: 'profile-picture.jpg',
@@ -65,7 +67,10 @@ const ChatInputV2Demo = () => {
     ]
 
     // Event handlers
-    const handlePlaygroundSend = (message: string, files: AttachedFile[]) => {
+    const handlePlaygroundSend = (
+        message: string,
+        files: ChatInputV2AttachedFile[]
+    ) => {
         addSnackbar({
             header: 'Message Sent!',
             description: `"${message}" with ${files.length} files`,
@@ -75,12 +80,14 @@ const ChatInputV2Demo = () => {
     }
 
     const handlePlaygroundAttachFiles = (newFiles: File[]) => {
-        const attachedFiles: AttachedFile[] = newFiles.map((file, index) => ({
-            id: `file-${Date.now()}-${index}`,
-            name: file.name,
-            type: getFileType(file),
-            size: file.size,
-        }))
+        const attachedFiles: ChatInputV2AttachedFile[] = newFiles.map(
+            (file, index) => ({
+                id: `file-${Date.now()}-${index}`,
+                name: file.name,
+                type: getFileType(file),
+                size: file.size,
+            })
+        )
         setPlaygroundFiles((prev) => [...prev, ...attachedFiles])
     }
 
@@ -88,7 +95,7 @@ const ChatInputV2Demo = () => {
         setPlaygroundFiles((prev) => prev.filter((f) => f.id !== fileId))
     }
 
-    const handlePlaygroundFileClick = (file: AttachedFile) => {
+    const handlePlaygroundFileClick = (file: ChatInputV2AttachedFile) => {
         addSnackbar({
             header: 'File Clicked',
             description: `${file.name} (${file.type})`,

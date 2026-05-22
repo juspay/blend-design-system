@@ -24,6 +24,7 @@ export const ROUTES = {
     blog: '/blog',
     blogWhyWeNamedItBlend: '/blog/why-we-named-it-blend',
     changelog: '/changelog',
+    showcase: '/showcase',
 } as const
 
 /**
@@ -38,6 +39,7 @@ export const HEADER_NAV_LINKS = [
         active: true,
     },
     { label: 'Blogs', href: ROUTES.blog, external: false, active: true },
+    { label: 'Showcase', href: ROUTES.showcase, external: false },
     { label: 'Storybook', href: EXTERNAL_LINKS.storybook, external: true },
 ] as const
 

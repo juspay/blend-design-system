@@ -4,6 +4,7 @@ import type { SkeletonVariant } from '../../Skeleton/skeleton.tokens'
 
 export type TableBodyProps<T extends Record<string, unknown>> = {
     currentData: T[]
+    dataVersion?: number | string
     visibleColumns: ColumnDefinition<T>[]
     idField: string
     tableTitle?: string
@@ -12,6 +13,7 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     editValues: Record<string, T>
     expandedRows: Record<string, boolean>
     enableInlineEdit?: boolean
+    showActionsColumn?: boolean
     enableColumnManager?: boolean
     enableRowExpansion?: boolean
     enableRowSelection?: boolean

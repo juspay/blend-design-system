@@ -2067,7 +2067,12 @@
             "compositionPattern": "Define columns as an array of column definition objects, each with a header (display label) and field (key in data object) or custom cell renderer. Pass data as an array of plain objects. idField identifies the unique key in each row object.",
             "imports": {
                 "components": ["DataTable"],
-                "enums": ["SortDirection", "FilterType", "ColumnType"],
+                "enums": [
+                    "SortDirection",
+                    "FilterType",
+                    "ColumnType",
+                    "PivotAggregationType"
+                ],
                 "types": ["DataTableProps"]
             },
             "enums": {
@@ -2099,6 +2104,15 @@
                     "DATE_RANGE": "date_range",
                     "SLIDER": "slider",
                     "CUSTOM": "custom"
+                },
+                "PivotAggregationType": {
+                    "SUM": "sum",
+                    "COUNT": "count",
+                    "AVERAGE": "average",
+                    "MEAN": "mean",
+                    "MEDIAN": "median",
+                    "MIN": "min",
+                    "MAX": "max"
                 }
             },
             "props": [
@@ -2771,6 +2785,26 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Numeric value for mobileColumnsToShow"
+                },
+                {
+                    "propName": "enablePivotTable",
+                    "propType": "boolean",
+                    "typeDefinition": "boolean",
+                    "propDescription": "Set to true to enable enablePivotTable",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "Set to true to enable enablePivotTable"
+                },
+                {
+                    "propName": "pivotTableConfig",
+                    "propType": "{\n        triggerButton?: ReactNode\n        triggerSlot?: 1 | 2 | 3\n        title?: string\n        description?: string\n        showExport?: boolean\n        initialConfig?: {\n            rows?: (keyof T)[]\n            columns?: (keyof T)[]\n            values?: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }\n        previewColumns?: Array<{\n            key: string\n            label: string\n        }>\n        previewRows?: Array<Record<string, unknown> & { __pivotId: string }>\n        /**\n         * Configure which aggregation operations are available in the Values section.\n         * If not provided, all operations will be shown.\n         * @example ['sum', 'count', 'average'] // Show only sum, count, and average\n         */\n        availableAggregations?: PivotAggregationType[]\n        onConfigChange?: (config: {\n            rows: (keyof T)[]\n            columns: (keyof T)[]\n            values: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }) => void\n        onExport?: (config: {\n            rows: (keyof T)[]\n            columns: (keyof T)[]\n            values: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }) => void\n    }",
+                    "typeDefinition": "{\n        triggerButton?: ReactNode\n        triggerSlot?: 1 | 2 | 3\n        title?: string\n        description?: string\n        showExport?: boolean\n        initialConfig?: {\n            rows?: (keyof T)[]\n            columns?: (keyof T)[]\n            values?: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }\n        previewColumns?: Array<{\n            key: string\n            label: string\n        }>\n        previewRows?: Array<Record<string, unknown> & { __pivotId: string }>\n        /**\n         * Configure which aggregation operations are available in the Values section.\n         * If not provided, all operations will be shown.\n         * @example ['sum', 'count', 'average'] // Show only sum, count, and average\n         */\n        availableAggregations?: PivotAggregationType[]\n        onConfigChange?: (config: {\n            rows: (keyof T)[]\n            columns: (keyof T)[]\n            values: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }) => void\n        onExport?: (config: {\n            rows: (keyof T)[]\n            columns: (keyof T)[]\n            values: Array<{\n                field: keyof T\n                aggregation: PivotAggregationType\n            }>\n        }) => void\n    }",
+                    "propDescription": "React element to render as pivotTableConfig",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "React element to render as pivotTableConfig"
                 }
             ],
             "usageExamples": [

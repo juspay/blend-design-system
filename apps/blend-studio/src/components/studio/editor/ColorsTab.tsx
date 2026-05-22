@@ -15,20 +15,36 @@ import {
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
 import { COLOR_GROUPS, type EditorTabProps, type ColorGroupKey } from './types'
 
+interface ColorsTabProps extends EditorTabProps {
+    activeGroup?: ColorGroupKey
+    onActiveGroupChange?: (group: ColorGroupKey) => void
+}
+
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
 
-export function ColorsTab({ brand, onChange }: EditorTabProps) {
-    const [activeGroup, setActiveGroup] = useState<ColorGroupKey>('primary')
+export function ColorsTab({
+    brand,
+    onChange,
+    activeGroup,
+    onActiveGroupChange,
+}: ColorsTabProps) {
+    const [localActiveGroup, setLocalActiveGroup] =
+        useState<ColorGroupKey>('primary')
+    const selectedGroup = activeGroup ?? localActiveGroup
+
+    const handleGroupChange = (value: string) => {
+        const nextGroup = value as ColorGroupKey
+        setLocalActiveGroup(nextGroup)
+        onActiveGroupChange?.(nextGroup)
+    }
 
     return (
-        <div className="space-y-5">
+        <div className="flex min-h-0 flex-1 flex-col">
             <TabsV2
-                value={activeGroup}
-                onValueChange={(value) =>
-                    setActiveGroup(value as ColorGroupKey)
-                }
+                value={selectedGroup}
+                onValueChange={handleGroupChange}
                 variant={TabsV2Variant.UNDERLINE}
             >
                 <TabsV2List>
@@ -40,11 +56,13 @@ export function ColorsTab({ brand, onChange }: EditorTabProps) {
                 </TabsV2List>
             </TabsV2>
 
-            <ColorGroupEditor
-                group={activeGroup}
-                brand={brand}
-                onChange={onChange}
-            />
+            <div className="flex min-h-0 flex-1 flex-col">
+                <ColorGroupEditor
+                    group={selectedGroup}
+                    brand={brand}
+                    onChange={onChange}
+                />
+            </div>
         </div>
     )
 }
@@ -59,18 +77,20 @@ interface ColorGroupEditorProps extends EditorTabProps {
 
 function ColorGroupEditor({ group, brand, onChange }: ColorGroupEditorProps) {
     return (
-        <ColorPaletteGenerator
-            label={`${group.charAt(0).toUpperCase() + group.slice(1)} Color Scale`}
-            value={(brand.colors?.[group] as Record<string, string>) || {}}
-            onChange={(shades) =>
-                onChange((prev) => ({
-                    ...prev,
-                    colors: {
-                        ...prev.colors,
-                        [group]: shades,
-                    },
-                }))
-            }
-        />
+        <div className="flex min-h-0 flex-1 flex-col">
+            <ColorPaletteGenerator
+                label={`${group.charAt(0).toUpperCase() + group.slice(1)} Color Scale`}
+                value={(brand.colors?.[group] as Record<string, string>) || {}}
+                onChange={(shades) =>
+                    onChange((prev) => ({
+                        ...prev,
+                        colors: {
+                            ...prev.colors,
+                            [group]: shades,
+                        },
+                    }))
+                }
+            />
+        </div>
     )
 }

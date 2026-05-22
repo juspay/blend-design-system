@@ -4,7 +4,10 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { CSSProperties } from 'react'
 import { MenuItem } from './SingleSelectV2MenuItems'
-import type { VirtualListProps, FlattenedItem } from './singleSelectV2.types'
+import type {
+    SingleSelectV2VirtualListProps,
+    FlattenedItem,
+} from './singleSelectV2.types'
 import { getItemOrdinalIndex } from './utils'
 
 const GroupLabel = styled(RadixMenu.Label)`
@@ -34,7 +37,7 @@ const SingleSelectV2VirtualList = ({
     loadingComponent,
     hasMore,
     virtualScrollRef,
-}: VirtualListProps) => {
+}: SingleSelectV2VirtualListProps) => {
     const menuGroupLabel = singleSelectTokens.menu.groupLabel
     const menuItem = singleSelectTokens.menu.item
 

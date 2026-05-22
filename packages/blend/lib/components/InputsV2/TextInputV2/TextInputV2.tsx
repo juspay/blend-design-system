@@ -13,7 +13,7 @@ import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import { AnyRef, InputSizeV2, InputStateV2 } from '../inputV2.types'
 import type { TextInputV2TokensType } from './TextInputV2.tokens'
 import {
-    DropdownPosition,
+    TextInputV2DropdownPosition,
     type TextInputV2Dropdown,
     type TextInputV2Props,
 } from './TextInputV2.types'
@@ -83,14 +83,14 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         const leftEntry = useMemo(
             () =>
                 normalizedDropdowns.find(
-                    (d) => d.position === DropdownPosition.LEFT
+                    (d) => d.position === TextInputV2DropdownPosition.LEFT
                 ),
             [normalizedDropdowns]
         )
         const rightEntry = useMemo(
             () =>
                 normalizedDropdowns.find(
-                    (d) => d.position === DropdownPosition.RIGHT
+                    (d) => d.position === TextInputV2DropdownPosition.RIGHT
                 ),
             [normalizedDropdowns]
         )

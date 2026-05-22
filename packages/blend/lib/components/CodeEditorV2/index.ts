@@ -1,3 +1,5 @@
 export { default as CodeEditorV2 } from './CodeEditorV2'
+export { CodeEditorV2Header } from './CodeEditorV2Header'
 export * from './codeEditorV2.types'
 export * from './codeEditorV2.tokens'
+export * from './utils'

@@ -131,7 +131,7 @@ export const getSubtextId = (
  * Merges custom aria-describedby with subtext ID
  * WCAG 4.1.2: Supports multiple IDs space-separated
  */
-export const mergeAriaDescribedBy = (
+export const mergeCheckboxV2AriaDescribedBy = (
     subtextId: string | undefined,
     customAriaDescribedBy?: string
 ): string | undefined => {

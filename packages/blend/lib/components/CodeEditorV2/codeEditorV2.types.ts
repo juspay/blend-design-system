@@ -11,18 +11,18 @@ export enum MonacoTheme {
     LIGHT = 'light',
     DARK = 'dark',
 }
-export enum DiffLineType {
+export enum CodeEditorV2DiffLineType {
     ADDED = 'added',
     REMOVED = 'removed',
     UNCHANGED = 'unchanged',
 }
 
-export type DiffLine = {
+export type CodeEditorV2DiffLine = {
     content: string
-    type: DiffLineType
+    type: CodeEditorV2DiffLineType
 }
 
-export type SupportedLanguage =
+export type CodeEditorV2SupportedLanguage =
     | 'javascript'
     | 'typescript'
     | 'jsx'
@@ -57,7 +57,7 @@ export type CodeEditorV2Props = {
         rightSlot?: ReactNode
         showCopyButton?: boolean
     }
-    language?: SupportedLanguage
+    language?: CodeEditorV2SupportedLanguage
     placeholder?: string
     readOnly?: boolean
     disabled?: boolean
