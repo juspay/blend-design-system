@@ -12,9 +12,7 @@ import * as orgRepo from '../data-access/organization.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 import { maskEmail, maskDisplayName } from '@/utils/crypto.js'
 import { NotFoundError } from '@/errors/AppError.js'
-import {
-    requireOrganizationRole,
-} from '@/domains/organizations/domain/org-permissions.service.js'
+import { requireOrganizationRole } from '@/domains/organizations/domain/org-permissions.service.js'
 
 const router: IRouter = Router()
 

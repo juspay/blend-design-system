@@ -50,12 +50,13 @@ router.post(
     strictLimiter,
     validate({ body: reviewMergeRequestSchema }),
     asyncHandler(async (req: Request, res: Response) => {
-        const publishRequest = await publishRequestService.approvePublishRequest(
-            req.params.id,
-            req.body.reviewComment,
-            req.user!.id,
-            req.user!.email
-        )
+        const publishRequest =
+            await publishRequestService.approvePublishRequest(
+                req.params.id,
+                req.body.reviewComment,
+                req.user!.id,
+                req.user!.email
+            )
         res.json({ success: true, data: { publishRequest } })
     })
 )

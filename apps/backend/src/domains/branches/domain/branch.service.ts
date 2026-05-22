@@ -407,7 +407,9 @@ export const updateBranch = async (
     const branch = await getBranch(branchId)
 
     const [organization, userRole] = await Promise.all([
-        branch.organizationId ? orgRepo.getOrganizationById(branch.organizationId) : null,
+        branch.organizationId
+            ? orgRepo.getOrganizationById(branch.organizationId)
+            : null,
         getRoleForBranchContext(branch, userId),
     ])
 
@@ -420,7 +422,8 @@ export const updateBranch = async (
 
     if (!canUpdate) {
         const isDefaultBranch = Boolean(
-            organization?.defaultBranchId && organization.defaultBranchId === branch.id
+            organization?.defaultBranchId &&
+            organization.defaultBranchId === branch.id
         )
 
         if (isDefaultBranch) {
@@ -433,7 +436,9 @@ export const updateBranch = async (
                 'Protected branch cannot be directly updated. Submit a merge request instead'
             )
         }
-        throw new ForbiddenError('Only the creator or an admin can update this branch')
+        throw new ForbiddenError(
+            'Only the creator or an admin can update this branch'
+        )
     }
 
     const mergedBrandConfig = dto.brandConfig
@@ -584,14 +589,18 @@ export const publishBranch = async (
     const branch = await getBranch(branchId)
 
     const [organization, userRole] = await Promise.all([
-        branch.organizationId ? orgRepo.getOrganizationById(branch.organizationId) : null,
+        branch.organizationId
+            ? orgRepo.getOrganizationById(branch.organizationId)
+            : null,
         getRoleForBranchContext(branch, userId),
     ])
 
     const isCreator = branch.createdBy === userId
     const isAdmin = userRole === 'admin'
     if (!isCreator && !isAdmin) {
-        throw new ForbiddenError('Only the creator or an admin can publish this branch')
+        throw new ForbiddenError(
+            'Only the creator or an admin can publish this branch'
+        )
     }
 
     if (!dto.version?.match(/^\d+\.\d+\.\d+$/)) {
@@ -706,7 +715,9 @@ export const updateBranchProtection = async (
     const userRole = await getRoleForBranchContext(branch, userId)
     const isAdmin = userRole === 'admin'
     if (!isAdmin) {
-        throw new ForbiddenError('Only admins can update branch protection settings')
+        throw new ForbiddenError(
+            'Only admins can update branch protection settings'
+        )
     }
 
     const updates: Record<string, unknown> = {}
@@ -741,11 +752,12 @@ export const updateBranchProtection = async (
     }
 
     if (branch.organizationId) {
-        const action = dto.isProtected === true
-            ? 'branch_protection_enabled'
-            : dto.isProtected === false
-              ? 'branch_protection_disabled'
-              : 'branch_protection_updated'
+        const action =
+            dto.isProtected === true
+                ? 'branch_protection_enabled'
+                : dto.isProtected === false
+                  ? 'branch_protection_disabled'
+                  : 'branch_protection_updated'
 
         await auditLogRepo.createAuditLog({
             organizationId: branch.organizationId,
@@ -788,7 +800,8 @@ export const getBranchApprovalSettings = async (
         branchId: branch.id,
         context,
         isDefaultBranch: Boolean(
-            organization?.defaultBranchId && organization.defaultBranchId === branch.id
+            organization?.defaultBranchId &&
+            organization.defaultBranchId === branch.id
         ),
         branch: {
             isProtected: branch.isProtected,
@@ -799,7 +812,8 @@ export const getBranchApprovalSettings = async (
         organization: organization
             ? {
                   requireApprovalForMerge: organization.requireApprovalForMerge,
-                  requireApprovalForPublish: organization.requireApprovalForPublish,
+                  requireApprovalForPublish:
+                      organization.requireApprovalForPublish,
                   allowedApprovers: organization.allowedApprovers,
                   minApprovals: organization.minApprovals,
                   allowAdminBypass: organization.allowAdminBypass,

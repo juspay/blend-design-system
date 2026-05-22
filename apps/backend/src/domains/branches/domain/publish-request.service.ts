@@ -1,4 +1,8 @@
-import { ForbiddenError, NotFoundError, ValidationError } from '@/errors/AppError.js'
+import {
+    ForbiddenError,
+    NotFoundError,
+    ValidationError,
+} from '@/errors/AppError.js'
 import * as publishRequestRepo from '@/domains/branches/data-access/publish-request.repository.js'
 import * as branchRepo from '@/domains/branches/data-access/branch.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
@@ -105,7 +109,9 @@ export const approvePublishRequest = async (
 ) => {
     const request = await getPublishRequest(id, userId)
     if (request.status !== 'pending') {
-        throw new ValidationError('Only pending publish requests can be approved')
+        throw new ValidationError(
+            'Only pending publish requests can be approved'
+        )
     }
     if (request.requestedBy === userId) {
         throw new ForbiddenError('You cannot approve your own publish request')
@@ -132,7 +138,9 @@ export const approvePublishRequest = async (
         userId
     )
     if (!canRoleApprove(policy, userRole, userId)) {
-        throw new ForbiddenError('You are not allowed to approve this publish request')
+        throw new ForbiddenError(
+            'You are not allowed to approve this publish request'
+        )
     }
 
     await publishRequestRepo.addPublishRequestApproval(id, {
@@ -271,7 +279,9 @@ export const executePublishRequest = async (
 
     if (request.status !== 'approved') {
         if (!(policy.requireApproval && !approvalsMet && bypassAllowed)) {
-            throw new ValidationError('Only approved publish requests can be executed')
+            throw new ValidationError(
+                'Only approved publish requests can be executed'
+            )
         }
     }
 
@@ -335,10 +345,15 @@ export const cancelPublishRequest = async (
     }
 
     if (request.organizationId) {
-        const membership = await requireOrganizationMember(request.organizationId, userId)
+        const membership = await requireOrganizationMember(
+            request.organizationId,
+            userId
+        )
         const isAdmin = membership.role === 'admin'
         if (request.requestedBy !== userId && !isAdmin) {
-            throw new ForbiddenError('Only the requestor or an admin can cancel')
+            throw new ForbiddenError(
+                'Only the requestor or an admin can cancel'
+            )
         }
     } else if (request.requestedBy !== userId) {
         throw new ForbiddenError('Only the requestor can cancel')

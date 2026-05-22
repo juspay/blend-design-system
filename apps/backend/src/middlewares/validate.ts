@@ -212,7 +212,11 @@ export const updateBranchProtectionSchema = z.object({
     isProtected: z.boolean().optional(),
     requireApproval: z.boolean().nullable().optional(),
     minApprovals: z.number().int().min(1).max(10).nullable().optional(),
-    allowedApproverIds: z.array(z.string().uuid()).max(12).nullable().optional(),
+    allowedApproverIds: z
+        .array(z.string().uuid())
+        .max(12)
+        .nullable()
+        .optional(),
 })
 
 export const publishBranchSchema = z.object({

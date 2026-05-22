@@ -58,7 +58,9 @@ export const resolveMergeApprovalPolicy = (
     const policy: EffectiveApprovalPolicy = {
         requireApproval: initialRequireApproval,
         minApprovals: normalizeMinApprovals(org?.minApprovals),
-        allowedApprovers: normalizeAllowedApprovers(org?.allowedApprovers || 'admins'),
+        allowedApprovers: normalizeAllowedApprovers(
+            org?.allowedApprovers || 'admins'
+        ),
         allowAdminBypass: org ? org.allowAdminBypass : true,
         customApproverIds: [],
     }
@@ -67,10 +69,14 @@ export const resolveMergeApprovalPolicy = (
         policy.requireApproval = branch.protectionRequireApproval
     }
     if (branch.protectionMinApprovals !== null) {
-        policy.minApprovals = normalizeMinApprovals(branch.protectionMinApprovals)
+        policy.minApprovals = normalizeMinApprovals(
+            branch.protectionMinApprovals
+        )
     }
     if (branch.protectionAllowedApprovers) {
-        const customIds = parseCustomApproverIds(branch.protectionAllowedApprovers)
+        const customIds = parseCustomApproverIds(
+            branch.protectionAllowedApprovers
+        )
         if (customIds.length > 0) {
             policy.allowedApprovers = 'custom'
             policy.customApproverIds = customIds
@@ -91,7 +97,9 @@ export const resolvePublishApprovalPolicy = (
     const policy: EffectiveApprovalPolicy = {
         requireApproval: initialRequireApproval,
         minApprovals: normalizeMinApprovals(org?.minApprovals),
-        allowedApprovers: normalizeAllowedApprovers(org?.allowedApprovers || 'admins'),
+        allowedApprovers: normalizeAllowedApprovers(
+            org?.allowedApprovers || 'admins'
+        ),
         allowAdminBypass: org ? org.allowAdminBypass : true,
         customApproverIds: [],
     }
@@ -100,10 +108,14 @@ export const resolvePublishApprovalPolicy = (
         policy.requireApproval = branch.protectionRequireApproval
     }
     if (branch.protectionMinApprovals !== null) {
-        policy.minApprovals = normalizeMinApprovals(branch.protectionMinApprovals)
+        policy.minApprovals = normalizeMinApprovals(
+            branch.protectionMinApprovals
+        )
     }
     if (branch.protectionAllowedApprovers) {
-        const customIds = parseCustomApproverIds(branch.protectionAllowedApprovers)
+        const customIds = parseCustomApproverIds(
+            branch.protectionAllowedApprovers
+        )
         if (customIds.length > 0) {
             policy.allowedApprovers = 'custom'
             policy.customApproverIds = customIds
@@ -140,7 +152,9 @@ export const canDirectlyUpdateBranch = (
     userId: string,
     userRole: OrgRole
 ): boolean => {
-    const isDefaultBranch = Boolean(org?.defaultBranchId && org.defaultBranchId === branch.id)
+    const isDefaultBranch = Boolean(
+        org?.defaultBranchId && org.defaultBranchId === branch.id
+    )
     const bypassEnabled = org?.allowAdminBypass ?? true
 
     if (isDefaultBranch) {

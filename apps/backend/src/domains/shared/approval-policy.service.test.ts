@@ -30,7 +30,10 @@ const baseBranchSettings: BranchProtectionSettings = {
 
 describe('approval policy resolution', () => {
     it('uses org merge settings by default', () => {
-        const policy = resolveMergeApprovalPolicy(baseBranchSettings, baseOrgSettings)
+        const policy = resolveMergeApprovalPolicy(
+            baseBranchSettings,
+            baseOrgSettings
+        )
         expect(policy.requireApproval).toBe(true)
         expect(policy.minApprovals).toBe(2)
         expect(policy.allowedApprovers).toBe('admins')
@@ -73,7 +76,10 @@ describe('approval policy resolution', () => {
 
 describe('approval decision helpers', () => {
     it('evaluates approver roles based on policy', () => {
-        const adminsOnly = resolveMergeApprovalPolicy(baseBranchSettings, baseOrgSettings)
+        const adminsOnly = resolveMergeApprovalPolicy(
+            baseBranchSettings,
+            baseOrgSettings
+        )
         expect(canRoleApprove(adminsOnly, 'admin', 'u1')).toBe(true)
         expect(canRoleApprove(adminsOnly, 'editor', 'u1')).toBe(false)
 
@@ -111,7 +117,12 @@ describe('direct branch update policy', () => {
     it('requires admin and bypass for default branch direct update', () => {
         const branch = { ...baseBranchSettings, id: 'main-branch' }
         expect(
-            canDirectlyUpdateBranch(branch, baseOrgSettings, 'creator-1', 'admin')
+            canDirectlyUpdateBranch(
+                branch,
+                baseOrgSettings,
+                'creator-1',
+                'admin'
+            )
         ).toBe(false)
 
         expect(
@@ -142,7 +153,12 @@ describe('direct branch update policy', () => {
         }
 
         expect(
-            canDirectlyUpdateBranch(protectedBranch, baseOrgSettings, 'creator-1', 'admin')
+            canDirectlyUpdateBranch(
+                protectedBranch,
+                baseOrgSettings,
+                'creator-1',
+                'admin'
+            )
         ).toBe(false)
     })
 })

@@ -201,7 +201,10 @@ export const createMR = async (
     const target = await branchRepo.getBranchById(targetBranchId)
     if (!target) throw new NotFoundError('Target branch')
 
-    const inferredOrgId = normalizeOrgId(source.organizationId, target.organizationId)
+    const inferredOrgId = normalizeOrgId(
+        source.organizationId,
+        target.organizationId
+    )
     const orgId = organizationId || inferredOrgId || null
 
     if (orgId) {
@@ -212,7 +215,10 @@ export const createMR = async (
             'Only admins and editors can create merge requests'
         )
 
-        if (source.organizationId !== orgId || target.organizationId !== orgId) {
+        if (
+            source.organizationId !== orgId ||
+            target.organizationId !== orgId
+        ) {
             throw new ValidationError(
                 'Source and target branches must belong to organization'
             )
@@ -236,7 +242,9 @@ export const createMR = async (
     }
 
     if (source.id === target.id) {
-        throw new ValidationError('Source and target branches must be different')
+        throw new ValidationError(
+            'Source and target branches must be different'
+        )
     }
 
     const diff = diffBrandConfigs(target.brandConfig, source.brandConfig)
@@ -335,7 +343,11 @@ export const listMRs = async (
 ) => {
     if (options.organizationId && requesterUserId) {
         await requireOrganizationMember(options.organizationId, requesterUserId)
-    } else if (!options.organizationId && requesterUserId && !options.requestedBy) {
+    } else if (
+        !options.organizationId &&
+        requesterUserId &&
+        !options.requestedBy
+    ) {
         options.requestedBy = requesterUserId
     }
     return mrRepo.listMergeRequests(options)
@@ -375,7 +387,9 @@ export const approveMR = async (
     )
 
     if (!canRoleApprove(policy, userRole, userId)) {
-        throw new ForbiddenError('You are not allowed to approve this merge request')
+        throw new ForbiddenError(
+            'You are not allowed to approve this merge request'
+        )
     }
 
     await mrRepo.addMergeRequestApproval(id, {
@@ -387,7 +401,10 @@ export const approveMR = async (
     const latest = await mrRepo.getMergeRequest(id)
     if (!latest) throw new NotFoundError('Merge request')
 
-    const approved = hasReachedApprovalThreshold(latest.approvals.length, policy)
+    const approved = hasReachedApprovalThreshold(
+        latest.approvals.length,
+        policy
+    )
     const updated = await mrRepo.updateMergeRequestStatus(id, {
         status: approved ? 'approved' : 'pending',
         reviewedBy: approved ? userId : undefined,
@@ -492,7 +509,10 @@ export const mergeMR = async (
     }
 
     const bypassAllowed = canBypassApproval(policy, userRole)
-    const approvalsMet = hasReachedApprovalThreshold(mr.approvals.length, policy)
+    const approvalsMet = hasReachedApprovalThreshold(
+        mr.approvals.length,
+        policy
+    )
 
     if (policy.requireApproval && !approvalsMet && !bypassAllowed) {
         throw new ValidationError(
@@ -559,14 +579,21 @@ export const cancelMR = async (
 ) => {
     const mr = await getMR(id, userId)
     if (mr.status !== 'pending') {
-        throw new ValidationError('Only pending merge requests can be cancelled')
+        throw new ValidationError(
+            'Only pending merge requests can be cancelled'
+        )
     }
 
     if (mr.organizationId) {
-        const membership = await requireOrganizationMember(mr.organizationId, userId)
+        const membership = await requireOrganizationMember(
+            mr.organizationId,
+            userId
+        )
         const isAdmin = membership.role === 'admin'
         if (mr.requestedBy !== userId && !isAdmin) {
-            throw new ForbiddenError('Only the requestor or an admin can cancel')
+            throw new ForbiddenError(
+                'Only the requestor or an admin can cancel'
+            )
         }
     } else if (mr.requestedBy !== userId) {
         throw new ForbiddenError('Only the requestor can cancel')
