@@ -87,7 +87,7 @@ export type VirtualItemShape = {
     start: number
 }
 
-export type VirtualListProps = MenuListSharedProps & {
+export type SingleSelectV2VirtualListProps = MenuListSharedProps & {
     flattenedItems: FlattenedItem[]
     virtualViewportHeight: number
     virtualItems: VirtualItemShape[]
@@ -109,7 +109,7 @@ export type MenuSearchProps = {
     containerRef?: RefObject<HTMLDivElement | null>
 }
 
-export type MenuRootProps = SelectV2MenuRootPropsBase
+export type SingleSelectV2MenuRootProps = SelectV2MenuRootPropsBase
 
 export type SingleSelectV2MenuProps = {
     items: SingleSelectV2GroupType[]

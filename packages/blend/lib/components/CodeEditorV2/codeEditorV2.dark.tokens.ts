@@ -1,6 +1,6 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { ResponsiveCodeEditorV2Tokens } from './codeEditorV2.tokens'
-import { DiffLineType, MonacoTheme } from './codeEditorV2.types'
+import { CodeEditorV2DiffLineType, MonacoTheme } from './codeEditorV2.types'
 
 export const darkCodeEditorV2Tokens = (
     foundationToken: FoundationTokenType
@@ -41,20 +41,24 @@ export const darkCodeEditorV2Tokens = (
                     width: '40px',
                     color: foundationToken.colors.gray[0],
                     backgroundColor: {
-                        [DiffLineType.UNCHANGED]:
+                        [CodeEditorV2DiffLineType.UNCHANGED]:
                             foundationToken.colors.gray[200],
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[500],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[500],
+                        [CodeEditorV2DiffLineType.REMOVED]:
+                            foundationToken.colors.red[500],
+                        [CodeEditorV2DiffLineType.ADDED]:
+                            foundationToken.colors.green[500],
                     },
                     borderLeft: {
-                        [DiffLineType.UNCHANGED]: 'none',
-                        [DiffLineType.REMOVED]: `2px solid ${foundationToken.colors.red[600]}`,
-                        [DiffLineType.ADDED]: `2px solid ${foundationToken.colors.green[600]}`,
+                        [CodeEditorV2DiffLineType.UNCHANGED]: 'none',
+                        [CodeEditorV2DiffLineType.REMOVED]: `2px solid ${foundationToken.colors.red[600]}`,
+                        [CodeEditorV2DiffLineType.ADDED]: `2px solid ${foundationToken.colors.green[600]}`,
                     },
                     borderColor: {
-                        [DiffLineType.UNCHANGED]: 'transparent',
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[600],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[600],
+                        [CodeEditorV2DiffLineType.UNCHANGED]: 'transparent',
+                        [CodeEditorV2DiffLineType.REMOVED]:
+                            foundationToken.colors.red[600],
+                        [CodeEditorV2DiffLineType.ADDED]:
+                            foundationToken.colors.green[600],
                     },
                 },
                 code: {
@@ -68,9 +72,11 @@ export const darkCodeEditorV2Tokens = (
                 },
                 highlightedLine: {
                     backgroundColor: {
-                        [DiffLineType.UNCHANGED]: 'transparent',
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[700],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[700],
+                        [CodeEditorV2DiffLineType.UNCHANGED]: 'transparent',
+                        [CodeEditorV2DiffLineType.REMOVED]:
+                            foundationToken.colors.red[700],
+                        [CodeEditorV2DiffLineType.ADDED]:
+                            foundationToken.colors.green[700],
                     },
                 },
                 syntax: {
@@ -120,20 +126,24 @@ export const darkCodeEditorV2Tokens = (
                     width: '44px',
                     color: foundationToken.colors.gray[0],
                     backgroundColor: {
-                        [DiffLineType.UNCHANGED]:
+                        [CodeEditorV2DiffLineType.UNCHANGED]:
                             foundationToken.colors.gray[200],
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[500],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[500],
+                        [CodeEditorV2DiffLineType.REMOVED]:
+                            foundationToken.colors.red[500],
+                        [CodeEditorV2DiffLineType.ADDED]:
+                            foundationToken.colors.green[500],
                     },
                     borderLeft: {
-                        [DiffLineType.UNCHANGED]: 'none',
-                        [DiffLineType.REMOVED]: `2px solid ${foundationToken.colors.red[600]}`,
-                        [DiffLineType.ADDED]: `2px solid ${foundationToken.colors.green[600]}`,
+                        [CodeEditorV2DiffLineType.UNCHANGED]: 'none',
+                        [CodeEditorV2DiffLineType.REMOVED]: `2px solid ${foundationToken.colors.red[600]}`,
+                        [CodeEditorV2DiffLineType.ADDED]: `2px solid ${foundationToken.colors.green[600]}`,
                     },
                     borderColor: {
-                        [DiffLineType.UNCHANGED]: 'transparent',
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[600],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[600],
+                        [CodeEditorV2DiffLineType.UNCHANGED]: 'transparent',
+                        [CodeEditorV2DiffLineType.REMOVED]:
+                            foundationToken.colors.red[600],
+                        [CodeEditorV2DiffLineType.ADDED]:
+                            foundationToken.colors.green[600],
                     },
                 },
                 code: {
@@ -147,9 +157,11 @@ export const darkCodeEditorV2Tokens = (
                 },
                 highlightedLine: {
                     backgroundColor: {
-                        [DiffLineType.UNCHANGED]: 'transparent',
-                        [DiffLineType.REMOVED]: foundationToken.colors.red[700],
-                        [DiffLineType.ADDED]: foundationToken.colors.green[700],
+                        [CodeEditorV2DiffLineType.UNCHANGED]: 'transparent',
+                        [CodeEditorV2DiffLineType.REMOVED]:
+                            foundationToken.colors.red[700],
+                        [CodeEditorV2DiffLineType.ADDED]:
+                            foundationToken.colors.green[700],
                     },
                 },
                 syntax: {

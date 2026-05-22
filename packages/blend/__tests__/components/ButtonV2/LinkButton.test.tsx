@@ -4,9 +4,9 @@ import { render, screen, fireEvent } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { LinkButton } from '../../../lib/components/ButtonV2'
 import {
-    ButtonType,
-    ButtonSize,
-    ButtonSubType,
+    ButtonV2Type,
+    ButtonV2Size,
+    ButtonV2SubType,
 } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -94,10 +94,10 @@ describe('LinkButton', () => {
 
     describe('Button Types', () => {
         it.each([
-            [ButtonType.PRIMARY, 'primary'],
-            [ButtonType.SECONDARY, 'secondary'],
-            [ButtonType.DANGER, 'danger'],
-            [ButtonType.SUCCESS, 'success'],
+            [ButtonV2Type.PRIMARY, 'primary'],
+            [ButtonV2Type.SECONDARY, 'secondary'],
+            [ButtonV2Type.DANGER, 'danger'],
+            [ButtonV2Type.SUCCESS, 'success'],
         ])('renders %s button type', async (buttonType) => {
             const { container } = render(
                 <LinkButton
@@ -116,9 +116,9 @@ describe('LinkButton', () => {
 
     describe('Button Sizes', () => {
         it.each([
-            [ButtonSize.SMALL, 'small'],
-            [ButtonSize.MEDIUM, 'medium'],
-            [ButtonSize.LARGE, 'large'],
+            [ButtonV2Size.SMALL, 'small'],
+            [ButtonV2Size.MEDIUM, 'medium'],
+            [ButtonV2Size.LARGE, 'large'],
         ])('renders %s size', async (size) => {
             const { container } = render(
                 <LinkButton href="/" text={`Size ${size}`} size={size} />
@@ -135,7 +135,7 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/"
                     text="Default"
-                    subType={ButtonSubType.DEFAULT}
+                    subType={ButtonV2SubType.DEFAULT}
                 />
             )
             const link = screen.getByRole('link', { name: 'Default' })
@@ -148,7 +148,7 @@ describe('LinkButton', () => {
                 <LinkButton
                     href="/"
                     text="Inline"
-                    subType={ButtonSubType.INLINE}
+                    subType={ButtonV2SubType.INLINE}
                 />
             )
             const link = screen.getByRole('link', { name: 'Inline' })
@@ -381,10 +381,10 @@ describe('LinkButton', () => {
 
         it('meets WCAG standards for all button types', async () => {
             const buttonTypes = [
-                ButtonType.PRIMARY,
-                ButtonType.SECONDARY,
-                ButtonType.DANGER,
-                ButtonType.SUCCESS,
+                ButtonV2Type.PRIMARY,
+                ButtonV2Type.SECONDARY,
+                ButtonV2Type.DANGER,
+                ButtonV2Type.SUCCESS,
             ]
 
             for (const buttonType of buttonTypes) {

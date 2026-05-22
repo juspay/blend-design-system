@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest'
 import {
     getSelectAllState,
-    getValueLabelMap,
+    getMultiSelectV2ValueLabelMap,
     getFilteredMenuItem,
-    filterMenuGroups,
+    filterMultiSelectV2MenuGroups,
     getAllAvailableValues,
     handleSelectAll,
     flattenMenuGroups,
@@ -51,7 +51,7 @@ describe('MultiSelectV2 utils', () => {
         })
     })
 
-    describe('getValueLabelMap', () => {
+    describe('getMultiSelectV2ValueLabelMap', () => {
         it('builds map from flat groups', () => {
             const groups: MultiSelectV2GroupType[] = [
                 {
@@ -61,7 +61,7 @@ describe('MultiSelectV2 utils', () => {
                     ],
                 },
             ]
-            expect(getValueLabelMap(groups)).toEqual({
+            expect(getMultiSelectV2ValueLabelMap(groups)).toEqual({
                 apple: 'Apple',
                 banana: 'Banana',
             })
@@ -79,7 +79,7 @@ describe('MultiSelectV2 utils', () => {
                     ],
                 },
             ]
-            expect(getValueLabelMap(groups)).toEqual({
+            expect(getMultiSelectV2ValueLabelMap(groups)).toEqual({
                 parent: 'Parent',
                 child: 'Child',
             })
@@ -119,12 +119,12 @@ describe('MultiSelectV2 utils', () => {
         })
     })
 
-    describe('filterMenuGroups', () => {
+    describe('filterMultiSelectV2MenuGroups', () => {
         it('returns all groups when searchText is empty', () => {
             const groups: MultiSelectV2GroupType[] = [
                 { items: [{ label: 'A', value: 'a' }] },
             ]
-            expect(filterMenuGroups(groups, '')).toEqual(groups)
+            expect(filterMultiSelectV2MenuGroups(groups, '')).toEqual(groups)
         })
 
         it('filters items by label', () => {
@@ -137,7 +137,7 @@ describe('MultiSelectV2 utils', () => {
                     ],
                 },
             ]
-            const result = filterMenuGroups(groups, 'app')
+            const result = filterMultiSelectV2MenuGroups(groups, 'app')
             expect(result).toHaveLength(1)
             expect(result[0].items).toHaveLength(1)
             expect(result[0].items[0].value).toBe('apple')

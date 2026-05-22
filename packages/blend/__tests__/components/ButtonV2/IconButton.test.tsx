@@ -4,8 +4,8 @@ import { render, screen, fireEvent } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { IconButton } from '../../../lib/components/ButtonV2'
 import {
-    ButtonType,
-    ButtonSize,
+    ButtonV2Type,
+    ButtonV2Size,
 } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -42,10 +42,10 @@ describe('IconButton', () => {
 
     describe('Button Types', () => {
         it.each([
-            [ButtonType.PRIMARY, 'primary'],
-            [ButtonType.SECONDARY, 'secondary'],
-            [ButtonType.DANGER, 'danger'],
-            [ButtonType.SUCCESS, 'success'],
+            [ButtonV2Type.PRIMARY, 'primary'],
+            [ButtonV2Type.SECONDARY, 'secondary'],
+            [ButtonV2Type.DANGER, 'danger'],
+            [ButtonV2Type.SUCCESS, 'success'],
         ])('renders %s button type', async (buttonType) => {
             const { container } = render(
                 <IconButton
@@ -64,9 +64,9 @@ describe('IconButton', () => {
 
     describe('Button Sizes', () => {
         it.each([
-            [ButtonSize.SMALL, 'small'],
-            [ButtonSize.MEDIUM, 'medium'],
-            [ButtonSize.LARGE, 'large'],
+            [ButtonV2Size.SMALL, 'small'],
+            [ButtonV2Size.MEDIUM, 'medium'],
+            [ButtonV2Size.LARGE, 'large'],
         ])('renders %s size', async (size) => {
             const { container } = render(
                 <IconButton

@@ -2,8 +2,9 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { XIcon, ListIcon } from '@phosphor-icons/react/dist/ssr'
+import { XIcon, ListIcon, CaretDownIcon } from '@phosphor-icons/react/dist/ssr'
 import { Drawer } from 'vaul'
+import { motion, AnimatePresence } from 'motion/react'
 import { GitHubIcon, FigmaIcon } from '../../icons'
 import {
     EXTERNAL_LINKS,
@@ -13,16 +14,106 @@ import {
 import { cn } from '@/lib/utils/cn'
 import ThemeToggle from '../ui/ThemeToggle/ThemeToggle'
 
+const PRIMARY_NAV_LABELS = ['Docs', 'Storybook']
+const MORE_NAV_LABELS = ['Blogs', 'Changelog', 'Showcase']
+const MOBILE_NAV_LABELS = [
+    'Docs',
+    'Storybook',
+    'Blogs',
+    'Changelog',
+    'Showcase',
+]
+
+const MORE_META: Record<string, { desc: string }> = {
+    Docs: {
+        desc: 'Documentation for Blend and related tools',
+    },
+    Storybook: {
+        desc: 'Component library and examples',
+    },
+    Blogs: {
+        desc: 'Guides & updates from the team',
+    },
+    Changelog: {
+        desc: "What's new with Blend",
+    },
+    Showcase: {
+        desc: 'Built with Blend by the community',
+    },
+}
+
+// Derived once at module level — never changes
+const primaryLinks = HEADER_NAV_LINKS.filter((l) =>
+    PRIMARY_NAV_LABELS.includes(l.label)
+)
+const moreLinks = HEADER_NAV_LINKS.filter((l) =>
+    MORE_NAV_LABELS.includes(l.label)
+)
+const mobileLinks = HEADER_NAV_LINKS.filter((l) =>
+    MOBILE_NAV_LABELS.includes(l.label)
+)
+
+function NavLink({
+    href,
+    external,
+    label,
+    isActive,
+}: {
+    href: string
+    external?: boolean
+    label: string
+    isActive: boolean
+}) {
+    return (
+        <Link
+            href={href}
+            target={external ? '_blank' : undefined}
+            rel={external ? 'noopener noreferrer' : undefined}
+            className={cn(
+                'text-sm transition-colors p-1',
+                isActive
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+            )}
+        >
+            {label}
+        </Link>
+    )
+}
+
+function IconBar() {
+    return (
+        <div className="flex items-center border border-border px-1.5 py-0.5">
+            <Link
+                href={EXTERNAL_LINKS.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                aria-label="GitHub"
+            >
+                <GitHubIcon />
+            </Link>
+            <div className="w-px h-4 bg-border mx-2" />
+            <Link
+                href={EXTERNAL_LINKS.figma}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                aria-label="Figma"
+            >
+                <FigmaIcon />
+            </Link>
+        </div>
+    )
+}
+
 export default function Navbar() {
     const pathname = usePathname()
-    const [isOpen, setIsOpen] = useState(false)
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+    const [moreOpen, setMoreOpen] = useState(false)
 
-    const navLinks = HEADER_NAV_LINKS.filter(
-        (link) =>
-            link.label === 'Docs' ||
-            link.label === 'Blogs' ||
-            link.label === 'Changelog' ||
-            link.label === 'Storybook'
+    const isMoreActive = moreLinks.some(
+        (l) => pathname === l.href || pathname.startsWith(l.href + '/')
     )
 
     return (
@@ -36,91 +127,177 @@ export default function Navbar() {
                     Blend
                 </Link>
 
-                {/* Desktop Navigation */}
+                {/* Desktop */}
                 <div className="hidden md:flex items-center gap-4">
                     <nav className="flex items-center gap-3">
-                        {HEADER_NAV_LINKS.map((link) => {
-                            const isActive =
-                                pathname === link.href ||
-                                pathname.startsWith(link.href + '/')
+                        {primaryLinks.map((link) => (
+                            <NavLink
+                                key={link.href}
+                                {...link}
+                                isActive={
+                                    pathname === link.href ||
+                                    pathname.startsWith(link.href + '/')
+                                }
+                            />
+                        ))}
 
-                            return (
-                                <Link
-                                    key={link.href}
-                                    href={link.href}
-                                    target={
-                                        link.external ? '_blank' : undefined
-                                    }
-                                    rel={
-                                        link.external
-                                            ? 'noopener noreferrer'
-                                            : undefined
-                                    }
-                                    className={cn(
-                                        'text-sm transition-colors p-1',
-                                        isActive
-                                            ? 'text-primary'
-                                            : 'text-muted-foreground hover:text-foreground'
-                                    )}
+                        {/* More dropdown */}
+                        <div
+                            className="relative group"
+                            onMouseEnter={() => setMoreOpen(true)}
+                            onMouseLeave={() => setMoreOpen(false)}
+                        >
+                            {/* Invisible bridge fills the mt gap so hover doesn't break */}
+                            <div className="absolute top-full left-0 right-0 h-3.5" />
+
+                            <button
+                                className={cn(
+                                    'flex items-center gap-1 text-sm transition-colors p-1 select-none cursor-default',
+                                    isMoreActive || moreOpen
+                                        ? 'text-primary'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                )}
+                                aria-expanded={moreOpen}
+                                aria-haspopup="true"
+                                onFocus={() => setMoreOpen(true)}
+                                onBlur={() => setMoreOpen(false)}
+                            >
+                                More
+                                <motion.span
+                                    animate={{ rotate: moreOpen ? 180 : 0 }}
+                                    transition={{
+                                        duration: 0.22,
+                                        ease: [0.4, 0, 0.2, 1],
+                                    }}
+                                    className="flex items-center"
                                 >
-                                    {link.label}
-                                </Link>
-                            )
-                        })}
+                                    <CaretDownIcon size={12} weight="bold" />
+                                </motion.span>
+                            </button>
+
+                            <AnimatePresence>
+                                {moreOpen && (
+                                    <motion.div
+                                        key="more-dropdown"
+                                        initial={{
+                                            opacity: 0,
+                                            y: -10,
+                                            scale: 0.95,
+                                            filter: 'blur(30px)',
+                                        }}
+                                        animate={{
+                                            opacity: 1,
+                                            y: 0,
+                                            scale: 1,
+                                            filter: 'blur(0px)',
+                                        }}
+                                        exit={{
+                                            opacity: 0,
+                                            y: -6,
+                                            scale: 0.97,
+                                            filter: 'blur(50px)',
+                                        }}
+                                        transition={{
+                                            duration: 0.4,
+                                            ease: [0.16, 1, 0.3, 1],
+                                        }}
+                                        className="absolute top-full left-1/2 -translate-x-1/2 mt-3.5 w-64 origin-top"
+                                    >
+                                        <div className="relative bg-background border border-border shadow-xl shadow-black/5 overflow-hidden mt-0.5">
+                                            {moreLinks.map((link, i) => {
+                                                const isActive =
+                                                    pathname === link.href ||
+                                                    pathname.startsWith(
+                                                        link.href + '/'
+                                                    )
+                                                const meta =
+                                                    MORE_META[link.label]
+                                                return (
+                                                    <motion.div
+                                                        key={link.href}
+                                                        initial={{
+                                                            opacity: 0,
+                                                            y: 5,
+                                                        }}
+                                                        animate={{
+                                                            opacity: 1,
+                                                            y: 0,
+                                                        }}
+                                                        transition={{
+                                                            delay: i * 0.045,
+                                                            duration: 0.18,
+                                                            ease: [
+                                                                0.16, 1, 0.3, 1,
+                                                            ],
+                                                        }}
+                                                        className="border-b border-border/60 last:border-b-0"
+                                                    >
+                                                        <Link
+                                                            href={link.href}
+                                                            target={
+                                                                link.external
+                                                                    ? '_blank'
+                                                                    : undefined
+                                                            }
+                                                            rel={
+                                                                link.external
+                                                                    ? 'noopener noreferrer'
+                                                                    : undefined
+                                                            }
+                                                            onClick={() =>
+                                                                setMoreOpen(
+                                                                    false
+                                                                )
+                                                            }
+                                                            className={cn(
+                                                                'group flex items-center gap-3 px-3.5 py-3 transition-all duration-150',
+                                                                isActive
+                                                                    ? 'bg-primary/5 text-primary'
+                                                                    : 'text-foreground hover:bg-primary/3'
+                                                            )}
+                                                        >
+                                                            <span className="flex flex-col gap-1.5 min-w-0">
+                                                                <span className="text-sm font-medium leading-none tracking-wide text-foreground/90">
+                                                                    {link.label}
+                                                                </span>
+                                                                {meta?.desc && (
+                                                                    <span
+                                                                        className={cn(
+                                                                            'text-xs tracking-wide leading-none',
+                                                                            isActive
+                                                                                ? 'text-primary/60'
+                                                                                : 'text-muted-foreground'
+                                                                        )}
+                                                                    >
+                                                                        {
+                                                                            meta.desc
+                                                                        }
+                                                                    </span>
+                                                                )}
+                                                            </span>
+                                                        </Link>
+                                                    </motion.div>
+                                                )
+                                            })}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </nav>
 
-                    <div className="flex items-center border border-border px-1.5 py-0.5">
-                        <Link
-                            href={EXTERNAL_LINKS.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                            aria-label="GitHub"
-                        >
-                            <GitHubIcon />
-                        </Link>
-                        <div className="w-px h-4 bg-border mx-2" />
-                        <Link
-                            href={EXTERNAL_LINKS.figma}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                            aria-label="Figma"
-                        >
-                            <FigmaIcon />
-                        </Link>
-                    </div>
-
+                    <IconBar />
                     <ThemeToggle />
                 </div>
 
-                {/* Mobile Navigation */}
+                {/* Mobile */}
                 <div className="flex md:hidden items-center gap-2">
-                    <div className="flex items-center border border-border px-1.5 py-0.5">
-                        <Link
-                            href={EXTERNAL_LINKS.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                            aria-label="GitHub"
-                        >
-                            <GitHubIcon />
-                        </Link>
-                        <div className="w-px h-4 bg-border mx-2" />
-                        <Link
-                            href={EXTERNAL_LINKS.figma}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                            aria-label="Figma"
-                        >
-                            <FigmaIcon />
-                        </Link>
-                    </div>
+                    <IconBar />
                     <ThemeToggle />
+
                     <Drawer.Root
-                        open={isOpen}
-                        onOpenChange={setIsOpen}
+                        open={isDrawerOpen}
+                        onOpenChange={setIsDrawerOpen}
                         direction="right"
                     >
                         <Drawer.Trigger asChild>
@@ -149,13 +326,13 @@ export default function Navbar() {
                                         </Drawer.Close>
                                     </div>
                                     <nav className="flex flex-col p-4 gap-1">
-                                        {navLinks.map((link) => {
+                                        {mobileLinks.map((link) => {
                                             const isActive =
                                                 pathname === link.href ||
                                                 pathname.startsWith(
                                                     link.href + '/'
                                                 )
-
+                                            const meta = MORE_META[link.label]
                                             return (
                                                 <Link
                                                     key={link.href}
@@ -171,16 +348,25 @@ export default function Navbar() {
                                                             : undefined
                                                     }
                                                     onClick={() =>
-                                                        setIsOpen(false)
+                                                        setIsDrawerOpen(false)
                                                     }
                                                     className={cn(
-                                                        'text-sm transition-colors p-3 rounded-md',
+                                                        'flex items-center gap-3 text-sm transition-colors p-3 rounded-md',
                                                         isActive
                                                             ? 'text-primary bg-primary/5'
                                                             : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                                                     )}
                                                 >
-                                                    {link.label}
+                                                    <span className="flex flex-col gap-0.5">
+                                                        <span className="font-medium text-foreground">
+                                                            {link.label}
+                                                        </span>
+                                                        {meta?.desc && (
+                                                            <span className="text-xs text-muted-foreground">
+                                                                {meta.desc}
+                                                            </span>
+                                                        )}
+                                                    </span>
                                                 </Link>
                                             )
                                         })}

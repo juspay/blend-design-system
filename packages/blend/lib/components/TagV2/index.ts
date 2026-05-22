@@ -1,2 +1,5 @@
 export { default as TagV2 } from './TagV2'
+export { default as TagSkeleton } from './TagSkeleton'
+export * from './tagV2.tokens'
 export * from './TagV2.types'
+export * from './utils'

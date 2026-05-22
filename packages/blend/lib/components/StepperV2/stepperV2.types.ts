@@ -33,7 +33,7 @@ export type StepperV2Props = {
     stepperType?: StepperV2Type
 } & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'id'>
 
-export type SubStep = {
+export type StepperV2SubStep = {
     id: number
     title: string
     status?: StepperV2StepStatus
@@ -47,7 +47,7 @@ export type StepperV2Step = {
     disabled?: boolean
     description?: string
     icon?: ReactNode
-    substeps?: SubStep[]
+    substeps?: StepperV2SubStep[]
     isExpandable?: boolean
     isExpanded?: boolean
 } & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'id'>

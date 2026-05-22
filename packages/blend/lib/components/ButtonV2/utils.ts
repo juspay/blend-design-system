@@ -10,7 +10,7 @@ import {
 import type { ButtonV2TokensType } from './buttonV2.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 
-export function getBorderRadius(
+export function getButtonV2BorderRadius(
     size: ButtonV2Size,
     buttonType: ButtonV2Type,
     subType: ButtonV2SubType,
@@ -101,7 +101,7 @@ export function getSkeletonBorderRadius(
     buttonGroupPosition: 'center' | 'left' | 'right' | undefined,
     tokens: ButtonV2TokensType
 ): string {
-    return getBorderRadius(
+    return getButtonV2BorderRadius(
         size,
         buttonType,
         subType,

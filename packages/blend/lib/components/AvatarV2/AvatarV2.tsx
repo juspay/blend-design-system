@@ -21,7 +21,7 @@ import {
     getAriaLiveValue,
     getStatusPositionStyles,
     renderFallbackContent,
-    createKeyboardHandler,
+    createAvatarKeyboardHandler,
     isInteractive,
 } from './avatarV2.utils'
 
@@ -209,7 +209,7 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
             onImageLoad?.()
         }
 
-        const keyboardHandler = createKeyboardHandler(rest.onClick)
+        const keyboardHandler = createAvatarKeyboardHandler(rest.onClick)
         const filteredProps = filterBlockedProps(rest)
 
         const renderAvatarContent = () => {

@@ -10,7 +10,7 @@ import {
     MenuV2Dimensions,
 } from './menuV2.types'
 import type { MenuV2TokensType } from './menuV2.tokens'
-import { filterMenuGroups } from './menuV2.utils'
+import { filterMenuV2Groups } from './menuV2.utils'
 import MenuV2Content from './MenuV2Content'
 import { CSSObject } from 'styled-components'
 
@@ -61,7 +61,7 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
         )
 
         const filteredItems = useMemo(
-            () => filterMenuGroups(items, searchText),
+            () => filterMenuV2Groups(items, searchText),
             [items, searchText]
         )
 

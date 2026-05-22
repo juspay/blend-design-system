@@ -6,7 +6,7 @@ import { TooltipSide } from '../Tooltip/types'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import { checkIfTruncated } from '../Select/SelectItem/utils'
 import {
-    type TextOverflowMode,
+    type KeyValuePairV2TextOverflowMode,
     getTextStyles,
     getPrimitiveTextStyles,
 } from './responsiveTextStyles'
@@ -17,7 +17,7 @@ export type ResponsiveTextProps = {
     color: CSSObject['color']
     className?: string
     fontWeight?: CSSObject['fontWeight']
-    textOverflow?: TextOverflowMode
+    textOverflow?: KeyValuePairV2TextOverflowMode
     maxLines?: number
     showTooltipOnTruncate?: boolean
     as?: React.ElementType

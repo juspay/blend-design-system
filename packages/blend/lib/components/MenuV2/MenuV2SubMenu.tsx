@@ -12,7 +12,7 @@ import {
     getMenuItemBackgroundColor,
     getMenuItemOptionColor,
     getMenuItemDescriptionColor,
-    filterMenuItem,
+    filterMenuV2Item,
     getItemSlots,
 } from './menuV2.utils'
 import { menuV2SubmenuContentAnimations } from './menuV2.animations'
@@ -65,7 +65,7 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
         const lower = searchText.toLowerCase()
 
         return item.subMenu.reduce<MenuV2ItemType[]>((acc, sub) => {
-            const result = filterMenuItem(sub, lower)
+            const result = filterMenuV2Item(sub, lower)
             if (result) acc.push(result)
             return acc
         }, [])

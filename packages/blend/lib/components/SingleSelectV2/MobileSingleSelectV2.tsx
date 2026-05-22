@@ -24,7 +24,7 @@ import SingleSelectV2Trigger from './SingleSelectV2Trigger'
 import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
-import { setupAccessibility, getValueLabelMap } from './utils'
+import { setupAccessibility, getSingleSelectV2ValueLabelMap } from './utils'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
@@ -150,7 +150,7 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
     }
     const [panelOpen, setPanelOpen] = useState(false)
     const [searchText, setSearchText] = useState('')
-    const valueLabelMap = getValueLabelMap(items)
+    const valueLabelMap = getSingleSelectV2ValueLabelMap(items)
 
     const hasMatch = React.useMemo(
         () => checkExactMatch(searchText, items),
