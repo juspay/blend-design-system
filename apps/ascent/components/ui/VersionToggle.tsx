@@ -33,15 +33,21 @@ export default function VersionToggle({ className }: VersionToggleProps) {
     const peerMap = useVersionPeerMap()
     const layoutId = useId()
     const [mounted, setMounted] = useState(false)
+    const [isNavigating, setIsNavigating] = useState(false)
 
     useEffect(() => {
         setMounted(true)
     }, [])
 
+    useEffect(() => {
+        setIsNavigating(false)
+    }, [pathname])
+
     const handleVersionChange = useCallback(
         (newVersion: Version) => {
-            if (newVersion === version) return
+            if (isNavigating || newVersion === version) return
             setVersion(newVersion)
+
             const slugMatch = pathname.match(/^\/docs\/components\/([^/]+)/)
             if (!slugMatch) return
 
@@ -49,9 +55,10 @@ export default function VersionToggle({ className }: VersionToggleProps) {
             const targetSlug = peerMap.get(currentSlug)
             if (!targetSlug) return
 
+            setIsNavigating(true)
             router.push(pathname.replace(currentSlug, targetSlug))
         },
-        [pathname, peerMap, setVersion, router, version]
+        [pathname, peerMap, setVersion, router, version, isNavigating]
     )
 
     if (!pathname?.startsWith('/docs')) return null
@@ -91,6 +98,7 @@ export default function VersionToggle({ className }: VersionToggleProps) {
                 <button
                     key={v}
                     type="button"
+                    disabled={isNavigating}
                     onClick={() => handleVersionChange(v)}
                     aria-pressed={version === v}
                     aria-label={`Switch to version ${v}`}

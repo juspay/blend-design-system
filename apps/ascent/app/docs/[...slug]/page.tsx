@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import { useMDXComponents } from '@/mdx-components'
+import { cache } from 'react'
 import React from 'react'
 import { PageMetadata } from '../utils/getFileContent'
 import { extractHeadings } from '../utils/toc'
@@ -10,8 +11,41 @@ import { Metadata } from 'next'
 import TableOfContents from '@/components/Navigation/TableOfContents'
 import { DocsPage } from '@/components/docs'
 import { MobileSidebarTrigger } from './PageClient'
+import { scanDirectory, buildSidebarItemsWithCategories } from '../utils'
 
-//Static Params
+const sidebarItems = buildSidebarItemsWithCategories(
+    scanDirectory(path.join(process.cwd(), 'app', 'docs', 'content'))
+)
+
+const getCompiledMDX = cache(async (filePath: string) => {
+    const fileContent = fs.readFileSync(filePath, 'utf8')
+    const { content, frontmatter } = await compileMDX({
+        source: fileContent,
+        options: {
+            parseFrontmatter: true,
+            mdxOptions: { remarkPlugins: [], rehypePlugins: [] },
+        },
+        components: useMDXComponents(),
+    })
+    return { content, frontmatter, fileContent }
+})
+
+function resolveFilePath(slugArray: string[]): string | null {
+    const basePath = path.join(process.cwd(), 'app', 'docs', 'content')
+
+    const directPath =
+        path.join(
+            basePath,
+            Array.isArray(slugArray) ? slugArray.join('/') : slugArray
+        ) + '.mdx'
+
+    if (fs.existsSync(directPath)) return directPath
+
+    const indexPath = path.join(basePath, ...slugArray, 'page.mdx')
+    if (fs.existsSync(indexPath)) return indexPath
+
+    return null
+}
 
 export async function generateStaticParams() {
     const contentDir = path.join(process.cwd(), 'app', 'docs', 'content')
@@ -38,79 +72,40 @@ export async function generateStaticParams() {
     return paths
 }
 
-// Metadata
-
 export async function generateMetadata({
     params,
 }: {
     params: Promise<{ slug: string[] }>
 }): Promise<Metadata> {
-    const resolvedParams = await params
-    const slugArray = resolvedParams.slug || []
-    const basePath = path.join(process.cwd(), 'app', 'docs', 'content')
+    const { slug } = await params
+    const filePath = resolveFilePath(slug || [])
 
-    let filePath =
-        path.join(
-            basePath,
-            Array.isArray(slugArray) ? slugArray.join('/') : slugArray
-        ) + '.mdx'
-
-    if (!fs.existsSync(filePath)) {
-        filePath = path.join(basePath, ...slugArray, 'page.mdx')
-        if (!fs.existsSync(filePath)) {
-            return {
-                title: 'Page Not Found',
-                description: 'The requested page could not be found.',
-            }
+    if (!filePath) {
+        return {
+            title: 'Page Not Found',
+            description: 'The requested page could not be found.',
         }
     }
 
-    const fileContent = fs.readFileSync(filePath, 'utf8')
-    const { frontmatter } = await compileMDX({
-        source: fileContent,
-        options: {
-            parseFrontmatter: true,
-            mdxOptions: { remarkPlugins: [], rehypePlugins: [] },
-        },
-        components: useMDXComponents(),
-    })
-
+    const { frontmatter } = await getCompiledMDX(filePath)
     const metadata = frontmatter as PageMetadata
+
     return {
         title: metadata?.title || 'Untitled',
         description: metadata?.description || '',
     }
 }
 
-// Page
-
 const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
-    const resolvedParams = await params
-    const slugArray = resolvedParams.slug || []
-    const basePath = path.join(process.cwd(), 'app', 'docs', 'content')
+    const { slug } = await params
+    const slugArray = slug || []
+    const filePath = resolveFilePath(slugArray)
 
-    let filePath =
-        path.join(
-            basePath,
-            Array.isArray(slugArray) ? slugArray.join('/') : slugArray
-        ) + '.mdx'
-
-    if (!fs.existsSync(filePath)) {
-        filePath = path.join(basePath, ...slugArray, 'page.mdx')
-        if (!fs.existsSync(filePath)) {
-            return <div>not found</div>
-        }
+    if (!filePath) {
+        return <div>not found</div>
     }
 
-    const fileContent = fs.readFileSync(filePath, 'utf8')
-    const { content, frontmatter } = await compileMDX({
-        source: fileContent,
-        options: {
-            parseFrontmatter: true,
-            mdxOptions: { remarkPlugins: [], rehypePlugins: [] },
-        },
-        components: useMDXComponents(),
-    })
+    const { content, frontmatter, fileContent } = await getCompiledMDX(filePath)
 
     const headings = extractHeadings(fileContent)
 
@@ -126,14 +121,6 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
         slugArray,
         metadata.title || 'Untitled'
     )
-
-    // Scan for mobile sidebar
-    const { scanDirectory, buildSidebarItemsWithCategories } =
-        await import('../utils')
-    const fileBasedItems = scanDirectory(
-        path.join(process.cwd(), 'app', 'docs', 'content')
-    )
-    const sidebarItems = buildSidebarItemsWithCategories(fileBasedItems)
 
     const asideStyle: React.CSSProperties = {
         position: 'sticky',
