@@ -51,7 +51,7 @@ export const ComponentShowcase = forwardRef<
     HTMLDivElement,
     ComponentShowcaseProps
 >(({ theme = 'light', className = '', isMobile = false }, ref) => {
-    const { surface, card, cardHeader, title, subtitle, betaNotice } =
+    const { surface, cardHeader, title, subtitle, betaNotice } =
         getShowcaseClassNames(theme)
 
     return (
