@@ -57,7 +57,7 @@ export const ComponentShowcase = forwardRef<
     return (
         <div
             ref={ref}
-            className={`min-h-full rounded-[28px] ${surface} ${className}`}
+            className={`min-h-full rounded-[28px] mx-[50px] ${surface} ${className}`}
         >
             <div className={getShowcaseGridClassNames(isMobile)}>
                 <Card variant={CardVariant.CUSTOM}>
@@ -148,6 +148,7 @@ export const ComponentShowcase = forwardRef<
                         alt="Node Configuration"
                         className="block h-auto w-full"
                     />
+
                     <div className="flex flex-col gap-2 p-[16px]">
                         <div className="flex flex-row items-center gap-2">
                             <div className="flex items-center justify-between">
@@ -287,32 +288,27 @@ export const ComponentShowcase = forwardRef<
                         options={AUTHORIZATION_RATE_CHART_OPTIONS}
                     />
                 </div>
-                <PreviewCard
-                    className={card}
-                    titleClassName={title}
-                    subtitleClassName={subtitle}
-                    media={
-                        <div className="p-[16px]">
-                            <img
-                                src={costEffectiveIcon}
-                                alt="Cost-Effective Processing"
-                                className="block h-auto w-full"
-                            />
-                        </div>
-                    }
-                >
-                    <div className="flex flex-col justify-center">
-                        <div className="flex items-center justify-center gap-2 mb-[14px]">
+                <Card variant={CardVariant.CUSTOM} minHeight="184px">
+                    <div className="p-[16px]">
+                        <img
+                            src={costEffectiveIcon}
+                            alt="Cost-Effective Processing"
+                            className="block h-auto w-full"
+                        />
+                    </div>
+                    <div className="flex flex-col gap-2 pb-[16px] px-[16px]">
+                        <div className="flex flex-row justify-center items-center gap-2">
                             <h3 className={`title inter-display ${title}`}>
                                 Cost-Effective Processing
                             </h3>
                             <TagV2
                                 text="Cost Saver"
                                 color={TagV2Color.PRIMARY}
+                                type={TagV2Type.SUBTLE}
                             />
                         </div>
                         <p
-                            className={`mb-[24px] subtitle inter-display ${subtitle}`}
+                            className={`subtitle inter-display ${subtitle} text-center mb-[16px]`}
                         >
                             Compare processors side by side and find the best
                             fit for your transaction volume. Cut costs without
@@ -325,7 +321,7 @@ export const ComponentShowcase = forwardRef<
                             width="100%"
                         />
                     </div>
-                </PreviewCard>
+                </Card>
             </div>
         </div>
     )
