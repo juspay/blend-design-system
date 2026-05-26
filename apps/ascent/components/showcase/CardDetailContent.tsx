@@ -111,23 +111,19 @@ export default function CardDetailContent({ id }: CardDetailContentProps) {
                     />
                 </div>
 
-                <div className="p-6 sm:p-10 flex flex-col gap-10">
-                    <div className="flex flex-col gap-3">
+                <div className="p-6 sm:p-10 flex flex-col items-center justify-center gap-10">
+                    <div className="flex flex-col items-center gap-3">
                         <h1 className="text-2xl font-medium text-primary">
                             {item.title}
                         </h1>
 
-                        <p className="text-foreground/85 text-base text-justify max-w-5xl lg:leading-8 tracking-[-0.32px]">
+                        <p className="text-foreground/85 text-base text-center max-w-5xl lg:leading-8 tracking-[-0.32px]">
                             {item.description}
                         </p>
                     </div>
 
                     {item.components.length > 0 && (
                         <div className="pb-8 flex flex-col gap-4">
-                            <p className="text-foreground/90 tracking-[-0.32px]">
-                                Components Used
-                            </p>
-
                             <div className="flex flex-wrap gap-2">
                                 {item.components.map((component) => (
                                     <span
