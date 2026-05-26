@@ -29,13 +29,13 @@ const ZOOM_PINCH_FACTOR = 0.025
 
 interface DesktopShowcaseProps {
     query: string
-    category?: string | null
+    categories?: string[]
     children: React.ReactNode
 }
 
 export function DesktopShowcase({
     query,
-    category,
+    categories = [],
     children,
 }: DesktopShowcaseProps) {
     const router = useRouter()
@@ -155,7 +155,8 @@ export function DesktopShowcase({
 
     // Relevance-ranked search results
     const rankedCards = useMemo(() => {
-        if (!query && !category) return null
+        const hasFilters = query || categories.length > 0
+        if (!hasFilters) return null
         const q = query.toLowerCase()
         return showcaseData
             .filter((item) => {
@@ -163,7 +164,9 @@ export function DesktopShowcase({
                     !query ||
                     item.title.toLowerCase().includes(q) ||
                     item.description.toLowerCase().includes(q)
-                const matchesCategory = !category || item.category === category
+                const matchesCategory =
+                    categories.length === 0 ||
+                    categories.includes(item.category)
                 return matchesQuery && matchesCategory
             })
             .map((item) => {
@@ -173,12 +176,13 @@ export function DesktopShowcase({
                 return { ...item, score }
             })
             .sort((a, b) => b.score - a.score)
-    }, [query, category])
+    }, [query, categories])
 
     // Snap on query / category change
     useEffect(() => {
         const { w, h } = viewSizeRef.current
-        if (query || category) {
+        const hasFilters = query || categories.length > 0
+        if (hasFilters) {
             const cx = Math.round(w / 2)
             const cy = Math.round(h / 2 - 80)
             panRef.current = { x: cx, y: cy }
@@ -192,7 +196,7 @@ export function DesktopShowcase({
             applyTransform(initX, initY)
             syncCards(initX, initY)
         }
-    }, [query, category, applyTransform, syncCards])
+    }, [query, categories, applyTransform, syncCards])
 
     // Inertia
     const stopInertia = useCallback(() => {
@@ -503,7 +507,7 @@ export function DesktopShowcase({
             {/* Search/filter overlay */}
             <div
                 className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-300 bg-background/60 backdrop-blur-[2px]"
-                style={{ opacity: query || category ? 1 : 0 }}
+                style={{ opacity: query || categories.length > 0 ? 1 : 0 }}
             />
 
             {/* World canvas */}

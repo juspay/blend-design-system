@@ -125,7 +125,19 @@ export const showcaseData: ShowcaseItem[] = [
         title: 'AI Assistant - Onboarding',
         description:
             'AI-assisted onboarding flow that walks users through setup steps - integration configuration, checkout setup, and go-live readiness with contextual guidance at each stage.',
-        components: ['ChatInput', 'Card', 'Button', 'Stepper', 'Avatar'],
+        components: [
+            'ChatInput',
+            'Card',
+            'Button',
+            'Stepper',
+            'Avatar',
+            'Textarea',
+            'Modal',
+            'SingleSelect',
+            'TextInput',
+            'Switch',
+            'Checkbox',
+        ],
         category: 'AI',
     },
     {
@@ -176,7 +188,7 @@ export const showcaseData: ShowcaseItem[] = [
         image: '/showcase/rule-builder-complete-rule-flow-in-play-mode.webp',
         title: 'Complete Rule Flow in Play Mode',
         description:
-            'Users can select any node block to simulate and trace the logic path from start to end.',
+            'An interactive simulation view of a fully constructed rule flow. Users can select any node block to trace the logic path from start to end, validating decision branches and action sequences before publishing. Highlights the active traversal path and surfaces intermediate outputs at each step for debugging and verification.',
         components: ['Card', 'Button', 'Tabs', 'Modal'],
         category: 'Rules',
     },
@@ -194,7 +206,7 @@ export const showcaseData: ShowcaseItem[] = [
         image: '/showcase/sign-in-page.webp',
         title: 'Straight Through Processing (STP) Sign In Page',
         description:
-            'A simple sign-in page to authenticate and access STP workspace.',
+            'A clean and minimal sign-in page for the STP workspace. Features email and password fields with validation, a remember-me checkbox, and a primary call-to-action. Designed for quick authentication with clear error states and password recovery links.',
         components: ['TextInput', 'Button', 'Card', 'Checkbox'],
         category: 'Authentication',
     },
@@ -203,7 +215,7 @@ export const showcaseData: ShowcaseItem[] = [
         image: '/showcase/onboarding-page.webp',
         title: 'Onboarding Page',
         description:
-            'Step-by-step guided onboarding checklist to help users complete their integration setup and get started quickly.',
+            'A step-by-step guided onboarding checklist that helps users complete their integration setup and get started quickly. Tracks overall progress with a visual indicator, breaks setup into manageable stages, and surfaces contextual tips at each step. Users can resume interrupted flows and see which tasks are pending, in-progress, or completed.',
         components: ['Stepper', 'Card', 'Button', 'ProgressBar', 'Checkbox'],
         category: 'Integration',
     },
@@ -228,7 +240,7 @@ export const showcaseData: ShowcaseItem[] = [
         image: '/showcase/onboarding-completed.webp',
         title: 'Onboarding Completed',
         description:
-            'The final state of the onboarding journey, confirming all integrations are configured and the workspace is live-ready.',
+            'The final confirmation screen of the onboarding journey, celebrating completion with a clear success state. Summarises configured integrations, highlights next steps, and offers quick-action buttons to jump into the workspace or review settings. Reinforces user confidence that the environment is live-ready.',
         components: ['Card', 'Button', 'Stepper', 'Alert'],
         category: 'Integration',
     },
@@ -237,7 +249,7 @@ export const showcaseData: ShowcaseItem[] = [
         image: '/showcase/channel-integration-connected-emails.webp',
         title: 'Channel Integration — Connected Emails',
         description:
-            'Manage and monitor all integrated email channels from a single view after setup is complete.',
+            'A centralised management view for all integrated email channels after initial setup. Displays connection health, sync status, provider details, and last-sync timestamps in a sortable list. Users can add new channels, reconnect broken ones, revoke access, and drill into per-channel configuration from a single unified interface.',
         components: ['DataTable', 'Card', 'Button', 'Tag', 'Modal'],
         category: 'Integration',
     },
@@ -246,7 +258,7 @@ export const showcaseData: ShowcaseItem[] = [
         image: '/showcase/login.webp',
         title: 'Grid Sign In Page',
         description:
-            'A simple sign-in page to authenticate and access Grid workspace.',
+            'A streamlined sign-in page for the Grid workspace. Presents a focused form with email and password inputs, a primary submit button, and helpful links for account recovery. Uses a card-based layout to keep the interface clean and approachable with clear validation feedback.',
         components: ['TextInput', 'Button', 'Card'],
         category: 'Authentication',
     },
@@ -255,7 +267,7 @@ export const showcaseData: ShowcaseItem[] = [
         image: '/showcase/creating-api-key.webp',
         title: 'Grid Landing Page',
         description:
-            'A step-by-step guide for creating and storing an API key to authenticate requests from coding agents like Claude Code, OpenCode, or Cline.',
+            'A step-by-step guide for creating and securely storing an API key to authenticate requests from coding agents like Claude Code, OpenCode, or Cline. Walks users through naming the key, selecting scopes, generating the secret, and copying it safely. Includes warnings about key exposure, tagging for organisation, and revocation controls.',
         components: ['Card', 'Button', 'TextInput', 'Modal', 'Tag'],
         category: 'Authentication',
     },
@@ -264,7 +276,7 @@ export const showcaseData: ShowcaseItem[] = [
         image: '/showcase/usage-guidelines.webp',
         title: 'Usage Guidelines',
         description:
-            'A reference page that helps users pick the right model for their task — covering use cases like coding, parallel agents, IDE autocomplete, commit messages, and documentation.',
+            'A reference page that helps users pick the right model for their task — covering use cases like coding, parallel agents, IDE autocomplete, commit messages, and documentation. Presents recommendations in an accordion layout with expandable sections, code snippets for quick copy-paste integration, and side-by-side comparisons where relevant.',
         components: ['Card', 'Button', 'Accordion', 'CodeBlock'],
         category: 'Guidelines',
     },
