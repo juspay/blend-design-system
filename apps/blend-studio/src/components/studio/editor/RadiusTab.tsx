@@ -72,7 +72,7 @@ export function RadiusTab({ brand, onChange }: EditorTabProps) {
             {/* Presets */}
             <div className="flex flex-col items-center justify-between px-[16px] py-[12px] gap-[12px]">
                 <div className="w-full flex items-center justify-between">
-                    <h3 className="font-medium text-gray-900 font-size-[14px] line-height-[20px] inter-display">
+                    <h3 className="font-medium text-gray-900 text-[14px] leading-[20px] inter-display">
                         Scale Presets
                     </h3>
                     <ButtonV2
@@ -117,7 +117,7 @@ export function RadiusTab({ brand, onChange }: EditorTabProps) {
             </div>
 
             <div className="flex items-center justify-between px-[16px] py-[12px] border-b border-t border-gray-200">
-                <h3 className="font-medium text-gray-900 font-size-[14px] line-height-[20px] inter-display">
+                <h3 className="font-medium text-gray-900 text-[14px] leading-[20px] inter-display">
                     Scale Tokens
                 </h3>
                 <ButtonV2
@@ -216,7 +216,7 @@ function RadiusRow({ radiusKey, value, onChange }: RadiusRowProps) {
             style={{ marginBottom: '24px' }}
         >
             <div className="w-[140px] shrink-0 text-xs font-mono text-gray-500 text-left font-size-[12px] line-height-[18px] inter-display font-weight-[600]">
-                {radiusKey} (--radius-xs)
+                {radiusKey} {`(--radius-${radiusKey})`}
             </div>
             <div
                 className={`flex min-w-0 items-center gap-[12px] ${

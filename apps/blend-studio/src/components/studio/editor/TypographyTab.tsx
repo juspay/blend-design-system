@@ -59,7 +59,7 @@ export function TypographyTab({ brand, onChange }: EditorTabProps) {
         <div className="flex min-h-full flex-1 flex-col">
             <div className="min-h-0 flex-1 overflow-y-auto">
                 <div className="flex items-center justify-between border-b border-gray-200 px-[16px] py-[12px]">
-                    <h3 className="inter-display font-medium font-size-[14px] line-height-[20px] text-gray-900">
+                    <h3 className="inter-display font-medium text-[14px] leading-[20px] text-gray-900">
                         System Fonts
                     </h3>
                     <p className="inter-display font-weight-[500] font-size-[14px] line-height-[20px] text-gray-900">
