@@ -25,7 +25,7 @@ const baseBranchSettings: BranchProtectionSettings = {
     isProtected: false,
     protectionRequireApproval: null,
     protectionMinApprovals: null,
-    protectionAllowedApprovers: null,
+    protectionApproverIds: [],
 }
 
 describe('approval policy resolution', () => {
@@ -47,7 +47,7 @@ describe('approval policy resolution', () => {
                 isProtected: true,
                 protectionRequireApproval: false,
                 protectionMinApprovals: 1,
-                protectionAllowedApprovers: 'user-a,user-b',
+                protectionApproverIds: ['user-a', 'user-b'],
             },
             baseOrgSettings
         )
@@ -72,6 +72,41 @@ describe('approval policy resolution', () => {
         expect(policy.allowedApprovers).toBe('admins')
         expect(policy.allowAdminBypass).toBe(true)
     })
+
+    it('falls back to admins when allowed approvers has unknown value', () => {
+        const policy = resolveMergeApprovalPolicy(baseBranchSettings, {
+            ...baseOrgSettings,
+            allowedApprovers:
+                'something-unsupported' as unknown as typeof baseOrgSettings.allowedApprovers,
+        })
+
+        expect(policy.allowedApprovers).toBe('admins')
+    })
+
+    it('normalizes invalid min approvals to one', () => {
+        const policy = resolveMergeApprovalPolicy(baseBranchSettings, {
+            ...baseOrgSettings,
+            minApprovals: 0,
+        })
+
+        expect(policy.minApprovals).toBe(1)
+    })
+
+    it('ignores empty custom approver list and keeps org mode', () => {
+        const policy = resolveMergeApprovalPolicy(
+            {
+                ...baseBranchSettings,
+                protectionApproverIds: [],
+            },
+            {
+                ...baseOrgSettings,
+                allowedApprovers: 'admins-and-editors',
+            }
+        )
+
+        expect(policy.allowedApprovers).toBe('admins-and-editors')
+        expect(policy.customApproverIds).toEqual([])
+    })
 })
 
 describe('approval decision helpers', () => {
@@ -92,7 +127,7 @@ describe('approval decision helpers', () => {
         const custom = resolveMergeApprovalPolicy(
             {
                 ...baseBranchSettings,
-                protectionAllowedApprovers: 'allowed-user',
+                protectionApproverIds: ['allowed-user'],
             },
             baseOrgSettings
         )
@@ -110,6 +145,29 @@ describe('approval decision helpers', () => {
         expect(canBypassApproval(policy, 'editor')).toBe(false)
         expect(hasReachedApprovalThreshold(2, policy)).toBe(true)
         expect(hasReachedApprovalThreshold(1, policy)).toBe(false)
+    })
+
+    it('does not allow bypass when policy disables admin bypass', () => {
+        const policy = resolvePublishApprovalPolicy(baseBranchSettings, {
+            ...baseOrgSettings,
+            allowAdminBypass: false,
+        })
+
+        expect(canBypassApproval(policy, 'admin')).toBe(false)
+    })
+
+    it('handles custom approvers list', () => {
+        const policy = resolvePublishApprovalPolicy(
+            {
+                ...baseBranchSettings,
+                protectionApproverIds: ['user-1', 'user-2'],
+            },
+            baseOrgSettings
+        )
+
+        expect(policy.allowedApprovers).toBe('custom')
+        expect(canRoleApprove(policy, 'viewer', 'user-1')).toBe(true)
+        expect(canRoleApprove(policy, 'viewer', 'user-2')).toBe(true)
     })
 })
 
@@ -158,6 +216,42 @@ describe('direct branch update policy', () => {
                 baseOrgSettings,
                 'creator-1',
                 'admin'
+            )
+        ).toBe(false)
+    })
+
+    it('allows admin direct update on protected branch with bypass', () => {
+        const protectedBranch = {
+            ...baseBranchSettings,
+            isProtected: true,
+        }
+
+        expect(
+            canDirectlyUpdateBranch(
+                protectedBranch,
+                { ...baseOrgSettings, allowAdminBypass: true },
+                'admin-1',
+                'admin'
+            )
+        ).toBe(true)
+    })
+
+    it('uses fallback behavior for personal branches without org', () => {
+        expect(
+            canDirectlyUpdateBranch(
+                baseBranchSettings,
+                null,
+                'creator-1',
+                'viewer'
+            )
+        ).toBe(true)
+
+        expect(
+            canDirectlyUpdateBranch(
+                baseBranchSettings,
+                null,
+                'other-user',
+                'viewer'
             )
         ).toBe(false)
     })

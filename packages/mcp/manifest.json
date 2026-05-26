@@ -1,7 +1,7 @@
 {
     "version": "2.0.0",
     "packageName": "@juspay/blend-design-system",
-    "blendPackageVersion": "0.0.37-beta.2",
+    "blendPackageVersion": "0.0.37-beta.3",
     "components": {
         "Accordion": {
             "componentName": "Accordion",
@@ -2577,6 +2577,16 @@
                     "llmContext": "Set to true to enable enableInlineEdit"
                 },
                 {
+                    "propName": "showActionsColumn",
+                    "propType": "boolean",
+                    "typeDefinition": "boolean",
+                    "propDescription": "Set to true to enable showActionsColumn",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "Set to true to enable showActionsColumn"
+                },
+                {
                     "propName": "onRowSave",
                     "propType": "(rowId: unknown, updatedRow: T) => void",
                     "typeDefinition": "(rowId: unknown, updatedRow: T) => void",
@@ -2615,6 +2625,16 @@
                     "category": "Events",
                     "required": false,
                     "llmContext": "Callback function for onFieldChange"
+                },
+                {
+                    "propName": "onHeaderChange",
+                    "propType": "(field: keyof T, newHeader: string) => void",
+                    "typeDefinition": "(field: keyof T, newHeader: string) => void",
+                    "propDescription": "Callback function for onHeaderChange",
+                    "propDefault": "undefined",
+                    "category": "Events",
+                    "required": false,
+                    "llmContext": "Callback function for onHeaderChange"
                 },
                 {
                     "propName": "enableRowExpansion",

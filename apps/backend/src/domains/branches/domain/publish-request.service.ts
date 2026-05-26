@@ -59,7 +59,7 @@ export const listPublishRequests = async (
     options: {
         organizationId?: string
         branchId?: string
-        status?: string
+        status?: 'pending' | 'approved' | 'rejected' | 'published' | 'cancelled'
         requestedBy?: string
         limit?: number
         cursor?: string
@@ -287,7 +287,7 @@ export const executePublishRequest = async (
 
     const version = await branchRepo.createVersion(request.branchId, {
         version: request.version,
-        brandConfig: branch.brandConfig,
+        tokenConfig: branch.tokenConfig,
         changelog: request.changelog,
         isBreaking: request.isBreaking,
         isPrerelease: request.isPrerelease,

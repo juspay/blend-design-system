@@ -35,19 +35,19 @@ export interface BrandConfig {
 export interface Branch {
     id: string
     organizationId: string | null
-    brandId: string
+    branchSlug: string
     name: string
     description: string | null
     parentBranchId: string | null
     status: BranchStatus
     visibility: BranchVisibility
-    brandConfig: BrandConfig
+    tokenConfig: BrandConfig
     publishedVersions: number
     latestVersion: string | null
     isProtected: boolean
     protectionRequireApproval: boolean | null
     protectionMinApprovals: number | null
-    protectionAllowedApprovers: string | null
+    protectionApproverIds: string[]
     createdBy: string
     createdByName: string
     createdAt: Date
@@ -60,7 +60,7 @@ export interface BranchVersion {
     id: string
     branchId: string
     version: string
-    brandConfig: BrandConfig
+    tokenConfig: BrandConfig
     changelog: string | null
     isBreaking: boolean
     isPrerelease: boolean
@@ -72,7 +72,7 @@ export interface BranchVersion {
 export interface BranchSnapshot {
     id: string
     branchId: string
-    brandConfig: BrandConfig
+    tokenConfig: BrandConfig
     label: string | null
     isAutoSave: boolean
     savedBy: string
@@ -87,10 +87,10 @@ export interface TagRow {
 
 export interface CreateBranchDTO {
     name: string
-    brandId?: string
+    branchSlug: string
     description?: string
     parentBranchId?: string
-    brandConfig?: Partial<BrandConfig>
+    tokenConfig?: Partial<BrandConfig>
     visibility?: BranchVisibility
     tags?: string[]
     organizationId?: string
@@ -99,7 +99,7 @@ export interface CreateBranchDTO {
 export interface UpdateBranchDTO {
     name?: string
     description?: string
-    brandConfig?: Partial<BrandConfig>
+    tokenConfig?: Partial<BrandConfig>
     status?: BranchStatus
     visibility?: BranchVisibility
 }
@@ -108,7 +108,7 @@ export interface UpdateBranchProtectionDTO {
     isProtected?: boolean
     requireApproval?: boolean
     minApprovals?: number
-    allowedApproverIds?: string[]
+    allowedApproverIds?: string[] | null
 }
 
 export interface PublishBranchDTO {
@@ -127,7 +127,12 @@ export type PublishBranchResult =
           mode: 'approval_required'
           publishRequest: {
               id: string
-              status: string
+              status:
+                  | 'pending'
+                  | 'approved'
+                  | 'rejected'
+                  | 'published'
+                  | 'cancelled'
           }
       }
 

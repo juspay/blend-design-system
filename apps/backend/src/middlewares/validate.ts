@@ -152,7 +152,11 @@ export const updateOrgSchema = z.object({
         .max(100)
         .regex(/^[a-z0-9-]+$/)
         .optional(),
-    defaultBranchId: z.string().max(255).nullable().optional(),
+    defaultBranchId: z
+        .string()
+        .uuid('Invalid default branch ID')
+        .nullable()
+        .optional(),
     blendVersion: z.string().max(50).nullable().optional(),
     wcagEnforcement: z.enum(['none', 'warn', 'block']).optional(),
     requireApprovalForMerge: z.boolean().optional(),
@@ -178,13 +182,13 @@ export const updateMemberRoleSchema = z.object({
 // ---------------------------------------------------------------------------
 
 export const createBranchSchema = z.object({
-    brandId: z
+    branchSlug: z
         .string()
-        .min(1, 'Brand ID is required')
+        .min(1, 'Branch slug is required')
         .max(255)
         .regex(
             /^[a-z0-9][a-z0-9_/-]*$/,
-            'Brand ID must be lowercase alphanumeric with hyphens, underscores, or slashes'
+            'Branch slug must be lowercase alphanumeric with hyphens, underscores, or slashes'
         ),
     name: z.string().min(1, 'Name is required').max(255),
     slug: z.string().min(1).max(100).optional(),
@@ -193,7 +197,7 @@ export const createBranchSchema = z.object({
         .enum(['private', 'team', 'public'])
         .optional()
         .default('private'),
-    brandConfig: z.record(z.unknown()).optional(),
+    tokenConfig: z.record(z.unknown()).optional(),
     organizationId: z.string().uuid().optional(),
     clientName: z.string().max(255).optional(),
     projectName: z.string().max(255).optional(),
@@ -203,7 +207,7 @@ export const createBranchSchema = z.object({
 export const updateBranchSchema = z.object({
     name: z.string().min(1).max(255).optional(),
     description: z.string().max(1000).optional(),
-    brandConfig: z.record(z.unknown()).optional(),
+    tokenConfig: z.record(z.unknown()).optional(),
     visibility: z.enum(['private', 'team', 'public']).optional(),
     status: z.enum(['draft', 'published', 'archived']).optional(),
 })
@@ -237,7 +241,7 @@ export const resolveTokensSchema = z.object({
 })
 
 export const createSnapshotSchema = z.object({
-    brandConfig: z.record(z.unknown()).optional(),
+    tokenConfig: z.record(z.unknown()).optional(),
     label: z.string().max(255).optional(),
     isAutoSave: z.boolean().optional().default(false),
 })
@@ -321,14 +325,22 @@ export const createMergeRequestSchema = z.object({
     organizationId: z.string().uuid().optional(),
 })
 
-export const reviewMergeRequestSchema = z.object({
+export const reviewRequestSchema = z.object({
     reviewComment: z.string().max(5000).optional(),
 })
+
+// Backward-compatible alias. Prefer reviewRequestSchema in new code.
+export const reviewMergeRequestSchema = reviewRequestSchema
 
 export const listPublishRequestsSchema = z.object({
     organizationId: queryStringOptional,
     branchId: queryStringOptional,
-    status: queryStringOptional,
+    status: z.preprocess(
+        normalizeSingleQueryParam,
+        z
+            .enum(['pending', 'approved', 'rejected', 'published', 'cancelled'])
+            .optional()
+    ),
     requestedBy: queryStringOptional,
     limit: queryStringOptional,
     cursor: queryStringOptional,

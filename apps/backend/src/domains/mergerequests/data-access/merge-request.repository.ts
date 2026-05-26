@@ -19,7 +19,7 @@ export interface MergeRequestRow {
     targetBranchName: string
     title: string
     description: string | null
-    status: string
+    status: 'pending' | 'approved' | 'rejected' | 'merged' | 'cancelled'
     diff: unknown
     lockViolations: unknown
     requestedBy: string
@@ -87,7 +87,7 @@ export const getMergeRequest = async (
 export const listMergeRequests = async (
     options: {
         organizationId?: string
-        status?: string
+        status?: 'pending' | 'approved' | 'rejected' | 'merged' | 'cancelled'
         requestedBy?: string
         sourceBranchId?: string
         targetBranchId?: string
@@ -155,7 +155,7 @@ export const addMergeRequestApproval = async (
 export const updateMergeRequestStatus = async (
     id: string,
     data: {
-        status: string
+        status: 'pending' | 'approved' | 'rejected' | 'merged' | 'cancelled'
         reviewedBy?: string
         reviewComment?: string
     }

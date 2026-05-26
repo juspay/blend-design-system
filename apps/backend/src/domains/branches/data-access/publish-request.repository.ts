@@ -19,7 +19,7 @@ export interface PublishRequestRow {
     changelog: string | null
     isBreaking: boolean
     isPrerelease: boolean
-    status: string
+    status: 'pending' | 'approved' | 'rejected' | 'published' | 'cancelled'
     requestedBy: string
     requestedByName: string
     reviewComment: string | null
@@ -91,7 +91,7 @@ export const listPublishRequests = async (
     options: {
         organizationId?: string
         branchId?: string
-        status?: string
+        status?: 'pending' | 'approved' | 'rejected' | 'published' | 'cancelled'
         requestedBy?: string
         limit?: number
         cursor?: string
@@ -156,7 +156,7 @@ export const addPublishRequestApproval = async (
 export const updatePublishRequestStatus = async (
     id: string,
     data: {
-        status: string
+        status: 'pending' | 'approved' | 'rejected' | 'published' | 'cancelled'
         reviewComment?: string
         publishedVersionId?: string
         reviewedAt?: Date

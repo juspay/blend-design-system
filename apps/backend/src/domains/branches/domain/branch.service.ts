@@ -262,7 +262,7 @@ export const resolveEffectiveBrandConfig = async (
     }
 
     const inheritanceResult = resolveWithInheritance(
-        inheritanceContext.parentBranch.brandConfig,
+        inheritanceContext.parentBranch.tokenConfig,
         baseConfig,
         inheritanceContext.lockedPaths
     )
@@ -287,10 +287,10 @@ export const createBranch = async (
         orgId = membership?.organizationId || null
     }
 
-    const brandId = dto.brandId || dto.name.toLowerCase().replace(/\s+/g, '-')
+    const branchSlug = dto.branchSlug
 
     const defaultConfig: BrandConfig = {
-        brandId,
+        brandId: branchSlug,
         name: dto.name,
         version: '1.0.0',
         colors: {
@@ -316,7 +316,7 @@ export const createBranch = async (
         },
     }
 
-    const branchConfig = mergeBrandConfig(defaultConfig, dto.brandConfig)
+    const tokenConfig = mergeBrandConfig(defaultConfig, dto.tokenConfig)
     let resolvedParentBranchId = dto.parentBranchId || null
 
     if (orgId) {
@@ -328,8 +328,8 @@ export const createBranch = async (
             resolvedParentBranchId = parentContext.parentBranchId
             if (parentContext.lockedPaths.length > 0) {
                 validateLocksAgainstParent(
-                    parentContext.parentBranch.brandConfig,
-                    branchConfig,
+                    parentContext.parentBranch.tokenConfig,
+                    tokenConfig,
                     parentContext.lockedPaths
                 )
             }
@@ -338,13 +338,13 @@ export const createBranch = async (
 
     const branch = await branchRepo.createBranch({
         organizationId: orgId,
-        brandId,
+        branchSlug,
         name: dto.name,
         description: dto.description || null,
         parentBranchId: resolvedParentBranchId,
         status: 'draft',
         visibility: dto.visibility || 'private',
-        brandConfig: branchConfig,
+        tokenConfig,
         createdBy: userId,
         createdByName: userName,
     })
@@ -366,7 +366,7 @@ export const createBranch = async (
             targetId: branch.id,
             metadata: {
                 name: dto.name,
-                brandId,
+                branchSlug,
                 visibility: dto.visibility || 'private',
             },
         })
@@ -389,8 +389,8 @@ export const listBranches = async (
         limit?: number
         cursor?: string
         createdBy?: string
-        status?: string
-        visibility?: string
+        status?: Branch['status']
+        visibility?: Branch['visibility']
         search?: string
         tag?: string
     } = {}
@@ -441,17 +441,17 @@ export const updateBranch = async (
         )
     }
 
-    const mergedBrandConfig = dto.brandConfig
-        ? mergeBrandConfig(branch.brandConfig, dto.brandConfig)
+    const mergedTokenConfig = dto.tokenConfig
+        ? mergeBrandConfig(branch.tokenConfig, dto.tokenConfig)
         : undefined
 
-    // Validate against org token locks when brandConfig changes
-    if (dto.brandConfig && branch.organizationId) {
+    // Validate against org token locks when tokenConfig changes
+    if (dto.tokenConfig && branch.organizationId) {
         const inheritanceContext = await getOrgInheritanceContext(branch)
         if (inheritanceContext && inheritanceContext.lockedPaths.length > 0) {
             validateLocksAgainstParent(
-                inheritanceContext.parentBranch.brandConfig,
-                mergedBrandConfig!,
+                inheritanceContext.parentBranch.tokenConfig,
+                mergedTokenConfig!,
                 inheritanceContext.lockedPaths
             )
         }
@@ -463,8 +463,8 @@ export const updateBranch = async (
     if (dto.description !== undefined) updates.description = dto.description
     if (dto.visibility) updates.visibility = dto.visibility
 
-    if (mergedBrandConfig) {
-        updates.brandConfig = mergedBrandConfig
+    if (mergedTokenConfig) {
+        updates.tokenConfig = mergedTokenConfig
     }
 
     const previousValues: Record<string, unknown> = {}
@@ -520,7 +520,7 @@ export const deleteBranch = async (
             targetId: branchId,
             metadata: {
                 name: branch.name,
-                brandId: branch.brandId,
+                branchSlug: branch.branchSlug,
                 softDelete: true,
             },
         })
@@ -552,7 +552,7 @@ export const forkBranch = async (
 
     const forked = await branchRepo.forkBranch(sourceBranchId, {
         name: newName,
-        brandId: newName.toLowerCase().replace(/\s+/g, '-'),
+        branchSlug: newName.toLowerCase().replace(/\s+/g, '-'),
         organizationId: orgId,
         createdBy: userId,
         createdByName: userName,
@@ -674,7 +674,7 @@ export const publishBranch = async (
 
     const version = await branchRepo.createVersion(branchId, {
         version: dto.version,
-        brandConfig: branch.brandConfig,
+        tokenConfig: branch.tokenConfig,
         changelog: dto.changelog || null,
         isBreaking: dto.isBreaking || false,
         isPrerelease: dto.isPrerelease || false,
@@ -734,21 +734,25 @@ export const updateBranchProtection = async (
         updates.protectionMinApprovals = dto.minApprovals
     }
 
-    if (dto.allowedApproverIds !== undefined) {
-        updates.protectionAllowedApprovers = dto.allowedApproverIds
-            ? dto.allowedApproverIds.join(',')
-            : null
-    }
+    const hasApproverUpdate = dto.allowedApproverIds !== undefined
 
     if (dto.isProtected === false) {
         updates.protectionRequireApproval = null
         updates.protectionMinApprovals = null
-        updates.protectionAllowedApprovers = null
     }
 
     const updated = await branchRepo.updateBranch(branchId, updates as any)
     if (!updated) {
         throw new NotFoundError('Branch')
+    }
+
+    if (dto.isProtected === false) {
+        await branchRepo.setProtectionApproverIds(branchId, [])
+        updated.protectionApproverIds = []
+    } else if (hasApproverUpdate) {
+        const approverIds = dto.allowedApproverIds ?? []
+        await branchRepo.setProtectionApproverIds(branchId, approverIds)
+        updated.protectionApproverIds = approverIds
     }
 
     if (branch.organizationId) {
@@ -771,7 +775,7 @@ export const updateBranchProtection = async (
                 isProtected: updated.isProtected,
                 requireApproval: updated.protectionRequireApproval,
                 minApprovals: updated.protectionMinApprovals,
-                hasCustomApprovers: Boolean(updated.protectionAllowedApprovers),
+                hasCustomApprovers: updated.protectionApproverIds.length > 0,
             },
         })
     }
@@ -807,7 +811,7 @@ export const getBranchApprovalSettings = async (
             isProtected: branch.isProtected,
             protectionRequireApproval: branch.protectionRequireApproval,
             protectionMinApprovals: branch.protectionMinApprovals,
-            protectionAllowedApprovers: branch.protectionAllowedApprovers,
+            protectionApproverIds: branch.protectionApproverIds,
         },
         organization: organization
             ? {
@@ -838,17 +842,17 @@ export const listVersions = async (branchId: string) => {
 export const resolveTokens = async (
     branchId: string,
     theme: 'light' | 'dark' = 'light'
-): Promise<{ branch: Branch; theme: string; brandConfig: BrandConfig }> => {
+): Promise<{ branch: Branch; theme: string; tokenConfig: BrandConfig }> => {
     const branch = await getBranch(branchId)
     const effectiveBrandConfig = await resolveEffectiveBrandConfig(
         branch,
-        branch.brandConfig
+        branch.tokenConfig
     )
 
     return {
         branch,
         theme,
-        brandConfig: effectiveBrandConfig,
+        tokenConfig: effectiveBrandConfig,
     }
 }
 

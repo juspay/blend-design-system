@@ -1,12 +1,13 @@
 export type OrgRole = 'admin' | 'editor' | 'viewer'
 
 export type AllowedApprovers = 'admins' | 'admins-and-editors' | 'custom'
+type PersistedAllowedApprovers = AllowedApprovers | 'admins_and_editors'
 
 export interface OrgApprovalSettings {
     defaultBranchId: string | null
     requireApprovalForMerge: boolean
     requireApprovalForPublish: boolean
-    allowedApprovers: string
+    allowedApprovers: PersistedAllowedApprovers
     minApprovals: number
     allowAdminBypass: boolean
 }
@@ -17,7 +18,7 @@ export interface BranchProtectionSettings {
     isProtected: boolean
     protectionRequireApproval: boolean | null
     protectionMinApprovals: number | null
-    protectionAllowedApprovers: string | null
+    protectionApproverIds: string[]
 }
 
 export interface EffectiveApprovalPolicy {
@@ -28,16 +29,12 @@ export interface EffectiveApprovalPolicy {
     customApproverIds: string[]
 }
 
-const parseCustomApproverIds = (value: string | null): string[] => {
-    if (!value) return []
-    return value
-        .split(',')
-        .map((id) => id.trim())
-        .filter(Boolean)
-}
-
-const normalizeAllowedApprovers = (value: string): AllowedApprovers => {
-    if (value === 'admins-and-editors') return 'admins-and-editors'
+const normalizeAllowedApprovers = (
+    value: string | null | undefined
+): AllowedApprovers => {
+    if (value === 'admins-and-editors' || value === 'admins_and_editors') {
+        return 'admins-and-editors'
+    }
     if (value === 'custom') return 'custom'
     return 'admins'
 }
@@ -73,14 +70,9 @@ export const resolveMergeApprovalPolicy = (
             branch.protectionMinApprovals
         )
     }
-    if (branch.protectionAllowedApprovers) {
-        const customIds = parseCustomApproverIds(
-            branch.protectionAllowedApprovers
-        )
-        if (customIds.length > 0) {
-            policy.allowedApprovers = 'custom'
-            policy.customApproverIds = customIds
-        }
+    if (branch.protectionApproverIds.length > 0) {
+        policy.allowedApprovers = 'custom'
+        policy.customApproverIds = branch.protectionApproverIds
     }
 
     return policy
@@ -112,14 +104,9 @@ export const resolvePublishApprovalPolicy = (
             branch.protectionMinApprovals
         )
     }
-    if (branch.protectionAllowedApprovers) {
-        const customIds = parseCustomApproverIds(
-            branch.protectionAllowedApprovers
-        )
-        if (customIds.length > 0) {
-            policy.allowedApprovers = 'custom'
-            policy.customApproverIds = customIds
-        }
+    if (branch.protectionApproverIds.length > 0) {
+        policy.allowedApprovers = 'custom'
+        policy.customApproverIds = branch.protectionApproverIds
     }
 
     return policy

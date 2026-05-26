@@ -3,7 +3,7 @@ import { authenticate } from '@/middlewares/auth.js'
 import { asyncHandler } from '@/middlewares/errorHandler.js'
 import {
     validate,
-    reviewMergeRequestSchema,
+    reviewRequestSchema,
     listPublishRequestsSchema,
 } from '@/middlewares/validate.js'
 import { strictLimiter } from '@/middlewares/rateLimit.js'
@@ -21,7 +21,13 @@ router.get(
                 {
                     organizationId: req.query.organizationId as string,
                     branchId: req.query.branchId as string,
-                    status: req.query.status as string,
+                    status: req.query.status as
+                        | 'pending'
+                        | 'approved'
+                        | 'rejected'
+                        | 'published'
+                        | 'cancelled'
+                        | undefined,
                     requestedBy: req.query.requestedBy as string,
                     limit: parseInt(req.query.limit as string, 10) || 20,
                     cursor: req.query.cursor as string,
@@ -48,7 +54,7 @@ router.post(
     '/:id/approve',
     authenticate,
     strictLimiter,
-    validate({ body: reviewMergeRequestSchema }),
+    validate({ body: reviewRequestSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         const publishRequest =
             await publishRequestService.approvePublishRequest(
@@ -65,7 +71,7 @@ router.post(
     '/:id/reject',
     authenticate,
     strictLimiter,
-    validate({ body: reviewMergeRequestSchema }),
+    validate({ body: reviewRequestSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         const publishRequest = await publishRequestService.rejectPublishRequest(
             req.params.id,

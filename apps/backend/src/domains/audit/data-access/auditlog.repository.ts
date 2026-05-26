@@ -48,7 +48,7 @@ export type AuditAction =
 
 export interface BranchCreatedMeta {
     name: string
-    brandId: string
+    branchSlug: string
     visibility: string
 }
 
@@ -59,7 +59,7 @@ export interface BranchUpdatedMeta {
 
 export interface BranchDeletedMeta {
     name: string
-    brandId: string
+    branchSlug: string
     softDelete: true
 }
 
@@ -249,7 +249,7 @@ export type AuditTargetType =
 export interface CreateAuditLogInput {
     organizationId: string
     action: AuditAction
-    actorId: string
+    actorId: string | null
     actorEmail: string
     targetType: AuditTargetType
     targetId: string
@@ -260,24 +260,8 @@ export interface AuditLogRow {
     id: string
     organizationId: string
     action: AuditAction
-    actorId: string
+    actorId: string | null
     actorEmailHash: string
-    targetType: string
-    targetId: string
-    metadata: AuditMetadata | null
-    createdAt: Date
-}
-
-// ===========================================================================
-// Row shape from DB
-// ===========================================================================
-
-export interface AuditLogRow {
-    id: string
-    organizationId: string
-    action: AuditAction
-    actorId: string
-    actorEmail: string
     targetType: string
     targetId: string
     metadata: AuditMetadata | null

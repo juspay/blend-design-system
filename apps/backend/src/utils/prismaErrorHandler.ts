@@ -72,7 +72,7 @@ const buildConflictMessage = (constraintKey: string | null): string => {
         slug: 'Organization identifier already taken',
         branchId_version: 'This version number already exists for this branch',
         organizationId_userId: 'User already belongs to this organization',
-        brandId: 'Brand configuration already exists',
+        branchSlug: 'Branch slug already exists',
         name: 'This name is already in use',
         organizationId_tokenPath: 'This token path is already locked',
         tokenHash: 'Session conflict detected. Please try logging in again',

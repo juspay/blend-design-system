@@ -186,7 +186,7 @@ const getRoleForMergeContext = async (
     return await getOrganizationRole(organizationId, userId, 'viewer')
 }
 
-export const createMR = async (
+export const createMergeRequest = async (
     organizationId: string | undefined,
     sourceBranchId: string,
     targetBranchId: string,
@@ -247,15 +247,15 @@ export const createMR = async (
         )
     }
 
-    const diff = diffBrandConfigs(target.brandConfig, source.brandConfig)
+    const diff = diffBrandConfigs(target.tokenConfig, source.tokenConfig)
 
     let lockViolations: unknown = null
     if (orgId) {
         try {
             const violations = await lockService.validateBranchAgainstLocks(
                 orgId,
-                source.brandConfig,
-                target.brandConfig
+                source.tokenConfig,
+                target.tokenConfig
             )
             if (violations.length > 0) {
                 lockViolations = violations
@@ -298,7 +298,7 @@ export const createMR = async (
     return mr
 }
 
-export const getMR = async (id: string, requesterUserId?: string) => {
+export const getMergeRequest = async (id: string, requesterUserId?: string) => {
     const mr = await mrRepo.getMergeRequest(id)
     if (!mr) throw new NotFoundError('Merge request')
 
@@ -329,10 +329,10 @@ export const getMR = async (id: string, requesterUserId?: string) => {
     return mr
 }
 
-export const listMRs = async (
+export const listMergeRequests = async (
     options: {
         organizationId?: string
-        status?: string
+        status?: 'pending' | 'approved' | 'rejected' | 'merged' | 'cancelled'
         requestedBy?: string
         sourceBranchId?: string
         targetBranchId?: string
@@ -353,13 +353,13 @@ export const listMRs = async (
     return mrRepo.listMergeRequests(options)
 }
 
-export const approveMR = async (
+export const approveMergeRequest = async (
     id: string,
     reviewComment: string | undefined,
     userId: string,
     userEmail: string
 ) => {
-    const mr = await getMR(id, userId)
+    const mr = await getMergeRequest(id, userId)
     if (mr.status !== 'pending') {
         throw new ValidationError('Only pending merge requests can be approved')
     }
@@ -428,13 +428,13 @@ export const approveMR = async (
     return updated
 }
 
-export const rejectMR = async (
+export const rejectMergeRequest = async (
     id: string,
     reviewComment: string | undefined,
     userId: string,
     userEmail: string
 ) => {
-    const mr = await getMR(id, userId)
+    const mr = await getMergeRequest(id, userId)
 
     const target = await branchRepo.getBranchById(mr.targetBranchId)
     if (!target) throw new NotFoundError('Target branch')
@@ -477,12 +477,12 @@ export const rejectMR = async (
     return updated
 }
 
-export const mergeMR = async (
+export const mergeMergeRequest = async (
     id: string,
     userId: string,
     userEmail: string
 ) => {
-    const mr = await getMR(id, userId)
+    const mr = await getMergeRequest(id, userId)
 
     const source = await branchRepo.getBranchById(mr.sourceBranchId)
     if (!source) throw new NotFoundError('Source branch')
@@ -523,8 +523,8 @@ export const mergeMR = async (
     if (mr.organizationId) {
         const lockViolations = await lockService.validateBranchAgainstLocks(
             mr.organizationId,
-            source.brandConfig,
-            target.brandConfig
+            source.tokenConfig,
+            target.tokenConfig
         )
         if (lockViolations.length > 0) {
             throw new ValidationError(
@@ -534,12 +534,12 @@ export const mergeMR = async (
     }
 
     const mergedTargetConfig = mergeConfigForTargetBranch(
-        target.brandConfig,
-        source.brandConfig
+        target.tokenConfig,
+        source.tokenConfig
     )
 
     await branchRepo.updateBranch(mr.targetBranchId, {
-        brandConfig: mergedTargetConfig,
+        tokenConfig: mergedTargetConfig,
     })
 
     const updated = await mrRepo.updateMergeRequestStatus(id, {
@@ -572,12 +572,12 @@ export const mergeMR = async (
     return updated
 }
 
-export const cancelMR = async (
+export const cancelMergeRequest = async (
     id: string,
     userId: string,
     _userEmail: string
 ) => {
-    const mr = await getMR(id, userId)
+    const mr = await getMergeRequest(id, userId)
     if (mr.status !== 'pending') {
         throw new ValidationError(
             'Only pending merge requests can be cancelled'
@@ -601,3 +601,12 @@ export const cancelMR = async (
 
     return mrRepo.cancelMergeRequest(id)
 }
+
+// Backward-compatible aliases. Prefer full names in new code.
+export const createMR = createMergeRequest
+export const getMR = getMergeRequest
+export const listMRs = listMergeRequests
+export const approveMR = approveMergeRequest
+export const rejectMR = rejectMergeRequest
+export const mergeMR = mergeMergeRequest
+export const cancelMR = cancelMergeRequest
