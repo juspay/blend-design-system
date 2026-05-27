@@ -96,7 +96,12 @@ import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
-import { TextInput, Button } from '../../../../packages/blend/lib/main'
+import {
+    TextInput,
+    Button,
+    BadgeColor,
+    BadgeSize,
+} from '../../../../packages/blend/lib/main'
 import {
     ButtonType,
     ButtonSize,
@@ -279,6 +284,11 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'juspay',
+            badge: {
+                text: 'IN',
+                color: BadgeColor.PRIMARY,
+                size: BadgeSize.SM,
+            },
             showInPanel: true, // Visible in panel
         },
         {
@@ -311,6 +321,11 @@ const SidebarDemo = () => {
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
+            badge: {
+                text: 'US',
+                color: BadgeColor.SUCCESS,
+                size: BadgeSize.SM,
+            },
             value: 'paypal',
             showInPanel: true, // Visible in panel
         },

@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react'
 import type { DirectoryData, NavbarItem } from '../Directory/types'
 import type { MerchantInfo } from '../Topbar/types'
+import { BadgeColor, BadgeSize } from '../Badge'
 
 export type LeftPanelItem = {
     label: string
@@ -23,6 +24,7 @@ export type TenantItem = {
     value?: string
     icon: ReactNode
     showInPanel?: boolean
+    badge?: { text: string; color: BadgeColor; size: BadgeSize }
 }
 
 export type SidebarMerchantInfo = {
