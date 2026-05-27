@@ -325,7 +325,7 @@ export const getStatCardToken = (
                         width: foundationToken.unit[20],
                     },
                     title: {
-                        fontSize: foundationToken.font.size.body.md.fontSize,
+                        fontSize: foundationToken.font.size.body.lg.fontSize,
                         fontWeight: foundationToken.font.weight[500],
                         color: foundationToken.colors.gray[400],
                     },
