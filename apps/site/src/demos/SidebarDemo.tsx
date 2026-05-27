@@ -99,7 +99,12 @@ import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
-import { TextInput, Button } from '../../../../packages/blend/lib/main'
+import {
+    TextInput,
+    Button,
+    BadgeColor,
+    BadgeSize,
+} from '../../../../packages/blend/lib/main'
 import {
     ButtonType,
     ButtonSize,
