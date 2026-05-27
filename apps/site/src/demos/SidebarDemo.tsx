@@ -328,6 +328,7 @@ const SidebarDemo = () => {
                 text: 'US',
                 color: BadgeColor.SUCCESS,
                 size: BadgeSize.SM,
+                position: 'top-right',
             },
             value: 'paypal',
             showInPanel: true, // Visible in panel
