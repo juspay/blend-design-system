@@ -167,7 +167,7 @@ const TenantItem: React.FC<{
             text={tenant.badge.text}
             size={tenant.badge.size || BadgeSize.SM}
             color={tenant.badge.color || BadgeColor.PRIMARY}
-            position="bottom-right"
+            position={tenant.badge.position || 'bottom-right'}
             isCircular
         >
             {tenantButton}

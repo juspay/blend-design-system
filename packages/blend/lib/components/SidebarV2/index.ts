@@ -8,6 +8,7 @@ export type {
     SecondarySidebarItem,
     SidebarV2Props,
     SidebarV2StateChangeType,
+    TenantBadge,
 } from './types'
 export { SidebarV2StateChange } from './types'
 export type { SidebarV2PanelProps } from './SidebarV2Panel'
