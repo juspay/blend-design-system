@@ -272,22 +272,47 @@ export const ComponentShowcase = forwardRef<
                         </div>
                     </div>
                 </Card>
-                <div className="w-full">
-                    <StatCardV2
-                        title="Authorization Rate"
-                        actionIcon={<GearSixIcon size={16} />}
-                        helpIconText="helpText"
-                        value="83.24%"
-                        variant={StatCardV2Variant.CHART}
-                        change={{
-                            value: '23.45%',
-                            changeType: StatCardV2ChangeType.INCREASE,
-                            arrowDirection: StatCardV2ArrowDirection.UP,
-                        }}
-                        maxWidth="100%"
-                        options={AUTHORIZATION_RATE_CHART_OPTIONS}
-                    />
-                </div>
+                <Card variant={CardVariant.CUSTOM} minHeight="184px">
+                    <div className="p-[16px] flex flex-col justify-between h-[100%]">
+                        <div className="flex flex-col gap-2">
+                            <div
+                                className={`flex items-center justify-between  ${cardHeader}`}
+                            >
+                                <div className="flex flex-row items-center gap-2">
+                                    <span className={`title ${title}`}>
+                                        Payment Performance
+                                    </span>
+                                    <TagV2
+                                        text="Analytics"
+                                        color={TagV2Color.PRIMARY}
+                                        type={TagV2Type.SUBTLE}
+                                    />
+                                </div>
+                                <GearSixIcon size={16} />
+                            </div>
+                            <p className={`subtitle inter-display ${subtitle}`}>
+                                Connect your stack across languages and
+                                services. Visualise how your payment nodes talk
+                                to each other and configure routing logic per
+                                environment.
+                            </p>
+                        </div>
+                        <StatCardV2
+                            title="Authorization Rate"
+                            // actionIcon={<GearSixIcon size={16} />}
+                            helpIconText="helpText"
+                            value="83.24%"
+                            variant={StatCardV2Variant.CHART}
+                            change={{
+                                value: '23.45%',
+                                changeType: StatCardV2ChangeType.INCREASE,
+                                arrowDirection: StatCardV2ArrowDirection.UP,
+                            }}
+                            maxWidth="100%"
+                            options={AUTHORIZATION_RATE_CHART_OPTIONS}
+                        />
+                    </div>
+                </Card>
                 <Card variant={CardVariant.CUSTOM} minHeight="184px">
                     <div className="p-[16px]">
                         <img

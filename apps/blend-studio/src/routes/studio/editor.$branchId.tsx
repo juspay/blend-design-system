@@ -158,6 +158,7 @@ function EditorPage() {
     // Editor state
     const [previewTheme, setPreviewTheme] = useState<'light' | 'dark'>('light')
     const [brand, setBrand] = useState<BrandConfig | null>(null)
+    const [savedBrand, setSavedBrand] = useState<BrandConfig | null>(null)
     const [hasChanges, setHasChanges] = useState(false)
     const [saving, setSaving] = useState(false)
     const [activeTab, setActiveTab] = useState<EditorTabId>('colors')
@@ -186,10 +187,11 @@ function EditorPage() {
 
     // Sync brand from branch on load
     useEffect(() => {
-        if (branch?.brandConfig && !brand) {
-            setBrand(branch.brandConfig)
+        if (branch?.brandConfig) {
+            setSavedBrand(branch.brandConfig)
+            setBrand((current) => current ?? branch.brandConfig)
         }
-    }, [branch, brand])
+    }, [branch?.brandConfig])
 
     // Auto-save when there are changes
     useEffect(() => {
@@ -248,6 +250,32 @@ function EditorPage() {
         []
     )
 
+    const handleColorGroupReset = useCallback(
+        (group: ColorGroupKey, shades: Record<string, string>) => {
+            setBrand((prev) => {
+                if (!prev) return prev
+                const updated: BrandConfig = {
+                    ...prev,
+                    colors: {
+                        ...prev.colors,
+                        [group]: shades,
+                    },
+                }
+
+                if (
+                    savedBrand &&
+                    JSON.stringify(updated) === JSON.stringify(savedBrand)
+                ) {
+                    setHasChanges(false)
+                    setSaving(false)
+                }
+
+                return updated
+            })
+        },
+        [savedBrand]
+    )
+
     const handleImportTokens = useCallback((imported: Partial<BrandConfig>) => {
         setBrand((prev) => {
             if (!prev) return prev
@@ -263,6 +291,7 @@ function EditorPage() {
         try {
             await updateBranch(branchId, { brandConfig: brand })
             await createSnapshot(brand, 'Manual save', false)
+            setSavedBrand(brand)
             setHasChanges(false)
         } catch (err) {
             console.error('Save failed:', err)
@@ -286,7 +315,7 @@ function EditorPage() {
         )
     }
 
-    if (!brand) return null
+    if (!brand || !savedBrand) return null
 
     return (
         <RequireAuth>
@@ -385,8 +414,12 @@ function EditorPage() {
                                                 {activeTab === 'colors' && (
                                                     <ColorsTab
                                                         brand={brand}
+                                                        savedBrand={savedBrand}
                                                         onChange={
                                                             handleBrandChange
+                                                        }
+                                                        onColorGroupReset={
+                                                            handleColorGroupReset
                                                         }
                                                         activeGroup={
                                                             activeColorGroup
@@ -762,6 +795,7 @@ function EditorPage() {
                             })
                             if (v) {
                                 setShowPublishModal(false)
+                                setSavedBrand(brand)
                                 setHasChanges(false)
                             }
                         }}

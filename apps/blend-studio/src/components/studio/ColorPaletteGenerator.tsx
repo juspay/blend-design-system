@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ArrowsClockwise, Eyedropper, XIcon } from '@phosphor-icons/react'
+import { ArrowsClockwiseIcon, CopyIcon, XIcon } from '@phosphor-icons/react'
 import {
     ButtonV2,
     ButtonV2Size,
@@ -24,7 +24,10 @@ import {
 interface ColorPaletteGeneratorProps {
     label: string
     value: Record<string, string>
+    /** Saved palette for this group — reset restores to this */
+    initialValue: Record<string, string>
     onChange: (shades: Record<string, string>) => void
+    onReset: (shades: Record<string, string>) => void
     /** Which shade to treat as the "base" for generation (defaults to "500") */
     baseShade?: string
 }
@@ -36,7 +39,9 @@ interface ColorPaletteGeneratorProps {
 export function ColorPaletteGenerator({
     label,
     value,
+    initialValue,
     onChange,
+    onReset,
     baseShade = '500',
 }: ColorPaletteGeneratorProps) {
     // ------------------------------------------------------------------
@@ -50,6 +55,10 @@ export function ColorPaletteGenerator({
     const [overriddenShades, setOverriddenShades] = useState<Set<ShadeKey>>(
         new Set()
     )
+
+    useEffect(() => {
+        setOverriddenShades(new Set())
+    }, [label, baseShade])
 
     useEffect(() => {
         if (!showOverrides) {
@@ -102,6 +111,15 @@ export function ColorPaletteGenerator({
         onChange(scale)
     }
 
+    const handleResetRandom = () => {
+        const restored = { ...initialValue }
+        const baseHex =
+            normaliseHex(restored[baseShade] || '#3B82F6') ?? '#3B82F6'
+        setOverriddenShades(new Set())
+        setBaseHexInput(baseHex)
+        onReset(restored)
+    }
+
     const handleResetShade = (shade: ShadeKey) => {
         setOverriddenShades((prev) => {
             const next = new Set(prev)
@@ -112,6 +130,25 @@ export function ColorPaletteGenerator({
         if (updated) onChange(updated)
     }
 
+    const handleCopyPalette = async () => {
+        const palette = SHADE_KEYS.reduce<Record<string, string>>(
+            (acc, shade) => {
+                const hex = normaliseHex(value[shade] ?? '')
+                if (hex) acc[shade] = hex
+                return acc
+            },
+            {}
+        )
+
+        try {
+            await navigator.clipboard.writeText(
+                JSON.stringify(palette, null, 2)
+            )
+        } catch {
+            // Clipboard unavailable (e.g. non-secure context)
+        }
+    }
+
     // ------------------------------------------------------------------
     // Render
     // ------------------------------------------------------------------
@@ -120,14 +157,11 @@ export function ColorPaletteGenerator({
         <div className="flex min-h-0 w-full flex-1 flex-col" aria-label={label}>
             <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto">
                 <div className="flex flex-col gap-2">
-                    <div>
-                        <h3 className="mb-2 text-xs font-semibold text-gray-700 border-b py-[12px] px-[16px]">
+                    <div className="px-[16px] flex flex-col gap-2 my-[24px]">
+                        <h3 className="text-xs font-semibold text-gray-700">
                             Base Value HEX
                         </h3>
-                        <button
-                            type="button"
-                            className="relative pt-[12px] px-[16px]"
-                        >
+                        <button type="button" className="relative  w-full">
                             <TextInputV2
                                 type="text"
                                 value={baseHexInput}
@@ -162,45 +196,71 @@ export function ColorPaletteGenerator({
                                 aria-label="Pick base colour"
                             />
                         </button>
-                    </div>
-
-                    <div className="flex gap-1 py-[12px] px-[16px]">
-                        {SHADE_KEYS.map((shade) => {
-                            const color = value[shade] || '#CCCCCC'
-                            return (
-                                <div
-                                    key={shade}
-                                    className="group relative h-6 flex-1 cursor-default rounded-md border border-gray-100"
-                                    style={{
-                                        backgroundColor: color,
-                                        height: '60px',
-                                    }}
-                                    title={`${shade}: ${color}`}
-                                >
-                                    <span
-                                        className={`absolute inset-0 flex items-center justify-center text-[9px] font-semibold opacity-0 transition-opacity group-hover:opacity-100 ${
-                                            isLightColor(color)
-                                                ? 'text-gray-800'
-                                                : 'text-white'
-                                        }`}
+                        <div className="flex gap-1">
+                            {SHADE_KEYS.map((shade) => {
+                                const color = value[shade] || '#CCCCCC'
+                                return (
+                                    <div
+                                        key={shade}
+                                        className="group relative h-6 flex-1 cursor-default rounded-lg border border-gray-100"
+                                        style={{
+                                            backgroundColor: color,
+                                            height: '48px',
+                                        }}
+                                        title={`${shade}: ${color}`}
                                     >
-                                        {shade}
-                                    </span>
-                                </div>
-                            )
-                        })}
+                                        <span
+                                            className={`absolute inset-0 flex items-center justify-center text-[9px] font-semibold opacity-0 transition-opacity group-hover:opacity-100 ${
+                                                isLightColor(color)
+                                                    ? 'text-gray-800'
+                                                    : 'text-white'
+                                            }`}
+                                        >
+                                            {shade}
+                                        </span>
+                                    </div>
+                                )
+                            })}
+                        </div>
                     </div>
 
-                    <div className="flex justify-center px-[16px]">
+                    <div className="flex justify-center px-[16px] gap-2">
                         <ButtonV2
                             buttonType={ButtonV2Type.SECONDARY}
                             size={ButtonV2Size.MEDIUM}
                             onClick={handleGenerateRandom}
                             text="Generate Random"
-                            leftSlot={{
-                                slot: <ArrowsClockwise className="h-4 w-4" />,
-                            }}
                             width="100%"
+                        />
+                        <ButtonV2
+                            buttonType={ButtonV2Type.SECONDARY}
+                            size={ButtonV2Size.MEDIUM}
+                            onClick={handleResetRandom}
+                            aria-label="Reset palette"
+                            leftSlot={{
+                                slot: (
+                                    <ArrowsClockwiseIcon
+                                        className="h-4 w-4"
+                                        weight="bold"
+                                    />
+                                ),
+                            }}
+                            width={36}
+                        />
+                        <ButtonV2
+                            buttonType={ButtonV2Type.SECONDARY}
+                            size={ButtonV2Size.MEDIUM}
+                            onClick={handleCopyPalette}
+                            aria-label="Copy palette"
+                            leftSlot={{
+                                slot: (
+                                    <CopyIcon
+                                        className="h-4 w-4"
+                                        weight="bold"
+                                    />
+                                ),
+                            }}
+                            width={36}
                         />
                     </div>
                 </div>
@@ -255,35 +315,19 @@ export function ColorPaletteGenerator({
                                             >
                                                 <button
                                                     type="button"
-                                                    className="relative min-w-0"
+                                                    className="relative flex min-w-0 items-stretch"
                                                 >
-                                                    <TextInputV2
-                                                        type="text"
-                                                        value={color}
-                                                        onChange={(e) =>
-                                                            handleShadeChange(
-                                                                shade,
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        size={InputSizeV2.SM}
-                                                        spellCheck={false}
-                                                        aria-label={`${shade} hex value`}
-                                                        leftSlot={{
-                                                            slot: (
-                                                                <span className="flex items-center gap-1">
-                                                                    <span
-                                                                        className="h-3 w-3 rounded"
-                                                                        style={{
-                                                                            backgroundColor:
-                                                                                color,
-                                                                        }}
-                                                                    />
-                                                                    <Eyedropper className="h-3 w-3 text-gray-300" />
-                                                                </span>
-                                                            ),
-                                                        }}
-                                                    />
+                                                    <div className="relative w-[36px] shrink-0 self-stretch mr-[12px]">
+                                                        <span
+                                                            className="absolute inset-0 rounded-[8px]"
+                                                            style={{
+                                                                backgroundColor:
+                                                                    normaliseHex(
+                                                                        color
+                                                                    ) ?? color,
+                                                            }}
+                                                        />
+                                                    </div>
                                                     <input
                                                         type="color"
                                                         value={
@@ -299,6 +343,19 @@ export function ColorPaletteGenerator({
                                                         }
                                                         className="absolute inset-y-0 left-0 h-full w-8 cursor-pointer opacity-0"
                                                         aria-label={`Pick ${shade} colour`}
+                                                    />
+                                                    <TextInputV2
+                                                        type="text"
+                                                        value={color}
+                                                        onChange={(e) =>
+                                                            handleShadeChange(
+                                                                shade,
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        size={InputSizeV2.MD}
+                                                        spellCheck={false}
+                                                        aria-label={`${shade} hex value`}
                                                     />
                                                 </button>
 
