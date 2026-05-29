@@ -57,7 +57,7 @@ export const ComponentShowcase = forwardRef<
     return (
         <div
             ref={ref}
-            className={`min-h-full rounded-[28px] mx-[50px] ${surface} ${className}`}
+            className={`min-h-full rounded-[28px] mx-[50px] bg-white ${surface} ${className}`}
         >
             <div className={getShowcaseGridClassNames(isMobile)}>
                 <Card variant={CardVariant.CUSTOM}>

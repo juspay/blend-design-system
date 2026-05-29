@@ -153,6 +153,8 @@ export function ColorPaletteGenerator({
     // Render
     // ------------------------------------------------------------------
 
+    const isPrimaryColorTab = label.startsWith('Primary')
+
     return (
         <div className="flex min-h-0 w-full flex-1 flex-col" aria-label={label}>
             <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto">
@@ -168,14 +170,14 @@ export function ColorPaletteGenerator({
                                 onChange={(e) =>
                                     handleBaseColorChange(e.target.value)
                                 }
-                                size={InputSizeV2.MD}
+                                size={InputSizeV2.LG}
                                 spellCheck={false}
                                 placeholder="#3B82F6"
                                 aria-label="Base hex value"
                                 leftSlot={{
                                     slot: (
                                         <span
-                                            className="h-3 w-3 rounded border border-gray-200"
+                                            className="h-3 w-3 rounded-sm"
                                             style={{
                                                 backgroundColor:
                                                     normaliseHex(
@@ -224,45 +226,82 @@ export function ColorPaletteGenerator({
                         </div>
                     </div>
 
-                    <div className="flex justify-center px-[16px] gap-2">
-                        <ButtonV2
-                            buttonType={ButtonV2Type.SECONDARY}
-                            size={ButtonV2Size.MEDIUM}
-                            onClick={handleGenerateRandom}
-                            text="Generate Random"
-                            width="100%"
-                        />
-                        <ButtonV2
-                            buttonType={ButtonV2Type.SECONDARY}
-                            size={ButtonV2Size.MEDIUM}
-                            onClick={handleResetRandom}
-                            aria-label="Reset palette"
-                            leftSlot={{
-                                slot: (
-                                    <ArrowsClockwiseIcon
-                                        className="h-4 w-4"
-                                        weight="bold"
-                                    />
-                                ),
-                            }}
-                            width={36}
-                        />
-                        <ButtonV2
-                            buttonType={ButtonV2Type.SECONDARY}
-                            size={ButtonV2Size.MEDIUM}
-                            onClick={handleCopyPalette}
-                            aria-label="Copy palette"
-                            leftSlot={{
-                                slot: (
-                                    <CopyIcon
-                                        className="h-4 w-4"
-                                        weight="bold"
-                                    />
-                                ),
-                            }}
-                            width={36}
-                        />
-                    </div>
+                    {isPrimaryColorTab ? (
+                        <div className="flex justify-center px-[16px] gap-2">
+                            <ButtonV2
+                                buttonType={ButtonV2Type.SECONDARY}
+                                size={ButtonV2Size.MEDIUM}
+                                onClick={handleGenerateRandom}
+                                text="Generate Random"
+                                width="100%"
+                            />
+                            <ButtonV2
+                                buttonType={ButtonV2Type.SECONDARY}
+                                size={ButtonV2Size.MEDIUM}
+                                onClick={handleResetRandom}
+                                aria-label="Reset palette"
+                                leftSlot={{
+                                    slot: (
+                                        <ArrowsClockwiseIcon
+                                            className="h-4 w-4"
+                                            weight="bold"
+                                        />
+                                    ),
+                                }}
+                                width={36}
+                            />
+                            <ButtonV2
+                                buttonType={ButtonV2Type.SECONDARY}
+                                size={ButtonV2Size.MEDIUM}
+                                onClick={handleCopyPalette}
+                                aria-label="Copy palette"
+                                leftSlot={{
+                                    slot: (
+                                        <CopyIcon
+                                            className="h-4 w-4"
+                                            weight="bold"
+                                        />
+                                    ),
+                                }}
+                                width={36}
+                            />
+                        </div>
+                    ) : (
+                        <div className="flex justify-center px-[16px] gap-2">
+                            <ButtonV2
+                                text="Reset"
+                                buttonType={ButtonV2Type.SECONDARY}
+                                size={ButtonV2Size.MEDIUM}
+                                onClick={handleResetRandom}
+                                aria-label="Reset palette"
+                                leftSlot={{
+                                    slot: (
+                                        <ArrowsClockwiseIcon
+                                            className="h-4 w-4"
+                                            weight="bold"
+                                        />
+                                    ),
+                                }}
+                                width="100%"
+                            />
+                            <ButtonV2
+                                text="Copy HEX"
+                                buttonType={ButtonV2Type.SECONDARY}
+                                size={ButtonV2Size.MEDIUM}
+                                onClick={handleCopyPalette}
+                                aria-label="Copy palette"
+                                leftSlot={{
+                                    slot: (
+                                        <CopyIcon
+                                            className="h-4 w-4"
+                                            weight="bold"
+                                        />
+                                    ),
+                                }}
+                                width="100%"
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -356,6 +395,15 @@ export function ColorPaletteGenerator({
                                                         size={InputSizeV2.MD}
                                                         spellCheck={false}
                                                         aria-label={`${shade} hex value`}
+                                                        rightSlot={{
+                                                            slot: isBase ? (
+                                                                <span className="text-[#0E121B] bg-[#F5F7FA] px-[6px] py-[2px] rounded-[4px] text-[12px] weight-[500] font-medium outline-dashed outline-1 outline-[#ECEFF3]">
+                                                                    BASE
+                                                                </span>
+                                                            ) : (
+                                                                <></>
+                                                            ),
+                                                        }}
                                                     />
                                                 </button>
 
@@ -367,20 +415,14 @@ export function ColorPaletteGenerator({
                                                               )
                                                             : undefined
                                                     }
-                                                    className={`text-right text-[11px] font-medium tabular-nums mr-[10px] ${
-                                                        isBase
-                                                            ? 'text-blue-600'
-                                                            : isOverridden
-                                                              ? 'text-amber-600'
-                                                              : 'text-gray-400'
-                                                    }`}
+                                                    className="mr-[10px] text-right font-['JetBrains_Mono',ui-monospace,monospace] text-[12px] font-semibold tabular-nums text-[#717784]"
                                                     title={
                                                         isOverridden
                                                             ? 'Reset this shade'
                                                             : `${shade} shade`
                                                     }
                                                 >
-                                                    {isBase ? 'Base' : shade}
+                                                    {shade}
                                                 </div>
                                             </div>
                                         )
