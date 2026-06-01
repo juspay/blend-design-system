@@ -8,12 +8,14 @@ export const PageBreadcrumb = ({
     style,
     mobileTrigger,
     rightSection,
+    fullScreen,
 }: {
     items: Array<{ label: string; href: string }>
     className?: string
     style?: React.CSSProperties
     mobileTrigger?: React.ReactNode
     rightSection?: React.ReactNode
+    fullScreen?: boolean
 }) => {
     return (
         <nav
@@ -25,7 +27,12 @@ export const PageBreadcrumb = ({
             style={style}
         >
             <div className="h-5 flex items-center justify-between gap-3 min-w-0 lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto">
-                <ol className="flex items-center text-sm min-w-0 overflow-hidden">
+                <ol
+                    className={cn(
+                        'flex items-center text-sm min-w-0 overflow-hidden',
+                        fullScreen && 'lg:pl-5'
+                    )}
+                >
                     {items.map((item, index) => (
                         <li
                             key={item.href}

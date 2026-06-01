@@ -187,7 +187,7 @@ export default function Navbar() {
                                             opacity: 0,
                                             y: -10,
                                             scale: 0.95,
-                                            filter: 'blur(30px)',
+                                            filter: 'blur(10px)',
                                         }}
                                         animate={{
                                             opacity: 1,
@@ -199,7 +199,7 @@ export default function Navbar() {
                                             opacity: 0,
                                             y: -6,
                                             scale: 0.97,
-                                            filter: 'blur(50px)',
+                                            filter: 'blur(20px)',
                                         }}
                                         transition={{
                                             duration: 0.4,

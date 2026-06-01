@@ -8,7 +8,11 @@ function Page() {
     ]
     return (
         <SharedLayout fullWidth showSideBorder={false} baseRoute="/showcase">
-            <PageBreadcrumb items={breadcrumbItems} style={AsideStyle} />
+            <PageBreadcrumb
+                items={breadcrumbItems}
+                style={AsideStyle}
+                fullScreen
+            />
             <Showcase />
         </SharedLayout>
     )
