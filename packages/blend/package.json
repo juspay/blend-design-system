@@ -116,7 +116,7 @@
         "vite": "^6.3.5",
         "vite-plugin-dts": "^4.5.4",
         "vite-plugin-lib-inject-css": "^2.2.2",
-        "vitest": "^3.2.4"
+        "vitest": "^4.1.0"
     },
     "keywords": [
         "react",
