@@ -9,6 +9,10 @@ on:
             - 'apps/blend-studio/**'
             - 'packages/token-engine/**'
             - 'packages/blend/**'
+            - 'package.json'
+            - 'pnpm-lock.yaml'
+            - 'pnpm-workspace.yaml'
+            - 'turbo.json'
             - '.github/workflows/deploy.yml'
     workflow_dispatch:
         inputs:
@@ -209,6 +213,10 @@ jobs:
 
             - name: Install backend dependencies
               run: pnpm install --frozen-lockfile --filter "@blend-design/justbackend..."
+
+            - name: Validate Prisma schema
+              working-directory: apps/backend
+              run: pnpm exec prisma validate --schema=prisma/schema.prisma
 
             - name: Authenticate to Google Cloud
               uses: google-github-actions/auth@v2

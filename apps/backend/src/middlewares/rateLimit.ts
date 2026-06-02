@@ -1,4 +1,4 @@
-import { rateLimit, type Options } from 'express-rate-limit'
+import { ipKeyGenerator, rateLimit, type Options } from 'express-rate-limit'
 import type { Request } from 'express'
 
 /**
@@ -11,7 +11,9 @@ const keyGenerator = (req: Request): string => {
     if (userId) {
         return `user:${userId}`
     }
-    return req.ip ?? 'unknown'
+
+    // Use library helper for IPv6-safe normalization (required in v8+).
+    return ipKeyGenerator(req.ip ?? '')
 }
 
 /**
