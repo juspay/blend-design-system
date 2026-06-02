@@ -6,6 +6,10 @@ import {
     ButtonV2Type,
     TextInputV2,
     InputSizeV2,
+    SnackbarV2,
+    SnackbarV2Position,
+    SnackbarV2Variant,
+    addSnackbarV2,
 } from '@juspay/blend-design-system'
 import {
     SHADE_KEYS,
@@ -149,6 +153,28 @@ export function ColorPaletteGenerator({
         }
     }
 
+    const copyColorToClipboard = async (color: string) => {
+        const hex = normaliseHex(color)
+        if (!hex) return
+
+        try {
+            await navigator.clipboard.writeText(hex)
+            addSnackbarV2({
+                header: 'Color copied',
+                description: hex,
+                variant: SnackbarV2Variant.SUCCESS,
+                position: SnackbarV2Position.BOTTOM_RIGHT,
+                duration: 2000,
+            })
+        } catch {
+            addSnackbarV2({
+                header: 'Could not copy color',
+                variant: SnackbarV2Variant.ERROR,
+                position: SnackbarV2Position.BOTTOM_RIGHT,
+            })
+        }
+    }
+
     // ------------------------------------------------------------------
     // Render
     // ------------------------------------------------------------------
@@ -204,12 +230,26 @@ export function ColorPaletteGenerator({
                                 return (
                                     <div
                                         key={shade}
-                                        className="group relative h-6 flex-1 cursor-default rounded-lg border border-gray-100"
+                                        role="button"
+                                        tabIndex={0}
+                                        className="group relative h-6 flex-1 cursor-pointer rounded-lg border border-gray-100"
                                         style={{
                                             backgroundColor: color,
                                             height: '48px',
                                         }}
                                         title={`${shade}: ${color}`}
+                                        onClick={() =>
+                                            void copyColorToClipboard(color)
+                                        }
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'Enter' ||
+                                                e.key === ' '
+                                            ) {
+                                                e.preventDefault()
+                                                void copyColorToClipboard(color)
+                                            }
+                                        }}
                                     >
                                         <span
                                             className={`absolute inset-0 flex items-center justify-center text-[9px] font-semibold opacity-0 transition-opacity group-hover:opacity-100 ${
@@ -443,6 +483,7 @@ export function ColorPaletteGenerator({
                     </div>
                 )}
             </div>
+            <SnackbarV2 position={SnackbarV2Position.BOTTOM_RIGHT} />
         </div>
     )
 }

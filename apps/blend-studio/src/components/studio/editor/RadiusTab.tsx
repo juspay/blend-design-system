@@ -127,7 +127,7 @@ export function RadiusTab({ brand, onChange }: EditorTabProps) {
             radius: { ...prev.radius, ...preset.values },
         }))
     }
-    const [isPresetsOpen, setIsPresetsOpen] = useState(false)
+    const [isPresetsOpen, setIsPresetsOpen] = useState(true)
     const [isScaleTokensOpen, setIsScaleTokensOpen] = useState(false)
     const presetsReveal = useCollapsibleReveal(isPresetsOpen)
     const scaleTokensReveal = useCollapsibleReveal(isScaleTokensOpen)

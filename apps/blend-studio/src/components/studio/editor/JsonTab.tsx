@@ -5,8 +5,27 @@
  */
 
 import { useState, useEffect } from 'react'
-import { Copy, Check, FileCode, Sun, Moon } from '@phosphor-icons/react'
+import {
+    Copy,
+    Check,
+    FileCode,
+    Sun,
+    Moon,
+    CaretDownIcon,
+    CaretUpIcon,
+    CaretRightIcon,
+    SunIcon,
+    MoonStarsIcon,
+} from '@phosphor-icons/react'
 import type { EditorTabProps } from './types'
+import {
+    ButtonV2,
+    ButtonV2Size,
+    ButtonV2SubType,
+    ButtonV2Type,
+    CodeEditorV2,
+} from '@juspay/blend-design-system'
+import CollapsableHeader from '@/components/shared/CollapsableHeader'
 
 // Simple token tree component for displaying tokens
 function TokenTree({
@@ -165,17 +184,20 @@ function TokenTree({
 }
 
 export function JsonTab({ brand, onChange }: EditorTabProps) {
-    const [text, setText] = useState(() => JSON.stringify(brand, null, 2))
+    const [validJson, setValidJson] = useState(() =>
+        JSON.stringify(brand, null, 2)
+    )
+    const [isJsonOpen, setIsJsonOpen] = useState(true)
     const [isValid, setIsValid] = useState(true)
     const [copied, setCopied] = useState(false)
-
+    const [isLightDarkTokensOpen, setIsLightDarkTokensOpen] = useState(false)
     // Sync text when brand config changes from other tabs
     useEffect(() => {
-        setText(JSON.stringify(brand, null, 2))
+        setValidJson(JSON.stringify(brand, null, 2))
     }, [brand])
 
     const handleChange = (value: string) => {
-        setText(value)
+        setValidJson(value)
         try {
             const parsed = JSON.parse(value)
             onChange(() => parsed)
@@ -186,7 +208,7 @@ export function JsonTab({ brand, onChange }: EditorTabProps) {
     }
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(text)
+        navigator.clipboard.writeText(validJson)
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
     }
@@ -210,48 +232,84 @@ export function JsonTab({ brand, onChange }: EditorTabProps) {
     })
 
     return (
-        <div className="h-full flex flex-col space-y-3">
-            {/* Toolbar */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <FileCode className="w-4 h-4 text-gray-500" />
-                    <span
-                        className={`text-xs font-medium ${
-                            isValid ? 'text-green-600' : 'text-red-600'
-                        }`}
-                    >
-                        {isValid ? 'Valid JSON' : 'Invalid JSON'}
-                    </span>
-                </div>
-                <button
-                    onClick={handleCopy}
-                    className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
-                >
-                    {copied ? (
-                        <Check className="w-3 h-3 text-green-600" />
-                    ) : (
-                        <Copy className="w-3 h-3" />
-                    )}
-                    {copied ? 'Copied' : 'Copy'}
-                </button>
-            </div>
-
-            {/* Raw JSON Editor */}
-            <textarea
-                value={text}
-                onChange={(e) => handleChange(e.target.value)}
-                spellCheck={false}
-                className={`w-full flex-1 min-h-[200px] px-3 py-2 text-xs font-mono border rounded-lg focus:outline-none focus:ring-2 resize-none ${
-                    isValid
-                        ? 'border-gray-200 focus:ring-blue-500'
-                        : 'border-red-300 focus:ring-red-400'
-                }`}
+        <div className="h-full flex flex-col min-h-0">
+            <CollapsableHeader
+                title="Valid JSON"
+                isOpen={isJsonOpen}
+                onToggle={() => setIsJsonOpen(!isJsonOpen)}
             />
+            {isJsonOpen ? (
+                <div className="flex-1 min-h-0 overflow-auto px-[12px] py-[12px]">
+                    <CodeEditorV2
+                        value={validJson}
+                        language="json"
+                        readOnly
+                        header={{
+                            showHeader: false,
+                        }}
+                        height={isLightDarkTokensOpen ? '33vh' : '83.5vh'}
+                    />
+                </div>
+            ) : (
+                <div className="flex-1 min-h-0" />
+            )}
 
+            <div className="shrink-0 w-full flex items-center justify-between px-[16px] py-[12px] outline outline-1 outline-gray-200 bg-white">
+                <h3 className="font-medium text-gray-900 text-[14px] leading-[20px] inter-display">
+                    Light/Dark Mode Tokens
+                </h3>
+                <ButtonV2
+                    onClick={() =>
+                        setIsLightDarkTokensOpen(!isLightDarkTokensOpen)
+                    }
+                    buttonType={ButtonV2Type.SECONDARY}
+                    size={ButtonV2Size.MEDIUM}
+                    subType={ButtonV2SubType.INLINE}
+                    leftSlot={{
+                        slot: isLightDarkTokensOpen ? (
+                            <CaretDownIcon size={16} />
+                        ) : (
+                            <CaretRightIcon size={16} />
+                        ),
+                    }}
+                />
+            </div>
+            {isLightDarkTokensOpen && (
+                <div className="max-h-[500px] overflow-y-auto">
+                    <div className="shrink-0 px-[12px] pt-[12px]">
+                        <CodeEditorV2
+                            value={JSON.stringify(getLightTokens(), null, 2)}
+                            language="json"
+                            readOnly
+                            header={{
+                                showHeader: true,
+                                title: 'Light Tokens',
+                                leftSlot: <SunIcon size={20} weight="fill" />,
+                            }}
+                            height="300px"
+                        />
+                    </div>
+                    <div className="shrink-0 px-[12px] py-[12px]">
+                        <CodeEditorV2
+                            value={JSON.stringify(getDarkTokens(), null, 2)}
+                            language="json"
+                            readOnly
+                            header={{
+                                showHeader: true,
+                                title: 'Dark Tokens',
+                                leftSlot: (
+                                    <MoonStarsIcon size={20} weight="fill" />
+                                ),
+                            }}
+                            height="300px"
+                        />
+                    </div>
+                </div>
+            )}
             {/* Split Token Preview */}
-            <div className="h-[300px] border border-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+            {/* <div className="h-[300px] border border-gray-200 rounded-lg overflow-hidden flex-shrink-0">
                 <div className="grid grid-cols-2 divide-x divide-gray-200 h-full">
-                    {/* Light Tokens */}
+                    
                     <div className="flex flex-col h-full overflow-hidden">
                         <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200 shrink-0">
                             <Sun className="w-4 h-4 text-yellow-500" />
@@ -269,7 +327,7 @@ export function JsonTab({ brand, onChange }: EditorTabProps) {
                         </div>
                     </div>
 
-                    {/* Dark Tokens */}
+                    
                     <div className="flex flex-col h-full overflow-hidden">
                         <div className="flex items-center gap-2 px-3 py-2 bg-gray-800 border-b border-gray-700 shrink-0">
                             <Moon className="w-4 h-4 text-blue-400" />
@@ -287,7 +345,7 @@ export function JsonTab({ brand, onChange }: EditorTabProps) {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
