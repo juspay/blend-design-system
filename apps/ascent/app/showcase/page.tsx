@@ -11,7 +11,7 @@ function Page() {
             <PageBreadcrumb
                 items={breadcrumbItems}
                 style={AsideStyle}
-                fullScreen
+                className="lg:pl-15!"
             />
             <Showcase />
         </SharedLayout>
