@@ -23,8 +23,22 @@ import {
     NumberInputV2,
     RadioV2,
 } from '@juspay/blend-design-system'
-import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react'
+import { CaretDownIcon, CaretUpIcon, XIcon } from '@phosphor-icons/react'
 import { TemplatesIcon } from '@/components/svg/Templates'
+
+const SCALE_TOKENS_PANEL_TRANSITION_MS = 480
+const SCALE_TOKENS_PANEL_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)'
+const SCALE_TOKENS_LIST_OPEN_MS = 420
+
+function getScaleTokensPanelTransitionMs() {
+    if (
+        typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+        return 0
+    }
+    return SCALE_TOKENS_PANEL_TRANSITION_MS
+}
 
 function resolveRadiusValue(
     radius: EditorTabProps['brand']['radius'],
@@ -128,126 +142,247 @@ export function RadiusTab({ brand, onChange }: EditorTabProps) {
         }))
     }
     const [isPresetsOpen, setIsPresetsOpen] = useState(true)
-    const [isScaleTokensOpen, setIsScaleTokensOpen] = useState(false)
+    const [showScaleTokens, setShowScaleTokens] = useState(false)
+    const [scaleTokensMounted, setScaleTokensMounted] = useState(false)
+    const [scaleTokensReveal, setScaleTokensReveal] = useState(false)
+    const closeScaleTokensTimerRef = useRef<ReturnType<
+        typeof setTimeout
+    > | null>(null)
     const presetsReveal = useCollapsibleReveal(isPresetsOpen)
-    const scaleTokensReveal = useCollapsibleReveal(isScaleTokensOpen)
     const current8 = resolveRadiusValue(brand.radius, '8')
 
+    useEffect(() => {
+        return () => {
+            if (closeScaleTokensTimerRef.current) {
+                clearTimeout(closeScaleTokensTimerRef.current)
+            }
+        }
+    }, [])
+
+    const openScaleTokens = () => {
+        if (closeScaleTokensTimerRef.current) {
+            clearTimeout(closeScaleTokensTimerRef.current)
+            closeScaleTokensTimerRef.current = null
+        }
+        setScaleTokensMounted(true)
+        setShowScaleTokens(true)
+    }
+
+    const closeScaleTokens = () => {
+        setScaleTokensReveal(false)
+        setShowScaleTokens(false)
+        if (closeScaleTokensTimerRef.current) {
+            clearTimeout(closeScaleTokensTimerRef.current)
+        }
+        closeScaleTokensTimerRef.current = setTimeout(() => {
+            setScaleTokensMounted(false)
+            closeScaleTokensTimerRef.current = null
+        }, getScaleTokensPanelTransitionMs())
+    }
+
+    useEffect(() => {
+        if (!showScaleTokens) {
+            setScaleTokensReveal(false)
+            return
+        }
+        if (
+            typeof window !== 'undefined' &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ) {
+            setScaleTokensReveal(true)
+            return
+        }
+        const id = requestAnimationFrame(() => {
+            requestAnimationFrame(() => setScaleTokensReveal(true))
+        })
+        return () => cancelAnimationFrame(id)
+    }, [showScaleTokens])
+
     return (
-        <div>
-            {/* Presets */}
+        <div className="flex min-h-0 w-full flex-1 flex-col">
             <div
-                className={`w-full flex items-center justify-between px-[16px] py-[12px] ${isPresetsOpen && 'border-b'} border-gray-200`}
+                className="grid min-h-0 flex-1 motion-reduce:transition-none"
+                style={{
+                    gridTemplateRows: showScaleTokens
+                        ? 'auto minmax(0, 1fr)'
+                        : 'minmax(0, 1fr) auto',
+                    transition: `grid-template-rows ${SCALE_TOKENS_PANEL_TRANSITION_MS}ms ${SCALE_TOKENS_PANEL_EASING}`,
+                }}
             >
-                <h3 className="font-medium text-gray-900 text-[14px] leading-[20px] inter-display">
-                    Templates
-                </h3>
-                <ButtonV2
-                    onClick={() => setIsPresetsOpen(!isPresetsOpen)}
-                    buttonType={ButtonV2Type.SECONDARY}
-                    size={ButtonV2Size.MEDIUM}
-                    subType={ButtonV2SubType.INLINE}
-                    leftSlot={{
-                        slot: isPresetsOpen ? (
-                            <CaretUpIcon size={16} />
-                        ) : (
-                            <CaretDownIcon size={16} />
-                        ),
-                    }}
-                />
-            </div>
-            <CollapsibleSection isOpen={isPresetsOpen} reveal={presetsReveal}>
-                <div className="w-full overflow-x-auto px-[16px] py-[12px]">
-                    <div className="flex w-full flex-col justify-between gap-2">
-                        {RADIUS_PRESETS.map((preset) => {
-                            const previewRadius = preset.values['8']
-                            const isActive = current8 === previewRadius
-                            return (
-                                <Card
-                                    variant={CardVariant.CUSTOM}
-                                    key={preset.name}
-                                >
-                                    <div
-                                        className="flex w-full cursor-pointer items-center justify-between p-[12px]"
-                                        onClick={() => applyPreset(preset)}
-                                    >
-                                        <div className="flex w-full min-w-0 items-center gap-2">
-                                            <TemplatesIcon
-                                                className="shrink-0"
-                                                width={75}
-                                                height={48}
-                                                color={
-                                                    getRadiusPresetSubtitle(
-                                                        preset.name
-                                                    ).color
+                <div className="min-h-0 overflow-y-auto">
+                    {/* Presets */}
+                    <div
+                        className={`w-full flex items-center justify-between px-[16px] py-[12px] ${isPresetsOpen && 'border-b'} border-gray-200`}
+                    >
+                        <h3 className="font-medium text-gray-900 text-[14px] leading-[20px] inter-display">
+                            Templates
+                        </h3>
+                        <ButtonV2
+                            onClick={() => setIsPresetsOpen(!isPresetsOpen)}
+                            buttonType={ButtonV2Type.SECONDARY}
+                            size={ButtonV2Size.MEDIUM}
+                            subType={ButtonV2SubType.INLINE}
+                            leftSlot={{
+                                slot: isPresetsOpen ? (
+                                    <CaretUpIcon size={16} />
+                                ) : (
+                                    <CaretDownIcon size={16} />
+                                ),
+                            }}
+                        />
+                    </div>
+                    <CollapsibleSection
+                        isOpen={isPresetsOpen}
+                        reveal={presetsReveal}
+                    >
+                        <div className="w-full overflow-x-auto px-[16px] py-[12px]">
+                            <div className="flex w-full flex-col justify-between gap-2">
+                                {RADIUS_PRESETS.map((preset) => {
+                                    const previewRadius = preset.values['8']
+                                    const isActive = current8 === previewRadius
+                                    return (
+                                        <Card
+                                            variant={CardVariant.CUSTOM}
+                                            key={preset.name}
+                                        >
+                                            <div
+                                                className="flex w-full cursor-pointer items-center justify-between p-[12px]"
+                                                onClick={() =>
+                                                    applyPreset(preset)
                                                 }
-                                            />
-                                            <div className="flex min-w-0 flex-1 flex-col gap-1">
-                                                <div className="flex items-center justify-between text-[16px] font-semibold text-[#222530]">
-                                                    {preset.name}
-                                                    <RadioV2
-                                                        checked={isActive}
+                                            >
+                                                <div className="flex w-full min-w-0 items-center gap-2">
+                                                    <TemplatesIcon
+                                                        className="shrink-0"
+                                                        width={75}
+                                                        height={48}
+                                                        color={
+                                                            getRadiusPresetSubtitle(
+                                                                preset.name
+                                                            ).color
+                                                        }
+                                                    />
+                                                    <div className="flex min-w-0 flex-1 flex-col gap-1">
+                                                        <div className="flex items-center justify-between text-[16px] font-semibold text-[#222530]">
+                                                            {preset.name}
+                                                            <RadioV2
+                                                                checked={
+                                                                    isActive
+                                                                }
+                                                            />
+                                                        </div>
+                                                        <span className="text-[14px] font-medium text-[#717784]">
+                                                            {
+                                                                getRadiusPresetSubtitle(
+                                                                    preset.name
+                                                                ).text
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Card>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </CollapsibleSection>
+                </div>
+
+                <div
+                    className={`min-h-0 bg-white ${scaleTokensMounted ? '' : 'pt-4'}`}
+                >
+                    {scaleTokensMounted && showScaleTokens ? (
+                        <div className="flex h-full min-h-0 flex-col">
+                            <button
+                                type="button"
+                                onClick={closeScaleTokens}
+                                className="flex w-full shrink-0 items-center justify-between border-b border-t px-[16px] py-[12px] text-left text-xs font-semibold text-gray-700"
+                                aria-expanded={showScaleTokens}
+                            >
+                                <span>Custom Values</span>
+                                <XIcon
+                                    size={16}
+                                    className="text-gray-400 transition-transform duration-300 ease-out"
+                                />
+                            </button>
+
+                            <div
+                                className={`grid min-h-0 flex-1 overflow-hidden motion-reduce:grid-rows-[1fr] motion-reduce:transition-none ${
+                                    scaleTokensReveal
+                                        ? 'grid-rows-[1fr]'
+                                        : 'grid-rows-[0fr]'
+                                }`}
+                                style={{
+                                    transition: `grid-template-rows ${SCALE_TOKENS_LIST_OPEN_MS}ms ${SCALE_TOKENS_PANEL_EASING}`,
+                                }}
+                            >
+                                <div className="min-h-0 h-full overflow-y-auto px-[16px] py-[12px]">
+                                    <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-3 py-[20px]">
+                                        {RADIUS_KEYS.map((key, index) => {
+                                            const staggerIndex = Math.min(
+                                                RADIUS_KEYS.length - 1 - index,
+                                                12
+                                            )
+
+                                            return (
+                                                <div
+                                                    key={key}
+                                                    style={{
+                                                        transitionDelay:
+                                                            scaleTokensReveal
+                                                                ? `${staggerIndex * 24}ms`
+                                                                : '0ms',
+                                                        transitionDuration: `${SCALE_TOKENS_LIST_OPEN_MS}ms`,
+                                                        transitionTimingFunction:
+                                                            SCALE_TOKENS_PANEL_EASING,
+                                                    }}
+                                                    className={`transition-[opacity,transform] motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:transition-none ${
+                                                        scaleTokensReveal
+                                                            ? 'translate-y-0 opacity-100'
+                                                            : 'translate-y-4 opacity-0'
+                                                    }`}
+                                                >
+                                                    <RadiusRow
+                                                        radiusKey={key}
+                                                        value={resolveRadiusValue(
+                                                            brand.radius,
+                                                            key
+                                                        )}
+                                                        onChange={(value) =>
+                                                            onChange(
+                                                                (prev) => ({
+                                                                    ...prev,
+                                                                    radius: {
+                                                                        ...prev.radius,
+                                                                        [key]: value,
+                                                                    },
+                                                                })
+                                                            )
+                                                        }
                                                     />
                                                 </div>
-                                                <span className="text-[14px] font-medium text-[#717784]">
-                                                    {
-                                                        getRadiusPresetSubtitle(
-                                                            preset.name
-                                                        ).text
-                                                    }
-                                                </span>
-                                            </div>
-                                        </div>
+                                            )
+                                        })}
                                     </div>
-                                </Card>
-                            )
-                        })}
-                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : scaleTokensMounted ? (
+                        <div className="min-h-0 overflow-hidden" aria-hidden />
+                    ) : (
+                        <div className="border-t border-gray-200 px-[16px] py-[12px]">
+                            <ButtonV2
+                                buttonType={ButtonV2Type.SECONDARY}
+                                size={ButtonV2Size.LARGE}
+                                onClick={openScaleTokens}
+                                text="Show Override Values"
+                                width="100%"
+                            />
+                        </div>
+                    )}
                 </div>
-            </CollapsibleSection>
-
-            <div className="flex items-center justify-between px-[16px] py-[12px] border-b border-t border-gray-200">
-                <h3 className="font-medium text-gray-900 text-[14px] leading-[20px] inter-display">
-                    Custom Values
-                </h3>
-                <ButtonV2
-                    onClick={() => setIsScaleTokensOpen(!isScaleTokensOpen)}
-                    buttonType={ButtonV2Type.SECONDARY}
-                    size={ButtonV2Size.MEDIUM}
-                    subType={ButtonV2SubType.INLINE}
-                    leftSlot={{
-                        slot: isScaleTokensOpen ? (
-                            <CaretUpIcon size={16} />
-                        ) : (
-                            <CaretDownIcon size={16} />
-                        ),
-                    }}
-                />
             </div>
-            {/* Fine-tune */}
-            <CollapsibleSection
-                isOpen={isScaleTokensOpen}
-                reveal={scaleTokensReveal}
-            >
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(90px,1fr))] gap-3 px-[16px] py-[32px]">
-                    {RADIUS_KEYS.map((key) => (
-                        <RadiusRow
-                            key={key}
-                            radiusKey={key}
-                            value={resolveRadiusValue(brand.radius, key)}
-                            onChange={(value) =>
-                                onChange((prev) => ({
-                                    ...prev,
-                                    radius: {
-                                        ...prev.radius,
-                                        [key]: value,
-                                    },
-                                }))
-                            }
-                        />
-                    ))}
-                </div>
-            </CollapsibleSection>
         </div>
     )
 }
