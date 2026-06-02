@@ -29,13 +29,13 @@ const ZOOM_PINCH_FACTOR = 0.025
 
 interface DesktopShowcaseProps {
     query: string
-    category?: string | null
+    categories?: string[]
     children: React.ReactNode
 }
 
 export function DesktopShowcase({
     query,
-    category,
+    categories = [],
     children,
 }: DesktopShowcaseProps) {
     const router = useRouter()
@@ -64,6 +64,10 @@ export function DesktopShowcase({
 
     // RAF batching
     const rafPendingRef = useRef(false)
+
+    // Tracks whether initial centering has been computed (separate from DOM apply)
+    // This prevents the x===0 guard from failing after hydration resets the DOM
+    const hasInitializedRef = useRef(false)
 
     // Card virtualisation
     const [cards, setCards] = useState<GradientCard[]>([])
@@ -119,7 +123,7 @@ export function DesktopShowcase({
             startY === r.startY &&
             endX === r.endX &&
             endY === r.endY &&
-            z === r.zoom // re-sync when zoom changes even if pan region is same
+            z === r.zoom
         )
             return
 
@@ -144,14 +148,15 @@ export function DesktopShowcase({
             pendingPanRef.current = { x: newPanX, y: newPanY }
 
             applyTransform(newPanX, newPanY, newZoom)
-            syncCards(newPanX, newPanY) // re-sync cards immediately on zoom
+            syncCards(newPanX, newPanY)
         },
         [applyTransform, syncCards]
     )
 
     // Relevance-ranked search results
     const rankedCards = useMemo(() => {
-        if (!query && !category) return null
+        const hasFilters = query || categories.length > 0
+        if (!hasFilters) return null
         const q = query.toLowerCase()
         return showcaseData
             .filter((item) => {
@@ -159,7 +164,9 @@ export function DesktopShowcase({
                     !query ||
                     item.title.toLowerCase().includes(q) ||
                     item.description.toLowerCase().includes(q)
-                const matchesCategory = !category || item.category === category
+                const matchesCategory =
+                    categories.length === 0 ||
+                    categories.includes(item.category)
                 return matchesQuery && matchesCategory
             })
             .map((item) => {
@@ -169,12 +176,13 @@ export function DesktopShowcase({
                 return { ...item, score }
             })
             .sort((a, b) => b.score - a.score)
-    }, [query, category])
+    }, [query, categories])
 
-    //  Snap on query / category change
+    // Snap on query / category change
     useEffect(() => {
         const { w, h } = viewSizeRef.current
-        if (query || category) {
+        const hasFilters = query || categories.length > 0
+        if (hasFilters) {
             const cx = Math.round(w / 2)
             const cy = Math.round(h / 2 - 80)
             panRef.current = { x: cx, y: cy }
@@ -188,7 +196,7 @@ export function DesktopShowcase({
             applyTransform(initX, initY)
             syncCards(initX, initY)
         }
-    }, [query, category, applyTransform, syncCards])
+    }, [query, categories, applyTransform, syncCards])
 
     // Inertia
     const stopInertia = useCallback(() => {
@@ -247,24 +255,44 @@ export function DesktopShowcase({
         const el = containerRef.current
         if (!el) return
 
-        const update = () => {
-            viewSizeRef.current = { w: el.clientWidth, h: el.clientHeight }
-            if (panRef.current.x === 0 && panRef.current.y === 0) {
-                const { w, h } = viewSizeRef.current
+        const init = () => {
+            const w = el.clientWidth
+            const h = el.clientHeight
+            if (w === 0 || h === 0) return
+
+            viewSizeRef.current = { w, h }
+
+            // Compute center pan once
+            if (!hasInitializedRef.current) {
+                hasInitializedRef.current = true
                 const initX = Math.round(w / 2 - CARD_WIDTH / 2)
                 const initY = Math.round(h / 2 - CARD_HEIGHT / 2 - 80)
                 panRef.current = { x: initX, y: initY }
                 pendingPanRef.current = { x: initX, y: initY }
-                applyTransform(initX, initY)
             }
+
+            // Always reapply transform — DOM may have been reset by hydration
+            applyTransform(panRef.current.x, panRef.current.y)
             syncCards(panRef.current.x, panRef.current.y)
         }
 
-        update()
-        window.addEventListener('resize', update)
+        const onResize = () => {
+            const w = el.clientWidth
+            const h = el.clientHeight
+            if (w === 0 || h === 0) return
+            viewSizeRef.current = { w, h }
+            syncCards(panRef.current.x, panRef.current.y)
+        }
+
+        // rAF guarantees real clientWidth/Height on Vercel SSR where layout
+        // may not be available synchronously at effect time
+        const raf = requestAnimationFrame(init)
+
+        window.addEventListener('resize', onResize)
         return () => {
-            window.removeEventListener('resize', update)
-            stopInertia() // clean up inertia on unmount
+            cancelAnimationFrame(raf)
+            window.removeEventListener('resize', onResize)
+            stopInertia()
         }
     }, [syncCards, applyTransform, stopInertia])
 
@@ -479,7 +507,7 @@ export function DesktopShowcase({
             {/* Search/filter overlay */}
             <div
                 className="absolute inset-0 z-10 pointer-events-none transition-opacity duration-300 bg-background/60 backdrop-blur-[2px]"
-                style={{ opacity: query || category ? 1 : 0 }}
+                style={{ opacity: query || categories.length > 0 ? 1 : 0 }}
             />
 
             {/* World canvas */}
