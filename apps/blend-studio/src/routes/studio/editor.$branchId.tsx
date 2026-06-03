@@ -31,7 +31,10 @@ import {
     Separator,
     type PanelImperativeHandle,
 } from 'react-resizable-panels'
-import { type BrandConfig } from '@juspay/blend-design-system/tokens'
+import {
+    buildBrandFoundation,
+    type BrandConfig,
+} from '@juspay/blend-design-system/tokens'
 import {
     useBranchWithMock,
     usePublishVersionWithMock,
@@ -53,6 +56,8 @@ import {
     EditorErrorScreen,
     type EditorTabId,
     type ColorGroupKey,
+    ensureTypographyDefaults,
+    getEffectiveFontFamily,
 } from '@/components/studio/editor'
 import { ToggleButton } from '@/components/studio/editor/ToggleButton'
 import { UserMenu } from '@/components/layout/UserMenu'
@@ -85,6 +90,10 @@ import {
 } from '@phosphor-icons/react'
 import { SidebarV2 } from '@juspay/blend-design-system'
 import { getCurrentReturnPath } from '@/lib/return-path'
+import {
+    getFontFamilyStyle,
+    loadTypographyPreviewFonts,
+} from '@/components/utils'
 import {
     AUTO_SAVE_DELAY_MS,
     TOKEN_RESOLVE_DEBOUNCE_MS,
@@ -185,12 +194,15 @@ function EditorPage() {
         return applyLeftPanelToggleTransition(el, LEFT_PANEL_TOGGLE_MS)
     }, [isLeftPanelOpen])
 
-    // Sync brand from branch on load
+    // Sync brand from branch on load (apply default font when missing)
     useEffect(() => {
-        if (branch?.brandConfig) {
-            setSavedBrand(branch.brandConfig)
-            setBrand((current) => current ?? branch.brandConfig)
-        }
+        if (!branch?.brandConfig) return
+
+        const config = ensureTypographyDefaults(branch.brandConfig)
+        setSavedBrand(config)
+        setBrand((current) =>
+            current ? ensureTypographyDefaults(current) : config
+        )
     }, [branch?.brandConfig])
 
     // Auto-save when there are changes
@@ -234,6 +246,20 @@ function EditorPage() {
                 : null,
         [previewBrand, previewTheme]
     )
+
+    const previewFoundation = useMemo(
+        () => (previewBrand ? buildBrandFoundation(previewBrand) : undefined),
+        [previewBrand]
+    )
+
+    const previewFontStyle = useMemo(
+        () => getFontFamilyStyle(getEffectiveFontFamily(previewBrand)),
+        [previewBrand]
+    )
+
+    useEffect(() => {
+        loadTypographyPreviewFonts([getEffectiveFontFamily(previewBrand)])
+    }, [previewBrand?.font?.family])
 
     const diffs = useMemo(() => computeBrandDiffs(brand), [brand])
 
@@ -408,9 +434,9 @@ function EditorPage() {
                                             </span>
                                         )}
                                     </div>
-                                    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
-                                        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
-                                            <div className="flex min-h-full flex-1 flex-col">
+                                    <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+                                        <div className="flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+                                            <div className="flex h-full min-w-0 flex-1 flex-col">
                                                 {activeTab === 'colors' && (
                                                     <ColorsTab
                                                         brand={brand}
@@ -435,6 +461,7 @@ function EditorPage() {
                                                         onChange={
                                                             handleBrandChange
                                                         }
+                                                        branchId={branchId}
                                                     />
                                                 )}
                                                 {activeTab === 'radius' && (
@@ -733,12 +760,16 @@ function EditorPage() {
                                         {componentTokens ? (
                                             <ThemeProvider
                                                 theme={previewTheme}
+                                                foundationTokens={
+                                                    previewFoundation
+                                                }
                                                 componentTokens={
                                                     componentTokens
                                                 }
                                             >
                                                 <div
                                                     className={`min-h-full p-8 ${getPreviewSurfaceClassName(previewTheme)}`}
+                                                    style={previewFontStyle}
                                                 >
                                                     {activeTab ===
                                                         'components' &&

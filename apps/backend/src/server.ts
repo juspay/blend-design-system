@@ -19,6 +19,7 @@ import apiKeyRoutes from '@/domains/apikeys/entry-points/apikey.routes.js'
 import lockRoutes from '@/domains/locks/entry-points/lock.routes.js'
 import mergeRequestRoutes from '@/domains/mergerequests/entry-points/merge-request.routes.js'
 import publishRequestRoutes from '@/domains/branches/entry-points/publish-request.routes.js'
+import googleFontsRoutes from '@/domains/google-fonts/google-fonts.routes.js'
 // (callback route is mounted via /api/auth router)
 import type { NextFunction, Request, Response } from 'express'
 
@@ -169,7 +170,9 @@ app.use(
         // Allow health and OAuth bootstrap endpoints even while DB is connecting.
         // OAuth callback still depends on DB and should remain guarded.
         const isReadinessBypassPath =
-            req.path === '/health' || req.path === '/auth/google'
+            req.path === '/health' ||
+            req.path === '/auth/google' ||
+            req.path === '/google-fonts'
 
         if (isReadinessBypassPath || isDatabaseReady()) {
             return next()
@@ -208,6 +211,7 @@ const mountApiRoutes = (prefix: string) => {
     app.use(`${prefix}/publish-requests`, apiLimiter, publishRequestRoutes)
     app.use(`${prefix}/tags`, apiLimiter, tagRoutes)
     app.use(`${prefix}/api-keys`, apiLimiter, apiKeyRoutes)
+    app.use(`${prefix}/google-fonts`, apiLimiter, googleFontsRoutes)
     app.use(prefix, apiLimiter, tokenRoutes)
 }
 

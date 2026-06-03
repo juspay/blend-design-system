@@ -25,6 +25,8 @@ const envSchema = z.object({
 
     FRONTEND_URL: z.string().default('http://localhost:5173'),
     STUDIO_URL: z.string().default(''),
+    /** Google Fonts Developer API key (optional; enables /api/google-fonts). */
+    GOOGLE_FONTS_API_KEY: z.string().optional(),
 })
 
 const isValidUrl = (value: string): boolean => {

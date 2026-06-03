@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { generateColorScale } from '@juspay/blend-design-system/tokens'
+import { buildGoogleFontCss2FamilyParam } from '@/lib/google-fonts'
 
 export const TYPOGRAPHY_PREVIEW_FONTS_LINK_ID =
     'typography-preview-google-fonts'
@@ -16,17 +17,30 @@ export function getFontFamilyStyle(family: string): CSSProperties {
     return { fontFamily: `"${trimmed}", sans-serif` }
 }
 
+export type TypographyPreviewFontSpec =
+    | string
+    | { family: string; variants?: readonly string[] }
+
 /** Load Google Fonts used by the typography editor preview. */
-export function loadTypographyPreviewFonts(families: readonly string[]): void {
+export function loadTypographyPreviewFonts(
+    fonts: readonly TypographyPreviewFontSpec[]
+): void {
     if (typeof document === 'undefined') return
 
-    const webFonts = families.filter(
-        (family) => family.trim().toLowerCase() !== 'system ui'
-    )
-    if (webFonts.length === 0) return
+    const specs = fonts
+        .map((entry) =>
+            typeof entry === 'string'
+                ? { family: entry, variants: undefined }
+                : entry
+        )
+        .filter((spec) => spec.family.trim().toLowerCase() !== 'system ui')
 
-    const href = `https://fonts.googleapis.com/css2?${webFonts
-        .map((family) => `family=${family.trim().replace(/\s+/g, '+')}`)
+    if (specs.length === 0) return
+
+    const href = `https://fonts.googleapis.com/css2?${specs
+        .map((spec) =>
+            buildGoogleFontCss2FamilyParam(spec.family, spec.variants)
+        )
         .join('&')}&display=swap`
 
     let link = document.getElementById(
