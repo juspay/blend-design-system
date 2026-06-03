@@ -1,0 +1,491 @@
+---
+version: 2
+title: Single Select
+description: The SingleSelectV2 component allows users to select a single option from a dropdown menu with search, grouping, and virtualization support.
+category: Selection
+tags:
+    - single-select
+    - component
+    - selection
+    - dropdown
+    - form
+RepoFolderName: SingleSelectV2
+StorybookLink: components-singleselect-singleselectv2--docs
+---
+
+<SingleSelectV2Preview />
+
+## Usage
+
+```tsx
+import { SingleSelectV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [selected, setSelected] = useState('')
+    const items = [
+        {
+            groupLabel: 'Countries',
+            items: [
+                { label: 'United States', value: 'us' },
+                { label: 'United Kingdom', value: 'uk' },
+                { label: 'Canada', value: 'ca' },
+            ],
+        },
+        {
+            groupLabel: 'Asia',
+            items: [
+                { label: 'Japan', value: 'jp' },
+                { label: 'Singapore', value: 'sg' },
+            ],
+        },
+    ]
+
+    return (
+        <SingleSelectV2
+            label="Select Country"
+            placeholder="Choose a country..."
+            selected={selected}
+            onSelect={setSelected}
+            items={items}
+            search={{ show: true, placeholder: 'Search countries...' }}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'selected',
+                hintText: 'Required. Currently selected option value.',
+            },
+            {
+                content: 'string',
+                hintText: 'Selected value string',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onSelect',
+                hintText: 'Required. Callback fired when selection changes.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Selection change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'items',
+                hintText: 'Grouped options available for selection.',
+            },
+            {
+                content: 'SingleSelectV2GroupType[]',
+                hintText: 'Array of groups with items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText:
+                    'Required. Placeholder text shown when no option is selected.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Field label displayed above the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText:
+                    'Secondary label text displayed below the main label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper description',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconText',
+                hintText: 'Tooltip text for the help icon.',
+            },
+            {
+                content: 'string',
+                hintText: 'Help tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'When true, displays a required indicator.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true marks field as required',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Size variant affecting input height and text sizing.',
+            },
+            {
+                content: 'SingleSelectV2Size',
+                hintText: 'Enum for component size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'Visual style of the select input.',
+            },
+            {
+                content: 'SingleSelectV2Variant',
+                hintText: 'Enum for visual style',
+            },
+            { content: 'CONTAINER, NO_CONTAINER' },
+        ],
+        [
+            {
+                content: 'search',
+                hintText: 'Configuration for search functionality in dropdown.',
+            },
+            {
+                content: 'SingleSelectV2SearchConfig',
+                hintText: 'Object with show and placeholder',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText:
+                    'Custom element displayed in the trigger alongside value.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Additional slot content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'customTrigger',
+                hintText:
+                    'Completely custom trigger element replacing default.',
+            },
+            {
+                content: 'ReactElement',
+                hintText: 'Custom trigger component',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'open',
+                hintText: 'Controlled open state of the dropdown.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true opens the dropdown',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onOpenChange',
+                hintText: 'Callback fired when dropdown open state changes.',
+            },
+            {
+                content: '(open: boolean) => void',
+                hintText: 'Open state change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'usePanelOnMobile',
+                hintText: 'When true, renders as a bottom panel on mobile.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true uses panel on mobile',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'menuPosition',
+                hintText: 'Positioning configuration for the dropdown menu.',
+            },
+            {
+                content: 'SingleSelectV2MenuPosition',
+                hintText: 'alignment, side, sideOffset, alignOffset',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'menuDimensions',
+                hintText: 'Size constraints for the dropdown menu.',
+            },
+            {
+                content: 'SingleSelectV2MenuDimensions',
+                hintText: 'minWidth, maxWidth, maxHeight',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'triggerDimensions',
+                hintText: 'Size constraints for the trigger element.',
+            },
+            {
+                content: 'SingleSelectV2TriggerDimensions',
+                hintText: 'minWidth, maxWidth, width',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'inline',
+                hintText:
+                    'When true, renders in inline mode for compact layouts.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables inline mode',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Error state configuration.',
+            },
+            {
+                content: 'SingleSelectV2ErrorState',
+                hintText: 'Object with show and message',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enableVirtualization',
+                hintText: 'When true, uses virtual rendering for large lists.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables virtualization',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'virtualListItemHeight',
+                hintText: 'Height of each virtualized item in pixels.',
+            },
+            {
+                content: 'number',
+                hintText: 'Item height in px',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'virtualListOverscan',
+                hintText:
+                    'Number of items to render outside the visible viewport.',
+            },
+            {
+                content: 'number',
+                hintText: 'Extra items to render for smoother scrolling',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onEndReached',
+                hintText:
+                    'Callback fired when scrolling reaches the end of list.',
+            },
+            {
+                content: '() => void',
+                hintText: 'End reached handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hasMore',
+                hintText:
+                    'For infinite scroll: indicates more items are available.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true indicates more items available',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'loadingComponent',
+                hintText:
+                    'Custom loading UI shown during infinite scroll loading.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Custom spinner or loading indicator',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'endReachedThreshold',
+                hintText:
+                    'Pixel threshold before end of list to trigger onEndReached.',
+            },
+            {
+                content: 'number',
+                hintText: 'Pixel offset from bottom of list',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'allowCustomValue',
+                hintText:
+                    'When true, allows users to enter values not in the list.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables custom values',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'customValueLabel',
+                hintText: 'Label for custom value option.',
+            },
+            {
+                content: 'string',
+                hintText: 'Custom value label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText: 'Configuration for skeleton loading state.',
+            },
+            {
+                content: 'SingleSelectV2SkeletonProps',
+                hintText: 'Object with show, variant, and count',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the SingleSelectV2 component using the following tokens:
+
+```tsx
+export type SingleSelectV2TokensType = {
+    trigger: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        border: {
+            default: CSSObject['border']
+            hover: CSSObject['border']
+            focus: CSSObject['border']
+            error: CSSObject['border']
+            disabled: CSSObject['border']
+        }
+        background: {
+            default: CSSObject['background']
+            disabled: CSSObject['background']
+        }
+        fontSize: CSSObject['fontSize']
+        color: CSSObject['color']
+    }
+    menu: {
+        background: CSSObject['background']
+        borderRadius: CSSObject['borderRadius']
+        border: CSSObject['border']
+        boxShadow: CSSObject['boxShadow']
+        padding: CSSObject['padding']
+    }
+    groupLabel: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+        padding: CSSObject['padding']
+    }
+    item: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        fontSize: CSSObject['fontSize']
+        color: {
+            default: CSSObject['color']
+            hover: CSSObject['color']
+            selected: CSSObject['color']
+            disabled: CSSObject['color']
+        }
+        background: {
+            default: CSSObject['background']
+            hover: CSSObject['background']
+            selected: CSSObject['background']
+        }
+    }
+    search: {
+        padding: CSSObject['padding']
+        input: {
+            borderRadius: CSSObject['borderRadius']
+            border: CSSObject['border']
+            padding: CSSObject['padding']
+        }
+    }
+}
+```

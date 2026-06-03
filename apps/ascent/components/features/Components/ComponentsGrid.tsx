@@ -68,7 +68,7 @@ const ComponentsGrid = () => {
     ]
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen w-full lg:border-l border-border">
             <PageBreadcrumb items={breadcrumbItems} />
 
             {/* Header - matching ChangelogHeader style */}

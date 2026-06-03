@@ -2,6 +2,11 @@ import type { Request, Response, NextFunction } from 'express'
 import { AppError } from '@/errors/AppError.js'
 import { logger } from '@/utils/logger.js'
 import { isDevelopment } from '@/config/index.js'
+import {
+    isPrismaError,
+    logPrismaError,
+    mapPrismaErrorToAppError,
+} from '@/utils/prismaErrorHandler.js'
 
 export const errorHandler = (
     err: Error,
@@ -9,19 +14,30 @@ export const errorHandler = (
     res: Response,
     _next: NextFunction
 ): void => {
+    let normalizedError: Error = err
+
+    if (isPrismaError(err)) {
+        logPrismaError(err)
+
+        const mappedError = mapPrismaErrorToAppError(err)
+        if (mappedError) {
+            normalizedError = mappedError
+        }
+    }
+
     let statusCode = 500
     let message = 'Internal Server Error'
     let code = 'INTERNAL_ERROR'
 
-    if (err instanceof AppError) {
-        statusCode = err.statusCode
-        message = err.message
-        code = err.code
+    if (normalizedError instanceof AppError) {
+        statusCode = normalizedError.statusCode
+        message = normalizedError.message
+        code = normalizedError.code
 
-        if (!err.isOperational) {
-            logger.error(err, 'Unexpected error occurred')
+        if (!normalizedError.isOperational) {
+            logger.error(normalizedError, 'Unexpected error occurred')
         }
-    } else {
+    } else if (!isPrismaError(err)) {
         logger.error(err, 'Unhandled error occurred')
     }
 
@@ -30,7 +46,7 @@ export const errorHandler = (
         error: {
             code,
             message,
-            ...(isDevelopment && { stack: err.stack }),
+            ...(isDevelopment && { stack: normalizedError.stack }),
         },
     })
 }

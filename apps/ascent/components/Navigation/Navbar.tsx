@@ -13,6 +13,7 @@ import {
 } from '../../lib/constants/links'
 import { cn } from '@/lib/utils/cn'
 import ThemeToggle from '../ui/ThemeToggle/ThemeToggle'
+import VersionToggle from '../ui/VersionToggle'
 
 const PRIMARY_NAV_LABELS = ['Docs', 'Storybook']
 const MORE_NAV_LABELS = ['Blogs', 'Changelog', 'Showcase']
@@ -119,13 +120,16 @@ export default function Navbar() {
     return (
         <header className="lg:max-w-5xl xl:max-w-6xl 2xl:max-w-360 mx-auto relative z-100">
             <div className="mx-auto px-4 sm:px-6.25 py-5 h-15 flex items-center justify-between border-x border-border">
-                <Link
-                    href={ROUTES.home}
-                    className="flex items-center font-semibold text-foreground"
-                    aria-label="Home"
-                >
-                    Blend
-                </Link>
+                <div className="flex items-center gap-4">
+                    <Link
+                        href={ROUTES.home}
+                        className="flex items-center font-semibold text-foreground"
+                        aria-label="Home"
+                    >
+                        Blend
+                    </Link>
+                    <VersionToggle />
+                </div>
 
                 {/* Desktop */}
                 <div className="hidden md:flex items-center gap-4">
@@ -183,7 +187,7 @@ export default function Navbar() {
                                             opacity: 0,
                                             y: -10,
                                             scale: 0.95,
-                                            filter: 'blur(30px)',
+                                            filter: 'blur(10px)',
                                         }}
                                         animate={{
                                             opacity: 1,
@@ -195,7 +199,7 @@ export default function Navbar() {
                                             opacity: 0,
                                             y: -6,
                                             scale: 0.97,
-                                            filter: 'blur(50px)',
+                                            filter: 'blur(20px)',
                                         }}
                                         transition={{
                                             duration: 0.4,

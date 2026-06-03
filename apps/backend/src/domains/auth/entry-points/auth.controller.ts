@@ -142,7 +142,7 @@ export const googleCallback = async (req: Request, res: Response) => {
             secure: env.NODE_ENV === 'production',
             sameSite: cookieSameSite,
             maxAge: REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60 * 1000,
-            path: '/api/auth',
+            path: '/api',
         })
 
         // Set access token as httpOnly cookie for secure browser requests.
@@ -235,7 +235,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
             secure: env.NODE_ENV === 'production',
             sameSite: cookieSameSite,
             maxAge: REFRESH_TOKEN_EXPIRES_DAYS * 24 * 60 * 60 * 1000,
-            path: '/api/auth',
+            path: '/api',
         })
 
         res.cookie('accessToken', newTokens.accessToken, {
@@ -296,6 +296,12 @@ export const logout = async (req: Request, res: Response) => {
             sameSite: cookieSameSite,
             path: '/api/auth',
         })
+        res.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: env.NODE_ENV === 'production',
+            sameSite: cookieSameSite,
+            path: '/api',
+        })
     }
 
     res.clearCookie('accessToken', {
@@ -320,6 +326,12 @@ export const logoutAllDevices = async (req: Request, res: Response) => {
         secure: env.NODE_ENV === 'production',
         sameSite: cookieSameSite,
         path: '/api/auth',
+    })
+    res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: env.NODE_ENV === 'production',
+        sameSite: cookieSameSite,
+        path: '/api',
     })
 
     res.clearCookie('accessToken', {

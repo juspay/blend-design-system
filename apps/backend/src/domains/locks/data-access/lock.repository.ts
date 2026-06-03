@@ -6,7 +6,7 @@ export interface TokenLockRow {
     organizationId: string
     tokenPath: string
     reason: string | null
-    lockedBy: string
+    lockedBy: string | null
     createdAt: Date
 }
 

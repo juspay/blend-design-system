@@ -4,7 +4,7 @@ import { NotFoundError, ValidationError } from '@/errors/AppError.js'
 
 export interface TokenUploadMetadata {
     branchId: string
-    uploadedBy: string
+    uploadedBy: string | null
     uploadedByName: string
     uploadedAt: Date
     fileName: string

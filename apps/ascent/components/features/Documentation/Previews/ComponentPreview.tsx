@@ -70,8 +70,8 @@ const ComponentPreview = ({
                     value={activeTab}
                     onValueChange={setActiveTab}
                 >
-                    <Tabs.List className="w-full pt-4 pb-2.5 px-5 flex items-center gap-1">
-                        <div className="px-1 py-0.5 bg-muted rounded-xl flex items-center gap-3">
+                    <Tabs.List className="w-full pt-4 pb-2.5 px-1.5 md:px-5 flex items-center gap-1">
+                        <div className="px-1 py-0.5 bg-muted rounded-xl flex items-center gap-0 sm:gap-3">
                             {tabs.map((tab) => (
                                 <Tabs.Trigger
                                     key={tab.id}
@@ -79,7 +79,7 @@ const ComponentPreview = ({
                                     className="px-3 h-7 rounded-lg cursor-pointer text-sm font-medium
                 data-[state=active]:bg-background data-[state=active]:text-foreground
                 data-[state=inactive]:text-gray-500 data-[state=inactive]:hover:text-gray-700
-                focus:outline-none transition-colors"
+                focus:outline-none transition-colors truncate line-clamp-1"
                                     data-nav-content
                                 >
                                     {tab.label}

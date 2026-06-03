@@ -11,7 +11,7 @@ const upload = multer({ storage: multer.memoryStorage() })
 
 /**
  * @openapi
- * /api/branches/{branchId}/tokens/upload:
+ * /api/v1/branches/{branchId}/tokens/upload:
  *   post:
  *     summary: Upload a token JSON file
  *     description: Upload and validate a token configuration JSON file
@@ -82,7 +82,7 @@ router.post(
 
 /**
  * @openapi
- * /api/branches/{branchId}/tokens:
+ * /api/v1/branches/{branchId}/tokens:
  *   get:
  *     summary: List all tokens for a branch
  *     description: Get all uploaded token files for a specific branch
@@ -120,7 +120,7 @@ router.get(
 
 /**
  * @openapi
- * /api/branches/{branchId}/tokens/{tokenId}:
+ * /api/v1/branches/{branchId}/tokens/{tokenId}:
  *   get:
  *     summary: Get a specific token by ID
  *     description: Retrieve token metadata by ID
@@ -174,7 +174,7 @@ router.get(
 
 /**
  * @openapi
- * /api/branches/{branchId}/tokens/{tokenId}/download:
+ * /api/v1/branches/{branchId}/tokens/{tokenId}/download:
  *   get:
  *     summary: Download token file content
  *     description: Download the raw JSON token file
@@ -222,7 +222,7 @@ router.get(
 
 /**
  * @openapi
- * /api/branches/{branchId}/tokens/{tokenId}:
+ * /api/v1/branches/{branchId}/tokens/{tokenId}:
  *   delete:
  *     summary: Delete a token
  *     description: Delete a token file and its metadata

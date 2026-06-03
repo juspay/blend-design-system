@@ -1,0 +1,203 @@
+---
+version: 2
+title: OTP Input
+description: The OTPInputV2 component provides a one-time password input with separate fields for each digit.
+category: Form Input
+tags:
+    - otp-input
+    - component
+    - input
+    - verification
+    - code
+RepoFolderName: OTPInputV2
+StorybookLink: components-inputs-otpinputv2--docs
+---
+
+<OTPInputV2Preview />
+
+## Usage
+
+```tsx
+import { OTPInputV2 } from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [otp, setOtp] = useState('')
+
+    return <OTPInputV2 length={6} value={otp} onChange={setOtp} />
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'length',
+                hintText: 'Required. Number of input fields (digits).',
+            },
+            {
+                content: 'number',
+                hintText: 'Digit count (typically 4-8)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'value',
+                hintText: 'Current OTP value as a string.',
+            },
+            {
+                content: 'string',
+                hintText: 'Complete OTP string',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback fired when OTP value changes.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, all inputs are non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables all inputs',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'autoFocus',
+                hintText: 'When true, focuses first input on mount.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true auto-focuses',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'When true, shows error styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows error state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'errorMessage',
+                hintText: 'Error message text displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Error message text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Field label displayed above the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'sublabel',
+                hintText:
+                    'Secondary label text displayed below the main label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconHintText',
+                hintText: 'Tooltip text for the help icon next to the label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Help icon tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper text content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'form',
+                hintText: 'Form ID to associate with the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Form identifier',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the OTPInputV2 component using the following tokens:
+
+```tsx
+export type OTPInputV2TokensType = {
+    gap: CSSObject['gap']
+    topContainer: InputLabelsV2Tokens
+    inputContainer: {
+        gap: CSSObject['gap']
+        input: {
+            height: CSSObject['height']
+            width: CSSObject['width']
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+            borderRadius: CSSObject['borderRadius']
+            border: {
+                [key in InputStateV2]: CSSObject['border']
+            }
+            backgroundColor: {
+                [key in InputStateV2]: CSSObject['backgroundColor']
+            }
+        }
+    }
+    bottomContainer: InputFooterV2Tokens
+}
+```

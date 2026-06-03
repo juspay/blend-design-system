@@ -1,5 +1,4 @@
 import { Metadata } from 'next'
-import { SharedLayout } from '@/components/layout'
 import { ComponentsGrid } from '@/components/features/Components'
 
 export const metadata: Metadata = {
@@ -9,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function ComponentsPage() {
     return (
-        <SharedLayout baseRoute="/docs">
+        <>
             <ComponentsGrid />
-        </SharedLayout>
+        </>
     )
 }

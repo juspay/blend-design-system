@@ -10,23 +10,23 @@ import SearchBar from './SearchBar'
 export default function Showcase() {
     const isMobile = useMobile()
     const [query, setQuery] = useState('')
-    const [category, setCategory] = useState<string | null>(null)
+    const [categories, setCategories] = useState<string[]>([])
 
     if (isMobile === undefined) return null
     return isMobile ? (
         <MobileShowcase
             query={query}
-            category={category}
-            onCategoryChange={setCategory}
+            categories={categories}
+            onCategoryChange={setCategories}
             onSearch={setQuery}
         />
     ) : (
-        <DesktopShowcase query={query} category={category}>
+        <DesktopShowcase query={query} categories={categories}>
             <SearchBar
                 onSearch={setQuery}
                 categories={showcaseCategories}
-                selectedCategory={category}
-                onCategoryChange={setCategory}
+                selectedCategories={categories}
+                onCategoryChange={setCategories}
             />
         </DesktopShowcase>
     )
