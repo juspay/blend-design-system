@@ -23,6 +23,7 @@ import {
     TagV2Color,
     TagV2Size,
     ThemeProvider,
+    TooltipV2,
 } from '@juspay/blend-design-system'
 import {
     Panel,
@@ -68,10 +69,7 @@ import {
     Moon,
     Code,
     TextAa,
-    Sliders,
-    GitBranch,
     Repeat,
-    Palette,
     Stack,
     LaptopIcon,
     DeviceMobileSpeakerIcon,
@@ -80,6 +78,10 @@ import {
     PlayIcon,
     SlidersIcon,
     DownloadIcon,
+    PaletteIcon,
+    BezierCurveIcon,
+    GitBranchIcon,
+    CaretLeftIcon,
 } from '@phosphor-icons/react'
 import { SidebarV2 } from '@juspay/blend-design-system'
 import { getCurrentReturnPath } from '@/lib/return-path'
@@ -107,8 +109,9 @@ export const Route = createFileRoute('/studio/editor/$branchId')({
 
 interface TabConfig {
     id: EditorTabId
-    icon: React.ComponentType<{ className?: string }>
+    icon: React.ComponentType<{ className?: string; color?: string }>
     label: string
+    color?: string
 }
 
 // ---------------------------------------------------------------------------
@@ -116,21 +119,21 @@ interface TabConfig {
 // ---------------------------------------------------------------------------
 
 const EDITOR_TABS: TabConfig[] = [
-    { id: 'colors', icon: Palette, label: 'Colors' },
-    { id: 'typography', icon: TextAa, label: 'Type' },
-    { id: 'radius', icon: Sliders, label: 'Radius' },
-    { id: 'shadows', icon: Stack, label: 'Shadows' },
-    { id: 'darkmode', icon: Moon, label: 'Dark' },
-    { id: 'components', icon: Repeat, label: 'Components' },
-    { id: 'json', icon: Code, label: 'JSON' },
+    { id: 'colors', icon: PaletteIcon, label: 'Colors', color: '#99A0AE' },
+    { id: 'typography', icon: TextAa, label: 'Type', color: '#99A0AE' },
+    { id: 'radius', icon: BezierCurveIcon, label: 'Radius', color: '#99A0AE' },
+    { id: 'shadows', icon: Stack, label: 'Shadows', color: '#99A0AE' },
+    { id: 'darkmode', icon: Moon, label: 'Dark', color: '#99A0AE' },
+    { id: 'components', icon: Repeat, label: 'Components', color: '#99A0AE' },
+    { id: 'json', icon: Code, label: 'JSON', color: '#99A0AE' },
 ]
 
 /** Tab switcher items aligned with `EDITOR_TABS` (e.g. secondary rail / panel). */
-const sidebarItems = EDITOR_TABS.map(({ id, icon: Icon, label }) => ({
+const sidebarItems = EDITOR_TABS.map(({ id, icon: Icon, label, color }) => ({
     label,
     value: id,
     showInPanel: true,
-    icon: <Icon className="h-4 w-4" aria-hidden />,
+    icon: <Icon className="h-4 w-4" color={color} aria-hidden />,
 }))
 
 // ---------------------------------------------------------------------------
@@ -155,6 +158,7 @@ function EditorPage() {
     // Editor state
     const [previewTheme, setPreviewTheme] = useState<'light' | 'dark'>('light')
     const [brand, setBrand] = useState<BrandConfig | null>(null)
+    const [savedBrand, setSavedBrand] = useState<BrandConfig | null>(null)
     const [hasChanges, setHasChanges] = useState(false)
     const [saving, setSaving] = useState(false)
     const [activeTab, setActiveTab] = useState<EditorTabId>('colors')
@@ -166,7 +170,7 @@ function EditorPage() {
     const [selectedComponent, setSelectedComponent] = useState<string | null>(
         null
     )
-    const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(false)
+    const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true)
     const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const leftPanelRef = useRef<PanelImperativeHandle | null>(null)
     const leftPanelOuterElRef = useRef<HTMLDivElement | null>(null)
@@ -183,10 +187,11 @@ function EditorPage() {
 
     // Sync brand from branch on load
     useEffect(() => {
-        if (branch?.brandConfig && !brand) {
-            setBrand(branch.brandConfig)
+        if (branch?.brandConfig) {
+            setSavedBrand(branch.brandConfig)
+            setBrand((current) => current ?? branch.brandConfig)
         }
-    }, [branch, brand])
+    }, [branch?.brandConfig])
 
     // Auto-save when there are changes
     useEffect(() => {
@@ -245,6 +250,32 @@ function EditorPage() {
         []
     )
 
+    const handleColorGroupReset = useCallback(
+        (group: ColorGroupKey, shades: Record<string, string>) => {
+            setBrand((prev) => {
+                if (!prev) return prev
+                const updated: BrandConfig = {
+                    ...prev,
+                    colors: {
+                        ...prev.colors,
+                        [group]: shades,
+                    },
+                }
+
+                if (
+                    savedBrand &&
+                    JSON.stringify(updated) === JSON.stringify(savedBrand)
+                ) {
+                    setHasChanges(false)
+                    setSaving(false)
+                }
+
+                return updated
+            })
+        },
+        [savedBrand]
+    )
+
     const handleImportTokens = useCallback((imported: Partial<BrandConfig>) => {
         setBrand((prev) => {
             if (!prev) return prev
@@ -260,6 +291,7 @@ function EditorPage() {
         try {
             await updateBranch(branchId, { brandConfig: brand })
             await createSnapshot(brand, 'Manual save', false)
+            setSavedBrand(brand)
             setHasChanges(false)
         } catch (err) {
             console.error('Save failed:', err)
@@ -283,7 +315,7 @@ function EditorPage() {
         )
     }
 
-    if (!brand) return null
+    if (!brand || !savedBrand) return null
 
     return (
         <RequireAuth>
@@ -326,15 +358,38 @@ function EditorPage() {
                                 className="min-h-0 flex flex-col"
                             >
                                 <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
-                                    <div className="bg-white border-b border-gray-200 h-[52px] flex items-center justify-between px-4">
-                                        <div className="flex items-center gap-2">
-                                            <GitBranch className="w-4 h-4 text-gray-400" />
-                                            <span className="truncate text-sm font-semibold text-gray-900">
-                                                {branch.name}
-                                            </span>
-                                            <span className="hidden max-w-[180px] truncate text-xs font-mono text-gray-400 lg:inline">
-                                                {branch.id}
-                                            </span>
+                                    <div className="bg-white border-b border-gray-200 h-[52px] flex min-w-[280px] items-center justify-between gap-3 px-4">
+                                        <ButtonV2
+                                            onClick={() =>
+                                                navigate({ to: '/studio' })
+                                            }
+                                            buttonType={ButtonV2Type.SECONDARY}
+                                            subType={ButtonV2SubType.INLINE}
+                                            leftSlot={{
+                                                slot: (
+                                                    <CaretLeftIcon
+                                                        className="size-4 shrink-0 text-gray-400"
+                                                        size={16}
+                                                        weight="bold"
+                                                    />
+                                                ),
+                                            }}
+                                        />
+                                        <div className="flex min-w-0 flex-1 items-center gap-2">
+                                            <GitBranchIcon
+                                                className="size-4 shrink-0 text-gray-400"
+                                                size={16}
+                                            />
+                                            <TooltipV2 content={branch.name}>
+                                                <span className="truncate text-sm font-semibold text-gray-900">
+                                                    {branch.name}
+                                                </span>
+                                            </TooltipV2>
+                                            <TooltipV2 content={branch.id}>
+                                                <span className="hidden max-w-[180px] truncate text-xs font-mono text-gray-400 lg:inline">
+                                                    {branch.id}
+                                                </span>
+                                            </TooltipV2>
                                             {hasChanges && (
                                                 <TagV2
                                                     text={'Unsaved'}
@@ -344,11 +399,13 @@ function EditorPage() {
                                             )}
                                         </div>
                                         {diffs.length > 0 && (
-                                            <TagV2
-                                                text={`${diffs.length} Changes`}
-                                                size={TagV2Size.SM}
-                                                color={TagV2Color.WARNING}
-                                            />
+                                            <span className="shrink-0">
+                                                <TagV2
+                                                    text={`${diffs.length} Changes`}
+                                                    size={TagV2Size.SM}
+                                                    color={TagV2Color.WARNING}
+                                                />
+                                            </span>
                                         )}
                                     </div>
                                     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
@@ -357,8 +414,12 @@ function EditorPage() {
                                                 {activeTab === 'colors' && (
                                                     <ColorsTab
                                                         brand={brand}
+                                                        savedBrand={savedBrand}
                                                         onChange={
                                                             handleBrandChange
+                                                        }
+                                                        onColorGroupReset={
+                                                            handleColorGroupReset
                                                         }
                                                         activeGroup={
                                                             activeColorGroup
@@ -440,10 +501,37 @@ function EditorPage() {
                                 <div className="h-full flex flex-col overflow-hidden bg-[#f8fafc]">
                                     <div className="bg-white border-b border-gray-200 h-[52px] flex items-center justify-between">
                                         <div className="flex items-center px-4 gap-2 h-[34px]">
+                                            {!isLeftPanelOpen && (
+                                                <ButtonV2
+                                                    onClick={() =>
+                                                        navigate({
+                                                            to: '/studio',
+                                                        })
+                                                    }
+                                                    buttonType={
+                                                        ButtonV2Type.SECONDARY
+                                                    }
+                                                    subType={
+                                                        ButtonV2SubType.INLINE
+                                                    }
+                                                    leftSlot={{
+                                                        slot: (
+                                                            <CaretLeftIcon
+                                                                className="size-4 shrink-0 text-gray-400"
+                                                                size={16}
+                                                                weight="bold"
+                                                            />
+                                                        ),
+                                                    }}
+                                                />
+                                            )}
                                             <ToggleButton
                                                 noContainer={true}
                                                 icon={
-                                                    <SidebarIcon className="h-3.5 w-3.5" />
+                                                    <SidebarIcon
+                                                        className="h-3.5 w-3.5"
+                                                        color={'#99A0AE'}
+                                                    />
                                                 }
                                                 title="Light preview"
                                                 onClick={() =>
@@ -458,11 +546,12 @@ function EditorPage() {
                                                     icon={
                                                         <LaptopIcon
                                                             className="h-3.5 w-3.5"
-                                                            weight={
-                                                                true
-                                                                    ? 'fill'
-                                                                    : 'regular'
+                                                            color={
+                                                                isMobile
+                                                                    ? '#99A0AE'
+                                                                    : '#000000'
                                                             }
+                                                            weight="fill"
                                                         />
                                                     }
                                                     title="Light preview"
@@ -475,11 +564,12 @@ function EditorPage() {
                                                     icon={
                                                         <DeviceMobileSpeakerIcon
                                                             className="h-3.5 w-3.5"
-                                                            weight={
-                                                                false
-                                                                    ? 'fill'
-                                                                    : 'regular'
+                                                            color={
+                                                                !isMobile
+                                                                    ? '#99A0AE'
+                                                                    : '#000000'
                                                             }
+                                                            weight="fill"
                                                         />
                                                     }
                                                     title="Dark preview"
@@ -494,12 +584,13 @@ function EditorPage() {
                                                     icon={
                                                         <Sun
                                                             className="h-3.5 w-3.5"
-                                                            weight={
+                                                            color={
                                                                 previewTheme ===
                                                                 'light'
-                                                                    ? 'fill'
-                                                                    : 'regular'
+                                                                    ? '#99A0AE'
+                                                                    : '#000000'
                                                             }
+                                                            weight="fill"
                                                         />
                                                     }
                                                     title="Light preview"
@@ -514,12 +605,13 @@ function EditorPage() {
                                                     icon={
                                                         <MoonStarsIcon
                                                             className="h-3.5 w-3.5"
-                                                            weight={
+                                                            color={
                                                                 previewTheme ===
                                                                 'dark'
-                                                                    ? 'fill'
-                                                                    : 'regular'
+                                                                    ? '#99A0AE'
+                                                                    : '#000000'
                                                             }
+                                                            weight="fill"
                                                         />
                                                     }
                                                     title="Dark preview"
@@ -547,6 +639,7 @@ function EditorPage() {
                                                                     className="h-3.5 w-3.5"
                                                                     weight="fill"
                                                                     aria-hidden
+                                                                    color="#99A0AE"
                                                                 />
                                                             ),
                                                         }}
@@ -567,6 +660,7 @@ function EditorPage() {
                                                                         <DownloadIcon
                                                                             className="h-3.5 w-3.5"
                                                                             weight="fill"
+                                                                            color="#99A0AE"
                                                                         />
                                                                     ),
                                                                 },
@@ -607,6 +701,7 @@ function EditorPage() {
                                                             className="h-3.5 w-3.5"
                                                             weight="fill"
                                                             aria-hidden
+                                                            color="#99A0AE"
                                                         />
                                                     ),
                                                 }}
@@ -700,6 +795,7 @@ function EditorPage() {
                             })
                             if (v) {
                                 setShowPublishModal(false)
+                                setSavedBrand(brand)
                                 setHasChanges(false)
                             }
                         }}
