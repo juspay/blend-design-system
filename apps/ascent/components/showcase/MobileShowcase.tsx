@@ -7,21 +7,22 @@ import { CardTile } from './CardTile'
 
 interface MobileShowcaseProps {
     query?: string
-    category?: string | null
-    onCategoryChange?: (category: string | null) => void
+    categories?: string[]
+    onCategoryChange?: (categories: string[]) => void
     onSearch?: (query: string) => void
 }
 
 export function MobileShowcase({
     query,
-    category,
+    categories,
     onCategoryChange,
     onSearch,
 }: MobileShowcaseProps) {
     const router = useRouter()
     const q = query?.toLowerCase() ?? ''
     const items = showcaseData.filter((d) => {
-        const matchesCategory = !category || d.category === category
+        const matchesCategory =
+            !categories?.length || categories.includes(d.category)
         const matchesQuery =
             !q ||
             d.title.toLowerCase().includes(q) ||
@@ -65,7 +66,7 @@ export function MobileShowcase({
                 <SearchBar
                     onSearch={onSearch}
                     categories={showcaseCategories}
-                    selectedCategory={category}
+                    selectedCategories={categories ?? []}
                     onCategoryChange={onCategoryChange}
                 />
             </div>

@@ -12,6 +12,7 @@ import {
 } from '@phosphor-icons/react'
 import { useBackendAuth } from '@/contexts/BackendAuthContext'
 import { usePermissions } from '@/frontend/components/auth/PermissionGuard'
+import { fetchWithCsrf } from '@/lib/csrf'
 import {
     Modal,
     ButtonV2,
@@ -74,12 +75,15 @@ export function UserMenu({
 
         void (async () => {
             try {
-                const response = await fetch(`${API_URL}/api/auth/cli-token`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: '{}',
-                })
+                const response = await fetchWithCsrf(
+                    API_URL,
+                    '/api/auth/cli-token',
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: '{}',
+                    }
+                )
                 const body = (await response.json().catch(() => ({}))) as {
                     success?: boolean
                     data?: {

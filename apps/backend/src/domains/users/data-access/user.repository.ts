@@ -30,7 +30,9 @@ export const findUserByEmail = async (
     const user = await prisma.user.findUnique({
         where: { email, deletedAt: null },
     })
-    return user as unknown as UserRow | null
+    return user
+        ? ({ ...(user as any), role: (user as any).systemRole } as UserRow)
+        : null
 }
 
 export const findUserByGoogleId = async (
@@ -39,14 +41,18 @@ export const findUserByGoogleId = async (
     const user = await prisma.user.findUnique({
         where: { googleId, deletedAt: null },
     })
-    return user as unknown as UserRow | null
+    return user
+        ? ({ ...(user as any), role: (user as any).systemRole } as UserRow)
+        : null
 }
 
 export const findUserById = async (id: string): Promise<UserRow | null> => {
     const user = await prisma.user.findUnique({
         where: { id, deletedAt: null },
     })
-    return user as unknown as UserRow | null
+    return user
+        ? ({ ...(user as any), role: (user as any).systemRole } as UserRow)
+        : null
 }
 
 export const findUserMembership = async (
@@ -55,7 +61,12 @@ export const findUserMembership = async (
     const membership = await prisma.member.findFirst({
         where: { userId },
     })
-    return membership as unknown as MembershipRow | null
+    return membership
+        ? ({
+              ...(membership as any),
+              role: (membership as any).orgRole,
+          } as MembershipRow)
+        : null
 }
 
 export const findUserMembershipInOrganization = async (
@@ -70,7 +81,12 @@ export const findUserMembershipInOrganization = async (
             },
         },
     })
-    return membership as unknown as MembershipRow | null
+    return membership
+        ? ({
+              ...(membership as any),
+              role: (membership as any).orgRole,
+          } as MembershipRow)
+        : null
 }
 
 export const findUserMemberships = async (
@@ -79,7 +95,10 @@ export const findUserMemberships = async (
     const memberships = await prisma.member.findMany({
         where: { userId },
     })
-    return memberships as unknown as MembershipRow[]
+    return memberships.map(
+        (membership: any) =>
+            ({ ...membership, role: membership.orgRole }) as MembershipRow
+    )
 }
 
 export const createUser = async (data: {
@@ -95,7 +114,7 @@ export const createUser = async (data: {
             displayName: data.displayName || null,
             photoUrl: data.photoUrl || null,
             googleId: data.googleId || null,
-            role: (data.role as any) || 'viewer',
+            systemRole: (data.role as any) || 'viewer',
             isActive: true,
             lastLogin: new Date(),
         },
@@ -105,7 +124,7 @@ export const createUser = async (data: {
         { userId: user.id, email: maskEmail(user.email) },
         'User created'
     )
-    return user as unknown as UserRow
+    return { ...(user as any), role: (user as any).systemRole } as UserRow
 }
 
 export const updateUserLogin = async (
@@ -115,7 +134,9 @@ export const updateUserLogin = async (
         where: { id: userId },
         data: { lastLogin: new Date() },
     })
-    return user as unknown as UserRow
+    return user
+        ? ({ ...(user as any), role: (user as any).systemRole } as UserRow)
+        : null
 }
 
 export const updateUserProfile = async (
@@ -129,7 +150,9 @@ export const updateUserProfile = async (
             photoUrl: data.photoUrl || undefined,
         },
     })
-    return user as unknown as UserRow
+    return user
+        ? ({ ...(user as any), role: (user as any).systemRole } as UserRow)
+        : null
 }
 
 export const updateUserRole = async (
@@ -138,9 +161,11 @@ export const updateUserRole = async (
 ): Promise<UserRow | null> => {
     const user = await prisma.user.update({
         where: { id: userId },
-        data: { role: role as any },
+        data: { systemRole: role as any },
     })
-    return user as unknown as UserRow
+    return user
+        ? ({ ...(user as any), role: (user as any).systemRole } as UserRow)
+        : null
 }
 
 export const softDeleteUser = async (userId: string): Promise<boolean> => {
@@ -176,7 +201,7 @@ export const listUsers = async (
                 email: true,
                 displayName: true,
                 photoUrl: true,
-                role: true,
+                systemRole: true,
                 isActive: true,
                 createdAt: true,
                 lastLogin: true,
@@ -186,7 +211,12 @@ export const listUsers = async (
         prisma.user.count({ where }),
     ])
 
-    return { users: users as unknown as UserRow[], total }
+    return {
+        users: users.map(
+            (user: any) => ({ ...user, role: user.systemRole }) as UserRow
+        ),
+        total,
+    }
 }
 
 export const storeRefreshToken = async (

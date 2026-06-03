@@ -195,6 +195,11 @@ export const RADIUS_PRESETS = [
     },
 ] as const
 
+/** Default radius values matching the design system foundation tokens. */
+export const RADIUS_DEFAULTS: Record<RadiusKey, string> = RADIUS_PRESETS.find(
+    (preset) => preset.name === 'Default'
+)!.values
+
 /** Font family options available in the typography editor. */
 export const FONT_FAMILIES = [
     'Inter',
