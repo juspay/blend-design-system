@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
+import { normalizeDirectoryData } from '../Directory/utils'
 import type { DirectoryData } from '../Directory/types'
 import SidebarV2Header from './SidebarV2Header'
 import SidebarV2Footer from './SidebarV2Footer'
@@ -43,7 +44,7 @@ export type SidebarV2PanelProps = {
     sidebarCollapseKey: string
     onToggle: () => void
     sidebarNavId?: string
-    data: DirectoryData[]
+    data: DirectoryData[] | null
     idPrefix: string
     activeItem?: string | null
     onActiveItemChange?: (item: string | null) => void
@@ -77,6 +78,7 @@ const SidebarV2Panel = ({
     tokens,
 }: SidebarV2PanelProps) => {
     const trackHover = shouldTrackHover(setIsHovering)
+    const directoryData = normalizeDirectoryData(data)
 
     return (
         <Block
@@ -118,7 +120,7 @@ const SidebarV2Panel = ({
                 }
             >
                 <Directory
-                    directoryData={data}
+                    directoryData={directoryData}
                     idPrefix={idPrefix}
                     activeItem={activeItem}
                     onActiveItemChange={onActiveItemChange}

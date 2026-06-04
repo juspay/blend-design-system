@@ -5,19 +5,20 @@ import { createRef, useEffect, useRef } from 'react'
 import type { DirectoryProps } from './types'
 import Section from './Section'
 import Block from '../Primitives/Block/Block'
-import { handleSectionNavigation } from './utils'
+import { handleSectionNavigation, normalizeDirectoryData } from './utils'
 import { ActiveItemProvider } from './NavItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 
 const Directory = ({
-    directoryData,
+    directoryData: directoryDataProp,
     idPrefix,
     activeItem,
     onActiveItemChange,
     defaultActiveItem,
     iconOnlyMode = false,
 }: DirectoryProps) => {
+    const directoryData = normalizeDirectoryData(directoryDataProp)
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
         []
     )
