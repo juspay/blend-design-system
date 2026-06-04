@@ -201,20 +201,11 @@ export const RADIUS_DEFAULTS: Record<RadiusKey, string> = RADIUS_PRESETS.find(
 )!.values
 
 /** Font family options available in the typography editor. */
-export const FONT_FAMILIES = [
-    'Inter',
-    'Roboto',
-    'Open Sans',
-    'Poppins',
-    'Lato',
-    'Nunito',
-    'DM Sans',
-    'System UI',
-] as const
+export const FONT_FAMILIES = ['System UI'] as const
 
-/** Default typography selection when brand config has no font.family. */
-export const DEFAULT_FONT_FAMILY: (typeof FONT_FAMILIES)[number] =
-    FONT_FAMILIES[0]
+/** Fallback / default when brand config has no font.family. */
+export const DEFAULT_FONT_FAMILY =
+    'System UI' as const satisfies (typeof FONT_FAMILIES)[number]
 
 export function getEffectiveFontFamily(
     brand: BrandConfig | null | undefined

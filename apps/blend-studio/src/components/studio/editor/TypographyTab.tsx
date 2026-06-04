@@ -308,7 +308,7 @@ export function TypographyTab({
                 }`}
             >
                 <div className="flex h-full min-h-0 min-w-0 flex-col">
-                    <div className="flex shrink-0 items-center gap-2  border-b border-t border-gray-200 px-[16px] py-[12px]">
+                    <div className="flex shrink-0 items-center gap-2  border-b border-gray-200 px-[16px] py-[12px]">
                         <ButtonV2
                             buttonType={ButtonV2Type.SECONDARY}
                             size={ButtonV2Size.LARGE}

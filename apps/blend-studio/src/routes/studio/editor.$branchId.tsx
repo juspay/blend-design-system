@@ -29,6 +29,7 @@ import {
     Panel,
     Group,
     Separator,
+    type GroupImperativeHandle,
     type PanelImperativeHandle,
 } from 'react-resizable-panels'
 import {
@@ -87,6 +88,9 @@ import {
     BezierCurveIcon,
     GitBranchIcon,
     CaretLeftIcon,
+    ReadCvLogoIcon,
+    XIcon,
+    CaretRightIcon,
 } from '@phosphor-icons/react'
 import { SidebarV2 } from '@juspay/blend-design-system'
 import { getCurrentReturnPath } from '@/lib/return-path'
@@ -99,9 +103,18 @@ import {
     TOKEN_RESOLVE_DEBOUNCE_MS,
     EDITOR_LEFT_PANEL_ID,
     EDITOR_RIGHT_PANEL_ID,
+    EDITOR_THIRD_PANEL_ID,
     LEFT_PANEL_TOGGLE_MS,
     LEFT_PANEL_MIN_SIZE,
     LEFT_PANEL_MAX_SIZE,
+    LEFT_PANEL_DEFAULT_SIZE,
+    PREVIEW_PANEL_MIN_SIZE,
+    PREVIEW_PANEL_MAX_SIZE,
+    PREVIEW_PANEL_DEFAULT_SIZE,
+    PREVIEW_PANEL_DEFAULT_SIZE_WITH_GUIDE,
+    THIRD_PANEL_MIN_SIZE,
+    THIRD_PANEL_MAX_SIZE,
+    THIRD_PANEL_DEFAULT_SIZE,
     applyLeftPanelToggleTransition,
     computeBrandDiffs,
     mergeImportedBrandConfig,
@@ -182,7 +195,9 @@ function EditorPage() {
     const [isLeftPanelOpen, setIsLeftPanelOpen] = useState(true)
     const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
     const leftPanelRef = useRef<PanelImperativeHandle | null>(null)
+    const groupRef = useRef<GroupImperativeHandle | null>(null)
     const leftPanelOuterElRef = useRef<HTMLDivElement | null>(null)
+    const [isPanelThreeOpen, setIsPanelThreeOpen] = useState(false)
 
     const leftPanelElementRef = useCallback((node: HTMLDivElement | null) => {
         leftPanelOuterElRef.current = node
@@ -193,6 +208,22 @@ function EditorPage() {
         if (!el) return
         return applyLeftPanelToggleTransition(el, LEFT_PANEL_TOGGLE_MS)
     }, [isLeftPanelOpen])
+
+    useEffect(() => {
+        if (!isPanelThreeOpen) return
+
+        const frameId = requestAnimationFrame(() => {
+            groupRef.current?.setLayout({
+                [EDITOR_LEFT_PANEL_ID]: Number(LEFT_PANEL_DEFAULT_SIZE),
+                [EDITOR_RIGHT_PANEL_ID]: Number(
+                    PREVIEW_PANEL_DEFAULT_SIZE_WITH_GUIDE
+                ),
+                [EDITOR_THIRD_PANEL_ID]: Number(THIRD_PANEL_DEFAULT_SIZE),
+            })
+        })
+
+        return () => cancelAnimationFrame(frameId)
+    }, [isPanelThreeOpen])
 
     // Sync brand from branch on load (apply default font when missing)
     useEffect(() => {
@@ -260,6 +291,10 @@ function EditorPage() {
     useEffect(() => {
         loadTypographyPreviewFonts([getEffectiveFontFamily(previewBrand)])
     }, [previewBrand?.font?.family])
+
+    useEffect(() => {
+        setIsMobile(isPanelThreeOpen)
+    }, [isPanelThreeOpen])
 
     const diffs = useMemo(() => computeBrandDiffs(brand), [brand])
 
@@ -362,11 +397,16 @@ function EditorPage() {
                 >
                     <div className="flex-1 flex overflow-hidden flex-col">
                         <Group
+                            groupRef={groupRef}
                             orientation="horizontal"
                             style={{ height: '100%' }}
                             defaultLayout={{
-                                [EDITOR_LEFT_PANEL_ID]: 0,
-                                [EDITOR_RIGHT_PANEL_ID]: 100,
+                                [EDITOR_LEFT_PANEL_ID]: Number(
+                                    LEFT_PANEL_DEFAULT_SIZE
+                                ),
+                                [EDITOR_RIGHT_PANEL_ID]: Number(
+                                    PREVIEW_PANEL_DEFAULT_SIZE
+                                ),
                             }}
                         >
                             <Panel
@@ -379,8 +419,8 @@ function EditorPage() {
                                 maxSize={
                                     isLeftPanelOpen ? LEFT_PANEL_MAX_SIZE : 0
                                 }
-                                defaultSize={LEFT_PANEL_MIN_SIZE}
-                                groupResizeBehavior="preserve-pixel-size"
+                                defaultSize={LEFT_PANEL_DEFAULT_SIZE}
+                                groupResizeBehavior="preserve-relative-size"
                                 className="min-h-0 flex flex-col"
                             >
                                 <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
@@ -522,8 +562,15 @@ function EditorPage() {
 
                             <Panel
                                 id={EDITOR_RIGHT_PANEL_ID}
-                                minSize={38}
-                                defaultSize={71}
+                                minSize={PREVIEW_PANEL_MIN_SIZE}
+                                maxSize={PREVIEW_PANEL_MAX_SIZE}
+                                defaultSize={
+                                    isPanelThreeOpen
+                                        ? PREVIEW_PANEL_DEFAULT_SIZE_WITH_GUIDE
+                                        : PREVIEW_PANEL_DEFAULT_SIZE
+                                }
+                                groupResizeBehavior="preserve-relative-size"
+                                className="min-h-0 min-w-0"
                             >
                                 <div className="h-full flex flex-col overflow-hidden bg-[#f8fafc]">
                                     <div className="bg-white border-b border-gray-200 h-[52px] flex items-center justify-between">
@@ -756,6 +803,31 @@ function EditorPage() {
                                             />
                                         </div>
                                     </div>
+                                    {activeTab === 'typography' && (
+                                        <div className="bg-[#FEFCE8] p-[12px] flex items-center justify-between border border-[#ECEFF3]">
+                                            <div className="text-[14px] font-[400] text-[#A65F00]">
+                                                The selected font is used as a
+                                                visual reference & must be added
+                                                manually to your codebase.
+                                            </div>
+                                            <button
+                                                className="flex items-center gap-1 text-[14px] font-[400] text-[#A65F00]"
+                                                onClick={() =>
+                                                    setIsPanelThreeOpen(
+                                                        !isPanelThreeOpen
+                                                    )
+                                                }
+                                            >
+                                                {'View Guide'}
+                                                <span>
+                                                    <CaretRightIcon
+                                                        size={16}
+                                                        className="text-[#A65F00]"
+                                                    />
+                                                </span>
+                                            </button>
+                                        </div>
+                                    )}
                                     <div className="flex-1 overflow-y-auto">
                                         {componentTokens ? (
                                             <ThemeProvider
@@ -796,6 +868,51 @@ function EditorPage() {
                                     </div>
                                 </div>
                             </Panel>
+                            {isPanelThreeOpen && (
+                                <>
+                                    <Separator className="w-px shrink-0 cursor-col-resize bg-gray-200 transition-colors hover:bg-blue-400" />
+                                    <Panel
+                                        id={EDITOR_THIRD_PANEL_ID}
+                                        minSize={THIRD_PANEL_MIN_SIZE}
+                                        maxSize={THIRD_PANEL_MAX_SIZE}
+                                        defaultSize={THIRD_PANEL_DEFAULT_SIZE}
+                                        groupResizeBehavior="preserve-relative-size"
+                                        className="min-h-0 min-w-0"
+                                    >
+                                        <div className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
+                                            <div className="flex h-[52px] px-[16px] py-[12px] justify-between shrink-0 items-center border-b border-gray-200 bg-white">
+                                                <div className="flex items-center gap-2">
+                                                    <ReadCvLogoIcon
+                                                        size={16}
+                                                        weight="fill"
+                                                    />
+                                                    <div className="text-[14px] font-[400] text-[#2B303B]">
+                                                        Font Setup Guide
+                                                    </div>
+                                                </div>
+                                                <ButtonV2
+                                                    buttonType={
+                                                        ButtonV2Type.SECONDARY
+                                                    }
+                                                    onClick={() =>
+                                                        setIsPanelThreeOpen(
+                                                            false
+                                                        )
+                                                    }
+                                                    leftSlot={{
+                                                        slot: (
+                                                            <XIcon size={16} />
+                                                        ),
+                                                    }}
+                                                    subType={
+                                                        ButtonV2SubType.INLINE
+                                                    }
+                                                />
+                                            </div>
+                                        </div>
+                                    </Panel>
+                                </>
+                            )}
                         </Group>
                     </div>
                 </SidebarV2>
