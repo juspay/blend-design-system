@@ -130,9 +130,9 @@ export const getCodeBlockTokens = (
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
                     x: foundationToken.unit[12],
-                    y: foundationToken.unit[10],
+                    y: foundationToken.unit[8],
                 },
-                gap: foundationToken.unit[8],
+                gap: foundationToken.unit[6],
                 icon: {
                     width: 16,
                 },
@@ -229,11 +229,11 @@ export const getCodeBlockTokens = (
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
                     x: foundationToken.unit[16],
-                    y: foundationToken.unit[10],
+                    y: foundationToken.unit[8],
                 },
-                gap: foundationToken.unit[12],
+                gap: foundationToken.unit[8],
                 icon: {
-                    width: 20,
+                    width: 16,
                 },
                 text: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
