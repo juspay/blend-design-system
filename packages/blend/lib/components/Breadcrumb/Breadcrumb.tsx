@@ -5,7 +5,12 @@ import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { BreadcrumbTokenType } from './breadcrumb.tokens'
-import type { BreadcrumbItemType, BreadcrumbSkeletonProps } from './types'
+import type {
+    BreadcrumbItemType,
+    BreadcrumbProps,
+    BreadcrumbSkeletonProps,
+} from './types'
+import { normalizeBreadcrumbItems } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SkeletonVariant } from '../Skeleton'
 import BreadcrumbSkeleton from './BreadcrumbSkeleton'
@@ -111,13 +116,9 @@ const BreadcrumbItem = ({
     )
 }
 
-const Breadcrumb = ({
-    items,
-    skeleton,
-}: {
-    items: BreadcrumbItemType[]
-    skeleton?: BreadcrumbSkeletonProps
-}) => {
+const Breadcrumb = ({ items: itemsProp, skeleton }: BreadcrumbProps) => {
+    const items = normalizeBreadcrumbItems(itemsProp)
+
     const breadcrumbTokens =
         useResponsiveTokens<BreadcrumbTokenType>('BREADCRUMB')
     if (items.length === 0) return null
