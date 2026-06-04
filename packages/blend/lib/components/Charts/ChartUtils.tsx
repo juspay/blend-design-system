@@ -6,6 +6,13 @@ import {
 } from './types'
 import { parseTimestamp, dateFormat } from './DateTimeFormatter'
 
+/** Replace null, undefined, or non-array `data` with `[]` (empty / no-data state). */
+export function normalizeChartData(
+    data: NewNestedDataPoint[] | null | undefined
+): NewNestedDataPoint[] {
+    return Array.isArray(data) ? data : []
+}
+
 export function transformNestedData(
     data: NewNestedDataPoint[],
     selectedKeys: string[] = []

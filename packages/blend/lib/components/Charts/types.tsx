@@ -151,7 +151,7 @@ export type RenderChartProps = {
 
 export type CoreChartProps = {
     chartType?: ChartType
-    data: NewNestedDataPoint[]
+    data?: NewNestedDataPoint[] | null
     colors?: { key: string; color: string }[]
     barsize?: number
     xAxis?: XAxisConfig
@@ -175,7 +175,7 @@ export type ChartsSkeletonProps = {
 
 export type ChartsProps = {
     chartType?: ChartType
-    data: NewNestedDataPoint[]
+    data?: NewNestedDataPoint[] | null
     colors?: { key: string; color: string }[]
     slot1?: ReactNode
     slot2?: ReactNode
