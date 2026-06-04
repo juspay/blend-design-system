@@ -612,7 +612,12 @@ export const CustomCard: React.FC<CustomCardComponentProps> = ({
 
     return (
         <Block
+            display="flex"
+            flexDirection="column"
+            flexGrow={1}
             style={{
+                minHeight: 0,
+                width: '100%',
                 ...(maxHeight && {
                     overflowY: 'auto',
                     overflowX: 'hidden',

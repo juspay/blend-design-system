@@ -457,7 +457,11 @@ function ColorOverridesSection({
                                         ? currentShades
                                         : globalShades
                                 }
+                                initialValue={globalShades}
                                 onChange={(shades) =>
+                                    onUpdateColor(group, shades)
+                                }
+                                onReset={(shades) =>
                                     onUpdateColor(group, shades)
                                 }
                             />

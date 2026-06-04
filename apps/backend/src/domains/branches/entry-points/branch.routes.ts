@@ -9,6 +9,7 @@ import {
     resolveTokensSchema,
     createSnapshotSchema,
     forkBranchSchema,
+    updateBranchProtectionSchema,
 } from '@/middlewares/validate.js'
 import * as branchService from '../domain/branch.service.js'
 import * as branchRepo from '../data-access/branch.repository.js'
@@ -28,8 +29,16 @@ router.get(
             cursor: req.query.cursor as string,
             createdBy: req.query.createdBy as string,
             organizationId: req.query.organizationId as string,
-            status: req.query.status as string,
-            visibility: req.query.visibility as string,
+            status: req.query.status as
+                | 'draft'
+                | 'published'
+                | 'archived'
+                | undefined,
+            visibility: req.query.visibility as
+                | 'private'
+                | 'team'
+                | 'public'
+                | undefined,
             search: req.query.search as string,
             tag: req.query.tag as string,
         })
@@ -96,8 +105,8 @@ router.get(
             ? await branchRepo.getVersionByNumber(branch.id, versionParam)
             : null
 
-        const baseBrandConfig = version?.brandConfig ?? branch.brandConfig
-        const brandConfig = await branchService.resolveEffectiveBrandConfig(
+        const baseBrandConfig = version?.tokenConfig ?? branch.tokenConfig
+        const tokenConfig = await branchService.resolveEffectiveBrandConfig(
             branch,
             baseBrandConfig
         )
@@ -119,7 +128,7 @@ router.get(
                           publishedAt: version.publishedAt,
                       }
                     : null,
-                brandConfig,
+                tokenConfig,
             },
         })
     })
@@ -196,17 +205,67 @@ router.post(
     authenticate,
     validate({ body: publishBranchSchema }),
     asyncHandler(async (req: Request, res: Response) => {
-        const version = await branchService.publishBranch(
+        const result = await branchService.publishBranch(
             req.params.branchId,
             req.body,
             req.user!.id,
             req.user!.displayName || req.user!.email,
             req.user!.email
         )
+        if (result.mode === 'approval_required') {
+            res.status(202).json({
+                success: true,
+                data: {
+                    publishRequest: result.publishRequest,
+                },
+                message: 'Publish request submitted for approval',
+            })
+            return
+        }
+
         res.json({
             success: true,
-            data: { version },
+            data: { version: result.version },
             message: 'Branch published successfully',
+        })
+    })
+)
+
+// ---------------------------------------------------------------------------
+// Branch Protection
+// ---------------------------------------------------------------------------
+router.patch(
+    '/:branchId/protection',
+    authenticate,
+    validate({ body: updateBranchProtectionSchema }),
+    asyncHandler(async (req: Request, res: Response) => {
+        const branch = await branchService.updateBranchProtection(
+            req.params.branchId,
+            req.body,
+            req.user!.id,
+            req.user!.email
+        )
+        res.json({
+            success: true,
+            data: { branch },
+            message: 'Branch protection updated successfully',
+        })
+    })
+)
+
+router.get(
+    '/:branchId/approval-settings',
+    authenticate,
+    asyncHandler(async (req: Request, res: Response) => {
+        const context = req.query.context === 'publish' ? 'publish' : 'merge'
+        const settings = await branchService.getBranchApprovalSettings(
+            req.params.branchId,
+            req.user!.id,
+            context
+        )
+        res.json({
+            success: true,
+            data: { settings },
         })
     })
 )
@@ -234,7 +293,7 @@ router.post(
     authenticate,
     validate({ body: resolveTokensSchema }),
     asyncHandler(async (req: Request, res: Response) => {
-        const { branch, theme, brandConfig } =
+        const { branch, theme, tokenConfig } =
             await branchService.resolveTokens(
                 req.params.branchId,
                 req.body.theme || 'light'
@@ -244,7 +303,7 @@ router.post(
             data: {
                 branchId: branch.id,
                 theme,
-                brandConfig,
+                tokenConfig,
             },
         })
     })
@@ -282,7 +341,7 @@ router.post(
         const { createSnapshot } =
             await import('../data-access/branch.repository.js')
         const snapshot = await createSnapshot(req.params.branchId, {
-            brandConfig: req.body.brandConfig || branch.brandConfig,
+            tokenConfig: req.body.tokenConfig || branch.tokenConfig,
             label: req.body.label || null,
             isAutoSave: req.body.isAutoSave || false,
             savedBy: req.user!.id,

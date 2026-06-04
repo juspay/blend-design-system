@@ -200,7 +200,11 @@ export function DarkModeTab({ brand, onChange }: EditorTabProps) {
                                             ? currentDarkShades
                                             : lightShades
                                     }
+                                    initialValue={lightShades}
                                     onChange={(shades) =>
+                                        updateDarkColor(group, shades)
+                                    }
+                                    onReset={(shades) =>
                                         updateDarkColor(group, shades)
                                     }
                                 />

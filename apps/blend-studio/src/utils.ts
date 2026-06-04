@@ -72,7 +72,7 @@ export function getSuggestedPublishVersion(
 }
 
 export function getPreviewSurfaceClassName(theme: PreviewTheme): string {
-    return theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
+    return theme === 'dark' ? 'bg-gray-900' : 'bg-white'
 }
 
 export function getVersionInputClassName(isValid: boolean): string {

@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { randomUUID } from 'crypto'
+import { createHash } from 'crypto'
 
 const prisma = new PrismaClient()
 
@@ -29,7 +30,7 @@ async function main() {
         create: {
             email: 'admin@blend.dev',
             displayName: 'Admin User',
-            role: 'admin',
+            systemRole: 'admin',
             isActive: true,
         },
     })
@@ -40,7 +41,7 @@ async function main() {
         create: {
             email: 'designer@blend.dev',
             displayName: 'Design Team',
-            role: 'editor',
+            systemRole: 'editor',
             isActive: true,
         },
     })
@@ -51,7 +52,7 @@ async function main() {
         create: {
             email: 'viewer@blend.dev',
             displayName: 'View Only User',
-            role: 'viewer',
+            systemRole: 'viewer',
             isActive: true,
         },
     })
@@ -65,9 +66,9 @@ async function main() {
     // -----------------------------------------------------------------------
     await prisma.member.createMany({
         data: [
-            { organizationId: orgId, userId: admin.id, role: 'admin' },
-            { organizationId: orgId, userId: designer.id, role: 'editor' },
-            { organizationId: orgId, userId: viewer.id, role: 'viewer' },
+            { organizationId: orgId, userId: admin.id, orgRole: 'admin' },
+            { organizationId: orgId, userId: designer.id, orgRole: 'editor' },
+            { organizationId: orgId, userId: viewer.id, orgRole: 'viewer' },
         ],
         skipDuplicates: true,
     })
@@ -120,14 +121,14 @@ async function main() {
             data: {
                 id: branchIds.blendDefault,
                 organizationId: orgId,
-                brandId: 'blend/default',
+                branchSlug: 'blend/default',
                 name: 'Blend Default',
                 description: 'Default Blend Design System theme — no overrides',
                 status: 'published',
                 visibility: 'public',
                 createdBy: admin.id,
                 createdByName: admin.displayName || 'Admin',
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'blend/default',
                     name: 'Blend Default',
                     version: '1.0.0',
@@ -141,7 +142,7 @@ async function main() {
             data: {
                 id: branchIds.juspayDefault,
                 organizationId: orgId,
-                brandId: 'juspay/default',
+                branchSlug: 'juspay/default',
                 name: 'Juspay Default',
                 description:
                     'Juspay brand theme with blue primary — the default preset',
@@ -149,7 +150,7 @@ async function main() {
                 visibility: 'team',
                 createdBy: admin.id,
                 createdByName: admin.displayName || 'Admin',
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'juspay/default',
                     name: 'Juspay',
                     version: '1.0.0',
@@ -172,7 +173,7 @@ async function main() {
             data: {
                 id: branchIds.starterPurple,
                 organizationId: orgId,
-                brandId: 'starter/purple',
+                branchSlug: 'starter/purple',
                 name: 'Starter Purple',
                 description:
                     'Purple SaaS theme with rounded corners — great for dashboards',
@@ -180,7 +181,7 @@ async function main() {
                 visibility: 'public',
                 createdBy: designer.id,
                 createdByName: designer.displayName || 'Designer',
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'starter/purple',
                     name: 'Purple',
                     version: '1.0.0',
@@ -204,14 +205,14 @@ async function main() {
             data: {
                 id: branchIds.starterGreen,
                 organizationId: orgId,
-                brandId: 'starter/green',
+                branchSlug: 'starter/green',
                 name: 'Starter Green',
                 description: 'Green theme — still in draft',
                 status: 'draft',
                 visibility: 'private',
                 createdBy: designer.id,
                 createdByName: designer.displayName || 'Designer',
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'starter/green',
                     name: 'Green',
                     version: '1.0.0',
@@ -259,7 +260,7 @@ async function main() {
             data: {
                 branchId: branchIds.blendDefault,
                 version: '1.0.0',
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'blend/default',
                     name: 'Blend Default',
                     version: '1.0.0',
@@ -274,7 +275,7 @@ async function main() {
             data: {
                 branchId: branchIds.juspayDefault,
                 version: '1.0.0',
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'juspay/default',
                     name: 'Juspay',
                     version: '1.0.0',
@@ -289,7 +290,7 @@ async function main() {
             data: {
                 branchId: branchIds.juspayDefault,
                 version: '1.2.0',
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'juspay/default',
                     name: 'Juspay',
                     version: '1.2.0',
@@ -304,7 +305,7 @@ async function main() {
             data: {
                 branchId: branchIds.starterPurple,
                 version: '1.0.0',
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'starter/purple',
                     name: 'Purple',
                     version: '1.0.0',
@@ -325,7 +326,7 @@ async function main() {
         prisma.branchSnapshot.create({
             data: {
                 branchId: branchIds.starterGreen,
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'starter/green',
                     name: 'Green',
                     colors: { primary: { '500': '#00C951' } },
@@ -339,7 +340,7 @@ async function main() {
         prisma.branchSnapshot.create({
             data: {
                 branchId: branchIds.starterGreen,
-                brandConfig: {
+                tokenConfig: {
                     brandId: 'starter/green',
                     name: 'Green',
                     colors: { primary: { '500': '#00D492' } },
@@ -356,13 +357,17 @@ async function main() {
     // -----------------------------------------------------------------------
     // Audit Logs
     // -----------------------------------------------------------------------
+    const adminEmailHash = createHash('sha256')
+        .update(admin.email)
+        .digest('hex')
+
     await Promise.all([
         prisma.auditLog.create({
             data: {
                 organizationId: orgId,
                 action: 'branch_created',
                 actorId: admin.id,
-                actorEmail: admin.email,
+                actorEmailHash: adminEmailHash,
                 targetType: 'branch',
                 targetId: branchIds.blendDefault,
                 metadata: { name: 'Blend Default' },
@@ -373,7 +378,7 @@ async function main() {
                 organizationId: orgId,
                 action: 'branch_created',
                 actorId: admin.id,
-                actorEmail: admin.email,
+                actorEmailHash: adminEmailHash,
                 targetType: 'branch',
                 targetId: branchIds.juspayDefault,
                 metadata: { name: 'Juspay Default' },
@@ -384,7 +389,7 @@ async function main() {
                 organizationId: orgId,
                 action: 'branch_published',
                 actorId: admin.id,
-                actorEmail: admin.email,
+                actorEmailHash: adminEmailHash,
                 targetType: 'branch',
                 targetId: branchIds.juspayDefault,
                 metadata: { version: '1.2.0' },

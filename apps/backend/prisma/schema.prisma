@@ -43,6 +43,34 @@ enum UploadStatus {
   invalid
 }
 
+enum WcagEnforcement {
+  none
+  warn
+  block
+}
+
+enum AllowedApprovers {
+  admins
+  admins_and_editors @map("admins-and-editors")
+  custom
+}
+
+enum MergeRequestStatus {
+  pending
+  approved
+  rejected
+  merged
+  cancelled
+}
+
+enum PublishRequestStatus {
+  pending
+  approved
+  rejected
+  published
+  cancelled
+}
+
 /// Audit log action types — every mutation in the system is tracked.
 enum AuditAction {
   branch_created
@@ -68,6 +96,17 @@ enum AuditAction {
   merge_request_approved
   merge_request_rejected
   merge_request_merged
+  merge_request_merged_admin_bypass
+  publish_request_created
+  publish_request_approved
+  publish_request_rejected
+  publish_request_cancelled
+  publish_request_published
+  publish_request_published_admin_bypass
+  organization_settings_updated
+  branch_protection_enabled
+  branch_protection_updated
+  branch_protection_disabled
 }
 
 // ===========================================================================
@@ -77,24 +116,31 @@ enum AuditAction {
 /// An organization (company, team). All resources belong to an org.
 /// For now, users can be in one org. Later, support multi-org.
 model Organization {
-  id                String   @id @default(uuid()) @db.Uuid
-  name              String   @db.VarChar(255)
-  slug              String   @unique @db.VarChar(100)
-  /// Firestore branch ID of the org's master theme (e.g. "acme/default")
-  defaultBranchId   String?  @map("default_branch_id") @db.VarChar(255)
+  id                        String           @id @default(uuid()) @db.Uuid
+  name                      String           @db.VarChar(255)
+  slug                      String           @unique @db.VarChar(100)
+  /// UUID of the org's default branch
+  defaultBranchId           String?          @map("default_branch_id") @db.Uuid
   /// Blend component library version the org is currently using
-  blendVersion      String?  @map("blend_version") @db.VarChar(50)
+  blendVersion              String?          @map("blend_version") @db.VarChar(50)
   /// WCAG enforcement policy: none = no checks, warn = show warnings, block = prevent saving
-  wcagEnforcement   String   @default("warn") @map("wcag_enforcement") @db.VarChar(20)
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
+  wcagEnforcement           WcagEnforcement  @default(warn) @map("wcag_enforcement")
+  requireApprovalForMerge   Boolean          @default(true) @map("require_approval_for_merge")
+  requireApprovalForPublish Boolean          @default(false) @map("require_approval_for_publish")
+  allowedApprovers          AllowedApprovers @default(admins) @map("allowed_approvers")
+  minApprovals              Int              @default(1) @map("min_approvals")
+  allowAdminBypass          Boolean          @default(true) @map("allow_admin_bypass")
+  createdAt                 DateTime         @default(now()) @map("created_at")
+  updatedAt                 DateTime         @updatedAt @map("updated_at")
 
-  members           Member[]
-  branches          Branch[]
-  apiKeys           ApiKey[]
-  auditLogs         AuditLog[]
-  tokenLocks        TokenLock[]
-  mergeRequests     MergeRequest[]
+  members         Member[]
+  branches        Branch[]         @relation("OrganizationBranches")
+  defaultBranch   Branch?          @relation("OrganizationDefaultBranch", fields: [defaultBranchId], references: [id], onDelete: SetNull)
+  apiKeys         ApiKey[]
+  auditLogs       AuditLog[]
+  tokenLocks      TokenLock[]
+  mergeRequests   MergeRequest[]
+  publishRequests PublishRequest[]
 
   @@map("organizations")
 }
@@ -104,7 +150,7 @@ model Member {
   id             String   @id @default(uuid()) @db.Uuid
   organizationId String   @map("organization_id") @db.Uuid
   userId         String   @map("user_id") @db.Uuid
-   role           UserRole @default(viewer)
+  orgRole        UserRole @default(viewer) @map("org_role")
   joinedAt       DateTime @default(now()) @map("joined_at")
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
@@ -125,19 +171,21 @@ model User {
   email       String    @unique @db.VarChar(255)
   displayName String?   @map("display_name") @db.VarChar(255)
   photoUrl    String?   @map("photo_url") @db.Text
-   role        UserRole  @default(viewer)
+  systemRole  UserRole  @default(viewer) @map("system_role")
   isActive    Boolean   @default(true) @map("is_active")
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
   lastLogin   DateTime? @map("last_login")
   deletedAt   DateTime? @map("deleted_at")
 
-   refreshTokens  RefreshToken[]
-   tokenUploads   TokenUpload[]
-   memberships    Member[]
-   apiKeys        ApiKey[]
-   createdBranches Branch[]       @relation("BranchCreator")
-   auditLogs      AuditLog[]
+  refreshTokens             RefreshToken[]
+  tokenUploads              TokenUpload[]
+  memberships               Member[]
+  apiKeys                   ApiKey[]
+  createdBranches           Branch[]                   @relation("BranchCreator")
+  branchProtectionApprovals BranchProtectionApprover[] @relation("BranchProtectionApproverUser")
+  auditLogs                 AuditLog[]
+  tokenLocks                TokenLock[]                @relation("TokenLockLocker")
 
   @@index([email])
   @@index([deletedAt])
@@ -151,7 +199,7 @@ model RefreshToken {
   expiresAt DateTime @map("expires_at")
   createdAt DateTime @default(now()) @map("created_at")
 
-   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([tokenHash])
@@ -162,16 +210,16 @@ model RefreshToken {
 /// API keys for CLI access. Users run `blend-studio login` to create one.
 /// This avoids passing user JWTs through the terminal.
 model ApiKey {
-  id             String      @id @default(uuid()) @db.Uuid
-  organizationId String      @map("organization_id") @db.Uuid
-  userId         String      @map("user_id") @db.Uuid
-  name           String      @db.VarChar(255)
-  keyHash        String      @unique @map("key_hash") @db.VarChar(255)
-  keyPrefix      String      @map("key_prefix") @db.VarChar(8)
-  lastUsedAt     DateTime?   @map("last_used_at")
-  expiresAt      DateTime?   @map("expires_at")
-  createdAt      DateTime    @default(now()) @map("created_at")
-  revokedAt      DateTime?   @map("revoked_at")
+  id             String    @id @default(uuid()) @db.Uuid
+  organizationId String    @map("organization_id") @db.Uuid
+  userId         String    @map("user_id") @db.Uuid
+  name           String    @db.VarChar(255)
+  keyHash        String    @unique @map("key_hash") @db.VarChar(255)
+  keyPrefix      String    @map("key_prefix") @db.VarChar(8)
+  lastUsedAt     DateTime? @map("last_used_at")
+  expiresAt      DateTime? @map("expires_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  revokedAt      DateTime? @map("revoked_at")
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -187,7 +235,7 @@ model ApiKey {
 // Branches — core token data
 // ===========================================================================
 
-/// A branch is a versioned brand configuration. It holds the full BrandConfig
+/// A branch is a versioned token configuration. It holds the full BrandConfig
 /// as JSONB and tracks its lifecycle (draft → published → archived).
 ///
 /// BrandConfig JSONB shape (enforced at application level):
@@ -214,56 +262,69 @@ model ApiKey {
 ///   }
 /// }
 model Branch {
-  id                String           @id @default(uuid()) @db.Uuid
-   organizationId    String?          @map("organization_id") @db.Uuid
-  brandId           String           @map("brand_id") @db.VarChar(255)
-  name              String           @db.VarChar(255)
-  description       String?          @db.Text
-  parentBranchId    String?          @map("parent_branch_id") @db.Uuid
-   status            BranchStatus     @default(draft)
-   visibility        BranchVisibility @default(private)
-  brandConfig       Json             @map("brand_config") @db.JsonB
-  publishedVersions Int              @default(0) @map("published_versions")
-  latestVersion     String?          @map("latest_version") @db.VarChar(50)
-  createdBy         String           @map("created_by") @db.Uuid
-  createdByName     String           @map("created_by_name") @db.VarChar(255)
-  createdAt         DateTime         @default(now()) @map("created_at")
-  updatedAt         DateTime         @updatedAt @map("updated_at")
-  deletedAt         DateTime?        @map("deleted_at")
+  id                        String           @id @default(uuid()) @db.Uuid
+  organizationId            String?          @map("organization_id") @db.Uuid
+  branchSlug                String           @map("branch_slug") @db.VarChar(255)
+  name                      String           @db.VarChar(255)
+  description               String?          @db.Text
+  parentBranchId            String?          @map("parent_branch_id") @db.Uuid
+  status                    BranchStatus     @default(draft)
+  visibility                BranchVisibility @default(private)
+  tokenConfig               Json             @map("token_config") @db.JsonB
+  publishedVersions         Int              @default(0) @map("published_versions")
+  latestVersion             String?          @map("latest_version") @db.VarChar(50)
+  isProtected               Boolean          @default(false) @map("is_protected")
+  protectionRequireApproval Boolean?         @map("protection_require_approval")
+  protectionMinApprovals    Int?             @map("protection_min_approvals")
+  createdBy                 String           @map("created_by") @db.Uuid
+  createdByName             String           @map("created_by_name") @db.VarChar(255)
+  createdAt                 DateTime         @default(now()) @map("created_at")
+  updatedAt                 DateTime         @updatedAt @map("updated_at")
+  deletedAt                 DateTime?        @map("deleted_at")
 
-   organization Organization?    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-   creator      User            @relation("BranchCreator", fields: [createdBy], references: [id], onDelete: Cascade)
-  versions     BranchVersion[]
-  snapshots    BranchSnapshot[]
-  tokenUploads TokenUpload[]
-   tags         BranchTag[]
+  organization            Organization?              @relation("OrganizationBranches", fields: [organizationId], references: [id], onDelete: Cascade)
+  defaultForOrganizations Organization[]             @relation("OrganizationDefaultBranch")
+  creator                 User                       @relation("BranchCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+  parentBranch            Branch?                    @relation("BranchParent", fields: [parentBranchId], references: [id], onDelete: SetNull)
+  childBranches           Branch[]                   @relation("BranchParent")
+  versions                BranchVersion[]
+  snapshots               BranchSnapshot[]
+  tokenUploads            TokenUpload[]
+  tags                    BranchTag[]
+  protectionApprovers     BranchProtectionApprover[]
+  sourceMergeRequests     MergeRequest[]             @relation("MergeRequestSourceBranch")
+  targetMergeRequests     MergeRequest[]             @relation("MergeRequestTargetBranch")
+  publishRequests         PublishRequest[]
 
-   @@unique([brandId])
+  @@unique([branchSlug])
   @@index([organizationId])
   @@index([createdBy])
+  @@index([parentBranchId])
   @@index([status])
   @@index([visibility])
+  @@index([isProtected])
   @@index([updatedAt])
   @@index([deletedAt])
-  @@index([brandId])
+  @@index([branchSlug])
   @@map("branches")
 }
 
 /// A published snapshot of a branch's brand config. Immutable once created.
 /// Used by `npx blend-studio pull <branchId>@<version>`.
 model BranchVersion {
-  id              String      @id @default(uuid()) @db.Uuid
-  branchId        String      @map("branch_id") @db.Uuid
-  version         String      @db.VarChar(50)
-  brandConfig     Json        @map("brand_config") @db.JsonB
-  changelog       String?     @db.Text
-  isBreaking      Boolean     @default(false) @map("is_breaking")
-  isPrerelease    Boolean     @default(false) @map("is_prerelease")
-  publishedBy     String      @map("published_by") @db.Uuid
-  publishedByName String      @map("published_by_name") @db.VarChar(255)
-  publishedAt     DateTime    @default(now()) @map("published_at")
+  id              String   @id @default(uuid()) @db.Uuid
+  branchId        String   @map("branch_id") @db.Uuid
+  version         String   @db.VarChar(50)
+  tokenConfig     Json     @map("token_config") @db.JsonB
+  changelog       String?  @db.Text
+  isBreaking      Boolean  @default(false) @map("is_breaking")
+  isPrerelease    Boolean  @default(false) @map("is_prerelease")
+  publishedBy     String   @map("published_by") @db.Uuid
+  publishedByName String   @map("published_by_name") @db.VarChar(255)
+  publishedAt     DateTime @default(now()) @map("published_at")
 
-  branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  branch          Branch           @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  publishRequests PublishRequest[]
 
   @@unique([branchId, version])
   @@index([branchId])
@@ -275,14 +336,14 @@ model BranchVersion {
 /// A save point (manual or auto). Used for undo/restore in the editor.
 /// Auto-saves are created on every edit (debounced). Manual saves have labels.
 model BranchSnapshot {
-  id            String   @id @default(uuid()) @db.Uuid
-  branchId      String   @map("branch_id") @db.Uuid
-  brandConfig   Json     @map("brand_config") @db.JsonB
-  label         String?  @db.VarChar(255)
-  isAutoSave    Boolean  @default(false) @map("is_auto_save")
-  savedBy       String   @map("saved_by") @db.Uuid
-  savedByName   String   @map("saved_by_name") @db.VarChar(255)
-  savedAt       DateTime @default(now()) @map("saved_at")
+  id          String   @id @default(uuid()) @db.Uuid
+  branchId    String   @map("branch_id") @db.Uuid
+  tokenConfig Json     @map("token_config") @db.JsonB
+  label       String?  @db.VarChar(255)
+  isAutoSave  Boolean  @default(false) @map("is_auto_save")
+  savedBy     String   @map("saved_by") @db.Uuid
+  savedByName String   @map("saved_by_name") @db.VarChar(255)
+  savedAt     DateTime @default(now()) @map("saved_at")
 
   branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
 
@@ -313,7 +374,7 @@ model BranchTag {
   tagId    String @map("tag_id") @db.Uuid
 
   branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([branchId, tagId])
   @@index([tagId])
@@ -326,20 +387,20 @@ model BranchTag {
 
 /// Uploaded brand.json files. Parsed, validated, and linked to a branch.
 model TokenUpload {
-  id             String      @id @default(uuid()) @db.Uuid
-  branchId       String      @map("branch_id") @db.Uuid
-  fileName       String      @map("file_name") @db.VarChar(255)
-  fileSize       Int         @map("file_size")
-  description    String?     @db.Text
-  parsedConfig   Json?       @map("parsed_config") @db.JsonB
-   status         UploadStatus @default(pending)
-  uploadedBy     String      @map("uploaded_by") @db.Uuid
-  uploadedByName String      @map("uploaded_by_name") @db.VarChar(255)
-  createdAt      DateTime    @default(now()) @map("created_at")
-  updatedAt      DateTime    @updatedAt @map("updated_at")
+  id             String       @id @default(uuid()) @db.Uuid
+  branchId       String       @map("branch_id") @db.Uuid
+  fileName       String       @map("file_name") @db.VarChar(255)
+  fileSize       Int          @map("file_size")
+  description    String?      @db.Text
+  parsedConfig   Json?        @map("parsed_config") @db.JsonB
+  status         UploadStatus @default(pending)
+  uploadedBy     String?      @map("uploaded_by") @db.Uuid
+  uploadedByName String       @map("uploaded_by_name") @db.VarChar(255)
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
 
   branch Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  user   User   @relation(fields: [uploadedBy], references: [id], onDelete: SetNull)
+  user   User?  @relation(fields: [uploadedBy], references: [id], onDelete: SetNull)
 
   @@index([branchId])
   @@index([uploadedBy])
@@ -355,16 +416,17 @@ model TokenUpload {
 /// A token path locked by org admin as a non-negotiable brand rule.
 /// Child branches cannot override these paths when resolving tokens.
 model TokenLock {
-  id               String   @id @default(uuid()) @db.Uuid
-  organizationId   String   @map("organization_id") @db.Uuid
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String   @map("organization_id") @db.Uuid
   /// Dot-path to the locked token, e.g. "colors.primary.500", "radius.8"
-  tokenPath        String   @map("token_path") @db.VarChar(500)
+  tokenPath      String   @map("token_path") @db.VarChar(500)
   /// Human-readable reason for locking (shown to editors who try to change it)
-  reason           String?  @db.Text
-  lockedBy         String   @map("locked_by") @db.Uuid
-  createdAt        DateTime @default(now()) @map("created_at")
+  reason         String?  @db.Text
+  lockedBy       String?  @map("locked_by") @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at")
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  locker       User?        @relation("TokenLockLocker", fields: [lockedBy], references: [id], onDelete: SetNull)
 
   @@unique([organizationId, tokenPath])
   @@index([organizationId])
@@ -378,31 +440,33 @@ model TokenLock {
 /// A merge request (change request) to promote a branch's config into
 /// the default branch. Editors must submit one; admins can self-merge.
 model MergeRequest {
-  id               String    @id @default(uuid()) @db.Uuid
-  organizationId   String    @map("organization_id") @db.Uuid
+  id               String             @id @default(uuid()) @db.Uuid
+  organizationId   String?            @map("organization_id") @db.Uuid
   /// Source branch ID (the branch with changes)
-  sourceBranchId   String    @map("source_branch_id") @db.Uuid
-  sourceBranchName String    @map("source_branch_name") @db.VarChar(255)
+  sourceBranchId   String             @map("source_branch_id") @db.Uuid
+  sourceBranchName String             @map("source_branch_name") @db.VarChar(255)
   /// Target branch ID (usually the org default)
-  targetBranchId   String    @map("target_branch_id") @db.Uuid
-  targetBranchName String    @map("target_branch_name") @db.VarChar(255)
-  title            String    @db.VarChar(255)
-  description      String?   @db.Text
-  /// pending | approved | rejected | merged | cancelled
-  status           String    @default("pending") @db.VarChar(50)
+  targetBranchId   String             @map("target_branch_id") @db.Uuid
+  targetBranchName String             @map("target_branch_name") @db.VarChar(255)
+  title            String             @db.VarChar(255)
+  description      String?            @db.Text
+  status           MergeRequestStatus @default(pending)
   /// Computed diff between source and target brand configs
-  diff             Json      @db.JsonB
+  diff             Json               @db.JsonB
   /// Any token lock violations found during diff
-  lockViolations   Json?     @map("lock_violations") @db.JsonB
-  requestedBy      String    @map("requested_by") @db.Uuid
-  reviewedBy       String?   @map("reviewed_by") @db.Uuid
-  reviewedAt       DateTime? @map("reviewed_at")
-  reviewComment    String?   @map("review_comment") @db.Text
-  mergedAt         DateTime? @map("merged_at")
-  createdAt        DateTime  @default(now()) @map("created_at")
-  updatedAt        DateTime  @updatedAt @map("updated_at")
+  lockViolations   Json?              @map("lock_violations") @db.JsonB
+  requestedBy      String             @map("requested_by") @db.Uuid
+  reviewedBy       String?            @map("reviewed_by") @db.Uuid
+  reviewedAt       DateTime?          @map("reviewed_at")
+  reviewComment    String?            @map("review_comment") @db.Text
+  mergedAt         DateTime?          @map("merged_at")
+  createdAt        DateTime           @default(now()) @map("created_at")
+  updatedAt        DateTime           @updatedAt @map("updated_at")
 
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization Organization?          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sourceBranch Branch                 @relation("MergeRequestSourceBranch", fields: [sourceBranchId], references: [id], onDelete: Cascade)
+  targetBranch Branch                 @relation("MergeRequestTargetBranch", fields: [targetBranchId], references: [id], onDelete: Cascade)
+  approvals    MergeRequestApproval[]
 
   @@index([organizationId])
   @@index([status])
@@ -410,6 +474,81 @@ model MergeRequest {
   @@index([targetBranchId])
   @@index([requestedBy])
   @@map("merge_requests")
+}
+
+model MergeRequestApproval {
+  id             String   @id @default(uuid()) @db.Uuid
+  mergeRequestId String   @map("merge_request_id") @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  userName       String   @map("user_name") @db.VarChar(255)
+  userRole       String   @map("user_role") @db.VarChar(50)
+  approvedAt     DateTime @default(now()) @map("approved_at")
+
+  mergeRequest MergeRequest @relation(fields: [mergeRequestId], references: [id], onDelete: Cascade)
+
+  @@unique([mergeRequestId, userId])
+  @@index([mergeRequestId])
+  @@index([userId])
+  @@map("merge_request_approvals")
+}
+
+model PublishRequest {
+  id                 String               @id @default(uuid()) @db.Uuid
+  organizationId     String?              @map("organization_id") @db.Uuid
+  branchId           String               @map("branch_id") @db.Uuid
+  branchName         String               @map("branch_name") @db.VarChar(255)
+  version            String               @db.VarChar(50)
+  changelog          String?              @db.Text
+  isBreaking         Boolean              @default(false) @map("is_breaking")
+  isPrerelease       Boolean              @default(false) @map("is_prerelease")
+  status             PublishRequestStatus @default(pending)
+  requestedBy        String               @map("requested_by") @db.Uuid
+  requestedByName    String               @map("requested_by_name") @db.VarChar(255)
+  reviewComment      String?              @map("review_comment") @db.Text
+  publishedVersionId String?              @map("published_version_id") @db.Uuid
+  publishedAt        DateTime?            @map("published_at")
+  createdAt          DateTime             @default(now()) @map("created_at")
+  updatedAt          DateTime             @updatedAt @map("updated_at")
+
+  organization     Organization?            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch           Branch                   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  publishedVersion BranchVersion?           @relation(fields: [publishedVersionId], references: [id], onDelete: SetNull)
+  approvals        PublishRequestApproval[]
+
+  @@index([organizationId])
+  @@index([branchId])
+  @@index([status])
+  @@index([requestedBy])
+  @@map("publish_requests")
+}
+
+model BranchProtectionApprover {
+  branchId  String   @map("branch_id") @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+
+  branch   Branch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  approver User   @relation("BranchProtectionApproverUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([branchId, userId])
+  @@index([userId])
+  @@map("branch_protection_approvers")
+}
+
+model PublishRequestApproval {
+  id               String   @id @default(uuid()) @db.Uuid
+  publishRequestId String   @map("publish_request_id") @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  userName         String   @map("user_name") @db.VarChar(255)
+  userRole         String   @map("user_role") @db.VarChar(50)
+  approvedAt       DateTime @default(now()) @map("approved_at")
+
+  publishRequest PublishRequest @relation(fields: [publishRequestId], references: [id], onDelete: Cascade)
+
+  @@unique([publishRequestId, userId])
+  @@index([publishRequestId])
+  @@index([userId])
+  @@map("publish_request_approvals")
 }
 
 // ===========================================================================
@@ -428,18 +567,18 @@ model MergeRequest {
 /// NOT the plaintext email. Use hashPII() before writing. The same applies
 /// to any PII in `metadata` — emails must be hashed, names masked.
 model AuditLog {
-  id              String      @id @default(uuid()) @db.Uuid
-  organizationId  String      @map("organization_id") @db.Uuid
-  action          AuditAction
-  actorId         String      @map("actor_id") @db.Uuid
-  actorEmailHash  String      @map("actor_email_hash") @db.VarChar(64)
-  targetType      String      @map("target_type") @db.VarChar(50)
-  targetId        String      @map("target_id") @db.Uuid
-  metadata        Json?       @db.JsonB
-  createdAt       DateTime    @default(now()) @map("created_at")
+  id             String      @id @default(uuid()) @db.Uuid
+  organizationId String      @map("organization_id") @db.Uuid
+  action         AuditAction
+  actorId        String?     @map("actor_id") @db.Uuid
+  actorEmailHash String      @map("actor_email_hash") @db.VarChar(64)
+  targetType     String      @map("target_type") @db.VarChar(50)
+  targetId       String      @map("target_id") @db.Uuid
+  metadata       Json?       @db.JsonB
+  createdAt      DateTime    @default(now()) @map("created_at")
 
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  actor        User         @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  actor        User?        @relation(fields: [actorId], references: [id], onDelete: SetNull)
 
   @@index([organizationId])
   @@index([action])

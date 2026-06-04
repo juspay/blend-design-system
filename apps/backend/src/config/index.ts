@@ -15,7 +15,7 @@ const envSchema = z.object({
     GOOGLE_CLIENT_SECRET: z.string(),
     GOOGLE_REDIRECT_URI: z
         .string()
-        .default('http://localhost:3001/auth/google/callback'),
+        .default('http://localhost:3001/api/v1/auth/google/callback'),
 
     JWT_SECRET: z.string().min(32, 'JWT secret must be at least 32 characters'),
     JWT_EXPIRES_IN: z.string().default('7d'),
@@ -56,20 +56,26 @@ const parsedEnv = envSchema
         }
 
         if (data.NODE_ENV === 'production') {
-            if (!isValidUrl(data.FRONTEND_URL)) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    path: ['FRONTEND_URL'],
-                    message:
-                        'FRONTEND_URL must be a valid absolute URL in production',
-                })
-            } else if (hasNonStandardHttpsPort(data.FRONTEND_URL)) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    path: ['FRONTEND_URL'],
-                    message:
-                        'FRONTEND_URL must not use a non-443 HTTPS port in production',
-                })
+            const frontendUrls = data.FRONTEND_URL.split(',').map((url) =>
+                url.trim()
+            )
+
+            for (const frontendUrl of frontendUrls) {
+                if (!isValidUrl(frontendUrl)) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        path: ['FRONTEND_URL'],
+                        message:
+                            'FRONTEND_URL must contain valid absolute URLs in production',
+                    })
+                } else if (hasNonStandardHttpsPort(frontendUrl)) {
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        path: ['FRONTEND_URL'],
+                        message:
+                            'FRONTEND_URL must not use non-443 HTTPS ports in production',
+                    })
+                }
             }
         }
     })
