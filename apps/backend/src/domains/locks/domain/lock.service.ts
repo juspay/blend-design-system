@@ -91,7 +91,7 @@ export const listLocks = async (organizationId: string, userId: string) => {
 
 export const validateBranchAgainstLocks = async (
     organizationId: string,
-    brandConfig: BrandConfig,
+    tokenConfig: BrandConfig,
     parentConfig: BrandConfig
 ) => {
     const locks = await lockRepo.listLocks(organizationId)
@@ -100,5 +100,5 @@ export const validateBranchAgainstLocks = async (
         reason: l.reason || undefined,
     }))
 
-    return validateAgainstLocks(parentConfig, brandConfig, lockedPaths)
+    return validateAgainstLocks(parentConfig, tokenConfig, lockedPaths)
 }
