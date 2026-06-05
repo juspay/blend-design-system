@@ -29,6 +29,12 @@ const CheckboxDemo = () => {
     const [showSubtext, setShowSubtext] = useState(true)
     const [showSlot, setShowSlot] = useState(false)
 
+    // Controlled vs uncontrolled comparison
+    const [controlledChecked, setControlledChecked] = useState(false)
+    const [uncontrolledCallbackValue, setUncontrolledCallbackValue] = useState<
+        boolean | 'indeterminate' | null
+    >(null)
+
     // Options for selects
     const sizeOptions = [
         { value: CheckboxSize.SMALL, label: 'Small' },
@@ -177,6 +183,101 @@ const CheckboxDemo = () => {
                             {playgroundLabel}
                         </Checkbox>
                     </div>
+                </div>
+            </div>
+
+            {/* Controlled vs Uncontrolled */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Controlled vs Uncontrolled
+                </h2>
+                <p className="text-sm text-gray-600 max-w-3xl">
+                    Click each checkbox repeatedly. The uncontrolled one toggles
+                    on its own (only <code>onCheckedChange</code>). The
+                    controlled one needs the parent to update{' '}
+                    <code>checked</code> — use the switch below to sync it.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="min-h-48 rounded-2xl p-6 flex flex-col justify-between gap-4 outline-1 outline-gray-200 bg-gray-50">
+                        <div className="space-y-1">
+                            <h3 className="font-semibold">Uncontrolled</h3>
+                            <p className="text-xs text-gray-500">
+                                No <code>checked</code> prop — only{' '}
+                                <code>onCheckedChange</code>
+                            </p>
+                            <p className="text-sm text-gray-700">
+                                Callback value:{' '}
+                                <span className="font-mono">
+                                    {uncontrolledCallbackValue === null
+                                        ? 'none yet'
+                                        : String(uncontrolledCallbackValue)}
+                                </span>
+                            </p>
+                        </div>
+                        <Checkbox
+                            onCheckedChange={(checked) => {
+                                setUncontrolledCallbackValue(checked)
+                                addSnackbar({
+                                    header: `Uncontrolled → ${checked === 'indeterminate' ? 'indeterminate' : checked ? 'checked' : 'unchecked'}`,
+                                })
+                            }}
+                        >
+                            Subscribe to newsletter
+                        </Checkbox>
+                    </div>
+
+                    <div className="min-h-48 rounded-2xl p-6 flex flex-col justify-between gap-4 outline-1 outline-gray-200 bg-gray-50">
+                        <div className="space-y-1">
+                            <h3 className="font-semibold">Controlled</h3>
+                            <p className="text-xs text-gray-500">
+                                <code>checked</code> +{' '}
+                                <code>onCheckedChange</code> wired to parent
+                                state
+                            </p>
+                            <p className="text-sm text-gray-700">
+                                Parent state:{' '}
+                                <span className="font-mono">
+                                    {String(controlledChecked)}
+                                </span>
+                            </p>
+                        </div>
+                        <Checkbox
+                            checked={controlledChecked}
+                            onCheckedChange={(checked) => {
+                                if (checked === 'indeterminate') return
+                                setControlledChecked(checked)
+                                addSnackbar({
+                                    header: `Controlled → ${checked ? 'checked' : 'unchecked'}`,
+                                })
+                            }}
+                        >
+                            Accept terms and conditions
+                        </Checkbox>
+                    </div>
+                </div>
+
+                <Switch
+                    label="Toggle controlled checked from parent"
+                    checked={controlledChecked}
+                    onChange={() => setControlledChecked(!controlledChecked)}
+                />
+
+                <div className="min-h-32 rounded-2xl p-6 flex flex-col justify-center gap-3 outline-1 outline-dashed outline-gray-300 bg-white">
+                    <p className="text-sm text-gray-600">
+                        <code>defaultChecked</code> — starts checked, then
+                        toggles uncontrolled:
+                    </p>
+                    <Checkbox
+                        defaultChecked
+                        onCheckedChange={(checked) => {
+                            addSnackbar({
+                                header: `defaultChecked → ${checked ? 'checked' : 'unchecked'}`,
+                            })
+                        }}
+                    >
+                        Remember my preference
+                    </Checkbox>
                 </div>
             </div>
         </div>
