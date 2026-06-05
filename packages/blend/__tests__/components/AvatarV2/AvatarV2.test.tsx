@@ -236,12 +236,10 @@ describe('AvatarV2', () => {
 
     describe('Sizes', () => {
         it.each([
-            [AvatarV2Size.XS, 'xs'],
             [AvatarV2Size.SM, 'sm'],
             [AvatarV2Size.MD, 'md'],
             [AvatarV2Size.LG, 'lg'],
             [AvatarV2Size.XL, 'xl'],
-            [AvatarV2Size.XXL, 'xxl'],
         ])('renders %s size correctly', async (size) => {
             const { container } = render(<AvatarV2 alt="Test" size={size} />)
 
@@ -254,9 +252,8 @@ describe('AvatarV2', () => {
 
     describe('Shapes', () => {
         it.each([
-            [AvatarV2Shape.CIRCLE, 'circle'],
+            [AvatarV2Shape.CIRCULAR, 'circle'],
             [AvatarV2Shape.ROUNDED, 'rounded'],
-            [AvatarV2Shape.SQUARE, 'square'],
         ])('renders %s shape correctly', async (shape) => {
             const { container } = render(<AvatarV2 alt="Test" shape={shape} />)
 
@@ -470,6 +467,42 @@ describe('AvatarV2', () => {
             })
 
             expect(await axe(container)).toHaveNoViolations()
+        })
+
+        it('retries image when src changes after a load error', async () => {
+            const { container, rerender } = render(
+                <AvatarV2 src="https://invalid.invalid/x.png" alt="John Doe" />
+            )
+
+            const image = container.querySelector('img')
+            if (image) {
+                image.dispatchEvent(new Event('error'))
+            }
+
+            await waitFor(() => {
+                expect(
+                    container.querySelector('[data-avatar-fallback="true"]')
+                ).toBeInTheDocument()
+                expect(
+                    container.querySelector('[data-avatar]')
+                ).toHaveAttribute('data-variant', 'text')
+            })
+
+            rerender(
+                <AvatarV2
+                    src="https://i.pravatar.cc/100?img=5"
+                    alt="John Doe"
+                />
+            )
+
+            await waitFor(() => {
+                expect(
+                    container.querySelector('[data-avatar-image="true"]')
+                ).toBeInTheDocument()
+                expect(
+                    container.querySelector('[data-avatar]')
+                ).toHaveAttribute('data-variant', 'image')
+            })
         })
 
         it('calls onImageLoad when image loads successfully', async () => {
