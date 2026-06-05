@@ -22,6 +22,12 @@ export const useModal = (isOpen: boolean, onClose: () => void) => {
             const container = getPortalContainer()
             setPortalContainer(container)
 
+            document.body.style.setProperty(
+                'pointer-events',
+                'auto',
+                'important'
+            )
+
             let animationFrame2: number | null = null
             const animationFrame1 = requestAnimationFrame(() => {
                 animationFrame2 = requestAnimationFrame(() => {
@@ -44,6 +50,7 @@ export const useModal = (isOpen: boolean, onClose: () => void) => {
                     cancelAnimationFrame(animationFrame2)
                 }
                 document.removeEventListener('keydown', handleEscapeKey)
+                document.body.style.removeProperty('pointer-events')
             }
         } else {
             // Start exit animation
