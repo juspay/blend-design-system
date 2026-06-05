@@ -8,11 +8,20 @@ import * as branchRepo from '@/domains/branches/data-access/branch.repository.js
 import * as lockService from '@/domains/locks/domain/lock.service.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 import * as orgRepo from '@/domains/organizations/data-access/organization.repository.js'
+import * as userRepo from '@/domains/users/data-access/user.repository.js'
 import type { BrandConfig } from '@/domains/branches/domain/branch.types.js'
 import {
-    requireOrganizationMember,
     requireOrganizationRole,
+    requireOrganizationMember,
+    getOrganizationRole,
 } from '@/domains/organizations/domain/org-permissions.service.js'
+import {
+    canBypassApproval,
+    canRoleApprove,
+    hasReachedApprovalThreshold,
+    resolveMergeApprovalPolicy,
+    type OrgApprovalSettings,
+} from '@/domains/shared/approval-policy.service.js'
 
 function diffBrandConfigs(
     configA: BrandConfig,
@@ -131,8 +140,54 @@ function mergeConfigForTargetBranch(
     }
 }
 
-export const createMR = async (
-    organizationId: string,
+const toOrgPolicy = (
+    organization: Awaited<ReturnType<typeof orgRepo.getOrganizationById>>
+): OrgApprovalSettings | null => {
+    if (!organization) return null
+    return {
+        defaultBranchId: organization.defaultBranchId,
+        requireApprovalForMerge: organization.requireApprovalForMerge,
+        requireApprovalForPublish: organization.requireApprovalForPublish,
+        allowedApprovers: organization.allowedApprovers,
+        minApprovals: organization.minApprovals,
+        allowAdminBypass: organization.allowAdminBypass,
+    }
+}
+
+const createPersonalPolicy = (targetBranchId: string): OrgApprovalSettings => ({
+    defaultBranchId: targetBranchId,
+    requireApprovalForMerge: true,
+    requireApprovalForPublish: false,
+    allowedApprovers: 'admins',
+    minApprovals: 1,
+    allowAdminBypass: true,
+})
+
+const normalizeOrgId = (
+    sourceOrgId: string | null,
+    targetOrgId: string | null
+): string | null => {
+    if (sourceOrgId && targetOrgId && sourceOrgId !== targetOrgId) {
+        throw new ValidationError(
+            'Source and target branches must belong to same organization context'
+        )
+    }
+    return sourceOrgId || targetOrgId || null
+}
+
+const getRoleForMergeContext = async (
+    organizationId: string | null,
+    targetBranchCreatedBy: string,
+    userId: string
+): Promise<'admin' | 'editor' | 'viewer'> => {
+    if (!organizationId) {
+        return targetBranchCreatedBy === userId ? 'admin' : 'viewer'
+    }
+    return await getOrganizationRole(organizationId, userId, 'viewer')
+}
+
+export const createMergeRequest = async (
+    organizationId: string | undefined,
     sourceBranchId: string,
     targetBranchId: string,
     title: string,
@@ -140,38 +195,50 @@ export const createMR = async (
     userId: string,
     userEmail: string
 ) => {
-    await requireOrganizationRole(
-        organizationId,
-        userId,
-        ['admin', 'editor'],
-        'Only admins and editors can create merge requests'
-    )
-
     const source = await branchRepo.getBranchById(sourceBranchId)
     if (!source) throw new NotFoundError('Source branch')
 
     const target = await branchRepo.getBranchById(targetBranchId)
     if (!target) throw new NotFoundError('Target branch')
 
-    if (source.organizationId !== organizationId) {
-        throw new ValidationError(
-            'Source branch does not belong to organization'
-        )
-    }
-    if (target.organizationId !== organizationId) {
-        throw new ValidationError(
-            'Target branch does not belong to organization'
-        )
-    }
+    const inferredOrgId = normalizeOrgId(
+        source.organizationId,
+        target.organizationId
+    )
+    const orgId = organizationId || inferredOrgId || null
 
-    const organization = await orgRepo.getOrganizationById(organizationId)
-    if (
-        organization?.defaultBranchId &&
-        target.id !== organization.defaultBranchId
-    ) {
-        throw new ValidationError(
-            'Merge requests can only target the organization default branch'
+    if (orgId) {
+        await requireOrganizationRole(
+            orgId,
+            userId,
+            ['admin', 'editor'],
+            'Only admins and editors can create merge requests'
         )
+
+        if (
+            source.organizationId !== orgId ||
+            target.organizationId !== orgId
+        ) {
+            throw new ValidationError(
+                'Source and target branches must belong to organization'
+            )
+        }
+
+        const organization = await orgRepo.getOrganizationById(orgId)
+        if (
+            organization?.defaultBranchId &&
+            target.id !== organization.defaultBranchId
+        ) {
+            throw new ValidationError(
+                'Merge requests can only target the organization default branch'
+            )
+        }
+    } else {
+        if (source.createdBy !== userId && target.createdBy !== userId) {
+            throw new ForbiddenError(
+                'Only branch owners can create merge requests without organization'
+            )
+        }
     }
 
     if (source.id === target.id) {
@@ -180,24 +247,26 @@ export const createMR = async (
         )
     }
 
-    const diff = diffBrandConfigs(target.brandConfig, source.brandConfig)
+    const diff = diffBrandConfigs(target.tokenConfig, source.tokenConfig)
 
-    let lockViolations = null
-    try {
-        const violations = await lockService.validateBranchAgainstLocks(
-            organizationId,
-            source.brandConfig,
-            target.brandConfig
-        )
-        if (violations.length > 0) {
-            lockViolations = violations
+    let lockViolations: unknown = null
+    if (orgId) {
+        try {
+            const violations = await lockService.validateBranchAgainstLocks(
+                orgId,
+                source.tokenConfig,
+                target.tokenConfig
+            )
+            if (violations.length > 0) {
+                lockViolations = violations
+            }
+        } catch {
+            // Ignore lock validation bootstrap failures.
         }
-    } catch {
-        // Lock validation may fail if no locks exist yet
     }
 
     const mr = await mrRepo.createMergeRequest({
-        organizationId,
+        organizationId: orgId,
         sourceBranchId: source.id,
         sourceBranchName: source.name,
         targetBranchId: target.id,
@@ -209,38 +278,64 @@ export const createMR = async (
         requestedBy: userId,
     })
 
-    await auditLogRepo.createAuditLog({
-        organizationId,
-        action: 'merge_request_created',
-        actorId: userId,
-        actorEmail: userEmail,
-        targetType: 'merge_request',
-        targetId: mr.id,
-        metadata: {
-            sourceBranchId: source.id,
-            sourceBranchName: source.name,
-            targetBranchId: target.id,
-            targetBranchName: target.name,
-        },
-    })
+    if (orgId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: orgId,
+            action: 'merge_request_created',
+            actorId: userId,
+            actorEmail: userEmail,
+            targetType: 'merge_request',
+            targetId: mr.id,
+            metadata: {
+                sourceBranchId: source.id,
+                sourceBranchName: source.name,
+                targetBranchId: target.id,
+                targetBranchName: target.name,
+            },
+        })
+    }
 
     return mr
 }
 
-export const getMR = async (id: string, requesterUserId?: string) => {
+export const getMergeRequest = async (id: string, requesterUserId?: string) => {
     const mr = await mrRepo.getMergeRequest(id)
     if (!mr) throw new NotFoundError('Merge request')
+
     if (requesterUserId) {
-        await requireOrganizationMember(mr.organizationId, requesterUserId)
+        if (mr.organizationId) {
+            await requireOrganizationMember(mr.organizationId, requesterUserId)
+        } else {
+            const [requester, source, target] = await Promise.all([
+                userRepo.findUserById(requesterUserId),
+                branchRepo.getBranchById(mr.sourceBranchId),
+                branchRepo.getBranchById(mr.targetBranchId),
+            ])
+            if (!requester || !source || !target) {
+                throw new ForbiddenError('Access denied')
+            }
+
+            const allowedUsers = new Set([
+                mr.requestedBy,
+                source.createdBy,
+                target.createdBy,
+            ])
+            if (!allowedUsers.has(requesterUserId)) {
+                throw new ForbiddenError('Access denied')
+            }
+        }
     }
+
     return mr
 }
 
-export const listMRs = async (
+export const listMergeRequests = async (
     options: {
         organizationId?: string
-        status?: string
+        status?: 'pending' | 'approved' | 'rejected' | 'merged' | 'cancelled'
         requestedBy?: string
+        sourceBranchId?: string
+        targetBranchId?: string
         limit?: number
         cursor?: string
     },
@@ -248,61 +343,115 @@ export const listMRs = async (
 ) => {
     if (options.organizationId && requesterUserId) {
         await requireOrganizationMember(options.organizationId, requesterUserId)
+    } else if (
+        !options.organizationId &&
+        requesterUserId &&
+        !options.requestedBy
+    ) {
+        options.requestedBy = requesterUserId
     }
     return mrRepo.listMergeRequests(options)
 }
 
-export const approveMR = async (
+export const approveMergeRequest = async (
     id: string,
     reviewComment: string | undefined,
     userId: string,
     userEmail: string
 ) => {
-    const mr = await getMR(id, userId)
-    await requireOrganizationRole(
-        mr.organizationId,
-        userId,
-        ['admin'],
-        'Only admins can approve merge requests'
-    )
+    const mr = await getMergeRequest(id, userId)
     if (mr.status !== 'pending') {
         throw new ValidationError('Only pending merge requests can be approved')
     }
+    if (mr.requestedBy === userId) {
+        throw new ForbiddenError('You cannot approve your own merge request')
+    }
 
+    const target = await branchRepo.getBranchById(mr.targetBranchId)
+    if (!target) throw new NotFoundError('Target branch')
+
+    const organization = mr.organizationId
+        ? await orgRepo.getOrganizationById(mr.organizationId)
+        : null
+    const policy = resolveMergeApprovalPolicy(
+        target,
+        toOrgPolicy(organization) || createPersonalPolicy(target.id)
+    )
+
+    const userName =
+        (await userRepo.findUserById(userId))?.displayName || userEmail
+    const userRole = await getRoleForMergeContext(
+        mr.organizationId,
+        target.createdBy,
+        userId
+    )
+
+    if (!canRoleApprove(policy, userRole, userId)) {
+        throw new ForbiddenError(
+            'You are not allowed to approve this merge request'
+        )
+    }
+
+    await mrRepo.addMergeRequestApproval(id, {
+        userId,
+        userName,
+        userRole,
+    })
+
+    const latest = await mrRepo.getMergeRequest(id)
+    if (!latest) throw new NotFoundError('Merge request')
+
+    const approved = hasReachedApprovalThreshold(
+        latest.approvals.length,
+        policy
+    )
     const updated = await mrRepo.updateMergeRequestStatus(id, {
-        status: 'approved',
-        reviewedBy: userId,
+        status: approved ? 'approved' : 'pending',
+        reviewedBy: approved ? userId : undefined,
         reviewComment,
     })
 
-    await auditLogRepo.createAuditLog({
-        organizationId: mr.organizationId,
-        action: 'merge_request_approved',
-        actorId: userId,
-        actorEmail: userEmail,
-        targetType: 'merge_request',
-        targetId: id,
-        metadata: { reviewComment: reviewComment || null },
-    })
+    if (mr.organizationId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: mr.organizationId,
+            action: 'merge_request_approved',
+            actorId: userId,
+            actorEmail: userEmail,
+            targetType: 'merge_request',
+            targetId: id,
+            metadata: {
+                reviewComment: reviewComment || null,
+            },
+        })
+    }
 
     return updated
 }
 
-export const rejectMR = async (
+export const rejectMergeRequest = async (
     id: string,
     reviewComment: string | undefined,
     userId: string,
     userEmail: string
 ) => {
-    const mr = await getMR(id, userId)
-    await requireOrganizationRole(
+    const mr = await getMergeRequest(id, userId)
+
+    const target = await branchRepo.getBranchById(mr.targetBranchId)
+    if (!target) throw new NotFoundError('Target branch')
+
+    const userRole = await getRoleForMergeContext(
         mr.organizationId,
-        userId,
-        ['admin'],
-        'Only admins can reject merge requests'
+        target.createdBy,
+        userId
     )
-    if (mr.status !== 'pending') {
-        throw new ValidationError('Only pending merge requests can be rejected')
+    if (userRole !== 'admin') {
+        throw new ForbiddenError('Only admins can reject merge requests')
+    }
+
+    if (mr.status !== 'pending' && mr.status !== 'approved') {
+        throw new ValidationError(
+            'Only pending or approved merge requests can be rejected'
+        )
     }
 
     const updated = await mrRepo.updateMergeRequestStatus(id, {
@@ -311,39 +460,29 @@ export const rejectMR = async (
         reviewComment,
     })
 
-    await auditLogRepo.createAuditLog({
-        organizationId: mr.organizationId,
-        action: 'merge_request_rejected',
-        actorId: userId,
-        actorEmail: userEmail,
-        targetType: 'merge_request',
-        targetId: id,
-        metadata: { reviewComment: reviewComment || null },
-    })
+    if (mr.organizationId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: mr.organizationId,
+            action: 'merge_request_rejected',
+            actorId: userId,
+            actorEmail: userEmail,
+            targetType: 'merge_request',
+            targetId: id,
+            metadata: {
+                reviewComment: reviewComment || null,
+            },
+        })
+    }
 
     return updated
 }
 
-export const mergeMR = async (
+export const mergeMergeRequest = async (
     id: string,
     userId: string,
     userEmail: string
 ) => {
-    const mr = await getMR(id, userId)
-    const membership = await requireOrganizationRole(
-        mr.organizationId,
-        userId,
-        ['admin'],
-        'Only admins can merge merge requests'
-    )
-
-    if (mr.status !== 'approved') {
-        if (!(mr.status === 'pending' && membership.role === 'admin')) {
-            throw new ValidationError(
-                'Only approved merge requests can be merged'
-            )
-        }
-    }
+    const mr = await getMergeRequest(id, userId)
 
     const source = await branchRepo.getBranchById(mr.sourceBranchId)
     if (!source) throw new NotFoundError('Source branch')
@@ -351,24 +490,56 @@ export const mergeMR = async (
     const target = await branchRepo.getBranchById(mr.targetBranchId)
     if (!target) throw new NotFoundError('Target branch')
 
-    const lockViolations = await lockService.validateBranchAgainstLocks(
-        mr.organizationId,
-        source.brandConfig,
-        target.brandConfig
+    const organization = mr.organizationId
+        ? await orgRepo.getOrganizationById(mr.organizationId)
+        : null
+    const policy = resolveMergeApprovalPolicy(
+        target,
+        toOrgPolicy(organization) || createPersonalPolicy(target.id)
     )
-    if (lockViolations.length > 0) {
+
+    const userRole = await getRoleForMergeContext(
+        mr.organizationId,
+        target.createdBy,
+        userId
+    )
+    const isAdmin = userRole === 'admin'
+    if (!isAdmin) {
+        throw new ForbiddenError('Only admins can merge merge requests')
+    }
+
+    const bypassAllowed = canBypassApproval(policy, userRole)
+    const approvalsMet = hasReachedApprovalThreshold(
+        mr.approvals.length,
+        policy
+    )
+
+    if (policy.requireApproval && !approvalsMet && !bypassAllowed) {
         throw new ValidationError(
-            'Cannot merge: lock violations must be resolved first'
+            `This merge request requires at least ${policy.minApprovals} approvals`
         )
     }
 
+    if (mr.organizationId) {
+        const lockViolations = await lockService.validateBranchAgainstLocks(
+            mr.organizationId,
+            source.tokenConfig,
+            target.tokenConfig
+        )
+        if (lockViolations.length > 0) {
+            throw new ValidationError(
+                'Cannot merge: lock violations must be resolved first'
+            )
+        }
+    }
+
     const mergedTargetConfig = mergeConfigForTargetBranch(
-        target.brandConfig,
-        source.brandConfig
+        target.tokenConfig,
+        source.tokenConfig
     )
 
     await branchRepo.updateBranch(mr.targetBranchId, {
-        brandConfig: mergedTargetConfig,
+        tokenConfig: mergedTargetConfig,
     })
 
     const updated = await mrRepo.updateMergeRequestStatus(id, {
@@ -376,43 +547,66 @@ export const mergeMR = async (
         reviewedBy: userId,
     })
 
-    await auditLogRepo.createAuditLog({
-        organizationId: mr.organizationId,
-        action: 'merge_request_merged',
-        actorId: userId,
-        actorEmail: userEmail,
-        targetType: 'merge_request',
-        targetId: id,
-        metadata: {
-            sourceBranchId: mr.sourceBranchId,
-            targetBranchId: mr.targetBranchId,
-        },
-    })
+    if (mr.organizationId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: mr.organizationId,
+            action:
+                policy.requireApproval && !approvalsMet && bypassAllowed
+                    ? 'merge_request_merged_admin_bypass'
+                    : 'merge_request_merged',
+            actorId: userId,
+            actorEmail: userEmail,
+            targetType: 'merge_request',
+            targetId: id,
+            metadata: {
+                sourceBranchId: mr.sourceBranchId,
+                targetBranchId: mr.targetBranchId,
+                usedAdminBypass:
+                    policy.requireApproval && !approvalsMet && bypassAllowed,
+                approvalCount: mr.approvals.length,
+                minRequired: policy.minApprovals,
+            },
+        })
+    }
 
     return updated
 }
 
-export const cancelMR = async (
+export const cancelMergeRequest = async (
     id: string,
     userId: string,
     _userEmail: string
 ) => {
-    const mr = await getMR(id, userId)
+    const mr = await getMergeRequest(id, userId)
     if (mr.status !== 'pending') {
         throw new ValidationError(
             'Only pending merge requests can be cancelled'
         )
     }
 
-    const membership = await requireOrganizationMember(
-        mr.organizationId,
-        userId
-    )
-    const isAdmin = membership.role === 'admin'
-
-    if (mr.requestedBy !== userId && !isAdmin) {
-        throw new ForbiddenError('Only the requestor or an admin can cancel')
+    if (mr.organizationId) {
+        const membership = await requireOrganizationMember(
+            mr.organizationId,
+            userId
+        )
+        const isAdmin = membership.role === 'admin'
+        if (mr.requestedBy !== userId && !isAdmin) {
+            throw new ForbiddenError(
+                'Only the requestor or an admin can cancel'
+            )
+        }
+    } else if (mr.requestedBy !== userId) {
+        throw new ForbiddenError('Only the requestor can cancel')
     }
 
     return mrRepo.cancelMergeRequest(id)
 }
+
+// Backward-compatible aliases. Prefer full names in new code.
+export const createMR = createMergeRequest
+export const getMR = getMergeRequest
+export const listMRs = listMergeRequests
+export const approveMR = approveMergeRequest
+export const rejectMR = rejectMergeRequest
+export const mergeMR = mergeMergeRequest
+export const cancelMR = cancelMergeRequest

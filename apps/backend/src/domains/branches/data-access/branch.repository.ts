@@ -10,15 +10,19 @@ import type {
 export interface BranchRow {
     id: string
     organizationId: string | null
-    brandId: string
+    branchSlug: string
     name: string
     description: string | null
     parentBranchId: string | null
     status: BranchStatus
     visibility: BranchVisibility
-    brandConfig: BrandConfig
+    tokenConfig: BrandConfig
     publishedVersions: number
     latestVersion: string | null
+    isProtected: boolean
+    protectionRequireApproval: boolean | null
+    protectionMinApprovals: number | null
+    protectionApproverIds: string[]
     createdBy: string
     createdByName: string
     createdAt: Date
@@ -31,7 +35,7 @@ export interface BranchVersionRow {
     id: string
     branchId: string
     version: string
-    brandConfig: BrandConfig
+    tokenConfig: BrandConfig
     changelog: string | null
     isBreaking: boolean
     isPrerelease: boolean
@@ -43,7 +47,7 @@ export interface BranchVersionRow {
 export interface BranchSnapshotRow {
     id: string
     branchId: string
-    brandConfig: BrandConfig
+    tokenConfig: BrandConfig
     label: string | null
     isAutoSave: boolean
     savedBy: string
@@ -60,26 +64,38 @@ export const createBranch = async (
         | 'publishedVersions'
         | 'latestVersion'
         | 'deletedAt'
+        | 'isProtected'
+        | 'protectionRequireApproval'
+        | 'protectionMinApprovals'
+        | 'protectionApproverIds'
         | 'tags'
     > & { organizationId: string | null }
 ): Promise<BranchRow> => {
     const branch = await prisma.branch.create({
         data: {
             organizationId: data.organizationId,
-            brandId: data.brandId,
+            branchSlug: data.branchSlug,
             name: data.name,
             description: data.description,
             parentBranchId: data.parentBranchId,
             status: data.status || 'draft',
             visibility: data.visibility || 'private',
-            brandConfig: data.brandConfig as any,
+            tokenConfig: data.tokenConfig as any,
+            isProtected: false,
+            protectionRequireApproval: null,
+            protectionMinApprovals: null,
             createdBy: data.createdBy,
             createdByName: data.createdByName,
         },
+        include: { protectionApprovers: true },
     })
 
     logger.info({ branchId: branch.id }, 'Branch created')
-    return branch as unknown as BranchRow
+    return {
+        ...(branch as any),
+        protectionApproverIds:
+            branch.protectionApprovers?.map((entry: any) => entry.userId) ?? [],
+    } as unknown as BranchRow
 }
 
 export const getBranchById = async (
@@ -87,7 +103,10 @@ export const getBranchById = async (
 ): Promise<BranchRow | null> => {
     const branch = await prisma.branch.findUnique({
         where: { id: branchId, deletedAt: null },
-        include: { tags: { include: { tag: true } } },
+        include: {
+            tags: { include: { tag: true } },
+            protectionApprovers: true,
+        },
     })
 
     if (!branch) return null
@@ -95,6 +114,8 @@ export const getBranchById = async (
     return {
         ...(branch as any),
         tags: branch.tags?.map((bt: any) => bt.tag) ?? [],
+        protectionApproverIds:
+            branch.protectionApprovers?.map((entry: any) => entry.userId) ?? [],
     } as unknown as BranchRow
 }
 
@@ -104,8 +125,8 @@ export const listBranches = async (
         limit?: number
         cursor?: string
         createdBy?: string
-        status?: string
-        visibility?: string
+        status?: BranchStatus
+        visibility?: BranchVisibility
         search?: string
         tag?: string
     } = {}
@@ -121,7 +142,7 @@ export const listBranches = async (
     if (options.search) {
         where.OR = [
             { name: { contains: options.search, mode: 'insensitive' } },
-            { brandId: { contains: options.search, mode: 'insensitive' } },
+            { branchSlug: { contains: options.search, mode: 'insensitive' } },
             { description: { contains: options.search, mode: 'insensitive' } },
         ]
     }
@@ -136,7 +157,10 @@ export const listBranches = async (
         where,
         orderBy: { createdAt: 'desc' },
         take: limit + 1,
-        include: { tags: { include: { tag: true } } },
+        include: {
+            tags: { include: { tag: true } },
+            protectionApprovers: true,
+        },
     })
 
     let nextCursor: string | undefined
@@ -149,6 +173,8 @@ export const listBranches = async (
         branches: branches.map((b: any) => ({
             ...b,
             tags: b.tags?.map((bt: any) => bt.tag) ?? [],
+            protectionApproverIds:
+                b.protectionApprovers?.map((entry: any) => entry.userId) ?? [],
         })) as unknown as BranchRow[],
         nextCursor,
     }
@@ -161,19 +187,31 @@ export const updateBranch = async (
             BranchRow,
             | 'name'
             | 'description'
-            | 'brandConfig'
+            | 'tokenConfig'
             | 'status'
             | 'visibility'
             | 'latestVersion'
+            | 'isProtected'
+            | 'protectionRequireApproval'
+            | 'protectionMinApprovals'
         >
     >
 ): Promise<BranchRow | null> => {
     const branch = await prisma.branch.update({
         where: { id: branchId },
         data: updates as any,
+        include: { protectionApprovers: true },
     })
 
-    return branch ? (branch as unknown as BranchRow) : null
+    return branch
+        ? ({
+              ...(branch as any),
+              protectionApproverIds:
+                  branch.protectionApprovers?.map(
+                      (entry: any) => entry.userId
+                  ) ?? [],
+          } as unknown as BranchRow)
+        : null
 }
 
 export const softDeleteBranch = async (branchId: string): Promise<boolean> => {
@@ -189,7 +227,7 @@ export const forkBranch = async (
     sourceBranchId: string,
     data: {
         name: string
-        brandId: string
+        branchSlug: string
         organizationId: string | null
         createdBy: string
         createdByName: string
@@ -202,13 +240,13 @@ export const forkBranch = async (
 
     return createBranch({
         organizationId: data.organizationId,
-        brandId: data.brandId,
+        branchSlug: data.branchSlug,
         name: data.name,
         description: data.description || null,
         parentBranchId: sourceBranchId,
         status: 'draft',
         visibility: data.visibility || 'private',
-        brandConfig: source.brandConfig,
+        tokenConfig: source.tokenConfig,
         createdBy: data.createdBy,
         createdByName: data.createdByName,
     })
@@ -242,7 +280,7 @@ export const createVersion = async (
         data: {
             branchId,
             version: data.version,
-            brandConfig: data.brandConfig as any,
+            tokenConfig: data.tokenConfig as any,
             changelog: data.changelog,
             isBreaking: data.isBreaking,
             isPrerelease: data.isPrerelease,
@@ -306,7 +344,7 @@ export const createSnapshot = async (
     const snapshot = await prisma.branchSnapshot.create({
         data: {
             branchId,
-            brandConfig: data.brandConfig as any,
+            tokenConfig: data.tokenConfig as any,
             label: data.label,
             isAutoSave: data.isAutoSave,
             savedBy: data.savedBy,
@@ -315,6 +353,25 @@ export const createSnapshot = async (
     })
 
     return snapshot as unknown as BranchSnapshotRow
+}
+
+export const setProtectionApproverIds = async (
+    branchId: string,
+    userIds: string[]
+): Promise<void> => {
+    await prisma.$transaction([
+        prisma.branchProtectionApprover.deleteMany({ where: { branchId } }),
+        ...(userIds.length > 0
+            ? [
+                  prisma.branchProtectionApprover.createMany({
+                      data: userIds.map((userId) => ({
+                          branchId,
+                          userId,
+                      })),
+                  }),
+              ]
+            : []),
+    ])
 }
 
 export const listSnapshots = async (
