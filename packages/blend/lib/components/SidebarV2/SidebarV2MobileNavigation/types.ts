@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes } from 'react'
 import type { NavbarItem } from '../../Directory/types'
-import type { MobileNavigationV2TokenType } from './mobile.tokens'
+import type { MobileNavigationV2TokenType } from './mobile.tokens.types'
 
 export type SidebarV2MobileNavigationItem = NavbarItem & {
     sectionLabel?: string

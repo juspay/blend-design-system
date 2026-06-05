@@ -3,6 +3,7 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import Button from '../../Button/Button'
 import { ButtonSize, ButtonType } from '../../Button/types'
+// eslint-disable-next-line import-x/no-cycle -- intentional recursion: the pivot preview renders a nested DataTable
 import DataTable from '../DataTable'
 import { NoScrollbar } from './pivotModal.styled'
 import { PivotTableIllustration } from './PivotTableIllustration'

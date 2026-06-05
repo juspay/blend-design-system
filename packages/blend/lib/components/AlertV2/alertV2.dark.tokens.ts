@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { ResponsiveAlertV2Tokens } from './alertV2.tokens'
+import type { ResponsiveAlertV2Tokens } from './alertV2.tokens.types'
 
 export const getAlertV2DarkTokens = (
     foundationToken: FoundationTokenType

@@ -6,7 +6,7 @@ import type {
     RefObject,
 } from 'react'
 import type { DropdownMenuContentProps } from '@radix-ui/react-dropdown-menu'
-import type { SkeletonVariant } from '../Skeleton'
+import type { SkeletonVariant } from '../Skeleton/types'
 import type { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum SelectV2Alignment {

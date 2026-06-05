@@ -4,7 +4,7 @@ import {
     MultiSelectV2Size,
     MultiSelectV2Variant,
 } from './multiSelectV2.types'
-import type { ResponsiveMultiSelectV2Tokens } from './multiSelectV2.tokens'
+import type { ResponsiveMultiSelectV2Tokens } from './multiSelectV2.tokens.types'
 
 export const getMultiSelectV2LightTokens = (
     foundationToken: FoundationTokenType

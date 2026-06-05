@@ -1,6 +1,6 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
 import { InputStateV2 } from '../inputV2.types'
-import { ChatInputV2MobileTokensType } from './ChatInputV2Mobile.tokens'
+import type { ChatInputV2MobileTokensType } from './ChatInputV2Mobile.tokens.types'
 
 const focusGlow = (foundationToken: FoundationTokenType) =>
     `0 2px 8px 0 ${foundationToken.colors.primary[50]}, 0 0 0 3px ${foundationToken.colors.primary[50]}`
