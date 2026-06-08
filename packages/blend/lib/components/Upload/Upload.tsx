@@ -146,6 +146,12 @@ const Upload: React.FC<UploadProps> = ({
 
     const uploadManager = useMemo(() => createUploadManager(), [])
 
+    useEffect(() => {
+        return () => {
+            uploadManager.cancelAllUploads()
+        }
+    }, [uploadManager])
+
     const handleInternalDrop = useMemo(
         () =>
             createComplexDropHandler(

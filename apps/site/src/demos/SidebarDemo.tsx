@@ -251,7 +251,7 @@ const SidebarDemo = () => {
         | 'searchInputV2'
         | 'chatInputV2'
         | 'stepperV2'
-    >('themeProvider')
+    >('upload')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
