@@ -1,9 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
     @apply antialiased;
+}
+
+.title {
+    @apply text-base font-semibold leading-6 text-gray-800;
+}
+
+.subtitle {
+    @apply text-sm font-medium leading-5 text-gray-500;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

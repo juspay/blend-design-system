@@ -11,8 +11,29 @@ import {
 import * as orgRepo from '../data-access/organization.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 import { maskEmail, maskDisplayName } from '@/utils/crypto.js'
+import { NotFoundError } from '@/errors/AppError.js'
+import {
+    requireOrganizationMember,
+    requireOrganizationRole,
+} from '@/domains/organizations/domain/org-permissions.service.js'
 
 const router: IRouter = Router()
+
+const isSystemAdmin = (req: Request): boolean => req.user?.role === 'admin'
+
+const requireOrgAdminOrSystemAdmin = async (
+    req: Request,
+    organizationId: string
+) => {
+    if (isSystemAdmin(req)) return
+
+    await requireOrganizationRole(
+        organizationId,
+        req.user!.id,
+        ['admin'],
+        'Only organization admins can perform this action'
+    )
+}
 
 // ---------------------------------------------------------------------------
 // List Organizations (admin only)
@@ -45,6 +66,11 @@ router.get(
             })
             return
         }
+
+        if (!isSystemAdmin(req)) {
+            await requireOrganizationMember(req.params.id, req.user!.id)
+        }
+
         res.json({ success: true, data: { organization: org } })
     })
 )
@@ -120,9 +146,10 @@ router.post(
 router.patch(
     '/:id',
     authenticate,
-    requireRole('admin'),
     validate({ body: updateOrgSchema }),
     asyncHandler(async (req: Request, res: Response) => {
+        await requireOrgAdminOrSystemAdmin(req, req.params.id)
+
         const org = await orgRepo.updateOrganization(req.params.id, req.body)
         if (!org) {
             res.status(404).json({
@@ -135,6 +162,52 @@ router.patch(
     })
 )
 
+router.patch(
+    '/:id/approval-settings',
+    authenticate,
+    validate({ body: updateOrgSchema }),
+    asyncHandler(async (req: Request, res: Response) => {
+        await requireOrganizationRole(
+            req.params.id,
+            req.user!.id,
+            ['admin'],
+            'Only organization admins can update approval settings'
+        )
+
+        const updatePayload = {
+            requireApprovalForMerge: req.body.requireApprovalForMerge,
+            requireApprovalForPublish: req.body.requireApprovalForPublish,
+            allowedApprovers: req.body.allowedApprovers,
+            minApprovals: req.body.minApprovals,
+            allowAdminBypass: req.body.allowAdminBypass,
+        }
+
+        const organization = await orgRepo.updateOrganization(
+            req.params.id,
+            updatePayload
+        )
+        if (!organization) {
+            throw new NotFoundError('Organization')
+        }
+
+        await auditLogRepo.createAuditLog({
+            organizationId: req.params.id,
+            action: 'organization_settings_updated',
+            actorId: req.user!.id,
+            actorEmail: req.user!.email,
+            targetType: 'organization',
+            targetId: req.params.id,
+            metadata: updatePayload,
+        })
+
+        res.json({
+            success: true,
+            data: { organization },
+            message: 'Organization approval settings updated',
+        })
+    })
+)
+
 // ---------------------------------------------------------------------------
 // List Members
 // ---------------------------------------------------------------------------
@@ -142,6 +215,10 @@ router.get(
     '/:id/members',
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
+        if (!isSystemAdmin(req)) {
+            await requireOrganizationMember(req.params.id, req.user!.id)
+        }
+
         const members = await orgRepo.listMembers(req.params.id)
         const maskedMembers = members.map((m: any) => ({
             ...m,
@@ -163,9 +240,10 @@ router.get(
 router.post(
     '/:id/members',
     authenticate,
-    requireRole('admin'),
     validate({ body: addMemberSchema }),
     asyncHandler(async (req: Request, res: Response) => {
+        await requireOrgAdminOrSystemAdmin(req, req.params.id)
+
         const member = await orgRepo.addMember({
             organizationId: req.params.id,
             userId: req.body.userId,
@@ -181,8 +259,9 @@ router.post(
 router.delete(
     '/:id/members/:userId',
     authenticate,
-    requireRole('admin'),
     asyncHandler(async (req: Request, res: Response) => {
+        await requireOrgAdminOrSystemAdmin(req, req.params.id)
+
         await orgRepo.removeMember(req.params.id, req.params.userId)
         res.json({ success: true, message: 'Member removed' })
     })
@@ -194,9 +273,10 @@ router.delete(
 router.patch(
     '/:id/members/:userId/role',
     authenticate,
-    requireRole('admin'),
     validate({ body: updateMemberRoleSchema }),
     asyncHandler(async (req: Request, res: Response) => {
+        await requireOrgAdminOrSystemAdmin(req, req.params.id)
+
         const member = await orgRepo.updateMemberRole(
             req.params.id,
             req.params.userId,
@@ -213,6 +293,8 @@ router.get(
     '/:id/audit-logs',
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
+        await requireOrgAdminOrSystemAdmin(req, req.params.id)
+
         const { logs, nextCursor } = await auditLogRepo.listAuditLogs({
             organizationId: req.params.id,
             action: req.query.action as any,

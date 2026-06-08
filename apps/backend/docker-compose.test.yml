@@ -1,0 +1,16 @@
+services:
+    postgres_test:
+        image: postgres:16-alpine
+        container_name: blend_studio_postgres_test
+        restart: unless-stopped
+        ports:
+            - '5433:5432'
+        environment:
+            POSTGRES_USER: blend
+            POSTGRES_PASSWORD: blend_test_secret
+            POSTGRES_DB: blend_studio_test
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U blend -d blend_studio_test']
+            interval: 5s
+            timeout: 5s
+            retries: 10
