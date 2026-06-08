@@ -194,11 +194,11 @@ export type CustomPresetDefinition = {
 /**
  * Presets configuration - can be predefined presets, custom configs, or custom definitions
  */
-export type PresetsConfig =
-    | DateRangePreset[]
-    | CustomPresetConfig[]
-    | CustomPresetDefinition[]
-    | (DateRangePreset | CustomPresetConfig | CustomPresetDefinition)[]
+export type PresetsConfig = (
+    | DateRangePreset
+    | CustomPresetConfig
+    | CustomPresetDefinition
+)[]
 
 // =============================================================================
 // COMPONENT PROPS
