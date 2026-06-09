@@ -323,12 +323,22 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 passive: true,
             })
 
-            const handleResize = () => setTimeout(updateBlurState, 50)
+            let resizeTimeoutId: ReturnType<typeof setTimeout> | null = null
+
+            const handleResize = () => {
+                if (resizeTimeoutId) {
+                    clearTimeout(resizeTimeoutId)
+                }
+                resizeTimeoutId = setTimeout(updateBlurState, 50)
+            }
             window.addEventListener('resize', handleResize, { passive: true })
 
             return () => {
                 scrollingElement.removeEventListener('scroll', updateBlurState)
                 window.removeEventListener('resize', handleResize)
+                if (resizeTimeoutId) {
+                    clearTimeout(resizeTimeoutId)
+                }
             }
         }, [isExpanded, data, isHovering])
 
