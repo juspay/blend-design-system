@@ -1,5 +1,6 @@
 import { ipKeyGenerator, rateLimit, type Options } from 'express-rate-limit'
 import type { Request } from 'express'
+import { env } from '@/config/index.js'
 
 /**
  * Generate rate limit key based on authenticated user or IP address.
@@ -100,7 +101,7 @@ export const writeLimiter = rateLimit({
 export const authLimiter = rateLimit({
     ...baseConfig,
     windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 5, // 5 requests per window
+    limit: env.NODE_ENV === 'development' ? 50 : 5,
     skipSuccessfulRequests: true, // Don't count successful logins
     message: {
         success: false,

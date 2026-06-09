@@ -13,10 +13,10 @@ import {
     ButtonV2,
     ButtonV2Size,
     ButtonV2Type,
-    StatCardV2,
-    StatCardV2ArrowDirection,
-    StatCardV2ChangeType,
-    StatCardV2Variant,
+    StatCard,
+    StatCardVariant,
+    ChangeType,
+    StatCardArrowDirection,
     TagV2,
     TagV2Color,
     TagV2Type,
@@ -35,7 +35,7 @@ import {
     CaretRightIcon,
 } from '@phosphor-icons/react'
 import {
-    AUTHORIZATION_RATE_CHART_OPTIONS,
+    AUTHORIZATION_RATE_CHART_DATA,
     getShowcaseClassNames,
     getShowcaseGridClassNames,
     type ShowcaseTheme,
@@ -301,19 +301,19 @@ export const ComponentShowcase = forwardRef<
                                 in real time.
                             </p>
                         </div>
-                        <StatCardV2
+                        <StatCard
                             title="Authorization Rate"
-                            // actionIcon={<GearSixIcon size={16} />}
                             helpIconText="helpText"
                             value="83.24%"
-                            variant={StatCardV2Variant.CHART}
+                            variant={StatCardVariant.LINE}
                             change={{
-                                value: '23.45%',
-                                changeType: StatCardV2ChangeType.INCREASE,
-                                arrowDirection: StatCardV2ArrowDirection.UP,
+                                value: 23.45,
+                                valueType: ChangeType.INCREASE,
+                                arrowDirection: StatCardArrowDirection.UP,
                             }}
                             maxWidth="100%"
-                            options={AUTHORIZATION_RATE_CHART_OPTIONS}
+                            chartData={AUTHORIZATION_RATE_CHART_DATA}
+                            showBorder={false}
                         />
                     </div>
                 </Card>

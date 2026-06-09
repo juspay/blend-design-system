@@ -19,11 +19,18 @@ import {
     MenuV2Alignment,
     MenuV2ItemActionType,
     MenuV2Side,
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsSize,
+    TabsTrigger,
+    TabsVariant,
     TagV2,
     TagV2Color,
     TagV2Size,
     ThemeProvider,
     TooltipV2,
+    CodeEditorV2,
 } from '@juspay/blend-design-system'
 import {
     Panel,
@@ -210,7 +217,7 @@ function EditorPage() {
     }, [isLeftPanelOpen])
 
     useEffect(() => {
-        if (!isPanelThreeOpen) return
+        if (!isPanelThreeOpen || activeTab !== 'typography') return
 
         const frameId = requestAnimationFrame(() => {
             groupRef.current?.setLayout({
@@ -293,8 +300,8 @@ function EditorPage() {
     }, [previewBrand?.font?.family])
 
     useEffect(() => {
-        setIsMobile(isPanelThreeOpen)
-    }, [isPanelThreeOpen])
+        setIsMobile(isPanelThreeOpen && activeTab === 'typography')
+    }, [isPanelThreeOpen, activeTab])
 
     const diffs = useMemo(() => computeBrandDiffs(brand), [brand])
 
@@ -565,7 +572,8 @@ function EditorPage() {
                                 minSize={PREVIEW_PANEL_MIN_SIZE}
                                 maxSize={PREVIEW_PANEL_MAX_SIZE}
                                 defaultSize={
-                                    isPanelThreeOpen
+                                    isPanelThreeOpen &&
+                                    activeTab === 'typography'
                                         ? PREVIEW_PANEL_DEFAULT_SIZE_WITH_GUIDE
                                         : PREVIEW_PANEL_DEFAULT_SIZE
                                 }
@@ -804,7 +812,7 @@ function EditorPage() {
                                         </div>
                                     </div>
                                     {activeTab === 'typography' && (
-                                        <div className="bg-[#FEFCE8] p-[12px] flex items-center justify-between border border-[#ECEFF3]">
+                                        <div className="bg-[#FEFCE8] p-[12px] flex items-center justify-between border-b border-[#ECEFF3]">
                                             <div className="text-[14px] font-[400] text-[#A65F00]">
                                                 The selected font is used as a
                                                 visual reference & must be added
@@ -868,7 +876,7 @@ function EditorPage() {
                                     </div>
                                 </div>
                             </Panel>
-                            {isPanelThreeOpen && (
+                            {isPanelThreeOpen && activeTab === 'typography' && (
                                 <>
                                     <Separator className="w-px shrink-0 cursor-col-resize bg-gray-200 transition-colors hover:bg-blue-400" />
                                     <Panel
@@ -908,6 +916,78 @@ function EditorPage() {
                                                         ButtonV2SubType.INLINE
                                                     }
                                                 />
+                                            </div>
+                                            <div className="flex min-h-0 flex-1 flex-col overflow-hidden px-[16px] py-[24px]">
+                                                <div className="shrink-0">
+                                                    <div className="text-[18px] font-[500] text-[#222530] leading-[24px] font-medium">
+                                                        Get Started with the
+                                                        Google Fonts
+                                                    </div>
+                                                    <div className="text-[12px] font-[400] text-[#717784] leading-[18px]">
+                                                        This guide explains how
+                                                        to use the Google Fonts
+                                                        API to add fonts to your
+                                                        web pages. Since
+                                                        typography is not
+                                                        automatically pushed to
+                                                        your codebase yet, you
+                                                        need to manually add the
+                                                        selected font to your
+                                                        app/website.
+                                                    </div>
+                                                    <div className="text-[12px] font-[400] text-[#717784] leading-[18px]">
+                                                        Once the font is
+                                                        installed, all text
+                                                        styles, components, and
+                                                        layouts will render
+                                                        correctly with your
+                                                        chosen brand typography.
+                                                    </div>
+                                                </div>
+                                                <Tabs
+                                                    defaultValue="web"
+                                                    variant={
+                                                        TabsVariant.UNDERLINE
+                                                    }
+                                                    size={TabsSize.MD}
+                                                    className="mt-[24px] flex min-h-0 flex-1 flex-col"
+                                                >
+                                                    <TabsList
+                                                        variant={
+                                                            TabsVariant.UNDERLINE
+                                                        }
+                                                        size={TabsSize.MD}
+                                                        className="shrink-0"
+                                                    >
+                                                        <TabsTrigger value="web">
+                                                            Web
+                                                        </TabsTrigger>
+                                                        <TabsTrigger value="android">
+                                                            Android
+                                                        </TabsTrigger>
+                                                        <TabsTrigger value="ios">
+                                                            iOS
+                                                        </TabsTrigger>
+                                                    </TabsList>
+                                                    <TabsContent
+                                                        value="web"
+                                                        className="mt-4 min-h-0 flex-1 overflow-y-auto"
+                                                    >
+                                                        <FontSetupGuideHTMLContent />
+                                                    </TabsContent>
+                                                    <TabsContent
+                                                        value="android"
+                                                        className="mt-4 min-h-0 flex-1 overflow-y-auto"
+                                                    >
+                                                        <FontSetupGuideAndroidContent />
+                                                    </TabsContent>
+                                                    <TabsContent
+                                                        value="ios"
+                                                        className="mt-4 min-h-0 flex-1 overflow-y-auto"
+                                                    >
+                                                        <FontSetupGuideIosContent />
+                                                    </TabsContent>
+                                                </Tabs>
                                             </div>
                                         </div>
                                     </Panel>
@@ -952,5 +1032,324 @@ function EditorPage() {
                 )}
             </div>
         </RequireAuth>
+    )
+}
+
+function FontSetupGuideHTMLContent() {
+    return (
+        <div className="flex flex-col gap-3">
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 1 : Add the font
+            </p>
+            <CodeEditorV2
+                language="html"
+                value={`<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+</head>`}
+                showLineNumbers={true}
+                header={{ title: 'index.html' }}
+                minHeight={150}
+            />
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 2 : Add the font family to your CSS
+            </p>
+            <CodeEditorV2
+                language="css"
+                value={`@font-face {
+font-family: 'Inter';
+src: url('https://fonts.googleapis.com/css2?family=Inter&display=swap') format('woff2');
+font-weight: 400;
+font-style: normal;
+}`}
+                showLineNumbers={true}
+                header={{ title: 'styles.css' }}
+                minHeight={170}
+            />
+        </div>
+    )
+}
+
+function FontSetupGuideAndroidContent() {
+    return (
+        <div className="flex flex-col gap-3">
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 1 : Download the Font
+            </p>
+            <p className="text-[12px] font-[400] text-[#717784] leading-[18px]">
+                <ul className="list-disc pl-5">
+                    <li>
+                        Go to{' '}
+                        <a
+                            className="text-[#007AFF]"
+                            href="https://fonts.google.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            fonts.google.com
+                        </a>
+                    </li>
+                    <li>Search for the font you want to use</li>
+                    <li>Click on the font you want to use</li>
+                    <li>Click on the "Download" button</li>
+                    <li>Save the font to your computer</li>
+                </ul>
+            </p>
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 2 : Add Fonts to the Project
+            </p>
+            <p className="text-[12px] font-[400] text-[#717784] leading-[18px]">
+                Create a font folder inside res.
+            </p>
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 3 : Use Font in XML
+            </p>
+            <CodeEditorV2
+                language="html"
+                value={`<TextView
+android:id="@+id/text_view"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Hello, World!"
+android:fontFamily="Inter"
+/>`}
+                showLineNumbers={true}
+                header={{ title: 'MainLayout.tsx' }}
+                minHeight={170}
+            />
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 4 : Use Font Programmatically (Kotlin)
+            </p>
+            <CodeEditorV2
+                language="tsx"
+                value={`val typeface = resources.getFont(R.font.inter_regular)
+textView.typeface = typeface`}
+                showLineNumbers={true}
+                header={{ title: 'MainActivity.kt' }}
+                minHeight={170}
+            />
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 5 : (Optional) Create a Font Family XML
+            </p>
+            <CodeEditorV2
+                language="html"
+                value={`<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <font
+        app:font="@font/inter_regular"
+        app:fontStyle="normal"
+        app:fontWeight="400" />
+
+    <font
+        app:font="@font/inter_medium"
+        app:fontStyle="normal"
+        app:fontWeight="500" />
+
+    <font
+        app:font="@font/inter_bold"
+        app:fontStyle="normal"
+        app:fontWeight="700" />
+
+</font-family>`}
+                showLineNumbers={true}
+                header={{ title: 'res/font/inter.xml' }}
+            />
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 4 : Final Step
+            </p>
+            <CodeEditorV2
+                language="html"
+                value={`<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/inter" />`}
+                showLineNumbers={true}
+                header={{ title: 'MainLayout.tsx' }}
+                minHeight={170}
+            />
+        </div>
+    )
+}
+function FontSetupGuideIosContent() {
+    return (
+        <div className="flex flex-col gap-3">
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 1 : Download the Font
+            </p>
+            <ul className="list-disc pl-5 text-[12px] font-[400] text-[#717784] leading-[18px]">
+                <li>
+                    Go to{' '}
+                    <a
+                        className="text-[#007AFF]"
+                        href="https://fonts.google.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Google Fonts
+                    </a>
+                </li>
+                <li>Download the font family (e.g., Inter, Poppins, Roboto)</li>
+                <li>Extract the ZIP file</li>
+            </ul>
+
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 2 : Add Font Files to Xcode
+            </p>
+            <ul className="list-disc pl-5 text-[12px] font-[400] text-[#717784] leading-[18px]">
+                <li>Open your Xcode project</li>
+                <li>
+                    Drag the <code>.ttf</code> or <code>.otf</code> files into
+                    the project navigator
+                </li>
+                <li>
+                    Make sure <strong>Copy items if needed</strong> is checked
+                    and your app target is selected
+                </li>
+            </ul>
+            <CodeEditorV2
+                language="markdown"
+                value={`Project
+ ├── Fonts
+ │   ├── Inter-Regular.ttf
+ │   ├── Inter-Medium.ttf
+ │   └── Inter-Bold.ttf`}
+                showLineNumbers={false}
+                header={{ title: 'Project structure' }}
+                minHeight={120}
+            />
+
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 3 : Register Fonts in Info.plist
+            </p>
+            <p className="text-[12px] font-[400] text-[#717784] leading-[18px]">
+                Add the <strong>Fonts provided by application</strong>{' '}
+                (UIAppFonts) key.
+            </p>
+            <CodeEditorV2
+                language="html"
+                value={`<key>UIAppFonts</key>
+<array>
+    <string>Inter-Regular.ttf</string>
+    <string>Inter-Medium.ttf</string>
+    <string>Inter-Bold.ttf</string>
+</array>`}
+                showLineNumbers={true}
+                header={{ title: 'Info.plist' }}
+                minHeight={150}
+            />
+
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 4 : Find the Actual Font Name
+            </p>
+            <p className="text-[12px] font-[400] text-[#717784] leading-[18px]">
+                The file name is not always the font name. Print all available
+                fonts to confirm the correct PostScript name.
+            </p>
+            <CodeEditorV2
+                language="javascript"
+                value={`for family in UIFont.familyNames.sorted() {
+    print("Family: \\(family)")
+    for font in UIFont.fontNames(forFamilyName: family) {
+        print("  \\(font)")
+    }
+}`}
+                showLineNumbers={true}
+                header={{ title: 'FontDebug.swift' }}
+                minHeight={150}
+            />
+            <CodeEditorV2
+                language="markdown"
+                value={`Example output:
+
+Family: Inter
+  Inter-Regular
+  Inter-Medium
+  Inter-Bold`}
+                showLineNumbers={false}
+                header={{ title: 'Console output' }}
+                minHeight={110}
+            />
+
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 5 : Use the Font in UIKit
+            </p>
+            <CodeEditorV2
+                language="javascript"
+                value={`label.font = UIFont(name: "Inter-Regular", size: 16)
+titleLabel.font = UIFont(name: "Inter-Bold", size: 24)`}
+                showLineNumbers={true}
+                header={{ title: 'ViewController.swift' }}
+                minHeight={100}
+            />
+
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Step 6 : Use the Font in SwiftUI
+            </p>
+            <CodeEditorV2
+                language="javascript"
+                value={`Text("Hello World")
+    .font(.custom("Inter-Regular", size: 16))
+
+Text("Title")
+    .font(.custom("Inter-Bold", size: 24))`}
+                showLineNumbers={true}
+                header={{ title: 'ContentView.swift' }}
+                minHeight={120}
+            />
+
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                React Native (iOS) Specific Steps
+            </p>
+            <p className="text-[12px] font-[400] text-[#717784] leading-[18px]">
+                If you&apos;re using React Native, add fonts to{' '}
+                <code>assets/fonts/</code> and link them with{' '}
+                <code>react-native-asset</code>.
+            </p>
+            <CodeEditorV2
+                language="javascript"
+                value={`module.exports = {
+  assets: ['./assets/fonts'],
+};`}
+                showLineNumbers={true}
+                header={{ title: 'react-native.config.js' }}
+                minHeight={90}
+            />
+            <CodeEditorV2
+                language="markdown"
+                value={`npx react-native-asset
+
+cd ios
+pod install
+cd ..
+npx react-native run-ios`}
+                showLineNumbers={false}
+                header={{ title: 'Terminal' }}
+                minHeight={110}
+            />
+            <CodeEditorV2
+                language="javascript"
+                value={`const styles = StyleSheet.create({
+  text: {
+    fontFamily: 'Inter-Regular',
+  },
+});`}
+                showLineNumbers={true}
+                header={{ title: 'styles.ts' }}
+                minHeight={110}
+            />
+
+            <p className="text-[14px] font-[500] text-[#181B25] font-medium">
+                Verification Checklist
+            </p>
+            <ul className="list-disc pl-5 text-[12px] font-[400] text-[#717784] leading-[18px]">
+                <li>Downloaded .ttf/.otf files</li>
+                <li>Added files to Xcode</li>
+                <li>Added file names to UIAppFonts</li>
+                <li>Confirmed the actual font name</li>
+                <li>Cleaned and rebuilt the project</li>
+                <li>Applied the font using UIFont or .custom()</li>
+            </ul>
+        </div>
     )
 }

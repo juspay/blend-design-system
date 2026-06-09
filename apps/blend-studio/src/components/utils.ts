@@ -225,24 +225,16 @@ export function getShowcaseClassNames(theme: ShowcaseTheme = 'light') {
     }
 }
 
-export const AUTHORIZATION_RATE_CHART_OPTIONS = {
-    series: [
-        {
-            data: [9, 11, 13, 10, 12, 15, 18, 17, 19, 21, 22],
-            type: 'area' as const,
-            color: '#00A63E',
-            fillColor: {
-                linearGradient: {
-                    x1: 0,
-                    y1: 0,
-                    x2: 0,
-                    y2: 1,
-                },
-                stops: [
-                    [0, 'rgba(123, 241, 168, 0.40)'] as [number, string],
-                    [1, 'rgba(123, 241, 168, 0.00)'] as [number, string],
-                ],
-            },
-        },
-    ],
-}
+export const AUTHORIZATION_RATE_CHART_DATA = [
+    { value: 9, name: '1' },
+    { value: 11, name: '2' },
+    { value: 13, name: '3' },
+    { value: 10, name: '4' },
+    { value: 12, name: '5' },
+    { value: 15, name: '6' },
+    { value: 18, name: '7' },
+    { value: 17, name: '8' },
+    { value: 19, name: '9' },
+    { value: 21, name: '10' },
+    { value: 22, name: '11' },
+]

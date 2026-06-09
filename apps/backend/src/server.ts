@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser'
 import { env, isDevelopment } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js'
-import { apiLimiter, authLimiter } from '@/middlewares/rateLimit.js'
+import { apiLimiter } from '@/middlewares/rateLimit.js'
 import { createCookieCsrfProtection } from '@/middlewares/csrf.js'
 import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
 import { connectDatabaseWithRetry, isDatabaseReady } from '@/config/database.js'
@@ -202,7 +202,9 @@ app.use(
 app.use('/docs', swaggerUiHandler, swaggerUiSetup)
 
 const mountApiRoutes = (prefix: string) => {
-    app.use(`${prefix}/auth`, authLimiter, authRoutes)
+    // Auth rate limits are applied per-route in auth.routes (not router-wide).
+    // A global limiter caused logged-out /me 401s to exhaust the OAuth budget.
+    app.use(`${prefix}/auth`, authRoutes)
     app.use(`${prefix}/branches`, apiLimiter, branchRoutes)
     app.use(`${prefix}/users`, apiLimiter, userRoutes)
     app.use(`${prefix}/organizations`, apiLimiter, orgRoutes)
