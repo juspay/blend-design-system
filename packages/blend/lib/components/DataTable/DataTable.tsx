@@ -943,6 +943,14 @@ const DataTable = forwardRef(
 
         const sortTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+        useEffect(() => {
+            return () => {
+                if (sortTimeoutRef.current) {
+                    clearTimeout(sortTimeoutRef.current)
+                }
+            }
+        }, [])
+
         const applySortConfig = (
             field: keyof T,
             newSortConfig: SortConfig | null
