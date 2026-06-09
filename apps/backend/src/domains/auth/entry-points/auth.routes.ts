@@ -1,6 +1,7 @@
 import { Router, type IRouter } from 'express'
 import { authenticate } from '@/middlewares/auth.js'
 import { asyncHandler } from '@/middlewares/errorHandler.js'
+import { authLimiter } from '@/middlewares/rateLimit.js'
 import { validate, googleCallbackQuerySchema } from '@/middlewares/validate.js'
 import {
     getGoogleAuthUrl,
@@ -67,6 +68,7 @@ router.get('/csrf', asyncHandler(getCsrfToken))
  */
 router.get(
     '/google/callback',
+    authLimiter,
     validate({ query: googleCallbackQuerySchema }),
     asyncHandler(googleCallback)
 )
@@ -99,7 +101,7 @@ router.get(
  *       401:
  *         description: Invalid or expired refresh token
  */
-router.post('/refresh', asyncHandler(refreshAccessToken))
+router.post('/refresh', authLimiter, asyncHandler(refreshAccessToken))
 
 /**
  * @openapi

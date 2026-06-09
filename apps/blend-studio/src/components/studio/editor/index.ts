@@ -15,6 +15,11 @@ export type {
     ExportPanelProps,
     ColorGroupKey,
 } from './types'
+export {
+    ensureTypographyDefaults,
+    getEffectiveFontFamily,
+    DEFAULT_FONT_FAMILY,
+} from './types'
 
 // Tabs
 export { ColorsTab } from './ColorsTab'
