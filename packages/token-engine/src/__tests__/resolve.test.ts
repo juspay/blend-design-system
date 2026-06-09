@@ -177,4 +177,28 @@ describe('buildBrandFoundation', () => {
         // The branded foundation should have different primary colors
         expect(JSON.stringify(base)).not.toEqual(JSON.stringify(branded))
     })
+
+    it('applies font family overrides to display, body, and heading slots', () => {
+        const foundation = buildBrandFoundation({
+            ...MINIMAL_CONFIG,
+            font: { family: 'Roboto' },
+        })
+
+        expect(foundation.font.family).toEqual({
+            display: 'Roboto',
+            body: 'Roboto',
+            heading: 'Roboto',
+            mono: 'SF Mono',
+        })
+    })
+
+    it('maps System UI to a CSS system font stack', () => {
+        const foundation = buildBrandFoundation({
+            ...MINIMAL_CONFIG,
+            font: { family: 'System UI' },
+        })
+
+        expect(foundation.font.family.body).toBe('system-ui, sans-serif')
+        expect(foundation.font.family.display).toBe('system-ui, sans-serif')
+    })
 })

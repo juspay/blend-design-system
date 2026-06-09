@@ -440,7 +440,7 @@ const StepComponent = forwardRef<
                         display="flex"
                         justifyContent="space-between"
                         gap={8}
-                        alignItems="flex-start"
+                        alignItems="center"
                     >
                         <Block
                             display="flex"
@@ -566,6 +566,16 @@ const StepComponent = forwardRef<
                                 />
                             </Block>
                         )}
+                        {step.slot && (
+                            <Block
+                                flexShrink={0}
+                                onClick={(e: React.MouseEvent) => {
+                                    e.stopPropagation()
+                                }}
+                            >
+                                {step.slot}
+                            </Block>
+                        )}
                     </Block>
 
                     {isExpanded &&
@@ -623,184 +633,212 @@ const StepComponent = forwardRef<
                                             }
                                         >
                                             <Block
-                                                data-element="substep"
-                                                data-id={`Substep ${index + 1}: ${subStep.title}${
-                                                    isSubstepCompleted
-                                                        ? ', completed'
-                                                        : isSubstepCurrent
-                                                          ? ', current'
-                                                          : isSubstepDisabled
-                                                            ? ', disabled'
-                                                            : isSubstepSkipped
-                                                              ? ', skipped'
-                                                              : ', pending'
-                                                }`}
-                                                data-numeric={subStep.id}
-                                                ref={(el) => {
-                                                    substepRefs.current[index] =
-                                                        el
-                                                }}
-                                                role={
-                                                    clickable
-                                                        ? 'button'
-                                                        : 'group'
-                                                }
-                                                tabIndex={
-                                                    clickable &&
-                                                    !isSubstepDisabled
-                                                        ? 0
-                                                        : -1
-                                                }
-                                                aria-label={`Substep ${index + 1}: ${subStep.title}${
-                                                    isSubstepCompleted
-                                                        ? ', completed'
-                                                        : isSubstepCurrent
-                                                          ? ', current'
-                                                          : isSubstepDisabled
-                                                            ? ', disabled'
-                                                            : isSubstepSkipped
-                                                              ? ', skipped'
-                                                              : ', pending'
-                                                }`}
-                                                aria-disabled={
-                                                    isSubstepDisabled
-                                                        ? 'true'
-                                                        : undefined
-                                                }
-                                                aria-current={
-                                                    isSubstepCurrent
-                                                        ? 'step'
-                                                        : undefined
-                                                }
-                                                style={{
-                                                    cursor: clickable
-                                                        ? 'pointer'
-                                                        : 'default',
-                                                }}
-                                                onClick={
-                                                    clickable && onSubstepClick
-                                                        ? (
-                                                              e: React.MouseEvent
-                                                          ) => {
-                                                              e.preventDefault()
-                                                              e.stopPropagation()
-                                                              onSubstepClick(
-                                                                  stepIndex,
-                                                                  index
-                                                              )
-                                                          }
-                                                        : undefined
-                                                }
-                                                onKeyDown={(
-                                                    event: React.KeyboardEvent
-                                                ) => {
-                                                    if (isSubstepDisabled)
-                                                        return
-
-                                                    switch (event.key) {
-                                                        case 'Enter':
-                                                        case ' ': {
-                                                            if (
-                                                                clickable &&
-                                                                onSubstepClick
-                                                            ) {
-                                                                event.preventDefault()
-                                                                event.stopPropagation()
-                                                                onSubstepClick(
-                                                                    stepIndex,
-                                                                    index
-                                                                )
-                                                            }
-                                                            break
-                                                        }
-                                                        case 'ArrowUp': {
-                                                            event.preventDefault()
-                                                            const prevIndex =
-                                                                Math.max(
-                                                                    index - 1,
-                                                                    0
-                                                                )
-                                                            if (
-                                                                step.substeps &&
-                                                                !step.substeps[
-                                                                    prevIndex
-                                                                ]?.disabled &&
-                                                                substepRefs
-                                                                    .current[
-                                                                    prevIndex
-                                                                ]
-                                                            ) {
-                                                                setFocusedSubstepIndex(
-                                                                    prevIndex
-                                                                )
-                                                                substepRefs.current[
-                                                                    prevIndex
-                                                                ]?.focus()
-                                                            }
-                                                            break
-                                                        }
-                                                        case 'ArrowDown': {
-                                                            event.preventDefault()
-                                                            const nextIndex =
-                                                                Math.min(
-                                                                    index + 1,
-                                                                    step.substeps
-                                                                        ? step
-                                                                              .substeps
-                                                                              .length -
-                                                                              1
-                                                                        : 0
-                                                                )
-                                                            if (
-                                                                step.substeps &&
-                                                                !step.substeps[
-                                                                    nextIndex
-                                                                ]?.disabled &&
-                                                                substepRefs
-                                                                    .current[
-                                                                    nextIndex
-                                                                ]
-                                                            ) {
-                                                                setFocusedSubstepIndex(
-                                                                    nextIndex
-                                                                )
-                                                                substepRefs.current[
-                                                                    nextIndex
-                                                                ]?.focus()
-                                                            }
-                                                            break
-                                                        }
-                                                        case 'ArrowLeft':
-                                                        case 'ArrowRight': {
-                                                            // Move back to parent step
-                                                            event.preventDefault()
-                                                            setFocusedSubstepIndex(
-                                                                null
-                                                            )
-                                                            if (
-                                                                ref &&
-                                                                typeof ref !==
-                                                                    'function'
-                                                            ) {
-                                                                ref.current?.focus()
-                                                            }
-                                                            break
-                                                        }
-                                                    }
-                                                }}
-                                                onFocus={() => {
-                                                    setFocusedSubstepIndex(
-                                                        index
-                                                    )
-                                                }}
+                                                display="flex"
+                                                justifyContent="space-between"
+                                                alignItems="center"
+                                                gap={8}
                                             >
-                                                <Text
-                                                    fontSize={12}
-                                                    fontWeight={500}
-                                                    color={textColor}
+                                                <Block
+                                                    data-element="substep"
+                                                    data-id={`Substep ${index + 1}: ${subStep.title}${
+                                                        isSubstepCompleted
+                                                            ? ', completed'
+                                                            : isSubstepCurrent
+                                                              ? ', current'
+                                                              : isSubstepDisabled
+                                                                ? ', disabled'
+                                                                : isSubstepSkipped
+                                                                  ? ', skipped'
+                                                                  : ', pending'
+                                                    }`}
+                                                    data-numeric={subStep.id}
+                                                    ref={(el) => {
+                                                        substepRefs.current[
+                                                            index
+                                                        ] = el
+                                                    }}
+                                                    role={
+                                                        clickable
+                                                            ? 'button'
+                                                            : 'group'
+                                                    }
+                                                    tabIndex={
+                                                        clickable &&
+                                                        !isSubstepDisabled
+                                                            ? 0
+                                                            : -1
+                                                    }
+                                                    aria-label={`Substep ${index + 1}: ${subStep.title}${
+                                                        isSubstepCompleted
+                                                            ? ', completed'
+                                                            : isSubstepCurrent
+                                                              ? ', current'
+                                                              : isSubstepDisabled
+                                                                ? ', disabled'
+                                                                : isSubstepSkipped
+                                                                  ? ', skipped'
+                                                                  : ', pending'
+                                                    }`}
+                                                    aria-disabled={
+                                                        isSubstepDisabled
+                                                            ? 'true'
+                                                            : undefined
+                                                    }
+                                                    aria-current={
+                                                        isSubstepCurrent
+                                                            ? 'step'
+                                                            : undefined
+                                                    }
+                                                    style={{
+                                                        flex: 1,
+                                                        cursor: clickable
+                                                            ? 'pointer'
+                                                            : 'default',
+                                                    }}
+                                                    onClick={
+                                                        clickable &&
+                                                        onSubstepClick
+                                                            ? (
+                                                                  e: React.MouseEvent
+                                                              ) => {
+                                                                  e.preventDefault()
+                                                                  e.stopPropagation()
+                                                                  onSubstepClick(
+                                                                      stepIndex,
+                                                                      index
+                                                                  )
+                                                              }
+                                                            : undefined
+                                                    }
+                                                    onKeyDown={(
+                                                        event: React.KeyboardEvent
+                                                    ) => {
+                                                        if (isSubstepDisabled)
+                                                            return
+
+                                                        switch (event.key) {
+                                                            case 'Enter':
+                                                            case ' ': {
+                                                                if (
+                                                                    clickable &&
+                                                                    onSubstepClick
+                                                                ) {
+                                                                    event.preventDefault()
+                                                                    event.stopPropagation()
+                                                                    onSubstepClick(
+                                                                        stepIndex,
+                                                                        index
+                                                                    )
+                                                                }
+                                                                break
+                                                            }
+                                                            case 'ArrowUp': {
+                                                                event.preventDefault()
+                                                                const prevIndex =
+                                                                    Math.max(
+                                                                        index -
+                                                                            1,
+                                                                        0
+                                                                    )
+                                                                if (
+                                                                    step.substeps &&
+                                                                    !step
+                                                                        .substeps[
+                                                                        prevIndex
+                                                                    ]
+                                                                        ?.disabled &&
+                                                                    substepRefs
+                                                                        .current[
+                                                                        prevIndex
+                                                                    ]
+                                                                ) {
+                                                                    setFocusedSubstepIndex(
+                                                                        prevIndex
+                                                                    )
+                                                                    substepRefs.current[
+                                                                        prevIndex
+                                                                    ]?.focus()
+                                                                }
+                                                                break
+                                                            }
+                                                            case 'ArrowDown': {
+                                                                event.preventDefault()
+                                                                const nextIndex =
+                                                                    Math.min(
+                                                                        index +
+                                                                            1,
+                                                                        step.substeps
+                                                                            ? step
+                                                                                  .substeps
+                                                                                  .length -
+                                                                                  1
+                                                                            : 0
+                                                                    )
+                                                                if (
+                                                                    step.substeps &&
+                                                                    !step
+                                                                        .substeps[
+                                                                        nextIndex
+                                                                    ]
+                                                                        ?.disabled &&
+                                                                    substepRefs
+                                                                        .current[
+                                                                        nextIndex
+                                                                    ]
+                                                                ) {
+                                                                    setFocusedSubstepIndex(
+                                                                        nextIndex
+                                                                    )
+                                                                    substepRefs.current[
+                                                                        nextIndex
+                                                                    ]?.focus()
+                                                                }
+                                                                break
+                                                            }
+                                                            case 'ArrowLeft':
+                                                            case 'ArrowRight': {
+                                                                // Move back to parent step
+                                                                event.preventDefault()
+                                                                setFocusedSubstepIndex(
+                                                                    null
+                                                                )
+                                                                if (
+                                                                    ref &&
+                                                                    typeof ref !==
+                                                                        'function'
+                                                                ) {
+                                                                    ref.current?.focus()
+                                                                }
+                                                                break
+                                                            }
+                                                        }
+                                                    }}
+                                                    onFocus={() => {
+                                                        setFocusedSubstepIndex(
+                                                            index
+                                                        )
+                                                    }}
                                                 >
-                                                    {subStep.title}
-                                                </Text>
+                                                    <Text
+                                                        fontSize={12}
+                                                        fontWeight={500}
+                                                        color={textColor}
+                                                    >
+                                                        {subStep.title}
+                                                    </Text>
+                                                </Block>
+                                                {subStep.slot && (
+                                                    <Block
+                                                        flexShrink={0}
+                                                        onClick={(
+                                                            e: React.MouseEvent
+                                                        ) => {
+                                                            e.stopPropagation()
+                                                        }}
+                                                    >
+                                                        {subStep.slot}
+                                                    </Block>
+                                                )}
                                             </Block>
                                         </Block>
                                     )

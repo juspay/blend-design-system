@@ -13,16 +13,25 @@
 
 import { useState } from 'react'
 import {
-    Upload,
     FileCode,
     Palette,
     BracketsCurly,
-    ArrowRight,
     Check,
     WarningCircle,
-    X,
+    XIcon,
+    FileCodeIcon,
+    DownloadSimpleIcon,
 } from '@phosphor-icons/react'
 import type { BrandConfig } from '@juspay/blend-design-system/tokens'
+import {
+    ButtonV2,
+    ButtonV2Size,
+    ButtonV2SubType,
+    ButtonV2Type,
+    Card,
+    CardVariant,
+    RadioV2,
+} from '@juspay/blend-design-system'
 
 // ---------------------------------------------------------------------------
 // Types
@@ -310,68 +319,72 @@ export function ImportWizard({ onImport, onClose }: ImportWizardProps) {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999] p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between p-6 border-b border-gray-200 shrink-0">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <Upload className="w-5 h-5 text-purple-600" />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-semibold text-gray-900">
-                                Import Brand Tokens
-                            </h2>
-                            <p className="text-sm text-gray-500">
+                <div className="w-full flex items-center justify-between p-[20px] border-b border-gray-200 shrink-0">
+                    <div className="w-full flex items-center gap-3">
+                        <div className="w-full">
+                            <div className="w-full flex items-center justify-between gap-2">
+                                <h2 className="text-[18px] font-weight-600 font-semibold text-gray-900 line-height-24">
+                                    Import Brand Tokens
+                                </h2>
+                                <ButtonV2
+                                    buttonType={ButtonV2Type.SECONDARY}
+                                    size={ButtonV2Size.MEDIUM}
+                                    subType={ButtonV2SubType.INLINE}
+                                    onClick={onClose}
+                                    width="22px"
+                                    leftSlot={{
+                                        slot: (
+                                            <XIcon size={22} color="#717784" />
+                                        ),
+                                    }}
+                                />
+                            </div>
+                            <p className="text-[14px] font-weight-400 text-gray-500 line-height-20">
                                 Migrate from any design system to Blend
                             </p>
                         </div>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
-                    >
-                        <X className="w-5 h-5" />
-                    </button>
                 </div>
 
                 {/* Body */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-5">
+                <div className="flex-1 overflow-y-auto p-5 space-y-5">
                     {/* Source Selector */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Import Source
-                        </label>
                         <div className="grid grid-cols-2 gap-2">
                             {SOURCE_OPTIONS.map((opt) => {
-                                const Icon = opt.icon
                                 return (
-                                    <button
-                                        key={opt.id}
-                                        onClick={() => {
-                                            setSource(opt.id)
-                                            setPreview(null)
-                                            setError(null)
-                                        }}
-                                        className={`flex items-center gap-2 p-3 rounded-lg border text-left transition-colors ${
-                                            source === opt.id
-                                                ? 'border-purple-500 bg-purple-50'
-                                                : 'border-gray-200 hover:border-gray-300'
-                                        }`}
-                                    >
-                                        <Icon
-                                            className={`w-4 h-4 ${
-                                                source === opt.id
-                                                    ? 'text-purple-600'
-                                                    : 'text-gray-400'
-                                            }`}
-                                        />
-                                        <div>
-                                            <div className="text-xs font-medium text-gray-800">
-                                                {opt.label}
+                                    <Card variant={CardVariant.CUSTOM}>
+                                        <div
+                                            className="flex flex-col w-full gap-[4px] cursor-pointer text-left px-[16px] py-[12px]"
+                                            onClick={() => {
+                                                setSource(opt.id)
+                                            }}
+                                            role="presentation"
+                                        >
+                                            <div className="min-w-0 flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <FileCodeIcon
+                                                        size={20}
+                                                        weight="fill"
+                                                        color="#99A0AE"
+                                                    />
+                                                    <p className="title inter-display">
+                                                        {opt.label}
+                                                    </p>
+                                                </div>
+                                                <RadioV2
+                                                    checked={source === opt.id}
+                                                    onCheckedChange={() => {
+                                                        setSource(opt.id)
+                                                    }}
+                                                    aria-label={`Select ${opt.label}`}
+                                                />
                                             </div>
-                                            <div className="text-[10px] text-gray-500">
+                                            <p className="subtitle">
                                                 {opt.description}
-                                            </div>
+                                            </p>
                                         </div>
-                                    </button>
+                                    </Card>
                                 )
                             })}
                         </div>
@@ -379,8 +392,22 @@ export function ImportWizard({ onImport, onClose }: ImportWizardProps) {
 
                     {/* Input Area */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
                             Paste your tokens
+                            <span className="mb-1.5">
+                                <svg
+                                    width="6"
+                                    height="6"
+                                    viewBox="0 0 6 6"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M2.21744 5.7271L2.3119 3.62908L0.542014 4.76758L0.000110954 3.82298L1.87937 2.86346L0.000110954 1.90394L0.542014 0.959339L2.3119 2.09783L2.21744 -0.00017786H3.29628L3.20182 2.09783L4.9717 0.959339L5.51361 1.90394L3.63434 2.86346L5.51361 3.82298L4.9717 4.76758L3.20182 3.62908L3.29628 5.7271H2.21744Z"
+                                        fill="#E7000B"
+                                    />
+                                </svg>
+                            </span>
                         </label>
                         <textarea
                             value={input}
@@ -391,19 +418,20 @@ export function ImportWizard({ onImport, onClose }: ImportWizardProps) {
                             }}
                             placeholder={currentSource.placeholder}
                             rows={10}
-                            className="w-full px-3 py-2 text-xs font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                            className="w-full px-3 py-2 text-xs font-mono border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-100 resize-none"
                         />
                     </div>
 
                     {/* Parse Button */}
-                    <button
+
+                    <ButtonV2
+                        buttonType={ButtonV2Type.SECONDARY}
+                        size={ButtonV2Size.MEDIUM}
                         onClick={handleParse}
                         disabled={!input.trim()}
-                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-40 transition-colors"
-                    >
-                        Parse Tokens
-                        <ArrowRight className="w-4 h-4" />
-                    </button>
+                        width="100%"
+                        text="Parse Tokens"
+                    />
 
                     {/* Error */}
                     {error && (
@@ -476,20 +504,26 @@ export function ImportWizard({ onImport, onClose }: ImportWizardProps) {
 
                 {/* Footer */}
                 <div className="flex justify-end gap-3 p-6 border-t border-gray-200 shrink-0">
-                    <button
+                    <ButtonV2
+                        buttonType={ButtonV2Type.SECONDARY}
+                        size={ButtonV2Size.MEDIUM}
                         onClick={onClose}
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg"
-                    >
-                        Cancel
-                    </button>
-                    <button
+                        width="76px"
+                        text="Cancel"
+                    />
+
+                    <ButtonV2
+                        buttonType={ButtonV2Type.PRIMARY}
+                        size={ButtonV2Size.MEDIUM}
                         onClick={handleImport}
                         disabled={!preview}
-                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-40"
-                    >
-                        <Upload className="w-4 h-4" />
-                        Import to Branch
-                    </button>
+                        text="Import to Branch"
+                        leftSlot={{
+                            slot: (
+                                <DownloadSimpleIcon size={20} weight="bold" />
+                            ),
+                        }}
+                    />
                 </div>
             </div>
         </div>

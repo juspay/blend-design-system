@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser'
 import { env, isDevelopment } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js'
-import { apiLimiter, authLimiter } from '@/middlewares/rateLimit.js'
+import { apiLimiter } from '@/middlewares/rateLimit.js'
 import { createCookieCsrfProtection } from '@/middlewares/csrf.js'
 import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
 import { connectDatabaseWithRetry, isDatabaseReady } from '@/config/database.js'
@@ -19,6 +19,7 @@ import apiKeyRoutes from '@/domains/apikeys/entry-points/apikey.routes.js'
 import lockRoutes from '@/domains/locks/entry-points/lock.routes.js'
 import mergeRequestRoutes from '@/domains/mergerequests/entry-points/merge-request.routes.js'
 import publishRequestRoutes from '@/domains/branches/entry-points/publish-request.routes.js'
+import googleFontsRoutes from '@/domains/google-fonts/google-fonts.routes.js'
 // (callback route is mounted via /api/auth router)
 import type { NextFunction, Request, Response } from 'express'
 
@@ -169,7 +170,9 @@ app.use(
         // Allow health and OAuth bootstrap endpoints even while DB is connecting.
         // OAuth callback still depends on DB and should remain guarded.
         const isReadinessBypassPath =
-            req.path === '/health' || req.path === '/auth/google'
+            req.path === '/health' ||
+            req.path === '/auth/google' ||
+            req.path === '/google-fonts'
 
         if (isReadinessBypassPath || isDatabaseReady()) {
             return next()
@@ -199,7 +202,9 @@ app.use(
 app.use('/docs', swaggerUiHandler, swaggerUiSetup)
 
 const mountApiRoutes = (prefix: string) => {
-    app.use(`${prefix}/auth`, authLimiter, authRoutes)
+    // Auth rate limits are applied per-route in auth.routes (not router-wide).
+    // A global limiter caused logged-out /me 401s to exhaust the OAuth budget.
+    app.use(`${prefix}/auth`, authRoutes)
     app.use(`${prefix}/branches`, apiLimiter, branchRoutes)
     app.use(`${prefix}/users`, apiLimiter, userRoutes)
     app.use(`${prefix}/organizations`, apiLimiter, orgRoutes)
@@ -208,6 +213,7 @@ const mountApiRoutes = (prefix: string) => {
     app.use(`${prefix}/publish-requests`, apiLimiter, publishRequestRoutes)
     app.use(`${prefix}/tags`, apiLimiter, tagRoutes)
     app.use(`${prefix}/api-keys`, apiLimiter, apiKeyRoutes)
+    app.use(`${prefix}/google-fonts`, apiLimiter, googleFontsRoutes)
     app.use(prefix, apiLimiter, tokenRoutes)
 }
 
