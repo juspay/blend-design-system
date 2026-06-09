@@ -114,7 +114,7 @@ export default function CardDetailContent({ id }: CardDetailContentProps) {
 
                 <div className="p-6 sm:p-10 flex flex-col items-center justify-center gap-10">
                     <div className="flex flex-col items-center gap-3">
-                        <h1 className="text-2xl font-medium text-primary">
+                        <h1 className="text-2xl font-medium text-primary text-center">
                             {item.title}
                         </h1>
 

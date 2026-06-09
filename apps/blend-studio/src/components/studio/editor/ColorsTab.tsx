@@ -7,10 +7,10 @@
 
 import { useState } from 'react'
 import {
-    TabsV2,
-    TabsV2List,
-    TabsV2Trigger,
-    TabsV2Variant,
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsVariant,
 } from '@juspay/blend-design-system'
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
 import { COLOR_GROUPS, type EditorTabProps, type ColorGroupKey } from './types'
@@ -50,19 +50,19 @@ export function ColorsTab({
 
     return (
         <div className="flex min-h-0 flex-1 flex-col">
-            <TabsV2
+            <Tabs
                 value={selectedGroup}
                 onValueChange={handleGroupChange}
-                variant={TabsV2Variant.UNDERLINE}
+                variant={TabsVariant.UNDERLINE}
             >
-                <TabsV2List>
+                <TabsList>
                     {COLOR_GROUPS.map((group) => (
-                        <TabsV2Trigger key={group} value={group}>
+                        <TabsTrigger key={group} value={group}>
                             {group.charAt(0).toUpperCase() + group.slice(1)}
-                        </TabsV2Trigger>
+                        </TabsTrigger>
                     ))}
-                </TabsV2List>
-            </TabsV2>
+                </TabsList>
+            </Tabs>
 
             <div className="flex min-h-0 flex-1 flex-col">
                 <ColorGroupEditor
