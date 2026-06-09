@@ -13,10 +13,10 @@ import {
     ButtonV2,
     ButtonV2Size,
     ButtonV2Type,
-    StatCardV2,
-    StatCardV2ArrowDirection,
-    StatCardV2ChangeType,
-    StatCardV2Variant,
+    StatCard,
+    StatCardVariant,
+    ChangeType,
+    StatCardArrowDirection,
     TagV2,
     TagV2Color,
     TagV2Type,
@@ -35,7 +35,7 @@ import {
     CaretRightIcon,
 } from '@phosphor-icons/react'
 import {
-    AUTHORIZATION_RATE_CHART_OPTIONS,
+    AUTHORIZATION_RATE_CHART_DATA,
     getShowcaseClassNames,
     getShowcaseGridClassNames,
     type ShowcaseTheme,
@@ -60,7 +60,7 @@ export const ComponentShowcase = forwardRef<
             className={`min-h-full rounded-[28px] mx-[50px] bg-white ${surface} ${className}`}
         >
             <div className={getShowcaseGridClassNames(isMobile)}>
-                <Card variant={CardVariant.CUSTOM}>
+                <Card variant={CardVariant.CUSTOM} maxHeight="230px">
                     <div
                         className={`flex items-center justify-between border-b px-[16px] py-[12px] ${cardHeader}`}
                     >
@@ -84,19 +84,19 @@ export const ComponentShowcase = forwardRef<
                             buttonType={ButtonV2Type.SECONDARY}
                         />
                     </div>
-                    <div className="flex flex-col gap-2 p-[16px]">
+                    <div className="flex flex-col gap-[14px] p-[16px]">
                         <div className="flex flex-col gap-2">
-                            <TagV2
-                                text="14/17 Selected Features Available"
-                                leftSlot={{
-                                    slot: (
-                                        <WarningOctagonIcon className="h-3.5 w-3.5" />
-                                    ),
-                                }}
-                                color={TagV2Color.PURPLE}
-                                type={TagV2Type.SUBTLE}
-                            />
                             <div className="flex gap-2">
+                                <TagV2
+                                    text="14/17 Selected Features Available"
+                                    leftSlot={{
+                                        slot: (
+                                            <WarningOctagonIcon className="h-3.5 w-3.5" />
+                                        ),
+                                    }}
+                                    color={TagV2Color.PURPLE}
+                                    type={TagV2Type.SUBTLE}
+                                />
                                 <TagV2
                                     text="Customisable UI"
                                     leftSlot={{
@@ -107,6 +107,8 @@ export const ComponentShowcase = forwardRef<
                                     color={TagV2Color.NEUTRAL}
                                     type={TagV2Type.SUBTLE}
                                 />
+                            </div>
+                            <div className="flex gap-2">
                                 <TagV2
                                     text="Easy Integration"
                                     leftSlot={{
@@ -119,7 +121,9 @@ export const ComponentShowcase = forwardRef<
                                 />
                             </div>
                         </div>
-                        <p className={`subtitle inter-display ${subtitle}`}>
+                        <p
+                            className={`subtitle inter-display line-height-[20px] ${subtitle}`}
+                        >
                             Accept payments across 50+ gateways with a single
                             integration. Built for conversion, with smart
                             retries and fallback routing out of the box.
@@ -142,12 +146,14 @@ export const ComponentShowcase = forwardRef<
                     </div>
                 </Card>
 
-                <Card variant={CardVariant.CUSTOM}>
-                    <img
-                        src={nodeConfigurationUrl}
-                        alt="Node Configuration"
-                        className="block h-auto w-full"
-                    />
+                <Card variant={CardVariant.CUSTOM} maxHeight="309px">
+                    <div className="h-[150px] w-full shrink-0 overflow-hidden">
+                        <img
+                            src={nodeConfigurationUrl}
+                            alt="Node Configuration"
+                            className="block h-full w-full object-cover object-center"
+                        />
+                    </div>
 
                     <div className="flex flex-col gap-2 p-[16px]">
                         <div className="flex flex-row items-center gap-2">
@@ -201,7 +207,7 @@ export const ComponentShowcase = forwardRef<
                     </div>
                 </Card>
 
-                <Card variant={CardVariant.CUSTOM} minHeight="184px">
+                <Card variant={CardVariant.CUSTOM} maxHeight="154px">
                     <div className="flex min-h-0 flex-1 flex-col justify-between p-[16px]">
                         <div className="flex flex-col gap-2">
                             <div className="flex flex-row items-center gap-2">
@@ -228,7 +234,7 @@ export const ComponentShowcase = forwardRef<
                         <ButtonV2
                             text="Send message"
                             buttonType={ButtonV2Type.PRIMARY}
-                            size={ButtonV2Size.SMALL}
+                            size={ButtonV2Size.LARGE}
                             width="100%"
                         />
                     </div>
@@ -272,7 +278,7 @@ export const ComponentShowcase = forwardRef<
                         </div>
                     </div>
                 </Card>
-                <Card variant={CardVariant.CUSTOM} minHeight="184px">
+                <Card variant={CardVariant.CUSTOM} maxHeight="236px">
                     <div className="p-[16px] flex flex-col justify-between h-[100%]">
                         <div className="flex flex-col gap-2">
                             <div
@@ -291,25 +297,23 @@ export const ComponentShowcase = forwardRef<
                                 <GearSixIcon size={16} />
                             </div>
                             <p className={`subtitle inter-display ${subtitle}`}>
-                                Connect your stack across languages and
-                                services. Visualise how your payment nodes talk
-                                to each other and configure routing logic per
-                                environment.
+                                Your authorization trends at a glance, updated
+                                in real time.
                             </p>
                         </div>
-                        <StatCardV2
+                        <StatCard
                             title="Authorization Rate"
-                            // actionIcon={<GearSixIcon size={16} />}
                             helpIconText="helpText"
                             value="83.24%"
-                            variant={StatCardV2Variant.CHART}
+                            variant={StatCardVariant.LINE}
                             change={{
-                                value: '23.45%',
-                                changeType: StatCardV2ChangeType.INCREASE,
-                                arrowDirection: StatCardV2ArrowDirection.UP,
+                                value: 23.45,
+                                valueType: ChangeType.INCREASE,
+                                arrowDirection: StatCardArrowDirection.UP,
                             }}
                             maxWidth="100%"
-                            options={AUTHORIZATION_RATE_CHART_OPTIONS}
+                            chartData={AUTHORIZATION_RATE_CHART_DATA}
+                            showBorder={false}
                         />
                     </div>
                 </Card>

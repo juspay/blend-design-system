@@ -9,6 +9,10 @@
 
 import { featureFlags } from '@/lib/feature-flags'
 import { fetchWithCsrf } from '@/lib/csrf'
+import {
+    mapBackendBranchToStudioBranch,
+    type BackendBranchRow,
+} from '@/api/backend-branch-mapper'
 import type {
     Branch,
     BrandConfig,
@@ -63,11 +67,11 @@ type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse
 // ---------------------------------------------------------------------------
 
 interface BranchResponse {
-    branch: Branch
+    branch: BackendBranchRow
 }
 
 interface BranchListResponse {
-    branches: Branch[]
+    branches: BackendBranchRow[]
     nextCursor?: string
 }
 
@@ -159,7 +163,7 @@ export async function createBranchBackend(
         },
         token
     )
-    return data.branch
+    return mapBackendBranchToStudioBranch(data.branch)
 }
 
 /** List all branches with optional pagination. */
@@ -181,11 +185,15 @@ export async function listBranchesBackend(
 
     const query = params.toString() ? `?${params.toString()}` : ''
 
-    return fetchWithAuth<BranchListResponse>(
+    const data = await fetchWithAuth<BranchListResponse>(
         `/api/branches${query}`,
         { method: 'GET' },
         token
     )
+    return {
+        branches: data.branches.map(mapBackendBranchToStudioBranch),
+        nextCursor: data.nextCursor,
+    }
 }
 
 /** Get a single branch by ID. */
@@ -198,7 +206,7 @@ export async function getBranchBackend(
         { method: 'GET' },
         token
     )
-    return data.branch
+    return mapBackendBranchToStudioBranch(data.branch)
 }
 
 /** Update a branch's name or brand config. */
@@ -218,7 +226,7 @@ export async function updateBranchBackend(
         },
         token
     )
-    return data.branch
+    return mapBackendBranchToStudioBranch(data.branch)
 }
 
 /** Delete a branch. */
@@ -251,7 +259,7 @@ export async function forkBranchBackend(
         },
         token
     )
-    return data.branch
+    return mapBackendBranchToStudioBranch(data.branch)
 }
 
 /** Publish a versioned snapshot of a branch. */
