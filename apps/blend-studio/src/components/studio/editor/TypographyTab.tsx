@@ -121,7 +121,7 @@ export function TypographyTab({
     }, [addedFonts])
 
     useEffect(() => {
-        if (!selectedFamily) return
+        if (!selectedFamily || showGoogleFonts) return
 
         const added = addedFonts.find((f) => f.family === selectedFamily)
         if (added) {
@@ -140,7 +140,7 @@ export function TypographyTab({
         }
 
         loadTypographyPreviewFonts([selectedFamily])
-    }, [selectedFamily, addedFonts, googleFonts])
+    }, [selectedFamily, addedFonts, googleFonts, showGoogleFonts])
 
     useEffect(() => {
         if (!showGoogleFonts) {
@@ -181,6 +181,14 @@ export function TypographyTab({
 
         return list.slice(0, GOOGLE_FONTS_PREVIEW_LIMIT)
     }, [googleFonts, searchQuery, categoryFilter])
+
+    useEffect(() => {
+        if (!showGoogleFonts || filteredGoogleFonts.length === 0) return
+
+        loadTypographyPreviewFonts(
+            filteredGoogleFonts.map((font) => font.family)
+        )
+    }, [showGoogleFonts, filteredGoogleFonts])
 
     const handleSelectGoogleFont = (font: GoogleFontFamily) => {
         addFont(font)
