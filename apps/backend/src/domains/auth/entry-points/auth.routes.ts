@@ -1,6 +1,7 @@
 import { Router, type IRouter } from 'express'
 import { authenticate } from '@/middlewares/auth.js'
 import { asyncHandler } from '@/middlewares/errorHandler.js'
+import { authLimiter } from '@/middlewares/rateLimit.js'
 import { validate, googleCallbackQuerySchema } from '@/middlewares/validate.js'
 import {
     getGoogleAuthUrl,
@@ -17,7 +18,7 @@ const router: IRouter = Router()
 
 /**
  * @openapi
- * /api/auth/google:
+ * /api/v1/auth/google:
  *   get:
  *     summary: Initiate Google OAuth login
  *     description: Returns the Google OAuth URL for authentication
@@ -46,7 +47,7 @@ router.get('/csrf', asyncHandler(getCsrfToken))
 
 /**
  * @openapi
- * /api/auth/google/callback:
+ * /api/v1/auth/google/callback:
  *   get:
  *     summary: Google OAuth callback
  *     description: Handles the OAuth callback from Google and creates/logs in the user
@@ -67,13 +68,14 @@ router.get('/csrf', asyncHandler(getCsrfToken))
  */
 router.get(
     '/google/callback',
+    authLimiter,
     validate({ query: googleCallbackQuerySchema }),
     asyncHandler(googleCallback)
 )
 
 /**
  * @openapi
- * /api/auth/refresh:
+ * /api/v1/auth/refresh:
  *   post:
  *     summary: Refresh access token
  *     description: Uses refresh token to generate a new access token
@@ -99,11 +101,11 @@ router.get(
  *       401:
  *         description: Invalid or expired refresh token
  */
-router.post('/refresh', asyncHandler(refreshAccessToken))
+router.post('/refresh', authLimiter, asyncHandler(refreshAccessToken))
 
 /**
  * @openapi
- * /api/auth/logout:
+ * /api/v1/auth/logout:
  *   post:
  *     summary: Logout user
  *     description: Revokes the current refresh token
@@ -121,7 +123,7 @@ router.post('/logout', authenticate, asyncHandler(logout))
 
 /**
  * @openapi
- * /api/auth/logout-all:
+ * /api/v1/auth/logout-all:
  *   post:
  *     summary: Logout from all devices
  *     description: Revokes all refresh tokens for the user
@@ -139,7 +141,7 @@ router.post('/logout-all', authenticate, asyncHandler(logoutAllDevices))
 
 /**
  * @openapi
- * /api/auth/me:
+ * /api/v1/auth/me:
  *   get:
  *     summary: Get current user profile
  *     description: Returns the authenticated user's information

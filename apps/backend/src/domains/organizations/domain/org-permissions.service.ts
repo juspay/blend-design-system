@@ -31,3 +31,19 @@ export const requireOrganizationRole = async (
     }
     return membership
 }
+
+export const getOrganizationRole = async (
+    organizationId: string | null,
+    userId: string,
+    fallbackRole: OrgRole = 'viewer'
+): Promise<OrgRole> => {
+    if (!organizationId) {
+        return fallbackRole
+    }
+
+    const membership = await userRepo.findUserMembershipInOrganization(
+        userId,
+        organizationId
+    )
+    return (membership?.role as OrgRole | undefined) || fallbackRole
+}

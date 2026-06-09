@@ -7,15 +7,21 @@
 
 import { useState } from 'react'
 import {
-    TabsV2,
-    TabsV2List,
-    TabsV2Trigger,
-    TabsV2Variant,
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsVariant,
 } from '@juspay/blend-design-system'
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
 import { COLOR_GROUPS, type EditorTabProps, type ColorGroupKey } from './types'
+import type { BrandConfig } from '@juspay/blend-design-system/tokens'
 
 interface ColorsTabProps extends EditorTabProps {
+    savedBrand: BrandConfig
+    onColorGroupReset: (
+        group: ColorGroupKey,
+        shades: Record<string, string>
+    ) => void
     activeGroup?: ColorGroupKey
     onActiveGroupChange?: (group: ColorGroupKey) => void
 }
@@ -26,7 +32,9 @@ interface ColorsTabProps extends EditorTabProps {
 
 export function ColorsTab({
     brand,
+    savedBrand,
     onChange,
+    onColorGroupReset,
     activeGroup,
     onActiveGroupChange,
 }: ColorsTabProps) {
@@ -42,25 +50,27 @@ export function ColorsTab({
 
     return (
         <div className="flex min-h-0 flex-1 flex-col">
-            <TabsV2
+            <Tabs
                 value={selectedGroup}
                 onValueChange={handleGroupChange}
-                variant={TabsV2Variant.UNDERLINE}
+                variant={TabsVariant.UNDERLINE}
             >
-                <TabsV2List>
+                <TabsList>
                     {COLOR_GROUPS.map((group) => (
-                        <TabsV2Trigger key={group} value={group}>
+                        <TabsTrigger key={group} value={group}>
                             {group.charAt(0).toUpperCase() + group.slice(1)}
-                        </TabsV2Trigger>
+                        </TabsTrigger>
                     ))}
-                </TabsV2List>
-            </TabsV2>
+                </TabsList>
+            </Tabs>
 
             <div className="flex min-h-0 flex-1 flex-col">
                 <ColorGroupEditor
                     group={selectedGroup}
                     brand={brand}
+                    savedBrand={savedBrand}
                     onChange={onChange}
+                    onColorGroupReset={onColorGroupReset}
                 />
             </div>
         </div>
@@ -73,14 +83,29 @@ export function ColorsTab({
 
 interface ColorGroupEditorProps extends EditorTabProps {
     group: ColorGroupKey
+    savedBrand: BrandConfig
+    onColorGroupReset: (
+        group: ColorGroupKey,
+        shades: Record<string, string>
+    ) => void
 }
 
-function ColorGroupEditor({ group, brand, onChange }: ColorGroupEditorProps) {
+function ColorGroupEditor({
+    group,
+    brand,
+    savedBrand,
+    onChange,
+    onColorGroupReset,
+}: ColorGroupEditorProps) {
+    const initialValue =
+        (savedBrand.colors?.[group] as Record<string, string>) || {}
+
     return (
         <div className="flex min-h-0 flex-1 flex-col">
             <ColorPaletteGenerator
                 label={`${group.charAt(0).toUpperCase() + group.slice(1)} Color Scale`}
                 value={(brand.colors?.[group] as Record<string, string>) || {}}
+                initialValue={initialValue}
                 onChange={(shades) =>
                     onChange((prev) => ({
                         ...prev,
@@ -90,6 +115,7 @@ function ColorGroupEditor({ group, brand, onChange }: ColorGroupEditorProps) {
                         },
                     }))
                 }
+                onReset={(shades) => onColorGroupReset(group, shades)}
             />
         </div>
     )

@@ -13,13 +13,15 @@ import {
     ButtonV2,
     ButtonV2Size,
     ButtonV2Type,
-    StatCardV2,
-    StatCardV2ArrowDirection,
-    StatCardV2ChangeType,
-    StatCardV2Variant,
+    StatCard,
+    StatCardVariant,
+    ChangeType,
+    StatCardArrowDirection,
     TagV2,
     TagV2Color,
     TagV2Type,
+    Card,
+    CardVariant,
 } from '@juspay/blend-design-system'
 import {
     BellSlashIcon,
@@ -30,9 +32,10 @@ import {
     CurrencyCircleDollarIcon,
     WarningOctagonIcon,
     GearSixIcon,
+    CaretRightIcon,
 } from '@phosphor-icons/react'
 import {
-    AUTHORIZATION_RATE_CHART_OPTIONS,
+    AUTHORIZATION_RATE_CHART_DATA,
     getShowcaseClassNames,
     getShowcaseGridClassNames,
     type ShowcaseTheme,
@@ -48,24 +51,26 @@ export const ComponentShowcase = forwardRef<
     HTMLDivElement,
     ComponentShowcaseProps
 >(({ theme = 'light', className = '', isMobile = false }, ref) => {
-    const { surface, card, mutedText, betaNotice } =
+    const { surface, cardHeader, title, subtitle, betaNotice } =
         getShowcaseClassNames(theme)
 
     return (
         <div
             ref={ref}
-            className={`min-h-full rounded-[28px] ${surface} ${className}`}
+            className={`min-h-full rounded-[28px] mx-[50px] bg-white ${surface} ${className}`}
         >
             <div className={getShowcaseGridClassNames(isMobile)}>
-                <div className={`rounded-[12px] border ${card} shadow-sm`}>
-                    <div className="flex items-center justify-between border-b px-[16px] py-[12px]">
+                <Card variant={CardVariant.CUSTOM} maxHeight="230px">
+                    <div
+                        className={`flex items-center justify-between border-b px-[16px] py-[12px] ${cardHeader}`}
+                    >
                         <div className="flex flex-row items-center gap-2">
                             <img
                                 src={checkoutIconUrl}
                                 alt="Hyper Checkout"
                                 className="block h-5 w-5 shrink-0"
                             />
-                            <span className="text-sm font-semibold leading-none">
+                            <span className={`title ${title}`}>
                                 Hyper Checkout
                             </span>
                             <TagV2
@@ -79,19 +84,19 @@ export const ComponentShowcase = forwardRef<
                             buttonType={ButtonV2Type.SECONDARY}
                         />
                     </div>
-                    <div className="flex flex-col gap-2 p-[16px]">
+                    <div className="flex flex-col gap-[14px] p-[16px]">
                         <div className="flex flex-col gap-2">
-                            <TagV2
-                                text="14/17 Selected Features Available"
-                                leftSlot={{
-                                    slot: (
-                                        <WarningOctagonIcon className="h-3.5 w-3.5" />
-                                    ),
-                                }}
-                                color={TagV2Color.PURPLE}
-                                type={TagV2Type.SUBTLE}
-                            />
                             <div className="flex gap-2">
+                                <TagV2
+                                    text="14/17 Selected Features Available"
+                                    leftSlot={{
+                                        slot: (
+                                            <WarningOctagonIcon className="h-3.5 w-3.5" />
+                                        ),
+                                    }}
+                                    color={TagV2Color.PURPLE}
+                                    type={TagV2Type.SUBTLE}
+                                />
                                 <TagV2
                                     text="Customisable UI"
                                     leftSlot={{
@@ -102,6 +107,8 @@ export const ComponentShowcase = forwardRef<
                                     color={TagV2Color.NEUTRAL}
                                     type={TagV2Type.SUBTLE}
                                 />
+                            </div>
+                            <div className="flex gap-2">
                                 <TagV2
                                     text="Easy Integration"
                                     leftSlot={{
@@ -114,171 +121,223 @@ export const ComponentShowcase = forwardRef<
                                 />
                             </div>
                         </div>
-                        <p className={`text-xs leading-5 ${mutedText}`}>
+                        <p
+                            className={`subtitle inter-display line-height-[20px] ${subtitle}`}
+                        >
                             Accept payments across 50+ gateways with a single
                             integration. Built for conversion, with smart
                             retries and fallback routing out of the box.
                         </p>
                         <button
                             type="button"
-                            className="w-fit text-xs text-blue-500"
+                            className="w-fit text-[#0561E2] font-size-[14px] font-weight-[500]"
                         >
-                            Read Details &gt;
+                            <span className="flex items-center gap-2">
+                                {' '}
+                                <span>Read Details</span>{' '}
+                                <CaretRightIcon
+                                    size={16}
+                                    weight="bold"
+                                    color="#0561E2"
+                                    className="shrink-0"
+                                />
+                            </span>
                         </button>
                     </div>
-                </div>
+                </Card>
 
-                <PreviewCard
-                    className={card}
-                    media={
+                <Card variant={CardVariant.CUSTOM} maxHeight="309px">
+                    <div className="h-[150px] w-full shrink-0 overflow-hidden">
                         <img
                             src={nodeConfigurationUrl}
                             alt="Node Configuration"
-                            className="block h-auto w-full"
-                        />
-                    }
-                    title="Node Configuration"
-                    eyebrow={
-                        <TagV2
-                            leftSlot={{
-                                slot: (
-                                    <LightningIcon
-                                        className="h-3.5 w-3.5"
-                                        color="#059669"
-                                    />
-                                ),
-                            }}
-                            text="New"
-                            color={TagV2Color.PRIMARY}
-                            type={TagV2Type.SUBTLE}
-                        />
-                    }
-                    description="Connect your stack across languages and services. Visualise how your payment nodes talk to each other and configure routing logic per environment."
-                    mutedTextClassName={mutedText}
-                >
-                    <div className="flex flex-wrap gap-2">
-                        <TagV2
-                            leftSlot={{
-                                slot: <RecycleIcon className="h-3.5 w-3.5" />,
-                            }}
-                            text="New Feature"
-                            color={TagV2Color.NEUTRAL}
-                            type={TagV2Type.SUBTLE}
-                        />
-                        <TagV2
-                            leftSlot={{
-                                slot: (
-                                    <WarningDiamondIcon className="h-3.5 w-3.5" />
-                                ),
-                            }}
-                            text="Latest Feature"
-                            color={TagV2Color.NEUTRAL}
-                            type={TagV2Type.SUBTLE}
+                            className="block h-full w-full object-cover object-center"
                         />
                     </div>
-                </PreviewCard>
 
-                <PreviewCard
-                    className={card}
-                    title="Embedded Messaging"
-                    eyebrow={
-                        <TagV2
-                            text="Widget"
-                            color={TagV2Color.NEUTRAL}
-                            type={TagV2Type.SUBTLE}
-                        />
-                    }
-                    description="Drop a support channel directly into your checkout flow. Resolve payment queries without redirecting customers away from the page."
-                    mutedTextClassName={mutedText}
-                >
-                    <div className="flex h-full items-end">
+                    <div className="flex flex-col gap-2 p-[16px]">
+                        <div className="flex flex-row items-center gap-2">
+                            <div className="flex items-center justify-between">
+                                {' '}
+                                <h3 className={`title inter-display ${title}`}>
+                                    Node Configuration
+                                </h3>
+                            </div>
+                            <TagV2
+                                text="New"
+                                color={TagV2Color.PRIMARY}
+                                type={TagV2Type.SUBTLE}
+                                leftSlot={{
+                                    slot: (
+                                        <LightningIcon
+                                            className="h-3.5 w-3.5"
+                                            color="#059669"
+                                        />
+                                    ),
+                                }}
+                            />
+                        </div>
+                        <p className={`subtitle inter-display ${subtitle}`}>
+                            Connect your stack across languages and services.
+                            Visualise how your payment nodes talk to each other
+                            and configure routing logic per environment.
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            <TagV2
+                                text="New Feature"
+                                color={TagV2Color.NEUTRAL}
+                                type={TagV2Type.SUBTLE}
+                                leftSlot={{
+                                    slot: (
+                                        <RecycleIcon className="h-3.5 w-3.5" />
+                                    ),
+                                }}
+                            />
+                            <TagV2
+                                text="Latest Feature"
+                                color={TagV2Color.NEUTRAL}
+                                type={TagV2Type.SUBTLE}
+                                leftSlot={{
+                                    slot: (
+                                        <WarningDiamondIcon className="h-3.5 w-3.5" />
+                                    ),
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Card>
+
+                <Card variant={CardVariant.CUSTOM} maxHeight="154px">
+                    <div className="flex min-h-0 flex-1 flex-col justify-between p-[16px]">
+                        <div className="flex flex-col gap-2">
+                            <div className="flex flex-row items-center gap-2">
+                                <div className="flex items-center justify-between">
+                                    {' '}
+                                    <h3
+                                        className={`title inter-display ${title}`}
+                                    >
+                                        Embedded Messaging
+                                    </h3>
+                                </div>
+                                <TagV2
+                                    text="Widget"
+                                    color={TagV2Color.NEUTRAL}
+                                    type={TagV2Type.SUBTLE}
+                                />
+                            </div>
+                            <p className={`subtitle inter-display ${subtitle}`}>
+                                Drop a support channel directly into your
+                                checkout flow. Resolve payment queries without
+                                redirecting customers away from the page.
+                            </p>
+                        </div>
                         <ButtonV2
                             text="Send message"
                             buttonType={ButtonV2Type.PRIMARY}
-                            size={ButtonV2Size.SMALL}
+                            size={ButtonV2Size.LARGE}
                             width="100%"
                         />
                     </div>
-                </PreviewCard>
+                </Card>
 
-                <PreviewCard
-                    className={card}
-                    title="EMI Suite"
-                    eyebrow={
-                        <TagV2
-                            leftSlot={{
-                                slot: (
-                                    <CurrencyCircleDollarIcon weight="fill" />
-                                ),
-                            }}
-                            text="Finance"
-                            color={TagV2Color.NEUTRAL}
-                            type={TagV2Type.SUBTLE}
-                        />
-                    }
-                    description={
-                        <>
+                <Card variant={CardVariant.CUSTOM} minHeight="184px">
+                    <div className="flex flex-col gap-2 justify-between h-[100%] p-[16px]">
+                        <div className="flex flex-row items-center gap-2">
+                            <h3 className={`title inter-display ${title}`}>
+                                EMI Suite
+                            </h3>
+                            <TagV2
+                                text="Finance"
+                                color={TagV2Color.NEUTRAL}
+                                type={TagV2Type.SUBTLE}
+                                leftSlot={{
+                                    slot: (
+                                        <CurrencyCircleDollarIcon weight="fill" />
+                                    ),
+                                }}
+                            />
+                        </div>
+                        <p className={`subtitle inter-display ${subtitle}`}>
                             The most comprehensive EMI offers, aggregated under
                             one roof.{' '}
                             <a href="/" className="text-blue-500">
                                 Learn More
                             </a>
-                        </>
-                    }
-                    mutedTextClassName={mutedText}
-                >
-                    <div className="flex h-full items-end">
-                        <div
-                            className={`rounded-xl border p-3 text-xs leading-5 ${betaNotice.container}`}
-                        >
-                            <strong className={betaNotice.strong}>BETA</strong>{' '}
-                            Convert high-value purchases into easy monthly
-                            instalments. Currently available.
+                        </p>
+
+                        <div className="flex h-full items-end">
+                            <div
+                                className={`rounded-xl border p-3 text-xs leading-5 ${betaNotice.container}`}
+                            >
+                                <strong className={betaNotice.strong}>
+                                    BETA
+                                </strong>{' '}
+                                Convert high-value purchases into easy monthly
+                                instalments. Currently available.
+                            </div>
                         </div>
                     </div>
-                </PreviewCard>
-
-                <div className="w-full">
-                    <StatCardV2
-                        title="Authorization Rate"
-                        actionIcon={<GearSixIcon size={16} />}
-                        helpIconText="helpText"
-                        value="83.24%"
-                        variant={StatCardV2Variant.CHART}
-                        change={{
-                            value: '23.45%',
-                            changeType: StatCardV2ChangeType.INCREASE,
-                            arrowDirection: StatCardV2ArrowDirection.UP,
-                        }}
-                        maxWidth="100%"
-                        options={AUTHORIZATION_RATE_CHART_OPTIONS}
-                    />
-                </div>
-
-                <PreviewCard
-                    className={card}
-                    media={
-                        <div className="p-[16px]">
-                            <img
-                                src={costEffectiveIcon}
-                                alt="Cost-Effective Processing"
-                                className="block h-auto w-full"
-                            />
+                </Card>
+                <Card variant={CardVariant.CUSTOM} maxHeight="236px">
+                    <div className="p-[16px] flex flex-col justify-between h-[100%]">
+                        <div className="flex flex-col gap-2">
+                            <div
+                                className={`flex items-center justify-between  ${cardHeader}`}
+                            >
+                                <div className="flex flex-row items-center gap-2">
+                                    <span className={`title ${title}`}>
+                                        Payment Performance
+                                    </span>
+                                    <TagV2
+                                        text="Analytics"
+                                        color={TagV2Color.PRIMARY}
+                                        type={TagV2Type.SUBTLE}
+                                    />
+                                </div>
+                                <GearSixIcon size={16} />
+                            </div>
+                            <p className={`subtitle inter-display ${subtitle}`}>
+                                Your authorization trends at a glance, updated
+                                in real time.
+                            </p>
                         </div>
-                    }
-                >
-                    <div className="flex flex-col justify-center">
-                        <div className="flex items-center justify-center gap-2">
-                            <h3 className="text-sm font-semibold">
+                        <StatCard
+                            title="Authorization Rate"
+                            helpIconText="helpText"
+                            value="83.24%"
+                            variant={StatCardVariant.LINE}
+                            change={{
+                                value: 23.45,
+                                valueType: ChangeType.INCREASE,
+                                arrowDirection: StatCardArrowDirection.UP,
+                            }}
+                            maxWidth="100%"
+                            chartData={AUTHORIZATION_RATE_CHART_DATA}
+                            showBorder={false}
+                        />
+                    </div>
+                </Card>
+                <Card variant={CardVariant.CUSTOM} minHeight="184px">
+                    <div className="p-[16px]">
+                        <img
+                            src={costEffectiveIcon}
+                            alt="Cost-Effective Processing"
+                            className="block h-auto w-full"
+                        />
+                    </div>
+                    <div className="flex flex-col gap-2 pb-[16px] px-[16px]">
+                        <div className="flex flex-row justify-center items-center gap-2">
+                            <h3 className={`title inter-display ${title}`}>
                                 Cost-Effective Processing
                             </h3>
                             <TagV2
                                 text="Cost Saver"
                                 color={TagV2Color.PRIMARY}
+                                type={TagV2Type.SUBTLE}
                             />
                         </div>
                         <p
-                            className={`mb-[24px] text-xs leading-5 ${mutedText}`}
+                            className={`subtitle inter-display ${subtitle} text-center mb-[16px]`}
                         >
                             Compare processors side by side and find the best
                             fit for your transaction volume. Cut costs without
@@ -291,7 +350,7 @@ export const ComponentShowcase = forwardRef<
                             width="100%"
                         />
                     </div>
-                </PreviewCard>
+                </Card>
             </div>
         </div>
     )
@@ -302,7 +361,8 @@ ComponentShowcase.displayName = 'ComponentShowcase'
 interface PreviewCardProps {
     title?: string
     description?: ReactNode
-    mutedTextClassName?: string
+    titleClassName?: string
+    subtitleClassName?: string
     className?: string
     children: ReactNode
     eyebrow?: ReactNode
@@ -315,7 +375,8 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
         {
             title,
             description,
-            mutedTextClassName,
+            titleClassName = '',
+            subtitleClassName = '',
             className = '',
             children,
             eyebrow,
@@ -332,14 +393,16 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
                 className={`flex min-h-[184px] flex-col overflow-hidden rounded-2xl border shadow-sm ${className}`}
             >
                 {media}
-                <div className="flex flex-1 flex-col gap-4 p-4">
+                <div className="flex flex-1 flex-col gap-[14px] p-4">
                     {hasHeader && (
-                        <div className="shrink-0">
+                        <div className="shrink-0 flex flex-col gap-[14px]">
                             <div className="flex items-start justify-between gap-3">
                                 <div className="flex min-w-0 flex-wrap items-center gap-2">
                                     {icon}
                                     {title && (
-                                        <h3 className="text-sm font-semibold tracking-[-0.01em]">
+                                        <h3
+                                            className={`title inter-display ${titleClassName}`}
+                                        >
                                             {title}
                                         </h3>
                                     )}
@@ -348,7 +411,7 @@ const PreviewCard = forwardRef<HTMLElement, PreviewCardProps>(
                             </div>
                             {description && (
                                 <p
-                                    className={`text-xs leading-5 ${mutedTextClassName ?? ''}`}
+                                    className={`subtitle inter-display ${subtitleClassName}`}
                                 >
                                     {description}
                                 </p>

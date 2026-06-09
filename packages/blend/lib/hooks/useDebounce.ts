@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 export const useDebounce = <Args extends unknown[]>(
     fn: (...args: Args) => void,
     delay: number
@@ -14,6 +14,14 @@ export const useDebounce = <Args extends unknown[]>(
         },
         [fn, delay]
     )
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
 
     return debouncedFn
 }

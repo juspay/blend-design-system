@@ -3,7 +3,6 @@
 import {
     MagnifyingGlassIcon,
     XIcon,
-    SlidersHorizontalIcon,
     CheckIcon,
     CaretDownIcon,
 } from '@phosphor-icons/react/dist/ssr'
@@ -14,8 +13,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 interface SearchBarProps {
     onSearch?: (query: string) => void
     categories?: string[]
-    selectedCategory?: string | null
-    onCategoryChange?: (category: string | null) => void
+    selectedCategories?: string[]
+    onCategoryChange?: (categories: string[]) => void
 }
 
 const dropdownVariants: Variants = {
@@ -52,7 +51,7 @@ const dropdownVariants: Variants = {
 export default function SearchBar({
     onSearch,
     categories = [],
-    selectedCategory = null,
+    selectedCategories = [],
     onCategoryChange,
 }: SearchBarProps) {
     const [searchQuery, setSearchQuery] = useState('')
@@ -74,13 +73,14 @@ export default function SearchBar({
         inputRef.current?.blur()
     }, [onSearch])
 
-    const handleCategorySelect = useCallback(
-        (cat: string | null) => {
-            onCategoryChange?.(cat)
-            // Small delay so the check animation is visible before closing
-            setTimeout(() => setDropdownOpen(false), 100)
+    const toggleCategory = useCallback(
+        (cat: string) => {
+            const next = selectedCategories.includes(cat)
+                ? selectedCategories.filter((c) => c !== cat)
+                : [...selectedCategories, cat]
+            onCategoryChange?.(next)
         },
-        [onCategoryChange]
+        [selectedCategories, onCategoryChange]
     )
 
     // Keyboard shortcuts
@@ -150,8 +150,13 @@ export default function SearchBar({
         // Only re-attach when isExpanded changes — collapse/expand are stable refs
     }, [isExpanded, collapse])
 
-    const activeCount = selectedCategory !== null ? 1 : 0
-    const activeLabel = selectedCategory === null ? 'All' : selectedCategory
+    const activeCount = selectedCategories.length
+    const activeLabel =
+        activeCount === 0
+            ? 'Select category'
+            : activeCount === 1
+              ? selectedCategories[0]
+              : `${activeCount} categories`
 
     return (
         <div className="pointer-events-auto w-full">
@@ -229,7 +234,7 @@ export default function SearchBar({
 
                 {/* Divider */}
                 {categories.length > 0 && (
-                    <div className="w-px h-5 bg-border/90 shrink-0 ml-2" />
+                    <div className="w-px h-5 bg-border/90 shrink-0 mx-2" />
                 )}
 
                 {/* Filter — Radix Popover handles click-outside, focus trap, portal, a11y */}
@@ -242,7 +247,7 @@ export default function SearchBar({
                             <button
                                 aria-label="Filter by category"
                                 className={`
-                                    flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm
+                                    flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-sm border border-border/75
                                     transition-colors duration-150 select-none
                                     ${
                                         dropdownOpen
@@ -251,12 +256,7 @@ export default function SearchBar({
                                     }
                                 `}
                             >
-                                <SlidersHorizontalIcon
-                                    size={14}
-                                    className="shrink-0"
-                                />
-
-                                <span className="hidden sm:inline text-foreground/70 text-[13px]">
+                                <span className="hidden sm:inline text-foreground/50 text-[13px]">
                                     {activeLabel}
                                 </span>
 
@@ -325,29 +325,15 @@ export default function SearchBar({
                                                 Filter by
                                             </p>
 
-                                            <CategoryItem
-                                                label="All items"
-                                                isActive={
-                                                    selectedCategory === null
-                                                }
-                                                onClick={() =>
-                                                    handleCategorySelect(null)
-                                                }
-                                            />
-
-                                            <div className="h-px bg-border/40 mx-1.5 my-1" />
-
                                             {categories.map((cat) => (
                                                 <CategoryItem
                                                     key={cat}
                                                     label={cat}
-                                                    isActive={
-                                                        selectedCategory === cat
-                                                    }
+                                                    isActive={selectedCategories.includes(
+                                                        cat
+                                                    )}
                                                     onClick={() =>
-                                                        handleCategorySelect(
-                                                            cat
-                                                        )
+                                                        toggleCategory(cat)
                                                     }
                                                 />
                                             ))}
@@ -374,37 +360,34 @@ function CategoryItem({
 }) {
     return (
         <button
-            role="option"
-            aria-selected={isActive}
+            role="checkbox"
+            aria-checked={isActive}
             onClick={onClick}
-            className={`
-                flex items-center gap-2 w-full px-2.5 py-2 rounded-lg text-[13px]
-                transition-colors duration-100 text-left
-                ${
-                    isActive
-                        ? 'bg-muted text-foreground font-medium'
-                        : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
-                }
-            `}
+            className="
+                flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-[13px]
+                transition-colors duration-100 text-left text-foreground/75 hover:bg-muted/60 hover:text-foreground
+            "
         >
-            <span
-                className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors duration-150 ${
-                    isActive ? 'bg-foreground' : 'bg-border'
-                }`}
-            />
             <span className="flex-1">{label}</span>
-            <AnimatePresence initial={false}>
-                {isActive && (
-                    <motion.span
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.5 }}
-                        transition={{ duration: 0.1 }}
-                    >
-                        <CheckIcon size={12} className="text-foreground" />
-                    </motion.span>
-                )}
-            </AnimatePresence>
+            <span
+                className={`
+                    shrink-0 w-4 h-4 rounded border flex items-center justify-center transition-colors
+                    ${isActive ? 'bg-foreground border-foreground' : 'border-border bg-transparent'}
+                `}
+            >
+                <AnimatePresence initial={false}>
+                    {isActive && (
+                        <motion.span
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.5 }}
+                            transition={{ duration: 0.1 }}
+                        >
+                            <CheckIcon size={10} className="text-background" />
+                        </motion.span>
+                    )}
+                </AnimatePresence>
+            </span>
         </button>
     )
 }

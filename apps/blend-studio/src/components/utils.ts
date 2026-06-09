@@ -1,4 +1,63 @@
+import type { CSSProperties } from 'react'
 import { generateColorScale } from '@juspay/blend-design-system/tokens'
+import { buildGoogleFontCss2FamilyParam } from '@/lib/google-fonts'
+
+export const TYPOGRAPHY_PREVIEW_FONTS_LINK_ID =
+    'typography-preview-google-fonts'
+
+/** Build a CSS font-family value with proper quoting and fallbacks. */
+export function getFontFamilyStyle(family: string): CSSProperties {
+    const trimmed = family.trim()
+    if (!trimmed) return { fontFamily: 'sans-serif' }
+
+    if (trimmed.toLowerCase() === 'system ui') {
+        return { fontFamily: 'system-ui, sans-serif' }
+    }
+
+    return { fontFamily: `"${trimmed}", sans-serif` }
+}
+
+export type TypographyPreviewFontSpec =
+    | string
+    | { family: string; variants?: readonly string[] }
+
+/** Load Google Fonts used by the typography editor preview. */
+export function loadTypographyPreviewFonts(
+    fonts: readonly TypographyPreviewFontSpec[]
+): void {
+    if (typeof document === 'undefined') return
+
+    const specs = fonts
+        .map((entry) =>
+            typeof entry === 'string'
+                ? { family: entry, variants: undefined }
+                : entry
+        )
+        .filter((spec) => spec.family.trim().toLowerCase() !== 'system ui')
+
+    if (specs.length === 0) return
+
+    const href = `https://fonts.googleapis.com/css2?${specs
+        .map((spec) =>
+            buildGoogleFontCss2FamilyParam(spec.family, spec.variants)
+        )
+        .join('&')}&display=swap`
+
+    let link = document.getElementById(
+        TYPOGRAPHY_PREVIEW_FONTS_LINK_ID
+    ) as HTMLLinkElement | null
+
+    if (!link) {
+        link = document.createElement('link')
+        link.id = TYPOGRAPHY_PREVIEW_FONTS_LINK_ID
+        link.rel = 'stylesheet'
+        document.head.appendChild(link)
+    }
+
+    if (link.href !== href) {
+        link.href = href
+    }
+}
 
 export const SHADE_KEYS = [
     '50',
@@ -100,9 +159,7 @@ export function isDarkTheme(theme: ShowcaseTheme = 'light'): boolean {
 export function getShowcaseSurfaceClassNames(
     theme: ShowcaseTheme = 'light'
 ): string {
-    return isDarkTheme(theme)
-        ? 'bg-slate-950 text-white'
-        : 'bg-[#f8fafc] text-slate-950'
+    return isDarkTheme(theme) ? 'text-white' : 'bg-[#f8fafc] text-slate-950'
 }
 
 export function getShowcaseCardClassNames(
@@ -138,33 +195,46 @@ export function getShowcaseBetaNoticeClassNames(
     }
 }
 
+export function getShowcaseCardHeaderClassNames(
+    theme: ShowcaseTheme = 'light'
+): string {
+    return isDarkTheme(theme) ? 'border-slate-800' : 'border-slate-200/80'
+}
+
+export function getShowcaseTitleClassNames(
+    theme: ShowcaseTheme = 'light'
+): string {
+    return isDarkTheme(theme) ? 'text-slate-100' : 'text-gray-800'
+}
+
+export function getShowcaseSubtitleClassNames(
+    theme: ShowcaseTheme = 'light'
+): string {
+    return isDarkTheme(theme) ? 'text-slate-400' : 'text-gray-500'
+}
+
 export function getShowcaseClassNames(theme: ShowcaseTheme = 'light') {
     return {
         surface: getShowcaseSurfaceClassNames(theme),
         card: getShowcaseCardClassNames(theme),
+        cardHeader: getShowcaseCardHeaderClassNames(theme),
+        title: getShowcaseTitleClassNames(theme),
+        subtitle: getShowcaseSubtitleClassNames(theme),
         mutedText: getShowcaseMutedTextClassNames(theme),
         betaNotice: getShowcaseBetaNoticeClassNames(theme),
     }
 }
 
-export const AUTHORIZATION_RATE_CHART_OPTIONS = {
-    series: [
-        {
-            data: [9, 11, 13, 10, 12, 15, 18, 17, 19, 21, 22],
-            type: 'area' as const,
-            color: '#00A63E',
-            fillColor: {
-                linearGradient: {
-                    x1: 0,
-                    y1: 0,
-                    x2: 0,
-                    y2: 1,
-                },
-                stops: [
-                    [0, 'rgba(123, 241, 168, 0.40)'] as [number, string],
-                    [1, 'rgba(123, 241, 168, 0.00)'] as [number, string],
-                ],
-            },
-        },
-    ],
-}
+export const AUTHORIZATION_RATE_CHART_DATA = [
+    { value: 9, name: '1' },
+    { value: 11, name: '2' },
+    { value: 13, name: '3' },
+    { value: 10, name: '4' },
+    { value: 12, name: '5' },
+    { value: 15, name: '6' },
+    { value: 18, name: '7' },
+    { value: 17, name: '8' },
+    { value: 19, name: '9' },
+    { value: 21, name: '10' },
+    { value: 22, name: '11' },
+]

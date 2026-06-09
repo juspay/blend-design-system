@@ -1,13 +1,36 @@
 import { prisma } from '@/config/database.js'
 import { logger } from '@/utils/logger.js'
 
+export type WcagEnforcementPolicy = 'none' | 'warn' | 'block'
+export type AllowedApproversPolicy = 'admins' | 'admins-and-editors' | 'custom'
+
+type PrismaAllowedApproversPolicy = 'admins' | 'admins_and_editors' | 'custom'
+
+type OrganizationUpdateData = {
+    name?: string
+    slug?: string
+    defaultBranchId?: string | null
+    blendVersion?: string | null
+    wcagEnforcement?: WcagEnforcementPolicy
+    requireApprovalForMerge?: boolean
+    requireApprovalForPublish?: boolean
+    allowedApprovers?: PrismaAllowedApproversPolicy
+    minApprovals?: number
+    allowAdminBypass?: boolean
+}
+
 export interface OrganizationRow {
     id: string
     name: string
     slug: string
     defaultBranchId: string | null
     blendVersion: string | null
-    wcagEnforcement: string
+    wcagEnforcement: WcagEnforcementPolicy
+    requireApprovalForMerge: boolean
+    requireApprovalForPublish: boolean
+    allowedApprovers: AllowedApproversPolicy
+    minApprovals: number
+    allowAdminBypass: boolean
     createdAt: Date
     updatedAt: Date
 }
@@ -20,6 +43,44 @@ export interface MemberRow {
     joinedAt: Date
 }
 
+const toDomainAllowedApprovers = (
+    value: string | null | undefined
+): AllowedApproversPolicy => {
+    if (value === 'admins-and-editors' || value === 'admins_and_editors') {
+        return 'admins-and-editors'
+    }
+    if (value === 'custom') return 'custom'
+    return 'admins'
+}
+
+const toPrismaAllowedApprovers = (
+    value: AllowedApproversPolicy | undefined
+): PrismaAllowedApproversPolicy | undefined => {
+    if (!value) return undefined
+    if (value === 'admins-and-editors') return 'admins_and_editors'
+    return value
+}
+
+const toDomainWcagEnforcement = (
+    value: string | null | undefined
+): WcagEnforcementPolicy => {
+    if (value === 'none' || value === 'block') return value
+    return 'warn'
+}
+
+const mapOrganizationRow = (organization: unknown): OrganizationRow => {
+    const row = organization as OrganizationRow & {
+        allowedApprovers?: string | null
+        wcagEnforcement?: string | null
+    }
+
+    return {
+        ...row,
+        wcagEnforcement: toDomainWcagEnforcement(row.wcagEnforcement),
+        allowedApprovers: toDomainAllowedApprovers(row.allowedApprovers),
+    }
+}
+
 export const createOrganization = async (data: {
     name: string
     slug: string
@@ -28,21 +89,21 @@ export const createOrganization = async (data: {
         data: { name: data.name, slug: data.slug },
     })
     logger.info({ orgId: org.id, slug: data.slug }, 'Organization created')
-    return org as unknown as OrganizationRow
+    return mapOrganizationRow(org)
 }
 
 export const getOrganizationById = async (
     id: string
 ): Promise<OrganizationRow | null> => {
     const org = await prisma.organization.findUnique({ where: { id } })
-    return org as unknown as OrganizationRow | null
+    return org ? mapOrganizationRow(org) : null
 }
 
 export const getOrganizationBySlug = async (
     slug: string
 ): Promise<OrganizationRow | null> => {
     const org = await prisma.organization.findUnique({ where: { slug } })
-    return org as unknown as OrganizationRow | null
+    return org ? mapOrganizationRow(org) : null
 }
 
 export const listOrganizations = async (
@@ -65,7 +126,7 @@ export const listOrganizations = async (
     }
 
     return {
-        organizations: organizations as unknown as OrganizationRow[],
+        organizations: organizations.map(mapOrganizationRow),
         nextCursor,
     }
 }
@@ -77,14 +138,24 @@ export const updateOrganization = async (
         slug?: string
         defaultBranchId?: string | null
         blendVersion?: string | null
-        wcagEnforcement?: string
+        wcagEnforcement?: WcagEnforcementPolicy
+        requireApprovalForMerge?: boolean
+        requireApprovalForPublish?: boolean
+        allowedApprovers?: AllowedApproversPolicy
+        minApprovals?: number
+        allowAdminBypass?: boolean
     }
 ): Promise<OrganizationRow | null> => {
+    const updateData: OrganizationUpdateData = {
+        ...data,
+        allowedApprovers: toPrismaAllowedApprovers(data.allowedApprovers),
+    }
+
     const org = await prisma.organization.update({
         where: { id },
-        data,
+        data: updateData,
     })
-    return org as unknown as OrganizationRow | null
+    return org ? mapOrganizationRow(org) : null
 }
 
 export const addMember = async (data: {
@@ -103,14 +174,14 @@ export const addMember = async (data: {
         create: {
             organizationId: data.organizationId,
             userId: data.userId,
-            role: (data.role as any) || 'viewer',
+            orgRole: (data.role as any) || 'viewer',
         },
     })
     logger.info(
         { orgId: data.organizationId, userId: data.userId },
         'Member added to organization'
     )
-    return member as unknown as MemberRow
+    return { ...(member as any), role: (member as any).orgRole } as MemberRow
 }
 
 export const removeMember = async (
@@ -132,9 +203,11 @@ export const updateMemberRole = async (
         where: {
             organizationId_userId: { organizationId, userId },
         },
-        data: { role: role as any },
+        data: { orgRole: role as any },
     })
-    return member as unknown as MemberRow | null
+    return member
+        ? ({ ...(member as any), role: (member as any).orgRole } as MemberRow)
+        : null
 }
 
 export const listMembers = async (
@@ -153,7 +226,9 @@ export const listMembers = async (
             },
         },
     })
-    return members as unknown as MemberRow[]
+    return members.map(
+        (member: any) => ({ ...member, role: member.orgRole }) as MemberRow
+    )
 }
 
 export const getMemberOrganizations = async (
@@ -163,7 +238,5 @@ export const getMemberOrganizations = async (
         where: { userId },
         include: { organization: true },
     })
-    return memberships.map(
-        (m: any) => m.organization
-    ) as unknown as OrganizationRow[]
+    return memberships.map((m: any) => mapOrganizationRow(m.organization))
 }

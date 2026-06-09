@@ -7,16 +7,27 @@ import type {
     Branch,
     CreateBranchDTO,
     UpdateBranchDTO,
+    UpdateBranchProtectionDTO,
     PublishBranchDTO,
+    PublishBranchResult,
     BrandConfig,
     BranchVersion,
 } from './branch.types.js'
 import * as branchRepo from '../data-access/branch.repository.js'
+import * as publishRequestRepo from '../data-access/publish-request.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 import * as tagRepo from '@/domains/tags/data-access/tag.repository.js'
 import * as userRepo from '@/domains/users/data-access/user.repository.js'
 import * as lockRepo from '@/domains/locks/data-access/lock.repository.js'
 import * as orgRepo from '@/domains/organizations/data-access/organization.repository.js'
+import {
+    canBypassApproval,
+    canDirectlyUpdateBranch,
+    resolvePublishApprovalPolicy,
+    resolveMergeApprovalPolicy,
+    type OrgApprovalSettings,
+} from '@/domains/shared/approval-policy.service.js'
+import { getOrganizationRole } from '@/domains/organizations/domain/org-permissions.service.js'
 import {
     resolveWithInheritance,
     validateAgainstLocks,
@@ -213,6 +224,34 @@ const getOrgParentContext = async (
     }
 }
 
+const toOrgApprovalSettings = (
+    organization: Awaited<ReturnType<typeof orgRepo.getOrganizationById>>
+): OrgApprovalSettings | null => {
+    if (!organization) {
+        return null
+    }
+
+    return {
+        defaultBranchId: organization.defaultBranchId,
+        requireApprovalForMerge: organization.requireApprovalForMerge,
+        requireApprovalForPublish: organization.requireApprovalForPublish,
+        allowedApprovers: organization.allowedApprovers,
+        minApprovals: organization.minApprovals,
+        allowAdminBypass: organization.allowAdminBypass,
+    }
+}
+
+const getRoleForBranchContext = async (
+    branch: Branch,
+    userId: string
+): Promise<'admin' | 'editor' | 'viewer'> => {
+    if (!branch.organizationId) {
+        return branch.createdBy === userId ? 'admin' : 'viewer'
+    }
+
+    return await getOrganizationRole(branch.organizationId, userId, 'viewer')
+}
+
 export const resolveEffectiveBrandConfig = async (
     branch: Branch,
     baseConfig: BrandConfig
@@ -223,7 +262,7 @@ export const resolveEffectiveBrandConfig = async (
     }
 
     const inheritanceResult = resolveWithInheritance(
-        inheritanceContext.parentBranch.brandConfig,
+        inheritanceContext.parentBranch.tokenConfig,
         baseConfig,
         inheritanceContext.lockedPaths
     )
@@ -248,10 +287,10 @@ export const createBranch = async (
         orgId = membership?.organizationId || null
     }
 
-    const brandId = dto.brandId || dto.name.toLowerCase().replace(/\s+/g, '-')
+    const branchSlug = dto.branchSlug
 
     const defaultConfig: BrandConfig = {
-        brandId,
+        brandId: branchSlug,
         name: dto.name,
         version: '1.0.0',
         colors: {
@@ -277,7 +316,7 @@ export const createBranch = async (
         },
     }
 
-    const branchConfig = mergeBrandConfig(defaultConfig, dto.brandConfig)
+    const tokenConfig = mergeBrandConfig(defaultConfig, dto.tokenConfig)
     let resolvedParentBranchId = dto.parentBranchId || null
 
     if (orgId) {
@@ -289,8 +328,8 @@ export const createBranch = async (
             resolvedParentBranchId = parentContext.parentBranchId
             if (parentContext.lockedPaths.length > 0) {
                 validateLocksAgainstParent(
-                    parentContext.parentBranch.brandConfig,
-                    branchConfig,
+                    parentContext.parentBranch.tokenConfig,
+                    tokenConfig,
                     parentContext.lockedPaths
                 )
             }
@@ -299,13 +338,13 @@ export const createBranch = async (
 
     const branch = await branchRepo.createBranch({
         organizationId: orgId,
-        brandId,
+        branchSlug,
         name: dto.name,
         description: dto.description || null,
         parentBranchId: resolvedParentBranchId,
         status: 'draft',
         visibility: dto.visibility || 'private',
-        brandConfig: branchConfig,
+        tokenConfig,
         createdBy: userId,
         createdByName: userName,
     })
@@ -327,7 +366,7 @@ export const createBranch = async (
             targetId: branch.id,
             metadata: {
                 name: dto.name,
-                brandId,
+                branchSlug,
                 visibility: dto.visibility || 'private',
             },
         })
@@ -350,8 +389,8 @@ export const listBranches = async (
         limit?: number
         cursor?: string
         createdBy?: string
-        status?: string
-        visibility?: string
+        status?: Branch['status']
+        visibility?: Branch['visibility']
         search?: string
         tag?: string
     } = {}
@@ -367,21 +406,52 @@ export const updateBranch = async (
 ): Promise<Branch> => {
     const branch = await getBranch(branchId)
 
-    if (branch.createdBy !== userId) {
-        throw new ForbiddenError('Only the creator can update this branch')
+    const [organization, userRole] = await Promise.all([
+        branch.organizationId
+            ? orgRepo.getOrganizationById(branch.organizationId)
+            : null,
+        getRoleForBranchContext(branch, userId),
+    ])
+
+    const canUpdate = canDirectlyUpdateBranch(
+        branch,
+        toOrgApprovalSettings(organization),
+        userId,
+        userRole
+    )
+
+    if (!canUpdate) {
+        const isDefaultBranch = Boolean(
+            organization?.defaultBranchId &&
+            organization.defaultBranchId === branch.id
+        )
+
+        if (isDefaultBranch) {
+            throw new ForbiddenError(
+                'Default branch is protected. Submit a merge request instead'
+            )
+        }
+        if (branch.isProtected) {
+            throw new ForbiddenError(
+                'Protected branch cannot be directly updated. Submit a merge request instead'
+            )
+        }
+        throw new ForbiddenError(
+            'Only the creator or an admin can update this branch'
+        )
     }
 
-    const mergedBrandConfig = dto.brandConfig
-        ? mergeBrandConfig(branch.brandConfig, dto.brandConfig)
+    const mergedTokenConfig = dto.tokenConfig
+        ? mergeBrandConfig(branch.tokenConfig, dto.tokenConfig)
         : undefined
 
-    // Validate against org token locks when brandConfig changes
-    if (dto.brandConfig && branch.organizationId) {
+    // Validate against org token locks when tokenConfig changes
+    if (dto.tokenConfig && branch.organizationId) {
         const inheritanceContext = await getOrgInheritanceContext(branch)
         if (inheritanceContext && inheritanceContext.lockedPaths.length > 0) {
             validateLocksAgainstParent(
-                inheritanceContext.parentBranch.brandConfig,
-                mergedBrandConfig!,
+                inheritanceContext.parentBranch.tokenConfig,
+                mergedTokenConfig!,
                 inheritanceContext.lockedPaths
             )
         }
@@ -393,8 +463,8 @@ export const updateBranch = async (
     if (dto.description !== undefined) updates.description = dto.description
     if (dto.visibility) updates.visibility = dto.visibility
 
-    if (mergedBrandConfig) {
-        updates.brandConfig = mergedBrandConfig
+    if (mergedTokenConfig) {
+        updates.tokenConfig = mergedTokenConfig
     }
 
     const previousValues: Record<string, unknown> = {}
@@ -450,7 +520,7 @@ export const deleteBranch = async (
             targetId: branchId,
             metadata: {
                 name: branch.name,
-                brandId: branch.brandId,
+                branchSlug: branch.branchSlug,
                 softDelete: true,
             },
         })
@@ -482,7 +552,7 @@ export const forkBranch = async (
 
     const forked = await branchRepo.forkBranch(sourceBranchId, {
         name: newName,
-        brandId: newName.toLowerCase().replace(/\s+/g, '-'),
+        branchSlug: newName.toLowerCase().replace(/\s+/g, '-'),
         organizationId: orgId,
         createdBy: userId,
         createdByName: userName,
@@ -515,11 +585,22 @@ export const publishBranch = async (
     userId: string,
     userName: string,
     userEmail: string
-): Promise<BranchVersion> => {
+): Promise<PublishBranchResult> => {
     const branch = await getBranch(branchId)
 
-    if (branch.createdBy !== userId) {
-        throw new ForbiddenError('Only the creator can publish this branch')
+    const [organization, userRole] = await Promise.all([
+        branch.organizationId
+            ? orgRepo.getOrganizationById(branch.organizationId)
+            : null,
+        getRoleForBranchContext(branch, userId),
+    ])
+
+    const isCreator = branch.createdBy === userId
+    const isAdmin = userRole === 'admin'
+    if (!isCreator && !isAdmin) {
+        throw new ForbiddenError(
+            'Only the creator or an admin can publish this branch'
+        )
     }
 
     if (!dto.version?.match(/^\d+\.\d+\.\d+$/)) {
@@ -528,9 +609,72 @@ export const publishBranch = async (
         )
     }
 
+    const policy = resolvePublishApprovalPolicy(
+        branch,
+        toOrgApprovalSettings(organization)
+    )
+    const bypassAllowed = canBypassApproval(policy, userRole)
+
+    if (policy.requireApproval && !bypassAllowed) {
+        const publishRequest = await publishRequestRepo.createPublishRequest({
+            organizationId: branch.organizationId,
+            branchId: branch.id,
+            branchName: branch.name,
+            version: dto.version,
+            changelog: dto.changelog,
+            isBreaking: dto.isBreaking,
+            isPrerelease: dto.isPrerelease,
+            requestedBy: userId,
+            requestedByName: userName,
+        })
+
+        if (branch.organizationId) {
+            await auditLogRepo.createAuditLog({
+                organizationId: branch.organizationId,
+                action: 'publish_request_created',
+                actorId: userId,
+                actorEmail: userEmail,
+                targetType: 'publish_request',
+                targetId: publishRequest.id,
+                metadata: {
+                    branchId,
+                    branchName: branch.name,
+                    version: dto.version,
+                },
+            })
+        }
+
+        return {
+            mode: 'approval_required',
+            publishRequest: {
+                id: publishRequest.id,
+                status: publishRequest.status,
+            },
+        }
+    }
+
+    if (policy.requireApproval && bypassAllowed && branch.organizationId) {
+        await auditLogRepo.createAuditLog({
+            organizationId: branch.organizationId,
+            action: 'publish_request_published_admin_bypass',
+            actorId: userId,
+            actorEmail: userEmail,
+            targetType: 'branch',
+            targetId: branch.id,
+            metadata: {
+                branchId,
+                branchName: branch.name,
+                version: dto.version,
+                usedAdminBypass: true,
+                approvalCount: 0,
+                minRequired: policy.minApprovals,
+            },
+        })
+    }
+
     const version = await branchRepo.createVersion(branchId, {
         version: dto.version,
-        brandConfig: branch.brandConfig,
+        tokenConfig: branch.tokenConfig,
         changelog: dto.changelog || null,
         isBreaking: dto.isBreaking || false,
         isPrerelease: dto.isPrerelease || false,
@@ -554,8 +698,141 @@ export const publishBranch = async (
         })
     }
 
-    return version as unknown as BranchVersion
+    return {
+        mode: 'published',
+        version: version as unknown as BranchVersion,
+    }
 }
+
+export const updateBranchProtection = async (
+    branchId: string,
+    dto: UpdateBranchProtectionDTO,
+    userId: string,
+    userEmail: string
+): Promise<Branch> => {
+    const branch = await getBranch(branchId)
+
+    const userRole = await getRoleForBranchContext(branch, userId)
+    const isAdmin = userRole === 'admin'
+    if (!isAdmin) {
+        throw new ForbiddenError(
+            'Only admins can update branch protection settings'
+        )
+    }
+
+    const updates: Record<string, unknown> = {}
+
+    if (dto.isProtected !== undefined) {
+        updates.isProtected = dto.isProtected
+    }
+
+    if (dto.requireApproval !== undefined) {
+        updates.protectionRequireApproval = dto.requireApproval
+    }
+
+    if (dto.minApprovals !== undefined) {
+        updates.protectionMinApprovals = dto.minApprovals
+    }
+
+    const hasApproverUpdate = dto.allowedApproverIds !== undefined
+
+    if (dto.isProtected === false) {
+        updates.protectionRequireApproval = null
+        updates.protectionMinApprovals = null
+    }
+
+    const updated = await branchRepo.updateBranch(branchId, updates as any)
+    if (!updated) {
+        throw new NotFoundError('Branch')
+    }
+
+    if (dto.isProtected === false) {
+        await branchRepo.setProtectionApproverIds(branchId, [])
+        updated.protectionApproverIds = []
+    } else if (hasApproverUpdate) {
+        const approverIds = dto.allowedApproverIds ?? []
+        await branchRepo.setProtectionApproverIds(branchId, approverIds)
+        updated.protectionApproverIds = approverIds
+    }
+
+    if (branch.organizationId) {
+        const action =
+            dto.isProtected === true
+                ? 'branch_protection_enabled'
+                : dto.isProtected === false
+                  ? 'branch_protection_disabled'
+                  : 'branch_protection_updated'
+
+        await auditLogRepo.createAuditLog({
+            organizationId: branch.organizationId,
+            action,
+            actorId: userId,
+            actorEmail: userEmail,
+            targetType: 'branch',
+            targetId: branch.id,
+            metadata: {
+                branchId: branch.id,
+                isProtected: updated.isProtected,
+                requireApproval: updated.protectionRequireApproval,
+                minApprovals: updated.protectionMinApprovals,
+                hasCustomApprovers: updated.protectionApproverIds.length > 0,
+            },
+        })
+    }
+
+    return updated as unknown as Branch
+}
+
+export const getBranchApprovalSettings = async (
+    branchId: string,
+    userId: string,
+    context: 'merge' | 'publish'
+) => {
+    const branch = await getBranch(branchId)
+    const organization = branch.organizationId
+        ? await orgRepo.getOrganizationById(branch.organizationId)
+        : null
+
+    const userRole = await getRoleForBranchContext(branch, userId)
+    const orgSettings = toOrgApprovalSettings(organization)
+    const policy =
+        context === 'publish'
+            ? resolvePublishApprovalPolicy(branch, orgSettings)
+            : resolveMergeApprovalPolicy(branch, orgSettings)
+
+    return {
+        branchId: branch.id,
+        context,
+        isDefaultBranch: Boolean(
+            organization?.defaultBranchId &&
+            organization.defaultBranchId === branch.id
+        ),
+        branch: {
+            isProtected: branch.isProtected,
+            protectionRequireApproval: branch.protectionRequireApproval,
+            protectionMinApprovals: branch.protectionMinApprovals,
+            protectionApproverIds: branch.protectionApproverIds,
+        },
+        organization: organization
+            ? {
+                  requireApprovalForMerge: organization.requireApprovalForMerge,
+                  requireApprovalForPublish:
+                      organization.requireApprovalForPublish,
+                  allowedApprovers: organization.allowedApprovers,
+                  minApprovals: organization.minApprovals,
+                  allowAdminBypass: organization.allowAdminBypass,
+              }
+            : null,
+        effectivePolicy: policy,
+        currentUser: {
+            id: userId,
+            role: userRole,
+            canAdminBypass: canBypassApproval(policy, userRole),
+        },
+    }
+}
+
+export { canDirectlyUpdateBranch } from '@/domains/shared/approval-policy.service.js'
 
 export const listVersions = async (branchId: string) => {
     await getBranch(branchId)
@@ -565,17 +842,17 @@ export const listVersions = async (branchId: string) => {
 export const resolveTokens = async (
     branchId: string,
     theme: 'light' | 'dark' = 'light'
-): Promise<{ branch: Branch; theme: string; brandConfig: BrandConfig }> => {
+): Promise<{ branch: Branch; theme: string; tokenConfig: BrandConfig }> => {
     const branch = await getBranch(branchId)
     const effectiveBrandConfig = await resolveEffectiveBrandConfig(
         branch,
-        branch.brandConfig
+        branch.tokenConfig
     )
 
     return {
         branch,
         theme,
-        brandConfig: effectiveBrandConfig,
+        tokenConfig: effectiveBrandConfig,
     }
 }
 

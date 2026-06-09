@@ -1,5 +1,6 @@
-import { rateLimit, type Options } from 'express-rate-limit'
+import { ipKeyGenerator, rateLimit, type Options } from 'express-rate-limit'
 import type { Request } from 'express'
+import { env } from '@/config/index.js'
 
 /**
  * Generate rate limit key based on authenticated user or IP address.
@@ -11,7 +12,9 @@ const keyGenerator = (req: Request): string => {
     if (userId) {
         return `user:${userId}`
     }
-    return req.ip ?? 'unknown'
+
+    // Use library helper for IPv6-safe normalization (required in v8+).
+    return ipKeyGenerator(req.ip ?? '')
 }
 
 /**
@@ -98,7 +101,7 @@ export const writeLimiter = rateLimit({
 export const authLimiter = rateLimit({
     ...baseConfig,
     windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 5, // 5 requests per window
+    limit: env.NODE_ENV === 'development' ? 50 : 5,
     skipSuccessfulRequests: true, // Don't count successful logins
     message: {
         success: false,

@@ -32,8 +32,8 @@ export default function RelatedCardsRow({
 
     return (
         <div className="border-t border-border/60 p-6 sm:px-10 py-8 flex flex-col gap-2.5">
-            <h2 className="text-2xl font-medium text-primary mb-8">
-                Similar pages for you...
+            <h2 className="text-2xl font-medium text-primary mb-8 w-full flex items-center justify-center">
+                Similar pages for you
             </h2>
             <div className="flex gap-8 overflow-x-auto pb-2">
                 {relatedItems.map((item) => (

@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser'
 import { env, isDevelopment } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js'
-import { apiLimiter, authLimiter } from '@/middlewares/rateLimit.js'
+import { apiLimiter } from '@/middlewares/rateLimit.js'
 import { createCookieCsrfProtection } from '@/middlewares/csrf.js'
 import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
 import { connectDatabaseWithRetry, isDatabaseReady } from '@/config/database.js'
@@ -18,10 +18,14 @@ import tagRoutes from '@/domains/tags/entry-points/tag.routes.js'
 import apiKeyRoutes from '@/domains/apikeys/entry-points/apikey.routes.js'
 import lockRoutes from '@/domains/locks/entry-points/lock.routes.js'
 import mergeRequestRoutes from '@/domains/mergerequests/entry-points/merge-request.routes.js'
+import publishRequestRoutes from '@/domains/branches/entry-points/publish-request.routes.js'
+import googleFontsRoutes from '@/domains/google-fonts/google-fonts.routes.js'
 // (callback route is mounted via /api/auth router)
 import type { NextFunction, Request, Response } from 'express'
 
 const app = express()
+const API_V1_PREFIX = '/api/v1'
+const LEGACY_API_PREFIX = '/api'
 
 app.use(helmet())
 
@@ -57,7 +61,7 @@ app.use(
         },
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
     })
 )
 
@@ -142,7 +146,7 @@ app.get('/health', (_req: Request, res: Response) => {
     })
 })
 
-app.get('/api/health', (_req: Request, res: Response) => {
+app.get(`${API_V1_PREFIX}/health`, (_req: Request, res: Response) => {
     res.json({
         status: 'ok',
         database: isDatabaseReady() ? 'connected' : 'connecting',
@@ -151,21 +155,35 @@ app.get('/api/health', (_req: Request, res: Response) => {
     })
 })
 
-app.use('/api', (req: Request, res: Response, next: NextFunction) => {
-    // Allow health and OAuth bootstrap endpoints even while DB is connecting.
-    // OAuth callback still depends on DB and should remain guarded.
-    const isReadinessBypassPath =
-        req.path === '/health' || req.path === '/auth/google'
-
-    if (isReadinessBypassPath || isDatabaseReady()) {
-        return next()
-    }
-
-    return res.status(503).json({
-        success: false,
-        message: 'Database connection is still initializing. Please retry.',
+app.get(`${LEGACY_API_PREFIX}/health`, (_req: Request, res: Response) => {
+    res.json({
+        status: 'ok',
+        database: isDatabaseReady() ? 'connected' : 'connecting',
+        timestamp: new Date().toISOString(),
+        version: '0.1.0',
     })
 })
+
+app.use(
+    [API_V1_PREFIX, LEGACY_API_PREFIX],
+    (req: Request, res: Response, next: NextFunction) => {
+        // Allow health and OAuth bootstrap endpoints even while DB is connecting.
+        // OAuth callback still depends on DB and should remain guarded.
+        const isReadinessBypassPath =
+            req.path === '/health' ||
+            req.path === '/auth/google' ||
+            req.path === '/google-fonts'
+
+        if (isReadinessBypassPath || isDatabaseReady()) {
+            return next()
+        }
+
+        return res.status(503).json({
+            success: false,
+            message: 'Database connection is still initializing. Please retry.',
+        })
+    }
+)
 
 app.use(
     '/docs',
@@ -183,15 +201,24 @@ app.use(
 )
 app.use('/docs', swaggerUiHandler, swaggerUiSetup)
 
-app.use('/api/auth', authLimiter, authRoutes)
-app.use('/api/branches', apiLimiter, branchRoutes)
-app.use('/api/users', apiLimiter, userRoutes)
-app.use('/api/organizations', apiLimiter, orgRoutes)
-app.use('/api/organizations', apiLimiter, lockRoutes)
-app.use('/api/merge-requests', apiLimiter, mergeRequestRoutes)
-app.use('/api/tags', apiLimiter, tagRoutes)
-app.use('/api/api-keys', apiLimiter, apiKeyRoutes)
-app.use('/api', apiLimiter, tokenRoutes)
+const mountApiRoutes = (prefix: string) => {
+    // Auth rate limits are applied per-route in auth.routes (not router-wide).
+    // A global limiter caused logged-out /me 401s to exhaust the OAuth budget.
+    app.use(`${prefix}/auth`, authRoutes)
+    app.use(`${prefix}/branches`, apiLimiter, branchRoutes)
+    app.use(`${prefix}/users`, apiLimiter, userRoutes)
+    app.use(`${prefix}/organizations`, apiLimiter, orgRoutes)
+    app.use(`${prefix}/organizations`, apiLimiter, lockRoutes)
+    app.use(`${prefix}/merge-requests`, apiLimiter, mergeRequestRoutes)
+    app.use(`${prefix}/publish-requests`, apiLimiter, publishRequestRoutes)
+    app.use(`${prefix}/tags`, apiLimiter, tagRoutes)
+    app.use(`${prefix}/api-keys`, apiLimiter, apiKeyRoutes)
+    app.use(`${prefix}/google-fonts`, apiLimiter, googleFontsRoutes)
+    app.use(prefix, apiLimiter, tokenRoutes)
+}
+
+mountApiRoutes(API_V1_PREFIX)
+mountApiRoutes(LEGACY_API_PREFIX)
 
 app.use(notFoundHandler)
 app.use(errorHandler)

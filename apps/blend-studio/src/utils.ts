@@ -14,10 +14,25 @@ export const TOKEN_RESOLVE_DEBOUNCE_MS = 200
 
 export const EDITOR_LEFT_PANEL_ID = 'editor-left-panel'
 export const EDITOR_RIGHT_PANEL_ID = 'editor-right-panel'
+export const EDITOR_THIRD_PANEL_ID = 'editor-third-panel'
 
 export const LEFT_PANEL_TOGGLE_MS = 280
-export const LEFT_PANEL_MIN_SIZE = '23'
-export const LEFT_PANEL_MAX_SIZE = '55'
+
+/** Panel sizes are percentage strings for react-resizable-panels (v4). */
+export const LEFT_PANEL_MIN_SIZE = '22'
+export const LEFT_PANEL_MAX_SIZE = '45'
+export const LEFT_PANEL_DEFAULT_SIZE = '26'
+
+/** Middle preview panel — keep wide enough for desktop showcase (~1120px). */
+export const PREVIEW_PANEL_MIN_SIZE = '36'
+export const PREVIEW_PANEL_MAX_SIZE = '78'
+export const PREVIEW_PANEL_DEFAULT_SIZE = '74'
+export const PREVIEW_PANEL_DEFAULT_SIZE_WITH_GUIDE = '48'
+
+/** Right guide panel (typography “View Guide”). */
+export const THIRD_PANEL_MIN_SIZE = '20'
+export const THIRD_PANEL_MAX_SIZE = '38'
+export const THIRD_PANEL_DEFAULT_SIZE = '26'
 
 export const VERSION_BUMP_TYPES = ['patch', 'minor', 'major'] as const
 export type VersionBumpType = (typeof VERSION_BUMP_TYPES)[number]
@@ -72,7 +87,7 @@ export function getSuggestedPublishVersion(
 }
 
 export function getPreviewSurfaceClassName(theme: PreviewTheme): string {
-    return theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
+    return theme === 'dark' ? 'bg-gray-900' : 'bg-white'
 }
 
 export function getVersionInputClassName(isValid: boolean): string {
