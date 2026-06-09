@@ -709,6 +709,20 @@ fibonacci n
                         />
                     </div>
 
+                    {/* No Header */}
+                    <div className="space-y-3">
+                        <h3 className="text-lg font-semibold">No Header</h3>
+                        <p className="text-sm text-gray-600">
+                            Code block without header for a clean minimal look
+                        </p>
+                        <CodeBlock
+                            code={codeExamples.payment}
+                            variant={CodeBlockVariant.DEFAULT}
+                            showHeader={false}
+                            showLineNumbers={true}
+                        />
+                    </div>
+
                     {/* GitHub-style diff: expand above / below hunks */}
                     <div className="space-y-3">
                         <h3 className="text-lg font-semibold">
