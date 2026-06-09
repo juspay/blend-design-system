@@ -95,9 +95,14 @@ function applyFontOverrides(
     if (!brand.font) return
 
     if (brand.font.family) {
-        const fontObj = foundation.font as Record<string, unknown>
-        if ('family' in fontObj) {
-            fontObj.family = brand.font.family
+        const familyMap = foundation.font.family as Record<string, string>
+        const raw = brand.font.family.trim()
+        const resolved =
+            raw.toLowerCase() === 'system ui' ? 'system-ui, sans-serif' : raw
+
+        for (const key of Object.keys(familyMap)) {
+            if (key === 'mono') continue
+            familyMap[key] = resolved
         }
     }
 
