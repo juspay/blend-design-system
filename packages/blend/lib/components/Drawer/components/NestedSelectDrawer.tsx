@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, createContext } from 'react'
+import React, { useState, useMemo, createContext, useEffect } from 'react'
 import {
     Drawer,
     DrawerPortal,
@@ -248,6 +248,11 @@ export const NestedMultiSelectDrawer = ({
             selectedValues: string[]
         }>
     >([{ title: heading, items, selectedValues: internalSelectedValues }])
+
+    useEffect(() => {
+        setInternalSelectedValues(selectedValues)
+        setNavigationStack([{ title: heading, items, selectedValues }])
+    }, [selectedValues])
 
     const selectMobileOffset = {
         top: '74px',
@@ -578,6 +583,13 @@ export const NestedSingleSelectDrawer = ({
             selectedValue: string
         }>
     >([{ title: heading, items, selectedValue: internalSelectedValue }])
+
+    useEffect(() => {
+        setInternalSelectedValue(selectedValue || '')
+        setNavigationStack([
+            { title: heading, items, selectedValue: selectedValue || '' },
+        ])
+    }, [selectedValue])
 
     const selectMobileOffset = {
         top: '74px',
