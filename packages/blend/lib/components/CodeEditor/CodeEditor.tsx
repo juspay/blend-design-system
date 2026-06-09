@@ -1,9 +1,8 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { CodeBlockTokenType } from '../CodeBlock/codeBlock.token'
 import { CodeEditorVariant, type CodeEditorProps } from './types'
-import { createCopyToClipboard } from '../CodeBlock/utils'
 import { shouldShowLineNumbers, getContainerStyles } from './utils'
 import { CodeEditorHeader } from './CodeEditorHeader'
 import { MonacoEditorWrapper } from './MonacoEditorWrapper'
@@ -37,6 +36,31 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
     ) => {
         const tokens = useResponsiveTokens<CodeBlockTokenType>('CODE_BLOCK')
         const [isCopied, setIsCopied] = useState(false)
+        const copyFeedbackTimeoutRef = useRef<ReturnType<
+            typeof setTimeout
+        > | null>(null)
+
+        useEffect(() => {
+            return () => {
+                if (copyFeedbackTimeoutRef.current !== null) {
+                    clearTimeout(copyFeedbackTimeoutRef.current)
+                }
+            }
+        }, [])
+
+        const copyToClipboard = useCallback(() => {
+            navigator.clipboard.writeText(value)
+            setIsCopied(true)
+
+            if (copyFeedbackTimeoutRef.current !== null) {
+                clearTimeout(copyFeedbackTimeoutRef.current)
+            }
+
+            copyFeedbackTimeoutRef.current = setTimeout(() => {
+                setIsCopied(false)
+                copyFeedbackTimeoutRef.current = null
+            }, 2000)
+        }, [value])
 
         // Determine if line numbers should be shown
         const shouldShowLineNumbersValue = shouldShowLineNumbers(
@@ -44,8 +68,6 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
             variant
         )
 
-        // Handlers
-        const copyToClipboard = createCopyToClipboard(value, setIsCopied)
         const containerStyles = getContainerStyles(minHeight, maxHeight)
 
         return (
