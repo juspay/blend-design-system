@@ -26,6 +26,7 @@ export type SubStep = {
     title: string
     status?: StepState
     disabled?: boolean
+    slot?: ReactNode
 }
 
 export type Step = {
@@ -35,6 +36,7 @@ export type Step = {
     disabled?: boolean
     description?: string
     icon?: ReactNode
+    slot?: ReactNode
     substeps?: SubStep[]
     isExpandable?: boolean
     isExpanded?: boolean
