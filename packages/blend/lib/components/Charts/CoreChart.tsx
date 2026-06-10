@@ -3,11 +3,11 @@ import { ResponsiveContainer } from 'recharts'
 import { ChartType, CoreChartProps } from './types'
 import { DEFAULT_COLORS } from './utils'
 import { renderChart } from './renderChart'
-import { transformNestedData } from './ChartUtils'
+import { normalizeChartData, transformNestedData } from './ChartUtils'
 
 export const CoreChart: React.FC<CoreChartProps> = ({
     chartType = ChartType.LINE,
-    data,
+    data: dataProp,
     colors = DEFAULT_COLORS,
     barsize,
     xAxis,
@@ -22,6 +22,8 @@ export const CoreChart: React.FC<CoreChartProps> = ({
     enableHover = false,
     lineSeriesKeys,
 }) => {
+    const data = normalizeChartData(dataProp)
+
     const [internalHoveredKey, setInternalHoveredKey] = useState<string | null>(
         null
     )
