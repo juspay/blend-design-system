@@ -251,11 +251,7 @@ const SidebarDemo = () => {
         | 'searchInputV2'
         | 'chatInputV2'
         | 'stepperV2'
-<<<<<<< HEAD
-    >('upload')
-=======
     >('otpInput')
->>>>>>> ff92efe4 (fix: OTPInput (v1) ignores programmatic  changes while enabled resolved)
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
