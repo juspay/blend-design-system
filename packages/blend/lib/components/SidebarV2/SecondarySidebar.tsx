@@ -76,7 +76,7 @@ function SecondarySidebarItemButton({
 
     const trigger = item.badge ? (
         <Badge
-            text={item.badge.text}
+            text={item.badge.text.slice(0, 2)}
             size={item.badge.size || BadgeSize.SM}
             color={item.badge.color || BadgeColor.PRIMARY}
             position={item.badge.position || 'bottom-right'}
