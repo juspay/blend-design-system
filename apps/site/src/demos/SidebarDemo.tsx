@@ -40,7 +40,10 @@ import {
     SearchIcon,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
-import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
+import {
+    LeftPanelInfo,
+    Sidebar,
+} from '../../../../packages/blend/lib/components/Sidebar'
 import ButtonGroupDemo from './ButtonGroupDemo'
 import ButtonGroupV2Demo from './ButtonGroupV2Demo'
 import TagDemo from './TagDemo'
@@ -269,7 +272,7 @@ const SidebarDemo = () => {
     const [, setSidebarState] = useState('expanded')
     // const [sidebarTopMenuOpen, setSidebarTopMenuOpen] = useState<boolean>(false)
 
-    const tenants = [
+    const tenants: LeftPanelInfo['items'] = [
         {
             label: 'Juspay',
             icon: (
@@ -279,6 +282,9 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'juspay',
+            badge: {
+                text: 'IN',
+            },
             showInPanel: true, // Visible in panel
         },
         {
@@ -311,6 +317,9 @@ const SidebarDemo = () => {
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
+            badge: {
+                text: 'USA',
+            },
             value: 'paypal',
             showInPanel: true, // Visible in panel
         },

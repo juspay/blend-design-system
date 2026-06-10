@@ -1,6 +1,9 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import type { DirectoryData } from '../Directory/types'
 import type { MerchantInfo } from '../Topbar/types'
+import type { TenantBadge } from '../Sidebar/types'
+
+export type { TenantBadge } from '../Sidebar/types'
 
 export enum SidebarV2StateChange {
     COLLAPSED = 'collapsed',
@@ -14,6 +17,7 @@ export type SecondarySidebarItem = {
     label: string
     value: string
     icon: ReactNode
+    badge?: TenantBadge
 }
 
 export type SecondarySidebarInfo = {

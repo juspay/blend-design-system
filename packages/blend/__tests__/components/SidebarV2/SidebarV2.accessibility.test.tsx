@@ -5,6 +5,7 @@ import { axe } from 'jest-axe'
 import userEvent from '@testing-library/user-event'
 import SidebarV2 from '../../../lib/components/SidebarV2/SidebarV2'
 import type { DirectoryData } from '../../../lib/components/Directory/types'
+import { BadgeColor, BadgeSize } from '../../../lib/components/Badge'
 
 const createMockDirectoryData = (): DirectoryData[] => [
     {
@@ -124,6 +125,44 @@ describe('SidebarV2 Accessibility', () => {
             '[data-element="secondary-sidebar"]'
         )
         expect(secondarySidebarElement).toBeInTheDocument()
+    })
+
+    it('secondary sidebar badges are accessible and pass axe checks', async () => {
+        const secondarySidebar = {
+            items: [
+                {
+                    label: 'App 1',
+                    value: 'app1',
+                    icon: <span aria-hidden="true">A1</span>,
+                    badge: {
+                        text: 'IN',
+                        color: BadgeColor.PRIMARY,
+                        size: BadgeSize.SM,
+                    },
+                },
+            ],
+            selected: 'app1',
+            onSelect: () => {},
+        }
+
+        const { container } = render(
+            <SidebarV2
+                data={createMockDirectoryData()}
+                secondarySidebar={secondarySidebar}
+            >
+                <div>Content</div>
+            </SidebarV2>
+        )
+
+        const badge = container.querySelector(
+            '[data-element="secondary-sidebar"] [role="status"]'
+        )
+        expect(badge).toHaveAttribute('aria-label', 'IN')
+        expect(
+            screen.getByRole('button', { name: 'Select tenant: App 1' })
+        ).toBeInTheDocument()
+
+        expect(await axe(container)).toHaveNoViolations()
     })
 
     it('navigation region has proper aria-label', () => {
