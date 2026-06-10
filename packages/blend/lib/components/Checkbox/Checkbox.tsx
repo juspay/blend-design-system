@@ -1,4 +1,4 @@
-import { forwardRef, useId } from 'react'
+import { forwardRef, useEffect, useId, useState } from 'react'
 import { Check, Minus } from 'lucide-react'
 import type { CheckboxProps } from './types'
 import { CheckboxSize } from './types'
@@ -46,6 +46,26 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
         const generatedId = useId()
         const uniqueId = id || generatedId
         const shouldShake = useErrorShake(error)
+        const isControlled = checked !== undefined
+        const [uncontrolledChecked, setUncontrolledChecked] = useState<
+            boolean | 'indeterminate'
+        >(defaultChecked ?? false)
+        const resolvedChecked = isControlled ? checked : uncontrolledChecked
+
+        useEffect(() => {
+            if (!isControlled) {
+                setUncontrolledChecked(defaultChecked ?? false)
+            }
+        }, [defaultChecked, isControlled])
+
+        const handleCheckedChange = (
+            nextChecked: boolean | 'indeterminate'
+        ) => {
+            if (!isControlled) {
+                setUncontrolledChecked(nextChecked)
+            }
+            onCheckedChange?.(nextChecked)
+        }
 
         const labelMaxLength = maxLength?.label
         const subtextMaxLength = maxLength?.subtext
@@ -76,28 +96,30 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
                     id={uniqueId}
                     name={name}
                     ref={ref}
-                    checked={checked ?? defaultChecked ?? false}
-                    onCheckedChange={onCheckedChange}
+                    {...(isControlled
+                        ? { checked }
+                        : { defaultChecked: defaultChecked ?? false })}
+                    onCheckedChange={handleCheckedChange}
                     disabled={disabled}
                     required={required}
                     size={size}
                     $isDisabled={disabled}
-                    $checked={checked ?? defaultChecked ?? false}
+                    $checked={resolvedChecked}
                     $error={error}
                     style={getErrorShakeStyle(shouldShake)}
                     {...ariaAttributes}
                     {...restProps}
                     data-element="checkbox"
                     data-state={
-                        checked === 'indeterminate'
+                        resolvedChecked === 'indeterminate'
                             ? 'indeterminate'
-                            : checked
+                            : resolvedChecked
                               ? 'checked'
                               : 'unchecked'
                     }
                 >
                     <CheckboxIndicator
-                        checked={checked ?? defaultChecked ?? false}
+                        checked={resolvedChecked}
                         size={size}
                         tokens={tokens}
                         disabled={disabled}
