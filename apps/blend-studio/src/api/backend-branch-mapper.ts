@@ -7,6 +7,8 @@ import type {
     BrandConfig,
     BranchStatus,
     BranchVisibility,
+    Snapshot,
+    Version,
 } from '@juspay/blend-design-system/tokens'
 import { parseBranchId } from '@juspay/blend-design-system/tokens'
 
@@ -59,6 +61,72 @@ function resolveBrandParts(
     }
 
     return { brandId: branchSlug, slug: branchSlug }
+}
+
+/** Raw snapshot object returned by @blend-design/justbackend. */
+export interface BackendSnapshotRow {
+    id: string
+    branchId: string
+    tokenConfig: BrandConfig
+    label?: string | null
+    isAutoSave: boolean
+    savedBy: string
+    savedByName?: string
+    savedAt: string | Date
+}
+
+/** Raw version object returned by @blend-design/justbackend. */
+export interface BackendVersionRow {
+    id: string
+    branchId: string
+    version: string
+    tokenConfig: BrandConfig
+    changelog?: string | null
+    isBreaking: boolean
+    isPrerelease: boolean
+    publishedBy: string
+    publishedByName?: string
+    publishedAt: string | Date
+    downloadCount?: number
+    lastDownloadedAt?: string | Date | null
+    parentVersion?: string | null
+}
+
+export function mapBackendSnapshotToStudioSnapshot(
+    row: BackendSnapshotRow
+): Snapshot {
+    return {
+        id: row.id,
+        branchId: row.branchId,
+        brandConfig: row.tokenConfig,
+        savedBy: row.savedBy,
+        savedByName: row.savedByName,
+        savedAt: toDate(row.savedAt),
+        label: row.label ?? undefined,
+        isAutoSave: row.isAutoSave,
+    }
+}
+
+export function mapBackendVersionToStudioVersion(
+    row: BackendVersionRow
+): Version {
+    return {
+        id: row.id,
+        branchId: row.branchId,
+        version: row.version,
+        brandConfig: row.tokenConfig,
+        changelog: row.changelog ?? undefined,
+        isBreaking: row.isBreaking,
+        isPrerelease: row.isPrerelease,
+        publishedBy: row.publishedBy,
+        publishedByName: row.publishedByName,
+        publishedAt: toDate(row.publishedAt),
+        downloadCount: row.downloadCount ?? 0,
+        lastDownloadedAt: row.lastDownloadedAt
+            ? toDate(row.lastDownloadedAt)
+            : null,
+        parentVersion: row.parentVersion ?? null,
+    }
 }
 
 export function mapBackendBranchToStudioBranch(row: BackendBranchRow): Branch {

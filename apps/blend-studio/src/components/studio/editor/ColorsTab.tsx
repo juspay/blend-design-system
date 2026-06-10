@@ -6,15 +6,16 @@
  */
 
 import { useState } from 'react'
-import {
-    Tabs,
-    TabsList,
-    TabsTrigger,
-    TabsVariant,
-} from '@juspay/blend-design-system'
+import { Tabs, TabsVariant, type TabItem } from '@juspay/blend-design-system'
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
 import { COLOR_GROUPS, type EditorTabProps, type ColorGroupKey } from './types'
 import type { BrandConfig } from '@juspay/blend-design-system/tokens'
+
+const COLOR_GROUP_TAB_ITEMS: TabItem[] = COLOR_GROUPS.map((group) => ({
+    value: group,
+    label: group.charAt(0).toUpperCase() + group.slice(1),
+    content: null,
+}))
 
 interface ColorsTabProps extends EditorTabProps {
     savedBrand: BrandConfig
@@ -54,15 +55,9 @@ export function ColorsTab({
                 value={selectedGroup}
                 onValueChange={handleGroupChange}
                 variant={TabsVariant.UNDERLINE}
-            >
-                <TabsList>
-                    {COLOR_GROUPS.map((group) => (
-                        <TabsTrigger key={group} value={group}>
-                            {group.charAt(0).toUpperCase() + group.slice(1)}
-                        </TabsTrigger>
-                    ))}
-                </TabsList>
-            </Tabs>
+                items={COLOR_GROUP_TAB_ITEMS}
+                className="min-w-0 shrink-0 [&_[data-element=content]]:hidden"
+            />
 
             <div className="flex min-h-0 flex-1 flex-col">
                 <ColorGroupEditor
