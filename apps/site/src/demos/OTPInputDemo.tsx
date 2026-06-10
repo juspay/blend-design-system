@@ -1,4 +1,8 @@
 import { OTPInput } from '../../../../packages/blend/lib/components/Inputs/OTPInput'
+import {
+    Button,
+    ButtonType,
+} from '../../../../packages/blend/lib/components/Button'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { SingleSelect } from '../../../../packages/blend/lib/components/SingleSelect'
@@ -7,6 +11,8 @@ import {
     SnackbarVariant,
 } from '../../../../packages/blend/lib/components/Snackbar'
 import { useState } from 'react'
+
+const DEMO_AUTOFILL_OTP = '842591'
 
 const OTPInputDemo = () => {
     const [playgroundLabel, setPlaygroundLabel] = useState('Enter OTP Code')
@@ -49,6 +55,21 @@ const OTPInputDemo = () => {
                 variant: SnackbarVariant.SUCCESS,
             })
         }
+    }
+
+    const handleAutofillOtp = () => {
+        const code = DEMO_AUTOFILL_OTP.slice(0, playgroundLength)
+        setPlaygroundValue(code)
+        handleOtpComplete(code)
+        addSnackbar({
+            header: 'OTP Autofilled',
+            description: `Filled with demo code: ${code}`,
+            variant: SnackbarVariant.SUCCESS,
+        })
+    }
+
+    const handleClearOtp = () => {
+        setPlaygroundValue('')
     }
 
     return (
@@ -127,7 +148,26 @@ const OTPInputDemo = () => {
                         />
                     </div>
 
-                    <div className="min-h-40 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8">
+                    <div className="min-h-40 rounded-2xl w-full flex flex-col justify-center items-center gap-4 outline-1 outline-gray-200 p-8">
+                        <div className="flex flex-wrap items-center justify-center gap-3">
+                            <Button
+                                text={`Autofill OTP (${DEMO_AUTOFILL_OTP.slice(0, playgroundLength)})`}
+                                onClick={handleAutofillOtp}
+                                disabled={isDisabled}
+                            />
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                text="Clear"
+                                onClick={handleClearOtp}
+                                disabled={isDisabled || !playgroundValue}
+                            />
+                            <span className="text-sm text-gray-500">
+                                Current value:{' '}
+                                <span className="font-mono">
+                                    {playgroundValue || '—'}
+                                </span>
+                            </span>
+                        </div>
                         <div className="w-full max-w-md">
                             <OTPInput
                                 data-id={'Enter OTP Code'}
