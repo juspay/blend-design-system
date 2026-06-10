@@ -256,6 +256,11 @@ export const isValidDate = (date: Date): boolean => {
     return date instanceof Date && !isNaN(date.getTime())
 }
 
+/** True when a controlled `value` has a usable start date (avoids `.getTime()` on undefined). */
+export const isControlledDateRange = (
+    value?: DateRange | null
+): value is DateRange => !!value && isValidDate(value.startDate)
+
 /**
  * Formats time in 12-hour format
  * @param date The date to format
