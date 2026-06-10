@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 export type DirectoryProps = {
-    directoryData: DirectoryData[]
+    directoryData: DirectoryData[] | null
     idPrefix?: string
     activeItem?: string | null
     onActiveItemChange?: (item: string | null) => void
