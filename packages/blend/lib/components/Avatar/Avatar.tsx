@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 import {
     type AvatarProps,
     AvatarSize,
@@ -33,6 +33,11 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         ref
     ) => {
         const [imageError, setImageError] = useState(false)
+
+        useEffect(() => {
+            setImageError(false)
+        }, [src])
+
         const hasImage = src && !imageError
         const shouldShowSkeleton = skeleton?.show
         const variant = hasImage ? 'withImage' : 'withoutImage'

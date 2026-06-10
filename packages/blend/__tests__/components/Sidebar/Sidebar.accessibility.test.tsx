@@ -5,6 +5,8 @@ import { axe } from 'jest-axe'
 import Sidebar from '../../../lib/components/Sidebar/Sidebar'
 import { Home, Users, BarChart3, Package, ShoppingCart } from 'lucide-react'
 import type { DirectoryData } from '../../../lib/components/Directory/types'
+import type { LeftPanelInfo } from '../../../lib/components/Sidebar/types'
+import { BadgeColor, BadgeSize } from '../../../lib/components/Badge'
 
 // Helper to create sample navigation data
 const createNavigationData = (): DirectoryData[] => [
@@ -39,6 +41,54 @@ const createNavigationData = (): DirectoryData[] => [
         ],
     },
 ]
+
+const createLeftPanelItems = (
+    options: { includeBadges?: boolean } = {}
+): LeftPanelInfo['items'] => [
+    {
+        label: 'Tenant 1',
+        icon: <Home size={16} aria-hidden="true" />,
+        value: 'tenant-1',
+        showInPanel: true,
+        ...(options.includeBadges
+            ? {
+                  badge: {
+                      text: 'IN',
+                      color: BadgeColor.PRIMARY,
+                      size: BadgeSize.SM,
+                  },
+              }
+            : {}),
+    },
+    {
+        label: 'Tenant 2',
+        icon: <Users size={16} aria-hidden="true" />,
+        value: 'tenant-2',
+        showInPanel: true,
+        ...(options.includeBadges
+            ? {
+                  badge: {
+                      text: 'US',
+                      color: BadgeColor.SUCCESS,
+                      size: BadgeSize.SM,
+                      position: 'top-right' as const,
+                  },
+              }
+            : {}),
+    },
+]
+
+const createLeftPanelConfig = (
+    options: {
+        includeBadges?: boolean
+        selected?: string
+        onSelect?: (label: string) => void
+    } = {}
+): LeftPanelInfo => ({
+    items: createLeftPanelItems({ includeBadges: options.includeBadges }),
+    selected: options.selected ?? 'Tenant 1',
+    onSelect: options.onSelect ?? (() => {}),
+})
 
 describe('Sidebar Accessibility', () => {
     beforeEach(() => {
@@ -104,22 +154,9 @@ describe('Sidebar Accessibility', () => {
                     <Sidebar
                         data={createNavigationData()}
                         topbar={<div>Topbar Content</div>}
-                        leftPanel={{
-                            items: [
-                                {
-                                    label: 'Tenant 1',
-                                    icon: <Home size={16} aria-hidden="true" />,
-                                },
-                                {
-                                    label: 'Tenant 2',
-                                    icon: (
-                                        <Users size={16} aria-hidden="true" />
-                                    ),
-                                },
-                            ],
-                            selected: 'Tenant 1',
-                            onSelect: () => {},
-                        }}
+                        leftPanel={createLeftPanelConfig({
+                            includeBadges: true,
+                        })}
                         isExpanded={true}
                     >
                         <div>Main Content</div>
@@ -158,16 +195,10 @@ describe('Sidebar Accessibility', () => {
                     <Sidebar
                         data={createNavigationData()}
                         topbar={<div>Topbar Content</div>}
-                        leftPanel={{
-                            items: [
-                                {
-                                    label: 'Tenant 1',
-                                    icon: <Home size={16} aria-hidden="true" />,
-                                },
-                            ],
+                        leftPanel={createLeftPanelConfig({
+                            includeBadges: false,
                             selected: 'Tenant 1',
-                            onSelect: () => {},
-                        }}
+                        })}
                         panelOnlyMode={true}
                     >
                         <div>Main Content</div>
@@ -1294,6 +1325,133 @@ describe('Sidebar Accessibility', () => {
                 expect(nav).toBeInTheDocument()
                 expect(main).toBeInTheDocument()
             })
+        })
+    })
+
+    describe('Tenant Panel Badges', () => {
+        it('meets WCAG standards with tenant badges on left panel', async () => {
+            const { container } = render(
+                <div style={{ height: '100vh', width: '100vw' }}>
+                    <Sidebar
+                        data={createNavigationData()}
+                        topbar={<div>Topbar Content</div>}
+                        leftPanel={createLeftPanelConfig({
+                            includeBadges: true,
+                        })}
+                        isExpanded={true}
+                    >
+                        <div>Main Content</div>
+                    </Sidebar>
+                </div>
+            )
+
+            await waitFor(() => {
+                expect(
+                    container.querySelector('[data-element="tenant-panel"]')
+                ).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('renders tenant badges with accessible status labels', async () => {
+            const { container } = render(
+                <div style={{ height: '100vh', width: '100vw' }}>
+                    <Sidebar
+                        data={createNavigationData()}
+                        topbar={<div>Topbar Content</div>}
+                        leftPanel={createLeftPanelConfig({
+                            includeBadges: true,
+                        })}
+                        isExpanded={true}
+                    >
+                        <div>Main Content</div>
+                    </Sidebar>
+                </div>
+            )
+
+            await waitFor(() => {
+                const badges = container.querySelectorAll(
+                    '[data-element="tenant-panel"] [role="status"]'
+                )
+                expect(badges.length).toBeGreaterThanOrEqual(2)
+                expect(badges[0]).toHaveAttribute('aria-label', 'IN')
+                expect(badges[1]).toHaveAttribute('aria-label', 'US')
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('keeps tenant button names independent of badge labels', async () => {
+            const { container } = render(
+                <div style={{ height: '100vh', width: '100vw' }}>
+                    <Sidebar
+                        data={createNavigationData()}
+                        topbar={<div>Topbar Content</div>}
+                        leftPanel={createLeftPanelConfig({
+                            includeBadges: true,
+                        })}
+                        isExpanded={true}
+                    >
+                        <div>Main Content</div>
+                    </Sidebar>
+                </div>
+            )
+
+            await waitFor(() => {
+                const tenantButtons = container.querySelectorAll(
+                    '[data-element="tenant-panel"] button[data-element="sidebar-section"]'
+                )
+                expect(tenantButtons).toHaveLength(2)
+                expect(tenantButtons[0]).toHaveAttribute(
+                    'aria-label',
+                    'Select tenant: Tenant 1'
+                )
+                expect(tenantButtons[1]).toHaveAttribute(
+                    'aria-label',
+                    'Select tenant: Tenant 2'
+                )
+                expect(tenantButtons[0]).toHaveAttribute('aria-pressed', 'true')
+                expect(tenantButtons[1]).toHaveAttribute(
+                    'aria-pressed',
+                    'false'
+                )
+            })
+        })
+
+        it('allows selecting a tenant that has a badge', async () => {
+            const onSelect = vi.fn()
+
+            const { container } = render(
+                <div style={{ height: '100vh', width: '100vw' }}>
+                    <Sidebar
+                        data={createNavigationData()}
+                        topbar={<div>Topbar Content</div>}
+                        leftPanel={createLeftPanelConfig({
+                            includeBadges: true,
+                            onSelect,
+                        })}
+                        isExpanded={true}
+                    >
+                        <div>Main Content</div>
+                    </Sidebar>
+                </div>
+            )
+
+            await waitFor(() => {
+                expect(
+                    container.querySelector('[data-element="tenant-panel"]')
+                ).toBeInTheDocument()
+            })
+
+            const tenantTwoButton = screen.getByRole('button', {
+                name: 'Select tenant: Tenant 2',
+            })
+            fireEvent.click(tenantTwoButton)
+
+            expect(onSelect).toHaveBeenCalledWith('Tenant 2')
         })
     })
 

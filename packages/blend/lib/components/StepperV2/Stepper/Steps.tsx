@@ -62,6 +62,9 @@ export const Steps = forwardRef<
         const [isExpanded, setIsExpanded] = useState<boolean>(
             step.isExpanded ?? hasSubsteps
         )
+        const focusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+            null
+        )
 
         useEffect(() => {
             if (step.isExpanded !== undefined) {
@@ -83,6 +86,14 @@ export const Steps = forwardRef<
             })
             return () => cancelAnimationFrame(animationFrameId)
         }, [isExpanded, hasSubsteps, step.substeps?.length])
+
+        useEffect(() => {
+            return () => {
+                if (focusTimeoutRef.current) {
+                    clearTimeout(focusTimeoutRef.current)
+                }
+            }
+        }, [])
 
         const stepState = getStepState(step, isCompleted, isCurrent)
         const isClickable = Boolean(clickable && !step.disabled && onClick)
@@ -192,7 +203,10 @@ export const Steps = forwardRef<
                     if (!isHorizontal && hasSubsteps && !isExpanded) {
                         event.preventDefault()
                         toggleExpand()
-                        setTimeout(() => focusFirstSubstep(), 100)
+                        focusTimeoutRef.current = setTimeout(
+                            () => focusFirstSubstep(),
+                            100
+                        )
                         return
                     }
                     if (!isHorizontal && hasSubsteps && isExpanded) {

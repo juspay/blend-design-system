@@ -7,7 +7,7 @@ import {
     MenuSide,
     type MenuItemType,
 } from './types'
-import React, { useState, useRef, useMemo, useCallback } from 'react'
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react'
 import { filterMenuGroups } from './utils'
 import MenuItem from './MenuItem'
 import Block from '../Primitives/Block/Block'
@@ -114,6 +114,14 @@ const Menu = ({
 
         onOpenChange?.(newOpen)
     }
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
 
     const handleOutsideInteraction = useCallback((e: Event) => {
         if (justOpenedRef.current) {

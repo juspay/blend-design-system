@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import initTokens from './initComponentTokens'
@@ -5,6 +6,8 @@ import ThemeContext, { type ComponentTokenType } from './ThemeContext'
 import { Theme } from './theme.enum'
 import { AutofillStyles } from '../components/Inputs/AutofillStyles/AutofillStyles'
 import ShadowAware from './ShadowAware'
+
+const EMPTY_COMPONENT_TOKENS: ComponentTokenType = {}
 
 type ThemeProviderProps = {
     foundationTokens?: ThemeType
@@ -25,18 +28,26 @@ type ThemeProviderProps = {
 
 const ThemeProvider = ({
     foundationTokens = FOUNDATION_THEME,
-    componentTokens = {},
+    componentTokens = EMPTY_COMPONENT_TOKENS,
     breakpoints = BREAKPOINTS,
     theme = Theme.LIGHT,
     children,
     target,
 }: ThemeProviderProps) => {
-    const defaultThemeContextValue = {
-        foundationTokens,
-        componentTokens: initTokens(componentTokens, foundationTokens, theme),
-        breakpoints,
-        theme,
-    }
+    const resolvedComponentTokens = useMemo(
+        () => initTokens(componentTokens, foundationTokens, theme),
+        [componentTokens, foundationTokens, theme]
+    )
+
+    const themeContextValue = useMemo(
+        () => ({
+            foundationTokens,
+            componentTokens: resolvedComponentTokens,
+            breakpoints,
+            theme,
+        }),
+        [foundationTokens, resolvedComponentTokens, breakpoints, theme]
+    )
 
     const content = (
         <>
@@ -46,7 +57,7 @@ const ThemeProvider = ({
     )
 
     return (
-        <ThemeContext.Provider value={defaultThemeContextValue}>
+        <ThemeContext.Provider value={themeContextValue}>
             {target ? (
                 <ShadowAware target={target}>{content}</ShadowAware>
             ) : (

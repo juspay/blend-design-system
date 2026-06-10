@@ -7,7 +7,6 @@ import { radioAnimations } from './radio.animations'
 export const StyledRadioInput = styled.input<{
     size: RadioSize
     $isDisabled: boolean
-    $isChecked: boolean
     $error?: boolean
     $tokens: RadioTokensType
 }>`
@@ -22,17 +21,17 @@ export const StyledRadioInput = styled.input<{
     padding: 0;
     flex-shrink: 0;
 
-    ${({ size, $isChecked, $isDisabled, $tokens }) => {
+    ${({ size, $isDisabled, $tokens }) => {
         const state = $isDisabled ? 'disabled' : 'default'
-        const indicatorState = $isChecked ? 'active' : 'inactive'
+        const inactiveIndicator = $tokens.indicator.inactive
+        const activeIndicator = $tokens.indicator.active
 
         return css`
             ${radioAnimations}
 
-            background-color: ${$tokens.indicator[indicatorState]
-                .backgroundColor[state]};
-            border: ${$tokens.borderWidth[indicatorState][state]}px solid
-                ${$tokens.indicator[indicatorState].borderColor[state]};
+            background-color: ${inactiveIndicator.backgroundColor[state]};
+            border: ${$tokens.borderWidth.inactive[state]}px solid
+                ${inactiveIndicator.borderColor[state]};
             width: ${$tokens.height[size]};
             height: ${$tokens.height[size]};
 
@@ -41,28 +40,45 @@ export const StyledRadioInput = styled.input<{
                 width: 50%;
                 height: 50%;
                 border-radius: 50%;
-                background-color: ${$isChecked
-                    ? $tokens.activeIndicator.active.backgroundColor[state]
-                    : 'transparent'};
-                transform: ${$isChecked ? 'scale(1)' : 'scale(0)'};
+                background-color: transparent;
+                transform: scale(0);
                 transition:
                     transform 250ms cubic-bezier(0.4, 0, 0.2, 1),
                     background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
             }
+
+            &:checked {
+                background-color: ${activeIndicator.backgroundColor[state]};
+                border: ${$tokens.borderWidth.active[state]}px solid
+                    ${activeIndicator.borderColor[state]};
+
+                &::after {
+                    background-color: ${$tokens.activeIndicator.active
+                        .backgroundColor[state]};
+                    transform: scale(1);
+                }
+            }
+
             &:focus-visible {
-                outline: 2px solid
-                    ${$tokens.indicator[indicatorState].borderColor[state]};
+                outline: 2px solid ${inactiveIndicator.borderColor[state]};
                 outline-offset: 2px;
                 /* WCAG 2.4.7 Focus Visible (AA): Focus indicator must be visible
                  * WCAG 1.4.11 Non-text Contrast (AA): Focus outline must have contrast ratio ≥3:1 against adjacent colors
                  * Manual verification recommended for all states */
             }
 
+            &:checked:focus-visible {
+                outline-color: ${activeIndicator.borderColor[state]};
+            }
+
             &:not(:disabled):hover {
-                background-color: ${$tokens.indicator[indicatorState]
-                    .backgroundColor.hover};
-                border-color: ${$tokens.indicator[indicatorState].borderColor
-                    .hover};
+                background-color: ${inactiveIndicator.backgroundColor.hover};
+                border-color: ${inactiveIndicator.borderColor.hover};
+            }
+
+            &:checked:not(:disabled):hover {
+                background-color: ${activeIndicator.backgroundColor.hover};
+                border-color: ${activeIndicator.borderColor.hover};
             }
 
             cursor: ${$isDisabled ? 'not-allowed' : 'pointer'};

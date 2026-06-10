@@ -342,6 +342,7 @@ export const MonacoEditorWrapper = ({
     const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null)
     const monacoRef = useRef<typeof import('monaco-editor') | null>(null)
     const shortcutDisposables = useRef<Monaco.IDisposable[]>([])
+    const focusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const [isEditorReady, setIsEditorReady] = useState(false)
     const monacoLanguage = useMemo(() => mapLanguage(language), [language])
 
@@ -449,6 +450,14 @@ export const MonacoEditorWrapper = ({
         }
     }, [disposeShortcuts, isEditorReady, registerKeyboardShortcuts])
 
+    useEffect(() => {
+        return () => {
+            if (focusTimeoutRef.current !== null) {
+                clearTimeout(focusTimeoutRef.current)
+            }
+        }
+    }, [])
+
     const handleEditorDidMount: OnMount = (editor, monacoInstance) => {
         editorRef.current = editor
         monacoRef.current = monacoInstance
@@ -502,7 +511,10 @@ export const MonacoEditorWrapper = ({
         editor.onDidBlurEditorText(() => onBlur?.())
 
         if (autoFocus && !disabled && !readOnly) {
-            setTimeout(() => editor.focus(), EDITOR_FOCUS_DELAY_MS)
+            focusTimeoutRef.current = setTimeout(
+                () => editor.focus(),
+                EDITOR_FOCUS_DELAY_MS
+            )
         }
     }
 

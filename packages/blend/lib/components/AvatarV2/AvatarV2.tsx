@@ -1,4 +1,9 @@
-import React, { forwardRef, useState, type ReactElement } from 'react'
+import React, {
+    forwardRef,
+    useEffect,
+    useState,
+    type ReactElement,
+} from 'react'
 import {
     AvatarV2Props,
     AvatarV2Size,
@@ -175,6 +180,10 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
         ref
     ) => {
         const [imageError, setImageError] = useState(false)
+
+        useEffect(() => {
+            setImageError(false)
+        }, [src])
 
         const tokens = useResponsiveTokens<AvatarV2TokensType>('AVATARV2')
 

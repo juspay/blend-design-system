@@ -299,6 +299,22 @@ export const Drawer = ({
         string | undefined
     >(undefined)
 
+    // Prevent focus from escaping to underlying content when a nested drawer is open
+    React.useLayoutEffect(() => {
+        const stopFocus = (e: FocusEvent) => {
+            // only intercept when a nested modal is open
+            if (document.querySelector('[data-modal]')) {
+                e.stopImmediatePropagation()
+            }
+        }
+        document.addEventListener('focusin', stopFocus)
+        document.addEventListener('focusout', stopFocus)
+        return () => {
+            document.removeEventListener('focusin', stopFocus)
+            document.removeEventListener('focusout', stopFocus)
+        }
+    }, [])
+
     // Screen reader announcement for drawer state changes
     React.useEffect(() => {
         if (open) {

@@ -4,7 +4,18 @@ import {
     Stepper,
     StepperType,
     StepState,
+    Checkbox,
 } from '../../../../packages/blend/lib/main'
+
+const DemoCheckbox = () => {
+    const [checked, setChecked] = useState(false)
+    return (
+        <Checkbox
+            checked={checked}
+            onCheckedChange={(val) => setChecked(val === true)}
+        />
+    )
+}
 
 const StepperDemo = () => {
     const [horizontalSteps, setHorizontalSteps] = useState<Step[]>([
@@ -20,21 +31,40 @@ const StepperDemo = () => {
             id: 2,
             title: 'Step 2',
             status: StepState.PENDING,
+            isExpandable: true,
+            isExpanded: true,
             substeps: [
-                { id: 1, title: 'Substep 2.1', status: StepState.PENDING },
+                {
+                    id: 1,
+                    title: 'Substep 2.1',
+                    status: StepState.PENDING,
+                    slot: <DemoCheckbox />,
+                },
                 { id: 2, title: 'Substep 2.2', status: StepState.PENDING },
                 { id: 3, title: 'Substep 2.3', status: StepState.PENDING },
             ],
         },
-        { id: 3, title: 'Step 3', status: StepState.PENDING },
+        {
+            id: 3,
+            title: 'Step 3',
+            status: StepState.PENDING,
+            slot: <DemoCheckbox />,
+        },
         { id: 4, title: 'Step 4', status: StepState.PENDING },
 
         {
             id: 5,
             title: 'Step 5',
             status: StepState.PENDING,
+            isExpandable: true,
+            isExpanded: true,
             substeps: [
-                { id: 1, title: 'Substep 5.1', status: StepState.PENDING },
+                {
+                    id: 1,
+                    title: 'Substep 5.1',
+                    status: StepState.PENDING,
+                    slot: <DemoCheckbox />,
+                },
                 { id: 2, title: 'Substep 5.2', status: StepState.PENDING },
                 { id: 3, title: 'Substep 5.3', status: StepState.PENDING },
             ],

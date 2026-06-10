@@ -1,12 +1,21 @@
 import { type ReactNode } from 'react'
+import type { BadgeColor, BadgePosition, BadgeSize } from '../Badge/Badge.types'
 import type { DirectoryData, NavbarItem } from '../Directory/types'
 import type { MerchantInfo } from '../Topbar/types'
+
+export type TenantBadge = {
+    text: string
+    size?: BadgeSize
+    color?: BadgeColor
+    position?: BadgePosition
+}
 
 export type LeftPanelItem = {
     label: string
     icon: ReactNode
     value?: string
     showInPanel?: boolean
+    badge?: TenantBadge
 }
 
 export type LeftPanelInfo = {
@@ -23,6 +32,7 @@ export type TenantItem = {
     value?: string
     icon: ReactNode
     showInPanel?: boolean
+    badge?: TenantBadge
 }
 
 export type SidebarMerchantInfo = {
@@ -39,7 +49,7 @@ export type SidebarStateChangeType = 'collapsed' | 'expanded' | 'intermediate'
 export type SidebarProps = {
     showLeftPanel?: boolean
     children: ReactNode
-    data: DirectoryData[]
+    data: DirectoryData[] | null
     leftPanel?: LeftPanelInfo
     topbar: ReactNode
     footer?: ReactNode

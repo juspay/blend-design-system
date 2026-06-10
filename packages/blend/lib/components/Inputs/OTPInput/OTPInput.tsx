@@ -74,15 +74,17 @@ const OTPInput = ({
             .join(' ') || undefined
 
     useEffect(() => {
-        if (!disabled) return
         const val = value || ''
         const otpArray = val.split('').slice(0, length)
         const paddedOtp = [
             ...otpArray,
             ...new Array(Math.max(length - otpArray.length, 0)).fill(''),
         ]
-        setOtp(paddedOtp)
-    }, [disabled, value, length])
+        setOtp((prevOtp) => {
+            if (prevOtp.join('') === paddedOtp.join('')) return prevOtp
+            return paddedOtp
+        })
+    }, [value, length])
 
     useEffect(() => {
         setOtp((prevOtp) => {

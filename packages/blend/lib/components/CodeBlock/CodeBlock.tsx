@@ -7,6 +7,7 @@ import {
     useCallback,
     useMemo,
 } from 'react'
+import styled from 'styled-components'
 import { Check, Copy, FileCode } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
@@ -32,6 +33,21 @@ import {
     formatCode,
     buildDiffViewSegments,
 } from './utils'
+
+const CopyOverlay = styled.div`
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+
+    .code-body:hover & {
+        opacity: 1;
+        pointer-events: auto;
+    }
+`
 
 const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
     (
@@ -255,7 +271,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 type="button"
                                 onClick={copyToClipboard}
                                 buttonType={ButtonType.SECONDARY}
-                                subType={ButtonSubType.ICON_ONLY}
+                                subType={ButtonSubType.INLINE}
                                 size={ButtonSize.SMALL}
                                 aria-label={
                                     isCopied
@@ -284,8 +300,38 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                     }
                     backgroundColor={tokens.body.backgroundColor}
                     overflow="auto"
+                    position={
+                        !showHeader && showCopyButton ? 'relative' : undefined
+                    }
+                    className={
+                        !showHeader && showCopyButton ? 'code-body' : undefined
+                    }
                     style={{ maxHeight: maxHeight || 'none' }}
                 >
+                    {!showHeader && showCopyButton && (
+                        <CopyOverlay>
+                            <Button
+                                data-element="copy-button"
+                                type="button"
+                                onClick={copyToClipboard}
+                                buttonType={ButtonType.SECONDARY}
+                                subType={ButtonSubType.ICON_ONLY}
+                                size={ButtonSize.SMALL}
+                                aria-label={
+                                    isCopied
+                                        ? 'Code copied to clipboard'
+                                        : 'Copy code'
+                                }
+                                leadingIcon={
+                                    isCopied ? (
+                                        <Check size={16} aria-hidden="true" />
+                                    ) : (
+                                        <Copy size={16} aria-hidden="true" />
+                                    )
+                                }
+                            />
+                        </CopyOverlay>
+                    )}
                     {isDiffMode && diffLines?.length ? (
                         <CodeBlockDiffView
                             diffLines={diffLines}
