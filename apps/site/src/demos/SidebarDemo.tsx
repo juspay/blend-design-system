@@ -226,6 +226,7 @@ const SidebarDemo = () => {
         | 'virtualList'
         | 'skeleton'
         | 'upload'
+        | 'uploadV2'
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
