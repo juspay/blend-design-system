@@ -44,6 +44,37 @@ type CustomCardComponentProps = {
     baseId?: string
 }
 
+const isPlainTextContent = (content: React.ReactNode) =>
+    typeof content === 'string' || typeof content === 'number'
+
+const CardBodyContent = ({
+    content,
+    contentId,
+    cardToken,
+    describedBy,
+}: {
+    content: React.ReactNode
+    contentId: string
+    cardToken: CardTokenType
+    describedBy?: string
+}) => {
+    const sharedProps = {
+        id: contentId,
+        style: getBodyContentStyles(cardToken),
+        'aria-describedby': describedBy,
+    }
+
+    if (isPlainTextContent(content)) {
+        return (
+            <Text as="p" {...sharedProps}>
+                {content}
+            </Text>
+        )
+    }
+
+    return <Block {...sharedProps}>{content}</Block>
+}
+
 export const DefaultCard: React.FC<CardComponentProps> = ({
     props,
     cardToken,
@@ -80,6 +111,9 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
     const subHeaderId = `${baseId}-subheader`
     const bodyTitleId = `${baseId}-body-title`
     const contentId = `${baseId}-content`
+    const contentDataId = isPlainTextContent(content)
+        ? String(content)
+        : undefined
 
     return (
         <>
@@ -228,22 +262,20 @@ export const DefaultCard: React.FC<CardComponentProps> = ({
                             ),
                         }}
                         data-element="card-body-content"
-                        data-id={content}
+                        data-id={contentDataId}
                     >
-                        <Text
-                            as="p"
-                            id={contentId}
-                            style={getBodyContentStyles(cardToken)}
-                            aria-describedby={
+                        <CardBodyContent
+                            content={content}
+                            contentId={contentId}
+                            cardToken={cardToken}
+                            describedBy={
                                 bodyTitle
                                     ? bodyTitleId
                                     : headerTitle
                                       ? headerTitleId
                                       : undefined
                             }
-                        >
-                            {content}
-                        </Text>
+                        />
                     </Block>
                 )}
 
@@ -461,20 +493,18 @@ const CardContent: React.FC<{
                 }
             >
                 {hasContent && (
-                    <Text
-                        as="p"
-                        id={contentId}
-                        style={getBodyContentStyles(cardToken)}
-                        aria-describedby={
+                    <CardBodyContent
+                        content={content}
+                        contentId={contentId}
+                        cardToken={cardToken}
+                        describedBy={
                             bodyTitle
                                 ? bodyTitleId
                                 : headerTitle
                                   ? headerTitleId
                                   : undefined
                         }
-                    >
-                        {content}
-                    </Text>
+                    />
                 )}
 
                 {hasActionButton && (

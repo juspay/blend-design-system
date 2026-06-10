@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import Card from '../../../lib/components/Card/Card'
+import Button from '../../../lib/components/Button/Button'
 import { CardVariant, CardAlignment } from '../../../lib/components/Card/types'
 import { ButtonType, ButtonSize } from '../../../lib/components/Button/types'
 import {
@@ -349,6 +350,31 @@ describe('Card Accessibility', () => {
             )
             expect(content).toBeInTheDocument()
             expect(content.tagName.toLowerCase()).toBe('p')
+        })
+
+        it('renders interactive content without nesting paragraph elements', () => {
+            const { container } = render(
+                <Card
+                    headerTitle="Order Audit"
+                    bodyTitle="Audit trail"
+                    content={
+                        <Button
+                            text="View audit"
+                            buttonType={ButtonType.PRIMARY}
+                            size={ButtonSize.SMALL}
+                        />
+                    }
+                />
+            )
+
+            const button = screen.getByRole('button', { name: 'View audit' })
+            const contentWrapper = container.querySelector(
+                '[data-element="card-body-content"] > div'
+            )
+
+            expect(button).toBeInTheDocument()
+            expect(contentWrapper).toBeInTheDocument()
+            expect(container.querySelector('p p')).not.toBeInTheDocument()
         })
 
         it('header has role="group" for logical grouping', () => {
