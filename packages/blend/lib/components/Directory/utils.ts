@@ -1,3 +1,9 @@
+import type { DirectoryData } from './types'
+
+export const normalizeDirectoryData = (
+    directoryData: DirectoryData[] | null
+): DirectoryData[] => (Array.isArray(directoryData) ? directoryData : [])
+
 export const handleSectionNavigation = (
     direction: 'up' | 'down',
     currentIndex: number,

@@ -104,6 +104,7 @@ import {
 import StepperDemo from './StepperDemo'
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
+import ThemeProviderDemo from './ThemeProviderDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
@@ -215,6 +216,7 @@ const SidebarDemo = () => {
         | 'card'
         | 'dataRangePicker'
         | 'allComponents'
+        | 'themeProvider'
         | 'virtualList'
         | 'skeleton'
         | 'upload'
@@ -249,7 +251,7 @@ const SidebarDemo = () => {
         | 'searchInputV2'
         | 'chatInputV2'
         | 'stepperV2'
-    >('stepperV2')
+    >('upload')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -578,6 +580,8 @@ const SidebarDemo = () => {
                 return <SkeletonDemo />
             case 'allComponents':
                 return <AllComponentsDemo />
+            case 'themeProvider':
+                return <ThemeProviderDemo />
             case 'virtualList':
                 return <VirtualListDemo />
             case 'upload':
@@ -1638,6 +1642,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'allComponents',
                     onClick: () => setActiveComponent('allComponents'),
+                },
+                {
+                    label: 'ThemeProvider render test',
+                    leftSlot: (
+                        <Palette style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'themeProvider',
+                    onClick: () => setActiveComponent('themeProvider'),
                 },
                 {
                     label: 'Accessibility',

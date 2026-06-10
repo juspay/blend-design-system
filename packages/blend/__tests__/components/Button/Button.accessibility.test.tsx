@@ -51,6 +51,24 @@ describe('Button Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('does not render icon slots inside a paragraph', () => {
+            render(
+                <Button
+                    text="With Icon"
+                    leadingIcon={<div data-testid="block-icon" />}
+                />
+            )
+
+            const button = screen.getByRole('button')
+            const iconSlot = button.querySelector(
+                '[data-element="leading-icon"]'
+            )
+
+            expect(iconSlot).toBeInTheDocument()
+            expect(button.querySelector('p [data-element]')).toBeNull()
+            expect(iconSlot?.parentElement?.tagName).toBe('SPAN')
+        })
     })
 
     describe('WCAG 2.1.1 Keyboard (Level A)', () => {

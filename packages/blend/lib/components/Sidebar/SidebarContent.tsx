@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
+import { normalizeDirectoryData } from '../Directory/utils'
 import SidebarHeader from './SidebarHeader'
 import SidebarFooter from './SidebarFooter'
 import type { DirectoryData } from '../Directory/types'
@@ -35,7 +36,7 @@ export type SidebarContentProps = {
     sidebarNavId?: string
     showTopBlur: boolean
     showBottomBlur: boolean
-    data: DirectoryData[]
+    data: DirectoryData[] | null
     idPrefix: string
     activeItem?: string | null
     onActiveItemChange?: (item: string | null) => void
@@ -66,6 +67,8 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
     setIsHovering,
     sidebarState = 'expanded',
 }) => {
+    const directoryData = normalizeDirectoryData(data)
+
     return (
         <Block
             data-element="sidebar-content"
@@ -104,7 +107,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                 onMouseEnter={() => setIsHovering?.(true)}
             >
                 <Directory
-                    directoryData={data}
+                    directoryData={directoryData}
                     idPrefix={idPrefix}
                     activeItem={activeItem}
                     onActiveItemChange={onActiveItemChange}

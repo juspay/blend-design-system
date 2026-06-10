@@ -39,7 +39,7 @@ export type SidebarStateChangeType = 'collapsed' | 'expanded' | 'intermediate'
 export type SidebarProps = {
     showLeftPanel?: boolean
     children: ReactNode
-    data: DirectoryData[]
+    data: DirectoryData[] | null
     leftPanel?: LeftPanelInfo
     topbar: ReactNode
     footer?: ReactNode
