@@ -1,13 +1,9 @@
 import { type ReactNode } from 'react'
 import type { DirectoryData, NavbarItem } from '../Directory/types'
 import type { MerchantInfo } from '../Topbar/types'
-import { BadgeColor, BadgePosition, BadgeSize } from '../Badge'
 
 export type TenantBadge = {
     text: string
-    color?: BadgeColor
-    size?: BadgeSize
-    position?: BadgePosition
 }
 
 export type LeftPanelItem = {

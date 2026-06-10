@@ -289,8 +289,6 @@ const SidebarDemo = () => {
             value: 'juspay',
             badge: {
                 text: 'IN',
-                color: BadgeColor.PRIMARY,
-                size: BadgeSize.SM,
             },
             showInPanel: true, // Visible in panel
         },
@@ -325,10 +323,7 @@ const SidebarDemo = () => {
                 />
             ),
             badge: {
-                text: 'US',
-                color: BadgeColor.SUCCESS,
-                size: BadgeSize.SM,
-                position: 'top-right',
+                text: 'USA',
             },
             value: 'paypal',
             showInPanel: true, // Visible in panel

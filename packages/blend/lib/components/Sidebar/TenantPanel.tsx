@@ -164,10 +164,10 @@ const TenantItem: React.FC<{
 
     const trigger = tenant.badge ? (
         <Badge
-            text={tenant.badge.text}
-            size={tenant.badge.size || BadgeSize.SM}
-            color={tenant.badge.color || BadgeColor.PRIMARY}
-            position={tenant.badge.position || 'bottom-right'}
+            text={tenant.badge.text.slice(0, 2)}
+            size={BadgeSize.SM}
+            color={BadgeColor.NEUTRAL}
+            position={'bottom-right'}
             isCircular
         >
             {tenantButton}
