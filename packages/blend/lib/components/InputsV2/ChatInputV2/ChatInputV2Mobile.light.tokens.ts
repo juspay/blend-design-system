@@ -1,6 +1,6 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
 import { InputStateV2 } from '../inputV2.types'
-import { ChatInputV2MobileTokensType } from './ChatInputV2Mobile.tokens'
+import type { ChatInputV2MobileTokensType } from './ChatInputV2Mobile.tokens.types'
 export const getChatInputV2MobileLightTokens = (
     foundationToken: FoundationTokenType
 ): ChatInputV2MobileTokensType => {

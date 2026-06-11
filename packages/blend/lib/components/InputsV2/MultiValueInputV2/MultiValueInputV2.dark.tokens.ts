@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import { ResponsiveMultiValueInputV2Tokens } from './MultiValueInputV2.tokens'
+import type { ResponsiveMultiValueInputV2Tokens } from './MultiValueInputV2.tokens.types'
 
 export const getMultiValueInputV2DarkTokens = (
     foundationTokens: FoundationTokenType

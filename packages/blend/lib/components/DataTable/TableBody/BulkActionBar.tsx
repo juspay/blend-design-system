@@ -1,6 +1,6 @@
 import { forwardRef, useState } from 'react'
 import { Download } from 'lucide-react'
-import { Button } from '../../../main'
+import { Button } from '../../Button'
 import { ButtonSize, ButtonType } from '../../Button/types'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'

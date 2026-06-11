@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { ResponsiveStatCardV2Tokens } from './statcardV2.tokens'
+import type { ResponsiveStatCardV2Tokens } from './statcardV2.tokens.types'
 import { StatCardV2Variant } from './statcardV2.types'
 
 export const getStatCardV2DarkTokens = (

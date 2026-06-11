@@ -6,23 +6,14 @@ import React, {
     useRef,
     useState,
 } from 'react'
-import {
-    AttachedFile,
-    Button,
-    ButtonSize,
-    ButtonSubType,
-    ButtonType,
-    MenuProps,
-    Tag,
-    TagColor,
-    TagSize,
-    TagVariant,
-    Tooltip,
-    Menu,
-} from '../../main'
+import type { AttachedFile } from './types'
+import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
+import { Menu, type MenuProps } from '../Menu'
+import { Tag, TagColor, TagSize, TagVariant } from '../Tags'
+import { Tooltip } from '../Tooltip'
 import Block from '../Primitives/Block/Block'
 import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
-import { getDocIcon } from './ChatInput'
+import { getDocIcon } from './getDocIcon'
 import { Plus, X } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { ChatInputTokensType } from './chatInput.tokens'

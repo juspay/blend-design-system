@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { ResponsiveAccordionV2Tokens } from './accordionV2.tokens'
+import type { ResponsiveAccordionV2Tokens } from './accordionV2.tokens.types'
 import { AccordionV2Type } from './accordionV2.types'
 
 export const getAccordionV2LightTokens = (
