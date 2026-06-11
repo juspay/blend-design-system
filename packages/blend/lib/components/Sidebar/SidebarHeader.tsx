@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { PanelsTopLeft, UserIcon } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
@@ -57,16 +57,6 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
 
     const merchantData = merchantInfo || defaultMerchantInfo
 
-    const [selectVisible, setSelectVisible] = useState(!iconOnlyMode)
-    useEffect(() => {
-        if (iconOnlyMode) {
-            setSelectVisible(false)
-        } else {
-            const t = setTimeout(() => setSelectVisible(true), 180)
-            return () => clearTimeout(t)
-        }
-    }, [iconOnlyMode])
-
     const headerSlot = sidebarTopSlot ? (
         iconOnlyMode ? null : (
             sidebarTopSlot
@@ -123,7 +113,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                 width={iconOnlyMode ? 0 : '100%'}
                 minWidth={0}
                 overflow="hidden"
-                opacity={iconOnlyMode ? 0 : selectVisible ? 1 : 0}
+                opacity={iconOnlyMode ? 0 : 1}
                 pointerEvents={iconOnlyMode ? 'none' : 'auto'}
                 transition="opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1), flex-grow 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
                 style={{

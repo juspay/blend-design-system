@@ -12,6 +12,8 @@ export type UseTruncationDetectionOptions = {
     deps?: DependencyList
 }
 
+const DEBOUNCE_MS = 100
+
 export default function useTruncationDetection<
     T extends HTMLElement = HTMLElement,
 >(
@@ -22,13 +24,9 @@ export default function useTruncationDetection<
     const { disabled = false, deps = [] } = options
     const [isTruncated, setIsTruncated] = useState(false)
     const rafRef = useRef<number | null>(null)
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-    const checkTruncation = useCallback(() => {
-        if (disabled) {
-            setIsTruncated(false)
-            return
-        }
-
+    const runTruncationCheck = useCallback(() => {
         if (rafRef.current !== null) {
             cancelAnimationFrame(rafRef.current)
         }
@@ -56,11 +54,35 @@ export default function useTruncationDetection<
             setIsTruncated(truncated)
             rafRef.current = null
         })
-    }, [elementRef, selector, disabled])
+    }, [elementRef, selector])
+
+    const checkTruncation = useCallback(() => {
+        if (disabled) {
+            setIsTruncated(false)
+            return
+        }
+        runTruncationCheck()
+    }, [disabled, runTruncationCheck])
+
+    const debouncedCheckTruncation = useCallback(() => {
+        if (disabled) {
+            setIsTruncated(false)
+            return
+        }
+
+        if (debounceRef.current) {
+            clearTimeout(debounceRef.current)
+        }
+
+        debounceRef.current = setTimeout(() => {
+            runTruncationCheck()
+            debounceRef.current = null
+        }, DEBOUNCE_MS)
+    }, [disabled, runTruncationCheck])
 
     useResizeObserver(elementRef, () => {
         if (!disabled) {
-            checkTruncation()
+            debouncedCheckTruncation()
         }
     })
 
@@ -78,6 +100,9 @@ export default function useTruncationDetection<
             window.removeEventListener('resize', handleResize)
             if (rafRef.current !== null) {
                 cancelAnimationFrame(rafRef.current)
+            }
+            if (debounceRef.current !== null) {
+                clearTimeout(debounceRef.current)
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps -- deps is intentionally spread to allow custom dependencies

@@ -406,94 +406,80 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
 
                                 {/* Intermediate Sidebar */}
 
-                                {!isExpanded && (
-                                    <Block
-                                        position="absolute"
-                                        display="flex"
-                                        top={0}
-                                        left={isLeftPanelVisible ? '52px' : 0}
-                                        width={
-                                            isHovering
-                                                ? shouldRenderIntermediateLeftPanel
-                                                    ? '302px'
-                                                    : '250px'
-                                                : 0
-                                        }
-                                        minWidth={0}
-                                        height="100%"
-                                        overflow="hidden"
-                                        zIndex={99}
-                                        aria-hidden="true"
-                                        backgroundColor={tokens.backgroundColor}
-                                        borderRight={
-                                            isHovering
-                                                ? tokens.borderRight
-                                                : 'none'
-                                        }
-                                        boxShadow={
-                                            isHovering
-                                                ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
-                                                : 'none'
-                                        }
-                                        transition="width 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
-                                        pointerEvents={
-                                            isHovering ? 'auto' : 'none'
-                                        }
-                                        onMouseLeave={() =>
-                                            setIsHovering(false)
-                                        }
-                                        style={{
-                                            willChange: 'width, box-shadow',
-                                            transform: 'translateZ(0)',
-                                            // Delay on close to prevent abrupt disappearance
-                                            transitionDelay: isHovering
-                                                ? '0ms'
-                                                : '50ms',
-                                        }}
-                                    >
-                                        {shouldRenderIntermediateLeftPanel && (
-                                            <TenantPanel
-                                                ref={tenantPanelRef}
-                                                items={leftPanel.items}
-                                                selected={leftPanel.selected}
-                                                onSelect={leftPanel.onSelect}
-                                                tenantSlot1={
-                                                    leftPanel.tenantSlot1
-                                                }
-                                                tenantSlot2={
-                                                    leftPanel.tenantSlot2
-                                                }
-                                                tenantFooter={
-                                                    leftPanel.tenantFooter
-                                                }
-                                            />
-                                        )}
-                                        <SidebarContent
-                                            sidebarTopSlot={sidebarTopSlot}
-                                            merchantInfo={merchantInfo}
-                                            isExpanded={isExpanded}
-                                            isScrolled={isScrolled}
-                                            sidebarCollapseKey={
-                                                sidebarCollapseKey
+                                <Block
+                                    position="absolute"
+                                    display="flex"
+                                    top={0}
+                                    left={isLeftPanelVisible ? '52px' : 0}
+                                    width={
+                                        !isExpanded && isHovering
+                                            ? shouldRenderIntermediateLeftPanel
+                                                ? '302px'
+                                                : '250px'
+                                            : 0
+                                    }
+                                    minWidth={0}
+                                    height="100%"
+                                    overflow="hidden"
+                                    zIndex={99}
+                                    aria-hidden="true"
+                                    backgroundColor={tokens.backgroundColor}
+                                    borderRight={
+                                        isHovering ? tokens.borderRight : 'none'
+                                    }
+                                    boxShadow={
+                                        isHovering
+                                            ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
+                                            : 'none'
+                                    }
+                                    transition="width 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+                                    pointerEvents={
+                                        !isExpanded && isHovering
+                                            ? 'auto'
+                                            : 'none'
+                                    }
+                                    onMouseLeave={() => setIsHovering(false)}
+                                    style={{
+                                        willChange: 'width, box-shadow',
+                                        transform: 'translateZ(0)',
+                                        // Delay on close to prevent abrupt disappearance
+                                        transitionDelay: isHovering
+                                            ? '0ms'
+                                            : '50ms',
+                                    }}
+                                >
+                                    {shouldRenderIntermediateLeftPanel && (
+                                        <TenantPanel
+                                            ref={tenantPanelRef}
+                                            items={leftPanel.items}
+                                            selected={leftPanel.selected}
+                                            onSelect={leftPanel.onSelect}
+                                            tenantSlot1={leftPanel.tenantSlot1}
+                                            tenantSlot2={leftPanel.tenantSlot2}
+                                            tenantFooter={
+                                                leftPanel.tenantFooter
                                             }
-                                            onToggle={toggleSidebar}
-                                            sidebarNavId={sidebarNavId}
-                                            showTopBlur={showTopBlur}
-                                            showBottomBlur={showBottomBlur}
-                                            data={data}
-                                            idPrefix={`${baseId}-`}
-                                            activeItem={activeItem}
-                                            onActiveItemChange={
-                                                onActiveItemChange
-                                            }
-                                            defaultActiveItem={
-                                                defaultActiveItem
-                                            }
-                                            iconOnlyMode={!isHovering}
-                                            footer={footer}
                                         />
-                                    </Block>
-                                )}
+                                    )}
+                                    <SidebarContent
+                                        sidebarTopSlot={sidebarTopSlot}
+                                        merchantInfo={merchantInfo}
+                                        isExpanded={isExpanded}
+                                        isScrolled={isScrolled}
+                                        sidebarCollapseKey={sidebarCollapseKey}
+                                        onToggle={toggleSidebar}
+                                        sidebarNavId={sidebarNavId}
+                                        showTopBlur={showTopBlur}
+                                        showBottomBlur={showBottomBlur}
+                                        data={data}
+                                        idPrefix={`${baseId}-`}
+                                        activeItem={activeItem}
+                                        onActiveItemChange={onActiveItemChange}
+                                        defaultActiveItem={defaultActiveItem}
+                                        iconOnlyMode={false}
+                                        footer={footer}
+                                    />
+                                </Block>
                             </>
                         )}
                     </Block>

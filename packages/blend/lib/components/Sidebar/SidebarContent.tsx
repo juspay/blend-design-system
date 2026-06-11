@@ -84,6 +84,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
             style={{
                 willChange: 'width',
                 transform: 'translateZ(0)',
+                contain: 'layout paint',
             }}
         >
             <SidebarHeader
