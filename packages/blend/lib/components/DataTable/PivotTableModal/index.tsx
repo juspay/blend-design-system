@@ -36,6 +36,7 @@ import {
 } from './utils'
 import { NoScrollbar } from './pivotModal.styled'
 import { getPivotModalStyleTokens } from './pivotModalStyleTokens'
+// eslint-disable-next-line import-x/no-cycle -- intentional recursion: pivot preview renders a nested DataTable
 import PivotPreviewPanel from './PivotPreviewPanel'
 
 type PivotSectionKey = 'rows' | 'columns' | 'values'

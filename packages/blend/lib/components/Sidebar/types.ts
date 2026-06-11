@@ -1,31 +1,18 @@
 import { type ReactNode } from 'react'
-import type { BadgeColor, BadgePosition, BadgeSize } from '../Badge/Badge.types'
 import type { DirectoryData, NavbarItem } from '../Directory/types'
-import type { MerchantInfo } from '../Topbar/types'
+import type {
+    MerchantInfo,
+    LeftPanelInfo,
+    TenantBadge,
+} from '../shared/layoutTypes'
 
-export type TenantBadge = {
-    text: string
-    size?: BadgeSize
-    color?: BadgeColor
-    position?: BadgePosition
-}
-
-export type LeftPanelItem = {
-    label: string
-    icon: ReactNode
-    value?: string
-    showInPanel?: boolean
-    badge?: TenantBadge
-}
-
-export type LeftPanelInfo = {
-    items: LeftPanelItem[]
-    selected: string
-    onSelect: (value: string) => void
-    tenantSlot1?: ReactNode
-    tenantSlot2?: ReactNode
-    tenantFooter?: ReactNode
-}
+// Re-exported for backward compatibility: these types were previously declared
+// here and are part of the public API via `Sidebar/index.ts` (`export * from './types'`).
+export type {
+    LeftPanelInfo,
+    LeftPanelItem,
+    TenantBadge,
+} from '../shared/layoutTypes'
 
 export type TenantItem = {
     label: string

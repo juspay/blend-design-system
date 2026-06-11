@@ -3,6 +3,7 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import { MenuItemActionType, type MenuItemType, MenuItemVariant } from './types'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
+// eslint-disable-next-line import-x/no-cycle -- intentional recursion: SubMenu renders MenuItem which renders SubMenu
 import MenuItem from './MenuItem'
 import { ChevronRightIcon, Search } from 'lucide-react'
 import { type MenuItemStates, type MenuTokensType } from './menu.tokens'

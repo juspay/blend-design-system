@@ -1,5 +1,5 @@
 import type { FoundationTokenType } from '../../../tokens/theme.token'
-import { ResponsiveOTPInputV2Tokens } from './OTPInputV2.tokens'
+import type { ResponsiveOTPInputV2Tokens } from './OTPInputV2.tokens.types'
 
 export const getOTPInputV2DarkTokens = (
     foundationTokens: FoundationTokenType

@@ -49,7 +49,7 @@ import { filterBlockedProps } from '../../../utils/prop-helpers'
 import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 import NumberInputV2Stepper from './NumberInputV2Stepper'
 import NumberInputV2Unit from './NumberInputV2Unit'
-import { NumberInputV2Direction } from '.'
+import { NumberInputV2Direction } from './numberInputV2.types'
 
 const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
     (

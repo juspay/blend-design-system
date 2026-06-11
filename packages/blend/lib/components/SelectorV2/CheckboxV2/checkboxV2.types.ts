@@ -1,13 +1,10 @@
 import { ButtonHTMLAttributes, ReactElement } from 'react'
-import { CheckboxV2TokensType } from './checkboxV2.tokens'
+import type { CheckboxV2TokensType } from './checkboxV2.tokens.types'
+import { CheckboxV2CheckedState } from './checkboxV2.tokens.types'
 import { CSSObject } from 'styled-components'
 import { SelectorV2Size } from '../../SelectorV2/selectorV2.types'
 
-export enum CheckboxV2CheckedState {
-    CHECKED = 'checked',
-    UNCHECKED = 'unchecked',
-    INDETERMINATE = 'indeterminate',
-}
+export { CheckboxV2CheckedState }
 export type CheckboxV2Props = {
     checked?: boolean | 'indeterminate'
     onCheckedChange?: (checked: boolean | 'indeterminate') => void

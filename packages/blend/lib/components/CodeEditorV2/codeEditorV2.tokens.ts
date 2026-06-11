@@ -1,91 +1,13 @@
-import type { CSSObject } from 'styled-components'
-import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { darkCodeEditorV2Tokens } from './codeEditorV2.dark.tokens'
 import { lightCodeEditorV2Tokens } from './codeEditorV2.light.token'
 import { Theme } from '../../context/theme.enum'
-import { CodeEditorV2DiffLineType } from './codeEditorV2.types'
+import type { ResponsiveCodeEditorV2Tokens } from './codeEditorV2.tokens.types'
 
-export type CodeEditorV2Tokens = {
-    backgroundColor: CSSObject['backgroundColor']
-    border: CSSObject['border']
-    borderRadius: CSSObject['borderRadius']
-    boxShadow: CSSObject['boxShadow']
-    theme: 'light' | 'dark'
-    // Header tokens
-    header: {
-        backgroundColor: CSSObject['backgroundColor']
-        borderBottom: CSSObject['borderBottom']
-        paddingTop: CSSObject['paddingTop']
-        paddingBottom: CSSObject['paddingBottom']
-        paddingLeft: CSSObject['paddingLeft']
-        paddingRight: CSSObject['paddingRight']
-        gap: CSSObject['gap']
-        icon: {
-            width: CSSObject['width']
-        }
-        text: {
-            fontSize: CSSObject['fontSize']
-            fontWeight: CSSObject['fontWeight']
-            lineHeight: CSSObject['lineHeight']
-            color: CSSObject['color']
-        }
-    }
-    // Content area tokens
-    body: {
-        paddingTop: CSSObject['paddingTop']
-        paddingBottom: CSSObject['paddingBottom']
-        paddingLeft: CSSObject['paddingLeft']
-        paddingRight: CSSObject['paddingRight']
-        backgroundColor: CSSObject['backgroundColor']
-
-        // Gutter (line numbers) tokens
-        gutter: {
-            width: CSSObject['width']
-            color: CSSObject['color']
-            backgroundColor: {
-                [key in CodeEditorV2DiffLineType]: CSSObject['backgroundColor']
-            }
-            borderLeft: {
-                [key in CodeEditorV2DiffLineType]: CSSObject['borderLeft']
-            }
-            borderColor: {
-                [key in CodeEditorV2DiffLineType]: CSSObject['color']
-            }
-        }
-        // Code tokens
-        code: {
-            fontFamily: CSSObject['fontFamily']
-            fontSize: CSSObject['fontSize']
-            lineHeight: CSSObject['lineHeight']
-            paddingTop: CSSObject['paddingTop']
-            paddingBottom: CSSObject['paddingBottom']
-            paddingLeft: CSSObject['paddingLeft']
-            paddingRight: CSSObject['paddingRight']
-        }
-        // Highlighted line tokens (for diff mode and code highlighting)
-        highlightedLine: {
-            backgroundColor: {
-                [key in CodeEditorV2DiffLineType]: CSSObject['backgroundColor']
-            }
-        }
-        // Syntax highlighting tokens
-        syntax: {
-            keyword: { color: CSSObject['color'] }
-            function: { color: CSSObject['color'] }
-            string: { color: CSSObject['color'] }
-            number: { color: CSSObject['color'] }
-            operator: { color: CSSObject['color'] }
-            variable: { color: CSSObject['color'] }
-            comment: { color: CSSObject['color'] }
-            text: { color: CSSObject['color'] }
-        }
-    }
-}
-
-export type ResponsiveCodeEditorV2Tokens = {
-    [key in keyof BreakpointType]: CodeEditorV2Tokens
-}
+export type {
+    CodeEditorV2Tokens,
+    ResponsiveCodeEditorV2Tokens,
+} from './codeEditorV2.tokens.types'
 
 export const getCodeEditorV2Tokens = (
     foundationToken: FoundationTokenType,
