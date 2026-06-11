@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event'
 import { SecondarySidebar } from '../../../lib/components/SidebarV2/SecondarySidebar'
 import type { SecondarySidebarInfo } from '../../../lib/components/SidebarV2/types'
 import type { SidebarV2TokensType } from '../../../lib/components/SidebarV2/sidebarV2.tokens'
+import { BadgeColor, BadgeSize } from '../../../lib/components/Badge'
 
 const mockTokens: SidebarV2TokensType = {
     container: {
@@ -322,6 +323,87 @@ describe('SecondarySidebar', () => {
         await waitFor(() => {
             expect(onSelect).toHaveBeenCalledWith('app1')
             expect(buttonOnClick).toHaveBeenCalledTimes(1)
+        })
+    })
+
+    it('renders badge on items when badge config is provided', () => {
+        const secondarySidebar: SecondarySidebarInfo = {
+            items: [
+                {
+                    label: 'App 1',
+                    value: 'app1',
+                    icon: <span data-testid="icon-1">A1</span>,
+                    badge: {
+                        text: 'IN',
+                        color: BadgeColor.PRIMARY,
+                        size: BadgeSize.SM,
+                    },
+                },
+                {
+                    label: 'App 2',
+                    value: 'app2',
+                    icon: <span data-testid="icon-2">A2</span>,
+                    badge: {
+                        text: 'US',
+                        color: BadgeColor.SUCCESS,
+                        size: BadgeSize.SM,
+                        position: 'top-right',
+                    },
+                },
+            ],
+            selected: 'app1',
+            onSelect: vi.fn(),
+        }
+
+        const { container } = render(
+            <SecondarySidebar
+                id="test-secondary"
+                secondarySidebar={secondarySidebar}
+                tokens={mockTokens}
+            />
+        )
+
+        const badges = container.querySelectorAll(
+            '[data-element="secondary-sidebar"] [role="status"]'
+        )
+        expect(badges).toHaveLength(2)
+        expect(badges[0]).toHaveAttribute('aria-label', 'IN')
+        expect(badges[1]).toHaveAttribute('aria-label', 'US')
+        expect(
+            screen.getByRole('button', { name: 'Select tenant: App 1' })
+        ).toHaveAttribute('aria-pressed', 'true')
+    })
+
+    it('allows selecting an item that has a badge', async () => {
+        const user = userEvent.setup()
+        const onSelect = vi.fn()
+        const secondarySidebar: SecondarySidebarInfo = {
+            items: [
+                {
+                    label: 'App 1',
+                    value: 'app1',
+                    icon: <span>A1</span>,
+                    badge: { text: 'IN', color: BadgeColor.PRIMARY },
+                },
+            ],
+            selected: '',
+            onSelect,
+        }
+
+        render(
+            <SecondarySidebar
+                id="test-secondary"
+                secondarySidebar={secondarySidebar}
+                tokens={mockTokens}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', { name: 'Select tenant: App 1' })
+        )
+
+        await waitFor(() => {
+            expect(onSelect).toHaveBeenCalledWith('app1')
         })
     })
 })

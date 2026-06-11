@@ -10,6 +10,7 @@ import {
     SnackbarV2Position,
     SnackbarV2Variant,
     addSnackbarV2,
+    ButtonV2SubType,
 } from '@juspay/blend-design-system'
 import {
     SHADE_KEYS,
@@ -20,6 +21,7 @@ import {
     generateRandomColorScale,
     resetShadeInScale,
 } from '@/components/utils'
+import { PreviewModeIllustration } from '@/components/svg/PreviewModeIllustration'
 
 const OVERRIDE_PANEL_TRANSITION_MS = 480
 const OVERRIDE_PANEL_EASING = 'cubic-bezier(0.32, 0.72, 0, 1)'
@@ -72,6 +74,7 @@ export function ColorPaletteGenerator({
     /** Keeps override UI mounted until the close animation finishes */
     const [overridesMounted, setOverridesMounted] = useState(false)
     const [overrideListReveal, setOverrideListReveal] = useState(false)
+    const [showPreviewMode, setShowPreviewMode] = useState(true)
     const closeOverridesTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
         null
     )
@@ -228,6 +231,11 @@ export function ColorPaletteGenerator({
     // ------------------------------------------------------------------
 
     const isPrimaryColorTab = label.startsWith('Primary')
+    const previewChromeColor = normaliseHex(value['100'] ?? '') ?? '#E1E4EA'
+    const previewBaseColor =
+        normaliseHex(baseHexInput) ??
+        normaliseHex(value[baseShade] ?? '') ??
+        '#3B82F6'
 
     return (
         <div className="flex min-h-0 w-full flex-1 flex-col" aria-label={label}>
@@ -242,6 +250,39 @@ export function ColorPaletteGenerator({
             >
                 <div className="min-h-0 overflow-y-auto">
                     <div className="flex flex-col gap-2">
+                        {showPreviewMode && (
+                            <div
+                                className="p-[16px] flex flex-row gap-2 border-b border-gray-200"
+                                aria-label="Live preview illustration"
+                            >
+                                <PreviewModeIllustration
+                                    className="block w-[74px] h-[54px] max-w-full"
+                                    chromeColor={previewChromeColor}
+                                    baseColor={previewBaseColor}
+                                />
+                                <div className="flex flex-col gap-1 w-[255px]">
+                                    <span className="text-xs font-semibold text-gray-700">
+                                        Previewing dark mode?{' '}
+                                    </span>
+                                    <span className="text-xs text-gray-400">
+                                        Use the theme toggle in the editor
+                                        header to switch between light and dark.
+                                    </span>
+                                </div>
+                                <ButtonV2
+                                    buttonType={ButtonV2Type.SECONDARY}
+                                    size={ButtonV2Size.MEDIUM}
+                                    subType={ButtonV2SubType.INLINE}
+                                    onClick={() => {
+                                        setShowPreviewMode(false)
+                                    }}
+                                    width="16px"
+                                    leftSlot={{
+                                        slot: <XIcon className="h-4 w-4" />,
+                                    }}
+                                />
+                            </div>
+                        )}
                         <div className="px-[16px] flex flex-col gap-2 my-[24px]">
                             <h3 className="text-xs font-semibold text-gray-700">
                                 Base Value HEX

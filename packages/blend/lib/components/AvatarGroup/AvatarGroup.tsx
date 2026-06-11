@@ -17,7 +17,7 @@ import { AvatarTokensType } from '../Avatar/avatar.tokens'
 const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
     (
         {
-            avatars,
+            avatars = [],
             maxCount = 5,
             size = AvatarSize.MD,
             shape = AvatarShape.CIRCULAR,

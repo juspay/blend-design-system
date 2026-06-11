@@ -1,16 +1,25 @@
 import { type ReactNode } from 'react'
 import type { DirectoryData, NavbarItem } from '../Directory/types'
-import type { MerchantInfo, LeftPanelInfo } from '../shared/layoutTypes'
+import type {
+    MerchantInfo,
+    LeftPanelInfo,
+    TenantBadge,
+} from '../shared/layoutTypes'
 
 // Re-exported for backward compatibility: these types were previously declared
 // here and are part of the public API via `Sidebar/index.ts` (`export * from './types'`).
-export type { LeftPanelInfo, LeftPanelItem } from '../shared/layoutTypes'
+export type {
+    LeftPanelInfo,
+    LeftPanelItem,
+    TenantBadge,
+} from '../shared/layoutTypes'
 
 export type TenantItem = {
     label: string
     value?: string
     icon: ReactNode
     showInPanel?: boolean
+    badge?: TenantBadge
 }
 
 export type SidebarMerchantInfo = {
@@ -27,7 +36,7 @@ export type SidebarStateChangeType = 'collapsed' | 'expanded' | 'intermediate'
 export type SidebarProps = {
     showLeftPanel?: boolean
     children: ReactNode
-    data: DirectoryData[]
+    data: DirectoryData[] | null
     leftPanel?: LeftPanelInfo
     topbar: ReactNode
     footer?: ReactNode

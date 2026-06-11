@@ -618,6 +618,8 @@ export const SingleSelectItems: React.FC<{
                                                         .header.filter
                                                         .sortOption.fontWeight,
                                                 flexGrow: 1,
+                                                overflowWrap: 'break-word',
+                                                minWidth: 0,
                                             }}
                                         >
                                             {label}
@@ -824,6 +826,8 @@ export const MultiSelectItems: React.FC<{
                                                         .header.filter
                                                         .sortOption.fontWeight,
                                                 flexGrow: 1,
+                                                overflowWrap: 'break-word',
+                                                minWidth: 0,
                                             }}
                                         >
                                             {label}

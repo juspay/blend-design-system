@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+import type { BadgeColor, BadgePosition, BadgeSize } from '../Badge/Badge.types'
 
 /**
  * Layout-level types shared between the Sidebar and Topbar components.
@@ -8,11 +9,19 @@ import { type ReactNode } from 'react'
  * from here, keeping the type graph a clean DAG.
  */
 
+export type TenantBadge = {
+    text: string
+    size?: BadgeSize
+    color?: BadgeColor
+    position?: BadgePosition
+}
+
 export type LeftPanelItem = {
     label: string
     icon: ReactNode
     value?: string
     showInPanel?: boolean
+    badge?: TenantBadge
 }
 
 export type LeftPanelInfo = {

@@ -5,6 +5,18 @@ export type BreadcrumbSkeletonProps = {
     variant: SkeletonVariant
 }
 
+/** Replace null, undefined, or non-array `items` with `[]`. */
+export function normalizeBreadcrumbItems(
+    items: BreadcrumbItemType[] | null | undefined
+): BreadcrumbItemType[] {
+    return Array.isArray(items) ? items : []
+}
+
+export type BreadcrumbProps = {
+    items: BreadcrumbItemType[] | null
+    skeleton?: BreadcrumbSkeletonProps
+}
+
 export type BreadcrumbItemType = {
     leftSlot?: React.ReactNode
     rightSlot?: React.ReactNode

@@ -1,8 +1,10 @@
+import type { ButtonHTMLAttributes } from 'react'
 import { SidebarV2TokensType } from './sidebarV2.tokens'
-import type { SecondarySidebarInfo } from './types'
+import type { SecondarySidebarInfo, SecondarySidebarItem } from './types'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { TooltipV2, TooltipV2Side, TooltipV2Size } from '../TooltipV2'
+import { Badge, BadgeColor, BadgeSize } from '../Badge'
 import styled from 'styled-components'
 
 const ScrollableContainer = styled(Block)`
@@ -20,6 +22,82 @@ type Props = {
     id: string
     secondarySidebar?: SecondarySidebarInfo
     tokens: SidebarV2TokensType
+}
+
+type SecondarySidebarItemButtonProps = {
+    item: SecondarySidebarItem
+    isSelected: boolean
+    onSelect: (value: string) => void
+    buttonProps?: ButtonHTMLAttributes<HTMLButtonElement>
+    tokens: SidebarV2TokensType
+}
+
+function SecondarySidebarItemButton({
+    item,
+    isSelected,
+    onSelect,
+    buttonProps,
+    tokens,
+}: SecondarySidebarItemButtonProps) {
+    const itemButton = (
+        <PrimitiveButton
+            {...buttonProps}
+            type="button"
+            cursor="pointer"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            width={tokens.secondarySidebar.item.width}
+            height={tokens.secondarySidebar.item.height}
+            borderRadius={tokens.secondarySidebar.item.borderRadius}
+            border={
+                isSelected
+                    ? tokens.secondarySidebar.item.border.active
+                    : tokens.secondarySidebar.item.border.default
+            }
+            _hover={{
+                backgroundColor:
+                    tokens.secondarySidebar.item.backgroundColor.hover,
+                outline: 'none',
+                border: isSelected
+                    ? tokens.secondarySidebar.item.border.active
+                    : tokens.secondarySidebar.item.border.hover,
+            }}
+            onClick={(e) => {
+                onSelect(item.value)
+                buttonProps?.onClick?.(e)
+            }}
+            aria-label={`Select tenant: ${item.label}`}
+            aria-pressed={isSelected}
+        >
+            <span aria-hidden="true">{item.icon}</span>
+        </PrimitiveButton>
+    )
+
+    const trigger = item.badge ? (
+        <Badge
+            text={item.badge.text.slice(0, 2)}
+            size={item.badge.size || BadgeSize.SM}
+            color={item.badge.color || BadgeColor.PRIMARY}
+            position={item.badge.position || 'bottom-right'}
+            isCircular
+        >
+            {itemButton}
+        </Badge>
+    ) : (
+        itemButton
+    )
+
+    return (
+        <TooltipV2
+            content={item.label}
+            side={TooltipV2Side.RIGHT}
+            delayDuration={500}
+            size={TooltipV2Size.SM}
+        >
+            {trigger}
+        </TooltipV2>
+    )
 }
 
 export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
@@ -59,50 +137,14 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
                 style={{ minHeight: 0 }}
             >
                 {items?.map((item) => (
-                    <TooltipV2
+                    <SecondarySidebarItemButton
                         key={item.value}
-                        content={item.label}
-                        side={TooltipV2Side.RIGHT}
-                        delayDuration={500}
-                        size={TooltipV2Size.SM}
-                    >
-                        <PrimitiveButton
-                            {...buttonProps}
-                            type="button"
-                            cursor="pointer"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            width={tokens.secondarySidebar.item.width}
-                            height={tokens.secondarySidebar.item.height}
-                            borderRadius={
-                                tokens.secondarySidebar.item.borderRadius
-                            }
-                            border={
-                                isSelected(item.value)
-                                    ? tokens.secondarySidebar.item.border.active
-                                    : tokens.secondarySidebar.item.border
-                                          .default
-                            }
-                            _hover={{
-                                backgroundColor:
-                                    tokens.secondarySidebar.item.backgroundColor
-                                        .hover,
-                                outline: 'none',
-                                border: isSelected(item.value)
-                                    ? tokens.secondarySidebar.item.border.active
-                                    : tokens.secondarySidebar.item.border.hover,
-                            }}
-                            onClick={(e) => {
-                                onSelect?.(item.value)
-                                buttonProps?.onClick?.(e)
-                            }}
-                            aria-label={`Select tenant: ${item.label}`}
-                            aria-pressed={isSelected(item.value)}
-                        >
-                            <span aria-hidden="true">{item.icon}</span>
-                        </PrimitiveButton>
-                    </TooltipV2>
+                        item={item}
+                        isSelected={isSelected(item.value)}
+                        onSelect={onSelect}
+                        buttonProps={buttonProps}
+                        tokens={tokens}
+                    />
                 ))}
             </ScrollableContainer>
 

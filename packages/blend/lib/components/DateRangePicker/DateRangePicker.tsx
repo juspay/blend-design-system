@@ -25,6 +25,8 @@ import {
     getPresetLabel,
     getTodayInTimezone,
     validateDateInput,
+    isControlledDateRange,
+    isValidDate,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -409,7 +411,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         const [selectedRange, setSelectedRange] = useState<
             DateRange | undefined
-        >(value)
+        >(() => (isControlledDateRange(value) ? value : undefined))
         const lastExternalValueRef = React.useRef<{
             start: number | null
             end: number | null
@@ -525,32 +527,44 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         const resetValues = useCallback(
             (dateRangeObj?: DateRange) => {
-                setSelectedRange(dateRangeObj)
+                const normalizedRange = isControlledDateRange(dateRangeObj)
+                    ? dateRangeObj
+                    : undefined
+
+                setSelectedRange(normalizedRange)
                 setActivePreset(
-                    dateRangeObj
-                        ? detectPresetFromRange(dateRangeObj, timezone)
+                    normalizedRange
+                        ? detectPresetFromRange(normalizedRange, timezone)
                         : DateRangePreset.CUSTOM
                 )
                 setStartDate(
-                    dateRangeObj &&
-                        formatDate(dateRangeObj.startDate, dateFormat, timezone)
+                    normalizedRange &&
+                        formatDate(
+                            normalizedRange.startDate,
+                            dateFormat,
+                            timezone
+                        )
                 )
-                if (dateRangeObj && dateRangeObj.endDate) {
+                if (normalizedRange?.endDate) {
                     setEndDate(
-                        formatDate(dateRangeObj.endDate, dateFormat, timezone)
+                        formatDate(
+                            normalizedRange.endDate,
+                            dateFormat,
+                            timezone
+                        )
                     )
-                } else if (!dateRangeObj) {
+                } else if (!normalizedRange) {
                     setEndDate(undefined)
                 }
                 setStartTime(
-                    dateRangeObj &&
-                        formatDate(dateRangeObj.startDate, 'HH:mm', timezone)
+                    normalizedRange &&
+                        formatDate(normalizedRange.startDate, 'HH:mm', timezone)
                 )
-                if (dateRangeObj && dateRangeObj.endDate) {
+                if (normalizedRange?.endDate) {
                     setEndTime(
-                        formatDate(dateRangeObj.endDate, 'HH:mm', timezone)
+                        formatDate(normalizedRange.endDate, 'HH:mm', timezone)
                     )
-                } else if (!dateRangeObj) {
+                } else if (!normalizedRange) {
                     setEndTime(undefined)
                 }
                 setStartDateValidation({ isValid: true, error: 'none' })
@@ -563,7 +577,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         )
 
         useEffect(() => {
-            if (!value) {
+            if (!isControlledDateRange(value)) {
                 if (lastExternalValueRef.current !== null) {
                     lastExternalValueRef.current = null
                     resetValues(undefined)
@@ -572,8 +586,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             }
 
             const nextSignature = {
-                start: value.startDate.getTime() ?? null,
-                end: value.endDate?.getTime() ?? null,
+                start: value.startDate.getTime(),
+                end:
+                    value.endDate && isValidDate(value.endDate)
+                        ? value.endDate.getTime()
+                        : null,
                 dateFormat,
             }
 

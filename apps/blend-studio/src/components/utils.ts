@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { generateColorScale } from '@juspay/blend-design-system/tokens'
+import { buildGoogleFontCss2FamilyParam } from '@/lib/google-fonts'
 
 export const TYPOGRAPHY_PREVIEW_FONTS_LINK_ID =
     'typography-preview-google-fonts'
@@ -16,17 +17,30 @@ export function getFontFamilyStyle(family: string): CSSProperties {
     return { fontFamily: `"${trimmed}", sans-serif` }
 }
 
+export type TypographyPreviewFontSpec =
+    | string
+    | { family: string; variants?: readonly string[] }
+
 /** Load Google Fonts used by the typography editor preview. */
-export function loadTypographyPreviewFonts(families: readonly string[]): void {
+export function loadTypographyPreviewFonts(
+    fonts: readonly TypographyPreviewFontSpec[]
+): void {
     if (typeof document === 'undefined') return
 
-    const webFonts = families.filter(
-        (family) => family.trim().toLowerCase() !== 'system ui'
-    )
-    if (webFonts.length === 0) return
+    const specs = fonts
+        .map((entry) =>
+            typeof entry === 'string'
+                ? { family: entry, variants: undefined }
+                : entry
+        )
+        .filter((spec) => spec.family.trim().toLowerCase() !== 'system ui')
 
-    const href = `https://fonts.googleapis.com/css2?${webFonts
-        .map((family) => `family=${family.trim().replace(/\s+/g, '+')}`)
+    if (specs.length === 0) return
+
+    const href = `https://fonts.googleapis.com/css2?${specs
+        .map((spec) =>
+            buildGoogleFontCss2FamilyParam(spec.family, spec.variants)
+        )
         .join('&')}&display=swap`
 
     let link = document.getElementById(
@@ -211,24 +225,16 @@ export function getShowcaseClassNames(theme: ShowcaseTheme = 'light') {
     }
 }
 
-export const AUTHORIZATION_RATE_CHART_OPTIONS = {
-    series: [
-        {
-            data: [9, 11, 13, 10, 12, 15, 18, 17, 19, 21, 22],
-            type: 'area' as const,
-            color: '#00A63E',
-            fillColor: {
-                linearGradient: {
-                    x1: 0,
-                    y1: 0,
-                    x2: 0,
-                    y2: 1,
-                },
-                stops: [
-                    [0, 'rgba(123, 241, 168, 0.40)'] as [number, string],
-                    [1, 'rgba(123, 241, 168, 0.00)'] as [number, string],
-                ],
-            },
-        },
-    ],
-}
+export const AUTHORIZATION_RATE_CHART_DATA = [
+    { value: 9, name: '1' },
+    { value: 11, name: '2' },
+    { value: 13, name: '3' },
+    { value: 10, name: '4' },
+    { value: 12, name: '5' },
+    { value: 15, name: '6' },
+    { value: 18, name: '7' },
+    { value: 17, name: '8' },
+    { value: 19, name: '9' },
+    { value: 21, name: '10' },
+    { value: 22, name: '11' },
+]

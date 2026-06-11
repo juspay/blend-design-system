@@ -119,6 +119,7 @@ const Text = ({
                 fontWeight={fontWeight}
                 color={color ?? 'inherit'}
                 style={style}
+                truncate={truncate}
                 {...rest}
             >
                 {children}

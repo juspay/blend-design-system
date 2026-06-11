@@ -41,6 +41,7 @@ import {
 } from 'lucide-react'
 import { ThemeProvider, Theme } from '../../../../packages/blend/lib/context'
 import { SidebarV2 } from '../../../../packages/blend/lib/components/SidebarV2'
+import type { SecondarySidebarInfo } from '../../../../packages/blend/lib/components/SidebarV2/types'
 import type { DirectoryData } from '../../../../packages/blend/lib/components/Directory/types'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import ButtonGroupDemo from './ButtonGroupDemo'
@@ -96,7 +97,12 @@ import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
-import { TextInput, Button } from '../../../../packages/blend/lib/main'
+import {
+    TextInput,
+    Button,
+    BadgeColor,
+    BadgeSize,
+} from '../../../../packages/blend/lib/main'
 import {
     ButtonType,
     ButtonSize,
@@ -238,7 +244,9 @@ const SidebarV2Demo = () => {
     const [colorTheme, setColorTheme] = useState<Theme>(Theme.LIGHT)
 
     const tenants = useMemo(
-        () => [
+        (): (SecondarySidebarInfo['items'][number] & {
+            showInPanel: boolean
+        })[] => [
             {
                 label: 'Juspay',
                 icon: (
@@ -249,6 +257,11 @@ const SidebarV2Demo = () => {
                 ),
                 value: 'juspay',
                 showInPanel: true,
+                badge: {
+                    text: 'IN',
+                    color: BadgeColor.PRIMARY,
+                    size: BadgeSize.SM,
+                },
             },
             {
                 label: 'Razorpay',
@@ -282,6 +295,12 @@ const SidebarV2Demo = () => {
                 ),
                 value: 'paypal',
                 showInPanel: true,
+                badge: {
+                    text: 'US',
+                    color: BadgeColor.SUCCESS,
+                    size: BadgeSize.SM,
+                    position: 'top-right',
+                },
             },
             {
                 label: 'Square',

@@ -32,7 +32,7 @@ const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
         ref
     ) => {
         const tokens = useResponsiveTokens<ChartV2TokensType>('CHARTSV2')
-        const { options, ...restProps } = props
+        const { options = {}, ...restProps } = props
 
         const hasSeriesData =
             (options.series as ChartV2SeriesOptionsType[] | undefined)?.some(

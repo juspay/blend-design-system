@@ -9,10 +9,21 @@
 
 import { featureFlags } from '@/lib/feature-flags'
 import { fetchWithCsrf } from '@/lib/csrf'
-import type {
-    Branch,
-    BrandConfig,
-    CreateBranchInput,
+import {
+    mapBackendBranchToStudioBranch,
+    mapBackendSnapshotToStudioSnapshot,
+    mapBackendVersionToStudioVersion,
+    type BackendBranchRow,
+    type BackendSnapshotRow,
+    type BackendVersionRow,
+} from '@/api/backend-branch-mapper'
+import {
+    generateBranchId,
+    type Branch,
+    type BrandConfig,
+    type CreateBranchInput,
+    type Snapshot,
+    type Version,
 } from '@juspay/blend-design-system/tokens'
 
 // ---------------------------------------------------------------------------
@@ -63,11 +74,11 @@ type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse
 // ---------------------------------------------------------------------------
 
 interface BranchResponse {
-    branch: Branch
+    branch: BackendBranchRow
 }
 
 interface BranchListResponse {
-    branches: Branch[]
+    branches: BackendBranchRow[]
     nextCursor?: string
 }
 
@@ -133,33 +144,52 @@ async function fetchWithAuth<T>(
 // Branch CRUD
 // ---------------------------------------------------------------------------
 
+function resolveBranchSlug(input: CreateBranchInput): string {
+    const slug =
+        input.slug?.trim() ||
+        input.name.toLowerCase().replace(/[^a-z0-9-]/g, '-')
+    return generateBranchId(input.brandId, slug)
+}
+
 /** Create a new branch. */
 export async function createBranchBackend(
     token: string,
     input: CreateBranchInput,
     organizationId?: string
 ): Promise<Branch> {
+    const branchSlug = resolveBranchSlug(input)
+    const tokenConfig = input.brandConfig
+        ? {
+              ...input.brandConfig,
+              brandId: branchSlug,
+              name: input.name,
+          }
+        : undefined
+
     const data = await fetchWithAuth<BranchResponse>(
         '/api/branches',
         {
             method: 'POST',
             body: JSON.stringify({
+                branchSlug,
                 name: input.name,
-                brandId: input.brandId,
+                slug: input.slug,
                 description: input.description,
                 visibility: input.visibility,
-                brandConfig: input.brandConfig,
+                tokenConfig,
                 parentBranchId:
                     input.parentBranch?.branchId ||
                     input.forkFrom?.branchId ||
                     undefined,
                 tags: input.tags,
+                clientName: input.clientName,
+                projectName: input.projectName,
                 organizationId,
             }),
         },
         token
     )
-    return data.branch
+    return mapBackendBranchToStudioBranch(data.branch)
 }
 
 /** List all branches with optional pagination. */
@@ -181,11 +211,15 @@ export async function listBranchesBackend(
 
     const query = params.toString() ? `?${params.toString()}` : ''
 
-    return fetchWithAuth<BranchListResponse>(
+    const data = await fetchWithAuth<BranchListResponse>(
         `/api/branches${query}`,
         { method: 'GET' },
         token
     )
+    return {
+        branches: data.branches.map(mapBackendBranchToStudioBranch),
+        nextCursor: data.nextCursor,
+    }
 }
 
 /** Get a single branch by ID. */
@@ -198,7 +232,7 @@ export async function getBranchBackend(
         { method: 'GET' },
         token
     )
-    return data.branch
+    return mapBackendBranchToStudioBranch(data.branch)
 }
 
 /** Update a branch's name or brand config. */
@@ -207,18 +241,28 @@ export async function updateBranchBackend(
     branchId: string,
     updates: Partial<{
         name: string
+        description?: string
         brandConfig: BrandConfig
     }>
 ): Promise<Branch> {
+    const payload: Record<string, unknown> = {}
+    if (updates.name !== undefined) payload.name = updates.name
+    if (updates.description !== undefined) {
+        payload.description = updates.description
+    }
+    if (updates.brandConfig !== undefined) {
+        payload.tokenConfig = updates.brandConfig
+    }
+
     const data = await fetchWithAuth<BranchResponse>(
         `/api/branches/${encodeURIComponent(branchId)}`,
         {
             method: 'PATCH',
-            body: JSON.stringify(updates),
+            body: JSON.stringify(payload),
         },
         token
     )
-    return data.branch
+    return mapBackendBranchToStudioBranch(data.branch)
 }
 
 /** Delete a branch. */
@@ -251,7 +295,7 @@ export async function forkBranchBackend(
         },
         token
     )
-    return data.branch
+    return mapBackendBranchToStudioBranch(data.branch)
 }
 
 /** Publish a versioned snapshot of a branch. */
@@ -292,64 +336,41 @@ export async function resolveTokensBackend(
 // ---------------------------------------------------------------------------
 
 interface VersionListResponse {
-    versions: Array<{
-        id: string
-        branchId: string
-        version: string
-        brandConfig: BrandConfig
-        isBreaking: boolean
-        isPrerelease: boolean
-        publishedAt: string
-        publishedBy: string
-        publishedByName?: string
-        changelog?: string
-        downloadCount?: number
-        lastDownloadedAt?: string | null
-        parentVersion?: string | null
-    }>
+    versions: BackendVersionRow[]
 }
 
 /** List all published versions for a branch. */
 export async function listVersionsBackend(
     token: string,
     branchId: string
-): Promise<VersionListResponse['versions']> {
+): Promise<Version[]> {
     const data = await fetchWithAuth<VersionListResponse>(
         `/api/branches/${encodeURIComponent(branchId)}/versions`,
         { method: 'GET' },
         token
     )
-    return data.versions
+    return data.versions.map(mapBackendVersionToStudioVersion)
 }
 
 interface SnapshotResponse {
-    snapshot: {
-        id: string
-        branchId: string
-        brandConfig: BrandConfig
-        savedBy: string
-        savedByName: string
-        savedAt: string
-        label: string | null
-        isAutoSave: boolean
-    }
+    snapshot: BackendSnapshotRow
 }
 
 interface SnapshotListResponse {
-    snapshots: SnapshotResponse['snapshot'][]
+    snapshots: BackendSnapshotRow[]
 }
 
 /** List all snapshots for a branch. */
 export async function listSnapshotsBackend(
     token: string,
     branchId: string
-): Promise<SnapshotListResponse['snapshots']> {
+): Promise<Snapshot[]> {
     const data = await fetchWithAuth<SnapshotListResponse>(
         `/api/branches/${encodeURIComponent(branchId)}/snapshots`,
         { method: 'GET' },
         token
     )
-    return data.snapshots
+    return data.snapshots.map(mapBackendSnapshotToStudioSnapshot)
 }
 
 /** Create a new snapshot for a branch. */
@@ -361,33 +382,24 @@ export async function createSnapshotBackend(
         label?: string
         isAutoSave?: boolean
     }
-): Promise<SnapshotResponse['snapshot']> {
+): Promise<Snapshot> {
     const data = await fetchWithAuth<SnapshotResponse>(
         `/api/branches/${encodeURIComponent(branchId)}/snapshots`,
         {
             method: 'POST',
             body: JSON.stringify({
-                brandConfig: input.brandConfig,
+                tokenConfig: input.brandConfig,
                 label: input.label,
                 isAutoSave: input.isAutoSave ?? true,
             }),
         },
         token
     )
-    return data.snapshot
+    return mapBackendSnapshotToStudioSnapshot(data.snapshot)
 }
 
 interface PublishVersionResponse {
-    version: {
-        id: string
-        branchId: string
-        version: string
-        brandConfig: BrandConfig
-        isBreaking: boolean
-        isPrerelease: boolean
-        publishedAt: string
-        changelog?: string
-    }
+    version: BackendVersionRow
 }
 
 /** Publish a versioned snapshot of a branch with full metadata. */
@@ -400,7 +412,7 @@ export async function publishVersionBackend(
         isBreaking?: boolean
         isPrerelease?: boolean
     }
-): Promise<PublishVersionResponse['version']> {
+): Promise<Version> {
     const data = await fetchWithAuth<PublishVersionResponse>(
         `/api/branches/${encodeURIComponent(branchId)}/publish`,
         {
@@ -414,7 +426,7 @@ export async function publishVersionBackend(
         },
         token
     )
-    return data.version
+    return mapBackendVersionToStudioVersion(data.version)
 }
 
 // ---------------------------------------------------------------------------

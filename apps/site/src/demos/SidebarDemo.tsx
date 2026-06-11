@@ -40,7 +40,10 @@ import {
     SearchIcon,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
-import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
+import {
+    LeftPanelInfo,
+    Sidebar,
+} from '../../../../packages/blend/lib/components/Sidebar'
 import ButtonGroupDemo from './ButtonGroupDemo'
 import ButtonGroupV2Demo from './ButtonGroupV2Demo'
 import TagDemo from './TagDemo'
@@ -104,6 +107,7 @@ import {
 import StepperDemo from './StepperDemo'
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
+import ThemeProviderDemo from './ThemeProviderDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
@@ -215,6 +219,7 @@ const SidebarDemo = () => {
         | 'card'
         | 'dataRangePicker'
         | 'allComponents'
+        | 'themeProvider'
         | 'virtualList'
         | 'skeleton'
         | 'upload'
@@ -249,7 +254,7 @@ const SidebarDemo = () => {
         | 'searchInputV2'
         | 'chatInputV2'
         | 'stepperV2'
-    >('stepperV2')
+    >('checkbox')
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -267,7 +272,7 @@ const SidebarDemo = () => {
     const [, setSidebarState] = useState('expanded')
     // const [sidebarTopMenuOpen, setSidebarTopMenuOpen] = useState<boolean>(false)
 
-    const tenants = [
+    const tenants: LeftPanelInfo['items'] = [
         {
             label: 'Juspay',
             icon: (
@@ -277,6 +282,9 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'juspay',
+            badge: {
+                text: 'IN',
+            },
             showInPanel: true, // Visible in panel
         },
         {
@@ -309,6 +317,9 @@ const SidebarDemo = () => {
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
+            badge: {
+                text: 'USA',
+            },
             value: 'paypal',
             showInPanel: true, // Visible in panel
         },
@@ -578,6 +589,8 @@ const SidebarDemo = () => {
                 return <SkeletonDemo />
             case 'allComponents':
                 return <AllComponentsDemo />
+            case 'themeProvider':
+                return <ThemeProviderDemo />
             case 'virtualList':
                 return <VirtualListDemo />
             case 'upload':
@@ -1638,6 +1651,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'allComponents',
                     onClick: () => setActiveComponent('allComponents'),
+                },
+                {
+                    label: 'ThemeProvider render test',
+                    leftSlot: (
+                        <Palette style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'themeProvider',
+                    onClick: () => setActiveComponent('themeProvider'),
                 },
                 {
                     label: 'Accessibility',
