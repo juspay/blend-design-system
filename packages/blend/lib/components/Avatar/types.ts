@@ -1,5 +1,5 @@
 import type { HTMLAttributes } from 'react'
-import { SkeletonVariant } from '../Skeleton'
+import type { SkeletonVariant } from '../Skeleton/types'
 
 export enum AvatarSize {
     SM = 'sm',

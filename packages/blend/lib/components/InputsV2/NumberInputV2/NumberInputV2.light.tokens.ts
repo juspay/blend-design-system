@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import { ResponsiveNumberInputV2Tokens } from './numberInputV2.tokens'
+import type { ResponsiveNumberInputV2Tokens } from './numberInputV2.tokens.types'
 
 const labelTopContainer = (foundationToken: FoundationTokenType) => ({
     label: {

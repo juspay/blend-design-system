@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { ResponsiveKeyValuePairV2Tokens } from './keyValuePairV2.tokens'
+import type { ResponsiveKeyValuePairV2Tokens } from './keyValuePairV2.tokens.types'
 import { KeyValuePairV2Size } from './keyValuePairV2.types'
 
 export const getKeyValuePairV2DarkTokens = (

@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from 'react'
 import type { AvatarProps } from '../Avatar/types'
 import { AvatarSize, AvatarShape } from '../Avatar/types'
-import { SkeletonVariant } from '../Skeleton'
+import type { SkeletonVariant } from '../Skeleton/types'
 
 export interface AvatarData extends Omit<AvatarProps, 'className' | 'id'> {
     id: string | number

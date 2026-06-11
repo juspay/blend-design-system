@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import { ResponsiveRadioV2Tokens } from './radioV2.tokens'
+import type { ResponsiveRadioV2Tokens } from './radioV2.tokens.types'
 
 export const getRadioV2LightTokens = (
     foundationToken: FoundationTokenType

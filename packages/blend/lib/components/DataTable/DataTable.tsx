@@ -61,6 +61,7 @@ import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnDrawer from './MobileColumnDrawer'
+// eslint-disable-next-line import-x/no-cycle -- intentional recursion: DataTable renders PivotTableModal whose preview renders a nested DataTable
 import PivotTableModal from './PivotTableModal'
 import type { PivotTableConfig } from './PivotTableModal/types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'

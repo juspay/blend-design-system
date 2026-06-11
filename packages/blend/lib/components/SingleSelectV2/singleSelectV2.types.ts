@@ -5,7 +5,7 @@ import type {
     ButtonHTMLAttributes,
 } from 'react'
 import type { CSSObject } from 'styled-components'
-import type { SingleSelectV2TokensType } from './singleSelectV2.tokens'
+import type { SingleSelectV2TokensType } from './singleSelectV2.tokens.types'
 
 import {
     SelectV2Alignment,
