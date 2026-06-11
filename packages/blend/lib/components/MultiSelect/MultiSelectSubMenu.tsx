@@ -3,6 +3,7 @@ import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
 import { type MultiSelectMenuItemType } from './types'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
+// eslint-disable-next-line import-x/no-cycle -- intentional recursion: SubMenu renders MenuItem which renders SubMenu
 import MultiSelectMenuItem from './MultiSelectMenuItem'
 import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'

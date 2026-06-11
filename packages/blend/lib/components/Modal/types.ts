@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import type { ButtonProps } from '../Button'
-import { SkeletonVariant } from '../Skeleton'
+import type { ButtonProps } from '../Button/types'
+import type { SkeletonVariant } from '../Skeleton/types'
 
 type ModalButtonAction = Omit<ButtonProps, 'buttonGroupPosition'>
 

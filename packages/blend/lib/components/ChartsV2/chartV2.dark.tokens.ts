@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { ResponsiveChartV2Tokens } from './chartV2.tokens'
+import type { ResponsiveChartV2Tokens } from './chartV2.tokens.types'
 
 export const getChartV2DarkTokens = (
     foundationToken: FoundationTokenType
