@@ -1,5 +1,5 @@
 import type { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveMenuV2TokensType } from './menuV2.tokens'
+import type { ResponsiveMenuV2TokensType } from './menuV2.tokens.types'
 import { MenuV2ItemActionType, MenuV2ItemVariant } from './menuV2.types'
 
 export const getMenuV2LightTokens = (

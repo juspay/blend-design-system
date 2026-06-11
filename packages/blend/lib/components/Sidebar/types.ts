@@ -1,8 +1,7 @@
 import { type ReactNode } from 'react'
-import type { BadgeColor, BadgePosition, BadgeSize } from '../Badge/Badge.types'
 import type { DirectoryData, NavbarItem } from '../Directory/types'
 import type { MerchantInfo } from '../Topbar/types'
-
+import { BadgeColor, BadgePosition, BadgeSize } from '../Badge/Badge.types'
 export type TenantBadge = {
     text: string
     size?: BadgeSize

@@ -1,6 +1,6 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { AvatarV2Size, AvatarV2Shape, AvatarV2Status } from './avatarV2.types'
-import type { AvatarV2TokensType } from './avatarV2.tokens'
+import type { AvatarV2TokensType } from './avatarV2.tokens.types'
 import type { BreakpointType } from '../../breakpoints/breakPoints'
 
 type ResponsiveAvatarV2Tokens = {

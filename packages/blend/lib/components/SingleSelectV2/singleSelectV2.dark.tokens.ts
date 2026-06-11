@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveSingleSelectV2Tokens } from './singleSelectV2.tokens'
+import type { ResponsiveSingleSelectV2Tokens } from './singleSelectV2.tokens.types'
 import {
     SingleSelectV2Size,
     SingleSelectV2Variant,

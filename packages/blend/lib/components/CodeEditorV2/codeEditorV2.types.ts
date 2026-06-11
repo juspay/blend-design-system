@@ -1,6 +1,10 @@
 import { ReactNode } from 'react'
-import { CodeEditorV2Tokens } from './codeEditorV2.tokens'
+import type { CodeEditorV2Tokens } from './codeEditorV2.tokens.types'
+import { CodeEditorV2DiffLineType } from './codeEditorV2.tokens.types'
 import type { CSSObject } from 'styled-components'
+
+export { CodeEditorV2DiffLineType } from './codeEditorV2.tokens.types'
+
 export enum CodeEditorV2Variant {
     DEFAULT = 'default',
     NO_GUTTER = 'no-gutter',
@@ -10,11 +14,6 @@ export enum CodeEditorV2Variant {
 export enum MonacoTheme {
     LIGHT = 'light',
     DARK = 'dark',
-}
-export enum CodeEditorV2DiffLineType {
-    ADDED = 'added',
-    REMOVED = 'removed',
-    UNCHANGED = 'unchanged',
 }
 
 export type CodeEditorV2DiffLine = {

@@ -1,9 +1,9 @@
 import type { InputHTMLAttributes, ReactElement } from 'react'
-import { RadioV2TokensType } from './radioV2.tokens'
+import { RadioV2TokensType } from './radioV2.tokens.types'
 import { CSSObject } from 'styled-components'
 import { SelectorV2Size } from '../selectorV2.types'
 
-export type RadioV2IndicatorState = 'active' | 'inactive'
+export type { RadioV2IndicatorState } from './radioV2.tokens.types'
 
 export type RadioV2ContentProps = {
     uniqueId: string

@@ -1,8 +1,4 @@
 import * as React from 'react'
-import BreadcrumbV2CompoundItem from './BreadcrumbV2Item'
-import BreadcrumbV2Icon from './BreadcrumbV2Icon'
-import BreadcrumbV2Page from './BreadcrumbV2Page'
-import BreadcrumbV2Separator from './BreadcrumbV2Separator'
 
 export type BreadcrumbV2ItemType = {
     /** Stable unique id for React list keys when `href` may repeat or collide (e.g. dynamic routes). */
@@ -40,14 +36,4 @@ export type BreadcrumbV2Props = {
      * overflow (all crumbs inline).
      */
     maxItems?: number
-}
-
-export type BreadcrumbV2Component = ((
-    props: BreadcrumbV2Props
-) => React.ReactElement | null) & {
-    displayName?: string
-    Item: typeof BreadcrumbV2CompoundItem
-    Icon: typeof BreadcrumbV2Icon
-    Separator: typeof BreadcrumbV2Separator
-    Page: typeof BreadcrumbV2Page
 }

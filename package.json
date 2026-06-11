@@ -26,6 +26,7 @@
         "fix:all": "prettier --write . && pnpm lint:fix",
         "prepare": "husky",
         "build:blend": "cd packages/blend && pnpm build",
+        "check:circular": "pnpm --filter @juspay/blend-design-system check:circular",
         "publish:blend": "cd packages/blend && npm publish --access public",
         "publish:blend:dry": "cd packages/blend && npm publish --dry-run --access public",
         "version:blend": "cd packages/blend && npm version",

@@ -1,6 +1,7 @@
 import React from 'react'
 import Block from '../../Primitives/Block/Block'
-import { ButtonType, ButtonSize, Button, Tooltip } from '../../../main'
+import { ButtonType, ButtonSize, Button } from '../../Button'
+import { Tooltip } from '../../Tooltip'
 import type { ActionButtonsProps } from '../types'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { getMobileToken } from './mobile.tokens'
