@@ -62,7 +62,7 @@
         "tsc-alias": "^1.8.10",
         "tsx": "^4.19.2",
         "typescript": "~5.8.3",
-        "vitest": "^3.2.4"
+        "vitest": "^3.2.6"
     },
     "engines": {
         "node": ">=20.0.0"
