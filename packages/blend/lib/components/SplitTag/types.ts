@@ -1,4 +1,4 @@
-import { TagProps, TagShape, TagSize } from '../Tags'
+import { TagProps, TagShape, TagSize } from '../Tags/types'
 
 export type SplitTagProps = {
     primaryTag: Omit<TagProps, 'splitTagPosition' | 'size' | 'shape'>

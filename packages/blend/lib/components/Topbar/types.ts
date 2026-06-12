@@ -1,15 +1,9 @@
 import type { ReactNode } from 'react'
-import type { LeftPanelInfo } from '../Sidebar/types'
+import type { LeftPanelInfo, MerchantInfo } from '../shared/layoutTypes'
 
-export type MerchantInfo = {
-    items: Array<{
-        label: string
-        value: string
-        icon?: ReactNode
-    }>
-    selected: string
-    onSelect: (value: string) => void
-}
+// Re-exported for backward compatibility: `MerchantInfo` was previously declared
+// here and is part of the public API via `Topbar/index.ts`.
+export type { MerchantInfo } from '../shared/layoutTypes'
 
 export type TopbarProps = {
     children?: ReactNode

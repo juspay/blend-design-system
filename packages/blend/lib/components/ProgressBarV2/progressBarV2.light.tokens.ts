@@ -3,7 +3,7 @@ import {
     ProgressBarV2Appearance,
     ProgressBarV2Size,
 } from './progressBarV2.types'
-import type { ResponsiveProgressBarV2Tokens } from './progressBarV2.tokens'
+import type { ResponsiveProgressBarV2Tokens } from './progressBarV2.tokens.types'
 
 export const getProgressBarV2LightTokens = (
     foundationToken: FoundationTokenType

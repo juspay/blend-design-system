@@ -3,8 +3,8 @@ import { HighchartsReactProps } from 'highcharts-react-official'
 
 import type { HighchartsReactRefObject } from 'highcharts-react-official'
 import Highcharts from 'highcharts'
-import type { ButtonProps } from '../Button'
-import type { SkeletonVariant } from '../Skeleton'
+import type { ButtonProps } from '../Button/types'
+import type { SkeletonVariant } from '../Skeleton/types'
 
 export const ChartV2BaseInstance = Highcharts
 export type ChartV2Type = typeof Highcharts
