@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import type { ResponsiveSwitchV2Tokens } from './switchV2.tokens.types'
+import { ResponsiveSwitchV2Tokens } from './switchV2.tokens'
 
 export const getSwitchV2LightTokens = (
     foundationToken: FoundationTokenType

@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveSidebarV2Tokens } from './sidebarV2.tokens.types'
+import { ResponsiveSidebarV2Tokens } from './sidebarV2.tokens'
 
 export const getSidebarV2DarkTokens = (
     foundationToken: FoundationTokenType

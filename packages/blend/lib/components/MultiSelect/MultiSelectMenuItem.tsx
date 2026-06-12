@@ -1,5 +1,4 @@
 import { type MultiSelectMenuItemType } from './types'
-// eslint-disable-next-line import-x/no-cycle -- intentional recursion: MenuItem renders SubMenu which renders MenuItem
 import MultiSelectSubMenu from './MultiSelectSubMenu'
 import SelectItem, { SelectItemType } from '../Select/SelectItem'
 

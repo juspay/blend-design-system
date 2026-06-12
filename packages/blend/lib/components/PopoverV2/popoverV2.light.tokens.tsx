@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsivePopoverV2Tokens } from './popoverV2.tokens.types'
+import { ResponsivePopoverV2Tokens } from './popoverV2.token'
 
 export const getPopoverV2LightToken = (
     foundationTokens: FoundationTokenType

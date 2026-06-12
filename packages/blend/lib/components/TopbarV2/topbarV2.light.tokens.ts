@@ -1,5 +1,5 @@
 import type { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveTopbarV2Tokens } from './topbarV2.tokens.types'
+import type { ResponsiveTopbarV2Tokens } from './topbarV2.tokens'
 
 export const getTopbarV2LightTokens = (
     foundationToken: FoundationTokenType

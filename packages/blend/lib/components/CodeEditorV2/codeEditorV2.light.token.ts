@@ -1,7 +1,6 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveCodeEditorV2Tokens } from './codeEditorV2.tokens.types'
-import { CodeEditorV2DiffLineType } from './codeEditorV2.tokens.types'
-import { MonacoTheme } from './codeEditorV2.types'
+import { ResponsiveCodeEditorV2Tokens } from './codeEditorV2.tokens'
+import { CodeEditorV2DiffLineType, MonacoTheme } from './codeEditorV2.types'
 
 export const lightCodeEditorV2Tokens = (
     foundationToken: FoundationTokenType

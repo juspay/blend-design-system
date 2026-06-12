@@ -1,15 +1,9 @@
 import { HTMLAttributes, ReactNode } from 'react'
 import { CSSObject } from 'styled-components'
-import {
-    StatCardV2ChangeType,
-    StatCardV2Variant,
-} from './statcardV2.tokens.types'
-import type { StatCardV2TokensType } from './statcardV2.tokens.types'
-import type { ChartV2Options } from '../ChartsV2/chartV2.types'
-import type { SkeletonVariant } from '../Skeleton/types'
-import type { SingleSelectProps } from '../SingleSelect/types'
-
-export { StatCardV2ChangeType, StatCardV2Variant }
+import { StatCardV2TokensType } from './statcardV2.tokens'
+import { ChartV2Options } from '../ChartsV2'
+import { SkeletonVariant } from '../Skeleton'
+import type { SingleSelectProps } from '../SingleSelect'
 
 export type StatCardV2Dimensions = {
     width?: CSSObject['width']
@@ -18,9 +12,20 @@ export type StatCardV2Dimensions = {
     height?: CSSObject['height']
 }
 
+export enum StatCardV2Variant {
+    CHART = 'chart',
+    PROGRESS_BAR = 'progress',
+    NUMBER = 'number',
+}
+
 export enum StatCardV2ArrowDirection {
     UP = 'up',
     DOWN = 'down',
+}
+
+export enum StatCardV2ChangeType {
+    INCREASE = 'increase',
+    DECREASE = 'decrease',
 }
 
 export enum StatCardV2Alignment {

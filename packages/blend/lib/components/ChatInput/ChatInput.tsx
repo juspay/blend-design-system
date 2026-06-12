@@ -7,13 +7,13 @@ import React, {
     useEffect,
     useId,
 } from 'react'
-import { ChatInputProps, TopQuery } from './types'
+import { ChatInputProps, AttachedFile, TopQuery } from './types'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize, ButtonSubType } from '../Button/types'
 import Text from '../Text/Text'
-import { Paperclip } from 'lucide-react'
+import { Paperclip, FileMinus, Image, FileText } from 'lucide-react'
 import { ChatInputTokensType } from './chatInput.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
@@ -30,7 +30,38 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import PrimitiveTextarea from '../Primitives/PrimitiveTextArea'
 import AttachmentFile from './AttachmentFile'
 
-export { getDocIcon } from './getDocIcon'
+export const getDocIcon = (fileType: AttachedFile['type']): React.ReactNode => {
+    switch (fileType) {
+        case 'image':
+            return <Image color={FOUNDATION_THEME.colors.gray[600]} size={12} />
+        case 'pdf':
+            return (
+                <FileMinus
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                    size={12}
+                />
+            )
+        case 'csv':
+            return (
+                <FileMinus
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                    size={12}
+                />
+            )
+        case 'text':
+            return (
+                <FileText color={FOUNDATION_THEME.colors.gray[600]} size={12} />
+            )
+        default:
+            return (
+                <FileMinus
+                    color={FOUNDATION_THEME.colors.gray[600]}
+                    size={12}
+                />
+            )
+    }
+    return '📎'
+}
 
 const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
     (

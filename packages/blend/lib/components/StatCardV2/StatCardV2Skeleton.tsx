@@ -1,5 +1,4 @@
-import { Skeleton } from '../Skeleton'
-import type { SkeletonVariant } from '../Skeleton/types'
+import { Skeleton, SkeletonVariant } from '../Skeleton'
 import type { StatCardV2SkeletonProps } from './statcardV2.types'
 
 const StatCardV2Skeleton = ({

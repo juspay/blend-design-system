@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveButtonV2Tokens } from './buttonV2.tokens.types'
+import type { ResponsiveButtonV2Tokens } from './buttonV2.tokens'
 
 export const getButtonV2DarkTokens = (
     foundationToken: FoundationTokenType

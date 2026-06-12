@@ -1,8 +1,8 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import type {
+import {
     ResponsiveMobileNavigationV2Tokens,
     MobileNavigationV2TokenType,
-} from './mobile.tokens.types'
+} from './mobile.tokens'
 
 export const getMobileNavigationV2DarkTokens = (
     foundationToken: FoundationTokenType

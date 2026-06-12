@@ -1,6 +1,5 @@
 import { SelectItemV2 } from '../SelectV2'
 import type { MultiSelectV2ItemType } from './multiSelectV2.types'
-// eslint-disable-next-line import-x/no-cycle -- intentional recursion: MenuItem renders SubMenu which renders MenuItem
 import MultiSelectV2SubMenu from './MultiSelectV2SubMenu'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'

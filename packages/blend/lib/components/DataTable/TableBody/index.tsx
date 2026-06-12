@@ -19,10 +19,16 @@ import { MenuAlignment, MenuSide } from '../../Menu/types'
 import Skeleton from '../../Skeleton/Skeleton'
 import { getSkeletonState } from '../../Skeleton/utils'
 
-import { Button, ButtonType, ButtonSize, ButtonSubType } from '../../Button'
-import { Checkbox, CheckboxSize } from '../../Checkbox'
-import { Tooltip } from '../../Tooltip'
-import type { TableTokenType } from '../dataTable.tokens'
+import {
+    Button,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+    Checkbox,
+    CheckboxSize,
+    TableTokenType,
+    Tooltip,
+} from '../../../main'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip/types'
 

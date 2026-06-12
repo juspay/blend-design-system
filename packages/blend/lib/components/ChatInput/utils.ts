@@ -2,7 +2,7 @@ import { AttachedFile } from './types'
 import { MenuItemType } from '../Menu/types'
 import { X } from 'lucide-react'
 import React from 'react'
-import { getDocIcon } from './getDocIcon'
+import { getDocIcon } from './ChatInput'
 import { capitalizeFirstLetter } from '../../global-utils/GlobalUtils'
 
 /**

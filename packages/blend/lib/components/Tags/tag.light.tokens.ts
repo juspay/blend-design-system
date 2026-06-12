@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveTagTokens } from './tag.tokens.types'
+import type { ResponsiveTagTokens } from './tag.tokens'
 
 export const getTagLightTokens = (
     foundationToken: FoundationTokenType

@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveTooltipV2Tokens } from './tooltipV2.tokens.types'
+import { ResponsiveTooltipV2Tokens } from './tooltipV2.tokens'
 
 export const getTooltipV2DarkTokens = (
     foundationToken: FoundationTokenType

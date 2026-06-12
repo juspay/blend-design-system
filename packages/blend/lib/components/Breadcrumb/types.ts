@@ -1,4 +1,4 @@
-import type { SkeletonVariant } from '../Skeleton/types'
+import { SkeletonVariant } from '../Skeleton'
 
 export type BreadcrumbSkeletonProps = {
     show: boolean

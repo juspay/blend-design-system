@@ -4,8 +4,8 @@ import {
     NameType,
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
-import type { ButtonProps } from '../Button/types'
-import type { SkeletonVariant } from '../Skeleton/types'
+import { ButtonProps } from '../Button'
+import { SkeletonVariant } from '../Skeleton'
 
 export type DataPoint = {
     primary: {

@@ -1,5 +1,5 @@
 import type { FoundationTokenType } from '../../../tokens/theme.token'
-import type { ResponsiveSearchInputV2Tokens } from './SearchInputV2.tokens.types'
+import type { ResponsiveSearchInputV2Tokens } from './SearchInputV2.tokens'
 
 export const getSearchInputV2DarkTokens = (
     foundationTokens: FoundationTokenType

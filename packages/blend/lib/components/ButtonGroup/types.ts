@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react'
-import type { ButtonProps } from '../Button/types'
+import type { ButtonProps } from '../Button'
 
 export type ButtonGroupProps = {
     stacked?: boolean

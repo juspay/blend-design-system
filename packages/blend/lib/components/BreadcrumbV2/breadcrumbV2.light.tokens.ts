@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveBreadcrumbV2Tokens } from './breadcrumbV2.tokens.types'
+import { ResponsiveBreadcrumbV2Tokens } from './breadcrumbV2.tokens'
 
 export const getBreadcrumbV2LightTokens = (
     foundationToken: FoundationTokenType

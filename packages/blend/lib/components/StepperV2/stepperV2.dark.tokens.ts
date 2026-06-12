@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveStepperV2Tokens } from './stepperV2.tokens.types'
+import { ResponsiveStepperV2Tokens } from './stepperV2.tokens'
 
 export const getStepperV2DarkTokens = (
     foundationToken: FoundationTokenType

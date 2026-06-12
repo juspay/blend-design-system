@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { ButtonProps } from '../Button/types'
-import type { SkeletonVariant } from '../Skeleton/types'
+import { SkeletonVariant } from '../Skeleton'
 
 export enum CardVariant {
     DEFAULT = 'default',
