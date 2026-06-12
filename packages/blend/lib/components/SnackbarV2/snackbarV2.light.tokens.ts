@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveSnackbarV2Tokens } from './snackbarV2.tokens.types'
+import { ResponsiveSnackbarV2Tokens } from './snackbarV2.tokens'
 
 export const getSnackbarV2LightTokens = (
     foundationToken: FoundationTokenType

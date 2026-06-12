@@ -1,12 +1,9 @@
 import { ButtonHTMLAttributes, ReactElement } from 'react'
-import {
-    type SwitchV2TokensType,
-    type SwitchV2Variant,
-} from './switchV2.tokens.types'
+import { SwitchV2TokensType } from './switchV2.tokens'
 import { CSSObject } from 'styled-components'
 import { SelectorV2Size } from '../selectorV2.types'
 
-export type { SwitchV2Variant }
+export type SwitchV2Variant = 'checked' | 'unchecked'
 
 export type SwitchV2ButtonProps = {
     id: string

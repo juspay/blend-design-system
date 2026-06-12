@@ -1,7 +1,6 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import React from 'react'
 import { MenuItemActionType, type MenuItemType, MenuItemVariant } from './types'
-// eslint-disable-next-line import-x/no-cycle -- intentional recursion: MenuItem renders SubMenu which renders MenuItem
 import { SubMenu } from './SubMenu'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'

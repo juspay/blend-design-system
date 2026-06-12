@@ -1,13 +1,77 @@
+import type { CSSObject } from 'styled-components'
+import {
+    TagV2Color,
+    TagV2Size,
+    TagV2Type,
+    TagV2SubType,
+    TagV2PaddingDirection,
+} from './TagV2.types'
+import { BreakpointType } from '../../breakpoints/breakPoints'
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { Theme } from '../../context/theme.enum'
 import { getTagV2DarkTokens } from './tagV2.dark.tokens'
 import { getTagV2LightTokens } from './tagV2.light.tokens'
-import type { ResponsiveTagV2Tokens } from './tagV2.tokens.types'
 
-export type {
-    ResponsiveTagV2Tokens,
-    TagV2TokensType,
-} from './tagV2.tokens.types'
+//Tokens Pattern: component.[target].CSSProp.[size].[variant/type].[subVariant/subType].[state].value
+
+export type TagV2TokensType = Readonly<{
+    border: {
+        [key in TagV2Type]: {
+            [key in TagV2Color]: CSSObject['border']
+        }
+    }
+    borderRadius: {
+        [key in TagV2Size]: {
+            [key in TagV2SubType]: CSSObject['borderRadius']
+        }
+    }
+    backgroundColor: {
+        [key in TagV2Type]: {
+            [key in TagV2Color]: CSSObject['backgroundColor']
+        }
+    }
+    height: {
+        [key in TagV2Size]: CSSObject['height']
+    }
+    padding: {
+        [key in TagV2PaddingDirection]: {
+            [key in TagV2Size]: CSSObject['padding']
+        }
+    }
+    gap: CSSObject['gap']
+
+    leftSlot: {
+        maxHeight: {
+            [key in TagV2Size]: CSSObject['maxHeight']
+        }
+    }
+    rightSlot: {
+        maxHeight: {
+            [key in TagV2Size]: CSSObject['maxHeight']
+        }
+    }
+
+    text: {
+        color: {
+            [key in TagV2Type]: {
+                [key in TagV2Color]: CSSObject['color']
+            }
+        }
+        fontSize: {
+            [key in TagV2Size]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in TagV2Size]: CSSObject['fontWeight']
+        }
+        lineHeight: {
+            [key in TagV2Size]: CSSObject['lineHeight']
+        }
+    }
+}>
+
+export type ResponsiveTagV2Tokens = {
+    [key in keyof BreakpointType]: TagV2TokensType
+}
 
 export const getTagV2Tokens = (
     foundationToken: FoundationTokenType,

@@ -1,18 +1,25 @@
 import type { HTMLAttributes } from 'react'
-import {
-    ProgressBarV2Size,
-    ProgressBarV2Variant,
-    ProgressBarV2Appearance,
-    type ProgressBarV2TokenType,
-} from './progressBarV2.tokens.types'
+import type { ProgressBarV2TokenType } from './progressBarV2.tokens'
 
-// Re-exported for backward compatibility: these enums were previously declared
-// here and are part of the public API.
-export {
-    ProgressBarV2Size,
-    ProgressBarV2Variant,
-    ProgressBarV2Appearance,
-} from './progressBarV2.tokens.types'
+export enum ProgressBarV2Size {
+    SM = 'sm',
+    MD = 'md',
+    LG = 'lg',
+}
+
+/** Bar geometry: horizontal track vs circular ring. */
+export enum ProgressBarV2Variant {
+    LINEAR = 'linear',
+    CIRCULAR = 'circular',
+}
+
+/**
+ * Fill / stroke style shared by linear and circular progress (continuous vs segmented).
+ */
+export enum ProgressBarV2Appearance {
+    SOLID = 'solid',
+    SEGMENTED = 'segmented',
+}
 
 export type ProgressBarV2Props = {
     value: number

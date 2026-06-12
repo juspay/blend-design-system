@@ -1,9 +1,11 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
 import { TimelineNodeStatus } from './types'
-import type {
-    TimelineTokensType,
-    ResponsiveTimelineTokens,
-} from './timeline.tokens.types'
+import type { TimelineTokensType } from './timeline.token'
+import type { BreakpointType } from '../../breakpoints/breakPoints'
+
+type ResponsiveTimelineTokens = {
+    [key in keyof BreakpointType]: TimelineTokensType
+}
 
 const buildTokens = (
     foundationToken: FoundationTokenType

@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import type { ResponsiveCheckboxV2Tokens } from './checkboxV2.tokens.types'
+import { ResponsiveCheckboxV2Tokens } from './checkboxV2.tokens'
 
 export const getCheckboxV2LightTokens = (
     foundationToken: FoundationTokenType

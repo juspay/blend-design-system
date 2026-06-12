@@ -1,5 +1,5 @@
-import type { ButtonProps } from '../Button/types'
-import type { SkeletonVariant } from '../Skeleton/types'
+import type { ButtonProps } from '../Button'
+import { SkeletonVariant } from '../Skeleton'
 
 export type PopoverActionType = Omit<
     ButtonProps,

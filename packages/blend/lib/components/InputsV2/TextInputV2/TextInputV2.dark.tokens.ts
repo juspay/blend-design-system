@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import type { ResponsiveTextInputV2Tokens } from './TextInputV2.tokens.types'
+import { ResponsiveTextInputV2Tokens } from './TextInputV2.tokens'
 
 export const getTextInputV2DarkTokens = (
     foundationTokens: FoundationTokenType

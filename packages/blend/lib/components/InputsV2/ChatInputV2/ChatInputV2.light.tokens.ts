@@ -1,6 +1,6 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
 import { InputStateV2 } from '../inputV2.types'
-import type { ResponsiveChatInputV2TokensType } from './ChatInputV2.tokens.types'
+import { ResponsiveChatInputV2TokensType } from './ChatInputV2.tokens'
 
 export const getChatInputV2LightTokens = (
     foundationToken: FoundationTokenType

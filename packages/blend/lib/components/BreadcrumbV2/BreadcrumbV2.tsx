@@ -7,6 +7,7 @@ import BreadcrumbV2Separator from './BreadcrumbV2Separator'
 import type { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
 import type {
     BreadcrumbCompoundItemProps,
+    BreadcrumbV2Component,
     BreadcrumbV2ItemType,
     BreadcrumbV2Props,
 } from './breadcrumbV2.types'
@@ -16,19 +17,6 @@ import {
     indexBreadcrumbChildren,
 } from './utils'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-
-// Defined here (rather than in breadcrumbV2.types) because it references the
-// compound sub-components by value (`typeof`); keeping it here avoids a cycle
-// between the types module and the component files.
-export type BreadcrumbV2Component = ((
-    props: BreadcrumbV2Props
-) => React.ReactElement | null) & {
-    displayName?: string
-    Item: typeof BreadcrumbV2CompoundItem
-    Icon: typeof BreadcrumbV2Icon
-    Separator: typeof BreadcrumbV2Separator
-    Page: typeof BreadcrumbV2Page
-}
 
 function wrapItemsOnClick(
     onClick: BreadcrumbV2ItemType['onClick']

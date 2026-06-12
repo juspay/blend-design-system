@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
-import { SearchInput } from '../Inputs/SearchInput'
+import { SearchInput } from '../Inputs'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import {
     usePreventParentScroll,

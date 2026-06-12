@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveTabsV2Tokens } from './tabsV2.tokens.types'
+import { ResponsiveTabsV2Tokens } from './tabsV2.tokens'
 import { TabsV2Variant, TabsV2Size } from './tabsV2.types'
 
 export const getTabsV2LightTokens = (

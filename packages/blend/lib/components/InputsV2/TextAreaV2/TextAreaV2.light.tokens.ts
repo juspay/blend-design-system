@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import type { ResponsiveTextAreaV2Tokens } from './TextAreaV2.tokens.types'
+import { ResponsiveTextAreaV2Tokens } from './TextAreaV2.tokens'
 
 export const getTextAreaV2LightTokens = (
     foundationTokens: FoundationTokenType

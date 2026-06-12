@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveBadgeTokens } from './badge.tokens.types'
+import { ResponsiveBadgeTokens } from './badge.tokens'
 
 export const getBadgeDarkTokens = (
     foundationToken: FoundationTokenType
