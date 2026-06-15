@@ -2,6 +2,7 @@ import { ArrowDown, ArrowUp } from 'lucide-react'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
+import { Tooltip } from '../Tooltip'
 import {
     StatCardV2ArrowDirection,
     type StatCardV2ChangeProps,
@@ -13,6 +14,7 @@ const StatCardV2Change = ({
     rightSymbol,
     arrowDirection,
     changeType,
+    tooltip,
     tokens,
     id,
 }: StatCardV2ChangeProps) => {
@@ -24,7 +26,7 @@ const StatCardV2Change = ({
 
     if (changeValueText === undefined || changeValueText === null) return null
 
-    return (
+    const changeContent = (
         <Block
             display="flex"
             alignItems="center"
@@ -33,6 +35,7 @@ const StatCardV2Change = ({
                     .gap
             }
             data-element="statcard-delta"
+            cursor={tooltip ? 'pointer' : undefined}
         >
             <Block
                 data-element="change-arrow"
@@ -84,6 +87,12 @@ const StatCardV2Change = ({
             </Block>
         </Block>
     )
+
+    if (!tooltip) {
+        return changeContent
+    }
+
+    return <Tooltip content={tooltip}>{changeContent}</Tooltip>
 }
 
 export default StatCardV2Change
