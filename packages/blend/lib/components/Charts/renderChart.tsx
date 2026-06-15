@@ -22,6 +22,7 @@ import {
     RenderChartProps,
     TickProps,
     AxisType,
+    AxisIntervalType,
     SankeyData,
     DotItemDotProps,
     FlattenedDataPoint,
@@ -117,9 +118,12 @@ export const renderChart = ({
         }
     }
 
-    // When using custom ticks, set interval to 0 to show all ticks
+    // When using custom ticks, set interval to 0 to show all ticks.
+    // On small screens use preserveStartEnd so recharts auto-hides
     if (finalXAxis.ticks && finalXAxis.interval === undefined) {
-        finalXAxis.interval = 0
+        finalXAxis.interval = isSmallScreen
+            ? AxisIntervalType.PRESERVE_START_END
+            : 0
     }
 
     const getColor = (key: string, chartType: ChartType) => {

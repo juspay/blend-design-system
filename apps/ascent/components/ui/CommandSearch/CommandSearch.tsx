@@ -22,9 +22,15 @@ interface SearchItem {
 
 // Static data - computed once at module load
 const items: SearchItem[] = Object.values(searchIndex)
+const seenTitles = new Set<string>()
 const components = items
-    .filter((item) => item.category === 'components')
+    .filter((item) => item.path.startsWith('components/'))
     .sort((a, b) => a.title.localeCompare(b.title))
+    .filter((item) => {
+        if (seenTitles.has(item.title)) return false
+        seenTitles.add(item.title)
+        return true
+    })
 const blogs = items.filter((item) => item.path.includes('blog'))
 
 export function CommandSearch() {

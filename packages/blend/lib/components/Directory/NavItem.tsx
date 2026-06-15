@@ -368,6 +368,7 @@ const NavItem = ({
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
+                            whiteSpace: 'nowrap',
                         }}
                     >
                         <TruncatedTextWithTooltipV2

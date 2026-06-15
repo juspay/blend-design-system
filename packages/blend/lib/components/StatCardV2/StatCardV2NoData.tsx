@@ -102,6 +102,7 @@ const StatCardV2NoData = ({
                             title={title}
                             helpIconText={helpIconText}
                             tokens={tokens}
+                            isSmallScreen={isSmallScreen}
                         />
                     </Block>
                 </Block>

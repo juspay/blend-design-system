@@ -50,6 +50,7 @@ export type StatCardV2TitleProps = {
     helpIconText?: string
     tokens: StatCardV2TokensType
     id?: string
+    isSmallScreen?: boolean
 }
 
 export type StatCardV2ChangeProps = {
@@ -59,6 +60,7 @@ export type StatCardV2ChangeProps = {
     arrowDirection: StatCardV2ArrowDirection
     changeType: StatCardV2ChangeType
     tokens: StatCardV2TokensType
+    tooltip?: ReactNode
     id?: string
 }
 
@@ -76,6 +78,7 @@ export type StatCardV2Props = {
     value?: string
     progressValue?: number
     helpIconText?: string
+    valueTooltip?: ReactNode
     change?: StatCardV2Change
     subtitle?: string
     options?: ChartV2Options
