@@ -37,6 +37,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
             variant = StatCardV2Variant.NUMBER,
             actionIcon,
             value,
+            valueTooltip,
             progressValue,
             change,
             subtitle,
@@ -198,6 +199,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                                     title={title}
                                     helpIconText={helpIconText}
                                     tokens={tokens}
+                                    isSmallScreen={isSmallScreen}
                                 />
                                 <Block
                                     display="flex"
@@ -215,8 +217,10 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                                         <StatCardV2Value
                                             id={valueId}
                                             value={value}
+                                            valueTooltip={valueTooltip}
                                             tokens={tokens}
                                             variant={variant}
+                                            isSmallScreen={isSmallScreen}
                                         />
                                         <StatCardV2Change
                                             id={changeId}
@@ -227,6 +231,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                                                 effectiveArrowDirection
                                             }
                                             changeType={effectiveChangeType}
+                                            tooltip={change?.tooltip}
                                             tokens={tokens}
                                         />
                                     </Block>
