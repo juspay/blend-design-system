@@ -204,6 +204,7 @@ const Section = ({
                         color={tokens.section.header.label.color}
                         fontWeight={tokens.section.header.label.fontWeight}
                         fontSize={tokens.section.header.label.fontSize}
+                        style={{ whiteSpace: 'nowrap' }}
                     >
                         {section.label.toUpperCase()}
                     </Text>
