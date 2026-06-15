@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import ButtonDemo from './ButtonDemo'
 import ButtonV2Demo from './ButtonV2Demo'
 import {
@@ -144,7 +144,7 @@ import {
 } from '../../../../packages/blend/lib/components/SingleSelectV2'
 
 const SidebarV2Demo = () => {
-    const [activeComponent, setActiveComponent] = useState<
+    const [activeComponent, setActiveComponentState] = useState<
         | 'buttons'
         | 'buttonV2'
         | 'accessibility'
@@ -229,7 +229,25 @@ const SidebarV2Demo = () => {
         | 'timeline'
         | 'tooltipV2'
         | 'popoverV2'
-    >('popoverV2')
+    >(() => {
+        return (window.location.hash.slice(1) || 'popoverV2') as any
+    })
+
+    const setActiveComponent = (id: string) => {
+        setActiveComponentState(id as any)
+        window.location.hash = id
+    }
+
+    useEffect(() => {
+        const handler = (e: CustomEvent) => {
+            const { demoId } = e.detail
+            setActiveComponentState(demoId as any)
+            window.location.hash = demoId
+        }
+        window.addEventListener('select-demo', handler as EventListener)
+        return () =>
+            window.removeEventListener('select-demo', handler as EventListener)
+    }, [])
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -1659,13 +1677,20 @@ const SidebarV2Demo = () => {
                     data={sampleData}
                     topbar={
                         <div className="flex items-center justify-between gap-2">
-                            <div className=" flex items-center gap-3 ">
+                            <div
+                                className=" flex items-center gap-3 cursor-pointer border py-1 px-2 rounded-lg border-gray-300"
+                                onClick={() =>
+                                    window.dispatchEvent(
+                                        new CustomEvent('open-command-search')
+                                    )
+                                }
+                            >
                                 {' '}
                                 <div className="text-sm text-gray-400 flex items-center gap-1">
                                     <SearchIcon
                                         size={16}
                                         color={
-                                            FOUNDATION_THEME.colors.gray[600]
+                                            FOUNDATION_THEME.colors.gray[400]
                                         }
                                     />{' '}
                                     Search
@@ -1677,7 +1702,7 @@ const SidebarV2Demo = () => {
                                             .gray[400],
                                     }}
                                 >
-                                    {`(⌘K)`}
+                                    {`⌘ + K`}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2">
