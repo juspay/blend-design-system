@@ -121,10 +121,6 @@ export function CommandSearch({ items, onSelect }: CommandSearchProps) {
         }
     }, [selectedIndex])
 
-    const openKrdo = () => {
-        setOpen(true)
-    }
-
     return (
         <Modal
             isOpen={open}
