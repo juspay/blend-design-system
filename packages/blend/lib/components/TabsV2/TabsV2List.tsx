@@ -343,6 +343,7 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                 data-element="tabs-list"
                 data-status={expanded ? 'expanded' : 'collapsed'}
                 style={{
+                    width: '100%',
                     position: stickyHeader ? 'sticky' : 'relative',
                     top: stickyHeader ? offsetTop : 'auto',
                     zIndex: stickyHeader
@@ -351,7 +352,10 @@ const TabsV2List = forwardRef<HTMLDivElement, TabsV2ListProps>(
                     backgroundColor: stickyHeader
                         ? stickyHeaderBackground
                         : 'transparent',
-                    borderBottom: 'none',
+                    borderBottom:
+                        variant === TabsV2Variant.UNDERLINE && !hasAnySkeleton
+                            ? tabsToken.tabList.borderBottom[variant]
+                            : 'none',
                     boxShadow: stickyHeader
                         ? tabsToken.tabList.stickyHeader.boxShadow
                         : 'none',
