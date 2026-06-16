@@ -1558,6 +1558,121 @@ const CardDemo = () => {
                 </div>
             </div>
 
+            {/* Overflow Test Section */}
+            <div>
+                <h2
+                    style={{
+                        fontSize: '20px',
+                        fontWeight: '600',
+                        marginBottom: '16px',
+                    }}
+                >
+                    Overflow Test — Large Content
+                </h2>
+                <p
+                    style={{
+                        color: '#666',
+                        fontSize: '14px',
+                        marginBottom: '20px',
+                    }}
+                >
+                    These cards contain content larger than the card boundaries.
+                    If <code>overflow: hidden</code> is missing, content will
+                    bleed past the card&apos;s rounded corners.
+                </p>
+
+                <div
+                    style={{
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(320px, 1fr))',
+                        gap: '20px',
+                        marginBottom: '32px',
+                    }}
+                >
+                    {/* Default Card with oversized image */}
+                    <Card
+                        headerTitle="Oversized Image"
+                        headerTag={
+                            <Tag
+                                text="Bleed Test"
+                                variant={TagVariant.ATTENTIVE}
+                                color={TagColor.WARNING}
+                                size={TagSize.SM}
+                            />
+                        }
+                        bodyTitle="Image wider than card"
+                        content="This card has a child image that is intentionally wider than the card width. Without overflow:hidden, the image corners will pierce through the card's border-radius."
+                    >
+                        <div style={{ marginTop: '12px' }}>
+                            <img
+                                src="https://picsum.photos/800/200"
+                                alt="Wide test"
+                                style={{
+                                    width: '120%',
+                                    marginLeft: '-10%',
+                                    display: 'block',
+                                    height: 'auto',
+                                }}
+                            />
+                        </div>
+                    </Card>
+
+                    {/* Custom Card with huge block */}
+                    <Card variant={CardVariant.CUSTOM}>
+                        <div
+                            style={{
+                                width: '150%',
+                                height: '120px',
+                                background:
+                                    'linear-gradient(90deg, #ff0080, #7928ca)',
+                                marginLeft: '-25%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: 'white',
+                                fontWeight: '700',
+                                fontSize: '16px',
+                            }}
+                        >
+                            Wide Block Bleeding Out
+                        </div>
+                        <p style={{ marginTop: '12px', color: '#666' }}>
+                            The gradient block above is 150% width with negative
+                            margin. Watch if it escapes the card boundary.
+                        </p>
+                    </Card>
+
+                    {/* Aligned card with oversized cardSlot */}
+                    <Card
+                        variant={CardVariant.ALIGNED}
+                        alignment={CardAlignment.VERTICAL}
+                        centerAlign={false}
+                        cardSlot={
+                            <img
+                                src="https://picsum.photos/600/300"
+                                alt="Tall test"
+                                style={{
+                                    width: '140%',
+                                    maxWidth: 'none',
+                                    height: 'auto',
+                                    display: 'block',
+                                    objectFit: 'cover',
+                                }}
+                            />
+                        }
+                        headerTitle="Aligned Oversized Slot"
+                        bodyTitle="Image bleeds sideways"
+                        content="The cardSlot image is stretched beyond the card width. If overflow is not clipped, corners won't respect the card border-radius."
+                        actionButton={{
+                            text: 'Action',
+                            buttonType: ButtonType.PRIMARY,
+                            size: ButtonSize.SMALL,
+                        }}
+                    />
+                </div>
+            </div>
+
             {/* Usage Guidelines */}
             <div
                 style={{
