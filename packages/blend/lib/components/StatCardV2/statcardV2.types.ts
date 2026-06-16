@@ -84,5 +84,6 @@ export type StatCardV2Props = {
     options?: ChartV2Options
     skeleton?: StatCardV2SkeletonProps
     dropdownProps?: SingleSelectProps
+    showBorder?: boolean
 } & HTMLAttributes<HTMLDivElement> &
     StatCardV2Dimensions
