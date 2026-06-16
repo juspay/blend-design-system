@@ -48,6 +48,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
             height,
             options,
             skeleton,
+            showBorder = true,
             ...props
         },
         ref
@@ -131,6 +132,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                     tokens={tokens}
                     isSmallScreen={isSmallScreen}
                     filteredProps={filteredProps}
+                    showBorder={showBorder}
                 />
             )
         }
@@ -141,14 +143,14 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                 display="flex"
                 flexDirection="column"
                 justifyContent="space-between"
-                paddingTop={tokens.paddingTop}
-                paddingBottom={tokens.paddingBottom}
-                paddingLeft={tokens.paddingLeft}
-                paddingRight={tokens.paddingRight}
-                border={tokens.border}
+                paddingTop={showBorder ? tokens.paddingTop : undefined}
+                paddingBottom={showBorder ? tokens.paddingBottom : undefined}
+                paddingLeft={showBorder ? tokens.paddingLeft : undefined}
+                paddingRight={showBorder ? tokens.paddingRight : undefined}
+                border={showBorder ? tokens.border : undefined}
                 borderRadius={tokens.borderRadius}
                 backgroundColor={tokens.backgroundColor}
-                boxShadow={tokens.boxShadow}
+                boxShadow={showBorder ? tokens.boxShadow : undefined}
                 maxWidth={maxWidth ?? tokens.maxWidth}
                 minWidth={minWidth ?? tokens.minWidth}
                 width={width ?? tokens.width}
