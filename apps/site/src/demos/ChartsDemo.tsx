@@ -41,6 +41,7 @@ import {
     last7daysDailyData,
     last7daysHourlyData,
 } from './ChartsData'
+import { Button } from '@juspay/blend-design-system'
 
 const LineBarDemo = () => {
     const lineBarData: NewNestedDataPoint[] = [
@@ -6284,9 +6285,9 @@ const ChartDemo = () => {
                 colors={customColors}
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
-                slot1={<div>Hello</div>}
-                slot2={<div>World</div>}
-                slot3={<div>World</div>}
+                // slot1={<div>Hello</div>}
+                // slot2={<div>World</div>}
+                // slot3={<div>World</div>}
                 xAxis={{
                     label: 'Date & Time Together',
                     show: true,
@@ -6303,11 +6304,12 @@ const ChartDemo = () => {
                     showLabel: true,
                 }}
                 chartHeaderSlot={
-                    <div className="chart-header">
-                        <Activity size={16} className="text-green-600" />
-                        <h4 style={{ margin: 0, fontSize: '14px' }}>
-                            Smart Date/Time Ticks (Like Highcharts!)
-                        </h4>
+                    <div className="chart-header overflow-hidden">
+                        <div className="flex gap-4 overflow-scroll">
+                            <Button text="Button 1" title="btn" />
+                            <Button text="Button 2" title="btn2" />
+                            <Button text="Button 3" title="btn3" />
+                        </div>
                     </div>
                 }
             />
