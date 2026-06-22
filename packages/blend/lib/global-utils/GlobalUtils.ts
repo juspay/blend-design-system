@@ -18,7 +18,16 @@ export const capitalizeFirstLetter = (string: string): string => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase()
 }
 
-export const getTruncatedText = (text: string, limit?: number) => {
+export type TruncatedTextResult = {
+    truncatedValue: string
+    fullValue: string
+    isTruncated: boolean
+}
+
+export const getTruncatedText = (
+    text: string,
+    limit?: number
+): TruncatedTextResult => {
     const shouldTruncate =
         typeof limit === 'number' && limit > 0 && text.length > limit
 
