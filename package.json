@@ -73,6 +73,7 @@
     },
     "dependencies": {
         "@phosphor-icons/react": "^2.1.10",
+        "expo-linear-gradient": "~56.0.4",
         "react-hook-form": "^7.62.0",
         "react-phone-input-2": "^2.15.1"
     }
