@@ -2,11 +2,21 @@ import { type ReactNode } from 'react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import type { SkeletonTokensType } from '../skeleton.tokens'
 
+export type UseSkeletonBaseResult = {
+    shouldRender: boolean
+    fallback: ReactNode | null
+    tokens: SkeletonTokensType | null
+    prefersReducedMotion: boolean
+}
+
 /**
  * Shared hook for all skeleton components to eliminate code duplication
  * Handles token fetching, loading state, and motion preferences
  */
-export const useSkeletonBase = (loading: boolean, children?: ReactNode) => {
+export const useSkeletonBase = (
+    loading: boolean,
+    children?: ReactNode
+): UseSkeletonBaseResult => {
     const tokens = useResponsiveTokens<SkeletonTokensType>('SKELETON')
 
     // Check for motion preferences (accessibility)
