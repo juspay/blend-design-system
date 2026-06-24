@@ -1,4 +1,4 @@
-import { FilterType, ColumnType } from './types'
+import { FilterType, ColumnType, DateFormat } from './types'
 
 export type ColumnFilterOption = {
     id: string
@@ -45,13 +45,13 @@ export type MultiSelectData = {
 
 export type DateData = {
     date: Date | string
-    format?: string
+    format?: DateFormat
 }
 
 export type DateRangeData = {
     startDate: Date | string
     endDate: Date | string
-    format?: string
+    format?: DateFormat
 }
 
 export type ColumnDataTypeMap = {
