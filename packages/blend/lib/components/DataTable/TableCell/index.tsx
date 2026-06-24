@@ -485,8 +485,6 @@ const TableCell = forwardRef<
                         <TruncatedTextWithTooltip
                             text={date ? formatDate(date) : '-'}
                             style={{
-                                fontSize:
-                                    FOUNDATION_THEME.font.size.body.sm.fontSize,
                                 color: FOUNDATION_THEME.colors.gray[700],
                             }}
                         />
