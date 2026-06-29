@@ -111,6 +111,7 @@ export type DateColumnProps = {
     date: Date | string
     format?: DateFormat
     showTime?: boolean
+    dateLabel?: string
 }
 
 export type SliderColumnProps = {
@@ -274,6 +275,11 @@ export type ColumnDefinition<T> =
           ) => ReactNode
           dateFormat?: DateFormat
           showTime?: boolean
+          /**
+           * Optional label appended after the formatted date, e.g. "(IST)".
+           * Column-level value can be overridden per-cell via DateColumnProps.dateLabel.
+           */
+          dateLabel?: string
       })
     | (BaseColumnDefinition<T> & {
           type: ColumnType.SLIDER
@@ -475,6 +481,12 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     // Mobile configuration
     mobileColumnsToShow?: number
+
+    /**
+     * Optional label appended after formatted dates in DATE columns,
+     * e.g. "(IST)". Can be overridden per-column or per-cell.
+     */
+    dateLabel?: string
 
     // Internal pivot modal configuration
     enablePivotTable?: boolean

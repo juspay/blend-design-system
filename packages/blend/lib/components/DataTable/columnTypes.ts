@@ -46,12 +46,14 @@ export type MultiSelectData = {
 export type DateData = {
     date: Date | string
     format?: DateFormat
+    dateLabel?: string
 }
 
 export type DateRangeData = {
     startDate: Date | string
     endDate: Date | string
     format?: DateFormat
+    dateLabel?: string
 }
 
 export type ColumnDataTypeMap = {

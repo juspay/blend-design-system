@@ -84,9 +84,13 @@ const isEmptyValue = (value: unknown, columnType?: ColumnType): boolean => {
 const TruncatedTextWithTooltip = ({
     text,
     style = {},
+    suffix,
+    tableToken,
 }: {
     text: string
     style?: React.CSSProperties
+    suffix?: string
+    tableToken?: TableTokenType
 }) => {
     const textRef = useRef<HTMLSpanElement>(null)
     const [isTruncated, setIsTruncated] = useState(false)
@@ -130,16 +134,32 @@ const TruncatedTextWithTooltip = ({
         <span
             ref={textRef}
             style={{
-                display: 'block',
+                display: 'inline-flex',
+                alignItems: 'baseline',
                 width: '100%',
                 minWidth: 0,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                gap: '3px',
                 ...style,
             }}
         >
             {text}
+            {suffix != null && (
+                <span
+                    style={{
+                        fontSize:
+                            tableToken?.dataTable.table.body.cell.dateLabel
+                                .fontSize,
+                        color: tableToken?.dataTable.table.body.cell.dateLabel
+                            .color,
+                        whiteSpace: 'nowrap',
+                    }}
+                >
+                    {suffix}
+                </span>
+            )}
         </span>
     )
 
@@ -182,6 +202,7 @@ const TableCell = forwardRef<
             hasCustomBackground,
             onFieldChange,
             getDisplayValue,
+            dateLabel,
             'data-row-index': dataRowIndex,
             'data-col-index': dataColIndex,
             tabIndex: cellTabIndex,
@@ -468,6 +489,11 @@ const TableCell = forwardRef<
                     (column as { dateFormat?: DateFormat }).dateFormat ||
                     (showTime ? 'DD MMM YYYY, hh:mm A' : 'DD MMM YYYY')
 
+                const dateLabelStr =
+                    dateData.dateLabel ||
+                    (column as { dateLabel?: string }).dateLabel ||
+                    dateLabel
+
                 const formatDate = (date: Date): string => {
                     if (isNaN(date.getTime())) return '-'
                     return formatDateString(date, formatStr)
@@ -486,6 +512,8 @@ const TableCell = forwardRef<
                             style={{
                                 color: FOUNDATION_THEME.colors.gray[700],
                             }}
+                            suffix={dateLabelStr}
+                            tableToken={tableToken}
                         />
                     </Block>
                 )

@@ -1561,7 +1561,9 @@ const DateColumnFormatDemo = () => {
                     Demonstrates the date fixes: (1) date cells inherit the
                     standard 14px body font size; (2) a custom format string can
                     be passed per-column via <code>dateFormat</code> or per-cell
-                    via <code>DateColumnProps.format</code>.
+                    via <code>DateColumnProps.format</code>; (3) a small muted
+                    date label such as <code>(IST)</code> can be appended via{' '}
+                    <code>dateLabel</code> at the table, column, or cell level.
                 </p>
             </div>
 
@@ -1619,6 +1621,111 @@ const DateColumnFormatDemo = () => {
                         />
                     </div>
                 ))}
+
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        Table-level dateLabel
+                    </h4>
+                    <p
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '13px',
+                            color: '#6b7280',
+                        }}
+                    >
+                        Applies <code>dateLabel=&quot;(IST)&quot;</code> to the
+                        whole table. Every date cell gets the muted suffix.
+                    </p>
+                    <DataTable
+                        data={orderData as unknown as Record<string, unknown>[]}
+                        columns={
+                            buildColumns(
+                                'placedAt',
+                                'MMM DD, YYYY hh:mm A',
+                                'Gateway Updated'
+                            ) as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        dateLabel="(IST)"
+                        enableSearch={false}
+                        showFooter={false}
+                        showHeader={true}
+                    />
+                </div>
+
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        Column + cell dateLabel override
+                    </h4>
+                    <p
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '13px',
+                            color: '#6b7280',
+                        }}
+                    >
+                        Column says <code>dateLabel=&quot;(PST)&quot;</code>,
+                        but the first cell overrides it with{' '}
+                        <code>dateLabel: &quot;(UTC)&quot;</code>.
+                    </p>
+                    <DataTable
+                        data={
+                            [
+                                {
+                                    ...orderData[0],
+                                    placedAt: {
+                                        ...orderData[0].placedAt,
+                                        dateLabel: '(UTC)',
+                                    },
+                                },
+                                orderData[1],
+                                orderData[2],
+                            ] as unknown as Record<string, unknown>[]
+                        }
+                        columns={
+                            [
+                                {
+                                    field: 'orderId',
+                                    header: 'Order ID',
+                                    type: ColumnType.TEXT,
+                                    minWidth: '100px',
+                                    maxWidth: '120px',
+                                },
+                                {
+                                    field: 'placedAt',
+                                    header: 'Placed',
+                                    type: ColumnType.DATE,
+                                    dateFormat: 'MMM DD, YYYY hh:mm A',
+                                    dateLabel: '(PST)',
+                                    minWidth: '200px',
+                                    maxWidth: '260px',
+                                },
+                            ] as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        enableSearch={false}
+                        showFooter={false}
+                        showHeader={true}
+                    />
+                </div>
             </div>
 
             <div
@@ -1654,6 +1761,13 @@ const DateColumnFormatDemo = () => {
                         <code>DD</code>/<code>dd</code>, <code>HH</code> (24h),{' '}
                         <code>hh</code> (12h), <code>mm</code>, <code>ss</code>,{' '}
                         <code>A</code>/<code>a</code> (AM/PM).
+                    </li>
+                    <li>
+                        Use <code>dateLabel</code> to append a timezone or any
+                        short marker after the date. It is rendered in a
+                        smaller, muted style and can be set at the table,
+                        column, or cell level — with cell winning over column,
+                        and column over table.
                     </li>
                 </ul>
             </div>
