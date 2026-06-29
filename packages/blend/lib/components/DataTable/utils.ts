@@ -7,6 +7,7 @@ import {
     ColumnDefinition,
     ColumnType,
     PivotAggregationType,
+    DateFormat,
 } from './types'
 import {
     validateColumnData,
@@ -904,6 +905,91 @@ export const formatDate = (dateString: string): string => {
     }).format(date)
 }
 
+/**
+ * Token map for the lightweight format-string parser. Supports the common
+ * dashboard tokens; anything else is passed through literally.
+ *
+ *   YYYY  -> 4-digit year          YY   -> 2-digit year
+ *   MM    -> 2-digit month         MMM  -> short month name (Jan)
+ *   DD    -> 2-digit day           dd   -> 2-digit day (alias)
+ *   HH    -> 24h hour (2-digit)    hh   -> 12h hour (2-digit)
+ *   mm    -> minutes (2-digit)     ss   -> seconds (2-digit)
+ *   A     -> AM/PM                 a    -> am/pm
+ */
+const FORMAT_TOKEN_PATTERN = /YYYY|YY|MMM|MM|dd|DD|HH|hh|mm|ss|A|a/g
+
+const pad2 = (n: number): string => String(n).padStart(2, '0')
+
+// Format a Date using a format string like "DD MMM YYYY, hh:mm A"
+export const formatDateString = (date: Date, format: string): string => {
+    if (isNaN(date.getTime())) return '-'
+
+    const parts = new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+    }).formatToParts(date)
+
+    const lookup: Record<string, string> = {}
+    for (const p of parts) {
+        if (p.type !== 'literal') lookup[p.type] = p.value
+    }
+
+    const year = lookup.year ?? ''
+    const monthNum = lookup.month ?? ''
+    const day = lookup.day ?? ''
+    const hour24 = lookup.hour ?? ''
+    const minute = lookup.minute ?? ''
+    const second = lookup.second ?? ''
+
+    // Short month name via a separate formatter (month: 'short' gives 'Jan' etc.)
+    const shortMonth = new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+    }).format(date)
+
+    // Normalize the 24-hour value: some browsers/locales return "24" for
+    // midnight instead of "00". Convert 24 -> 0 so HH always prints 00.
+    const hourNumRaw = parseInt(hour24, 10)
+    const hourNum = hourNumRaw === 24 ? 0 : hourNumRaw
+    const hour12 = (hourNum % 12 || 12).toString()
+    const ampm = hourNum < 12 ? 'AM' : 'PM'
+
+    FORMAT_TOKEN_PATTERN.lastIndex = 0
+    return format.replace(FORMAT_TOKEN_PATTERN, (token) => {
+        switch (token) {
+            case 'YYYY':
+                return year
+            case 'YY':
+                return year.slice(-2)
+            case 'MMM':
+                return shortMonth
+            case 'MM':
+                return monthNum
+            case 'DD':
+            case 'dd':
+                return day
+            case 'HH':
+                return pad2(hourNum)
+            case 'hh':
+                return pad2(parseInt(hour12, 10))
+            case 'mm':
+                return minute
+            case 'ss':
+                return second
+            case 'A':
+                return ampm
+            case 'a':
+                return ampm.toLowerCase()
+            default:
+                return token
+        }
+    })
+}
+
 export const updateColumnFilter = (
     currentFilters: ColumnFilter[],
     field: keyof Record<string, unknown>,
@@ -994,7 +1080,7 @@ const getExportValue = <T extends Record<string, unknown>>(
             ) {
                 const dateData = value as {
                     date: Date | string
-                    format?: string
+                    format?: DateFormat
                     showTime?: boolean
                 }
                 const date = new Date(dateData.date)
@@ -1267,7 +1353,7 @@ export const createMultiSelectData = (
 
 export const createDateData = (
     date: Date | string,
-    format?: string
+    format?: DateFormat
 ): DateData => ({
     date,
     format,
@@ -1276,7 +1362,7 @@ export const createDateData = (
 export const createDateRangeData = (
     startDate: Date | string,
     endDate: Date | string,
-    format?: string
+    format?: DateFormat
 ): DateRangeData => ({
     startDate,
     endDate,
@@ -1317,9 +1403,9 @@ const getExpectedTypeDescription = (columnType: ColumnType): string => {
         case ColumnType.MULTISELECT:
             return 'MultiSelectData { values: string[], labels?: string[] } or string[]'
         case ColumnType.DATE:
-            return 'DateData { date: Date | string, format?: string } or Date or string'
+            return 'DateData { date: Date | string, format?: DateFormat } or Date or string'
         case ColumnType.DATE_RANGE:
-            return 'DateRangeData { startDate: Date | string, endDate: Date | string, format?: string }'
+            return 'DateRangeData { startDate: Date | string, endDate: Date | string, format?: DateFormat }'
         case ColumnType.TEXT:
             return 'string or number'
         case ColumnType.NUMBER:

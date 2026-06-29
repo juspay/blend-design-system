@@ -38,6 +38,7 @@ const StatCardV2Demo = () => {
     const [showActionIcon, setShowActionIcon] = useState(true)
     const [showHelpText, setShowHelpText] = useState(true)
     const [showSkeleton, setShowSkeleton] = useState(false)
+    const [showBorder, setShowBorder] = useState(true)
     const [chartType, setChartType] = useState<'column' | 'line' | 'area'>(
         'column'
     )
@@ -260,6 +261,11 @@ const StatCardV2Demo = () => {
                             checked={showSkeleton}
                             onChange={() => setShowSkeleton((prev) => !prev)}
                         />
+                        <Switch
+                            label="Show border"
+                            checked={showBorder}
+                            onChange={() => setShowBorder((prev) => !prev)}
+                        />
                     </div>
                 </div>
 
@@ -278,6 +284,7 @@ const StatCardV2Demo = () => {
                     <StatCardV2
                         title={title}
                         subtitle={subtitle}
+                        showBorder={showBorder}
                         titleIcon={
                             showTitleIcon ? <Star size={16} /> : undefined
                         }

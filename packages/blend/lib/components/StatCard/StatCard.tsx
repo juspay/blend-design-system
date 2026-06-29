@@ -588,7 +588,11 @@ const StatCard = ({
                 overflow="hidden"
                 backgroundColor={statCardToken.backgroundColor}
                 boxShadow={showBorder ? statCardToken.boxShadow : undefined}
-                padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
+                padding={
+                    showBorder
+                        ? `${statCardToken.padding.y} ${statCardToken.padding.x}`
+                        : undefined
+                }
                 display="flex"
                 flexDirection="column"
                 // gap={statCardToken.gap}
@@ -737,7 +741,11 @@ const StatCard = ({
             overflow="hidden"
             backgroundColor={statCardToken.backgroundColor}
             boxShadow={showBorder ? statCardToken.boxShadow : undefined}
-            padding={`${statCardToken.padding.y} ${statCardToken.padding.x}`}
+            padding={
+                showBorder
+                    ? `${statCardToken.padding.y} ${statCardToken.padding.x}`
+                    : undefined
+            }
             display="flex"
             flexDirection="column"
             // gap={statCardToken.gap}

@@ -265,7 +265,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                             )}
                         </Block>
 
-                        {showCopyButton && (
+                        {showCopyButton && !isDiffMode && (
                             <Button
                                 data-element="copy-button"
                                 type="button"
@@ -301,14 +301,18 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                     backgroundColor={tokens.body.backgroundColor}
                     overflow="auto"
                     position={
-                        !showHeader && showCopyButton ? 'relative' : undefined
+                        !showHeader && showCopyButton && !isDiffMode
+                            ? 'relative'
+                            : undefined
                     }
                     className={
-                        !showHeader && showCopyButton ? 'code-body' : undefined
+                        !showHeader && showCopyButton && !isDiffMode
+                            ? 'code-body'
+                            : undefined
                     }
                     style={{ maxHeight: maxHeight || 'none' }}
                 >
-                    {!showHeader && showCopyButton && (
+                    {!showHeader && showCopyButton && !isDiffMode && (
                         <CopyOverlay>
                             <Button
                                 data-element="copy-button"

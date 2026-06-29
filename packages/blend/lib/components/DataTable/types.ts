@@ -88,10 +88,30 @@ export type DropdownColumnProps = {
     onSelect?: (value: unknown) => void
 }
 
+/**
+ * Format string for date display in DataTable DATE columns.
+ * @example 'DD MMM YYYY'           → "24 Jun 2026"
+ * @example 'DD/MM/YYYY'            → "24/06/2026"
+ * @example 'DD MMM YYYY, hh:mm A'  → "24 Jun 2026, 10:30 AM"
+ */
+
+export type DateFormat =
+    | 'DD MMM YYYY'
+    | 'DD/MM/YYYY'
+    | 'MM/DD/YYYY'
+    | 'YYYY-MM-DD'
+    | 'DD MMM YYYY, hh:mm A'
+    | 'DD MMM YYYY, HH:mm'
+    | 'MMM DD, YYYY'
+    | 'YYYY/MM/DD HH:mm'
+    | 'HH:mm:ss'
+    | (string & {})
+
 export type DateColumnProps = {
     date: Date | string
-    format?: string
+    format?: DateFormat
     showTime?: boolean
+    dateLabel?: string
 }
 
 export type SliderColumnProps = {
@@ -253,8 +273,13 @@ export type ColumnDefinition<T> =
               row: T,
               index: number
           ) => ReactNode
-          dateFormat?: string
+          dateFormat?: DateFormat
           showTime?: boolean
+          /**
+           * Optional label appended after the formatted date, e.g. "(IST)".
+           * Column-level value can be overridden per-cell via DateColumnProps.dateLabel.
+           */
+          dateLabel?: string
       })
     | (BaseColumnDefinition<T> & {
           type: ColumnType.SLIDER
@@ -456,6 +481,12 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     // Mobile configuration
     mobileColumnsToShow?: number
+
+    /**
+     * Optional label appended after formatted dates in DATE columns,
+     * e.g. "(IST)". Can be overridden per-column or per-cell.
+     */
+    dateLabel?: string
 
     // Internal pivot modal configuration
     enablePivotTable?: boolean

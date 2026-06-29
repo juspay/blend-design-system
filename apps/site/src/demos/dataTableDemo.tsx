@@ -9,6 +9,7 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
+    DateFormat,
     PivotAggregationType,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
@@ -131,7 +132,7 @@ const SimpleDataTableExample = () => {
             price: 2499.99,
             launchDate: {
                 date: '2023-10-30',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -187,7 +188,7 @@ const SimpleDataTableExample = () => {
             price: 1199.99,
             launchDate: {
                 date: '2023-09-22',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -243,7 +244,7 @@ const SimpleDataTableExample = () => {
             price: 0, // Zero price to show hyphen (will be handled as empty)
             launchDate: {
                 date: '', // Empty date to show hyphen
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Discontinued',
@@ -299,7 +300,7 @@ const SimpleDataTableExample = () => {
             price: 3999.99,
             launchDate: {
                 date: '2023-06-05',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -361,7 +362,7 @@ const SimpleDataTableExample = () => {
             price: 599.99,
             launchDate: {
                 date: '2023-09-22',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -417,7 +418,7 @@ const SimpleDataTableExample = () => {
             price: 1299.99,
             launchDate: {
                 date: 'invalid-date', // Invalid date to show hyphen
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -1392,6 +1393,383 @@ const SimpleDataTableExample = () => {
                         />
                     </div>
                 </Modal>
+            </div>
+        </div>
+    )
+}
+
+// Date column: custom format demo
+const DateColumnFormatDemo = () => {
+    type OrderRow = {
+        id: number
+        orderId: string
+        placedAt: DateColumnProps
+        nextBatch: DateColumnProps
+    }
+
+    const orderData: OrderRow[] = [
+        {
+            id: 1,
+            orderId: 'ORD-1001',
+            placedAt: { date: '2026-06-24T23:30:00Z' },
+            nextBatch: { date: '2026-06-28T00:15:00Z', format: 'DD/MM/YYYY' },
+        },
+        {
+            id: 2,
+            orderId: 'ORD-1002',
+            placedAt: { date: '2026-06-10T01:15:00Z' },
+            nextBatch: { date: '2026-06-30T23:45:00Z', format: 'DD/MM/YYYY' },
+        },
+        {
+            id: 3,
+            orderId: 'ORD-1003',
+            placedAt: { date: '2026-05-25T22:45:00Z' },
+            nextBatch: { date: '2026-06-29T22:30:00Z', format: 'DD/MM/YYYY' },
+        },
+    ]
+
+    const buildColumns = (
+        field: keyof OrderRow,
+        dateFormat: DateFormat,
+        header: string
+    ): ColumnDefinition<OrderRow>[] => [
+        {
+            field: 'orderId',
+            header: 'Order ID',
+            type: ColumnType.TEXT,
+            minWidth: '100px',
+            maxWidth: '120px',
+        },
+        {
+            field,
+            header,
+            type: ColumnType.DATE,
+            dateFormat,
+            minWidth: '180px',
+            maxWidth: '240px',
+        },
+    ]
+
+    const demoTables: {
+        title: string
+        field: keyof OrderRow
+        format: DateFormat
+        header: string
+        note: string
+    }[] = [
+        {
+            title: 'DD MMM YYYY',
+            field: 'placedAt',
+            format: 'DD MMM YYYY',
+            header: 'Placed',
+            note: 'Short month name, no time. The default when no format is set.',
+        },
+        {
+            title: 'DD/MM/YYYY',
+            field: 'placedAt',
+            format: 'DD/MM/YYYY',
+            header: 'Placed',
+            note: 'Numeric day/month/year, no time.',
+        },
+        {
+            title: 'MM/DD/YYYY',
+            field: 'placedAt',
+            format: 'MM/DD/YYYY',
+            header: 'Placed',
+            note: 'US-style numeric month/day/year.',
+        },
+        {
+            title: 'YYYY-MM-DD',
+            field: 'placedAt',
+            format: 'YYYY-MM-DD',
+            header: 'Placed',
+            note: 'ISO 8601 date only.',
+        },
+        {
+            title: 'DD MMM YYYY, hh:mm A',
+            field: 'placedAt',
+            format: 'DD MMM YYYY, hh:mm A',
+            header: 'Placed',
+            note: 'Short month + 12-hour clock with AM/PM. Default when showTime is true.',
+        },
+        {
+            title: 'DD MMM YYYY, HH:mm',
+            field: 'placedAt',
+            format: 'DD MMM YYYY, HH:mm',
+            header: 'Placed',
+            note: 'Short month + 24-hour clock.',
+        },
+        {
+            title: 'MMM DD, YYYY',
+            field: 'placedAt',
+            format: 'MMM DD, YYYY',
+            header: 'Placed',
+            note: 'Short month name first, US-style ordering.',
+        },
+        {
+            title: 'YYYY/MM/DD HH:mm',
+            field: 'placedAt',
+            format: 'YYYY/MM/DD HH:mm',
+            header: 'Placed',
+            note: 'Sortable year-first numeric date with 24-hour time.',
+        },
+        {
+            title: 'HH:mm:ss',
+            field: 'placedAt',
+            format: 'HH:mm:ss',
+            header: 'Time',
+            note: 'Time-only, 24-hour with seconds.',
+        },
+        {
+            title: 'Cell overrides column',
+            field: 'nextBatch',
+            format: 'YYYY-MM-DD',
+            header: 'Next Batch',
+            note: 'Column says YYYY-MM-DD, but each cell provides format: "DD/MM/YYYY" which wins.',
+        },
+    ]
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0f4ff',
+                    borderRadius: '8px',
+                    border: '1px solid #c7d2fe',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#3730a3',
+                    }}
+                >
+                    📅 Date Column: Custom Format
+                </h3>
+                <p
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '14px',
+                        color: '#312e81',
+                        maxWidth: '760px',
+                    }}
+                >
+                    Demonstrates the date fixes: (1) date cells inherit the
+                    standard 14px body font size; (2) a custom format string can
+                    be passed per-column via <code>dateFormat</code> or per-cell
+                    via <code>DateColumnProps.format</code>; (3) a small muted
+                    date label such as <code>(IST)</code> can be appended via{' '}
+                    <code>dateLabel</code> at the table, column, or cell level.
+                </p>
+            </div>
+
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                    gap: '24px',
+                }}
+            >
+                {demoTables.map((demo) => (
+                    <div key={demo.title}>
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '14px',
+                                fontWeight: 600,
+                                color: '#3730a3',
+                            }}
+                        >
+                            {demo.title}
+                        </h4>
+                        <p
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '13px',
+                                color: '#6b7280',
+                            }}
+                        >
+                            {demo.note}{' '}
+                            <code style={{ color: '#3730a3' }}>
+                                {demo.format}
+                            </code>
+                        </p>
+                        <DataTable
+                            data={
+                                orderData as unknown as Record<
+                                    string,
+                                    unknown
+                                >[]
+                            }
+                            columns={
+                                buildColumns(
+                                    demo.field,
+                                    demo.format,
+                                    demo.header
+                                ) as unknown as ColumnDefinition<
+                                    Record<string, unknown>
+                                >[]
+                            }
+                            idField="id"
+                            enableSearch={false}
+                            showFooter={false}
+                            showHeader={true}
+                        />
+                    </div>
+                ))}
+
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        Table-level dateLabel
+                    </h4>
+                    <p
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '13px',
+                            color: '#6b7280',
+                        }}
+                    >
+                        Applies <code>dateLabel=&quot;(IST)&quot;</code> to the
+                        whole table. Every date cell gets the muted suffix.
+                    </p>
+                    <DataTable
+                        data={orderData as unknown as Record<string, unknown>[]}
+                        columns={
+                            buildColumns(
+                                'placedAt',
+                                'MMM DD, YYYY hh:mm A',
+                                'Gateway Updated'
+                            ) as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        dateLabel="(IST)"
+                        enableSearch={false}
+                        showFooter={false}
+                        showHeader={true}
+                    />
+                </div>
+
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        Column + cell dateLabel override
+                    </h4>
+                    <p
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '13px',
+                            color: '#6b7280',
+                        }}
+                    >
+                        Column says <code>dateLabel=&quot;(PST)&quot;</code>,
+                        but the first cell overrides it with{' '}
+                        <code>dateLabel: &quot;(UTC)&quot;</code>.
+                    </p>
+                    <DataTable
+                        data={
+                            [
+                                {
+                                    ...orderData[0],
+                                    placedAt: {
+                                        ...orderData[0].placedAt,
+                                        dateLabel: '(UTC)',
+                                    },
+                                },
+                                orderData[1],
+                                orderData[2],
+                            ] as unknown as Record<string, unknown>[]
+                        }
+                        columns={
+                            [
+                                {
+                                    field: 'orderId',
+                                    header: 'Order ID',
+                                    type: ColumnType.TEXT,
+                                    minWidth: '100px',
+                                    maxWidth: '120px',
+                                },
+                                {
+                                    field: 'placedAt',
+                                    header: 'Placed',
+                                    type: ColumnType.DATE,
+                                    dateFormat: 'MMM DD, YYYY hh:mm A',
+                                    dateLabel: '(PST)',
+                                    minWidth: '200px',
+                                    maxWidth: '260px',
+                                },
+                            ] as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        enableSearch={false}
+                        showFooter={false}
+                        showHeader={true}
+                    />
+                </div>
+            </div>
+
+            <div
+                style={{
+                    marginTop: '16px',
+                    padding: '16px',
+                    background: '#f9fafb',
+                    borderRadius: '8px',
+                    border: '1px solid #e5e7eb',
+                    fontSize: '13px',
+                    color: '#374151',
+                    lineHeight: 1.6,
+                }}
+            >
+                <strong>How it works</strong>
+                <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                    <li>
+                        The first nine tables show the same{' '}
+                        <code>placedAt</code> data rendered with each of the
+                        preset <code>DateFormat</code> values, one per table.
+                    </li>
+                    <li>
+                        The last table uses <code>nextBatch</code> where the
+                        column-level <code>dateFormat</code> is{' '}
+                        <code>YYYY-MM-DD</code>, but each cell provides{' '}
+                        <code>format: &quot;DD/MM/YYYY&quot;</code> —
+                        demonstrating that the cell-level format takes
+                        precedence.
+                    </li>
+                    <li>
+                        Supported tokens: <code>YYYY</code>, <code>YY</code>,{' '}
+                        <code>MMM</code> (Jan), <code>MM</code> (01),{' '}
+                        <code>DD</code>/<code>dd</code>, <code>HH</code> (24h),{' '}
+                        <code>hh</code> (12h), <code>mm</code>, <code>ss</code>,{' '}
+                        <code>A</code>/<code>a</code> (AM/PM).
+                    </li>
+                    <li>
+                        Use <code>dateLabel</code> to append a timezone or any
+                        short marker after the date. It is rendered in a
+                        smaller, muted style and can be set at the table,
+                        column, or cell level — with cell winning over column,
+                        and column over table.
+                    </li>
+                </ul>
             </div>
         </div>
     )
@@ -3742,6 +4120,8 @@ const DataTableDemo = () => {
             />
 
             <SimpleDataTableExample />
+
+            <DateColumnFormatDemo />
 
             {/* Table Body Height Control Demo */}
             <div style={{ marginTop: '40px' }}>

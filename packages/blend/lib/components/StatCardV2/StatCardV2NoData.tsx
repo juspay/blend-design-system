@@ -19,6 +19,7 @@ type StatCardV2NoDataProps = Pick<
     | 'minWidth'
     | 'width'
     | 'height'
+    | 'showBorder'
 > & {
     tokens: StatCardV2TokensType
     isSmallScreen: boolean
@@ -35,6 +36,7 @@ const StatCardV2NoData = ({
     minWidth,
     width,
     height,
+    showBorder = true,
     tokens,
     isSmallScreen,
     filteredProps,
@@ -47,14 +49,14 @@ const StatCardV2NoData = ({
             display="flex"
             flexDirection="column"
             justifyContent="space-between"
-            paddingTop={tokens.paddingTop}
-            paddingBottom={tokens.paddingBottom}
-            paddingLeft={tokens.paddingLeft}
-            paddingRight={tokens.paddingRight}
-            border={tokens.border}
+            paddingTop={showBorder ? tokens.paddingTop : undefined}
+            paddingBottom={showBorder ? tokens.paddingBottom : undefined}
+            paddingLeft={showBorder ? tokens.paddingLeft : undefined}
+            paddingRight={showBorder ? tokens.paddingRight : undefined}
+            border={showBorder ? tokens.border : undefined}
             borderRadius={tokens.borderRadius}
             backgroundColor={tokens.backgroundColor}
-            boxShadow={tokens.boxShadow}
+            boxShadow={showBorder ? tokens.boxShadow : undefined}
             maxWidth={maxWidth ?? tokens.maxWidth}
             minWidth={minWidth ?? tokens.minWidth}
             width={width ?? tokens.width}

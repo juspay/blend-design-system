@@ -700,7 +700,7 @@ const SidebarV2Demo = () => {
                         showOnMobile: true,
                     },
                     {
-                        label: 'Tag ejdojdojodjoejdoejdoejdojdojedojeodjeodjedd ejodjoejdoehdohedoh',
+                        label: 'Tag',
                         leftSlot: (
                             <TagIcon
                                 style={{ width: '16px', height: '16px' }}
