@@ -159,6 +159,7 @@ const DataTable = forwardRef(
             mobileColumnsToShow,
             enablePivotTable = false,
             pivotTableConfig,
+            dateLabel,
             ...rest
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
@@ -1975,6 +1976,7 @@ const DataTable = forwardRef(
                                                           >
                                                         | undefined
                                                 }
+                                                dateLabel={dateLabel}
                                                 isLoading={
                                                     isLoading ||
                                                     (serverSidePagination &&

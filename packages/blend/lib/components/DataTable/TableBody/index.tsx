@@ -564,6 +564,7 @@ const TableBody = forwardRef<
             getColumnWidth,
             getRowStyle,
             getDisplayValue,
+            dateLabel,
             isLoading = false,
             showSkeleton = false,
             skeletonVariant = 'pulse',
@@ -1289,6 +1290,7 @@ const TableBody = forwardRef<
                                                       getDisplayValue={
                                                           getDisplayValue
                                                       }
+                                                      dateLabel={dateLabel}
                                                   />
                                               )
                                           }

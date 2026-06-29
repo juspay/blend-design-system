@@ -198,6 +198,11 @@ export type TableTokenType = BasicCSSProps & {
                     color: CSSObject['color']
                     fontSize: CSSObject['fontSize']
                     borderTop: CSSObject['borderTop']
+
+                    dateLabel: {
+                        fontSize: CSSObject['fontSize']
+                        color: CSSObject['color']
+                    }
                     expandable: {
                         padding: CSSObject['padding']
                         borderTop: CSSObject['borderTop']
@@ -467,6 +472,11 @@ export const getTableToken = (
                             fontSize:
                                 foundationToken.font.size.body.md.fontSize,
                             borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
+                            dateLabel: {
+                                fontSize:
+                                    foundationToken.font.size.body.xs.fontSize,
+                                color: foundationToken.colors.gray[400],
+                            },
                             expandable: {
                                 padding: foundationToken.unit[16],
                                 borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
@@ -732,6 +742,11 @@ export const getTableToken = (
                             fontSize:
                                 foundationToken.font.size.body.md.fontSize,
                             borderTop: `1px solid ${foundationToken.colors.gray[150]}`,
+                            dateLabel: {
+                                fontSize:
+                                    foundationToken.font.size.body.xs.fontSize,
+                                color: foundationToken.colors.gray[400],
+                            },
                             expandable: {
                                 padding: foundationToken.unit[16],
                                 borderTop: `1px solid ${foundationToken.colors.gray[150]}`,

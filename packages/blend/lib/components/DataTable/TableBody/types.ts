@@ -50,6 +50,7 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     ) => React.CSSProperties
     getRowStyle?: (row: T, index: number) => React.CSSProperties
     getDisplayValue?: (value: unknown, column: ColumnDefinition<T>) => unknown
+    dateLabel?: string
     isLoading?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant

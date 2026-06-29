@@ -11,7 +11,12 @@ import { TableTokenType } from '../dataTable.tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { ColumnType, DropdownColumnProps, DateColumnProps } from '../types'
+import {
+    ColumnType,
+    DropdownColumnProps,
+    DateColumnProps,
+    DateFormat,
+} from '../types'
 import SingleSelect from '../../SingleSelect/SingleSelect'
 import { SelectMenuVariant } from '../../Select'
 import { SelectMenuGroupType } from '../../Select/types'
@@ -19,7 +24,7 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import Tooltip from '../../Tooltip/Tooltip'
 import { TooltipSize } from '../../Tooltip/types'
-import { parseDateLike } from '../utils'
+import { parseDateLike, formatDateString } from '../utils'
 
 const StyledTableCell = styled.td<{
     width?: React.CSSProperties
@@ -79,9 +84,13 @@ const isEmptyValue = (value: unknown, columnType?: ColumnType): boolean => {
 const TruncatedTextWithTooltip = ({
     text,
     style = {},
+    suffix,
+    tableToken,
 }: {
     text: string
     style?: React.CSSProperties
+    suffix?: string
+    tableToken?: TableTokenType
 }) => {
     const textRef = useRef<HTMLSpanElement>(null)
     const [isTruncated, setIsTruncated] = useState(false)
@@ -125,16 +134,32 @@ const TruncatedTextWithTooltip = ({
         <span
             ref={textRef}
             style={{
-                display: 'block',
+                display: 'inline-flex',
+                alignItems: 'baseline',
                 width: '100%',
                 minWidth: 0,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                gap: '3px',
                 ...style,
             }}
         >
             {text}
+            {suffix != null && (
+                <span
+                    style={{
+                        fontSize:
+                            tableToken?.dataTable.table.body.cell.dateLabel
+                                .fontSize,
+                        color: tableToken?.dataTable.table.body.cell.dateLabel
+                            .color,
+                        whiteSpace: 'nowrap',
+                    }}
+                >
+                    {suffix}
+                </span>
+            )}
         </span>
     )
 
@@ -177,6 +202,7 @@ const TableCell = forwardRef<
             hasCustomBackground,
             onFieldChange,
             getDisplayValue,
+            dateLabel,
             'data-row-index': dataRowIndex,
             'data-col-index': dataColIndex,
             tabIndex: cellTabIndex,
@@ -455,23 +481,22 @@ const TableCell = forwardRef<
                 const date = parseDateLike(dateData.date)
                 const showTime = dateData.showTime || false
 
+                // Format string precedence: cell-level `DateColumnProps.format`
+                // beats column-level `dateFormat`. Falls back to a sensible
+                // default based on whether time should be shown.
+                const formatStr =
+                    dateData.format ||
+                    (column as { dateFormat?: DateFormat }).dateFormat ||
+                    (showTime ? 'DD MMM YYYY, hh:mm A' : 'DD MMM YYYY')
+
+                const dateLabelStr =
+                    dateData.dateLabel ||
+                    (column as { dateLabel?: string }).dateLabel ||
+                    dateLabel
+
                 const formatDate = (date: Date): string => {
                     if (isNaN(date.getTime())) return '-'
-
-                    const options: Intl.DateTimeFormatOptions = {
-                        year: 'numeric',
-                        month: 'short',
-                        day: '2-digit',
-                    }
-
-                    if (showTime) {
-                        options.hour = '2-digit'
-                        options.minute = '2-digit'
-                    }
-
-                    return new Intl.DateTimeFormat('en-US', options).format(
-                        date
-                    )
+                    return formatDateString(date, formatStr)
                 }
 
                 return (
@@ -487,6 +512,8 @@ const TableCell = forwardRef<
                             style={{
                                 color: FOUNDATION_THEME.colors.gray[700],
                             }}
+                            suffix={dateLabelStr}
+                            tableToken={tableToken}
                         />
                     </Block>
                 )
