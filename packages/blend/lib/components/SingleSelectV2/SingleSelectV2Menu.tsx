@@ -41,16 +41,32 @@ import {
 const Content = styled(RadixMenu.Content)`
     position: relative;
     z-index: ${SELECT_V2_MENU_Z_INDEX};
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none;
-    scrollbar-color: transparent transparent;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 
     &[data-state='closed'] {
         pointer-events: none;
     }
 
     ${menuContentAnimations}
+`
+
+const ScrollableContent = styled(Block)`
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+    flex-grow: 1;
+    min-height: 0;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+`
+
+const MenuFooter = styled(Block)`
+    flex-shrink: 0;
 `
 
 const SingleSelectV2Menu = ({
@@ -78,6 +94,7 @@ const SingleSelectV2Menu = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     menuId,
+    menuFooter,
 }: SingleSelectV2MenuProps) => {
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
@@ -286,63 +303,72 @@ const SingleSelectV2Menu = ({
                                 containerRef={searchContainerRef}
                             />
 
-                            {showEmptyState ? (
-                                <Block
-                                    display="flex"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    style={{
-                                        paddingTop: menuItem.paddingTop,
-                                        paddingRight: menuItem.paddingRight,
-                                        paddingBottom: menuItem.paddingBottom,
-                                        paddingLeft: menuItem.paddingLeft,
-                                    }}
-                                >
-                                    <Text
-                                        variant="body.md"
-                                        fontSize={
-                                            menuItem.groupLabelText.fontSize
-                                        }
-                                        fontWeight={
-                                            menuItem.groupLabelText.fontWeight
-                                        }
-                                        color={
-                                            menuItem.groupLabelText.color
-                                                .default
-                                        }
-                                        textAlign="center"
+                            <ScrollableContent>
+                                {showEmptyState ? (
+                                    <Block
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        style={{
+                                            paddingTop: menuItem.paddingTop,
+                                            paddingRight: menuItem.paddingRight,
+                                            paddingBottom:
+                                                menuItem.paddingBottom,
+                                            paddingLeft: menuItem.paddingLeft,
+                                        }}
                                     >
-                                        {emptyMessage}
-                                    </Text>
-                                </Block>
-                            ) : showVirtualList ? (
-                                <SingleSelectV2VirtualList
-                                    flattenedItems={flattenedItems}
-                                    selected={selected}
-                                    onSelect={onSelect}
-                                    singleSelectTokens={singleSelectTokens}
-                                    size={size}
-                                    variant={variant}
-                                    virtualViewportHeight={
-                                        adjustedVirtualViewportHeight
-                                    }
-                                    virtualItems={virtualItems}
-                                    totalSize={virtualizer.getTotalSize()}
-                                    measureElement={virtualizer.measureElement}
-                                    loadingComponent={loadingComponent}
-                                    hasMore={hasMore}
-                                    virtualScrollRef={virtualScrollRef}
-                                />
-                            ) : (
-                                <SingleSelectV2List
-                                    filteredItems={filteredItems}
-                                    selected={selected}
-                                    onSelect={onSelect}
-                                    singleSelectTokens={singleSelectTokens}
-                                    size={size}
-                                    variant={variant}
-                                    enableSearch={enableSearch}
-                                />
+                                        <Text
+                                            variant="body.md"
+                                            fontSize={
+                                                menuItem.groupLabelText.fontSize
+                                            }
+                                            fontWeight={
+                                                menuItem.groupLabelText
+                                                    .fontWeight
+                                            }
+                                            color={
+                                                menuItem.groupLabelText.color
+                                                    .default
+                                            }
+                                            textAlign="center"
+                                        >
+                                            {emptyMessage}
+                                        </Text>
+                                    </Block>
+                                ) : showVirtualList ? (
+                                    <SingleSelectV2VirtualList
+                                        flattenedItems={flattenedItems}
+                                        selected={selected}
+                                        onSelect={onSelect}
+                                        singleSelectTokens={singleSelectTokens}
+                                        size={size}
+                                        variant={variant}
+                                        virtualViewportHeight={
+                                            adjustedVirtualViewportHeight
+                                        }
+                                        virtualItems={virtualItems}
+                                        totalSize={virtualizer.getTotalSize()}
+                                        measureElement={
+                                            virtualizer.measureElement
+                                        }
+                                        loadingComponent={loadingComponent}
+                                        hasMore={hasMore}
+                                        virtualScrollRef={virtualScrollRef}
+                                    />
+                                ) : (
+                                    <SingleSelectV2List
+                                        filteredItems={filteredItems}
+                                        selected={selected}
+                                        onSelect={onSelect}
+                                        singleSelectTokens={singleSelectTokens}
+                                        size={size}
+                                        variant={variant}
+                                        enableSearch={enableSearch}
+                                    />
+                                )}
+                            </ScrollableContent>
+                            {menuFooter && (
+                                <MenuFooter>{menuFooter}</MenuFooter>
                             )}
                         </>
                     )}

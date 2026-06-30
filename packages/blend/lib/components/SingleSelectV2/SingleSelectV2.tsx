@@ -64,6 +64,7 @@ const SingleSelectV2 = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     singleSelectGroupPosition,
+    menuFooter,
     ...rest
 }: SingleSelectV2Props) => {
     const { disabled, name, ...buttonRest } = rest as {
@@ -248,6 +249,7 @@ const SingleSelectV2 = ({
                         allowCustomValue={allowCustomValue}
                         customValueLabel={customValueLabel}
                         menuId={menuId}
+                        menuFooter={menuFooter}
                         size={size}
                         variant={variant}
                         trigger={

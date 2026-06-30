@@ -1337,3 +1337,56 @@ export const MobileDrawerMode: Story = {
         },
     },
 }
+
+export const WithMenuFooter: Story = {
+    render: () => {
+        const [selected, setSelected] = useState<string>('')
+
+        return (
+            <div className="w-100">
+                <SingleSelect
+                    label="Country"
+                    placeholder="Select your country"
+                    items={countryItems}
+                    selected={selected}
+                    onSelect={setSelected}
+                    enableSearch
+                    menuFooter={
+                        <div
+                            style={{
+                                padding: '12px 16px',
+                                borderTop: '1px solid #e5e7eb',
+                            }}
+                        >
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    alert('Open the "Create new" modal here')
+                                }
+                                style={{
+                                    width: '100%',
+                                    padding: '8px 12px',
+                                    background: 'transparent',
+                                    border: '1px dashed #d1d5db',
+                                    borderRadius: 8,
+                                    cursor: 'pointer',
+                                    color: '#374151',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                + Create new country
+                            </button>
+                        </div>
+                    }
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Renders custom content (e.g. a "Create new" button) pinned at the bottom of the menu via the `menuFooter` prop. The footer is not selectable and stays visible even when the list is empty.',
+            },
+        },
+    },
+}
