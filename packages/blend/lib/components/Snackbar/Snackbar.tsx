@@ -45,6 +45,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
     onClose,
     actionButton,
     toastId,
+    wrap = false,
     ...props
 }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
@@ -75,14 +76,17 @@ export const StyledToast: React.FC<CustomToastProps> = ({
         >
             <Block
                 display="flex"
-                alignItems="center"
+                alignItems={wrap ? 'flex-start' : 'center'}
                 justifyContent="space-between"
                 gap={snackbarTokens.gap}
             >
                 <Block
                     display="flex"
-                    alignItems="flex-start"
+                    alignItems="center"
                     flexShrink={0}
+                    height={
+                        snackbarTokens.content.textContainer.header.lineHeight
+                    }
                     data-element="icon"
                     aria-hidden="true"
                 >
@@ -107,12 +111,16 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         }
                         data-element="header"
                         data-id={header}
-                        style={{
-                            minWidth: 0,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                        }}
+                        style={
+                            wrap
+                                ? { minWidth: 0 }
+                                : {
+                                      minWidth: 0,
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                  }
+                        }
                     >
                         {header}
                     </Text>
@@ -221,6 +229,7 @@ export const addSnackbar = ({
     actionButton,
     duration,
     position,
+    wrap = false,
 }: AddToastOptions) => {
     // Determine if position includes "center" for proper alignment
     const isCenter = position?.includes('center')
@@ -237,6 +246,7 @@ export const addSnackbar = ({
                 }}
                 actionButton={actionButton}
                 toastId={t}
+                wrap={wrap}
             />
         ),
         {
