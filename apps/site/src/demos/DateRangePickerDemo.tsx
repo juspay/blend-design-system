@@ -203,6 +203,17 @@ const DateRangePickerDemo = () => {
         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     })
 
+    // State for the popover clipping reproduction
+    const [popoverClipTopRange, setPopoverClipTopRange] = useState<DateRange>({
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    })
+    const [popoverClipControlRange, setPopoverClipControlRange] =
+        useState<DateRange>({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        })
+
     // Console logging functions for date changes
     const handlePlaygroundRangeChange = (range: DateRange) => {
         console.log('Playground Range Changed:', {
@@ -4167,6 +4178,89 @@ const DateRangePickerDemo = () => {
                         handles UI, formatting, preset detection, and timezone
                         conversion. Timezone support uses native Intl API.
                     </p>
+                </div>
+            </div>
+
+            {/* Calendar Popover Clipping Reproduction */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Calendar Popover Clipping (Bug Reproduction)
+                </h2>
+                <p className="text-gray-600">
+                    When the trigger sits low in the viewport, the tall calendar
+                    + time popover (~500-600px) flips to{' '}
+                    <code className="bg-gray-100 px-1 rounded">side="top"</code>{' '}
+                    via Radix's <code>avoidCollisions</code>, but the{' '}
+                    <code>[data-popover]</code> content never reads{' '}
+                    <code>--radix-popper-available-height</code>. The top of the
+                    calendar (weekday headers / first rows) overflows above the
+                    viewport and gets clipped.
+                </p>
+
+                {/* Control: top of page — room below, renders fine */}
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3">
+                    <h3 className="text-lg font-semibold">
+                        Control — Top of page (room below)
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        Opens downward without flipping. Renders correctly.
+                    </p>
+                    <DateRangePicker
+                        value={popoverClipControlRange}
+                        onChange={setPopoverClipControlRange}
+                        showDateTimePicker
+                        showDateInput
+                        showPresets={false}
+                        popoverConfig={{ side: 'bottom', sideOffset: 4 }}
+                    />
+                </div>
+
+                {/* Spacer to push the next picker low in the viewport */}
+                <div
+                    aria-hidden
+                    className="w-full bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg flex items-center justify-center text-gray-400"
+                    style={{ height: '60vh' }}
+                >
+                    <span className="text-sm">
+                        ↓ Scroll down — the buggy picker is at the bottom ↓
+                    </span>
+                </div>
+
+                {/* Buggy case: near the bottom of a tall page */}
+                <div className="p-4 border border-red-200 rounded-lg bg-red-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-red-800">
+                        Reproduction — Near bottom of viewport
+                    </h3>
+                    <p className="text-sm text-red-700">
+                        Open this picker. There isn't ~600px of room below, so
+                        the popover flips up. The top of the calendar overflows
+                        above the viewport and is clipped — no internal scroll,
+                        no cap to available height.
+                    </p>
+                    <div style={{ paddingBottom: 16 }}>
+                        <DateRangePicker
+                            value={popoverClipTopRange}
+                            onChange={setPopoverClipTopRange}
+                            showDateTimePicker
+                            showDateInput
+                            showPresets={false}
+                            popoverConfig={{ side: 'bottom', sideOffset: 4 }}
+                        />
+                    </div>
+                </div>
+
+                {/* No workaround applied */}
+                <div className="p-4 border border-blue-200 rounded-lg bg-blue-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-blue-800">
+                        No workaround applied
+                    </h3>
+                    <p className="text-sm text-blue-700">
+                        The consumer-side CSS workaround has been removed from
+                        this page so the broken state above is visible.
+                    </p>
+                    <pre className="text-xs bg-white border border-blue-100 rounded p-3 overflow-auto">
+                        {`/* no workaround active */`}
+                    </pre>
                 </div>
             </div>
         </div>
