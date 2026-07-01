@@ -22,54 +22,19 @@ export type CodeEditorV2DiffLine = {
 }
 
 /**
- * Curated set of language IDs that Monaco renders well and that are common in
- * practice. This list exists purely for editor autocomplete — it is NOT a
- * runtime constraint. Monaco does not export a static union of its built-in
- * language IDs (they are only enumerable at runtime via
- * `monaco.languages.getLanguages()`), so `CodeEditorV2Language` also accepts any
- * other string via `(string & {})` for languages Monaco supports beyond this
- * list.
+ * A Monaco language ID (e.g. `javascript`, `typescript`, `json`, `sql`,
+ * `python`, `plaintext`). Typed as `string` to mirror Monaco itself: Monaco
+ * types its own editor `language` option as `string` and does not export a
+ * static union of built-in IDs — the set is only enumerable at runtime via
+ * `monaco.languages.getLanguages()`. A hand-maintained union would inevitably
+ * drift from what Monaco actually supports, so we deliberately match the
+ * library (this also matches the internal `MonacoEditorWrapper`'s
+ * `language: string`).
+ *
+ * Note: the editor maps the aliases `jsx`/`tsx` onto Monaco's
+ * `javascript`/`typescript` tokenizers (Monaco has no distinct JSX/TSX IDs).
  */
-export type KnownCodeEditorV2Language =
-    | 'javascript'
-    | 'typescript'
-    | 'jsx'
-    | 'tsx'
-    | 'json'
-    | 'css'
-    | 'scss'
-    | 'less'
-    | 'html'
-    | 'xml'
-    | 'markdown'
-    | 'yaml'
-    | 'toml'
-    | 'ini'
-    | 'graphql'
-    | 'sql'
-    | 'python'
-    | 'rust'
-    | 'go'
-    | 'java'
-    | 'kotlin'
-    | 'swift'
-    | 'c'
-    | 'cpp'
-    | 'csharp'
-    | 'php'
-    | 'ruby'
-    | 'shell'
-    | 'bash'
-    | 'dockerfile'
-    | 'plaintext'
-    | 'text'
-
-/**
- * Language accepted by {@link CodeEditorV2Props.language}. Provides autocomplete
- * for {@link KnownCodeEditorV2Language} while still accepting any Monaco language
- * ID as a string, matching the internal `MonacoEditorWrapper` (`language: string`).
- */
-export type CodeEditorV2Language = KnownCodeEditorV2Language | (string & {})
+export type CodeEditorV2Language = string
 
 /** @deprecated Use {@link CodeEditorV2Language} instead. */
 export type CodeEditorV2SupportedLanguage = CodeEditorV2Language

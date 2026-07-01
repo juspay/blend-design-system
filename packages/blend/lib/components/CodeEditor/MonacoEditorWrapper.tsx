@@ -5,9 +5,13 @@ import Block from '../Primitives/Block/Block'
 import type { CodeBlockTokenType } from '../CodeBlock/codeBlock.token'
 import './monaco-editor.css'
 
+// Monaco registers only `javascript`/`typescript` (VS Code's
+// `javascriptreact`/`typescriptreact` IDs are not registered, so they would
+// fall back to plaintext with no highlighting). Monaco's JS/TS tokenizers
+// handle JSX/TSX syntax fine, so map the ergonomic aliases onto them.
 const LANGUAGE_MAP: Record<string, string> = {
-    jsx: 'javascriptreact',
-    tsx: 'typescriptreact',
+    jsx: 'javascript',
+    tsx: 'typescript',
 }
 
 const mapLanguage = (value: string) => LANGUAGE_MAP[value] ?? value

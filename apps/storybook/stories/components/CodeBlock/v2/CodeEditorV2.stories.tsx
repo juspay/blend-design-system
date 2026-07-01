@@ -99,7 +99,7 @@ A modern code editor component built on Monaco, with Blend design tokens, light/
                 'csharp',
                 'rust',
                 'shell',
-                'text',
+                'plaintext',
             ],
             description:
                 'Language mode for Monaco editor (accepts any Monaco language ID)',
