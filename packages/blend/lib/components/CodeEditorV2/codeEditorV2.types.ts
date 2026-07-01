@@ -21,19 +21,58 @@ export type CodeEditorV2DiffLine = {
     type: CodeEditorV2DiffLineType
 }
 
-export type CodeEditorV2SupportedLanguage =
+/**
+ * Curated set of language IDs that Monaco renders well and that are common in
+ * practice. This list exists purely for editor autocomplete — it is NOT a
+ * runtime constraint. Monaco does not export a static union of its built-in
+ * language IDs (they are only enumerable at runtime via
+ * `monaco.languages.getLanguages()`), so `CodeEditorV2Language` also accepts any
+ * other string via `(string & {})` for languages Monaco supports beyond this
+ * list.
+ */
+export type KnownCodeEditorV2Language =
     | 'javascript'
     | 'typescript'
     | 'jsx'
     | 'tsx'
     | 'json'
     | 'css'
+    | 'scss'
+    | 'less'
     | 'html'
+    | 'xml'
     | 'markdown'
     | 'yaml'
+    | 'toml'
+    | 'ini'
+    | 'graphql'
+    | 'sql'
     | 'python'
     | 'rust'
-    | 'haskell'
+    | 'go'
+    | 'java'
+    | 'kotlin'
+    | 'swift'
+    | 'c'
+    | 'cpp'
+    | 'csharp'
+    | 'php'
+    | 'ruby'
+    | 'shell'
+    | 'bash'
+    | 'dockerfile'
+    | 'plaintext'
+    | 'text'
+
+/**
+ * Language accepted by {@link CodeEditorV2Props.language}. Provides autocomplete
+ * for {@link KnownCodeEditorV2Language} while still accepting any Monaco language
+ * ID as a string, matching the internal `MonacoEditorWrapper` (`language: string`).
+ */
+export type CodeEditorV2Language = KnownCodeEditorV2Language | (string & {})
+
+/** @deprecated Use {@link CodeEditorV2Language} instead. */
+export type CodeEditorV2SupportedLanguage = CodeEditorV2Language
 
 export type CodeEditorV2Dimensions = {
     width?: CSSObject['width']
@@ -56,7 +95,7 @@ export type CodeEditorV2Props = {
         rightSlot?: ReactNode
         showCopyButton?: boolean
     }
-    language?: CodeEditorV2SupportedLanguage
+    language?: CodeEditorV2Language
     placeholder?: string
     readOnly?: boolean
     disabled?: boolean
