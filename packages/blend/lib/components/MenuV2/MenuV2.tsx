@@ -23,6 +23,8 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
             dimensions = {} as MenuV2Dimensions,
             enableSearch = false,
             searchPlaceholder = 'Search',
+            searchSortFn,
+            onEnter,
             enableVirtualScrolling = false,
             virtualScrolling,
             open: controlledOpen,
@@ -61,9 +63,13 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
         )
 
         const filteredItems = useMemo(
-            () => filterMenuV2Groups(items, searchText),
-            [items, searchText]
+            () => filterMenuV2Groups(items, searchText, searchSortFn),
+            [items, searchText, searchSortFn]
         )
+
+        const handleSearchEnter = useCallback(() => {
+            onEnter?.(searchText, filteredItems)
+        }, [onEnter, searchText, filteredItems])
 
         const handleInteractOutside = useCallback((e: unknown) => {
             const event = e as {
@@ -104,6 +110,7 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
                         searchPlaceholder={searchPlaceholder}
                         searchText={searchText}
                         onSearchTextChange={setSearchText}
+                        onEnter={handleSearchEnter}
                         maxHeight={
                             dimensions.maxHeight as CSSObject['maxHeight']
                         }
