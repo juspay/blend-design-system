@@ -244,26 +244,50 @@ export default function SearchBar({
                         onOpenChange={setDropdownOpen}
                     >
                         <Popover.Trigger asChild>
-                            <button
+                            <motion.button
+                                layout
+                                transition={{
+                                    type: 'spring',
+                                    stiffness: 500,
+                                    damping: 35,
+                                    mass: 0.6,
+                                }}
                                 aria-label="Filter by category"
                                 className={`
-                                    flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-sm border border-border/75
-                                    transition-colors duration-150 select-none
-                                    ${
-                                        dropdownOpen
-                                            ? 'bg-muted text-foreground'
-                                            : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
-                                    }
-                                `}
+            flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-sm border border-border/75
+            transition-colors duration-150 select-none
+            ${
+                dropdownOpen
+                    ? 'bg-muted text-foreground'
+                    : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+            }
+        `}
                             >
-                                <span className="hidden sm:inline text-foreground/50 text-[13px]">
-                                    {activeLabel}
-                                </span>
+                                <AnimatePresence
+                                    mode="popLayout"
+                                    initial={false}
+                                >
+                                    <motion.span
+                                        key={activeLabel}
+                                        layout
+                                        initial={{ opacity: 0, y: -4 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 4 }}
+                                        transition={{
+                                            duration: 0.15,
+                                            ease: [0.4, 0, 0.2, 1],
+                                        }}
+                                        className="hidden sm:inline text-foreground/50 text-[13px] whitespace-nowrap"
+                                    >
+                                        {activeLabel}
+                                    </motion.span>
+                                </AnimatePresence>
 
                                 <AnimatePresence initial={false}>
                                     {activeCount > 0 && (
                                         <motion.span
                                             key="badge"
+                                            layout
                                             initial={{ opacity: 0, scale: 0.6 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.6 }}
@@ -276,6 +300,7 @@ export default function SearchBar({
                                 </AnimatePresence>
 
                                 <motion.span
+                                    layout
                                     animate={{ rotate: dropdownOpen ? 0 : 180 }}
                                     transition={{
                                         duration: 0.18,
@@ -288,7 +313,7 @@ export default function SearchBar({
                                         className="text-muted-foreground"
                                     />
                                 </motion.span>
-                            </button>
+                            </motion.button>
                         </Popover.Trigger>
 
                         <AnimatePresence>
