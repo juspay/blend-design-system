@@ -22,19 +22,55 @@ export type CodeEditorV2DiffLine = {
 }
 
 /**
- * A Monaco language ID (e.g. `javascript`, `typescript`, `json`, `sql`,
- * `python`, `plaintext`). Typed as `string` to mirror Monaco itself: Monaco
- * types its own editor `language` option as `string` and does not export a
- * static union of built-in IDs — the set is only enumerable at runtime via
- * `monaco.languages.getLanguages()`. A hand-maintained union would inevitably
- * drift from what Monaco actually supports, so we deliberately match the
- * library (this also matches the internal `MonacoEditorWrapper`'s
- * `language: string`).
- *
- * Note: the editor maps the aliases `jsx`/`tsx` onto Monaco's
- * `javascript`/`typescript` tokenizers (Monaco has no distinct JSX/TSX IDs).
+ * Common Monaco language IDs, provided purely for IDE autocomplete on the
+ * `language` prop — NOT a runtime constraint. Every entry is verified against
+ * the language IDs monaco-editor actually registers (Monaco does not export a
+ * static union of its built-in IDs; they are only enumerable at runtime via
+ * `monaco.languages.getLanguages()`), except `jsx`/`tsx`, which are ergonomic
+ * aliases the editor maps onto Monaco's `javascript`/`typescript` tokenizers
+ * (Monaco has no distinct JSX/TSX IDs). Note Monaco's plain-text ID is
+ * `plaintext` and shell scripts are `shell` (there is no `bash` ID).
  */
-export type CodeEditorV2Language = string
+export type KnownCodeEditorV2Language =
+    | 'javascript'
+    | 'typescript'
+    | 'jsx'
+    | 'tsx'
+    | 'json'
+    | 'css'
+    | 'scss'
+    | 'less'
+    | 'html'
+    | 'xml'
+    | 'markdown'
+    | 'yaml'
+    | 'ini'
+    | 'graphql'
+    | 'sql'
+    | 'python'
+    | 'rust'
+    | 'go'
+    | 'java'
+    | 'kotlin'
+    | 'swift'
+    | 'c'
+    | 'cpp'
+    | 'csharp'
+    | 'php'
+    | 'ruby'
+    | 'shell'
+    | 'powershell'
+    | 'dockerfile'
+    | 'plaintext'
+
+/**
+ * Language accepted by {@link CodeEditorV2Props.language}: autocomplete for
+ * {@link KnownCodeEditorV2Language}, while `(string & {})` keeps the prop open
+ * to every other Monaco language ID (matching the internal
+ * `MonacoEditorWrapper`'s `language: string` — Monaco itself types the option
+ * as a plain `string`).
+ */
+export type CodeEditorV2Language = KnownCodeEditorV2Language | (string & {})
 
 /** @deprecated Use {@link CodeEditorV2Language} instead. */
 export type CodeEditorV2SupportedLanguage = CodeEditorV2Language
