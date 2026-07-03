@@ -364,10 +364,8 @@ describe('MenuV2', () => {
     it('honors a custom searchSortFn that overrides the default ranking', async () => {
         const user = userEvent.setup()
         // Reverse-alphabetical custom sort
-        const customSort = (
-            items: { label: { text: string } }[],
-            _searchText: string
-        ) => [...items].sort().reverse()
+        const customSort = (items: { label: { text: string } }[]) =>
+            [...items].sort().reverse()
         render(
             <MenuV2
                 trigger={<button type="button">Custom sort</button>}

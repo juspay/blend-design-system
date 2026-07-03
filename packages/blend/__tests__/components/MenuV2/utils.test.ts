@@ -309,10 +309,8 @@ describe('MenuV2 utils', () => {
             ]
 
             // Reverse alphabetical sort
-            const reverseSort = (
-                items: MenuV2ItemType[],
-                _searchText: string
-            ): MenuV2ItemType[] => [...items].sort().reverse()
+            const reverseSort = (items: MenuV2ItemType[]): MenuV2ItemType[] =>
+                [...items].sort().reverse()
 
             const result = filterMenuV2Groups(groups, 'a', reverseSort)
             const ids = result[0].items.map((i) => i.id)
