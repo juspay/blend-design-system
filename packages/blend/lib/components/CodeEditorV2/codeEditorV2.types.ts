@@ -26,16 +26,15 @@ export type CodeEditorV2DiffLine = {
  * `language` prop — NOT a runtime constraint. Every entry is verified against
  * the language IDs monaco-editor actually registers (Monaco does not export a
  * static union of its built-in IDs; they are only enumerable at runtime via
- * `monaco.languages.getLanguages()`), except `jsx`/`tsx`, which are ergonomic
- * aliases the editor maps onto Monaco's `javascript`/`typescript` tokenizers
- * (Monaco has no distinct JSX/TSX IDs). Note Monaco's plain-text ID is
- * `plaintext` and shell scripts are `shell` (there is no `bash` ID).
+ * `monaco.languages.getLanguages()`). Note Monaco's plain-text ID is
+ * `plaintext` and shell scripts are `shell` (there is no `bash` ID). Monaco
+ * also has no distinct `jsx`/`tsx` IDs — those still work through the open
+ * string arm of {@link CodeEditorV2Language}: the editor maps them onto the
+ * `javascript`/`typescript` tokenizers.
  */
 export type KnownCodeEditorV2Language =
     | 'javascript'
     | 'typescript'
-    | 'jsx'
-    | 'tsx'
     | 'json'
     | 'css'
     | 'scss'
