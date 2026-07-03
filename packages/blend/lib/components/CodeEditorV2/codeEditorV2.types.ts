@@ -21,19 +21,58 @@ export type CodeEditorV2DiffLine = {
     type: CodeEditorV2DiffLineType
 }
 
-export type CodeEditorV2SupportedLanguage =
+/**
+ * Common Monaco language IDs, provided purely for IDE autocomplete on the
+ * `language` prop — NOT a runtime constraint. Every entry is verified against
+ * the language IDs monaco-editor actually registers (Monaco does not export a
+ * static union of its built-in IDs; they are only enumerable at runtime via
+ * `monaco.languages.getLanguages()`). Note Monaco's plain-text ID is
+ * `plaintext` and shell scripts are `shell` (there is no `bash` ID). Monaco
+ * also has no distinct `jsx`/`tsx` IDs — those still work through the open
+ * string arm of {@link CodeEditorV2Language}: the editor maps them onto the
+ * `javascript`/`typescript` tokenizers.
+ */
+export type KnownCodeEditorV2Language =
     | 'javascript'
     | 'typescript'
-    | 'jsx'
-    | 'tsx'
     | 'json'
     | 'css'
+    | 'scss'
+    | 'less'
     | 'html'
+    | 'xml'
     | 'markdown'
     | 'yaml'
+    | 'ini'
+    | 'graphql'
+    | 'sql'
     | 'python'
     | 'rust'
-    | 'haskell'
+    | 'go'
+    | 'java'
+    | 'kotlin'
+    | 'swift'
+    | 'c'
+    | 'cpp'
+    | 'csharp'
+    | 'php'
+    | 'ruby'
+    | 'shell'
+    | 'powershell'
+    | 'dockerfile'
+    | 'plaintext'
+
+/**
+ * Language accepted by {@link CodeEditorV2Props.language}: autocomplete for
+ * {@link KnownCodeEditorV2Language}, while `(string & {})` keeps the prop open
+ * to every other Monaco language ID (matching the internal
+ * `MonacoEditorWrapper`'s `language: string` — Monaco itself types the option
+ * as a plain `string`).
+ */
+export type CodeEditorV2Language = KnownCodeEditorV2Language | (string & {})
+
+/** @deprecated Use {@link CodeEditorV2Language} instead. */
+export type CodeEditorV2SupportedLanguage = CodeEditorV2Language
 
 export type CodeEditorV2Dimensions = {
     width?: CSSObject['width']
@@ -56,7 +95,7 @@ export type CodeEditorV2Props = {
         rightSlot?: ReactNode
         showCopyButton?: boolean
     }
-    language?: CodeEditorV2SupportedLanguage
+    language?: CodeEditorV2Language
     placeholder?: string
     readOnly?: boolean
     disabled?: boolean
