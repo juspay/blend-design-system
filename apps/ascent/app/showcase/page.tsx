@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { AsideStyle, PageBreadcrumb, SharedLayout } from '@/components'
 import Showcase from '@/components/showcase/Showcase'
 
@@ -13,7 +14,9 @@ function Page() {
                 style={AsideStyle}
                 className="lg:pl-15!"
             />
-            <Showcase />
+            <Suspense fallback={null}>
+                <Showcase />
+            </Suspense>
         </SharedLayout>
     )
 }
