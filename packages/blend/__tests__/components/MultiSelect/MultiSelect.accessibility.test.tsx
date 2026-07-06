@@ -1992,5 +1992,21 @@ describe('MultiSelect Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('meets WCAG standards when menuFooter is provided', async () => {
+            const { container } = render(
+                <MultiSelect
+                    label="Select options"
+                    placeholder="Choose options"
+                    items={createTestItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    menuFooter={<button onClick={() => {}}>Create new</button>}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 })

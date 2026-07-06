@@ -116,4 +116,21 @@ describe('SingleSelectV2 Accessibility', () => {
         )
         expect(await axe(container)).toHaveNoViolations()
     })
+
+    it('meets WCAG standards when menuFooter is provided', async () => {
+        const user = userEvent.setup()
+        const { container } = render(
+            <SingleSelectV2
+                placeholder="Select an option"
+                items={createItems()}
+                selected=""
+                onSelect={() => {}}
+                menuFooter={<button onClick={() => {}}>Create new</button>}
+            />
+        )
+        await user.click(
+            screen.getByRole('button', { name: /select an option/i })
+        )
+        expect(await axe(container)).toHaveNoViolations()
+    })
 })
