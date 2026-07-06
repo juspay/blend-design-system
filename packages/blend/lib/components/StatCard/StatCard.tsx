@@ -39,6 +39,7 @@ import type { StatCardTokenType } from './statcard.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
+import { useResizeObserver } from '../../hooks/useResizeObserver'
 import {
     SelectMenuSize,
     SelectMenuVariant,
@@ -304,6 +305,12 @@ const StatCard = ({
     const isSmallScreen = breakPointLabel === 'sm'
     const titleIconRef = useRef<HTMLDivElement>(null)
     const titleIconWidth = titleIconRef.current?.offsetWidth || 0
+    const actionIconRef = useRef<HTMLDivElement>(null)
+    const [actionIconWidth, setActionIconWidth] = useState(0)
+
+    useResizeObserver(actionIconRef, (rect) => {
+        setActionIconWidth(rect.width)
+    })
 
     const [hoveredBarIndex, setHoveredBarIndex] = useState<number | null>(null)
 
@@ -824,6 +831,16 @@ const StatCard = ({
                                                 statCardToken.textContainer
                                                     .header.gap
                                             }
+                                            paddingRight={
+                                                actionIcon
+                                                    ? actionIconWidth +
+                                                      toPixels(
+                                                          statCardToken
+                                                              .textContainer
+                                                              .header.gap
+                                                      )
+                                                    : undefined
+                                            }
                                         >
                                             <StatCardHeaderTitleText
                                                 title={title}
@@ -843,6 +860,7 @@ const StatCard = ({
                                         direction !==
                                             StatCardDirection.HORIZONTAL && (
                                             <Block
+                                                ref={actionIconRef}
                                                 data-element="view-more"
                                                 display="flex"
                                                 alignItems="center"
@@ -1091,6 +1109,7 @@ const StatCard = ({
                             >
                                 {actionIcon && (
                                     <Block
+                                        ref={actionIconRef}
                                         data-element="action-icon"
                                         display="flex"
                                         alignItems="flex-start"
@@ -1130,6 +1149,16 @@ const StatCard = ({
                                         gap={
                                             statCardToken.textContainer.header
                                                 .gap
+                                        }
+                                        paddingRight={
+                                            actionIcon
+                                                ? actionIconWidth +
+                                                  toPixels(
+                                                      statCardToken
+                                                          .textContainer.header
+                                                          .gap
+                                                  )
+                                                : undefined
                                         }
                                     >
                                         <StatCardHeaderTitleText

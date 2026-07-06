@@ -116,7 +116,7 @@ const StatCardDemo = () => {
         return (
             <Popover
                 heading="Help Information"
-                trigger={<span>+4 more</span>}
+                trigger={<span className="text-blue-500">+4 more</span>}
                 side="top"
                 showCloseButton={false}
                 minWidth={280}
@@ -142,6 +142,170 @@ const StatCardDemo = () => {
 
     return (
         <div className="p-8 space-y-12">
+            {/* Refund Dashboard */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">Refund Dashboard</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <StatCard
+                        title="Refunds Success Rate"
+                        value="92.75%"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Percentage of refunds processed successfully"
+                    />
+                    <StatCard
+                        title="Refunds Volume"
+                        value="8.83L"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Total number of refund transactions"
+                    />
+                    <StatCard
+                        title="Processed Refund Amount"
+                        value="₹62.62Cr"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Total amount of refunds processed"
+                        actionIcon={<InfoPopoverExample />}
+                    />
+                    <StatCard
+                        title="Manual Review Rate"
+                        value="0.00%"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Percentage of refunds requiring manual review"
+                    />
+                    <StatCard
+                        title="Manual Review Count"
+                        value="33"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Number of refunds pending manual review"
+                    />
+                    <StatCard
+                        title="Refund Pending Rate"
+                        value="7.00%"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Percentage of refunds still pending"
+                    />
+                    <StatCard
+                        title="Refund Pending for 5+ days"
+                        value="0"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Refunds pending for more than 5 days"
+                    />
+                    <StatCard
+                        title="Refund Latency"
+                        value="24M 32S"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Average time taken to process refunds"
+                    />
+                    <StatCard
+                        title="TP 50 Latency"
+                        value="21M 7S"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="50th percentile refund processing time"
+                    />
+                    <StatCard
+                        title="ARN Latency (TP 50)"
+                        value="0S"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="50th percentile ARN generation time"
+                    />
+                    <StatCard
+                        title="ARN Latency (TP 90)"
+                        value="0S"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="90th percentile ARN generation time"
+                    />
+                    <StatCard
+                        title="ARN Availability Rate"
+                        value="83.09%"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Percentage of refunds with ARN available"
+                    />
+                </div>
+            </div>
+
+            {/* Refund Details Table */}
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Refund Details</h3>
+                <div className="border rounded-lg overflow-hidden">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-gray-50 text-gray-700">
+                            <tr>
+                                <th className="px-4 py-3 font-medium">
+                                    Merchant Id
+                                </th>
+                                <th className="px-4 py-3 font-medium">
+                                    Payment Gateway
+                                </th>
+                                <th className="px-4 py-3 font-medium">
+                                    Payment Method Type
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            <tr className="bg-white">
+                                <td className="px-4 py-3 text-gray-500">—</td>
+                                <td className="px-4 py-3 text-gray-500">—</td>
+                                <td className="px-4 py-3 text-gray-500">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Overlap Failure Scenarios */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Overlap Failure Scenarios
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <StatCard
+                        title="Very long title that should collide with a wide +4 more button in a narrow card"
+                        value="₹62.62Cr"
+                        variant={StatCardVariant.NUMBER}
+                        actionIcon={<InfoPopoverExample />}
+                    />
+                    <div className="max-w-50">
+                        <StatCard
+                            title="Processed Refund Amount"
+                            value="₹62.62Cr"
+                            variant={StatCardVariant.NUMBER}
+                            actionIcon={<InfoPopoverExample />}
+                        />
+                    </div>
+                    <StatCard
+                        title="Processed Refund Amount"
+                        value="₹62.62Cr"
+                        variant={StatCardVariant.NUMBER}
+                        actionIcon={
+                            <span className="text-blue-500 whitespace-nowrap">
+                                +4 more
+                            </span>
+                        }
+                    />
+                    <StatCard
+                        title="Processed Refund Amount"
+                        value="₹62.62Cr"
+                        variant={StatCardVariant.NUMBER}
+                        helpIconText="Total amount of refunds processed"
+                        actionIcon={<InfoPopoverExample />}
+                    />
+                    <div className="max-w-60">
+                        <StatCard
+                            title="Processed Refund Amount"
+                            value="₹62.62Cr"
+                            variant={StatCardVariant.NUMBER}
+                            helpIconText="Total amount of refunds processed"
+                            actionIcon={<InfoPopoverExample />}
+                        />
+                    </div>
+                    <StatCard
+                        title="Successful Authorized Amount"
+                        value="0 د.إ"
+                        variant={StatCardVariant.NUMBER}
+                        actionIcon={<InfoPopoverExample />}
+                    />
+                </div>
+            </div>
+
             {/* Playground Section */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Playground</h2>
