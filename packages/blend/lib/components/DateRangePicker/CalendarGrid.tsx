@@ -129,6 +129,7 @@ const CalendarSkeleton = ({
         <Block
             style={{
                 maxHeight: CONTAINER_HEIGHT,
+                height: '100%',
                 padding: FOUNDATION_THEME.unit[16],
             }}
         >
@@ -918,6 +919,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             <MotionBlock
                 style={{
                     maxHeight: CONTAINER_HEIGHT,
+                    height: '100%',
                     overflowY: 'auto',
                     overflow: 'auto',
                     position: 'relative',
@@ -985,6 +987,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                     }}
                     style={{
                         maxHeight: CONTAINER_HEIGHT,
+                        height: '100%',
                         overflowY: 'auto',
                         overflow: 'auto',
                         position: 'relative',
