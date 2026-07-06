@@ -5,6 +5,7 @@ import { expect, userEvent, within } from '@storybook/test'
 import {
     MenuV2,
     type MenuV2GroupType,
+    type MenuV2ItemType,
     MenuV2Alignment,
     MenuV2Side,
 } from '../../../../../../packages/blend/lib/components/MenuV2'
@@ -92,6 +93,8 @@ import { MenuV2 } from '@juspay/blend-design-system';
 - Grouped items with optional separators
 - Nested sub-menus
 - Optional search inside the menu
+- Search results ranked by relevance (exact → prefix → substring) by default; override via \`searchSortFn\`
+- \`onEnter\` callback for command-palette-style "confirm search" behavior
 - Controlled or uncontrolled open state
 
                 `,
@@ -145,6 +148,16 @@ import { MenuV2 } from '@juspay/blend-design-system';
         onOpenChange: {
             action: 'openChange',
             description: 'Called when menu opens or closes',
+        },
+        searchSortFn: {
+            control: false,
+            description:
+                'Custom sort function `(items, searchText) => items`. Overrides the default exact → prefix → substring ranking.',
+        },
+        onEnter: {
+            action: 'enter',
+            description:
+                'Fired when Enter is pressed while the search input is focused. Receives `(searchText, filteredGroups)`.',
         },
     },
     tags: ['autodocs'],
@@ -314,6 +327,186 @@ export const Interactive: Story = {
         docs: {
             description: {
                 story: 'Open the menu and choose an action. The button label and Actions panel show the result.',
+            },
+        },
+    },
+}
+
+const rankedItems: MenuV2GroupType[] = [
+    {
+        label: 'Results',
+        items: [
+            { label: { text: 'Advanced Search Tools' } },
+            { label: { text: 'Search' } },
+            { label: { text: 'Search Settings' } },
+            { label: { text: 'Deep Search' } },
+        ],
+    },
+]
+
+export const WithSearchRanking: Story = {
+    render: function WithSearchRankingRender() {
+        return (
+            <div className="flex flex-col gap-3">
+                <MenuV2
+                    trigger={
+                        <Button buttonType={ButtonType.SECONDARY}>
+                            Ranked search
+                        </Button>
+                    }
+                    items={rankedItems}
+                    enableSearch
+                    searchPlaceholder="Type 'search' to see ranking..."
+                />
+                <p className="text-xs text-gray-600">
+                    Type <code>search</code> in the box. Results are ordered
+                    exact match → prefix match → substring match. The item
+                    declared last (“Search”) jumps to the top.
+                </p>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Search results are ranked by relevance using a stable tiered sort:
+**exact match → prefix match → substring match**.
+
+This is the default behavior — no prop required. Items at the same tier
+preserve their original declaration order (stable sort).`,
+            },
+        },
+    },
+}
+
+export const WithCustomSearchSort: Story = {
+    render: function WithCustomSearchSortRender() {
+        // Reverse-alphabetical custom sort overrides the default ranking
+        const customSort = (
+            items: MenuV2ItemType[],
+            _searchText: string
+        ): MenuV2ItemType[] =>
+            [...items].sort((a, b) => b.label.text.localeCompare(a.label.text))
+
+        return (
+            <div className="flex flex-col gap-3">
+                <MenuV2
+                    trigger={
+                        <Button buttonType={ButtonType.SECONDARY}>
+                            Custom sort
+                        </Button>
+                    }
+                    items={rankedItems}
+                    enableSearch
+                    searchPlaceholder="Custom reverse-alpha sort..."
+                    searchSortFn={customSort}
+                />
+                <p className="text-xs text-gray-600">
+                    A custom <code>searchSortFn</code> fully overrides the
+                    default ranking. Here results are sorted reverse-
+                    alphabetically regardless of match tier.
+                </p>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Pass a \`searchSortFn: (items, searchText) => items\` to fully control result ordering. The default tiered ranking is skipped entirely when this prop is supplied.`,
+            },
+        },
+    },
+}
+
+export const WithSearchEnter: Story = {
+    render: function WithSearchEnterRender() {
+        const [lastEnter, setLastEnter] = React.useState<string>('none')
+
+        return (
+            <div className="flex flex-col gap-3">
+                <MenuV2
+                    trigger={
+                        <Button buttonType={ButtonType.SECONDARY}>
+                            Search + Enter
+                        </Button>
+                    }
+                    items={rankedItems}
+                    enableSearch
+                    searchPlaceholder="Type, then press Enter..."
+                    onEnter={(query, filteredGroups) => {
+                        const top = filteredGroups[0]?.items[0]
+                        setLastEnter(
+                            top
+                                ? `query="${query}" → top="${top.label.text}"`
+                                : `query="${query}" → no results`
+                        )
+                    }}
+                />
+                <div className="text-xs text-gray-600">
+                    Last Enter: <strong>{lastEnter}</strong>
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `When the user presses **Enter** while focused on the search input, \`onEnter(searchText, filteredGroups)\` fires — letting the consumer act on the query or the top-ranked result (e.g. command-palette-style navigation).`,
+            },
+        },
+    },
+}
+
+const submenuSearchItems: MenuV2GroupType[] = [
+    {
+        label: 'Locations',
+        items: [
+            {
+                label: { text: 'United States' },
+                enableSubMenuSearch: true,
+                subMenuSearchPlaceholder: 'Search states...',
+                onSubMenuSearchEnter: (query, results) => {
+                    // eslint-disable-next-line no-console
+                    console.log(
+                        `Sub-menu Enter: query="${query}", top="${results[0]?.label.text ?? 'none'}"`
+                    )
+                },
+                subMenu: [
+                    { label: { text: 'California' } },
+                    { label: { text: 'New York' } },
+                    { label: { text: 'Texas' } },
+                    { label: { text: 'Washington' } },
+                ],
+            },
+        ],
+    },
+]
+
+export const WithSubmenuSearchRanking: Story = {
+    render: function WithSubmenuSearchRankingRender() {
+        return (
+            <div className="flex flex-col gap-3">
+                <MenuV2
+                    trigger={
+                        <Button buttonType={ButtonType.SECONDARY}>
+                            Submenu search
+                        </Button>
+                    }
+                    items={submenuSearchItems}
+                />
+                <p className="text-xs text-gray-600">
+                    Open the menu, hover <strong>United States</strong> to
+                    reveal its sub-menu search. Typing in the sub-menu search
+                    applies the same exact → prefix → substring ranking, and
+                    pressing Enter fires <code>onSubMenuSearchEnter</code>.
+                </p>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Per-item sub-menu search also ranks results by relevance. Set \`enableSubMenuSearch\` on the parent item and (optionally) \`onSubMenuSearchEnter\` to handle Enter while the sub-menu search input is focused.`,
             },
         },
     },

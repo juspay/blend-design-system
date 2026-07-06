@@ -104,6 +104,7 @@ export type MenuV2ContentProps = {
     searchPlaceholder: string
     searchText: string
     onSearchTextChange: (value: string) => void
+    onEnter?: () => void
     maxHeight?: CSSObject['maxHeight']
     minHeight?: CSSObject['minHeight']
     minWidth?: CSSObject['minWidth']
@@ -130,6 +131,7 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
             searchPlaceholder,
             searchText,
             onSearchTextChange,
+            onEnter,
             maxHeight,
             minHeight,
             minWidth: minWidthProp,
@@ -250,6 +252,10 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                             onChange={(e) => onSearchTextChange(e.target.value)}
                             onKeyDown={(e) => {
                                 e.stopPropagation()
+                                if (e.key === 'Enter') {
+                                    e.preventDefault()
+                                    onEnter?.()
+                                }
                             }}
                             aria-label={
                                 searchPlaceholder

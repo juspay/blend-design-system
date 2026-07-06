@@ -38,6 +38,10 @@ export type MenuV2ItemLabel = {
     text: string
     leftSlot?: React.ReactElement
 }
+export type MenuV2SearchSortFn = (
+    items: MenuV2ItemType[],
+    searchText: string
+) => MenuV2ItemType[]
 export type MenuV2ItemType = {
     id?: string
     label: MenuV2ItemLabel
@@ -49,6 +53,11 @@ export type MenuV2ItemType = {
     subMenu?: MenuV2ItemType[]
     enableSubMenuSearch?: boolean
     subMenuSearchPlaceholder?: string
+    subMenuSearchSortFn?: MenuV2SearchSortFn
+    onSubMenuSearchEnter?: (
+        searchText: string,
+        filteredResults: MenuV2ItemType[]
+    ) => void
     tooltip?: string | ReactNode
     tooltipProps?: MenuV2ItemTooltipProps
 }
@@ -82,6 +91,8 @@ export type MenuV2Props = {
     dimensions?: MenuV2Dimensions
     enableSearch?: boolean
     searchPlaceholder?: string
+    searchSortFn?: MenuV2SearchSortFn
+    onEnter?: (searchText: string, filteredGroups: MenuV2GroupType[]) => void
     enableVirtualScrolling?: boolean
     virtualScrolling?: MenuV2VirtualScrollingConfig
     open?: boolean

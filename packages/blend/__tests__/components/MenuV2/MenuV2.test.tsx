@@ -1,6 +1,6 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '../../test-utils'
+import { render, screen, waitFor, fireEvent } from '../../test-utils'
 import userEvent from '@testing-library/user-event'
 import MenuV2 from '../../../lib/components/MenuV2/MenuV2'
 import type { MenuV2GroupType } from '../../../lib/components/MenuV2/menuV2.types'
@@ -39,6 +39,36 @@ const createSearchItems = (): MenuV2GroupType[] => [
             { label: { text: 'Mostar' } },
             { label: { text: 'Moscow' } },
             { label: { text: 'Mumbai' } },
+        ],
+    },
+]
+
+const createRankedSearchItems = (): MenuV2GroupType[] => [
+    {
+        label: 'Results',
+        items: [
+            { label: { text: 'Advanced Search Tools' }, onClick: vi.fn() },
+            { label: { text: 'Search' }, onClick: vi.fn() },
+            { label: { text: 'Search Settings' }, onClick: vi.fn() },
+        ],
+    },
+]
+
+const createSubmenuSearchItems = (): MenuV2GroupType[] => [
+    {
+        label: 'Locations',
+        items: [
+            {
+                label: { text: 'United States' },
+                enableSubMenuSearch: true,
+                subMenuSearchPlaceholder: 'Search states...',
+                onSubMenuSearchEnter: vi.fn(),
+                subMenu: [
+                    { label: { text: 'California' }, onClick: vi.fn() },
+                    { label: { text: 'New York' }, onClick: vi.fn() },
+                    { label: { text: 'Texas' }, onClick: vi.fn() },
+                ],
+            },
         ],
     },
 ]
@@ -252,5 +282,152 @@ describe('MenuV2', () => {
         await waitFor(() => {
             expect(screen.getByText('California')).toBeInTheDocument()
         })
+    })
+
+    it('ranks search results so exact match appears before prefix and substring', async () => {
+        const user = userEvent.setup()
+        render(
+            <MenuV2
+                trigger={<button type="button">Ranked</button>}
+                items={createRankedSearchItems()}
+                enableSearch
+                searchPlaceholder="Search..."
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /ranked/i }))
+        const searchInput = await screen.findByPlaceholderText('Search...')
+        await user.type(searchInput, 'search')
+
+        await waitFor(() => {
+            const items = screen.getAllByRole('menuitem')
+            const texts = items.map((i) => i.textContent)
+            // Exact "Search" should come before prefix "Search Settings"
+            // and substring "Advanced Search Tools"
+            const searchIdx = texts.findIndex((t) => t === 'Search')
+            const prefixIdx = texts.findIndex((t) => t === 'Search Settings')
+            const subIdx = texts.findIndex((t) => t === 'Advanced Search Tools')
+            expect(searchIdx).toBeLessThan(prefixIdx)
+            expect(prefixIdx).toBeLessThan(subIdx)
+        })
+    })
+
+    it('calls onEnter with the current search text and filtered groups when Enter is pressed in the search input', async () => {
+        const user = userEvent.setup()
+        const onEnter = vi.fn()
+        render(
+            <MenuV2
+                trigger={<button type="button">Enter</button>}
+                items={createSearchItems()}
+                enableSearch
+                searchPlaceholder="Search cities..."
+                onEnter={onEnter}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /enter/i }))
+        const searchInput =
+            await screen.findByPlaceholderText('Search cities...')
+        await user.type(searchInput, 'mos')
+        await user.keyboard('{Enter}')
+
+        await waitFor(() => {
+            expect(onEnter).toHaveBeenCalledTimes(1)
+        })
+        const [query, filteredGroups] = onEnter.mock.calls[0]
+        expect(query).toBe('mos')
+        // At least one group, with at least one matching item (Moscow, Mostar)
+        expect(filteredGroups.length).toBeGreaterThan(0)
+        const matchedTexts = filteredGroups[0].items.map(
+            (i: { label: { text: string } }) => i.label.text
+        )
+        expect(matchedTexts).toContain('Moscow')
+        expect(matchedTexts).toContain('Mostar')
+    })
+
+    it('does not call onEnter when enableSearch is false', async () => {
+        const user = userEvent.setup()
+        const onEnter = vi.fn()
+        render(
+            <MenuV2
+                trigger={<button type="button">No search</button>}
+                items={createBasicItems()}
+                onEnter={onEnter}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /no search/i }))
+        await user.keyboard('{Enter}')
+        expect(onEnter).not.toHaveBeenCalled()
+    })
+
+    it('honors a custom searchSortFn that overrides the default ranking', async () => {
+        const user = userEvent.setup()
+        // Reverse-alphabetical custom sort
+        const customSort = (items: { label: { text: string } }[]) =>
+            [...items].sort().reverse()
+        render(
+            <MenuV2
+                trigger={<button type="button">Custom sort</button>}
+                items={createSearchItems()}
+                enableSearch
+                searchPlaceholder="Search cities..."
+                searchSortFn={customSort as never}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /custom sort/i }))
+        const searchInput =
+            await screen.findByPlaceholderText('Search cities...')
+        await user.type(searchInput, 'mo')
+
+        await waitFor(() => {
+            const items = screen.getAllByRole('menuitem')
+            const texts = items.map((i) => i.textContent)
+            // Custom sort reverses alphabetical order of matches
+            const mostarIdx = texts.findIndex((t) => t === 'Mostar')
+            const moscowIdx = texts.findIndex((t) => t === 'Moscow')
+            const mumbaiIdx = texts.findIndex((t) => t === 'Mumbai')
+            // Mumbai shouldn't match "mo" at all
+            expect(mumbaiIdx).toBe(-1)
+            expect(moscowIdx).toBeLessThan(mostarIdx)
+        })
+    })
+
+    it('fires onSubMenuSearchEnter with query and filtered results when Enter is pressed in the sub-menu search input', async () => {
+        const user = userEvent.setup()
+        const items = createSubmenuSearchItems()
+        const onSubMenuSearchEnter = items[0].items[0]
+            .onSubMenuSearchEnter as ReturnType<typeof vi.fn>
+
+        render(
+            <MenuV2
+                trigger={<button type="button">Submenu search</button>}
+                items={items}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', { name: /submenu search/i })
+        )
+        const parent = await screen.findByRole('menuitem', {
+            name: /united states/i,
+        })
+        await user.click(parent)
+
+        const subSearchInput =
+            await screen.findByPlaceholderText('Search states...')
+        // fireEvent is used for the keydown to reliably target the sub-menu
+        // portal input in jsdom (userEvent.keyboard can lose focus in portals).
+        fireEvent.change(subSearchInput, { target: { value: 'cal' } })
+        fireEvent.keyDown(subSearchInput, { key: 'Enter', code: 'Enter' })
+
+        await waitFor(() => {
+            expect(onSubMenuSearchEnter).toHaveBeenCalledTimes(1)
+        })
+        const [query, filteredResults] = onSubMenuSearchEnter.mock.calls[0]
+        expect(query).toBe('cal')
+        expect(filteredResults.length).toBe(1)
+        expect(filteredResults[0].label.text).toBe('California')
     })
 })
