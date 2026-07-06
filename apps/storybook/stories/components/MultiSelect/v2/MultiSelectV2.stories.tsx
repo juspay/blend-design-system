@@ -451,3 +451,64 @@ export const Accessibility: Story = {
         },
     },
 }
+
+export const WithMenuFooter: Story = {
+    render: () => {
+        const [selectedValues, setSelectedValues] = useState<string[]>([])
+
+        return (
+            <MultiSelectV2
+                label="Choose items"
+                placeholder="Select options"
+                items={defaultItems}
+                selectedValues={selectedValues}
+                onChange={(value) => {
+                    if (Array.isArray(value)) {
+                        setSelectedValues(value)
+                    } else {
+                        setSelectedValues((prev) =>
+                            prev.includes(value)
+                                ? prev.filter((v) => v !== value)
+                                : [...prev, value]
+                        )
+                    }
+                }}
+                search={{ show: true }}
+                menuFooter={
+                    <div
+                        style={{
+                            padding: '12px 16px',
+                            borderTop: '1px solid #e5e7eb',
+                        }}
+                    >
+                        <button
+                            type="button"
+                            onClick={() =>
+                                alert('Open the "Create new" modal here')
+                            }
+                            style={{
+                                width: '100%',
+                                padding: '8px 12px',
+                                background: 'transparent',
+                                border: '1px dashed #d1d5db',
+                                borderRadius: 8,
+                                cursor: 'pointer',
+                                color: '#374151',
+                                fontWeight: 500,
+                            }}
+                        >
+                            + Create new item
+                        </button>
+                    </div>
+                }
+            />
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Renders custom content (e.g. a "Create new" button) pinned at the bottom of the menu via the `menuFooter` prop. The footer is not selectable and stays visible even when the list is empty.',
+            },
+        },
+    },
+}

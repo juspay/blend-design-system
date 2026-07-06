@@ -167,6 +167,14 @@ export type SingleSelectV2TokensType = {
             }
             iconColor: CSSObject['color']
         }
+        footer: {
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+            backgroundColor: CSSObject['backgroundColor']
+            borderTop: CSSObject['borderTop']
+        }
     }
 
     mobilePanel: {

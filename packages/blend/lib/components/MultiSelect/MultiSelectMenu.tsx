@@ -86,6 +86,10 @@ const FixedActionButtons = styled(Block)(() => ({
     flexShrink: 0,
 }))
 
+const MenuFooter = styled(Block)(() => ({
+    flexShrink: 0,
+}))
+
 type FlattenedMultiSelectItem = VirtualListItem & {
     type: 'item' | 'label' | 'separator'
     item?: MultiSelectMenuItemType
@@ -171,6 +175,7 @@ const MultiSelectMenu = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     menuId,
+    menuFooter,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -892,6 +897,9 @@ const MultiSelectMenu = ({
                                         )}
                                     </FixedActionButtons>
                                 )}
+                            {menuFooter && (
+                                <MenuFooter>{menuFooter}</MenuFooter>
+                            )}
                         </>
                     )}
                 </Content>

@@ -91,6 +91,7 @@ const MultiSelectV2 = ({
     onClearAllClick,
     onOpenChange,
     multiSelectGroupPosition,
+    menuFooter,
     ...rest
 }: MultiSelectV2Props) => {
     const { disabled, name, ...buttonRest } = rest as {
@@ -366,6 +367,7 @@ const MultiSelectV2 = ({
                         }
                         allowCustomValue={allowCustomValue}
                         customValueLabel={customValueLabel}
+                        menuFooter={menuFooter}
                     />
 
                     {shouldShowClearButton && (

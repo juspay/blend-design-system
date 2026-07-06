@@ -466,4 +466,148 @@ describe('MultiSelectV2', () => {
         })
         vi.restoreAllMocks()
     })
+
+    describe('menuFooter', () => {
+        it('renders menuFooter content when provided', async () => {
+            vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+                breakPointLabel: 'lg',
+                innerWidth: 1280,
+            } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+
+            const user = userEvent.setup()
+            render(
+                <MultiSelectV2
+                    label="Footer"
+                    placeholder="Footer"
+                    items={createBasicItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    menuFooter={<button>Create new</button>}
+                />
+            )
+            await user.click(screen.getByRole('combobox', { name: /footer/i }))
+            expect(
+                await screen.findByRole('button', { name: /create new/i })
+            ).toBeInTheDocument()
+            vi.restoreAllMocks()
+        })
+
+        it('does not render menuFooter when not provided', async () => {
+            vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+                breakPointLabel: 'lg',
+                innerWidth: 1280,
+            } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+
+            const user = userEvent.setup()
+            render(
+                <MultiSelectV2
+                    label="No footer"
+                    placeholder="No footer"
+                    items={createBasicItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                />
+            )
+            await user.click(
+                screen.getByRole('combobox', { name: /no footer/i })
+            )
+            await waitFor(() => {
+                expect(
+                    screen.queryByRole('button', { name: /create new/i })
+                ).not.toBeInTheDocument()
+            })
+            vi.restoreAllMocks()
+        })
+
+        it('clicking menuFooter does not close the menu or trigger selection', async () => {
+            vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+                breakPointLabel: 'lg',
+                innerWidth: 1280,
+            } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+
+            const user = userEvent.setup()
+            const onFooterClick = vi.fn()
+            const onChange = vi.fn()
+            render(
+                <MultiSelectV2
+                    label="Footer click"
+                    placeholder="Footer click"
+                    items={createBasicItems()}
+                    selectedValues={[]}
+                    onChange={onChange}
+                    menuFooter={
+                        <button onClick={onFooterClick}>Create new</button>
+                    }
+                />
+            )
+            const trigger = screen.getByRole('combobox', {
+                name: /footer click/i,
+            })
+            await user.click(trigger)
+            const footerBtn = await screen.findByRole('button', {
+                name: /create new/i,
+            })
+            await user.click(footerBtn)
+            expect(onFooterClick).toHaveBeenCalled()
+            expect(onChange).not.toHaveBeenCalled()
+            await waitFor(() => {
+                expect(trigger).toHaveAttribute('aria-expanded', 'true')
+            })
+            vi.restoreAllMocks()
+        })
+
+        it('menuFooter stays visible when list is empty', async () => {
+            vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+                breakPointLabel: 'lg',
+                innerWidth: 1280,
+            } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+
+            const user = userEvent.setup()
+            render(
+                <MultiSelectV2
+                    label="Empty footer"
+                    placeholder="Empty footer"
+                    items={[]}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    menuFooter={<button>Create new</button>}
+                />
+            )
+            await user.click(
+                screen.getByRole('combobox', { name: /empty footer/i })
+            )
+            expect(
+                await screen.findByRole('button', { name: /create new/i })
+            ).toBeInTheDocument()
+            vi.restoreAllMocks()
+        })
+
+        it('menuFooter renders alongside primaryAction', async () => {
+            vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+                breakPointLabel: 'lg',
+                innerWidth: 1280,
+            } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+
+            const user = userEvent.setup()
+            render(
+                <MultiSelectV2
+                    label="Both"
+                    placeholder="Both"
+                    items={createBasicItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    primaryAction={{ text: 'Apply', onClick: () => {} }}
+                    menuFooter={<button>Create new</button>}
+                />
+            )
+            await user.click(screen.getByRole('combobox', { name: /both/i }))
+            expect(
+                await screen.findByRole('button', { name: /apply/i })
+            ).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: /create new/i })
+            ).toBeInTheDocument()
+            vi.restoreAllMocks()
+        })
+    })
 })

@@ -1403,3 +1403,66 @@ export const ClearButtonControl: Story = {
         },
     },
 }
+
+export const WithMenuFooter: Story = {
+    render: () => {
+        const [selectedValues, setSelectedValues] = useState<string[]>([])
+
+        return (
+            <div className="w-100">
+                <MultiSelect
+                    label="Skills"
+                    placeholder="Select skills"
+                    items={skillItems}
+                    selectedValues={selectedValues}
+                    onChange={(value) => {
+                        if (Array.isArray(value)) {
+                            setSelectedValues(value)
+                        } else {
+                            setSelectedValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    enableSearch
+                    menuFooter={
+                        <div
+                            style={{
+                                padding: '12px 16px',
+                                borderTop: '1px solid #e5e7eb',
+                            }}
+                        >
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    alert('Open the "Create new" modal here')
+                                }
+                                style={{
+                                    width: '100%',
+                                    padding: '8px 12px',
+                                    background: 'transparent',
+                                    border: '1px dashed #d1d5db',
+                                    borderRadius: 8,
+                                    cursor: 'pointer',
+                                    color: '#374151',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                + Create new skill
+                            </button>
+                        </div>
+                    }
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Renders custom content (e.g. a "Create new" button) pinned at the bottom of the menu via the `menuFooter` prop. The footer is not selectable and stays visible even when the list is empty.',
+            },
+        },
+    },
+}

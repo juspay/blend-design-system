@@ -101,6 +101,7 @@ const MultiSelect = ({
     onClearAllClick,
     onOpenChange,
     multiSelectGroupPosition,
+    menuFooter,
     ...rest
 }: MultiSelectProps) => {
     const { onFocus, onBlur, ...buttonRest } = rest
@@ -356,6 +357,7 @@ const MultiSelect = ({
                             hasMore={hasMore}
                             loadingComponent={loadingComponent}
                             menuId={menuId}
+                            menuFooter={menuFooter}
                             trigger={
                                 customTrigger || (
                                     <PrimitiveButton
