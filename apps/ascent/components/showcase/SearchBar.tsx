@@ -15,8 +15,8 @@ interface SearchBarProps {
     categories?: string[]
     selectedCategories?: string[]
     onCategoryChange?: (categories: string[]) => void
-    /** Fixed pixel width for the whole bar so its footprint never shifts. */
     width?: number
+    initialQuery?: string
 }
 
 const dropdownVariants: Variants = {
@@ -56,8 +56,9 @@ export default function SearchBar({
     selectedCategories = [],
     onCategoryChange,
     width = 380,
+    initialQuery = '',
 }: SearchBarProps) {
-    const [searchQuery, setSearchQuery] = useState('')
+    const [searchQuery, setSearchQuery] = useState(initialQuery)
     const [isExpanded, setIsExpanded] = useState(false)
     const [dropdownOpen, setDropdownOpen] = useState(false)
 

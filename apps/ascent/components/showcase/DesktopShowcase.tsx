@@ -85,6 +85,14 @@ export function DesktopShowcase({
     const pinchActiveRef = useRef(false)
     const pinchLastDistRef = useRef(0)
     const pinchMidpointRef = useRef({ x: 0, y: 0 })
+    const queryRef = useRef(query)
+    const categoriesRef = useRef(categories)
+    useEffect(() => {
+        queryRef.current = query
+    }, [query])
+    useEffect(() => {
+        categoriesRef.current = categories
+    }, [categories])
 
     // Apply CSS transform
     const applyTransform = useCallback(
@@ -130,6 +138,29 @@ export function DesktopShowcase({
         lastRegionRef.current = { startX, startY, endX, endY, zoom: z }
         setCards(computeVisibleCards(panX, panY, w, h, z))
     }, [])
+
+    // Shared centering logic so the snap effect and the init rAF stay in sync.
+    const centerOn = useCallback(
+        (w: number, h: number) => {
+            const hasFilters =
+                queryRef.current || categoriesRef.current.length > 0
+            if (hasFilters) {
+                const cx = Math.round(w / 2)
+                const cy = Math.round(h / 2 - 80)
+                panRef.current = { x: cx, y: cy }
+                pendingPanRef.current = { x: cx, y: cy }
+                applyTransform(cx, cy)
+            } else {
+                const initX = Math.round(w / 2 - CARD_WIDTH / 2)
+                const initY = Math.round(h / 2 - CARD_HEIGHT / 2 - 80)
+                panRef.current = { x: initX, y: initY }
+                pendingPanRef.current = { x: initX, y: initY }
+                applyTransform(initX, initY)
+                syncCards(initX, initY)
+            }
+        },
+        [applyTransform, syncCards]
+    )
 
     // Zoom toward a viewport point
     const applyZoom = useCallback(
@@ -181,22 +212,9 @@ export function DesktopShowcase({
     // Snap on query / category change
     useEffect(() => {
         const { w, h } = viewSizeRef.current
-        const hasFilters = query || categories.length > 0
-        if (hasFilters) {
-            const cx = Math.round(w / 2)
-            const cy = Math.round(h / 2 - 80)
-            panRef.current = { x: cx, y: cy }
-            pendingPanRef.current = { x: cx, y: cy }
-            applyTransform(cx, cy)
-        } else {
-            const initX = Math.round(w / 2 - CARD_WIDTH / 2)
-            const initY = Math.round(h / 2 - CARD_HEIGHT / 2 - 80)
-            panRef.current = { x: initX, y: initY }
-            pendingPanRef.current = { x: initX, y: initY }
-            applyTransform(initX, initY)
-            syncCards(initX, initY)
-        }
-    }, [query, categories, applyTransform, syncCards])
+        if (w === 0 || h === 0) return
+        centerOn(w, h)
+    }, [query, categories, centerOn])
 
     // Inertia
     const stopInertia = useCallback(() => {
@@ -262,18 +280,14 @@ export function DesktopShowcase({
 
             viewSizeRef.current = { w, h }
 
-            // Compute center pan once
+            // card stays centered whether or not filters are active on mount.
             if (!hasInitializedRef.current) {
                 hasInitializedRef.current = true
-                const initX = Math.round(w / 2 - CARD_WIDTH / 2)
-                const initY = Math.round(h / 2 - CARD_HEIGHT / 2 - 80)
-                panRef.current = { x: initX, y: initY }
-                pendingPanRef.current = { x: initX, y: initY }
+                centerOn(w, h)
+            } else {
+                applyTransform(panRef.current.x, panRef.current.y)
+                syncCards(panRef.current.x, panRef.current.y)
             }
-
-            // Always reapply transform — DOM may have been reset by hydration
-            applyTransform(panRef.current.x, panRef.current.y)
-            syncCards(panRef.current.x, panRef.current.y)
         }
 
         const onResize = () => {
@@ -294,7 +308,7 @@ export function DesktopShowcase({
             window.removeEventListener('resize', onResize)
             stopInertia()
         }
-    }, [syncCards, applyTransform, stopInertia])
+    }, [syncCards, applyTransform, stopInertia, centerOn])
 
     //  Wheel: zoom (mouse) or pan (trackpad two-finger)
     useEffect(() => {
