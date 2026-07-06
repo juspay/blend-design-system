@@ -68,6 +68,7 @@ export function MobileShowcase({
                     categories={showcaseCategories}
                     selectedCategories={categories ?? []}
                     onCategoryChange={onCategoryChange}
+                    initialQuery={query ?? ''}
                 />
             </div>
 
