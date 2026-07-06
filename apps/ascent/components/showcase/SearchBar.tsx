@@ -17,6 +17,7 @@ interface SearchBarProps {
     onCategoryChange?: (categories: string[]) => void
     width?: number
     initialQuery?: string
+    width?: number
 }
 
 const dropdownVariants: Variants = {

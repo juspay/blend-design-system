@@ -26,6 +26,7 @@ export type AddToastOptions = {
     }
     duration?: number
     position?: SnackbarPosition
+    wrap?: boolean
 }
 
 export type CustomToastProps = {
@@ -39,6 +40,7 @@ export type CustomToastProps = {
         autoDismiss?: boolean
     }
     toastId?: string | number
+    wrap?: boolean
 }
 
 export type SnackbarProps = {

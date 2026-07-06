@@ -292,7 +292,7 @@ const CalendarSection: React.FC<
     isSingleDatePicker,
     maxYearOffset,
 }) => (
-    <Block>
+    <Block flexGrow={1} minHeight={0} overflow="auto">
         <CalendarGrid
             selectedRange={selectedRange}
             onDateSelect={onDateSelect}
@@ -1228,6 +1228,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         style={{
                             ...calendarToken.calendar,
                         }}
+                        maxHeight="var(--radix-popper-available-height)"
+                        display="flex"
+                        flexDirection="column"
+                        overflow="hidden"
                     >
                         {showDateInput && (
                             <DateInputsSection
