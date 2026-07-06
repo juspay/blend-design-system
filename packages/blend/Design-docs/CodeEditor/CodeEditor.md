@@ -47,7 +47,7 @@ export type CodeEditorV2Props = {
     headerRightSlot?: ReactNode
     showLeftIcon?: boolean
     showCopyButton?: boolean
-    language?: SupportedLanguage
+    language?: CodeEditorLanguage
     placeholder?: string
     readOnly?: boolean
     disabled?: boolean

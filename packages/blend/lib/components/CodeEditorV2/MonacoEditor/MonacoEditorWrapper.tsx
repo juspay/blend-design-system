@@ -25,9 +25,13 @@ import { CSSObject } from 'styled-components'
 // Language mapping
 // ---------------------------------------------------------------------------
 
+// Monaco registers only `javascript`/`typescript` (VS Code's
+// `javascriptreact`/`typescriptreact` IDs are not registered, so they would
+// fall back to plaintext with no highlighting). Monaco's JS/TS tokenizers
+// handle JSX/TSX syntax fine, so map the ergonomic aliases onto them.
 const LANGUAGE_MAP: Record<string, string> = {
-    jsx: 'javascriptreact',
-    tsx: 'typescriptreact',
+    jsx: 'javascript',
+    tsx: 'typescript',
 }
 
 const mapLanguage = (lang: string) => LANGUAGE_MAP[lang] ?? lang

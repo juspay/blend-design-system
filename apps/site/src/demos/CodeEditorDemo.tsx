@@ -5,6 +5,7 @@ import { TextInput } from '../../../../packages/blend/lib/components/Inputs/Text
 import {
     CodeEditor,
     CodeEditorVariant,
+    type CodeEditorLanguage,
 } from '../../../../packages/blend/lib/components/CodeEditor'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import {
@@ -12,7 +13,6 @@ import {
     ButtonType,
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
-import type { SupportedLanguage } from '../../../../packages/blend/lib/components/CodeBlock/types'
 import { Save, Play, Download } from 'lucide-react'
 
 const CodeEditorDemo = () => {
@@ -23,7 +23,7 @@ const CodeEditorDemo = () => {
     const [showLineNumbers, setShowLineNumbers] = useState(true)
     const [showHeader, setShowHeader] = useState(true)
     const [headerText, setHeaderText] = useState('editor.js')
-    const [language, setLanguage] = useState<SupportedLanguage>('javascript')
+    const [language, setLanguage] = useState<CodeEditorLanguage>('javascript')
     const [readOnly, setReadOnly] = useState(false)
     const [disabled, setDisabled] = useState(false)
 
@@ -190,7 +190,7 @@ def process_transactions(transactions):
                             items={[{ items: languageOptions }]}
                             selected={language}
                             onSelect={(value) =>
-                                setLanguage(value as SupportedLanguage)
+                                setLanguage(value as CodeEditorLanguage)
                             }
                             placeholder="Select language"
                         />
