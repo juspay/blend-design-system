@@ -1,7 +1,7 @@
 {
     "name": "@juspay/blend-design-system",
     "private": false,
-    "version": "0.0.37-beta.7",
+    "version": "0.0.37-beta.8",
     "description": "A comprehensive React component library and design system by Juspay",
     "type": "module",
     "main": "./dist/main.js",
