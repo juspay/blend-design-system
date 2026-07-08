@@ -208,6 +208,22 @@ const DateRangePickerDemo = () => {
         startDate: new Date(),
         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     })
+
+    // State for custom preset trigger label reproduction (bug #DateRangePicker)
+    // "Last 2 Hours" is a non-built-in duration (2h is not 30m/1h/6h/24h),
+    // so the trigger should show "Last 2 Hours" but currently shows "Custom".
+    const [customPresetLabelRange, setCustomPresetLabelRange] =
+        useState<DateRange>(() => {
+            const now = new Date()
+            return {
+                startDate: new Date(now.getTime() - 2 * 60 * 60 * 1000),
+                endDate: now,
+            }
+        })
+
+    const handleCustomPresetLabelChange = (range: DateRange) => {
+        setCustomPresetLabelRange(range)
+    }
     const [popoverClipControlRange, setPopoverClipControlRange] =
         useState<DateRange>({
             startDate: new Date(),
@@ -1737,6 +1753,70 @@ const DateRangePickerDemo = () => {
                             <div className="text-gray-600">
                                 Check console logs when you select presets to
                                 see the callback data
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Custom Preset Trigger Label Reproduction */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🐛 Custom Preset Trigger Label
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            The trigger should show{' '}
+                            <strong>&quot;Last 2 Hours&quot;</strong> (the
+                            custom preset&apos;s label), but it shows{' '}
+                            <strong>&quot;Custom&quot;</strong> because the
+                            active-preset detector does not consult
+                            customPresets. 2h is not a built-in duration
+                            (30m/1h/6h/24h), so it falls back to CUSTOM. Click
+                            the preset in the dropdown — the range applies, but
+                            the trigger label reverts to &quot;Custom&quot; on
+                            the next render.
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customPresetLabelRange}
+                                onChange={handleCustomPresetLabelChange}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                                formatConfig={{
+                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                    includeTime: true,
+                                    timeFormat: '12h',
+                                }}
+                                customPresets={[
+                                    {
+                                        id: 'last2Hours',
+                                        label: 'Last 2 Hours',
+                                        getDateRange: () => {
+                                            const now = new Date()
+                                            return {
+                                                startDate: new Date(
+                                                    now.getTime() -
+                                                        2 * 60 * 60 * 1000
+                                                ),
+                                                endDate: now,
+                                            }
+                                        },
+                                    },
+                                    DateRangePreset.LAST_30_MINUTES,
+                                    DateRangePreset.LAST_1_HOUR,
+                                    DateRangePreset.LAST_6_HOURS,
+                                    DateRangePreset.LAST_24_HOURS,
+                                ]}
+                            />
+                        </div>
+                        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded text-xs font-mono">
+                            <div className="text-red-600 mb-1">
+                                🐛 Reproduction: trigger shows
+                                &quot;Custom&quot; instead of &quot;Last 2
+                                Hours&quot;
+                            </div>
+                            <div className="text-gray-600">
+                                Expected: &quot;Last 2 Hours&quot; (custom
+                                label). Actual: &quot;Custom&quot; (built-in
+                                fallback).
                             </div>
                         </div>
                     </div>

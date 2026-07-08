@@ -3974,7 +3974,8 @@ export const matchesLastMonthPreset = (range: DateRange): boolean => {
  */
 export const detectPresetFromRange = (
     range: DateRange,
-    timezone?: string
+    timezone?: string,
+    presetConfigs?: CustomPresetConfig[]
 ): DateRangePreset => {
     if (!range.startDate || !range.endDate) {
         return DateRangePreset.CUSTOM
@@ -4117,6 +4118,32 @@ export const detectPresetFromRange = (
 
     if (startIsToday && monthsDiff === 12) {
         return DateRangePreset.NEXT_12_MONTHS
+    }
+
+    // Check custom preset definitions (from customPresets prop) before giving up.
+    if (presetConfigs && presetConfigs.length > 0) {
+        const toleranceMs =
+            DATE_RANGE_PICKER_CONSTANTS.PRESET_DETECTION_TOLERANCE_MS
+        for (const config of presetConfigs) {
+            const definition = getCustomPresetDefinition(
+                config.preset as string
+            )
+            if (!definition) continue
+
+            const presetRange = definition.getDateRange()
+            if (
+                presetRange.startDate &&
+                presetRange.endDate &&
+                Math.abs(
+                    range.startDate.getTime() - presetRange.startDate.getTime()
+                ) <= toleranceMs &&
+                Math.abs(
+                    range.endDate.getTime() - presetRange.endDate.getTime()
+                ) <= toleranceMs
+            ) {
+                return config.preset
+            }
+        }
     }
 
     return DateRangePreset.CUSTOM
