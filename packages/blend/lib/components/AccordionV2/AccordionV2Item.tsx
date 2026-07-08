@@ -149,7 +149,7 @@ const StyledAccordionContent = styled(RadixAccordion.Content)<{
     $accordionType: AccordionV2Type
     $accordionToken: AccordionV2TokensType
 }>`
-    overflow: visible;
+    overflow: hidden;
     transition: ${ACCORDION_TRANSITION};
 
     &[data-state='open'] {
