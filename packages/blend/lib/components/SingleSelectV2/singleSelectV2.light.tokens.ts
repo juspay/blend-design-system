@@ -349,6 +349,14 @@ export const getSingleSelectV2LightTokens = (
                 },
                 iconColor: foundationToken.colors.gray[400],
             },
+            footer: {
+                paddingTop: foundationToken.unit[16],
+                paddingRight: foundationToken.unit[16],
+                paddingBottom: foundationToken.unit[16],
+                paddingLeft: foundationToken.unit[16],
+                backgroundColor: foundationToken.colors.gray[0],
+                borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
+            },
         },
 
         mobilePanel: {

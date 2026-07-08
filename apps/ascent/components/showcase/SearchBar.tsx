@@ -15,6 +15,8 @@ interface SearchBarProps {
     categories?: string[]
     selectedCategories?: string[]
     onCategoryChange?: (categories: string[]) => void
+    width?: number
+    initialQuery?: string
 }
 
 const dropdownVariants: Variants = {
@@ -53,8 +55,10 @@ export default function SearchBar({
     categories = [],
     selectedCategories = [],
     onCategoryChange,
+    width = 380,
+    initialQuery = '',
 }: SearchBarProps) {
-    const [searchQuery, setSearchQuery] = useState('')
+    const [searchQuery, setSearchQuery] = useState(initialQuery)
     const [isExpanded, setIsExpanded] = useState(false)
     const [dropdownOpen, setDropdownOpen] = useState(false)
 
@@ -151,23 +155,24 @@ export default function SearchBar({
     }, [isExpanded, collapse])
 
     const activeCount = selectedCategories.length
-    const activeLabel =
-        activeCount === 0
-            ? 'Select category'
-            : activeCount === 1
-              ? selectedCategories[0]
-              : `${activeCount} categories`
+    // Single selection → show its actual name. Zero or multiple → show a count.
+    const showName = activeCount <= 1
+    const nameLabel =
+        activeCount === 1 ? selectedCategories[0] : 'Select category'
 
     return (
-        <div className="pointer-events-auto w-full">
+        <div
+            className="pointer-events-auto"
+            style={{ width, maxWidth: '100%' }}
+        >
             <div className="flex items-center justify-between gap-2 bg-background dark:border border-border/80 rounded-2xl py-2.5 px-3 w-full shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]">
-                {/* Search input */}
+                {/* Search input — flex-1 absorbs leftover space; layout animates any resulting resize smoothly */}
                 <motion.div
                     ref={containerRef}
-                    animate={{ width: isExpanded ? 220 : 180 }}
-                    initial={false}
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    className="flex items-center gap-2 border border-border/75 py-2 px-3 rounded-xl cursor-text overflow-hidden shrink-0 flex-1"
+                    layout
+                    style={{ minWidth: isExpanded ? 220 : 180 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                    className="flex items-center gap-2 border border-border/75 py-2 px-3 rounded-xl cursor-text overflow-hidden flex-1 min-w-0"
                     onClick={expand}
                 >
                     <MagnifyingGlassIcon
@@ -244,11 +249,18 @@ export default function SearchBar({
                         onOpenChange={setDropdownOpen}
                     >
                         <Popover.Trigger asChild>
-                            <button
+                            <motion.button
+                                layout
+                                transition={{
+                                    type: 'spring',
+                                    stiffness: 500,
+                                    damping: 35,
+                                    mass: 0.6,
+                                }}
                                 aria-label="Filter by category"
                                 className={`
                                     flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-sm border border-border/75
-                                    transition-colors duration-150 select-none
+                                    transition-colors duration-150 select-none overflow-hidden max-w-45
                                     ${
                                         dropdownOpen
                                             ? 'bg-muted text-foreground'
@@ -256,19 +268,90 @@ export default function SearchBar({
                                     }
                                 `}
                             >
-                                <span className="hidden sm:inline text-foreground/50 text-[13px]">
-                                    {activeLabel}
-                                </span>
+                                <AnimatePresence
+                                    mode="popLayout"
+                                    initial={false}
+                                >
+                                    {showName ? (
+                                        // Single or no selection — plain text swap, name changes are infrequent
+                                        <motion.span
+                                            key={`name-${nameLabel}`}
+                                            layout
+                                            initial={{ opacity: 0, y: -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 4 }}
+                                            transition={{
+                                                duration: 0.15,
+                                                ease: [0.4, 0, 0.2, 1],
+                                            }}
+                                            className="hidden sm:inline text-foreground/50 text-[13px] whitespace-nowrap max-w-35 overflow-hidden text-ellipsis"
+                                        >
+                                            {nameLabel}
+                                        </motion.span>
+                                    ) : (
+                                        // Multiple selected — "{n} categories", only the digit rolls
+                                        <motion.span
+                                            key="count-label"
+                                            layout
+                                            initial={{ opacity: 0, y: -4 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 4 }}
+                                            transition={{
+                                                duration: 0.15,
+                                                ease: [0.4, 0, 0.2, 1],
+                                            }}
+                                            className="hidden sm:inline-flex items-baseline gap-1 text-foreground/50 text-[13px] whitespace-nowrap"
+                                        >
+                                            <span className="relative inline-flex h-3.75 overflow-hidden items-baseline">
+                                                <AnimatePresence
+                                                    mode="popLayout"
+                                                    initial={false}
+                                                >
+                                                    <motion.span
+                                                        key={activeCount}
+                                                        initial={{
+                                                            y: 10,
+                                                            opacity: 0,
+                                                        }}
+                                                        animate={{
+                                                            y: 0,
+                                                            opacity: 1,
+                                                        }}
+                                                        exit={{
+                                                            y: -10,
+                                                            opacity: 0,
+                                                        }}
+                                                        transition={{
+                                                            duration: 0.15,
+                                                            ease: [
+                                                                0.4, 0, 0.2, 1,
+                                                            ],
+                                                        }}
+                                                        className="inline-block"
+                                                    >
+                                                        {activeCount}
+                                                    </motion.span>
+                                                </AnimatePresence>
+                                            </span>
+                                            <span>categories</span>
+                                        </motion.span>
+                                    )}
+                                </AnimatePresence>
 
-                                <AnimatePresence initial={false}>
+                                {/* Mobile-only compact count, no badge/background */}
+                                <AnimatePresence
+                                    mode="popLayout"
+                                    initial={false}
+                                >
                                     {activeCount > 0 && (
                                         <motion.span
-                                            key="badge"
-                                            initial={{ opacity: 0, scale: 0.6 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.6 }}
-                                            transition={{ duration: 0.12 }}
-                                            className="flex items-center justify-center text-xxs font-medium bg-foreground text-background rounded-full w-4 h-4 leading-none sm:hidden"
+                                            key={activeCount}
+                                            layout
+                                            initial={{ opacity: 0, y: -6 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 6 }}
+                                            transition={{ duration: 0.15 }}
+                                            className="sm:hidden text-foreground/50 text-[13px] tabular-nums"
                                         >
                                             {activeCount}
                                         </motion.span>
@@ -276,6 +359,7 @@ export default function SearchBar({
                                 </AnimatePresence>
 
                                 <motion.span
+                                    layout
                                     animate={{ rotate: dropdownOpen ? 0 : 180 }}
                                     transition={{
                                         duration: 0.18,
@@ -288,7 +372,7 @@ export default function SearchBar({
                                         className="text-muted-foreground"
                                     />
                                 </motion.span>
-                            </button>
+                            </motion.button>
                         </Popover.Trigger>
 
                         <AnimatePresence>

@@ -1,7 +1,7 @@
 {
     "name": "@juspay/blend-design-system",
     "private": false,
-    "version": "0.0.37-beta.7",
+    "version": "0.0.37-beta.8",
     "description": "A comprehensive React component library and design system by Juspay",
     "type": "module",
     "main": "./dist/main.js",
@@ -23,8 +23,8 @@
             "types": "./dist/node.d.ts"
         },
         "./tokens": {
-            "import": "./dist/tokens.js",
-            "types": "./dist/tokens.d.ts"
+            "import": "./dist/token-engine.js",
+            "types": "./dist/token-engine.d.ts"
         },
         "./tokens/server": {
             "import": "./dist/tokens-server.js",
@@ -36,7 +36,8 @@
     "scripts": {
         "lint": "eslint .",
         "check:circular": "node scripts/check-circular.mjs",
-        "build": "pnpm lint && vite build",
+        "check:dist": "node scripts/check-dist.mjs",
+        "build": "pnpm lint && vite build && pnpm check:dist",
         "prepublishOnly": "pnpm run build",
         "test": "vitest",
         "test:ui": "vitest --ui",

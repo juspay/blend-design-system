@@ -138,4 +138,5 @@ export type SingleSelectProps = {
     singleSelectGroupPosition?: 'center' | 'left' | 'right'
 
     allowDeselect?: boolean
+    menuFooter?: React.ReactNode
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'slot' | 'onSelect'>

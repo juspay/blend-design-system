@@ -144,6 +144,7 @@ export type SingleSelectV2MenuProps = {
     customValueLabel?: string
 
     menuId?: string
+    menuFooter?: ReactNode
 }
 export type SingleSelectV2PropsBase = {
     label?: string
@@ -194,6 +195,7 @@ export type SingleSelectV2PropsBase = {
     customValueLabel?: string
 
     singleSelectGroupPosition?: 'center' | 'left' | 'right'
+    menuFooter?: ReactNode
 }
 
 export type SingleSelectV2Props = Omit<

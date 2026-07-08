@@ -61,6 +61,8 @@ export type SnackbarTokens = Readonly<{
                 fontSize: CSSObject['fontSize']
                 // Pattern: content.textContainer.header.fontWeight
                 fontWeight: CSSObject['fontWeight']
+                // Pattern: content.textContainer.header.lineHeight
+                lineHeight: CSSObject['lineHeight']
             }
 
             // Description text styling
@@ -149,6 +151,8 @@ export const getSnackbarTokens = (
                         },
                         fontSize: foundationToken.font.size.body.md.fontSize,
                         fontWeight: foundationToken.font.weight[500],
+                        lineHeight:
+                            foundationToken.font.size.body.md.lineHeight,
                     },
 
                     description: {
@@ -222,6 +226,8 @@ export const getSnackbarTokens = (
                         },
                         fontSize: foundationToken.font.size.body.lg.fontSize,
                         fontWeight: foundationToken.font.weight[600],
+                        lineHeight:
+                            foundationToken.font.size.body.lg.lineHeight,
                     },
 
                     description: {

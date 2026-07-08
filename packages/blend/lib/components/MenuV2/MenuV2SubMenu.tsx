@@ -14,6 +14,7 @@ import {
     getMenuItemDescriptionColor,
     filterMenuV2Item,
     getItemSlots,
+    defaultSearchSortFn,
 } from './menuV2.utils'
 import { menuV2SubmenuContentAnimations } from './menuV2.animations'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -64,12 +65,15 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
 
         const lower = searchText.toLowerCase()
 
-        return item.subMenu.reduce<MenuV2ItemType[]>((acc, sub) => {
+        const matched = item.subMenu.reduce<MenuV2ItemType[]>((acc, sub) => {
             const result = filterMenuV2Item(sub, lower)
             if (result) acc.push(result)
             return acc
         }, [])
-    }, [item.subMenu, searchText])
+
+        const sortFn = item.subMenuSearchSortFn ?? defaultSearchSortFn
+        return sortFn(matched, searchText)
+    }, [item.subMenu, searchText, item.subMenuSearchSortFn])
 
     const {
         bgDefault,
@@ -262,6 +266,16 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                                 }
                                 value={searchText}
                                 onChange={(e) => setSearchText(e.target.value)}
+                                onKeyDown={(e) => {
+                                    e.stopPropagation()
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault()
+                                        item.onSubMenuSearchEnter?.(
+                                            searchText,
+                                            filteredSubMenuItems
+                                        )
+                                    }
+                                }}
                                 aria-label="Search submenu"
                             />
                         </Block>

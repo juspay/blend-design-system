@@ -104,6 +104,7 @@ const SingleSelect = ({
     customValueLabel = 'Specify',
     singleSelectGroupPosition,
     allowDeselect = false,
+    menuFooter,
     ...rest
 }: SingleSelectProps) => {
     const { onFocus, onBlur, ...buttonRest } = rest
@@ -298,6 +299,7 @@ const SingleSelect = ({
                         allowCustomValue={allowCustomValue}
                         customValueLabel={customValueLabel}
                         menuId={menuId}
+                        menuFooter={menuFooter}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton

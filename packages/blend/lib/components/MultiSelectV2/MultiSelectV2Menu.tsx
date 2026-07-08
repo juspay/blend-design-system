@@ -69,6 +69,10 @@ const ScrollableContent = styled(Block)(() => ({
     },
 }))
 
+const MenuFooter = styled(Block)`
+    flex-shrink: 0;
+`
+
 const MultiSelectV2Menu = ({
     items,
     selected,
@@ -104,6 +108,7 @@ const MultiSelectV2Menu = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     menuId,
+    menuFooter,
 }: MultiSelectV2MenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
@@ -466,6 +471,9 @@ const MultiSelectV2Menu = ({
                                     selected={selected}
                                     onClose={() => handleOpenChange(false)}
                                 />
+                            )}
+                            {menuFooter && (
+                                <MenuFooter>{menuFooter}</MenuFooter>
                             )}
                         </>
                     )}

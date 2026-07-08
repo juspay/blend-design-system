@@ -42,7 +42,16 @@ export default defineConfig({
             entry: {
                 main: resolve(__dirname, 'lib/main.ts'),
                 node: resolve(__dirname, 'lib/node.ts'),
-                tokens: resolve(__dirname, 'lib/token-engine.ts'),
+                // IMPORTANT: this entry must NOT be named `tokens` — that would
+                // emit `dist/tokens.js` / `dist/tokens.d.ts` next to the
+                // `dist/tokens/` directory (built from `lib/tokens/`), and in
+                // TypeScript module resolution a file always beats a directory.
+                // The root's relative `./tokens` re-exports (FOUNDATION_THEME
+                // etc.) would then resolve to the token-engine stub instead of
+                // `dist/tokens/index.d.ts`, silently typing them as `any` for
+                // every consumer. See issue #1556; scripts/check-dist.mjs
+                // guards this class of collision post-build.
+                'token-engine': resolve(__dirname, 'lib/token-engine.ts'),
                 'tokens-server': resolve(
                     __dirname,
                     'lib/token-engine-server.ts'

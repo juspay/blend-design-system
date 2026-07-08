@@ -157,6 +157,7 @@ export type MultiSelectProps = {
     showClearButton?: boolean
     onClearAllClick?: () => void
     multiSelectGroupPosition?: 'center' | 'left' | 'right'
+    menuFooter?: React.ReactNode
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'slot' | 'onChange'>
 
 // Multi Select Menu Dropdpown
@@ -225,4 +226,5 @@ export type MultiSelectMenuProps = {
     customValueLabel?: string
     menuId?: string
     collisionBoundary?: Element | null | Array<Element | null>
+    menuFooter?: React.ReactNode
 }

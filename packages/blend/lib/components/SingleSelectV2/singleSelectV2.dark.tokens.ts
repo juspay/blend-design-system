@@ -349,6 +349,14 @@ export const getSingleSelectV2DarkTokens = (
                 },
                 iconColor: foundationToken.colors.gray[500],
             },
+            footer: {
+                paddingTop: foundationToken.unit[16],
+                paddingRight: foundationToken.unit[16],
+                paddingBottom: foundationToken.unit[16],
+                paddingLeft: foundationToken.unit[16],
+                backgroundColor: foundationToken.colors.gray[800],
+                borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[700]}`,
+            },
         },
 
         mobilePanel: {

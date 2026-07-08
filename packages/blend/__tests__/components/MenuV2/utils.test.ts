@@ -4,6 +4,9 @@ import {
     filterMenuV2Item,
     getItemSlots,
     flattenMenuV2Groups,
+    getItemMatchRank,
+    defaultSearchSortFn,
+    MenuV2MatchRank,
 } from '../../../lib/components/MenuV2/menuV2.utils'
 import type {
     MenuV2GroupType,
@@ -153,5 +156,165 @@ describe('MenuV2 utils', () => {
         expect(result).toHaveLength(1)
         expect(result[0].label).toBe('Second')
         expect(result[0].items[0].label.text).toBe('Beta')
+    })
+
+    describe('getItemMatchRank', () => {
+        it('returns EXACT when label.text equals the query (case-insensitive)', () => {
+            const item = createItem({ label: { text: 'Search' } })
+            // getItemMatchRank expects a pre-lowercased query (internal helper)
+            expect(getItemMatchRank(item, 'search')).toBe(MenuV2MatchRank.EXACT)
+        })
+
+        it('returns EXACT for label.text that matches ignoring case (caller lowercases)', () => {
+            const item = createItem({ label: { text: 'SEARCH' } })
+            expect(getItemMatchRank(item, 'search')).toBe(MenuV2MatchRank.EXACT)
+        })
+
+        it('returns PREFIX when label.text starts with the query', () => {
+            const item = createItem({ label: { text: 'Settings' } })
+            expect(getItemMatchRank(item, 'set')).toBe(MenuV2MatchRank.PREFIX)
+        })
+
+        it('returns SUBSTRING when the query appears mid-string', () => {
+            const item = createItem({
+                label: { text: 'Advanced Search Tools' },
+            })
+            expect(getItemMatchRank(item, 'search')).toBe(
+                MenuV2MatchRank.SUBSTRING
+            )
+        })
+
+        it('returns NONE when neither label nor subLabel matches', () => {
+            const item = createItem({
+                label: { text: 'Profile' },
+                subLabel: 'Account info',
+            })
+            expect(getItemMatchRank(item, 'xyz')).toBe(MenuV2MatchRank.NONE)
+        })
+
+        it('uses the better rank across label.text and subLabel', () => {
+            const item = createItem({
+                label: { text: 'Advanced Search Tools' },
+                subLabel: 'Search',
+            })
+            // label is SUBSTRING, subLabel is EXACT -> best rank is EXACT
+            expect(getItemMatchRank(item, 'search')).toBe(MenuV2MatchRank.EXACT)
+        })
+
+        it('matches via subLabel only when label.text does not match', () => {
+            const item = createItem({
+                label: { text: 'Enterprise' },
+                subLabel: 'Full feature set',
+            })
+            expect(getItemMatchRank(item, 'full')).toBe(MenuV2MatchRank.PREFIX)
+        })
+    })
+
+    describe('defaultSearchSortFn', () => {
+        it('returns items unchanged when search text is empty', () => {
+            const items = [
+                createItem({ id: 'a', label: { text: 'Apple' } }),
+                createItem({ id: 'b', label: { text: 'Banana' } }),
+            ]
+            expect(defaultSearchSortFn(items, '')).toEqual(items)
+        })
+
+        it('returns items unchanged when search text is whitespace', () => {
+            const items = [
+                createItem({ id: 'a', label: { text: 'Apple' } }),
+                createItem({ id: 'b', label: { text: 'Banana' } }),
+            ]
+            expect(defaultSearchSortFn(items, '   ')).toEqual(items)
+        })
+
+        it('ranks exact match before prefix before substring', () => {
+            // Deliberately declare substring match first to verify reordering
+            const items = [
+                createItem({
+                    id: 'sub',
+                    label: { text: 'Advanced Search Tools' },
+                }),
+                createItem({ id: 'pre', label: { text: 'Search Settings' } }),
+                createItem({ id: 'exact', label: { text: 'Search' } }),
+            ]
+            const sorted = defaultSearchSortFn(items, 'search')
+            expect(sorted.map((i) => i.id)).toEqual(['exact', 'pre', 'sub'])
+        })
+
+        it('preserves original relative order for items at the same rank (stable)', () => {
+            const items = [
+                createItem({ id: 'first', label: { text: 'Search One' } }),
+                createItem({ id: 'second', label: { text: 'Search Two' } }),
+                createItem({ id: 'third', label: { text: 'Search Three' } }),
+            ]
+            const sorted = defaultSearchSortFn(items, 'search')
+            // All three are prefix matches -> order must be preserved
+            expect(sorted.map((i) => i.id)).toEqual([
+                'first',
+                'second',
+                'third',
+            ])
+        })
+
+        it('does not mutate the input array', () => {
+            const items = [
+                createItem({ id: 'sub', label: { text: 'Advanced Search' } }),
+                createItem({ id: 'exact', label: { text: 'Search' } }),
+            ]
+            const inputCopy = [...items]
+            defaultSearchSortFn(items, 'search')
+            expect(items.map((i) => i.id)).toEqual(inputCopy.map((i) => i.id))
+        })
+    })
+
+    describe('filterMenuV2Groups ranking integration', () => {
+        it('applies default ranking so exact matches come first within a group', () => {
+            const groups: MenuV2GroupType[] = [
+                {
+                    label: 'Results',
+                    items: [
+                        createItem({
+                            id: 'sub',
+                            label: { text: 'Advanced Search Tools' },
+                        }),
+                        createItem({
+                            id: 'exact',
+                            label: { text: 'Search' },
+                        }),
+                        createItem({
+                            id: 'pre',
+                            label: { text: 'Search Settings' },
+                        }),
+                    ],
+                },
+            ]
+
+            const result = filterMenuV2Groups(groups, 'search')
+            expect(result[0].items.map((i) => i.id)).toEqual([
+                'exact',
+                'pre',
+                'sub',
+            ])
+        })
+
+        it('honors a custom searchSortFn and overrides the default ranking', () => {
+            const groups: MenuV2GroupType[] = [
+                {
+                    label: 'Results',
+                    items: [
+                        createItem({ id: 'a', label: { text: 'Alpha' } }),
+                        createItem({ id: 'b', label: { text: 'Beta' } }),
+                    ],
+                },
+            ]
+
+            // Reverse alphabetical sort
+            const reverseSort = (items: MenuV2ItemType[]): MenuV2ItemType[] =>
+                [...items].sort().reverse()
+
+            const result = filterMenuV2Groups(groups, 'a', reverseSort)
+            const ids = result[0].items.map((i) => i.id)
+            expect(ids).toEqual(['b', 'a'])
+        })
     })
 })
