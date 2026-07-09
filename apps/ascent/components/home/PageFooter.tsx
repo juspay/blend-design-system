@@ -7,9 +7,9 @@ export default function PageFooter() {
             <div className="px-6 pt-16 pb-11">
                 <div className="flex flex-col items-start w-full justify-center md:justify-between gap-8 lg:gap-10 text-muted-foreground">
                     <div className="w-full flex items-center justify-center md:justify-between flex-col gap-7">
-                        <div className="w-full flex flex-col md:flex-row items-center md:items-end  md:justify-between gap-8 lg:gap-6">
+                        <div className="w-full flex flex-col md:flex-row items-center md:items-end  md:justify-between lg:gap-6">
                             <div className="flex items-baseline gap-3">
-                                <span className="text-[32px] lg:text-8xl font-medium leading-27 tracking-[-3.84px] text-foreground">
+                                <span className="text-[32px] lg:text-8xl font-medium leading-27 md:tracking-[-3.84px] text-foreground">
                                     Blend UI
                                 </span>
                                 <span className="text-[16px] lg:text-lg text-muted-foreground">
