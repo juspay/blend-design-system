@@ -76,8 +76,8 @@ export default function LaunchVideoSection() {
                     isExpanded ? 'max-h-225' : 'max-h-0'
                 )}
             >
-                <div className="lg:px-44 pb-20 lg:py-8 px-8 border-t border-border">
-                    <div className="relative w-full aspect-video rounded-lg overflow-hidden bg-black shadow-lg">
+                <div className="lg:px-4 lg:py-8 border-t border-border">
+                    <div className="relative w-full aspect-video lg:rounded-lg overflow-hidden bg-black shadow-lg">
                         <video
                             ref={videoRef}
                             className="w-full h-full object-contain"

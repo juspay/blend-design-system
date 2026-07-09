@@ -17,7 +17,7 @@ export const generateBreadcrumbItems = (
 
     items.push({
         label: 'Home',
-        href: '/docs',
+        href: '/',
     })
 
     if (slugArray.length === 0) {

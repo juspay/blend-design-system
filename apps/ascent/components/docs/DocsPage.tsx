@@ -19,7 +19,7 @@ function DocsPage({
     rawMarkdown,
 }: ExtendedDocsPageProps) {
     return (
-        <div className="flex flex-col mx-auto border-x border-border">
+        <div className="flex flex-col mx-auto">
             <PageBreadcrumb
                 items={breadcrumbItems}
                 style={AsideStyle}
