@@ -144,7 +144,7 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
                 />
             </div>
             <aside
-                className="w-56 max-w-56 shrink-0 hidden xl:block transition-none"
+                className="w-56 max-w-56 shrink-0 hidden xl:block transition-none border-l border-border"
                 style={asideStyle}
             >
                 <div className="px-5 py-3">

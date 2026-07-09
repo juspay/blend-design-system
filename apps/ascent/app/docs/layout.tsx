@@ -73,7 +73,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
             >
                 <div className="flex w-full">
                     <aside
-                        className="hidden lg:block w-56 max-w-56 shrink-0 transition-none"
+                        className="hidden lg:block w-56 max-w-56 shrink-0 transition-none border-r border-border"
                         style={asideStyle}
                     >
                         <Sidebar items={sidebarItems} baseRoute="/docs" />
