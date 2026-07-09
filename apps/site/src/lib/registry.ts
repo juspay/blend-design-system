@@ -70,6 +70,7 @@ export const DEMOS = [
     { id: 'statCardV2', label: 'Stat Card V2' },
     { id: 'skeleton', label: 'Skeleton' },
     { id: 'card', label: 'Card' },
+    { id: 'cardV2', label: 'Card V2' },
     { id: 'progressBar', label: 'Progress Bar' },
     { id: 'progressBarV2', label: 'Progress Bar V2' },
     { id: 'dataTable', label: 'Data Table' },

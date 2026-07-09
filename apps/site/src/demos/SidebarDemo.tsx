@@ -99,6 +99,7 @@ import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
+import CardV2Demo from './CardV2Demo'
 import { TextInput, Button } from '../../../../packages/blend/lib/main'
 import {
     ButtonType,
@@ -217,6 +218,7 @@ const SidebarDemo = () => {
         | 'stepper'
         | 'keyValuePair'
         | 'card'
+        | 'cardV2'
         | 'dataRangePicker'
         | 'allComponents'
         | 'themeProvider'
@@ -603,6 +605,8 @@ const SidebarDemo = () => {
                 return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
+            case 'cardV2':
+                return <CardV2Demo />
             case 'skeleton':
                 return <SkeletonDemo />
             case 'allComponents':
@@ -1496,6 +1500,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'card',
                     onClick: () => setActiveComponent('card'),
+                },
+                {
+                    label: 'Card V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'cardV2',
+                    onClick: () => setActiveComponent('cardV2'),
                 },
                 {
                     label: 'Progress Bar',

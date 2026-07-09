@@ -39,6 +39,10 @@ import type { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.t
 import type { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import type { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import {
+    getCardV2Tokens,
+    type ResponsiveCardV2Tokens,
+} from '../components/CardV2/cardV2.tokens'
+import {
     getTopbarTokens,
     type ResponsiveTopbarTokens,
 } from '../components/Topbar/topbar.tokens'
@@ -275,6 +279,7 @@ export type ComponentTokenType = {
     STEPPER?: ResponsiveStepperTokens
     KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
     CARD?: ResponsiveCardTokens
+    CARDV2?: ResponsiveCardV2Tokens
     SKELETON?: ResponsiveSkeletonTokens
     TOPBAR?: ResponsiveTopbarTokens
     TOPBARV2?: ResponsiveTopbarV2Tokens
@@ -364,6 +369,7 @@ const ThemeContext = createContext<ThemeContextType>({
         STEPPER: getStepperTokens(FOUNDATION_THEME),
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
+        CARDV2: getCardV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
         TOPBARV2: getTopbarV2Tokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),

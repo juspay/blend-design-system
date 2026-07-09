@@ -32,6 +32,7 @@ import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import { getStepperTokens } from '../components/Stepper/stepper.tokens'
 import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { getCardTokens } from '../components/Card/card.tokens'
+import { getCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 import { getTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
@@ -150,6 +151,8 @@ const initTokens = (
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
         STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
         CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+        CARDV2:
+            componentTokens.CARDV2 ?? getCardV2Tokens(foundationTokens, theme),
         SKELETON:
             componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
