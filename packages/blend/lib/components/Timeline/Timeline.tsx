@@ -95,7 +95,15 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineRootProps>(
 
 TimelineRoot.displayName = 'Timeline'
 
-const Timeline = Object.assign(TimelineRoot, {
+// Statics reuse the flat exports, so they are typed as `typeof` those exports
+// to keep the emitted declarations stating the value identity.
+const Timeline: typeof TimelineRoot & {
+    Label: typeof TimelineLabel
+    Header: typeof TimelineHeader
+    Substep: typeof TimelineSubstep
+    Node: typeof TimelineNode
+    ShowMore: typeof TimelineShowMore
+} = Object.assign(TimelineRoot, {
     Label: TimelineLabel,
     Header: TimelineHeader,
     Substep: TimelineSubstep,
