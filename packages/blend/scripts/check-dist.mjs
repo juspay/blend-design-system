@@ -14,6 +14,13 @@
 // Check 1 (collision guard) fails the build on ANY such basename collision.
 // Check 2 (type smoke test) type-checks key root exports of `dist/main.d.ts`
 // and fails if a symbol is missing or resolves to `any`.
+// Check 3 (compound identity, issue #1576) discovers at runtime every
+// compound static that is the SAME VALUE as a flat export (e.g.
+// `Skeleton.Avatar === SkeletonAvatar`) and fails if its emitted declaration
+// is an inline prop re-declaration instead of `typeof <FlatExport>` — inline
+// types claim two independent components where there is one, so type-driven
+// tooling emits duplicates. Discovery is by value identity, so new compounds
+// are covered automatically without registering them here.
 import { readdirSync, existsSync, statSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -98,10 +105,110 @@ if (!moduleSymbol) {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Check 3: compound statics that reuse a flat export must be typed `typeof`
+// ---------------------------------------------------------------------------
+// Runtime identity is the ground truth: a static counts as an alias only when
+// it is `===` a top-level export. The emitted type must then be a `typeof`
+// query resolving to that export's declaration. (A structural type comparison
+// cannot catch this — the inline form is structurally identical.)
+const compoundPairs = []
+try {
+    const { JSDOM } = await import('jsdom')
+    const dom = new JSDOM('', { pretendToBeVisual: true })
+    global.window = dom.window
+    global.document = dom.window.document
+    global.HTMLElement = dom.window.HTMLElement
+    global.getComputedStyle = dom.window.getComputedStyle
+    Object.defineProperty(global, 'navigator', {
+        value: dom.window.navigator,
+        configurable: true,
+    })
+
+    const mod = await import(resolve(distDir, 'main.js'))
+
+    const isComponentLike = (v) =>
+        typeof v === 'function' ||
+        (typeof v === 'object' && v !== null && '$$typeof' in v)
+
+    const namesByValue = new Map()
+    for (const [name, value] of Object.entries(mod)) {
+        if (name === 'default' || !isComponentLike(value)) continue
+        if (!namesByValue.has(value)) namesByValue.set(value, [])
+        namesByValue.get(value).push(name)
+    }
+
+    const seen = new Set()
+    for (const [name, value] of Object.entries(mod)) {
+        if (name === 'default' || !isComponentLike(value)) continue
+        for (const key of Object.keys(value)) {
+            if (!/^[A-Z]/.test(key)) continue
+            const staticValue = value[key]
+            if (staticValue === value) continue
+            const flatNames = namesByValue.get(staticValue)
+            if (!flatNames) continue
+            // the same compound value can be exported under several names —
+            // check each (compound value, static) pair once
+            const id = namesByValue.get(value)?.[0] + '.' + key
+            if (seen.has(id)) continue
+            seen.add(id)
+            compoundPairs.push({ compound: name, key, flatNames })
+        }
+    }
+} catch (error) {
+    failed = true
+    console.error(
+        `✖ Could not import dist/main.js to discover compound statics: ${error.message}`
+    )
+}
+
+if (moduleSymbol && compoundPairs.length > 0) {
+    const exportsOfMain = checker.getExportsOfModule(moduleSymbol)
+    const resolveAlias = (symbol) =>
+        symbol && symbol.flags & ts.SymbolFlags.Alias
+            ? checker.getAliasedSymbol(symbol)
+            : symbol
+
+    for (const { compound, key, flatNames } of compoundPairs) {
+        const compoundSymbol = exportsOfMain.find((s) => s.name === compound)
+        if (!compoundSymbol) continue
+        const compoundType = checker.getTypeOfSymbolAtLocation(
+            compoundSymbol,
+            sourceFile
+        )
+        const propDecl = compoundType.getProperty(key)?.declarations?.[0]
+        const typeNode = propDecl?.type
+
+        let ok = false
+        if (typeNode && ts.isTypeQueryNode(typeNode)) {
+            const target = resolveAlias(
+                checker.getSymbolAtLocation(typeNode.exprName)
+            )
+            ok = flatNames.some(
+                (flat) =>
+                    resolveAlias(exportsOfMain.find((s) => s.name === flat)) ===
+                    target
+            )
+        }
+        if (!ok) {
+            failed = true
+            console.error(
+                `✖ \`${compound}.${key}\` is the same runtime value as export ` +
+                    `\`${flatNames[0]}\`, but its emitted declaration is not ` +
+                    `\`typeof ${flatNames[0]}\`. Annotate the compound const ` +
+                    'explicitly (see SkeletonCompound.tsx) so declaration emit ' +
+                    'states the value identity instead of inlining the props.'
+            )
+        }
+    }
+}
+
 if (failed) {
     process.exit(1)
 }
 
 console.log(
-    `✔ dist/ has no file/directory collisions; key exports (${KEY_EXPORTS.join(', ')}) are typed.`
+    `✔ dist/ has no file/directory collisions; key exports (${KEY_EXPORTS.join(', ')}) are typed; ` +
+        `${compoundPairs.length} compound statics verified as \`typeof\` aliases.`
 )
+process.exit(0)
