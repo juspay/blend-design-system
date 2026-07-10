@@ -119,6 +119,12 @@ if (!moduleSymbol) {
 // A static that is `===` a top-level export must additionally be a `typeof`
 // query resolving to that export's declaration. (A structural type comparison
 // cannot catch that — the inline form is structurally identical.)
+//
+// A static that is deliberately kept out of the declared type must be
+// exempted as '<Export>.<Static>' (none today); any export name of the
+// owning component works.
+const UNDECLARED_STATIC_ALLOWLIST = new Set()
+
 const compoundStatics = []
 try {
     const { JSDOM } = await import('jsdom')
@@ -157,9 +163,16 @@ try {
             const flatNames = namesByValue.get(staticValue) ?? null
             // the same compound value can be exported under several names —
             // check each (compound value, static) pair once
-            const id = namesByValue.get(value)?.[0] + '.' + key
+            const compoundNames = namesByValue.get(value)
+            const id = compoundNames[0] + '.' + key
             if (seen.has(id)) continue
             seen.add(id)
+            if (
+                compoundNames.some((n) =>
+                    UNDECLARED_STATIC_ALLOWLIST.has(`${n}.${key}`)
+                )
+            )
+                continue
             compoundStatics.push({ compound: name, key, flatNames })
         }
     }
@@ -170,11 +183,6 @@ try {
     )
 }
 
-// Every uppercase own property of an export is treated as public API,
-// including non-component statics. A static that is deliberately kept out of
-// the declared type must be exempted here as '<Export>.<Static>' (none today).
-const UNDECLARED_STATIC_ALLOWLIST = new Set([])
-
 let verifiedStatics = 0
 if (moduleSymbol && compoundStatics.length > 0) {
     const resolveAlias = (symbol) =>
@@ -183,7 +191,6 @@ if (moduleSymbol && compoundStatics.length > 0) {
             : symbol
 
     for (const { compound, key, flatNames } of compoundStatics) {
-        if (UNDECLARED_STATIC_ALLOWLIST.has(`${compound}.${key}`)) continue
         const compoundSymbol = exportsOfMain.find((s) => s.name === compound)
         if (!compoundSymbol) {
             failed = true
