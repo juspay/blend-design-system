@@ -170,6 +170,11 @@ try {
     )
 }
 
+// Every uppercase own property of an export is treated as public API,
+// including non-component statics. A static that is deliberately kept out of
+// the declared type must be exempted here as '<Export>.<Static>' (none today).
+const UNDECLARED_STATIC_ALLOWLIST = new Set([])
+
 let verifiedStatics = 0
 if (moduleSymbol && compoundStatics.length > 0) {
     const resolveAlias = (symbol) =>
@@ -178,6 +183,7 @@ if (moduleSymbol && compoundStatics.length > 0) {
             : symbol
 
     for (const { compound, key, flatNames } of compoundStatics) {
+        if (UNDECLARED_STATIC_ALLOWLIST.has(`${compound}.${key}`)) continue
         const compoundSymbol = exportsOfMain.find((s) => s.name === compound)
         if (!compoundSymbol) {
             failed = true
@@ -226,12 +232,16 @@ if (moduleSymbol && compoundStatics.length > 0) {
             verifiedStatics++
         } else {
             failed = true
+            const flats = flatNames.map((f) => `\`${f}\``).join(' / ')
+            const expected = flatNames
+                .map((f) => `\`typeof ${f}\``)
+                .join(' or ')
             console.error(
                 `✖ \`${compound}.${key}\` is the same runtime value as export ` +
-                    `\`${flatNames[0]}\`, but its emitted declaration is not ` +
-                    `\`typeof ${flatNames[0]}\`. Annotate the compound const ` +
-                    'explicitly (see SkeletonCompound.tsx) so declaration emit ' +
-                    'states the value identity instead of inlining the props.'
+                    `${flats}, but its emitted declaration is not ${expected}. ` +
+                    'Annotate the compound const explicitly (see ' +
+                    'SkeletonCompound.tsx) so declaration emit states the ' +
+                    'value identity instead of inlining the props.'
             )
         }
     }
