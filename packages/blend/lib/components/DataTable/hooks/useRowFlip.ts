@@ -62,6 +62,7 @@ export function useRowFlip(
     const prevIdsRef = useRef<Set<string>>(new Set())
     const configRef = useRef<RowAnimationConfig | undefined>(animationConfig)
     const prefersReducedMotion = useReducedMotion()
+    const cleanupTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     configRef.current = animationConfig
 
@@ -154,7 +155,12 @@ export function useRowFlip(
         }
 
         const cleanupTimeout = Math.max(duration, enterDuration) * 1000 + 50
-        setTimeout(() => {
+
+        if (cleanupTimeoutRef.current) {
+            clearTimeout(cleanupTimeoutRef.current)
+        }
+
+        cleanupTimeoutRef.current = setTimeout(() => {
             for (const id of orderedIds) {
                 const el = elementsRef.current.get(id)
                 if (el) {
@@ -167,6 +173,13 @@ export function useRowFlip(
 
         prevTopsRef.current = currentTops
         prevIdsRef.current = new Set(orderedIds)
+
+        return () => {
+            if (cleanupTimeoutRef.current) {
+                clearTimeout(cleanupTimeoutRef.current)
+                cleanupTimeoutRef.current = null
+            }
+        }
     }, [orderedIds, prefersReducedMotion])
 
     return { register }
