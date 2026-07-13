@@ -61,10 +61,13 @@ export function useRowFlip(
     const prevTopsRef = useRef<Map<string, number>>(new Map())
     const prevIdsRef = useRef<Set<string>>(new Set())
     const configRef = useRef<RowAnimationConfig | undefined>(animationConfig)
+    const orderedIdsRef = useRef(orderedIds)
     const prefersReducedMotion = useReducedMotion()
     const cleanupTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const serializedOrderedIds = JSON.stringify(orderedIds)
 
     configRef.current = animationConfig
+    orderedIdsRef.current = orderedIds
 
     const register = useCallback(
         (id: string, el: HTMLTableRowElement | null) => {
@@ -78,18 +81,19 @@ export function useRowFlip(
     )
 
     useLayoutEffect(() => {
+        const currentOrderedIds = orderedIdsRef.current
         const currentConfig = configRef.current
 
         if (prefersReducedMotion) {
             const newTops = new Map<string, number>()
-            for (const id of orderedIds) {
+            for (const id of currentOrderedIds) {
                 const el = elementsRef.current.get(id)
                 if (el) {
                     newTops.set(id, el.getBoundingClientRect().top)
                 }
             }
             prevTopsRef.current = newTops
-            prevIdsRef.current = new Set(orderedIds)
+            prevIdsRef.current = new Set(currentOrderedIds)
             return
         }
 
@@ -104,10 +108,12 @@ export function useRowFlip(
         const enterOffset = mergedConfig.enterOffset
 
         const prevIds = prevIdsRef.current
-        const newRowIdSet = new Set(orderedIds.filter((id) => !prevIds.has(id)))
+        const newRowIdSet = new Set(
+            currentOrderedIds.filter((id) => !prevIds.has(id))
+        )
 
         const currentTops = new Map<string, number>()
-        for (const id of orderedIds) {
+        for (const id of currentOrderedIds) {
             const el = elementsRef.current.get(id)
             if (el) {
                 currentTops.set(id, el.getBoundingClientRect().top)
@@ -161,7 +167,7 @@ export function useRowFlip(
         }
 
         cleanupTimeoutRef.current = setTimeout(() => {
-            for (const id of orderedIds) {
+            for (const id of currentOrderedIds) {
                 const el = elementsRef.current.get(id)
                 if (el) {
                     el.style.transition = ''
@@ -172,7 +178,7 @@ export function useRowFlip(
         }, cleanupTimeout)
 
         prevTopsRef.current = currentTops
-        prevIdsRef.current = new Set(orderedIds)
+        prevIdsRef.current = new Set(currentOrderedIds)
 
         return () => {
             if (cleanupTimeoutRef.current) {
@@ -180,7 +186,7 @@ export function useRowFlip(
                 cleanupTimeoutRef.current = null
             }
         }
-    }, [orderedIds, prefersReducedMotion])
+    }, [serializedOrderedIds, prefersReducedMotion])
 
     return { register }
 }
