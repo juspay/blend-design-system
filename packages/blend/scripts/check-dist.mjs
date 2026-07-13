@@ -14,6 +14,16 @@
 // Check 1 (collision guard) fails the build on ANY such basename collision.
 // Check 2 (type smoke test) type-checks key root exports of `dist/main.d.ts`
 // and fails if a symbol is missing or resolves to `any`.
+// Check 3 (compound statics, issue #1576) enumerates at runtime every
+// public static on every export (e.g. `Skeleton.Avatar`) and asserts two
+// things against `dist/main.d.ts`: (a) the static exists in the declared
+// type at all — an explicit compound annotation silently drops statics that
+// are added to `Object.assign` without updating it; and (b) a static that is
+// the SAME VALUE as a flat export (`Skeleton.Avatar === SkeletonAvatar`) is
+// declared as `typeof <FlatExport>`, not an inline prop re-declaration —
+// inline types claim two independent components where there is one, so
+// type-driven tooling emits duplicates. Discovery is by runtime value, so
+// new compounds are covered automatically without registering them here.
 import { readdirSync, existsSync, statSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -74,12 +84,14 @@ const program = ts.createProgram([mainDts], {
 const checker = program.getTypeChecker()
 const sourceFile = program.getSourceFile(mainDts)
 const moduleSymbol = sourceFile && checker.getSymbolAtLocation(sourceFile)
+const exportsOfMain = moduleSymbol
+    ? checker.getExportsOfModule(moduleSymbol)
+    : []
 
 if (!moduleSymbol) {
     failed = true
     console.error(`✖ Could not load ${mainDts} as a module.`)
 } else {
-    const exportsOfMain = checker.getExportsOfModule(moduleSymbol)
     for (const name of KEY_EXPORTS) {
         const symbol = exportsOfMain.find((s) => s.name === name)
         if (!symbol) {
@@ -98,10 +110,167 @@ if (!moduleSymbol) {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Check 3: compound statics must be declared, and flat-export aliases `typeof`
+// ---------------------------------------------------------------------------
+// Runtime is the ground truth: every uppercase own property of an export is a
+// public static and must appear in the declared type (explicit compound
+// annotations drop statics added to `Object.assign` without updating them).
+// A static that is `===` a top-level export must additionally be a `typeof`
+// query resolving to that export's declaration. (A structural type comparison
+// cannot catch that — the inline form is structurally identical.)
+//
+// A static that is deliberately kept out of the declared type must be
+// exempted as '<Export>.<Static>' (none today); any export name of the
+// owning component works.
+const UNDECLARED_STATIC_ALLOWLIST = new Set()
+
+const compoundStatics = []
+try {
+    // The bundle runs its module-load side effects on import (e.g. Highcharts
+    // reads `window`), so provide a minimal browser environment. This only
+    // needs globals touched at module-load time — NOT render/effect-time ones
+    // like ResizeObserver, which never run here since the script imports but
+    // never renders. If a future dependency reads a new global at load, the
+    // import below throws and is caught (see catch); add the global here.
+    const { JSDOM } = await import('jsdom')
+    const dom = new JSDOM('', { pretendToBeVisual: true })
+    global.window = dom.window
+    global.document = dom.window.document
+    global.HTMLElement = dom.window.HTMLElement
+    global.getComputedStyle = dom.window.getComputedStyle
+    Object.defineProperty(global, 'navigator', {
+        value: dom.window.navigator,
+        configurable: true,
+    })
+
+    const mod = await import(resolve(distDir, 'main.js'))
+
+    const isComponentLike = (v) =>
+        typeof v === 'function' ||
+        (typeof v === 'object' && v !== null && '$$typeof' in v)
+
+    const namesByValue = new Map()
+    for (const [name, value] of Object.entries(mod)) {
+        if (name === 'default' || !isComponentLike(value)) continue
+        if (!namesByValue.has(value)) namesByValue.set(value, [])
+        namesByValue.get(value).push(name)
+    }
+
+    const seen = new Set()
+    for (const [name, value] of Object.entries(mod)) {
+        if (name === 'default' || !isComponentLike(value)) continue
+        for (const key of Object.keys(value)) {
+            if (!/^[A-Z]/.test(key)) continue
+            const staticValue = value[key]
+            if (staticValue === value) continue
+            // null flatNames = a compound-only static (no flat export) — only
+            // its presence in the declared type is asserted
+            const flatNames = namesByValue.get(staticValue) ?? null
+            // the same compound value can be exported under several names —
+            // check each (compound value, static) pair once
+            const compoundNames = namesByValue.get(value)
+            const id = compoundNames[0] + '.' + key
+            if (seen.has(id)) continue
+            seen.add(id)
+            if (
+                compoundNames.some((n) =>
+                    UNDECLARED_STATIC_ALLOWLIST.has(`${n}.${key}`)
+                )
+            )
+                continue
+            compoundStatics.push({ compound: name, key, flatNames })
+        }
+    }
+} catch (error) {
+    failed = true
+    console.error(
+        '✖ Could not import dist/main.js to discover compound statics ' +
+            '(a browser global read at module-load may need shimming in the ' +
+            `setup block above): ${error.message}`
+    )
+}
+
+let verifiedStatics = 0
+if (moduleSymbol && compoundStatics.length > 0) {
+    const resolveAlias = (symbol) =>
+        symbol && symbol.flags & ts.SymbolFlags.Alias
+            ? checker.getAliasedSymbol(symbol)
+            : symbol
+
+    for (const { compound, key, flatNames } of compoundStatics) {
+        const compoundSymbol = exportsOfMain.find((s) => s.name === compound)
+        if (!compoundSymbol) {
+            failed = true
+            console.error(
+                `✖ \`${compound}\` exists at runtime in dist/main.js but ` +
+                    'dist/main.d.ts does not export it.'
+            )
+            continue
+        }
+        const compoundType = checker.getTypeOfSymbolAtLocation(
+            compoundSymbol,
+            sourceFile
+        )
+        const prop = compoundType.getProperty(key)
+        if (!prop) {
+            failed = true
+            console.error(
+                `✖ \`${compound}.${key}\` exists at runtime but is missing ` +
+                    `from \`${compound}\`'s declared type — its explicit ` +
+                    'annotation has drifted behind the `Object.assign` value.'
+            )
+            continue
+        }
+        if (!flatNames) {
+            // compound-only static — nothing to alias, presence is enough
+            verifiedStatics++
+            continue
+        }
+
+        const typeNode = prop.declarations?.[0]?.type
+        let ok = false
+        if (typeNode && ts.isTypeQueryNode(typeNode)) {
+            const target = resolveAlias(
+                checker.getSymbolAtLocation(typeNode.exprName)
+            )
+            ok =
+                target !== undefined &&
+                flatNames.some(
+                    (flat) =>
+                        resolveAlias(
+                            exportsOfMain.find((s) => s.name === flat)
+                        ) === target
+                )
+        }
+        if (ok) {
+            verifiedStatics++
+        } else {
+            failed = true
+            const flats = flatNames.map((f) => `\`${f}\``).join(' / ')
+            const expected = flatNames
+                .map((f) => `\`typeof ${f}\``)
+                .join(' or ')
+            console.error(
+                `✖ \`${compound}.${key}\` is the same runtime value as export ` +
+                    `${flats}, but its emitted declaration is not ${expected}. ` +
+                    'Annotate the compound const explicitly (see ' +
+                    'SkeletonCompound.tsx) so declaration emit states the ' +
+                    'value identity instead of inlining the props.'
+            )
+        }
+    }
+}
+
 if (failed) {
     process.exit(1)
 }
 
 console.log(
-    `✔ dist/ has no file/directory collisions; key exports (${KEY_EXPORTS.join(', ')}) are typed.`
+    `✔ dist/ has no file/directory collisions; key exports (${KEY_EXPORTS.join(', ')}) are typed; ` +
+        `${verifiedStatics} compound statics declared (flat-export aliases as \`typeof\`).`
 )
+// Importing dist/main.js leaves live handles behind (styled-components /
+// framer-motion timers under jsdom), so Node would hang without an explicit
+// exit.
+process.exit(0)
