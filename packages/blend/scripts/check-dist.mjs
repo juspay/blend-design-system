@@ -127,6 +127,12 @@ const UNDECLARED_STATIC_ALLOWLIST = new Set()
 
 const compoundStatics = []
 try {
+    // The bundle runs its module-load side effects on import (e.g. Highcharts
+    // reads `window`), so provide a minimal browser environment. This only
+    // needs globals touched at module-load time — NOT render/effect-time ones
+    // like ResizeObserver, which never run here since the script imports but
+    // never renders. If a future dependency reads a new global at load, the
+    // import below throws and is caught (see catch); add the global here.
     const { JSDOM } = await import('jsdom')
     const dom = new JSDOM('', { pretendToBeVisual: true })
     global.window = dom.window
@@ -179,7 +185,9 @@ try {
 } catch (error) {
     failed = true
     console.error(
-        `✖ Could not import dist/main.js to discover compound statics: ${error.message}`
+        '✖ Could not import dist/main.js to discover compound statics ' +
+            '(a browser global read at module-load may need shimming in the ' +
+            `setup block above): ${error.message}`
     )
 }
 
