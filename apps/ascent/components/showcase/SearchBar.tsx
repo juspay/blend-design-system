@@ -221,7 +221,7 @@ export default function SearchBar({
                                 </motion.button>
                             ) : (
                                 <motion.div
-                                    key="shortcut"
+                                    key={isExpanded ? 'esc' : 'shortcut'}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
@@ -229,7 +229,7 @@ export default function SearchBar({
                                     aria-hidden="true"
                                 >
                                     <span className="flex items-center text-[11px] text-muted-foreground bg-secondary/50 border border-border/50 rounded-md px-1.5 py-0.5">
-                                        F
+                                        {isExpanded ? 'Esc' : 'F'}
                                     </span>
                                 </motion.div>
                             )}
