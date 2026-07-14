@@ -1,43 +1,17 @@
-import { useRef, useLayoutEffect, useCallback } from 'react'
+import { useRef, useLayoutEffect, useCallback, useMemo } from 'react'
 import { useReducedMotion } from './useReducedMotion'
 import type { RowAnimationConfig } from '../types'
 
-const DEFAULT_ANIMATION_CONFIG: Required<
-    Pick<
-        RowAnimationConfig,
-        | 'transitionType'
-        | 'stiffness'
-        | 'damping'
-        | 'mass'
-        | 'duration'
-        | 'bezier'
-        | 'enterDuration'
-        | 'enterOffset'
-    >
-> = {
-    transitionType: 'bezier',
-    stiffness: 320,
-    damping: 32,
-    mass: 1,
-    duration: 0.3,
-    bezier: [0, 0.2, 0, 1],
-    enterDuration: 0.65,
-    enterOffset: 34,
-}
-
-function toCssTransition(config: RowAnimationConfig | undefined): {
+function toCssTransition(config: RowAnimationConfig): {
     transition: string
     duration: number
 } {
-    const merged = { ...DEFAULT_ANIMATION_CONFIG, ...config }
-    const { transitionType, duration, bezier } = merged
-
-    if (transitionType === 'bezier') {
-        const [p0, p1, p2, p3] = bezier
+    if (config.transitionType === 'bezier') {
+        const [p0, p1, p2, p3] = config.bezier
         const cssBezier = `cubic-bezier(${p0}, ${p1}, ${p2}, ${p3})`
         return {
-            duration,
-            transition: `transform ${duration}s ${cssBezier}, opacity ${duration}s ${cssBezier}`,
+            duration: config.duration,
+            transition: `transform ${config.duration}s ${cssBezier}, opacity ${config.duration}s ${cssBezier}`,
         }
     }
 
@@ -64,7 +38,10 @@ export function useRowFlip(
     const orderedIdsRef = useRef(orderedIds)
     const prefersReducedMotion = useReducedMotion()
     const cleanupTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-    const serializedOrderedIds = JSON.stringify(orderedIds)
+    const serializedOrderedIds = useMemo(
+        () => JSON.stringify(orderedIds),
+        [orderedIds]
+    )
 
     configRef.current = animationConfig
     orderedIdsRef.current = orderedIds
@@ -97,21 +74,6 @@ export function useRowFlip(
             return
         }
 
-        const mergedConfig = {
-            ...DEFAULT_ANIMATION_CONFIG,
-            ...currentConfig,
-        }
-        const { transition: cssTransition, duration } = toCssTransition(
-            currentConfig || {}
-        )
-        const enterDuration = mergedConfig.enterDuration
-        const enterOffset = mergedConfig.enterOffset
-
-        const prevIds = prevIdsRef.current
-        const newRowIdSet = new Set(
-            currentOrderedIds.filter((id) => !prevIds.has(id))
-        )
-
         const currentTops = new Map<string, number>()
         for (const id of currentOrderedIds) {
             const el = elementsRef.current.get(id)
@@ -119,6 +81,22 @@ export function useRowFlip(
                 currentTops.set(id, el.getBoundingClientRect().top)
             }
         }
+
+        if (!currentConfig) {
+            prevTopsRef.current = currentTops
+            prevIdsRef.current = new Set(currentOrderedIds)
+            return
+        }
+
+        const { transition: cssTransition, duration } =
+            toCssTransition(currentConfig)
+        const enterDuration = currentConfig.enterDuration
+        const enterOffset = currentConfig.enterOffset
+
+        const prevIds = prevIdsRef.current
+        const newRowIdSet = new Set(
+            currentOrderedIds.filter((id) => !prevIds.has(id))
+        )
 
         for (const [id, newTop] of currentTops) {
             if (newRowIdSet.has(id)) continue
