@@ -4609,18 +4609,35 @@ const RowAnimationDemo = () => {
         setData((prev) => prev.filter((r) => r.id !== rowId))
     }
 
-    const animationConfig: RowAnimationConfig = {
+    const animationConfig: RowAnimationConfig = useMemo(() => {
+        if (transitionType === 'spring') {
+            return {
+                transitionType,
+                stiffness: springStiffness,
+                damping: springDamping,
+                mass: springMass,
+                enterDuration,
+                enterOffset,
+            }
+        }
+
+        return {
+            transitionType,
+            duration: bezierDuration,
+            bezier: bezierControl,
+            enterDuration,
+            enterOffset,
+        }
+    }, [
         transitionType,
-        ...(transitionType === 'spring'
-            ? {
-                  stiffness: springStiffness,
-                  damping: springDamping,
-                  mass: springMass,
-              }
-            : { duration: bezierDuration, bezier: bezierControl }),
+        springStiffness,
+        springDamping,
+        springMass,
+        bezierDuration,
+        bezierControl,
         enterDuration,
         enterOffset,
-    }
+    ])
 
     return (
         <div style={{ marginTop: '40px' }}>
