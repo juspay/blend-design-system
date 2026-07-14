@@ -1,3 +1,4 @@
+/** @deprecated Will be deprecated soon. Use DrawerV2 instead. */
 export {
     Drawer,
     DrawerTrigger,
