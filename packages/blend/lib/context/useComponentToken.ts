@@ -33,6 +33,7 @@ import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens
 import { ResponsiveStepperTokens } from '../components/Stepper/stepper.tokens'
 import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
+import type { ResponsiveCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
@@ -113,6 +114,7 @@ export const useComponentToken = (
     | ResponsiveStepperTokens
     | ResponsiveKeyValuePairTokens
     | ResponsiveCardTokens
+    | ResponsiveCardV2Tokens
     | ResponsiveSkeletonTokens
     | ResponsiveTopbarTokens
     | ResponsiveAvatarTokens
@@ -230,6 +232,8 @@ export const useComponentToken = (
             return componentTokens.KEYVALUEPAIR
         case 'CARD':
             return componentTokens.CARD
+        case 'CARDV2':
+            return componentTokens.CARDV2
         case 'SKELETON':
             return componentTokens.SKELETON
         case 'TOPBAR':
