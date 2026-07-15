@@ -52,6 +52,7 @@ export * from './components/Switch'
 export * from './components/Tabs'
 export * from './components/Tags'
 export * from './components/Tooltip'
+export * from './components/Topbar'
 export * from './components/Upload'
 export * from './components/VirtualList'
 

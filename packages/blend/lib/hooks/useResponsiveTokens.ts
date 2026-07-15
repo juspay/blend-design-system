@@ -15,6 +15,7 @@ const v1TokenReplacementMap: Partial<
     AVATAR: { component: 'Avatar', replacement: 'AvatarV2' },
     BREADCRUMB: { component: 'Breadcrumb', replacement: 'BreadcrumbV2' },
     BUTTON: { component: 'Button', replacement: 'ButtonV2' },
+    CARD: { component: 'Card', replacement: 'CardV2' },
     CHAT_INPUT: { component: 'ChatInput', replacement: 'ChatInputV2' },
     CHECKBOX: { component: 'Checkbox', replacement: 'CheckboxV2' },
     CHARTS: { component: 'Charts', replacement: 'ChartV2' },
