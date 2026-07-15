@@ -114,6 +114,7 @@ import AllComponentsDemo from './AllComponentsDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
+import UploadV2Demo from './UploadV2Demo'
 import CodeBlockDemo from './CodeBlockDemo'
 import CodeEditorDemo from './CodeEditorDemo'
 import ChatInputDemo from './ChatInputDemo'
@@ -212,6 +213,7 @@ const SidebarV2Demo = () => {
         | 'virtualList'
         | 'skeleton'
         | 'upload'
+        | 'uploadV2'
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
@@ -488,6 +490,8 @@ const SidebarV2Demo = () => {
                 return <VirtualListDemo />
             case 'upload':
                 return <UploadDemo />
+            case 'uploadV2':
+                return <UploadV2Demo />
             case 'codeBlock':
                 return <CodeBlockDemo />
             case 'codeEditor':
@@ -796,7 +800,16 @@ const SidebarV2Demo = () => {
                         leftSlot: (
                             <Upload style={{ width: '16px', height: '16px' }} />
                         ),
+                        isSelected: activeComponent === 'upload',
                         onClick: () => setActiveComponent('upload'),
+                    },
+                    {
+                        label: 'File Upload V2',
+                        leftSlot: (
+                            <Upload style={{ width: '16px', height: '16px' }} />
+                        ),
+                        isSelected: activeComponent === 'uploadV2',
+                        onClick: () => setActiveComponent('uploadV2'),
                     },
                 ],
             },
