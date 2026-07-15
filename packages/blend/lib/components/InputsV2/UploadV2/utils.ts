@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { UploadFileV2 } from './UploadV2.types'
 
-export const FILE_NAME_TAG_MAX_LEN = 15
+export const FILE_NAME_TAG_MAX_LEN = 24
 
 export const createClickHandler =
     (disabled: boolean, fileInputRef: React.RefObject<HTMLInputElement>) =>
@@ -97,6 +97,29 @@ export const truncateFileNameForTag = (name: string): string =>
 export const getFileId = (uploadFile: UploadFileV2, index: number) =>
     uploadFile.id ??
     `${uploadFile.file.name}-${uploadFile.file.size}-${uploadFile.file.lastModified}-${index}`
+
+export const isFileTypeAccepted = (file: File, acceptedFileTypes: string[]) => {
+    if (acceptedFileTypes.length === 0) return true
+
+    const fileName = file.name.toLowerCase()
+    const fileType = file.type.toLowerCase()
+
+    return acceptedFileTypes.some((acceptedType) => {
+        const normalizedAcceptedType = acceptedType.trim().toLowerCase()
+        if (!normalizedAcceptedType) return false
+
+        if (normalizedAcceptedType.startsWith('.')) {
+            return fileName.endsWith(normalizedAcceptedType)
+        }
+
+        if (normalizedAcceptedType.endsWith('/*')) {
+            const acceptedGroup = normalizedAcceptedType.slice(0, -1)
+            return fileType.startsWith(acceptedGroup)
+        }
+
+        return fileType === normalizedAcceptedType
+    })
+}
 
 const KNOWN_UPLOAD_ERROR_REASONS = [
     'oversized',

@@ -89,6 +89,19 @@ export * from './components/InputsV2/MultiValueInputV2'
 export * from './components/InputsV2/NumberInputV2'
 export * from './components/InputsV2/OTPInputV2'
 export * from './components/InputsV2/SearchInputV2'
+export { UploadV2 } from './components/InputsV2/UploadV2'
+export {
+    UploadState as UploadV2State,
+    UploadDragState as UploadV2DragState,
+    UploadErrorReason,
+} from './components/InputsV2/UploadV2'
+export type {
+    UploadV2Props,
+    UploadFileV2,
+    UploadErrorReasonValue,
+    UploadV2TokensType,
+    ResponsiveUploadV2Tokens,
+} from './components/InputsV2/UploadV2'
 export * from './components/SnackbarV2'
 export * from './components/CodeEditorV2'
 export * from './components/KeyValuePairV2'

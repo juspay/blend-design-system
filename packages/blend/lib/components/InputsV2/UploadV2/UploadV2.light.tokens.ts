@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import { ResponsiveUploadV2Tokens } from './UploadV2.tokens'
+import type { ResponsiveUploadV2Tokens } from './UploadV2.tokens.types'
 import { UploadDragState, UploadState } from './UploadV2.types'
 
 export const getUploadV2LightTokens = (
@@ -130,6 +130,50 @@ export const getUploadV2LightTokens = (
                     gap: foundationTokens.unit[4],
                 },
             },
+            bottomContainer: {
+                hintText: {
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[12],
+                        md: foundationTokens.font.fontSize[12],
+                        lg: foundationTokens.font.fontSize[12],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[400],
+                        md: foundationTokens.font.weight[400],
+                        lg: foundationTokens.font.weight[400],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[16],
+                        md: foundationTokens.font.lineHeight[16],
+                        lg: foundationTokens.font.lineHeight[16],
+                    },
+                    color: {
+                        default: foundationTokens.colors.gray[400],
+                        hover: foundationTokens.colors.gray[400],
+                        focus: foundationTokens.colors.gray[400],
+                        disabled: foundationTokens.colors.gray[300],
+                        error: foundationTokens.colors.gray[400],
+                    },
+                },
+                errorMessage: {
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[12],
+                        md: foundationTokens.font.fontSize[12],
+                        lg: foundationTokens.font.fontSize[12],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[400],
+                        md: foundationTokens.font.weight[400],
+                        lg: foundationTokens.font.weight[400],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[16],
+                        md: foundationTokens.font.lineHeight[16],
+                        lg: foundationTokens.font.lineHeight[16],
+                    },
+                    color: foundationTokens.colors.red[600],
+                },
+            },
         },
         lg: {
             gap: foundationTokens.unit[8],
@@ -253,6 +297,50 @@ export const getUploadV2LightTokens = (
                 fileTag: {
                     maxWidth: foundationTokens.unit[200],
                     gap: foundationTokens.unit[4],
+                },
+            },
+            bottomContainer: {
+                hintText: {
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[12],
+                        md: foundationTokens.font.fontSize[12],
+                        lg: foundationTokens.font.fontSize[12],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[400],
+                        md: foundationTokens.font.weight[400],
+                        lg: foundationTokens.font.weight[400],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[16],
+                        md: foundationTokens.font.lineHeight[16],
+                        lg: foundationTokens.font.lineHeight[16],
+                    },
+                    color: {
+                        default: foundationTokens.colors.gray[400],
+                        hover: foundationTokens.colors.gray[400],
+                        focus: foundationTokens.colors.gray[400],
+                        disabled: foundationTokens.colors.gray[300],
+                        error: foundationTokens.colors.gray[400],
+                    },
+                },
+                errorMessage: {
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[12],
+                        md: foundationTokens.font.fontSize[12],
+                        lg: foundationTokens.font.fontSize[12],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[400],
+                        md: foundationTokens.font.weight[400],
+                        lg: foundationTokens.font.weight[400],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[16],
+                        md: foundationTokens.font.lineHeight[16],
+                        lg: foundationTokens.font.lineHeight[16],
+                    },
+                    color: foundationTokens.colors.red[600],
                 },
             },
         },

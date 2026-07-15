@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../../tokens/theme.token'
-import { ResponsiveUploadV2Tokens } from './UploadV2.tokens'
+import type { ResponsiveUploadV2Tokens } from './UploadV2.tokens.types'
 import { UploadDragState, UploadState } from './UploadV2.types'
 
 export const getUploadV2DarkTokens = (
@@ -112,7 +112,7 @@ export const getUploadV2DarkTokens = (
                     title: {
                         fontSize: foundationTokens.font.fontSize[16],
                         fontWeight: foundationTokens.font.weight[600],
-                        color: foundationTokens.colors.gray[700],
+                        color: foundationTokens.colors.gray[100],
                     },
                     description: {
                         fontSize: foundationTokens.font.fontSize[14],
@@ -128,6 +128,50 @@ export const getUploadV2DarkTokens = (
                 fileTag: {
                     maxWidth: foundationTokens.unit[200],
                     gap: foundationTokens.unit[4],
+                },
+            },
+            bottomContainer: {
+                hintText: {
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[12],
+                        md: foundationTokens.font.fontSize[12],
+                        lg: foundationTokens.font.fontSize[12],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[400],
+                        md: foundationTokens.font.weight[400],
+                        lg: foundationTokens.font.weight[400],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[16],
+                        md: foundationTokens.font.lineHeight[16],
+                        lg: foundationTokens.font.lineHeight[16],
+                    },
+                    color: {
+                        default: foundationTokens.colors.gray[400],
+                        hover: foundationTokens.colors.gray[400],
+                        focus: foundationTokens.colors.gray[400],
+                        disabled: foundationTokens.colors.gray[500],
+                        error: foundationTokens.colors.gray[400],
+                    },
+                },
+                errorMessage: {
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[12],
+                        md: foundationTokens.font.fontSize[12],
+                        lg: foundationTokens.font.fontSize[12],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[400],
+                        md: foundationTokens.font.weight[400],
+                        lg: foundationTokens.font.weight[400],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[16],
+                        md: foundationTokens.font.lineHeight[16],
+                        lg: foundationTokens.font.lineHeight[16],
+                    },
+                    color: foundationTokens.colors.red[600],
                 },
             },
         },
@@ -253,6 +297,50 @@ export const getUploadV2DarkTokens = (
                 fileTag: {
                     maxWidth: foundationTokens.unit[200],
                     gap: foundationTokens.unit[4],
+                },
+            },
+            bottomContainer: {
+                hintText: {
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[12],
+                        md: foundationTokens.font.fontSize[12],
+                        lg: foundationTokens.font.fontSize[12],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[400],
+                        md: foundationTokens.font.weight[400],
+                        lg: foundationTokens.font.weight[400],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[16],
+                        md: foundationTokens.font.lineHeight[16],
+                        lg: foundationTokens.font.lineHeight[16],
+                    },
+                    color: {
+                        default: foundationTokens.colors.gray[400],
+                        hover: foundationTokens.colors.gray[400],
+                        focus: foundationTokens.colors.gray[400],
+                        disabled: foundationTokens.colors.gray[500],
+                        error: foundationTokens.colors.gray[400],
+                    },
+                },
+                errorMessage: {
+                    fontSize: {
+                        sm: foundationTokens.font.fontSize[12],
+                        md: foundationTokens.font.fontSize[12],
+                        lg: foundationTokens.font.fontSize[12],
+                    },
+                    fontWeight: {
+                        sm: foundationTokens.font.weight[400],
+                        md: foundationTokens.font.weight[400],
+                        lg: foundationTokens.font.weight[400],
+                    },
+                    lineHeight: {
+                        sm: foundationTokens.font.lineHeight[16],
+                        md: foundationTokens.font.lineHeight[16],
+                        lg: foundationTokens.font.lineHeight[16],
+                    },
+                    color: foundationTokens.colors.red[600],
                 },
             },
         },

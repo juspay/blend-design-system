@@ -14,6 +14,7 @@ export const DEMOS = [
     { id: 'breadcrumbV2', label: 'Breadcrumb V2' },
     { id: 'virtualList', label: 'Virtual List' },
     { id: 'upload', label: 'File Upload' },
+    { id: 'uploadV2', label: 'File Upload V2' },
     { id: 'input', label: 'Text Input' },
     { id: 'textInputV2', label: 'Text Input V2' },
     { id: 'textInputGroup', label: 'Text Input Group' },

@@ -161,8 +161,7 @@ export const useComponentToken = (
     | ResponsiveChatInputV2TokensType
     | ChatInputV2MobileTokensType
     | ResponsiveStepperV2Tokens
-    | ResponsiveUploadV2Tokens
-    | ChatInputV2MobileTokensType => {
+    | ResponsiveUploadV2Tokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':

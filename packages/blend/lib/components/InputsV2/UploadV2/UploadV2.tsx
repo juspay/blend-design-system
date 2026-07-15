@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useId, useRef, useState } from 'react'
+import { forwardRef, useEffect, useId, useMemo, useRef, useState } from 'react'
 import Block from '../../Primitives/Block/Block'
 import {
     UploadDragState,
@@ -10,20 +10,24 @@ import {
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import { InputLabelsV2Tokens } from '../inputV2.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import { UploadV2TokensType } from './UploadV2.tokens'
-import { InputSizeV2, InputStateV2 } from '../inputV2.types'
-import { createClickHandler, getFileId } from './utils'
+import type { UploadV2TokensType } from './UploadV2.tokens.types'
+import { InputSizeV2, InputStateV2, type AnyRef } from '../inputV2.types'
+import { createClickHandler, getFileId, isFileTypeAccepted } from './utils'
 import UploadContainerV2 from './UploadContainerV2'
+import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
+import InputFooterV2 from '../utils/InputFooter/InputFooterV2'
+import { filterBlockedProps } from '../../../utils/prop-helpers'
 
-const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
+const UploadV2 = forwardRef<HTMLInputElement, UploadV2Props>(
     (
         {
+            id: providedId,
+            name = 'upload',
             label,
             subLabel,
             description = '',
             size = InputSizeV2.SM,
             helpIconText,
-            inputId,
             required,
             multiple = true,
             acceptedFileTypes = [],
@@ -32,32 +36,77 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
             files = [],
             onChange,
             state = UploadState.IDLE,
+            error = { show: false, message: '' },
             maxSize = 0,
             maxFiles = multiple ? undefined : 1,
             errorText = '',
+            hintText,
             progressBarValue = 0,
             progressBarMaxWidth = '300px',
             uploadHeaderText = 'Choose a file or drag & drop it here',
+            ...rest
         },
         ref
     ) => {
         const tokens = useResponsiveTokens<UploadV2TokensType>('UPLOADV2')
         const fileInputRef = useRef<HTMLInputElement>(null)
-        const uploadId = useId()
+        const generatedUploadId = useId()
+        const uploadId = providedId ?? generatedUploadId
+        const { errorId, hintId } = generateAccessibilityIds(uploadId)
+        const filteredRest = filterBlockedProps(rest)
         const [uploadState, setUploadState] = useState<UploadState>(
             UploadState.IDLE
         )
         const [dragState, setDragState] = useState<UploadDragState>(
             UploadDragState.DRAG_LEAVE
         )
+        const isDisabled = disabled || state === UploadState.DISABLED
         const isUploading = state === UploadState.UPLOADING
         const isSuccess = state === UploadState.SUCCESS
-        const isInteractionBlocked = disabled || isUploading || isSuccess
+        const isInteractionBlocked = isDisabled || isUploading || isSuccess
+        const hasInvalidFiles = files.some((file) => !file.isValid)
+        const displayUploadState = isDisabled
+            ? UploadState.DISABLED
+            : hasInvalidFiles
+              ? UploadState.ERROR
+              : uploadState
+        const descriptionId =
+            description && files.length === 0 && !isUploading
+                ? `${uploadId}-description`
+                : undefined
+        const hasError = Boolean(
+            error?.show || displayUploadState === UploadState.ERROR
+        )
+        const showLabelError = Boolean(error?.show || (!multiple && hasError))
+        const effectiveErrorText = error?.message || errorText
+        const shouldDescribeError = Boolean(
+            hasError && (effectiveErrorText || (!multiple && hasInvalidFiles))
+        )
+        const ariaDescribedBy = useMemo(() => {
+            const ids = [
+                descriptionId,
+                hintText && !hasError ? hintId : undefined,
+                shouldDescribeError ? errorId : undefined,
+            ].filter(Boolean) as string[]
+            return ids.length > 0 ? ids.join(' ') : undefined
+        }, [
+            descriptionId,
+            errorId,
+            hasError,
+            hintId,
+            hintText,
+            shouldDescribeError,
+        ])
+        const setInputRef = (node: HTMLInputElement | null) => {
+            fileInputRef.current = node
+            setExternalRef(ref as AnyRef<HTMLInputElement>, node)
+        }
 
         // Validate files and mark with isValid flag instead of filtering
         const validateFiles = (newFiles: File[]): UploadFileV2[] => {
             const limit = maxFiles ?? (multiple ? undefined : 1)
-            const remainingSlots = limit ? limit - files.length : Infinity
+            const remainingSlots =
+                limit && multiple ? limit - files.length : Infinity
             let hasRejection = false
 
             const validatedFiles: UploadFileV2[] = newFiles.map(
@@ -70,6 +119,17 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                             file,
                             isValid: false,
                             errorReason: UploadErrorReason.MAX_FILES,
+                        }
+                    }
+
+                    // Check accepted file types for drag/drop and direct file input.
+                    if (!isFileTypeAccepted(file, acceptedFileTypes)) {
+                        hasRejection = true
+                        return {
+                            id: `${file.name}-${file.size}-${file.lastModified}-${Date.now()}-${index}`,
+                            file,
+                            isValid: false,
+                            errorReason: UploadErrorReason.INVALID_TYPE,
                         }
                     }
 
@@ -108,20 +168,20 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                 setUploadState(UploadState.SUCCESS)
             } else if (state === UploadState.ERROR) {
                 setUploadState(UploadState.ERROR)
-            } else if (disabled) {
+            } else if (isDisabled) {
                 setUploadState(UploadState.DISABLED)
             } else {
                 setUploadState(UploadState.IDLE)
             }
-        }, [state, disabled])
+        }, [state, isDisabled])
         return (
             <Block
                 data-upload={label ?? ''}
-                data-status={disabled ? 'disabled' : 'enabled'}
-                ref={ref}
+                data-status={isDisabled ? 'disabled' : 'enabled'}
                 display="flex"
                 flexDirection="column"
                 gap={tokens.gap}
+                width="100%"
             >
                 <InputLabelsV2
                     tokens={tokens.topContainer as InputLabelsV2Tokens}
@@ -129,26 +189,26 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                     sublabel={subLabel}
                     size={size}
                     state={
-                        state === UploadState.ERROR
+                        showLabelError
                             ? InputStateV2.ERROR
-                            : state === UploadState.DISABLED
+                            : displayUploadState === UploadState.DISABLED
                               ? InputStateV2.DISABLED
                               : InputStateV2.DEFAULT
                     }
                     helpIconText={helpIconText}
-                    inputId={inputId}
+                    inputId={uploadId}
                     required={required}
                 />
                 {/* fake input file */}
                 <Block
-                    cursor={disabled ? 'not-allowed' : 'pointer'}
+                    cursor={isDisabled ? 'not-allowed' : 'pointer'}
                     onClick={(e) => {
                         if (isInteractionBlocked) {
                             e.preventDefault()
                             return
                         }
                         createClickHandler(
-                            disabled,
+                            isDisabled,
                             fileInputRef as React.RefObject<HTMLInputElement>
                         )()
                     }}
@@ -181,7 +241,6 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                         }
                         e.preventDefault()
                         e.stopPropagation()
-                        setDragState(UploadDragState.DROP)
                         const droppedFiles = Array.from(e.dataTransfer.files)
                         const validatedFiles = validateFiles(droppedFiles)
                         const updatedFiles = multiple
@@ -190,12 +249,14 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                               ? [validatedFiles[0]]
                               : []
                         onChange?.(updatedFiles)
+                        setDragState(UploadDragState.DRAG_LEAVE)
                     }}
                 >
                     <UploadContainerV2
                         description={description}
+                        descriptionId={descriptionId}
                         slot={slot}
-                        disabled={disabled}
+                        disabled={isDisabled}
                         onClick={() => {
                             fileInputRef.current?.click()
                         }}
@@ -217,8 +278,9 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                             )
                             onChange?.(updatedFiles)
                         }}
-                        state={uploadState}
-                        errorText={errorText}
+                        state={displayUploadState}
+                        errorText={error?.message ? '' : errorText}
+                        errorId={error?.message ? undefined : errorId}
                         progressBarValue={progressBarValue}
                         progressBarMaxWidth={progressBarMaxWidth}
                         uploadHeaderText={uploadHeaderText}
@@ -230,8 +292,10 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
 
                 {/* real input file */}
                 <input
-                    ref={fileInputRef}
+                    {...filteredRest}
+                    ref={setInputRef}
                     id={uploadId}
+                    name={name}
                     type="file"
                     multiple={multiple}
                     accept={acceptedFileTypes.join(',')}
@@ -246,21 +310,27 @@ const UploadV2 = forwardRef<HTMLDivElement, UploadV2Props>(
                         onChange?.(updatedFiles)
                         e.target.value = ''
                     }}
-                    disabled={disabled}
+                    disabled={isDisabled}
                     required={required}
                     aria-required={required}
-                    aria-invalid={uploadState === UploadState.ERROR}
-                    aria-describedby={
-                        [description, errorText, helpIconText]
-                            .filter(Boolean)
-                            .join(' ') || undefined
-                    }
+                    aria-invalid={hasError}
+                    aria-describedby={ariaDescribedBy}
                     aria-label={label ? undefined : 'File upload'}
                     style={{ display: 'none' }}
+                />
+                <InputFooterV2
+                    tokens={tokens.bottomContainer}
+                    error={Boolean(error?.show && error?.message)}
+                    errorMessage={error?.message}
+                    hintText={hintText}
+                    errorId={errorId}
+                    hintId={hintId}
+                    size={size}
                 />
             </Block>
         )
     }
 )
 
+UploadV2.displayName = 'UploadV2'
 export default UploadV2

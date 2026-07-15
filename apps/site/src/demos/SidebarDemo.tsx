@@ -960,6 +960,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Upload style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'upload',
                     onClick: () => setActiveComponent('upload'),
                 },
                 {
@@ -967,6 +968,7 @@ const SidebarDemo = () => {
                     leftSlot: (
                         <Upload style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'uploadV2',
                     onClick: () => setActiveComponent('uploadV2'),
                 },
             ],

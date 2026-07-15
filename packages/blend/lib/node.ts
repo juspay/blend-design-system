@@ -31,6 +31,7 @@ export { getStatCardV2Tokens } from './components/StatCardV2/statcardV2.tokens'
 export { getTabsV2Tokens } from './components/TabsV2/tabsV2.tokens'
 export { getTagV2Tokens } from './components/TagV2/tagV2.tokens'
 export { getTextInputV2Tokens } from './components/InputsV2/TextInputV2/TextInputV2.tokens'
+export { getUploadV2Tokens } from './components/InputsV2/UploadV2/UploadV2.tokens'
 
 export { getTimelineTokens } from './components/Timeline/timeline.token'
 export { getTopbarTokens } from './components/Topbar/topbar.tokens'

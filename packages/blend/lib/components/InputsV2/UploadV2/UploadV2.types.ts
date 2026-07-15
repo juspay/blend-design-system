@@ -33,12 +33,13 @@ export type UploadFileV2 = {
 }
 
 export type UploadV2Props = {
+    id?: string
+    name?: string
     label?: string
     subLabel?: string
     description?: string
     size?: InputSizeV2
     helpIconText?: string
-    inputId?: string
     required?: boolean
     multiple?: boolean
     /** File types to accept (e.g., ['.jpg', '.png', 'image/*', '.pdf']) */
@@ -49,7 +50,12 @@ export type UploadV2Props = {
     /** Callback when files are selected or changed */
     onChange?: (files: UploadFileV2[]) => void
     state?: UploadState
+    error?: {
+        show: boolean
+        message?: string
+    }
     errorText?: string
+    hintText?: string
     maxSize?: number
     maxFiles?: number
     progressBarValue?: number
