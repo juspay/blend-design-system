@@ -20,7 +20,6 @@ import {
     CardV2Orientation,
     CardV2Padding,
     CardV2Variant,
-    type CardV2Component,
     type CardV2Props,
 } from './cardV2.types'
 import {
@@ -305,15 +304,24 @@ const CardV2Root = forwardRef<HTMLDivElement, CardV2Props>(
 
 CardV2Root.displayName = 'CardV2'
 
-const CardV2 = CardV2Root as CardV2Component
-
-CardV2.Header = CardV2Header
-CardV2.Meta = CardV2Meta
-CardV2.Media = CardV2Media
-CardV2.Body = CardV2Body
-CardV2.Content = CardV2Content
-CardV2.Actions = CardV2Actions
-CardV2.Footer = CardV2Footer
-CardV2.Skeleton = CardV2Skeleton
+const CardV2: typeof CardV2Root & {
+    Header: typeof CardV2Header
+    Meta: typeof CardV2Meta
+    Media: typeof CardV2Media
+    Body: typeof CardV2Body
+    Content: typeof CardV2Content
+    Actions: typeof CardV2Actions
+    Footer: typeof CardV2Footer
+    Skeleton: typeof CardV2Skeleton
+} = Object.assign(CardV2Root, {
+    Header: CardV2Header,
+    Meta: CardV2Meta,
+    Media: CardV2Media,
+    Body: CardV2Body,
+    Content: CardV2Content,
+    Actions: CardV2Actions,
+    Footer: CardV2Footer,
+    Skeleton: CardV2Skeleton,
+})
 
 export default CardV2
