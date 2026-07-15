@@ -534,7 +534,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 setSelectedRange(normalizedRange)
                 setActivePreset(
                     normalizedRange
-                        ? detectPresetFromRange(normalizedRange, timezone)
+                        ? detectPresetFromRange(
+                              normalizedRange,
+                              timezone,
+                              presetConfigs
+                          )
                         : DateRangePreset.CUSTOM
                 )
                 setStartDate(
@@ -573,7 +577,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     error: 'none',
                 })
             },
-            [timezone, dateFormat]
+            [timezone, dateFormat, presetConfigs]
         )
 
         useEffect(() => {
