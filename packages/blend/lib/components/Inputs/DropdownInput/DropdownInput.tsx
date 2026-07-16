@@ -42,6 +42,7 @@ const DropdownInput = ({
     hintText,
     value,
     onChange,
+    type = 'text',
     slot,
     size = TextInputSize.MEDIUM,
     dropdownPosition = DropdownPosition.RIGHT,
@@ -268,7 +269,7 @@ const DropdownInput = ({
                     placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                     required={required}
                     value={value}
-                    type="text"
+                    type={type}
                     name={name}
                     onChange={(e) => {
                         if (!isInputDisabled) {
