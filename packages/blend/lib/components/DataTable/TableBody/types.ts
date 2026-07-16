@@ -1,4 +1,8 @@
-import { ColumnDefinition, RowActionsConfig } from '../types'
+import {
+    ColumnDefinition,
+    RowActionsConfig,
+    RowAnimationConfig,
+} from '../types'
 import { MobileDataTableConfig } from '../hooks/useMobileDataTable'
 import type { SkeletonVariant } from '../../Skeleton/skeleton.tokens'
 
@@ -57,4 +61,6 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     isRowLoading?: (row: T, index: number) => boolean
     focusedCell?: { rowIndex: number; colIndex: number } | null
     onCellFocus?: (rowIndex: number, colIndex: number) => void
+    enableRowAnimation?: boolean
+    rowAnimationConfig?: RowAnimationConfig
 }

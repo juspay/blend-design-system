@@ -155,6 +155,8 @@ const DataTable = forwardRef(
             onInsertRight,
             onDeleteColumn,
             getRowStyle,
+            enableRowAnimation,
+            rowAnimationConfig,
             tableBodyHeight,
             mobileColumnsToShow,
             enablePivotTable = false,
@@ -1996,6 +1998,12 @@ const DataTable = forwardRef(
                                                               index: number
                                                           ) => boolean)
                                                         | undefined
+                                                }
+                                                enableRowAnimation={
+                                                    enableRowAnimation
+                                                }
+                                                rowAnimationConfig={
+                                                    rowAnimationConfig
                                                 }
                                             />
                                         )}
