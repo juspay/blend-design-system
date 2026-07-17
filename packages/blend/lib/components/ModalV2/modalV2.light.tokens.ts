@@ -1,5 +1,5 @@
 import { type FoundationTokenType } from '../../tokens/theme.token'
-import { type ResponsiveModalV2Tokens } from './modalV2.tokens'
+import type { ResponsiveModalV2Tokens } from './modalV2.tokens.types'
 
 export const getModalV2LightToken = (
     foundationToken: FoundationTokenType

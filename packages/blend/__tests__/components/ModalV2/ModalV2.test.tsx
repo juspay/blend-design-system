@@ -1,11 +1,24 @@
 import React, { useState } from 'react'
-import { describe, it, expect, vi } from 'vitest'
+import { afterEach, describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { ModalV2 } from '../../../lib/components/ModalV2'
 import { ButtonV2Type } from '../../../lib/components/ButtonV2'
 
+const setViewportWidth = (width: number) => {
+    Object.defineProperty(window, 'innerWidth', {
+        configurable: true,
+        writable: true,
+        value: width,
+    })
+    window.dispatchEvent(new Event('resize'))
+}
+
 describe('ModalV2', () => {
+    afterEach(() => {
+        setViewportWidth(1024)
+    })
+
     describe('Rendering', () => {
         it('renders with title and subtitle', () => {
             render(
@@ -33,6 +46,23 @@ describe('ModalV2', () => {
 
             expect(screen.getByText('Simple Modal')).toBeInTheDocument()
             expect(screen.getByText('Content')).toBeInTheDocument()
+        })
+
+        it('renders header slot without title', () => {
+            render(
+                <ModalV2
+                    isOpen={true}
+                    onClose={vi.fn()}
+                    headerSlot={<span>Header action</span>}
+                >
+                    <p>Content</p>
+                </ModalV2>
+            )
+
+            expect(screen.getByText('Header action')).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: 'Close modal' })
+            ).toBeInTheDocument()
         })
 
         it('does not render when isOpen is false', () => {
@@ -76,6 +106,107 @@ describe('ModalV2', () => {
             expect(
                 screen.queryByRole('button', { name: 'Close modal' })
             ).not.toBeInTheDocument()
+        })
+
+        it('does not render generated header when showHeader is false', () => {
+            render(
+                <ModalV2
+                    isOpen={true}
+                    onClose={vi.fn()}
+                    title="Hidden Header"
+                    showHeader={false}
+                >
+                    <p>Content</p>
+                </ModalV2>
+            )
+
+            expect(screen.queryByText('Hidden Header')).not.toBeInTheDocument()
+            expect(screen.getByRole('dialog')).toHaveAttribute(
+                'aria-label',
+                'Hidden Header'
+            )
+        })
+
+        it('renders custom header and footer', () => {
+            render(
+                <ModalV2
+                    isOpen={true}
+                    onClose={vi.fn()}
+                    title="Custom Modal"
+                    customHeader={<div>Custom header</div>}
+                    customFooter={<div>Custom footer</div>}
+                >
+                    <p>Content</p>
+                </ModalV2>
+            )
+
+            expect(screen.getByText('Custom header')).toBeInTheDocument()
+            expect(screen.getByText('Custom footer')).toBeInTheDocument()
+            expect(screen.queryByText('Custom Modal')).not.toBeInTheDocument()
+        })
+
+        it('keeps mobile dialog labelled when generated header is hidden', () => {
+            setViewportWidth(500)
+
+            render(
+                <ModalV2
+                    isOpen={true}
+                    onClose={vi.fn()}
+                    title="Mobile Hidden Header"
+                    showHeader={false}
+                >
+                    <p>Content</p>
+                </ModalV2>
+            )
+
+            expect(
+                screen.getByRole('dialog', { name: 'Mobile Hidden Header' })
+            ).toBeInTheDocument()
+            expect(screen.getByText('Mobile Hidden Header')).toHaveStyle({
+                position: 'absolute',
+                clipPath: 'inset(50%)',
+            })
+        })
+
+        it('passes data and aria attributes to mobile dialog content', () => {
+            setViewportWidth(500)
+
+            render(
+                <ModalV2
+                    isOpen={true}
+                    onClose={vi.fn()}
+                    title="Mobile Attributes"
+                    data-testid="mobile-modal-content"
+                    aria-label="Custom mobile dialog"
+                >
+                    <p>Content</p>
+                </ModalV2>
+            )
+
+            const dialog = screen.getByTestId('mobile-modal-content')
+            expect(dialog).toHaveAttribute('role', 'dialog')
+            expect(dialog).toHaveAttribute('aria-label', 'Custom mobile dialog')
+        })
+
+        it('passes data and aria attributes to desktop dialog content', () => {
+            render(
+                <ModalV2
+                    isOpen={true}
+                    onClose={vi.fn()}
+                    title="Desktop Attributes"
+                    data-testid="desktop-modal-content"
+                    aria-label="Custom desktop dialog"
+                >
+                    <p>Content</p>
+                </ModalV2>
+            )
+
+            const dialog = screen.getByTestId('desktop-modal-content')
+            expect(dialog).toHaveAttribute('role', 'dialog')
+            expect(dialog).toHaveAttribute(
+                'aria-label',
+                'Custom desktop dialog'
+            )
         })
     })
 
@@ -197,6 +328,45 @@ describe('ModalV2', () => {
 
             const primaryButton = screen.getByRole('button', { name: 'Submit' })
             expect(primaryButton).toBeDisabled()
+        })
+
+        it('does not render footer actions when showFooter is false', () => {
+            render(
+                <ModalV2
+                    isOpen={true}
+                    onClose={vi.fn()}
+                    title="No Footer Modal"
+                    showFooter={false}
+                    primaryAction={{
+                        text: 'Submit',
+                        onClick: vi.fn(),
+                        buttonType: ButtonV2Type.PRIMARY,
+                    }}
+                >
+                    <p>Content</p>
+                </ModalV2>
+            )
+
+            expect(
+                screen.queryByRole('button', { name: 'Submit' })
+            ).not.toBeInTheDocument()
+        })
+    })
+
+    describe('Skeleton', () => {
+        it('keeps body content when body skeleton is not enabled', () => {
+            render(
+                <ModalV2
+                    isOpen={true}
+                    onClose={vi.fn()}
+                    title="Loading Modal"
+                    skeleton={{ show: true }}
+                >
+                    <p>Body content</p>
+                </ModalV2>
+            )
+
+            expect(screen.getByText('Body content')).toBeInTheDocument()
         })
     })
 
@@ -432,7 +602,7 @@ describe('ModalV2', () => {
     })
 
     describe('Ref Forwarding', () => {
-        it('forwards ref to the modal dialog element', () => {
+        it('forwards ref to the desktop modal dialog element', () => {
             const ref = React.createRef<HTMLDivElement>()
 
             render(
@@ -448,6 +618,26 @@ describe('ModalV2', () => {
 
             expect(ref.current).toBeInstanceOf(HTMLDivElement)
             expect(ref.current?.getAttribute('role')).toBe('dialog')
+        })
+
+        it('forwards ref to the mobile drawer dialog element', () => {
+            setViewportWidth(500)
+            const ref = React.createRef<HTMLDivElement>()
+
+            render(
+                <ModalV2
+                    ref={ref}
+                    isOpen={true}
+                    onClose={vi.fn()}
+                    title="Mobile Ref Test"
+                >
+                    <p>Content</p>
+                </ModalV2>
+            )
+
+            expect(ref.current).toBeInstanceOf(HTMLDivElement)
+            expect(ref.current?.getAttribute('role')).toBe('dialog')
+            expect(ref.current).toHaveTextContent('Mobile Ref Test')
         })
     })
 })

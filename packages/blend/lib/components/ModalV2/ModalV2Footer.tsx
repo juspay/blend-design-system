@@ -1,7 +1,7 @@
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { ButtonV2, ButtonV2Type } from '../ButtonV2'
-import { ModalV2TokensType } from './modalV2.tokens'
+import type { ModalV2TokensType } from './modalV2.tokens.types'
 import { ModalV2Props } from './modalV2.types'
 import { SkeletonVariant } from '../Skeleton'
 import ModalV2Skeleton from './ModalV2Skeleton'
@@ -55,32 +55,18 @@ const ModalV2Footer = ({
         >
             {secondaryAction && (
                 <ButtonV2
+                    {...secondaryAction}
                     buttonType={
                         secondaryAction.buttonType || ButtonV2Type.SECONDARY
                     }
-                    text={secondaryAction.text}
-                    onClick={secondaryAction.onClick}
-                    disabled={secondaryAction.disabled}
-                    subType={secondaryAction.subType}
-                    size={secondaryAction.size}
-                    leftSlot={secondaryAction.leftSlot}
-                    rightSlot={secondaryAction.rightSlot}
-                    loading={secondaryAction.loading}
                 />
             )}
             {primaryAction && (
                 <ButtonV2
+                    {...primaryAction}
                     buttonType={
                         primaryAction.buttonType || ButtonV2Type.PRIMARY
                     }
-                    text={primaryAction.text}
-                    onClick={primaryAction.onClick}
-                    disabled={primaryAction.disabled}
-                    subType={primaryAction.subType}
-                    size={primaryAction.size}
-                    leftSlot={primaryAction.leftSlot}
-                    rightSlot={primaryAction.rightSlot}
-                    loading={primaryAction.loading}
                 />
             )}
         </Block>

@@ -1,7 +1,7 @@
-// Seleton types
+// Skeleton types
 import { SkeletonVariant } from '../Skeleton'
-import { ModalV2TokensType } from './modalV2.tokens'
-import type { ReactNode } from 'react'
+import type { ModalV2TokensType } from './modalV2.tokens.types'
+import type { HTMLAttributes, ReactNode } from 'react'
 import type { ButtonV2Props } from '../ButtonV2'
 
 export type HeaderSkeletonConfig = {
@@ -35,7 +35,7 @@ export type ModalV2ButtonAction = Omit<ButtonV2Props, 'buttonGroupPosition'>
 export type BodySkeletonProps = {
     show?: boolean
     width?: string
-    height?: string
+    height?: string | number
 }
 
 export type ModalV2BodySkeletonProps = {
@@ -67,4 +67,7 @@ export type ModalV2Props = {
     maxWidth?: string
     maxHeight?: string
     minHeight?: string
-}
+} & Omit<
+    HTMLAttributes<HTMLDivElement>,
+    'children' | 'title' | 'className' | 'style'
+>

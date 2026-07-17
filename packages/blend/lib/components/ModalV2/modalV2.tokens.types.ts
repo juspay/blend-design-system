@@ -1,11 +1,8 @@
 import type { CSSObject } from 'styled-components'
-import { type FoundationTokenType } from '../../tokens/theme.token'
-import { type BreakpointType } from '../../breakpoints/breakPoints'
-import { Theme } from '../../context/theme.enum'
-import { getModalV2LightToken } from './modalV2.light.tokens'
-import { getModalV2DarkToken } from './modalV2.dark.tokens'
+import type { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type ModalV2State = 'default'
+
 export type ModalV2TokensType = {
     boxShadow: CSSObject['boxShadow']
     borderRadius: CSSObject['borderRadius']
@@ -66,7 +63,6 @@ export type ModalV2TokensType = {
             borderRadius: CSSObject['borderRadius']
         }
     }
-
     body: {
         paddingTop: CSSObject['paddingTop']
         paddingRight: CSSObject['paddingRight']
@@ -74,7 +70,6 @@ export type ModalV2TokensType = {
         paddingLeft: CSSObject['paddingLeft']
         backgroundColor: CSSObject['backgroundColor']
     }
-
     footer: {
         paddingTop: CSSObject['paddingTop']
         paddingRight: CSSObject['paddingRight']
@@ -93,14 +88,4 @@ export type ModalV2TokensType = {
 
 export type ResponsiveModalV2Tokens = {
     [key in keyof BreakpointType]: ModalV2TokensType
-}
-
-export const getModalV2Tokens = (
-    foundationToken: FoundationTokenType,
-    theme: Theme | string = Theme.LIGHT
-): ResponsiveModalV2Tokens => {
-    if (theme === Theme.DARK || theme === 'dark') {
-        return getModalV2DarkToken(foundationToken)
-    }
-    return getModalV2LightToken(foundationToken)
 }

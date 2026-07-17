@@ -1,8 +1,9 @@
 import Block from '../Primitives/Block/Block'
 import { Skeleton } from '../Skeleton'
+import type { FC } from 'react'
 import type { ModalV2SkeletonProps } from './modalV2.types'
 
-const ModalV2Skeleton: React.FC<ModalV2SkeletonProps> = ({
+const ModalV2Skeleton: FC<ModalV2SkeletonProps> = ({
     modalTokens,
     headerSkeleton,
     bodySkeleton,
@@ -23,11 +24,10 @@ const ModalV2Skeleton: React.FC<ModalV2SkeletonProps> = ({
                 display="flex"
                 justifyContent="space-between"
                 alignItems="flex-start"
-                padding={
-                    modalTokens.skeleton.header.paddingTop +
-                    ' ' +
-                    modalTokens.skeleton.header.paddingBottom
-                }
+                paddingTop={modalTokens.skeleton.header.paddingTop}
+                paddingRight={modalTokens.skeleton.header.paddingRight}
+                paddingBottom={modalTokens.skeleton.header.paddingBottom}
+                paddingLeft={modalTokens.skeleton.header.paddingLeft}
                 flexShrink={0}
                 gap={modalTokens.skeleton.header.gap}
                 borderBottom={

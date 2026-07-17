@@ -78,7 +78,7 @@ import { ResponsiveChatInputV2TokensType } from '../components/InputsV2/ChatInpu
 import { ChatInputV2MobileTokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 import type { ResponsiveStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 import { ResponsiveUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
-import { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
+import type { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens.types'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType

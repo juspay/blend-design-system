@@ -5,16 +5,60 @@ import {
     ButtonV2Size,
 } from '../../../../packages/blend/lib/components/ButtonV2'
 import { useState } from 'react'
+import type { ChangeEvent, ReactNode } from 'react'
 import {
     Menu,
     MultiSelect,
     Popover,
     SingleSelect,
 } from '../../../../packages/blend/lib/main'
-import { LogOut, Settings, User } from 'lucide-react'
+import {
+    AlertTriangle,
+    CheckCircle2,
+    CreditCard,
+    LogOut,
+    Search,
+    Settings,
+    ShieldCheck,
+    User,
+} from 'lucide-react'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import TagV2 from '../../../../packages/blend/lib/components/TagV2/TagV2'
-import { TagV2Color } from '../../../../packages/blend/lib/components/TagV2/TagV2.types'
+import {
+    TagV2Color,
+    TagV2Size,
+} from '../../../../packages/blend/lib/components/TagV2/TagV2.types'
+
+const DemoCard = ({
+    title,
+    description,
+    children,
+}: {
+    title: string
+    description: string
+    children: ReactNode
+}) => (
+    <div className="p-6 bg-white border border-gray-200 rounded-lg">
+        <h3 className="text-lg font-semibold text-gray-700 mb-2">{title}</h3>
+        <p className="text-sm text-gray-600 mb-4">{description}</p>
+        {children}
+    </div>
+)
+
+const StatusRow = ({
+    label,
+    value,
+    color = TagV2Color.NEUTRAL,
+}: {
+    label: string
+    value: string
+    color?: TagV2Color
+}) => (
+    <div className="flex items-center justify-between gap-4 py-2 border-b border-gray-100 last:border-b-0">
+        <span className="text-sm text-gray-600">{label}</span>
+        <TagV2 text={value} color={color} size={TagV2Size.SM} />
+    </div>
+)
 
 const ModalV2Demo = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -38,7 +82,7 @@ const ModalV2Demo = () => {
     })
 
     const handleCheckboxChange =
-        (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        (field: string) => (e: ChangeEvent<HTMLInputElement>) => {
             setConfig({
                 ...config,
                 [field]: e.target.checked,
@@ -46,7 +90,7 @@ const ModalV2Demo = () => {
         }
 
     const handleInputChange =
-        (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        (field: string) => (e: ChangeEvent<HTMLInputElement>) => {
             setConfig({
                 ...config,
                 [field]: e.target.value,
@@ -54,7 +98,7 @@ const ModalV2Demo = () => {
         }
 
     const handleSelectChange =
-        (field: string) => (e: React.ChangeEvent<HTMLSelectElement>) => {
+        (field: string) => (e: ChangeEvent<HTMLSelectElement>) => {
             setConfig({
                 ...config,
                 [field]: e.target.value,
@@ -132,6 +176,115 @@ const ModalV2Demo = () => {
                                 </p>
                             </div>
                         ))}
+                    </div>
+                )
+            case 'status':
+                return (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 min-w-[560px]">
+                        <div className="rounded-md border border-gray-200 p-4">
+                            <div className="flex items-center gap-2 mb-3">
+                                <ShieldCheck
+                                    size={18}
+                                    className="text-green-600"
+                                />
+                                <h4 className="text-sm font-semibold text-gray-700">
+                                    Review Summary
+                                </h4>
+                            </div>
+                            <StatusRow
+                                label="Risk score"
+                                value="Low"
+                                color={TagV2Color.SUCCESS}
+                            />
+                            <StatusRow
+                                label="Verification"
+                                value="Passed"
+                                color={TagV2Color.SUCCESS}
+                            />
+                            <StatusRow
+                                label="Manual review"
+                                value="Needed"
+                                color={TagV2Color.WARNING}
+                            />
+                        </div>
+                        <div className="rounded-md border border-gray-200 p-4">
+                            <h4 className="text-sm font-semibold text-gray-700 mb-3">
+                                Metadata
+                            </h4>
+                            <dl className="grid grid-cols-[120px_1fr] gap-y-2 text-sm">
+                                <dt className="text-gray-500">Owner</dt>
+                                <dd className="text-gray-700">Risk Ops</dd>
+                                <dt className="text-gray-500">Updated</dt>
+                                <dd className="text-gray-700">Today</dd>
+                                <dt className="text-gray-500">Queue</dt>
+                                <dd className="text-gray-700">Priority</dd>
+                            </dl>
+                        </div>
+                    </div>
+                )
+            case 'controls':
+                return (
+                    <div className="flex flex-col gap-4 min-w-[520px]">
+                        <div className="relative">
+                            <Search
+                                size={16}
+                                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                            />
+                            <input
+                                type="search"
+                                placeholder="Search team members"
+                                className="w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none"
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            <label className="flex items-center gap-2 rounded-md border border-gray-200 p-3 text-sm text-gray-700">
+                                <input type="checkbox" defaultChecked />
+                                Send email update
+                            </label>
+                            <label className="flex items-center gap-2 rounded-md border border-gray-200 p-3 text-sm text-gray-700">
+                                <input type="checkbox" />
+                                Require approval
+                            </label>
+                        </div>
+                        <div className="rounded-md border border-gray-200 p-3">
+                            <p className="text-sm font-medium text-gray-700 mb-2">
+                                Access level
+                            </p>
+                            <div className="flex gap-2">
+                                {['Viewer', 'Editor', 'Admin'].map(
+                                    (item, index) => (
+                                        <label
+                                            key={item}
+                                            className="flex items-center gap-2 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-700"
+                                        >
+                                            <input
+                                                name="access-level"
+                                                type="radio"
+                                                defaultChecked={index === 1}
+                                            />
+                                            {item}
+                                        </label>
+                                    )
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )
+            case 'empty':
+                return (
+                    <div className="flex min-w-[420px] flex-col items-center justify-center gap-3 py-8 text-center">
+                        <div className="flex size-12 items-center justify-center rounded-full bg-blue-50">
+                            <CheckCircle2 size={24} className="text-blue-600" />
+                        </div>
+                        <div>
+                            <h4 className="text-base font-semibold text-gray-700">
+                                No pending tasks
+                            </h4>
+                            <p className="mt-1 text-sm text-gray-500">
+                                This is useful for empty or success-state modal
+                                content.
+                            </p>
+                        </div>
                     </div>
                 )
             default:
@@ -218,6 +371,11 @@ const ModalV2Demo = () => {
                             >
                                 <option value="basic">Basic</option>
                                 <option value="form">Form</option>
+                                <option value="status">Status Grid</option>
+                                <option value="controls">
+                                    Interactive Controls
+                                </option>
+                                <option value="empty">Empty State</option>
                                 <option value="long">Long Content</option>
                             </select>
                         </div>
@@ -389,6 +547,47 @@ const ModalV2Demo = () => {
                 </div>
             </div>
 
+            <div className="mb-8 rounded-lg border border-blue-100 bg-blue-50 p-5">
+                <div className="mb-4 flex items-center gap-2">
+                    <ShieldCheck size={18} className="text-blue-700" />
+                    <h2 className="text-lg font-semibold text-blue-900">
+                        V1 parity coverage
+                    </h2>
+                </div>
+                <div className="grid grid-cols-1 gap-3 text-sm text-blue-900 md:grid-cols-2">
+                    <div className="rounded-md bg-white/70 p-3">
+                        <p className="font-medium">Header overflow guard</p>
+                        <p className="mt-1 text-blue-700">
+                            Long title, subtitle, and header slot content should
+                            scroll inside the header instead of stretching the
+                            modal.
+                        </p>
+                    </div>
+                    <div className="rounded-md bg-white/70 p-3">
+                        <p className="font-medium">Mobile drawer parity</p>
+                        <p className="mt-1 text-blue-700">
+                            Resize below 1024px to check the bottom-sheet
+                            handle, content-driven height, and footer-aware body
+                            spacing.
+                        </p>
+                    </div>
+                    <div className="rounded-md bg-white/70 p-3">
+                        <p className="font-medium">Tokenized close control</p>
+                        <p className="mt-1 text-blue-700">
+                            The close icon now uses ModalV2 close-button tokens
+                            for size and color.
+                        </p>
+                    </div>
+                    <div className="rounded-md bg-white/70 p-3">
+                        <p className="font-medium">Footer-aware body radius</p>
+                        <p className="mt-1 text-blue-700">
+                            Body corners should resolve correctly with and
+                            without footer actions, especially in drawer mode.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             {/* Example Modals Section */}
             <div className="space-y-8">
                 <div>
@@ -401,83 +600,117 @@ const ModalV2Demo = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Confirmation Modal */}
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Confirmation Modal
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                            Standard confirmation dialog with primary and
-                            secondary actions
-                        </p>
+                    <DemoCard
+                        title="Confirmation Modal"
+                        description="Standard confirmation dialog with primary and secondary actions"
+                    >
                         <ConfirmationModalExample />
-                    </div>
+                    </DemoCard>
 
-                    {/* Form Modal */}
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Form Modal
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                            Modal containing form elements for data input
-                        </p>
+                    <DemoCard
+                        title="Form Modal"
+                        description="Modal containing form elements, popover, select, multiselect, and menu"
+                    >
                         <FormModalExample />
-                    </div>
+                    </DemoCard>
 
-                    {/* Info Modal */}
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Info Modal
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                            Simple informational modal with single action
-                        </p>
+                    <DemoCard
+                        title="Info Modal"
+                        description="Simple informational modal with single action"
+                    >
                         <InfoModalExample />
-                    </div>
+                    </DemoCard>
 
-                    {/* Warning Modal */}
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Warning Modal
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                            Warning modal with danger action styling
-                        </p>
+                    <DemoCard
+                        title="Warning Modal"
+                        description="Warning modal with danger action styling"
+                    >
                         <WarningModalExample />
-                    </div>
+                    </DemoCard>
 
-                    {/* Long Content Modal */}
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Scrollable Content
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                            Modal with long content that requires scrolling
-                        </p>
+                    <DemoCard
+                        title="Scrollable Content"
+                        description="Modal with long content that requires scrolling"
+                    >
                         <LongContentModalExample />
-                    </div>
+                    </DemoCard>
 
-                    {/* No Actions Modal */}
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            No Actions Modal
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                            Modal without action buttons, close button only
-                        </p>
+                    <DemoCard
+                        title="Disabled Action Modal"
+                        description="Modal with a disabled footer action for state checks"
+                    >
                         <NoActionsModalExample />
-                    </div>
+                    </DemoCard>
 
-                    {/* Nested Modal */}
-                    <div className="p-6 bg-white border border-gray-200 rounded-lg">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Nested Modal
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-4">
-                            Modal that opens another modal from primary button
-                        </p>
+                    <DemoCard
+                        title="Nested Modal"
+                        description="Modal that opens another modal from primary button"
+                    >
                         <NestedModalExample />
-                    </div>
+                    </DemoCard>
+
+                    <DemoCard
+                        title="Custom Header/Footer"
+                        description="Uses customHeader, customFooter, and custom layout content"
+                    >
+                        <CustomChromeModalExample />
+                    </DemoCard>
+
+                    <DemoCard
+                        title="Headerless Modal"
+                        description="Uses showHeader=false with an accessible title fallback"
+                    >
+                        <HeaderlessModalExample />
+                    </DemoCard>
+
+                    <DemoCard
+                        title="Footerless Modal"
+                        description="Uses showFooter=false for passive content"
+                    >
+                        <FooterlessModalExample />
+                    </DemoCard>
+
+                    <DemoCard
+                        title="Dense Data Modal"
+                        description="Wide modal with table-like content and constrained height"
+                    >
+                        <DenseDataModalExample />
+                    </DemoCard>
+
+                    <DemoCard
+                        title="No Divider Modal"
+                        description="Checks the modal with both header and footer dividers removed"
+                    >
+                        <NoDividerModalExample />
+                    </DemoCard>
+
+                    <DemoCard
+                        title="Long Header Guard"
+                        description="Stress-tests the 20vh header cap with long title, subtitle, and header slot"
+                    >
+                        <LongHeaderGuardModalExample />
+                    </DemoCard>
+
+                    <DemoCard
+                        title="Mobile Drawer Parity"
+                        description="Resize below 1024px to check handle, content-driven height, and scroll behavior"
+                    >
+                        <MobileParityModalExample />
+                    </DemoCard>
+
+                    <DemoCard
+                        title="Footer-Aware Body"
+                        description="Compares footerless body rounding against a footer action modal"
+                    >
+                        <FooterAwareBodyModalExample />
+                    </DemoCard>
+
+                    <DemoCard
+                        title="Tokenized Close Icon"
+                        description="Verifies close icon sizing/color comes from ModalV2 closeButton tokens"
+                    >
+                        <TokenizedCloseModalExample />
+                    </DemoCard>
                 </div>
             </div>
 
@@ -1049,6 +1282,572 @@ const NestedModalExample = () => {
                         Try closing this modal first, then the first modal, or
                         use "Close Both" to close them in sequence.
                     </p>
+                </div>
+            </ModalV2>
+        </>
+    )
+}
+
+const CustomChromeModalExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <>
+            <ButtonV2
+                text="Open Custom"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.SMALL}
+                onClick={() => setIsOpen(true)}
+            />
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                showDivider={false}
+                customHeader={
+                    <div className="flex items-center justify-between gap-4 border-b border-gray-200 px-5 py-4">
+                        <div className="flex items-center gap-3">
+                            <div className="flex size-10 items-center justify-center rounded-md bg-blue-50 text-blue-600">
+                                <CreditCard size={20} />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-base font-semibold text-gray-800">
+                                        Payment Review
+                                    </h3>
+                                    <TagV2
+                                        text="High value"
+                                        color={TagV2Color.WARNING}
+                                        size={TagV2Size.SM}
+                                    />
+                                </div>
+                                <p className="text-sm text-gray-500">
+                                    Custom header with icon, tag, and close
+                                    action handled by footer controls
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                customFooter={
+                    <div className="flex items-center justify-between gap-4 border-t border-gray-200 px-5 py-4">
+                        <p className="text-sm text-gray-500">
+                            Last reviewed 4 minutes ago
+                        </p>
+                        <div className="flex gap-2">
+                            <ButtonV2
+                                text="Close"
+                                buttonType={ButtonV2Type.SECONDARY}
+                                size={ButtonV2Size.SMALL}
+                                onClick={() => setIsOpen(false)}
+                            />
+                            <ButtonV2
+                                text="Approve"
+                                buttonType={ButtonV2Type.SUCCESS}
+                                size={ButtonV2Size.SMALL}
+                                onClick={() => setIsOpen(false)}
+                            />
+                        </div>
+                    </div>
+                }
+            >
+                <div className="grid min-w-[620px] grid-cols-[1fr_220px] gap-5">
+                    <div className="space-y-3">
+                        <div className="rounded-md border border-gray-200 p-4">
+                            <p className="text-sm text-gray-500">Amount</p>
+                            <p className="mt-1 text-2xl font-semibold text-gray-800">
+                                INR 2,48,000
+                            </p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                            <StatusRow label="Customer" value="Verified" />
+                            <StatusRow
+                                label="Risk"
+                                value="Medium"
+                                color={TagV2Color.WARNING}
+                            />
+                            <StatusRow
+                                label="Method"
+                                value="Card"
+                                color={TagV2Color.PRIMARY}
+                            />
+                            <StatusRow
+                                label="Rules"
+                                value="2 flags"
+                                color={TagV2Color.ERROR}
+                            />
+                        </div>
+                    </div>
+                    <div className="rounded-md bg-gray-50 p-4">
+                        <p className="text-sm font-medium text-gray-700">
+                            Timeline
+                        </p>
+                        <ol className="mt-3 space-y-3 text-sm text-gray-600">
+                            <li>Created by checkout</li>
+                            <li>Risk rule matched</li>
+                            <li>Manual review opened</li>
+                        </ol>
+                    </div>
+                </div>
+            </ModalV2>
+        </>
+    )
+}
+
+const HeaderlessModalExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <>
+            <ButtonV2
+                text="Open Headerless"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.SMALL}
+                onClick={() => setIsOpen(true)}
+            />
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Quick action"
+                showHeader={false}
+                primaryAction={{
+                    text: 'Run action',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.PRIMARY,
+                }}
+                secondaryAction={{
+                    text: 'Cancel',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.SECONDARY,
+                }}
+            >
+                <div className="flex min-w-[360px] items-start gap-3">
+                    <AlertTriangle size={22} className="mt-1 text-amber-600" />
+                    <div>
+                        <h3 className="text-base font-semibold text-gray-800">
+                            Run reconciliation now?
+                        </h3>
+                        <p className="mt-1 text-sm text-gray-600">
+                            This modal intentionally hides the generated header
+                            while keeping an accessible dialog label.
+                        </p>
+                    </div>
+                </div>
+            </ModalV2>
+        </>
+    )
+}
+
+const FooterlessModalExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <>
+            <ButtonV2
+                text="Open Footerless"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.SMALL}
+                onClick={() => setIsOpen(true)}
+            />
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Activity Details"
+                subtitle="A passive modal with no footer region"
+                showFooter={false}
+            >
+                <div className="min-w-[420px] space-y-3">
+                    {[
+                        'User invited two teammates',
+                        'Billing address updated',
+                        'API key rotated',
+                    ].map((item) => (
+                        <div
+                            key={item}
+                            className="flex items-center gap-3 rounded-md border border-gray-200 p-3"
+                        >
+                            <CheckCircle2
+                                size={18}
+                                className="text-green-600"
+                            />
+                            <span className="text-sm text-gray-700">
+                                {item}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            </ModalV2>
+        </>
+    )
+}
+
+const DenseDataModalExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+    const rows = [
+        ['ORD-1001', 'Captured', 'INR 4,320', 'Low'],
+        ['ORD-1002', 'Pending', 'INR 8,120', 'Medium'],
+        ['ORD-1003', 'Refunded', 'INR 1,999', 'Low'],
+        ['ORD-1004', 'Failed', 'INR 2,500', 'High'],
+        ['ORD-1005', 'Captured', 'INR 9,700', 'Low'],
+        ['ORD-1006', 'Review', 'INR 12,300', 'Medium'],
+    ]
+
+    return (
+        <>
+            <ButtonV2
+                text="Open Dense"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.SMALL}
+                onClick={() => setIsOpen(true)}
+            />
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Settlement Batch"
+                subtitle="Dense table-style content with horizontal and vertical scanning"
+                maxWidth="860px"
+                primaryAction={{
+                    text: 'Export',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.PRIMARY,
+                }}
+                secondaryAction={{
+                    text: 'Close',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.SECONDARY,
+                }}
+            >
+                <div className="max-h-[360px] min-w-[760px] overflow-auto">
+                    <table className="w-full border-collapse text-left text-sm">
+                        <thead className="sticky top-0 bg-white">
+                            <tr className="border-b border-gray-200 text-gray-500">
+                                <th className="py-2 pr-4 font-medium">Order</th>
+                                <th className="py-2 pr-4 font-medium">
+                                    Status
+                                </th>
+                                <th className="py-2 pr-4 font-medium">
+                                    Amount
+                                </th>
+                                <th className="py-2 pr-4 font-medium">Risk</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map(([order, status, amount, risk]) => (
+                                <tr
+                                    key={order}
+                                    className="border-b border-gray-100 last:border-b-0"
+                                >
+                                    <td className="py-3 pr-4 font-medium text-gray-700">
+                                        {order}
+                                    </td>
+                                    <td className="py-3 pr-4 text-gray-600">
+                                        {status}
+                                    </td>
+                                    <td className="py-3 pr-4 text-gray-600">
+                                        {amount}
+                                    </td>
+                                    <td className="py-3 pr-4">
+                                        <TagV2
+                                            text={risk}
+                                            color={
+                                                risk === 'High'
+                                                    ? TagV2Color.ERROR
+                                                    : risk === 'Medium'
+                                                      ? TagV2Color.WARNING
+                                                      : TagV2Color.SUCCESS
+                                            }
+                                            size={TagV2Size.SM}
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </ModalV2>
+        </>
+    )
+}
+
+const NoDividerModalExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <>
+            <ButtonV2
+                text="Open No Divider"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.SMALL}
+                onClick={() => setIsOpen(true)}
+            />
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Soft Confirmation"
+                subtitle="Header and footer dividers are disabled"
+                showDivider={false}
+                primaryAction={{
+                    text: 'Continue',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.PRIMARY,
+                }}
+                secondaryAction={{
+                    text: 'Back',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.SECONDARY,
+                }}
+            >
+                <div className="min-w-[420px] rounded-md bg-gray-50 p-4 text-sm text-gray-600">
+                    This case checks spacing when the modal has no visual
+                    dividers between header, body, and footer.
+                </div>
+            </ModalV2>
+        </>
+    )
+}
+
+const LongHeaderGuardModalExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+    const longTitle =
+        'Quarterly settlement review for enterprise merchants with several pending exception queues and regional compliance notes'
+    const longSubtitle =
+        'This intentionally long subtitle validates that the generated header has a maximum height and scrolls internally instead of forcing the whole modal to become unusably tall.'
+
+    return (
+        <>
+            <ButtonV2
+                text="Open Long Header"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.SMALL}
+                onClick={() => setIsOpen(true)}
+            />
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title={longTitle}
+                subtitle={longSubtitle}
+                headerSlot={
+                    <div className="flex max-w-[280px] flex-wrap gap-2">
+                        <TagV2
+                            text="Priority"
+                            color={TagV2Color.ERROR}
+                            size={TagV2Size.SM}
+                        />
+                        <TagV2
+                            text="Manual review"
+                            color={TagV2Color.WARNING}
+                            size={TagV2Size.SM}
+                        />
+                        <TagV2
+                            text="Cross-border"
+                            color={TagV2Color.PRIMARY}
+                            size={TagV2Size.SM}
+                        />
+                    </div>
+                }
+                primaryAction={{
+                    text: 'Approve',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.PRIMARY,
+                }}
+                secondaryAction={{
+                    text: 'Cancel',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.SECONDARY,
+                }}
+            >
+                <div className="min-w-[520px] space-y-3 text-sm text-gray-600">
+                    <p>
+                        The header should remain bounded even with verbose
+                        title, subtitle, and multiple tags.
+                    </p>
+                    <div className="rounded-md border border-gray-200 p-3">
+                        <StatusRow
+                            label="Expected header behavior"
+                            value="Capped"
+                            color={TagV2Color.SUCCESS}
+                        />
+                        <StatusRow
+                            label="Overflow"
+                            value="Scrollable"
+                            color={TagV2Color.PRIMARY}
+                        />
+                    </div>
+                </div>
+            </ModalV2>
+        </>
+    )
+}
+
+const MobileParityModalExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <>
+            <ButtonV2
+                text="Open Mobile Check"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.SMALL}
+                onClick={() => setIsOpen(true)}
+            />
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Mobile Drawer Behavior"
+                subtitle="Resize below 1024px to inspect drawer parity"
+                useDrawerOnMobile={true}
+                primaryAction={{
+                    text: 'Done',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.PRIMARY,
+                }}
+                secondaryAction={{
+                    text: 'Cancel',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.SECONDARY,
+                }}
+            >
+                <div className="space-y-3 text-sm text-gray-600 md:min-w-[480px]">
+                    <p>
+                        On mobile, this should open as a bottom sheet with a
+                        visible handle and content-driven height.
+                    </p>
+                    <div className="grid grid-cols-1 gap-2">
+                        {[
+                            'Sheet handle is visible',
+                            'Content height hugs the body',
+                            'Footer actions stay separated',
+                            'Body scrolls when content grows',
+                        ].map((item) => (
+                            <div
+                                key={item}
+                                className="flex items-center gap-2 rounded-md bg-gray-50 p-2"
+                            >
+                                <CheckCircle2
+                                    size={16}
+                                    className="text-green-600"
+                                />
+                                {item}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </ModalV2>
+        </>
+    )
+}
+
+const FooterAwareBodyModalExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+    const [withFooter, setWithFooter] = useState(false)
+
+    return (
+        <>
+            <div className="flex flex-wrap gap-2">
+                <ButtonV2
+                    text="No Footer"
+                    buttonType={ButtonV2Type.SECONDARY}
+                    size={ButtonV2Size.SMALL}
+                    onClick={() => {
+                        setWithFooter(false)
+                        setIsOpen(true)
+                    }}
+                />
+                <ButtonV2
+                    text="With Footer"
+                    buttonType={ButtonV2Type.PRIMARY}
+                    size={ButtonV2Size.SMALL}
+                    onClick={() => {
+                        setWithFooter(true)
+                        setIsOpen(true)
+                    }}
+                />
+            </div>
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title={
+                    withFooter
+                        ? 'Body With Footer Actions'
+                        : 'Footerless Body Rounding'
+                }
+                subtitle="Checks the footer-aware body radius and spacing path"
+                showFooter={withFooter}
+                primaryAction={
+                    withFooter
+                        ? {
+                              text: 'Confirm',
+                              onClick: () => setIsOpen(false),
+                              buttonType: ButtonV2Type.PRIMARY,
+                          }
+                        : undefined
+                }
+                secondaryAction={
+                    withFooter
+                        ? {
+                              text: 'Cancel',
+                              onClick: () => setIsOpen(false),
+                              buttonType: ButtonV2Type.SECONDARY,
+                          }
+                        : undefined
+                }
+            >
+                <div className="min-w-[420px] rounded-md bg-gray-50 p-4 text-sm text-gray-600">
+                    {withFooter
+                        ? 'Footer actions are present, so the footer owns the lower modal radius.'
+                        : 'No footer is rendered, so the body owns the lower modal radius.'}
+                </div>
+            </ModalV2>
+        </>
+    )
+}
+
+const TokenizedCloseModalExample = () => {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <>
+            <ButtonV2
+                text="Open Close Token"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.SMALL}
+                onClick={() => setIsOpen(true)}
+            />
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Tokenized Close Control"
+                subtitle="The close icon should follow ModalV2 closeButton token size and color"
+                headerSlot={
+                    <TagV2
+                        text="Token check"
+                        color={TagV2Color.PURPLE}
+                        size={TagV2Size.SM}
+                    />
+                }
+                primaryAction={{
+                    text: 'Close',
+                    onClick: () => setIsOpen(false),
+                    buttonType: ButtonV2Type.PRIMARY,
+                }}
+            >
+                <div className="min-w-[420px] space-y-3 text-sm text-gray-600">
+                    <p>
+                        This case keeps the default generated header and close
+                        button visible so token-driven icon size/color can be
+                        inspected.
+                    </p>
+                    <div className="rounded-md border border-gray-200 p-3">
+                        <StatusRow
+                            label="Icon source"
+                            value="closeButton token"
+                            color={TagV2Color.PRIMARY}
+                        />
+                        <StatusRow
+                            label="Header slot"
+                            value="Visible"
+                            color={TagV2Color.SUCCESS}
+                        />
+                    </div>
                 </div>
             </ModalV2>
         </>

@@ -1,11 +1,15 @@
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import type { ReactNode } from 'react'
 import { SkeletonVariant } from '../Skeleton'
-import { ModalV2TokensType } from './modalV2.tokens'
+import type { ModalV2TokensType } from './modalV2.tokens.types'
 import ModalV2Skeleton from './ModalV2Skeleton'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ButtonV2, ButtonV2Type, ButtonV2SubType } from '../ButtonV2'
 import { XIcon } from '@phosphor-icons/react'
+
+const formatLineHeight = (value: string | number | undefined) =>
+    typeof value === 'number' ? `${value}px` : value
 
 const ModalV2Header = ({
     title,
@@ -23,7 +27,7 @@ const ModalV2Header = ({
     subtitle?: string
     onClose: () => void
     showCloseButton?: boolean
-    headerSlot?: React.ReactNode
+    headerSlot?: ReactNode
     showDivider?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
@@ -48,20 +52,20 @@ const ModalV2Header = ({
         )
     }
 
-    if (!title && !subtitle) return null
+    if (!title && !subtitle && !headerSlot && !showCloseButton) return null
 
     return (
         <Block
             display="flex"
             justifyContent="space-between"
             alignItems="flex-start"
-            padding={
-                modalTokens.header.paddingTop +
-                ' ' +
-                modalTokens.header.paddingBottom
-            }
+            paddingTop={modalTokens.header.paddingTop}
+            paddingRight={modalTokens.header.paddingRight}
+            paddingBottom={modalTokens.header.paddingBottom}
+            paddingLeft={modalTokens.header.paddingLeft}
             flexShrink={0}
             overflow="auto"
+            maxHeight="20vh"
             gap={modalTokens.header.gap}
             backgroundColor={modalTokens.header.backgroundColor}
             borderTopLeftRadius={modalTokens.header.borderTopLeftRadius}
@@ -82,11 +86,14 @@ const ModalV2Header = ({
                             id={titleId}
                             data-element="header"
                             data-id={title ?? ''}
-                            variant="heading.sm"
                             as="span"
+                            fontSize={modalTokens.header.text.title.fontSize}
                             fontWeight={
                                 modalTokens.header.text.title.fontWeight
                             }
+                            lineHeight={formatLineHeight(
+                                modalTokens.header.text.title.lineHeight
+                            )}
                             color={modalTokens.header.text.title.color}
                         >
                             {title}
@@ -100,9 +107,13 @@ const ModalV2Header = ({
                         id={subtitleId}
                         data-element="header-subtitle"
                         data-id={subtitle}
-                        variant="code.lg"
+                        as="span"
+                        fontSize={modalTokens.header.text.subtitle.fontSize}
                         color={modalTokens.header.text.subtitle.color}
                         fontWeight={modalTokens.header.text.subtitle.fontWeight}
+                        lineHeight={formatLineHeight(
+                            modalTokens.header.text.subtitle.lineHeight
+                        )}
                     >
                         {subtitle}
                     </Text>
@@ -112,7 +123,16 @@ const ModalV2Header = ({
                 <ButtonV2
                     subType={ButtonV2SubType.INLINE}
                     buttonType={ButtonV2Type.SECONDARY}
-                    leftSlot={{ slot: <XIcon size={16} aria-hidden="true" /> }}
+                    leftSlot={{
+                        slot: (
+                            <XIcon
+                                size={modalTokens.closeButton.width}
+                                color={modalTokens.closeButton.color}
+                                aria-hidden="true"
+                            />
+                        ),
+                        maxHeight: modalTokens.closeButton.height,
+                    }}
                     onClick={onClose}
                     aria-label="Close modal"
                 />

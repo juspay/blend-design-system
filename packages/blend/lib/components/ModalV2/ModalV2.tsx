@@ -1,7 +1,7 @@
 import { forwardRef, useCallback } from 'react'
 import { ModalV2Props } from './modalV2.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { ModalV2TokensType } from './modalV2.tokens'
+import type { ModalV2TokensType } from './modalV2.tokens.types'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useModal } from '../Modal/useModal'
 import { useId } from 'react'
@@ -36,7 +36,11 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
             primaryAction,
             secondaryAction,
             showCloseButton = true,
+            showHeader = true,
+            showFooter = true,
             closeOnBackdropClick = true,
+            customHeader,
+            customFooter,
             headerSlot,
             showDivider = true,
             minWidth = '',
@@ -50,6 +54,12 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
         ref
     ) => {
         const filteredRest = filterBlockedProps(props)
+        const {
+            'aria-label': ariaLabel,
+            'aria-labelledby': ariaLabelledBy,
+            'aria-describedby': ariaDescribedBy,
+            ...dialogProps
+        } = filteredRest
         const modalTokens = useResponsiveTokens<ModalV2TokensType>('MODALV2')
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
@@ -59,10 +69,13 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
         )
 
         const baseId = useId()
-        const titleId = title ? `${baseId}-title` : undefined
-        const subtitleId = subtitle ? `${baseId}-subtitle` : undefined
-
-        const ariaDescribedBy = subtitleId || undefined
+        const shouldUseGeneratedHeader = showHeader && !customHeader
+        const titleId =
+            shouldUseGeneratedHeader && title ? `${baseId}-title` : undefined
+        const subtitleId =
+            shouldUseGeneratedHeader && subtitle
+                ? `${baseId}-subtitle`
+                : undefined
 
         const handleBackdropClick = useCallback(() => {
             if (closeOnBackdropClick) {
@@ -74,6 +87,15 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
 
         const shouldShowSkeleton = skeleton?.show
         const skeletonVariant = skeleton?.variant || 'pulse'
+        const shouldShowBodySkeleton = Boolean(
+            shouldShowSkeleton && skeleton?.bodySkeletonProps?.show
+        )
+        const hasFooterContent = Boolean(
+            customFooter ||
+            primaryAction ||
+            secondaryAction ||
+            shouldShowSkeleton
+        )
 
         const modalContent = (() => {
             if (isMobile && useDrawerOnMobile) {
@@ -87,9 +109,15 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
                         primaryAction={primaryAction}
                         secondaryAction={secondaryAction}
                         showCloseButton={showCloseButton}
+                        showHeader={showHeader}
+                        showFooter={showFooter}
                         closeOnBackdropClick={closeOnBackdropClick}
+                        customHeader={customHeader}
+                        customFooter={customFooter}
                         headerSlot={headerSlot}
                         showDivider={showDivider}
+                        ref={ref}
+                        {...filteredRest}
                     >
                         {children}
                     </MobileModalV2>
@@ -109,7 +137,6 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
                     paddingRight={modalTokens.paddingRight}
                     paddingBottom={modalTokens.paddingBottom}
                     paddingLeft={modalTokens.paddingLeft}
-                    {...filteredRest}
                 >
                     <AnimatedBackdrop
                         onClick={handleBackdropClick}
@@ -124,6 +151,7 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
                     />
 
                     <AnimatedModalContent
+                        {...dialogProps}
                         data-modal={title ?? 'modal'}
                         ref={ref}
                         display="flex"
@@ -138,25 +166,35 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
                         boxShadow={modalTokens.boxShadow}
                         role="dialog"
                         aria-modal="true"
-                        aria-labelledby={titleId}
-                        aria-label={title || 'Modal dialog'}
-                        aria-describedby={ariaDescribedBy}
+                        aria-labelledby={
+                            ariaLabel ? undefined : (ariaLabelledBy ?? titleId)
+                        }
+                        aria-label={
+                            ariaLabel ??
+                            (ariaLabelledBy || titleId
+                                ? undefined
+                                : title || 'Modal dialog')
+                        }
+                        aria-describedby={ariaDescribedBy ?? subtitleId}
                         zIndex={1}
                         pointerEvents="auto"
                         $isAnimatingIn={isAnimatingIn}
                     >
-                        <ModalV2Header
-                            title={title}
-                            subtitle={subtitle}
-                            onClose={onClose}
-                            showCloseButton={showCloseButton}
-                            headerSlot={headerSlot}
-                            showDivider={showDivider}
-                            showSkeleton={shouldShowSkeleton}
-                            skeletonVariant={skeletonVariant}
-                            titleId={titleId}
-                            subtitleId={subtitleId}
-                        />
+                        {showHeader &&
+                            (customHeader ?? (
+                                <ModalV2Header
+                                    title={title}
+                                    subtitle={subtitle}
+                                    onClose={onClose}
+                                    showCloseButton={showCloseButton}
+                                    headerSlot={headerSlot}
+                                    showDivider={showDivider}
+                                    showSkeleton={shouldShowSkeleton}
+                                    skeletonVariant={skeletonVariant}
+                                    titleId={titleId}
+                                    subtitleId={subtitleId}
+                                />
+                            ))}
 
                         <Block
                             data-element="body"
@@ -173,20 +211,19 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
                                 isCustom ? '0' : modalTokens.body.paddingLeft
                             }
                             overflow="auto"
-                            flexGrow={1}
+                            flexShrink={1}
+                            minHeight={0}
                             borderRadius={
-                                !primaryAction && !secondaryAction
+                                !showFooter || !hasFooterContent
                                     ? `0 0 ${modalTokens.borderRadius} ${modalTokens.borderRadius}`
                                     : undefined
                             }
                         >
-                            {shouldShowSkeleton && skeleton?.show ? (
+                            {shouldShowBodySkeleton ? (
                                 <ModalV2Skeleton
                                     modalTokens={modalTokens}
                                     bodySkeleton={{
-                                        show:
-                                            skeleton?.bodySkeletonProps?.show ||
-                                            false,
+                                        show: true,
                                         width:
                                             skeleton?.bodySkeletonProps
                                                 ?.width || '100%',
@@ -201,13 +238,16 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
                             )}
                         </Block>
 
-                        <ModalV2Footer
-                            primaryAction={primaryAction}
-                            secondaryAction={secondaryAction}
-                            showDivider={showDivider}
-                            showSkeleton={shouldShowSkeleton}
-                            skeletonVariant={skeletonVariant}
-                        />
+                        {showFooter &&
+                            (customFooter ?? (
+                                <ModalV2Footer
+                                    primaryAction={primaryAction}
+                                    secondaryAction={secondaryAction}
+                                    showDivider={showDivider}
+                                    showSkeleton={shouldShowSkeleton}
+                                    skeletonVariant={skeletonVariant}
+                                />
+                            ))}
                     </AnimatedModalContent>
                 </Block>
             )

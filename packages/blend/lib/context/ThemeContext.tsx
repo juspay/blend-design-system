@@ -247,10 +247,8 @@ import {
     ResponsiveUploadV2Tokens,
     getUploadV2Tokens,
 } from '../components/InputsV2/UploadV2/UploadV2.tokens'
-import {
-    ResponsiveModalV2Tokens,
-    getModalV2Tokens,
-} from '../components/ModalV2/modalV2.tokens'
+import { getModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
+import type { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens.types'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
