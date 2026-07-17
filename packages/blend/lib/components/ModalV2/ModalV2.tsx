@@ -43,10 +43,7 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
             customFooter,
             headerSlot,
             showDivider = true,
-            minWidth = '',
-            minHeight = '',
-            maxWidth = '90vw',
-            maxHeight = '90vh',
+            dimensions = {},
             useDrawerOnMobile = true,
             skeleton,
             ...props
@@ -96,6 +93,14 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
             secondaryAction ||
             shouldShowSkeleton
         )
+        const {
+            width,
+            height,
+            minWidth = '',
+            minHeight = '',
+            maxWidth = '90vw',
+            maxHeight = '90vh',
+        } = dimensions
 
         const modalContent = (() => {
             if (isMobile && useDrawerOnMobile) {
@@ -158,6 +163,8 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
                         flexDirection="column"
                         position="relative"
                         backgroundColor={modalTokens.backgroundColor}
+                        width={width}
+                        height={height}
                         minWidth={minWidth}
                         minHeight={minHeight}
                         maxWidth={maxWidth}

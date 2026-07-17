@@ -3,6 +3,7 @@ import { SkeletonVariant } from '../Skeleton'
 import type { ModalV2TokensType } from './modalV2.tokens.types'
 import type { HTMLAttributes, ReactNode } from 'react'
 import type { ButtonV2Props } from '../ButtonV2'
+import type { CSSObject } from 'styled-components'
 
 export type HeaderSkeletonConfig = {
     show: boolean
@@ -44,6 +45,15 @@ export type ModalV2BodySkeletonProps = {
     bodySkeletonProps?: BodySkeletonProps
 }
 
+export type ModalV2Dimensions = {
+    width?: CSSObject['width']
+    height?: CSSObject['height']
+    minWidth?: CSSObject['minWidth']
+    maxWidth?: CSSObject['maxWidth']
+    minHeight?: CSSObject['minHeight']
+    maxHeight?: CSSObject['maxHeight']
+}
+
 export type ModalV2Props = {
     isOpen: boolean
     isCustom?: boolean
@@ -61,12 +71,9 @@ export type ModalV2Props = {
     customFooter?: ReactNode
     headerSlot?: ReactNode
     showDivider?: boolean
-    minWidth?: string
+    dimensions?: ModalV2Dimensions
     useDrawerOnMobile?: boolean
     skeleton?: ModalV2BodySkeletonProps
-    maxWidth?: string
-    maxHeight?: string
-    minHeight?: string
 } & Omit<
     HTMLAttributes<HTMLDivElement>,
     'children' | 'title' | 'className' | 'style'

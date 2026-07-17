@@ -95,7 +95,7 @@ const MobileModalV2 = forwardRef<HTMLDivElement, MobileModalV2Props>(
             backgroundColor: modalTokens.backgroundColor,
             boxShadow: modalTokens.boxShadow,
             borderRadius: modalTokens.borderRadius,
-            border: `1px solid ${modalTokens.dividerColor}`,
+            border: `1px solid ${modalTokens.divider.borderColor}`,
             height: 'auto',
         }
         const shouldShowBodySkeleton = Boolean(
@@ -161,7 +161,7 @@ const MobileModalV2 = forwardRef<HTMLDivElement, MobileModalV2Props>(
                             width="48px"
                             height="4px"
                             borderRadius="999px"
-                            backgroundColor={modalTokens.dividerColor}
+                            backgroundColor={modalTokens.divider.borderColor}
                             marginTop="8px"
                             marginBottom="4px"
                             aria-hidden="true"
@@ -301,7 +301,12 @@ const MobileModalV2 = forwardRef<HTMLDivElement, MobileModalV2Props>(
                                     />
                                 )))}
                         {showHeader && showDivider && !shouldShowSkeleton && (
-                            <hr style={{ color: modalTokens.dividerColor }} />
+                            <hr
+                                style={{
+                                    borderColor:
+                                        modalTokens.divider.borderColor,
+                                }}
+                            />
                         )}
                         {/* Body */}
                         {!shouldShowBodySkeleton ? (
@@ -345,7 +350,10 @@ const MobileModalV2 = forwardRef<HTMLDivElement, MobileModalV2Props>(
                             showDivider &&
                             !shouldShowSkeleton && (
                                 <hr
-                                    style={{ color: modalTokens.dividerColor }}
+                                    style={{
+                                        borderColor:
+                                            modalTokens.divider.borderColor,
+                                    }}
                                 />
                             )}
                         {/* Footer */}

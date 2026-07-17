@@ -21,6 +21,7 @@ export type ModalV2TokensType = {
         paddingRight: CSSObject['paddingRight']
         paddingBottom: CSSObject['paddingBottom']
         paddingLeft: CSSObject['paddingLeft']
+        maxHeight: CSSObject['maxHeight']
         borderBottom: CSSObject['border']
         backgroundColor: CSSObject['backgroundColor']
         borderTopLeftRadius: CSSObject['borderTopLeftRadius']
@@ -43,7 +44,9 @@ export type ModalV2TokensType = {
             }
         }
     }
-    dividerColor: CSSObject['color']
+    divider: {
+        borderColor: CSSObject['borderColor']
+    }
     skeleton: {
         header: {
             gap: CSSObject['gap']

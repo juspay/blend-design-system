@@ -17,7 +17,9 @@ export const getModalV2DarkToken = (
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
                 offset: foundationToken.unit[16],
             },
-            dividerColor: foundationToken.colors.gray[200],
+            divider: {
+                borderColor: foundationToken.colors.gray[200],
+            },
             skeleton: {
                 header: {
                     gap: foundationToken.unit[16],
@@ -46,6 +48,7 @@ export const getModalV2DarkToken = (
                 paddingRight: foundationToken.unit[16],
                 paddingBottom: foundationToken.unit[16],
                 paddingLeft: foundationToken.unit[16],
+                maxHeight: '20vh',
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 backgroundColor: foundationToken.colors.gray[700],
                 borderTopLeftRadius: foundationToken.border.radius[16],
@@ -101,7 +104,9 @@ export const getModalV2DarkToken = (
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
                 offset: foundationToken.unit[16],
             },
-            dividerColor: foundationToken.colors.gray[200],
+            divider: {
+                borderColor: foundationToken.colors.gray[200],
+            },
             skeleton: {
                 header: {
                     gap: foundationToken.unit[16],
@@ -127,6 +132,7 @@ export const getModalV2DarkToken = (
                 paddingRight: foundationToken.unit[20],
                 paddingBottom: foundationToken.unit[20],
                 paddingLeft: foundationToken.unit[20],
+                maxHeight: '20vh',
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 backgroundColor: foundationToken.colors.gray[700],
                 borderTopLeftRadius: foundationToken.border.radius[16],

@@ -1504,7 +1504,7 @@ const DenseDataModalExample = () => {
                 onClose={() => setIsOpen(false)}
                 title="Settlement Batch"
                 subtitle="Dense table-style content with horizontal and vertical scanning"
-                maxWidth="860px"
+                dimensions={{ maxWidth: '860px' }}
                 primaryAction={{
                     text: 'Export',
                     onClick: () => setIsOpen(false),
