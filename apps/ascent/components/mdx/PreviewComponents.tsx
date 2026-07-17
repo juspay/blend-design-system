@@ -62,6 +62,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'DrawerV2',
     'KeyValuePairV2',
     'MenuV2',
+    'ModalV2',
     'MultiSelectV2',
     'PopoverV2',
     'ProgressBarV2',
@@ -90,6 +91,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'SwitchV2',
     'Timeline',
     'TopbarV2',
+    'UploadV2',
 ] as const
 
 // Generate all preview components programmatically

@@ -1236,6 +1236,33 @@
             }
         ]
     },
+    "modal-v2": {
+        "title": "Modal",
+        "description": "The ModalV2 component creates focused dialogs with configurable header, footer actions, close behavior, mobile drawer support, dimensions, and skeleton states.",
+        "path": "components/modal-v2",
+        "slug": "modal-v2",
+        "category": "Feedback",
+        "tags": ["modal", "modal-v2", "component", "dialog", "overlay"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'Close handler' },\n            { content: '' },\n        ],\n        [\n            { content: 'title', hintText: 'Header title text.' },\n            { content: 'string', hintText: 'Title' },\n            { content: '' },\n        ],\n        [\n            { content: 'subtitle', hintText: 'Secondary header description.' },\n            { content: 'string', hintText: 'Subtitle' },\n            { content: '' },\n        ],\n        [\n            { content: 'children', hintText: 'Modal body content.' },\n            { content: 'ReactNode', hintText: 'Body content' },\n            { content: '' },\n        ],\n        [\n            { content: 'primaryAction', hintText: 'Primary ButtonV2 action configuration.' },\n            { content: 'ModalV2ButtonAction', hintText: 'ButtonV2 props without buttonGroupPosition' },\n            { content: '' },\n        ],\n        [\n            { content: 'secondaryAction', hintText: 'Secondary ButtonV2 action configuration.' },\n            { content: 'ModalV2ButtonAction', hintText: 'ButtonV2 props without buttonGroupPosition' },\n            { content: '' },\n        ],\n        [\n            { content: 'showCloseButton', hintText: 'Shows or hides the close button.' },\n            { content: 'boolean', hintText: 'Close affordance' },\n            { content: 'true' },\n        ],\n        [\n            { content: 'closeOnBackdropClick', hintText: 'Allows backdrop click to close the modal.' },\n            { content: 'boolean', hintText: 'Backdrop behavior' },\n            { content: 'true' },\n        ],\n        [\n            { content: 'dimensions', hintText: 'Custom width, height, min/max dimensions.' },\n            { content: 'ModalV2Dimensions', hintText: 'CSS size values' },\n            { content: '' },\n        ],\n        [\n            { content: 'skeleton', hintText: 'Shows body skeleton loading state.' },\n            { content: 'ModalV2BodySkeletonProps', hintText: 'Skeleton config' },\n            { content: '' },\n        ],\n    ]}\n/>\n\nComponent Tokens\n\nYou can style the ModalV2 component using the MODALV2 component token.",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'Close handler' },\n            { content: '' },\n        ],\n        [\n            { content: 'title', hintTex...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "modal": {
         "title": "Modal",
         "description": "The Modal component creates overlay dialogs that focus user attention on specific content or actions, with backdrop blur, animations, mobile drawer support, and extensive customization options.",
@@ -2767,6 +2794,39 @@
         ],
         "content": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'unit',\n                hintText: 'Unit text to display (e.g., \"kg\", \"cm\", \"$\")',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'unitPosition',\n                hintText: 'Position of the unit display',\n            },\n            { content: 'UnitPosition', hintText: 'enum' },\n            { content: 'LEFT, RIGHT' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size variant of the input',\n            },\n            { content: 'UnitInputSize', hintText: 'enum' },\n            { content: 'SMALL, MEDIUM, LARGE' },\n        ],\n        [\n            {\n                content: 'min',\n                hintText: 'Minimum allowed value',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'max',\n                hintText: 'Maximum allowed value',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'step',\n                hintText: 'Step interval for numeric input',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Whether the input is in error state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'errorMessage',\n                hintText: 'Error message to display when in error state',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText: 'Whether the input is required',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'Whether the input is disabled',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Primary label for the input',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'sublabel',\n                hintText: 'Secondary label or description',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text for the input',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'hintText',\n                hintText: 'Helper text displayed below the input',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'helpIconHintText',\n                hintText: 'Tooltip text for the help icon',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'leftSlot',\n                hintText: 'React element to display on the left side',\n            },\n            { content: 'React.ReactNode', hintText: 'ReactNode' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'rightSlot',\n                hintText: 'React element to display on the right side',\n            },\n            { content: 'React.ReactNode', hintText: 'ReactNode' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'name',\n                hintText: 'Name attribute for the input element',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onFocus',\n                hintText: 'Callback when input receives focus',\n            },\n            {\n                content: '(e: React.FocusEvent) => void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onBlur',\n                hintText: 'Callback when input loses focus',\n            },\n            {\n                content: '(e: React.FocusEvent) => void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the UnitInput component using the following tokens:",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "upload-v2": {
+        "title": "Upload",
+        "description": "The UploadV2 component provides a controlled file upload surface with drag-and-drop support, accepted type validation, file state display, progress state, and error handling.",
+        "path": "components/upload-v2",
+        "slug": "upload-v2",
+        "category": "Display",
+        "tags": [
+            "upload",
+            "upload-v2",
+            "component",
+            "file-upload",
+            "drag-drop"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'Change handler' },\n            { content: '' },\n        ],\n        [\n            { content: 'state', hintText: 'Visual upload state.' },\n            { content: 'UploadV2State', hintText: 'idle, uploading, success, error, disabled' },\n            { content: 'idle' },\n        ],\n        [\n            { content: 'multiple', hintText: 'Allows multiple file selection.' },\n            { content: 'boolean', hintText: 'Multiple files' },\n            { content: 'false' },\n        ],\n        [\n            { content: 'maxSize', hintText: 'Maximum file size in bytes.' },\n            { content: 'number', hintText: 'Bytes' },\n            { content: '' },\n        ],\n        [\n            { content: 'maxFiles', hintText: 'Maximum number of files allowed.' },\n            { content: 'number', hintText: 'File limit' },\n            { content: '' },\n        ],\n        [\n            { content: 'progressBarValue', hintText: 'Progress value for uploading state.' },\n            { content: 'number', hintText: 'Progress value' },\n            { content: '' },\n        ],\n        [\n            { content: 'uploadHeaderText', hintText: 'Main call-to-action text in the upload surface.' },\n            { content: 'string', hintText: 'Header text' },\n            { content: '' },\n        ],\n    ]}\n/>\n\nComponent Tokens\n\nYou can style the UploadV2 component using the UPLOADV2 component token.",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'Change handler' },\n            { content: '' },\n        ],\n        [\n            { content: 'state', hintTe...",
         "sections": [
             {
                 "title": "Usage",
