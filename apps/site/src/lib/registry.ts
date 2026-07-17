@@ -58,6 +58,7 @@ export const DEMOS = [
     { id: 'tooltips', label: 'Tooltip' },
     { id: 'tooltipV2', label: 'Tooltip V2' },
     { id: 'modal', label: 'Modal' },
+    { id: 'modalV2', label: 'Modal V2' },
     { id: 'popover', label: 'Popover' },
     { id: 'popoverV2', label: 'Popover V2' },
     { id: 'drawer', label: 'Drawer' },

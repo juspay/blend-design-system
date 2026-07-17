@@ -20,6 +20,7 @@ export { getCheckboxV2Tokens } from './components/SelectorV2/CheckboxV2/checkbox
 export { getCodeEditorV2Tokens } from './components/CodeEditorV2/codeEditorV2.tokens'
 export { getKeyValuePairV2Tokens } from './components/KeyValuePairV2/keyValuePairV2.tokens'
 export { getMenuV2Tokens } from './components/MenuV2/menuV2.tokens'
+export { getModalV2Tokens } from './components/ModalV2/modalV2.tokens'
 export { getMultiSelectV2Tokens } from './components/MultiSelectV2/multiSelectV2.tokens'
 export { getPopoverV2Tokens } from './components/PopoverV2/popoverV2.token'
 export { getProgressBarV2Tokens } from './components/ProgressBarV2/progressBarV2.tokens'

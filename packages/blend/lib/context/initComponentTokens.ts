@@ -17,6 +17,7 @@ import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tok
 import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
+import { getModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
 import { getMenuTokens } from '../components/Menu/menu.tokens'
@@ -122,6 +123,9 @@ const initTokens = (
             getKeyValuePairTokens(foundationTokens),
         MODAL:
             componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
+        MODALV2:
+            componentTokens.MODALV2 ??
+            getModalV2Tokens(foundationTokens, theme),
         BREADCRUMB:
             componentTokens.BREADCRUMB ?? getBreadcrumbTokens(foundationTokens),
         POPOVER: componentTokens.POPOVER ?? getPopoverTokens(foundationTokens),
