@@ -154,6 +154,7 @@ import ChatInputV2Demo from './ChatInputV2Demo'
 import StepperV2Demo from './StepperV2Demo'
 import UploadV2Demo from './UploadV2Demo'
 import ModalV2Demo from './ModalV2Demo'
+import DirectoryDemo from './DirectoryDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponentState] = useState<
@@ -260,6 +261,7 @@ const SidebarDemo = () => {
         | 'chatInputV2'
         | 'stepperV2'
         | 'modalV2'
+        | 'directory'
     >(() => {
         return (window.location.hash.slice(1) || 'checkbox') as any
     })
@@ -583,6 +585,8 @@ const SidebarDemo = () => {
                 return <DrawerDemo />
             case 'drawerV2':
                 return <DrawerV2Demo />
+            case 'directory':
+                return <DirectoryDemo />
             case 'dropdownInput':
                 return <DropdownInputDemo />
             case 'dataRangePicker':
@@ -957,6 +961,15 @@ const SidebarDemo = () => {
                             setTopbarVisible(false)
                         }
                     },
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Directory',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'directory',
+                    onClick: () => setActiveComponent('directory'),
                     showOnMobile: true,
                 },
                 {

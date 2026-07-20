@@ -1,5 +1,9 @@
 import { type ReactNode } from 'react'
-import type { DirectoryData, NavbarItem } from '../Directory/types'
+import type {
+    DirectoryData,
+    DirectoryProps,
+    NavbarItem,
+} from '../Directory/types'
 import type {
     MerchantInfo,
     LeftPanelInfo,
@@ -65,6 +69,8 @@ export type SidebarProps = {
     onActiveItemChange?: (item: string | null) => void
     defaultActiveItem?: string | null
     onHoveringChange?: (isHovering: boolean) => void
+    showHierarchyLines?: DirectoryProps['showHierarchyLines']
+    hierarchyLineBorderRadius?: DirectoryProps['hierarchyLineBorderRadius']
 }
 
 export type MobileNavigationItem = NavbarItem & {

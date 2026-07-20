@@ -140,6 +140,7 @@ import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
 import RadioV2Demo from './RadioV2Demo'
+import DirectoryDemo from './DirectoryDemo'
 import {
     SingleSelectV2,
     SingleSelectV2Variant,
@@ -233,6 +234,7 @@ const SidebarV2Demo = () => {
         | 'timeline'
         | 'tooltipV2'
         | 'popoverV2'
+        | 'directory'
     >(() => {
         return (window.location.hash.slice(1) || 'popoverV2') as any
     })
@@ -488,6 +490,8 @@ const SidebarV2Demo = () => {
                 return <AllComponentsDemo />
             case 'virtualList':
                 return <VirtualListDemo />
+            case 'directory':
+                return <DirectoryDemo />
             case 'upload':
                 return <UploadDemo />
             case 'uploadV2':
@@ -793,6 +797,15 @@ const SidebarV2Demo = () => {
                                 setTopbarVisible(false)
                             }
                         },
+                        showOnMobile: true,
+                    },
+                    {
+                        label: 'Directory',
+                        leftSlot: (
+                            <List style={{ width: '16px', height: '16px' }} />
+                        ),
+                        isSelected: activeComponent === 'directory',
+                        onClick: () => setActiveComponent('directory'),
                         showOnMobile: true,
                     },
                     {

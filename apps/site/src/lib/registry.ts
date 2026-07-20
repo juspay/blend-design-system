@@ -13,6 +13,7 @@ export const DEMOS = [
     { id: 'breadcrumb', label: 'Breadcrumb' },
     { id: 'breadcrumbV2', label: 'Breadcrumb V2' },
     { id: 'virtualList', label: 'Virtual List' },
+    { id: 'directory', label: 'Directory' },
     { id: 'upload', label: 'File Upload' },
     { id: 'uploadV2', label: 'File Upload V2' },
     { id: 'input', label: 'Text Input' },

@@ -25,13 +25,17 @@ const StyledElement = styled(Block)<{
     $isActive?: boolean
     $tokens: DirectoryTokenType
     $iconOnlyMode?: boolean
+    $hasHierarchyLineInset?: boolean
 }>`
     background-color: ${({ $isActive, $tokens }) =>
         $isActive
             ? $tokens.section.itemList.item.backgroundColor.active
             : $tokens.section.itemList.item.backgroundColor.default};
     border: none;
-    width: 100%;
+    width: ${({ $hasHierarchyLineInset }) =>
+        $hasHierarchyLineInset ? 'calc(100% - 8px)' : '100%'};
+    margin-left: ${({ $hasHierarchyLineInset }) =>
+        $hasHierarchyLineInset ? '8px' : 0};
     min-width: 0;
     flex-shrink: 0;
     display: flex;
@@ -40,10 +44,14 @@ const StyledElement = styled(Block)<{
         $iconOnlyMode ? 'center' : 'flex-start'};
     gap: ${({ $tokens, $iconOnlyMode }) =>
         $iconOnlyMode ? '0' : $tokens.section.itemList.item.gap};
-    padding: ${({ $tokens, $iconOnlyMode }) =>
+    padding: ${({ $tokens, $iconOnlyMode, $hasHierarchyLineInset }) =>
         $iconOnlyMode
             ? `${$tokens.section.itemList.item.iconOnlyPadding.paddingTop} ${$tokens.section.itemList.item.iconOnlyPadding.paddingRight} ${$tokens.section.itemList.item.iconOnlyPadding.paddingBottom} ${$tokens.section.itemList.item.iconOnlyPadding.paddingLeft}`
-            : `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x}`};
+            : `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x} ${$tokens.section.itemList.item.padding.y} ${
+                  $hasHierarchyLineInset
+                      ? '8px'
+                      : $tokens.section.itemList.item.padding.x
+              }`};
     color: ${({ $isActive, $tokens }) =>
         $isActive
             ? $tokens.section.itemList.item.color.active
@@ -116,26 +124,76 @@ const ChevronWrapper = styled(Block)<{
     }
 `
 
-const NestedList = styled(Block)<{ $tokens: DirectoryTokenType }>`
+const NestedList = styled(Block)<{
+    $tokens: DirectoryTokenType
+    $showHierarchyLines?: boolean
+}>`
     width: 100%;
     padding-left: ${({ $tokens }) =>
         $tokens.section.itemList.nested.paddingLeft};
-    margin-top: ${({ $tokens }) => $tokens.section.itemList.nested.marginTop};
+    margin-top: ${({ $tokens, $showHierarchyLines }) =>
+        $showHierarchyLines ? '0' : $tokens.section.itemList.nested.marginTop};
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: ${({ $tokens }) => $tokens.section.itemList.gap};
+    gap: ${({ $tokens, $showHierarchyLines }) =>
+        $showHierarchyLines ? 0 : $tokens.section.itemList.gap};
+`
 
-    & > div:first-child {
-        position: absolute;
-        left: ${({ $tokens }) =>
-            $tokens.section.itemList.nested.border.leftOffset};
-        top: 0;
-        height: 100%;
-        width: ${({ $tokens }) => $tokens.section.itemList.nested.border.width};
-        background-color: ${({ $tokens }) =>
-            $tokens.section.itemList.nested.border.color};
-    }
+const NavListItem = styled.li<{
+    $showHierarchyLines?: boolean
+    $isLast?: boolean
+    $tokens: DirectoryTokenType
+    $hierarchyLineBorderRadius: React.CSSProperties['borderRadius']
+}>`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    position: relative;
+
+    ${({ $showHierarchyLines, $isLast, $tokens, $hierarchyLineBorderRadius }) =>
+        $showHierarchyLines &&
+        `
+            padding-bottom: ${$isLast ? '0' : $tokens.section.itemList.gap};
+
+            &::before,
+            &::after {
+                content: '';
+                position: absolute;
+                pointer-events: none;
+                border-color: ${$tokens.section.itemList.nested.border.color};
+            }
+
+            &::before {
+                left: calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset});
+                top: calc(-1 * ${$tokens.section.itemList.gap});
+                bottom: ${$isLast ? 'calc(100% - 5px)' : `calc(-1 * ${$tokens.section.itemList.gap})`};
+                border-left: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
+            }
+
+            &::after {
+                left: calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset});
+                top: 5px;
+                width: calc(${$tokens.section.itemList.nested.paddingLeft} - ${$tokens.section.itemList.nested.border.leftOffset} + 6px);
+                height: 10px;
+                border-left: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
+                border-bottom: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
+                border-bottom-left-radius: ${$hierarchyLineBorderRadius};
+            }
+        `}
+`
+
+const NavItemContentFrame = styled.div<{
+    $showHierarchyLines?: boolean
+}>`
+    position: relative;
+    z-index: ${({ $showHierarchyLines }) => ($showHierarchyLines ? 1 : 'auto')};
+`
+
+const NestedListFrame = styled.div`
+    position: relative;
 `
 
 type ActiveItemContextValue = {
@@ -223,6 +281,10 @@ const NavItem = ({
     onNavigate,
     itemPath = item.label,
     iconOnlyMode = false,
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
+    isLast = false,
+    isNested = false,
 }: NavItemProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const [isExpanded, setIsExpanded] = React.useState(false)
@@ -402,6 +464,7 @@ const NavItem = ({
             $isActive={isActive}
             $tokens={tokens}
             $iconOnlyMode={iconOnlyMode}
+            $hasHierarchyLineInset={showHierarchyLines && isNested}
             {...elementProps}
             ref={refCallback}
             onClick={handleClick}
@@ -436,82 +499,103 @@ const NavItem = ({
     )
 
     return (
-        <li
-            style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-start',
-                alignItems: 'stretch',
-                position: 'relative',
-            }}
+        <NavListItem
+            $showHierarchyLines={showHierarchyLines && isNested}
+            $isLast={isLast}
+            $tokens={tokens}
+            $hierarchyLineBorderRadius={hierarchyLineBorderRadius}
+            data-directory-hierarchy-item={
+                showHierarchyLines && isNested ? 'true' : undefined
+            }
         >
-            {iconOnlyMode && item.leftSlot ? (
-                <TooltipV2 content={item.label} side={TooltipV2Side.RIGHT}>
-                    {itemElement}
-                </TooltipV2>
-            ) : (
-                itemElement
-            )}
+            <NavItemContentFrame $showHierarchyLines={showHierarchyLines}>
+                {iconOnlyMode && item.leftSlot ? (
+                    <TooltipV2 content={item.label} side={TooltipV2Side.RIGHT}>
+                        {itemElement}
+                    </TooltipV2>
+                ) : (
+                    itemElement
+                )}
+            </NavItemContentFrame>
 
             {hasChildren && isExpanded && !iconOnlyMode && (
-                <NestedList
-                    ref={nestedListRef}
-                    as="ul"
-                    $tokens={tokens}
-                    role="list"
-                    aria-label={`${item.label} submenu`}
-                >
-                    {item.items &&
-                        item.items.map((childItem, childIdx) => (
-                            <NavItem
-                                key={childIdx}
-                                item={childItem}
-                                index={childIdx}
-                                itemPath={`${itemPath}/${childItem.label}`}
-                                iconOnlyMode={iconOnlyMode}
-                                onNavigate={(direction, currentIndex) => {
-                                    if (
-                                        direction === 'up' &&
-                                        currentIndex === 0
-                                    ) {
-                                        itemRef.current?.focus()
-                                    } else if (
-                                        direction === 'down' &&
-                                        currentIndex ===
-                                            (item.items?.length || 0) - 1
-                                    ) {
-                                        onNavigate('down', index)
-                                    } else {
-                                        const nextIndex =
-                                            direction === 'up'
-                                                ? Math.max(0, currentIndex - 1)
-                                                : Math.min(
-                                                      (item.items?.length ||
-                                                          0) - 1,
-                                                      currentIndex + 1
-                                                  )
-                                        const nestedItems =
-                                            itemRef.current?.parentElement
-                                                ?.querySelector('ul')
-                                                ?.querySelectorAll('button, a')
-                                        if (
-                                            nestedItems &&
-                                            nestedItems[nextIndex]
-                                        ) {
-                                            ;(
-                                                nestedItems[
-                                                    nextIndex
-                                                ] as HTMLElement
-                                            ).focus()
-                                        }
+                <NestedListFrame>
+                    <NestedList
+                        ref={nestedListRef}
+                        as="ul"
+                        $tokens={tokens}
+                        $showHierarchyLines={showHierarchyLines}
+                        role="list"
+                        aria-label={`${item.label} submenu`}
+                        data-directory-hierarchy-line={
+                            showHierarchyLines ? 'true' : undefined
+                        }
+                    >
+                        {item.items &&
+                            item.items.map((childItem, childIdx) => (
+                                <NavItem
+                                    key={childIdx}
+                                    item={childItem}
+                                    index={childIdx}
+                                    itemPath={`${itemPath}/${childItem.label}`}
+                                    iconOnlyMode={iconOnlyMode}
+                                    showHierarchyLines={showHierarchyLines}
+                                    hierarchyLineBorderRadius={
+                                        hierarchyLineBorderRadius
                                     }
-                                }}
-                            />
-                        ))}
-                </NestedList>
+                                    isLast={
+                                        childIdx ===
+                                        (item.items?.length || 0) - 1
+                                    }
+                                    isNested
+                                    onNavigate={(direction, currentIndex) => {
+                                        if (
+                                            direction === 'up' &&
+                                            currentIndex === 0
+                                        ) {
+                                            itemRef.current?.focus()
+                                        } else if (
+                                            direction === 'down' &&
+                                            currentIndex ===
+                                                (item.items?.length || 0) - 1
+                                        ) {
+                                            onNavigate('down', index)
+                                        } else {
+                                            const nextIndex =
+                                                direction === 'up'
+                                                    ? Math.max(
+                                                          0,
+                                                          currentIndex - 1
+                                                      )
+                                                    : Math.min(
+                                                          (item.items?.length ||
+                                                              0) - 1,
+                                                          currentIndex + 1
+                                                      )
+                                            const nestedItems =
+                                                itemRef.current?.parentElement
+                                                    ?.querySelector('ul')
+                                                    ?.querySelectorAll(
+                                                        'button, a'
+                                                    )
+                                            if (
+                                                nestedItems &&
+                                                nestedItems[nextIndex]
+                                            ) {
+                                                ;(
+                                                    nestedItems[
+                                                        nextIndex
+                                                    ] as HTMLElement
+                                                ).focus()
+                                            }
+                                        }
+                                    }}
+                                />
+                            ))}
+                    </NestedList>
+                </NestedListFrame>
             )}
-        </li>
+        </NavListItem>
     )
 }
 

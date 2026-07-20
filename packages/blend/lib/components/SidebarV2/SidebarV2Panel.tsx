@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
 import { normalizeDirectoryData } from '../Directory/utils'
-import type { DirectoryData } from '../Directory/types'
+import type { DirectoryData, DirectoryProps } from '../Directory/types'
 import SidebarV2Header from './SidebarV2Header'
 import SidebarV2Footer from './SidebarV2Footer'
 import type { SidebarV2StateChangeType } from './types'
@@ -55,6 +55,8 @@ export type SidebarV2PanelProps = {
     setIsHovering?: (isHovering: boolean) => void
     sidebarState?: SidebarV2StateChangeType
     tokens: SidebarV2TokensType
+    showHierarchyLines?: DirectoryProps['showHierarchyLines']
+    hierarchyLineBorderRadius?: DirectoryProps['hierarchyLineBorderRadius']
 }
 
 const SidebarV2Panel = ({
@@ -76,6 +78,8 @@ const SidebarV2Panel = ({
     setIsHovering,
     sidebarState = 'expanded',
     tokens,
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
 }: SidebarV2PanelProps) => {
     const trackHover = shouldTrackHover(setIsHovering)
     const directoryData = normalizeDirectoryData(data)
@@ -126,6 +130,8 @@ const SidebarV2Panel = ({
                     onActiveItemChange={onActiveItemChange}
                     defaultActiveItem={defaultActiveItem}
                     iconOnlyMode={iconOnlyMode}
+                    showHierarchyLines={showHierarchyLines}
+                    hierarchyLineBorderRadius={hierarchyLineBorderRadius}
                 />
             </DirectoryContainer>
 

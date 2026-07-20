@@ -71,6 +71,8 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             onActiveItemChange,
             defaultActiveItem,
             onSidebarStateChange,
+            showHierarchyLines = false,
+            hierarchyLineBorderRadius = 0,
         },
         ref
     ) => {
@@ -323,6 +325,10 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 setIsHovering={setIsHovering}
                                 sidebarState={sidebarStatus}
                                 tokens={tokens}
+                                showHierarchyLines={showHierarchyLines}
+                                hierarchyLineBorderRadius={
+                                    hierarchyLineBorderRadius
+                                }
                             />
                         )}
 
@@ -386,6 +392,10 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                     footer={footer}
                                     sidebarState={sidebarStatus}
                                     tokens={tokens}
+                                    showHierarchyLines={showHierarchyLines}
+                                    hierarchyLineBorderRadius={
+                                        hierarchyLineBorderRadius
+                                    }
                                 />
                             </Block>
                         )}

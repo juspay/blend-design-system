@@ -100,6 +100,8 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             defaultActiveItem,
             showLeftPanel = true,
             onSidebarStateChange,
+            showHierarchyLines = false,
+            hierarchyLineBorderRadius = 0,
         },
         ref
     ) => {
@@ -402,6 +404,10 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     iconOnlyMode={iconOnlyMode}
                                     footer={footer}
                                     setIsHovering={setIsHovering}
+                                    showHierarchyLines={showHierarchyLines}
+                                    hierarchyLineBorderRadius={
+                                        hierarchyLineBorderRadius
+                                    }
                                 />
 
                                 {/* Intermediate Sidebar */}
@@ -491,6 +497,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             }
                                             iconOnlyMode={false}
                                             footer={footer}
+                                            showHierarchyLines={
+                                                showHierarchyLines
+                                            }
+                                            hierarchyLineBorderRadius={
+                                                hierarchyLineBorderRadius
+                                            }
                                         />
                                     </Block>
                                 )}
