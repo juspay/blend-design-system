@@ -32,10 +32,14 @@ const StyledElement = styled(Block)<{
             ? $tokens.section.itemList.item.backgroundColor.active
             : $tokens.section.itemList.item.backgroundColor.default};
     border: none;
-    width: ${({ $hasHierarchyLineInset }) =>
-        $hasHierarchyLineInset ? 'calc(100% - 8px)' : '100%'};
-    margin-left: ${({ $hasHierarchyLineInset }) =>
-        $hasHierarchyLineInset ? '8px' : 0};
+    width: ${({ $hasHierarchyLineInset, $tokens }) =>
+        $hasHierarchyLineInset
+            ? `calc(100% - ${$tokens.section.itemList.nested.connector.itemInset})`
+            : '100%'};
+    margin-left: ${({ $hasHierarchyLineInset, $tokens }) =>
+        $hasHierarchyLineInset
+            ? $tokens.section.itemList.nested.connector.itemInset
+            : 0};
     min-width: 0;
     flex-shrink: 0;
     display: flex;
@@ -49,7 +53,8 @@ const StyledElement = styled(Block)<{
             ? `${$tokens.section.itemList.item.iconOnlyPadding.paddingTop} ${$tokens.section.itemList.item.iconOnlyPadding.paddingRight} ${$tokens.section.itemList.item.iconOnlyPadding.paddingBottom} ${$tokens.section.itemList.item.iconOnlyPadding.paddingLeft}`
             : `${$tokens.section.itemList.item.padding.y} ${$tokens.section.itemList.item.padding.x} ${$tokens.section.itemList.item.padding.y} ${
                   $hasHierarchyLineInset
-                      ? '8px'
+                      ? $tokens.section.itemList.nested.connector
+                            .itemPaddingLeft
                       : $tokens.section.itemList.item.padding.x
               }`};
     color: ${({ $isActive, $tokens }) =>
@@ -156,6 +161,8 @@ const NavListItem = styled.li<{
     ${({ $showHierarchyLines, $isLast, $tokens, $hierarchyLineBorderRadius }) =>
         $showHierarchyLines &&
         `
+            --directory-connector-elbow-top: ${$tokens.section.itemList.nested.connector.elbowTop};
+
             padding-bottom: ${$isLast ? '0' : $tokens.section.itemList.gap};
 
             &::before,
@@ -169,18 +176,18 @@ const NavListItem = styled.li<{
             &::before {
                 left: calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset});
                 top: calc(-1 * ${$tokens.section.itemList.gap});
-                bottom: ${$isLast ? 'calc(100% - 5px)' : `calc(-1 * ${$tokens.section.itemList.gap})`};
+                bottom: ${$isLast ? 'calc(100% - var(--directory-connector-elbow-top))' : `calc(-1 * ${$tokens.section.itemList.gap})`};
                 border-left: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
             }
 
             &::after {
                 left: calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset});
-                top: 5px;
-                width: calc(${$tokens.section.itemList.nested.paddingLeft} - ${$tokens.section.itemList.nested.border.leftOffset} + 6px);
-                height: 10px;
+                top: var(--directory-connector-elbow-top);
+                width: calc(${$tokens.section.itemList.nested.paddingLeft} - ${$tokens.section.itemList.nested.border.leftOffset} + ${$tokens.section.itemList.nested.connector.elbowWidthOffset});
+                height: ${$tokens.section.itemList.nested.connector.elbowHeight};
                 border-left: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
                 border-bottom: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
-                border-bottom-left-radius: ${$hierarchyLineBorderRadius};
+                border-bottom-left-radius: ${addPxToValue($hierarchyLineBorderRadius)};
             }
         `}
 `
