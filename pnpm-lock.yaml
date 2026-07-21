@@ -656,6 +656,9 @@ importers:
             '@types/styled-components':
                 specifier: ^5.1.34
                 version: 5.1.36
+            echarts:
+                specifier: ^6.1.0
+                version: 6.1.0
             framer-motion:
                 specifier: ^12.23.24
                 version: 12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -9303,6 +9306,12 @@ packages:
                 integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==,
             }
 
+    echarts@6.1.0:
+        resolution:
+            {
+                integrity: sha512-q0yaFPggC9FUdsWH4blavRWFmxdrIodbkoKNAjJudAI6CA9gNPxHtV2RcZNEepZVlk4yvBYkOkbk6HIVpIyHZA==,
+            }
+
     ee-first@1.1.1:
         resolution:
             {
@@ -17439,6 +17448,12 @@ packages:
                 integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==,
             }
 
+    zrender@6.1.0:
+        resolution:
+            {
+                integrity: sha512-oEGMDB6pOP2S6OwRR4PdVv610zrjnA3Bh+JnSG12fYJlBKjtNAoEb5fSUoCOOINlH96I2fU38/A2UpRKs67xYQ==,
+            }
+
     zustand@5.0.11:
         resolution:
             {
@@ -23611,6 +23626,11 @@ snapshots:
         dependencies:
             safe-buffer: 5.2.1
 
+    echarts@6.1.0:
+        dependencies:
+            tslib: 2.3.0
+            zrender: 6.1.0
+
     ee-first@1.1.1: {}
 
     effect@3.20.0:
@@ -29618,6 +29638,10 @@ snapshots:
     zod@3.25.76: {}
 
     zod@4.4.3: {}
+
+    zrender@6.1.0:
+        dependencies:
+            tslib: 2.3.0
 
     zustand@5.0.11(@types/react@19.2.7)(react@19.2.3)(use-sync-external-store@1.6.0(react@19.2.3)):
         optionalDependencies:

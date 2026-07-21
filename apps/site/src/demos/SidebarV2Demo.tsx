@@ -137,6 +137,7 @@ import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
 import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
 import ChartV2Demo from './ChartV2Demo'
+import ChartV3Demo from './ChartV3Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
 import RadioV2Demo from './RadioV2Demo'
@@ -167,6 +168,7 @@ const SidebarV2Demo = () => {
         | 'charts'
         | 'blendChart'
         | 'chartV2'
+        | 'chartV3'
         | 'fonts'
         | 'datePicker'
         | 'selectors'
@@ -508,6 +510,8 @@ const SidebarV2Demo = () => {
                 return <TextInputAutofillTestV2 />
             case 'chartV2':
                 return <ChartV2Demo />
+            case 'chartV3':
+                return <ChartV3Demo />
             case 'timeline':
                 return <TimelineDemo />
             case 'keyValuePairV2':
@@ -1268,6 +1272,16 @@ const SidebarV2Demo = () => {
                         ),
                         isSelected: activeComponent === 'chartV2',
                         onClick: () => setActiveComponent('chartV2'),
+                    },
+                    {
+                        label: 'Chart V3',
+                        leftSlot: (
+                            <BarChart2
+                                style={{ width: '16px', height: '16px' }}
+                            />
+                        ),
+                        isSelected: activeComponent === 'chartV3',
+                        onClick: () => setActiveComponent('chartV3'),
                     },
                     {
                         label: 'Outage Charts',

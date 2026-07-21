@@ -292,6 +292,8 @@ export const useComponentToken = (
             return componentTokens.TEXT_AREA_V2
         case 'CHARTSV2':
             return componentTokens.CHARTSV2
+        case 'CHARTSV3':
+            return componentTokens.CHARTSV3
         case 'TIMELINE':
             return componentTokens.TIMELINE
         case 'CHECKBOXV2':

@@ -66,6 +66,7 @@ export const DEMOS = [
     { id: 'charts', label: 'Charts' },
     { id: 'blendChart', label: 'Blend Chart' },
     { id: 'chartV2', label: 'Chart V2' },
+    { id: 'chartV3', label: 'Chart V3' },
     { id: 'outageCharts', label: 'Outage Charts' },
     { id: 'outageChartV2', label: 'Outage Charts V2' },
     { id: 'statCard', label: 'Stat Card' },

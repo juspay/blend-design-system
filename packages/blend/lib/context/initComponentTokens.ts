@@ -60,6 +60,7 @@ import { getKeyValuePairV2Tokens } from '../components/KeyValuePairV2/keyValuePa
 import { getAvatarV2Tokens } from '../components/AvatarV2/avatarV2.tokens'
 import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
+import { getChartV3Tokens } from '../components/ChartsV3/chartV3.tokens'
 import { getTimelineTokens } from '../components/Timeline/timeline.token'
 import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
 import { getStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
@@ -225,6 +226,9 @@ const initTokens = (
         CHARTSV2:
             componentTokens.CHARTSV2 ??
             getChartV2Tokens(foundationTokens, theme),
+        CHARTSV3:
+            componentTokens.CHARTSV3 ??
+            getChartV3Tokens(foundationTokens, theme),
         TIMELINE:
             componentTokens.TIMELINE ??
             getTimelineTokens(foundationTokens, theme),
