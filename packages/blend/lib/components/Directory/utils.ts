@@ -1,8 +1,88 @@
-import type { DirectoryData } from './types'
+import type {
+    DirectoryData,
+    DirectoryExpandedItems,
+    DirectoryFlatRow,
+    NavbarItem,
+} from './types'
 
 export const normalizeDirectoryData = (
     directoryData: DirectoryData[] | null
 ): DirectoryData[] => (Array.isArray(directoryData) ? directoryData : [])
+
+export const normalizeExpandedItems = (
+    expandedItems?: DirectoryExpandedItems
+): Set<string> =>
+    expandedItems ? new Set(Array.from(expandedItems)) : new Set<string>()
+
+const getItemPath = (parentPath: string, item: NavbarItem): string =>
+    parentPath ? `${parentPath}/${item.label}` : item.label
+
+const flattenDirectoryItems = (
+    items: NavbarItem[],
+    expandedItems: Set<string>,
+    rows: DirectoryFlatRow[],
+    sectionIndex: number,
+    parentPath = '',
+    depth = 0,
+    ancestorIsLast: boolean[] = []
+) => {
+    items.forEach((item, index) => {
+        const itemPath = getItemPath(parentPath, item)
+        const hasChildren = !!item.items?.length
+        const isLast = index === items.length - 1
+
+        rows.push({
+            type: 'item',
+            item,
+            sectionIndex,
+            itemPath,
+            depth,
+            isLast,
+            ancestorIsLast,
+        })
+
+        if (hasChildren && expandedItems.has(itemPath) && item.items) {
+            flattenDirectoryItems(
+                item.items,
+                expandedItems,
+                rows,
+                sectionIndex,
+                itemPath,
+                depth + 1,
+                [...ancestorIsLast, isLast]
+            )
+        }
+    })
+}
+
+export const flattenDirectoryData = (
+    directoryData: DirectoryData[],
+    expandedItems: Set<string>,
+    openSections: Set<number>
+): DirectoryFlatRow[] => {
+    const rows: DirectoryFlatRow[] = []
+
+    directoryData.forEach((section, sectionIndex) => {
+        if (section.label) {
+            rows.push({
+                type: 'section',
+                section,
+                sectionIndex,
+            })
+        }
+
+        if (section.items && openSections.has(sectionIndex)) {
+            flattenDirectoryItems(
+                section.items,
+                expandedItems,
+                rows,
+                sectionIndex
+            )
+        }
+    })
+
+    return rows
+}
 
 export const handleSectionNavigation = (
     direction: 'up' | 'down',

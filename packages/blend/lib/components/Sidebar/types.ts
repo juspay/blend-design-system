@@ -71,6 +71,12 @@ export type SidebarProps = {
     onHoveringChange?: (isHovering: boolean) => void
     showHierarchyLines?: DirectoryProps['showHierarchyLines']
     hierarchyLineBorderRadius?: DirectoryProps['hierarchyLineBorderRadius']
+    expandedItems?: DirectoryProps['expandedItems']
+    defaultExpandedItems?: DirectoryProps['defaultExpandedItems']
+    onExpandedItemsChange?: DirectoryProps['onExpandedItemsChange']
+    onItemExpand?: DirectoryProps['onItemExpand']
+    enableVirtualization?: DirectoryProps['enableVirtualization']
+    virtualization?: DirectoryProps['virtualization']
 }
 
 export type MobileNavigationItem = NavbarItem & {

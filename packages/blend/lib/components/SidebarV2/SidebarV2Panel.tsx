@@ -57,6 +57,12 @@ export type SidebarV2PanelProps = {
     tokens: SidebarV2TokensType
     showHierarchyLines?: DirectoryProps['showHierarchyLines']
     hierarchyLineBorderRadius?: DirectoryProps['hierarchyLineBorderRadius']
+    expandedItems?: DirectoryProps['expandedItems']
+    defaultExpandedItems?: DirectoryProps['defaultExpandedItems']
+    onExpandedItemsChange?: DirectoryProps['onExpandedItemsChange']
+    onItemExpand?: DirectoryProps['onItemExpand']
+    enableVirtualization?: DirectoryProps['enableVirtualization']
+    virtualization?: DirectoryProps['virtualization']
 }
 
 const SidebarV2Panel = ({
@@ -80,6 +86,12 @@ const SidebarV2Panel = ({
     tokens,
     showHierarchyLines = false,
     hierarchyLineBorderRadius = 0,
+    expandedItems,
+    defaultExpandedItems,
+    onExpandedItemsChange,
+    onItemExpand,
+    enableVirtualization = false,
+    virtualization,
 }: SidebarV2PanelProps) => {
     const trackHover = shouldTrackHover(setIsHovering)
     const directoryData = normalizeDirectoryData(data)
@@ -132,6 +144,12 @@ const SidebarV2Panel = ({
                     iconOnlyMode={iconOnlyMode}
                     showHierarchyLines={showHierarchyLines}
                     hierarchyLineBorderRadius={hierarchyLineBorderRadius}
+                    expandedItems={expandedItems}
+                    defaultExpandedItems={defaultExpandedItems}
+                    onExpandedItemsChange={onExpandedItemsChange}
+                    onItemExpand={onItemExpand}
+                    enableVirtualization={enableVirtualization}
+                    virtualization={virtualization}
                 />
             </DirectoryContainer>
 
