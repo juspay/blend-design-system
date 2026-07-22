@@ -18,6 +18,11 @@ const directoryData: DirectoryData[] = [
 ]
 
 describe('Directory', () => {
+    const waitForAnimationFrame = () =>
+        new Promise<void>((resolve) => {
+            window.requestAnimationFrame(() => resolve())
+        })
+
     it('renders hierarchy connector attributes only when enabled', async () => {
         const { user, unmount } = render(
             <Directory directoryData={directoryData} />
@@ -146,5 +151,7 @@ describe('Directory', () => {
         expect(
             screen.getByRole('button', { name: /helix network/i })
         ).toHaveFocus()
+
+        await waitForAnimationFrame()
     })
 })
