@@ -17,6 +17,8 @@ const Directory = ({
     onActiveItemChange,
     defaultActiveItem,
     iconOnlyMode = false,
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
 }: DirectoryProps) => {
     const directoryData = normalizeDirectoryData(directoryDataProp)
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
@@ -57,6 +59,8 @@ const Directory = ({
                         sectionIndex={sectionIndex}
                         idPrefix={idPrefix}
                         iconOnlyMode={iconOnlyMode}
+                        showHierarchyLines={showHierarchyLines}
+                        hierarchyLineBorderRadius={hierarchyLineBorderRadius}
                         onNavigateBetweenSections={(direction, currentIndex) =>
                             handleSectionNavigation(
                                 direction,

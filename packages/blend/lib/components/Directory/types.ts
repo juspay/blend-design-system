@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { CSSObject } from 'styled-components'
 
 export type DirectoryProps = {
     directoryData: DirectoryData[] | null
@@ -7,6 +8,8 @@ export type DirectoryProps = {
     onActiveItemChange?: (item: string | null) => void
     defaultActiveItem?: string | null
     iconOnlyMode?: boolean
+    showHierarchyLines?: boolean
+    hierarchyLineBorderRadius?: CSSObject['borderRadius']
 }
 
 export type DirectoryData = {
@@ -41,6 +44,8 @@ export type SectionProps = {
     ) => void
     idPrefix?: string
     iconOnlyMode?: boolean
+    showHierarchyLines?: boolean
+    hierarchyLineBorderRadius?: CSSObject['borderRadius']
 }
 
 export type NavItemProps = {
@@ -49,4 +54,8 @@ export type NavItemProps = {
     onNavigate: (direction: 'up' | 'down', currentIndex: number) => void
     itemPath?: string
     iconOnlyMode?: boolean
+    showHierarchyLines?: boolean
+    hierarchyLineBorderRadius?: CSSObject['borderRadius']
+    isLast?: boolean
+    isNested?: boolean
 }

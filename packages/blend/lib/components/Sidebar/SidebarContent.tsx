@@ -5,7 +5,7 @@ import Directory from '../Directory/Directory'
 import { normalizeDirectoryData } from '../Directory/utils'
 import SidebarHeader from './SidebarHeader'
 import SidebarFooter from './SidebarFooter'
-import type { DirectoryData } from '../Directory/types'
+import type { DirectoryData, DirectoryProps } from '../Directory/types'
 import type { SidebarMerchantInfo, SidebarStateChangeType } from './types'
 
 const DirectoryContainer = styled(Block)<{
@@ -45,6 +45,8 @@ export type SidebarContentProps = {
     footer?: React.ReactNode
     setIsHovering?: (isHovering: boolean) => void
     sidebarState?: SidebarStateChangeType
+    showHierarchyLines?: DirectoryProps['showHierarchyLines']
+    hierarchyLineBorderRadius?: DirectoryProps['hierarchyLineBorderRadius']
 }
 
 const SidebarContent: React.FC<SidebarContentProps> = ({
@@ -66,6 +68,8 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
     footer,
     setIsHovering,
     sidebarState = 'expanded',
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
 }) => {
     const directoryData = normalizeDirectoryData(data)
 
@@ -114,6 +118,8 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                     onActiveItemChange={onActiveItemChange}
                     defaultActiveItem={defaultActiveItem}
                     iconOnlyMode={iconOnlyMode}
+                    showHierarchyLines={showHierarchyLines}
+                    hierarchyLineBorderRadius={hierarchyLineBorderRadius}
                 />
             </DirectoryContainer>
 

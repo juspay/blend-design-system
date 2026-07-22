@@ -55,6 +55,8 @@ const Section = ({
     onNavigateBetweenSections,
     idPrefix,
     iconOnlyMode = false,
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const sectionStateContext = useSectionState()
@@ -259,6 +261,13 @@ const Section = ({
                             index={itemIdx}
                             itemPath={item.label}
                             iconOnlyMode={iconOnlyMode}
+                            showHierarchyLines={showHierarchyLines}
+                            hierarchyLineBorderRadius={
+                                hierarchyLineBorderRadius
+                            }
+                            isLast={
+                                itemIdx === (section.items?.length || 0) - 1
+                            }
                             onNavigate={handleItemNavigation}
                         />
                     ))}

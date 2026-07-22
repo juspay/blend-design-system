@@ -107,6 +107,13 @@ export type DirectoryTokenType = {
                     color: CSSObject['color'] // Border line color
                     leftOffset: CSSObject['left'] // Border line left position
                 }
+                connector: {
+                    itemInset: CSSObject['marginLeft'] // Keeps item backgrounds clear of hierarchy lines
+                    itemPaddingLeft: CSSObject['paddingLeft'] // Left padding for nested items when hierarchy lines are visible
+                    elbowTop: CSSObject['top'] // Top offset for the horizontal connector elbow
+                    elbowHeight: CSSObject['height'] // Height of the connector elbow
+                    elbowWidthOffset: CSSObject['width'] // Extra width that carries the elbow closer to the child row
+                }
             }
         }
     }
@@ -195,6 +202,13 @@ export const getDirectoryTokens = (
                             color: foundationToken.colors.gray[200],
                             leftOffset: foundationToken.unit[16],
                         },
+                        connector: {
+                            itemInset: foundationToken.unit[8],
+                            itemPaddingLeft: foundationToken.unit[8],
+                            elbowTop: foundationToken.unit[5],
+                            elbowHeight: foundationToken.unit[10],
+                            elbowWidthOffset: foundationToken.unit[6],
+                        },
                     },
                 },
             },
@@ -274,6 +288,13 @@ export const getDirectoryTokens = (
                             width: foundationToken.unit[1],
                             color: foundationToken.colors.gray[200],
                             leftOffset: foundationToken.unit[16],
+                        },
+                        connector: {
+                            itemInset: foundationToken.unit[8],
+                            itemPaddingLeft: foundationToken.unit[8],
+                            elbowTop: foundationToken.unit[5],
+                            elbowHeight: foundationToken.unit[10],
+                            elbowWidthOffset: foundationToken.unit[6],
                         },
                     },
                 },
