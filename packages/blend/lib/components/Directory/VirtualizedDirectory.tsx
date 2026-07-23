@@ -610,6 +610,9 @@ const VirtualizedDirectory = ({
                     <Block
                         key={virtualRow.key}
                         ref={virtualizer.measureElement}
+                        role="listitem"
+                        aria-setsize={rows.length}
+                        aria-posinset={virtualRow.index + 1}
                         data-index={virtualRow.index}
                         style={{
                             position: 'absolute',
@@ -633,6 +636,7 @@ const VirtualizedDirectory = ({
                             ? `section-${row.sectionIndex}`
                             : row.itemPath
                     }
+                    role="listitem"
                 >
                     {renderRow(row, index)}
                 </Block>
