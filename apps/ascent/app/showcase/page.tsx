@@ -1,5 +1,7 @@
 import { Suspense } from 'react'
-import { AsideStyle, PageBreadcrumb, SharedLayout } from '@/components'
+import SharedLayout from '@/components/layout/SharedLayout'
+import { AsideStyle } from '@/components/layout/AsideStyle'
+import { PageBreadcrumb } from '@/components/Navigation/PageBreadCrumb'
 import Showcase from '@/components/showcase/Showcase'
 
 function Page() {

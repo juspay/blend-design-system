@@ -480,6 +480,43 @@
             }
         ]
     },
+    "card-v2": {
+        "title": "Card",
+        "description": "The CardV2 component is a flexible surface for grouping content, media, metadata, actions, and footer content with improved composition and layout controls.",
+        "path": "components/card-v2",
+        "slug": "card-v2",
+        "category": "Layout",
+        "tags": ["card", "component", "container", "layout", "content", "v2"],
+        "content": "Usage\n\n\n\nComposition\n\nCardV2 supports both prop-driven usage and compound sections.\n\n\n\nAPI Reference\n\n\n\nCompound Sections\n\n\n\nComponent Tokens\n\nYou can style the CardV2 component using the CARDV2 component token.",
+        "excerpt": "Usage\n\n\n\nComposition\n\nCardV2 supports both prop-driven usage and compound sections.\n\n\n\nAPI Reference\n\n\n\nCompound Sections\n\n\n\nComponent Tokens\n\nYou can...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "Composition",
+                "level": 2,
+                "id": "composition"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Compound Sections",
+                "level": 2,
+                "id": "compound-sections"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "card": {
         "title": "Card",
         "description": "The Card component is a flexible container component used to display content in a structured format with multiple variants, alignment options, and customizable slots for headers, body content, and actions.",
@@ -785,7 +822,7 @@
         "slug": "code-editor-v2",
         "category": "Display",
         "tags": ["code-editor", "component", "editor", "monaco", "code"],
-        "content": "Usage\n\n\n\nDiff Mode Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'variant',\n                hintText:\n                    'Editor display mode. DEFAULT shows standard editor, NO_GUTTER hides line numbers, DIFF enables diff comparison.',\n            },\n            {\n                content: 'CodeEditorV2Variant',\n                hintText: 'Enum for editor variant',\n            },\n            { content: 'DEFAULT, NO_GUTTER, DIFF' },\n        ],\n        [\n            {\n                content: 'showLineNumbers',\n                hintText: 'Whether to display line numbers in the gutter.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows line numbers',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'language',\n                hintText: 'Programming language for syntax highlighting.',\n            },\n            {\n                content: 'SupportedLanguage',\n                hintText: 'One of the supported languages',\n            },\n            {\n                content:\n                    'javascript, typescript, jsx, tsx, json, css, html, markdown, yaml, python, rust, haskell',\n            },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text shown when editor is empty.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'readOnly',\n                hintText: 'When true, editor content cannot be modified.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true makes content read-only',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'When true, editor is visually disabled and non-interactive.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables the editor',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'diff',\n                hintText:\n                    'When true, renders Monaco diff editor. Same as variant={CodeEditorV2Variant.DIFF}.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables diff mode',\n            },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'header',\n                hintText:\n                    'Configuration for the editor header with title and actions.',\n            },\n            {\n                content: 'object',\n                hintText:\n                    'showHeader, title, leftSlot, rightSlot, showCopyButton',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'autoFocus',\n                hintText: 'When true, focuses the editor on mount.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true auto-focuses editor',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onFocus',\n                hintText: 'Callback fired when editor receives focus.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Focus handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onBlur',\n                hintText: 'Callback fired when editor loses focus.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Blur handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'originalValue',\n                hintText:\n                    'For diff mode: the original/left-side source to compare against.',\n            },\n            {\n                content: 'string',\n                hintText: 'Original content for comparison',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'renderSideBySide',\n                hintText:\n                    'For diff mode: when true, shows two columns. When false, shows inline diff.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true for side-by-side, false for inline',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'isDiffUnchangedCollapsed',\n                hintText:\n                    'For diff mode: when true, hides unchanged regions with expand controls.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true collapses unchanged sections',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'diffContextLines',\n                hintText:\n                    'For diff mode: lines shown around edits when collapsed. Defaults to 3.',\n            },\n            {\n                content: 'number',\n                hintText: 'Number of context lines',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'diffExpandChunk',\n                hintText:\n                    'For diff mode: lines revealed per expand action. Defaults to 20.',\n            },\n            {\n                content: 'number',\n                hintText: 'Lines per expand',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText: 'Custom width for the editor container.',\n            },\n            {\n                content: 'CSSObject[\"width\"]',\n                hintText: 'CSS width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'height',\n                hintText: 'Custom height for the editor container.',\n            },\n            {\n                content: 'CSSObject[\"height\"]',\n                hintText: 'CSS height value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'Maximum width constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"maxWidth\"]',\n                hintText: 'CSS max-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'Minimum width constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"minWidth\"]',\n                hintText: 'CSS min-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxHeight',\n                hintText: 'Maximum height constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"maxHeight\"]',\n                hintText: 'CSS max-height value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minHeight',\n                hintText: 'Minimum height constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"minHeight\"]',\n                hintText: 'CSS min-height value',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the CodeEditorV2 component using the following tokens:",
+        "content": "Usage\n\n\n\nDiff Mode Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'variant',\n                hintText:\n                    'Editor display mode. DEFAULT shows standard editor, NO_GUTTER hides line numbers, DIFF enables diff comparison.',\n            },\n            {\n                content: 'CodeEditorV2Variant',\n                hintText: 'Enum for editor variant',\n            },\n            { content: 'DEFAULT, NO_GUTTER, DIFF' },\n        ],\n        [\n            {\n                content: 'showLineNumbers',\n                hintText: 'Whether to display line numbers in the gutter.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true shows line numbers',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'language',\n                hintText: 'Programming language for syntax highlighting.',\n            },\n            {\n                content: 'CodeEditorV2Language',\n                hintText:\n                    'Curated union of common Monaco language IDs (IDE autocomplete) that also accepts any Monaco language ID as a string',\n            },\n            {\n                content:\n                    'e.g. javascript, typescript, jsx, tsx, json, css, html, xml, markdown, yaml, sql, python, go, java, cpp, csharp, plaintext — any Monaco language ID',\n            },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text shown when editor is empty.',\n            },\n            {\n                content: 'string',\n                hintText: 'Placeholder content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'readOnly',\n                hintText: 'When true, editor content cannot be modified.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true makes content read-only',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText:\n                    'When true, editor is visually disabled and non-interactive.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true disables the editor',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'diff',\n                hintText:\n                    'When true, renders Monaco diff editor. Same as variant={CodeEditorV2Variant.DIFF}.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true enables diff mode',\n            },\n            { content: 'false' },\n        ],\n        [\n            {\n                content: 'header',\n                hintText:\n                    'Configuration for the editor header with title and actions.',\n            },\n            {\n                content: 'object',\n                hintText:\n                    'showHeader, title, leftSlot, rightSlot, showCopyButton',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'autoFocus',\n                hintText: 'When true, focuses the editor on mount.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true auto-focuses editor',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onFocus',\n                hintText: 'Callback fired when editor receives focus.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Focus handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onBlur',\n                hintText: 'Callback fired when editor loses focus.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Blur handler',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'originalValue',\n                hintText:\n                    'For diff mode: the original/left-side source to compare against.',\n            },\n            {\n                content: 'string',\n                hintText: 'Original content for comparison',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'renderSideBySide',\n                hintText:\n                    'For diff mode: when true, shows two columns. When false, shows inline diff.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true for side-by-side, false for inline',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'isDiffUnchangedCollapsed',\n                hintText:\n                    'For diff mode: when true, hides unchanged regions with expand controls.',\n            },\n            {\n                content: 'boolean',\n                hintText: 'true collapses unchanged sections',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'diffContextLines',\n                hintText:\n                    'For diff mode: lines shown around edits when collapsed. Defaults to 3.',\n            },\n            {\n                content: 'number',\n                hintText: 'Number of context lines',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'diffExpandChunk',\n                hintText:\n                    'For diff mode: lines revealed per expand action. Defaults to 20.',\n            },\n            {\n                content: 'number',\n                hintText: 'Lines per expand',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'width',\n                hintText: 'Custom width for the editor container.',\n            },\n            {\n                content: 'CSSObject[\"width\"]',\n                hintText: 'CSS width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'height',\n                hintText: 'Custom height for the editor container.',\n            },\n            {\n                content: 'CSSObject[\"height\"]',\n                hintText: 'CSS height value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxWidth',\n                hintText: 'Maximum width constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"maxWidth\"]',\n                hintText: 'CSS max-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minWidth',\n                hintText: 'Minimum width constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"minWidth\"]',\n                hintText: 'CSS min-width value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxHeight',\n                hintText: 'Maximum height constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"maxHeight\"]',\n                hintText: 'CSS max-height value',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'minHeight',\n                hintText: 'Minimum height constraint for the editor.',\n            },\n            {\n                content: 'CSSObject[\"minHeight\"]',\n                hintText: 'CSS min-height value',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the CodeEditorV2 component using the following tokens:",
         "excerpt": "Usage\n\n\n\nDiff Mode Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler function',\n            },\n            { content: '' },...",
         "sections": [
             {
@@ -1181,6 +1218,33 @@
         ],
         "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with new open state when menu visibility changes',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Menu.asModal',\n                hintText:\n                    'When true, renders the menu as a full-screen modal on mobile devices (typically screen width ',\n                hintText:\n                    'Single element, array of elements, or null for collision boundaries',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Menu.enableVirtualScrolling',\n                hintText:\n                    'When true, enables virtual scrolling for large menu item lists. Virtual scrolling only renders visible items plus an overscan buffer, improving performance for menus with hundreds or thousands of items. Requires virtualItemHeight to be set. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true enables virtual scrolling, false uses standard rendering',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Menu.virtualItemHeight',\n                hintText:\n                    'Optional height configuration for virtual scrolling. Can be a number (fixed height in pixels for all items) or a function that receives the item and index and returns the height. Required when enableVirtualScrolling is true. The function allows dynamic heights for items with varying content. Defaults to 40 pixels.',\n            },\n            {\n                content:\n                    'number | ((item: MenuItemType, index: number) => number)',\n                hintText:\n                    'Fixed height in pixels or function that calculates item height',\n            },\n            {\n                content: 'MenuItemType: see MenuItemType props below',\n            },\n        ],\n        [\n            {\n                content: 'Menu.virtualOverscan',\n                hintText:\n                    'Optional number of items to render outside the visible area when using virtual scrolling. Higher values provide smoother scrolling but use more memory. Lower values are more memory-efficient but may cause slight delays during fast scrolling. Defaults to 5 items.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive integer representing number of items to render outside viewport',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'Menu.virtualScrollThreshold',\n                hintText:\n                    'Optional minimum number of menu items required before virtual scrolling is automatically enabled (if enableVirtualScrolling is true). Below this threshold, standard rendering is used. Useful for optimizing performance only when needed. Defaults to 50 items.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive integer representing minimum items to trigger virtual scrolling',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuGroupType.label',\n                hintText:\n                    'Optional string label displayed above the menu items in this group. Provides a heading or category name for organizing related items (e.g., \"Account\", \"Settings\", \"Actions\"). The label is styled distinctly from menu items and helps users navigate large menus.',\n            },\n            {\n                content: 'string',\n                hintText: 'Group heading text displayed above menu items',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuGroupType.items',\n                hintText:\n                    'Required array of MenuItemType objects that define the individual menu items within this group. Each item represents a clickable menu option with its own label, icon, action, and styling. The items are displayed in order within the group.',\n            },\n            {\n                content: 'MenuItemType[]',\n                hintText:\n                    'Array of menu item objects defining clickable options in this group',\n            },\n            {\n                content: 'MenuItemType: see MenuItemType props below',\n            },\n        ],\n        [\n            {\n                content: 'MenuGroupType.showSeparator',\n                hintText:\n                    'When true, displays a visual separator line after this menu group. Separators help visually distinguish different groups of menu items. Useful for grouping related actions or creating visual hierarchy. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true shows separator after group, false shows no separator',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.label',\n                hintText:\n                    'Required string representing the main text label displayed for the menu item. This is the primary text users see and click. Should be concise and action-oriented, clearly describing what the menu item does (e.g., \"Profile\", \"Settings\", \"Sign Out\").',\n            },\n            {\n                content: 'string',\n                hintText: 'Primary text label displayed for the menu item',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.subLabel',\n                hintText:\n                    \"Optional string representing secondary text displayed below the main label. Provides additional context, description, or clarification about the menu item's purpose. Styled with smaller, lighter text. Useful for explaining complex actions or providing hints.\",\n            },\n            {\n                content: 'string',\n                hintText:\n                    'Secondary descriptive text shown below the main label',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.slot1',\n                hintText:\n                    \"Optional React element displayed in the first content slot, typically before the label. Commonly used for icons (from lucide-react or other icon libraries) that visually represent the menu item's action. The slot maintains proper spacing and alignment.\",\n            },\n            {\n                content: 'React.ReactNode',\n                hintText:\n                    'React element (typically an icon) displayed in the first slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.slot2',\n                hintText:\n                    'Optional React element displayed in the second content slot. Can be used for additional icons, badges, indicators, or other visual elements that complement the menu item. Useful for status indicators, shortcuts, or additional actions.',\n            },\n            {\n                content: 'React.ReactNode',\n                hintText: 'React element displayed in the second slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.slot3',\n                hintText:\n                    'Optional React element displayed in the third content slot. Provides additional flexibility for custom content placement. Can be used for icons, badges, or other visual elements as needed for specific menu item designs.',\n            },\n            {\n                content: 'React.ReactNode',\n                hintText: 'React element displayed in the third slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.slot4',\n                hintText:\n                    'Optional React element displayed in the fourth content slot. Provides maximum flexibility for custom content placement. Can be used for icons, badges, shortcuts, or other visual elements as needed for complex menu item designs.',\n            },\n            {\n                content: 'React.ReactNode',\n                hintText: 'React element displayed in the fourth slot',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.variant',\n                hintText:\n                    'Optional MenuItemVariant enum value that determines the visual styling of the menu item. DEFAULT creates standard menu item styling, ACTION creates button-like styling with distinct colors. Action variant is useful for prominent actions like \"Sign Out\" or \"Delete\". Defaults to DEFAULT.',\n            },\n            {\n                content: 'MenuItemVariant',\n                hintText:\n                    'Enum that determines the visual style variant of the menu item',\n            },\n            { content: 'DEFAULT, ACTION' },\n        ],\n        [\n            {\n                content: 'MenuItemType.actionType',\n                hintText:\n                    'Optional MenuItemActionType enum value that determines the color scheme when variant is ACTION. PRIMARY creates a primary action button style, DANGER creates a warning/destructive action style (typically red). Only applies when variant is ACTION.',\n            },\n            {\n                content: 'MenuItemActionType',\n                hintText:\n                    'Enum that determines the action color scheme for ACTION variant',\n            },\n            { content: 'PRIMARY, DANGER' },\n        ],\n        [\n            {\n                content: 'MenuItemType.disabled',\n                hintText:\n                    \"When true, disables the menu item, making it non-clickable and visually muted. Disabled items show reduced opacity and cannot be selected. Useful for preventing actions when prerequisites aren't met or during loading states. Defaults to false.\",\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true disables menu item, false allows normal interaction',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.onClick',\n                hintText:\n                    'Optional callback function invoked when the menu item is clicked. Receives no parameters. Use this to perform the action associated with the menu item, such as navigation, state updates, or API calls. The menu typically closes after onClick executes.',\n            },\n            {\n                content: '() => void',\n                hintText: 'Function called when menu item is clicked',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.subMenu',\n                hintText:\n                    'Optional array of MenuItemType objects that create a nested submenu. When provided, clicking the menu item opens a submenu with these items. Supports nested menus for hierarchical navigation. The submenu appears to the side of the parent menu item.',\n            },\n            {\n                content: 'MenuItemType[]',\n                hintText:\n                    'Recursive array of MenuItemType objects for nested submenu',\n            },\n            {\n                content: 'Recursive: MenuItemType[]',\n            },\n        ],\n        [\n            {\n                content: 'MenuItemType.enableSubMenuSearch',\n                hintText:\n                    \"Optional boolean that enables search functionality within the submenu. When true, displays a search input in the submenu that filters submenu items. Useful for submenus with many items. If not provided, submenu search follows parent menu's enableSearch setting.\",\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true enables search in submenu, false disables submenu search',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.subMenuSearchPlaceholder',\n                hintText:\n                    'Optional placeholder text string for the submenu search input. Provides guidance about what users can search for in the submenu. Should be concise and descriptive. If not provided, uses the parent menu\\'s searchPlaceholder or default \"Search\".',\n            },\n            {\n                content: 'string',\n                hintText:\n                    'Placeholder text shown in submenu search input when empty',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.tooltip',\n                hintText:\n                    \"Optional tooltip content that appears when users hover over the menu item. Can be a string (simple text) or a React element (for rich content). Useful for providing additional information, shortcuts, or explanations that don't fit in the label.\",\n            },\n            {\n                content: 'string | ReactNode',\n                hintText: 'String text or React element for tooltip content',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.tooltipProps',\n                hintText:\n                    'Optional object with additional configuration properties for the tooltip component. Allows customization of tooltip positioning (side, align), size, arrow visibility, delay duration, and offset. Useful for fine-tuning tooltip appearance and behavior.',\n            },\n            {\n                content:\n                    '{ side?: TooltipSide; align?: TooltipAlign; size?: TooltipSize; showArrow?: boolean; delayDuration?: number; offset?: number }',\n                hintText:\n                    'Object with optional tooltip configuration properties',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.enableSubMenuVirtualScrolling',\n                hintText:\n                    'When true, enables virtual scrolling for the submenu, significantly improving performance when the submenu contains many items (100+). Virtual scrolling only renders visible items plus an overscan buffer, reducing DOM nodes and improving opening speed. Useful for large nested datasets. Defaults to false.',\n            },\n            {\n                content: 'boolean',\n                hintText:\n                    'true enables virtual scrolling in submenu, false uses standard rendering',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.subMenuVirtualItemHeight',\n                hintText:\n                    'Optional fixed height in pixels for each submenu item when using virtual scrolling. This value is used to calculate the total height of the scrollable area and determine which items are visible. Should be set to accommodate the tallest item or use a consistent layout. Defaults to 40 pixels.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive number representing fixed item height in pixels',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.subMenuVirtualOverscan',\n                hintText:\n                    'Optional number of extra submenu items to render outside the visible area when using virtual scrolling. Higher values provide smoother scrolling but use more memory. Lower values are more memory-efficient but may cause slight delays during fast scrolling. Useful for balancing performance and memory. Defaults to 5 items.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive integer representing extra items to render outside viewport',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'MenuItemType.subMenuVirtualScrollThreshold',\n                hintText:\n                    'Optional minimum number of submenu items required before virtual scrolling is automatically enabled. Below this threshold, standard rendering is used to avoid unnecessary complexity. Useful for optimizing performance only when needed. Set lower to activate virtual scrolling sooner. Defaults to 50 items.',\n            },\n            {\n                content: 'number',\n                hintText:\n                    'Positive integer representing minimum items to trigger virtual scrolling',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the Menu component using the following tokens:",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText:\n                    'Function called with new open state when menu visibility changes',...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "modal-v2": {
+        "title": "Modal",
+        "description": "The ModalV2 component creates focused dialogs with configurable header, footer actions, close behavior, mobile drawer support, dimensions, and skeleton states.",
+        "path": "components/modal-v2",
+        "slug": "modal-v2",
+        "category": "Feedback",
+        "tags": ["modal", "modal-v2", "component", "dialog", "overlay"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'Close handler' },\n            { content: '' },\n        ],\n        [\n            { content: 'title', hintText: 'Header title text.' },\n            { content: 'string', hintText: 'Title' },\n            { content: '' },\n        ],\n        [\n            { content: 'subtitle', hintText: 'Secondary header description.' },\n            { content: 'string', hintText: 'Subtitle' },\n            { content: '' },\n        ],\n        [\n            { content: 'children', hintText: 'Modal body content.' },\n            { content: 'ReactNode', hintText: 'Body content' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'primaryAction',\n                hintText: 'Primary ButtonV2 action configuration.',\n            },\n            {\n                content: 'ModalV2ButtonAction',\n                hintText: 'ButtonV2 props without buttonGroupPosition',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'secondaryAction',\n                hintText: 'Secondary ButtonV2 action configuration.',\n            },\n            {\n                content: 'ModalV2ButtonAction',\n                hintText: 'ButtonV2 props without buttonGroupPosition',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'showCloseButton',\n                hintText: 'Shows or hides the close button.',\n            },\n            { content: 'boolean', hintText: 'Close affordance' },\n            { content: 'true' },\n        ],\n        [\n            {\n                content: 'closeOnBackdropClick',\n                hintText: 'Allows backdrop click to close the modal.',\n            },\n            { content: 'boolean', hintText: 'Backdrop behavior' },\n            { content: 'true' },\n        ],\n        [\n            {\n                content: 'dimensions',\n                hintText: 'Custom width, height, min/max dimensions.',\n            },\n            { content: 'ModalV2Dimensions', hintText: 'CSS size values' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'skeleton',\n                hintText: 'Shows body skeleton loading state.',\n            },\n            {\n                content: 'ModalV2BodySkeletonProps',\n                hintText: 'Skeleton config',\n            },\n            { content: '' },\n        ],\n    ]}\n/>\n\nComponent Tokens\n\nYou can style the ModalV2 component using the MODALV2 component token.",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void', hintText: 'Close handler' },\n            { content: '' },\n        ],\n        [\n            { content: 'title', hintTex...",
         "sections": [
             {
                 "title": "Usage",
@@ -2565,6 +2629,38 @@
             }
         ]
     },
+    "timeline-v2": {
+        "title": "Timeline",
+        "description": "The Timeline component displays chronological events, labels, headers, nested substeps, comments, and show-more actions.",
+        "path": "components/timeline-v2",
+        "slug": "timeline-v2",
+        "category": "Data",
+        "tags": ["timeline", "component", "data", "activity", "v2"],
+        "content": "Usage\n\n\n\nComposition\n\nTimeline supports both compound component usage and flat named exports.\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the Timeline component using the TIMELINE component token.",
+        "excerpt": "Usage\n\n\n\nComposition\n\nTimeline supports both compound component usage and flat named exports.\n\n\n\nAPI Reference\n\n\n\nComponent Tokens\n\nYou can style the...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "Composition",
+                "level": 2,
+                "id": "composition"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "tooltip-v2": {
         "title": "Tooltip",
         "description": "The TooltipV2 component displays informative text when users hover over or focus on an element.",
@@ -2624,6 +2720,60 @@
             }
         ]
     },
+    "topbar-v2": {
+        "title": "Topbar",
+        "description": "The TopbarV2 component renders a responsive top navigation area with slots for actions, secondary navigation, merchant selection, and mobile back navigation.",
+        "path": "components/topbar-v2",
+        "slug": "topbar-v2",
+        "category": "Navigation",
+        "tags": ["topbar", "component", "navigation", "v2"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'secondarySidebar',\n                hintText:\n                    'Secondary sidebar metadata used to render contextual navigation controls.',\n            },\n            { content: 'SecondarySidebarInfo' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'merchantInfo',\n                hintText:\n                    'Merchant selector data including items, selected value, and selection callback.',\n            },\n            { content: 'MerchantInfoV2' },\n            { content: '' },\n        ],\n    ]}\n/>\n\nComponent Tokens\n\nYou can style the TopbarV2 component using the TOPBARV2 component token.",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'secondarySidebar',...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "topbar": {
+        "title": "Topbar",
+        "description": "The Topbar component renders a responsive top navigation area with slots for actions, merchant selection, left panel selection, and mobile back navigation.",
+        "path": "components/topbar",
+        "slug": "topbar",
+        "category": "Navigation",
+        "tags": ["topbar", "component", "navigation"],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'leftPanel',\n                hintText:\n                    'Left panel selector metadata used to render contextual navigation controls.',\n            },\n            { content: 'LeftPanelInfo' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'merchantInfo',\n                hintText:\n                    'Merchant selector data including items, selected value, and selection callback.',\n            },\n            { content: 'MerchantInfo' },\n            { content: '' },\n        ],\n    ]}\n/>\n\nComponent Tokens\n\nYou can style the Topbar component using the TOPBAR component token.",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'leftPanel',...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
     "unitinput": {
         "title": "UnitInput",
         "description": "The UnitInput component provides a specialized numeric input field with integrated unit display, configurable positioning, multiple sizes, and support for left/right slots. Perfect for measurements, quantities, and unit-based data entry.",
@@ -2644,6 +2794,39 @@
         ],
         "content": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'unit',\n                hintText: 'Unit text to display (e.g., \"kg\", \"cm\", \"$\")',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'unitPosition',\n                hintText: 'Position of the unit display',\n            },\n            { content: 'UnitPosition', hintText: 'enum' },\n            { content: 'LEFT, RIGHT' },\n        ],\n        [\n            {\n                content: 'size',\n                hintText: 'Size variant of the input',\n            },\n            { content: 'UnitInputSize', hintText: 'enum' },\n            { content: 'SMALL, MEDIUM, LARGE' },\n        ],\n        [\n            {\n                content: 'min',\n                hintText: 'Minimum allowed value',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'max',\n                hintText: 'Maximum allowed value',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'step',\n                hintText: 'Step interval for numeric input',\n            },\n            { content: 'number', hintText: 'number' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'error',\n                hintText: 'Whether the input is in error state',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'errorMessage',\n                hintText: 'Error message to display when in error state',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'required',\n                hintText: 'Whether the input is required',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'disabled',\n                hintText: 'Whether the input is disabled',\n            },\n            { content: 'boolean', hintText: 'boolean' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'label',\n                hintText: 'Primary label for the input',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'sublabel',\n                hintText: 'Secondary label or description',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'placeholder',\n                hintText: 'Placeholder text for the input',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'hintText',\n                hintText: 'Helper text displayed below the input',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'helpIconHintText',\n                hintText: 'Tooltip text for the help icon',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'leftSlot',\n                hintText: 'React element to display on the left side',\n            },\n            { content: 'React.ReactNode', hintText: 'ReactNode' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'rightSlot',\n                hintText: 'React element to display on the right side',\n            },\n            { content: 'React.ReactNode', hintText: 'ReactNode' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'name',\n                hintText: 'Name attribute for the input element',\n            },\n            { content: 'string', hintText: 'string' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onFocus',\n                hintText: 'Callback when input receives focus',\n            },\n            {\n                content: '(e: React.FocusEvent) => void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'onBlur',\n                hintText: 'Callback when input loses focus',\n            },\n            {\n                content: '(e: React.FocusEvent) => void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n    ]}\n    className=\"mb-8\"\n    emptyMessage=\"No props available\"\n    loadingMessage=\"Loading props...\"\n/>\n\nComponent Tokens\n\nYou can style the UnitInput component using the following tokens:",
         "excerpt": "Usage\n\n\n\nAPI Reference\n\n) => void',\n                hintText: 'function',\n            },\n            { content: '' },\n        ],\n        [...",
+        "sections": [
+            {
+                "title": "Usage",
+                "level": 2,
+                "id": "usage"
+            },
+            {
+                "title": "API Reference",
+                "level": 2,
+                "id": "api-reference"
+            },
+            {
+                "title": "Component Tokens",
+                "level": 2,
+                "id": "component-tokens"
+            }
+        ]
+    },
+    "upload-v2": {
+        "title": "Upload",
+        "description": "The UploadV2 component provides a controlled file upload surface with drag-and-drop support, accepted type validation, file state display, progress state, and error handling.",
+        "path": "components/upload-v2",
+        "slug": "upload-v2",
+        "category": "Display",
+        "tags": [
+            "upload",
+            "upload-v2",
+            "component",
+            "file-upload",
+            "drag-drop"
+        ],
+        "content": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [\n            { content: 'state', hintText: 'Visual upload state.' },\n            {\n                content: 'UploadV2State',\n                hintText: 'idle, uploading, success, error, disabled',\n            },\n            { content: 'idle' },\n        ],\n        [\n            {\n                content: 'multiple',\n                hintText: 'Allows multiple file selection.',\n            },\n            { content: 'boolean', hintText: 'Multiple files' },\n            { content: 'false' },\n        ],\n        [\n            { content: 'maxSize', hintText: 'Maximum file size in bytes.' },\n            { content: 'number', hintText: 'Bytes' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'maxFiles',\n                hintText: 'Maximum number of files allowed.',\n            },\n            { content: 'number', hintText: 'File limit' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'progressBarValue',\n                hintText: 'Progress value for uploading state.',\n            },\n            { content: 'number', hintText: 'Progress value' },\n            { content: '' },\n        ],\n        [\n            {\n                content: 'uploadHeaderText',\n                hintText: 'Main call-to-action text in the upload surface.',\n            },\n            { content: 'string', hintText: 'Header text' },\n            { content: '' },\n        ],\n    ]}\n/>\n\nComponent Tokens\n\nYou can style the UploadV2 component using the UPLOADV2 component token.",
+        "excerpt": "Usage\n\n\n\nAPI Reference\n\n void',\n                hintText: 'Change handler',\n            },\n            { content: '' },\n        ],\n        [...",
         "sections": [
             {
                 "title": "Usage",
@@ -3123,5 +3306,507 @@
                 "id": "next-steps"
             }
         ]
+    },
+    "blend-mcp-server-documentation": {
+        "title": "Blend MCP Server",
+        "description": "Connect any MCP-compatible AI assistant to the Blend design system — get component discovery, prop lookup, code generation, validation, and token access, all grounded in the real component manifest.",
+        "path": "blog/blend-mcp-server-documentation",
+        "slug": "blend-mcp-server-documentation",
+        "category": "tools",
+        "tags": ["mcp", "ai", "tools", "developer-experience"],
+        "content": "The Blend MCP Server (blend-ui-mcp) connects MCP-compatible AI assistants — Claude, Cursor, Windsurf, Cline, and others — directly to the Blend design system. Instead of the AI guessing prop names or inventing enum values, it calls the server and gets accurate, manifest-backed answers about every component.\n\nWhat It Does\n\nThe server exposes 11 tools that cover the full component development loop:\n\n- Discover what components exist and search by use-case\n- Understand props, enum values, and compound component structures\n- Generate correct React JSX with proper imports\n- Validate props before shipping — catch typos and invalid enums\n- Scaffold complete multi-component UI sections\n- Access design tokens for colors, spacing, borders, shadows, and typography\n\nEverything is grounded in the manifest.json that ships with the package — a pre-built snapshot of all component types extracted directly from the Blend TypeScript source.\n\nInstallation\n\nClaude Desktop\n\nOpen ~/Library/Application Support/Claude/claude_desktop_config.json (macOS) or %APPDATA%\\Claude\\claude_desktop_config.json (Windows) and add:\n\n\n\nSave the file, restart Claude Desktop, then verify:\n\n> _\"List all Blend design system components\"_\n\nClaude should call list_blend_components and return the full catalog.\n\nCursor\n\nCreate .cursor/mcp.json in your project root (or open Cursor Settings → MCP → Add new server):\n\n\n\nWindsurf\n\nEdit ~/.codeium/windsurf/mcp_config.json:\n\n\n\nCline (VS Code)\n\nOpen the Cline panel → MCP Servers tab → Edit Config, then add the same blend-design-system entry above.\n\nThe 11 Tools\n\nlist_blend_components\n\nLists all available Blend components, optionally filtered by category.\n\n| Param      | Type   | Required | Description                                                            |\n| ---------- | ------ | -------- | ---------------------------------------------------------------------- |\n| category | string | No       | action, input, data-display, feedback, navigation, overlay |\n\n\n\n---\n\nsearch_components\n\nSearch by keyword, use-case, or feature description when you don't know the exact component name.\n\n| Param   | Type   | Required | Description                      |\n| ------- | ------ | -------- | -------------------------------- |\n| query | string | Yes      | Keywords or use-case description |\n\n\n\n---\n\nget_blend_component_props\n\nReturns the full prop list for a component: names, types, required flags, defaults, enum references, and LLM guidance.\n\n| Param           | Type   | Required | Description                       |\n| --------------- | ------ | -------- | --------------------------------- |\n| componentName | string | Yes      | Component name (case-insensitive) |\n\n\n\n---\n\nget_component_variants\n\nReturns all enum types and valid members for a component. Always call this before generating code to know exact enum values.\n\n\n\n---\n\nget_component_composition\n\nReturns compound component structure, composition patterns, and usage examples. Essential for components like Accordion, Radio, Switch, and Tabs that require specific parent-child relationships.\n\n\n\n---\n\ngenerate_blend_component\n\nGenerates ready-to-use React JSX with correct prop syntax and import statements.\n\n| Param            | Type            | Required | Description                                |\n| ---------------- | --------------- | -------- | ------------------------------------------ |\n| componentName  | string          | Yes      | Component to generate                      |\n| props          | object          | Yes      | Props key-value map                        |\n| children       | string \\| array | No       | String content or nested child specs       |\n| includeImports | boolean         | No       | Include import statement (default: true) |\n\nInput:\n\n\n\nOutput:\n\n\n\n---\n\nscaffold_blend_section\n\nGenerates a complete multi-component UI section. Returns production-ready JSX with imports.\n\n| sectionType                      | Description                                         |\n| -------------------------------- | --------------------------------------------------- |\n| fintech_kpi_summary_with_chart | KPI stat cards with a chart                         |\n| transaction_list_with_controls | DataTable with search, filters, and actions         |\n| interactive_modal_with_form    | Modal with TextInputs and Buttons                   |\n| settings_form                  | Settings page with Cards, TextInputs, SingleSelects |\n| data_table_with_filters        | DataTable with filter bar, search, export           |\n\n\n\n---\n\nvalidate_component_usage\n\nValidates a props object against the manifest. Catches unknown props, suggests corrections for typos (fuzzy match), and flags invalid enum values.\n\nInput:\n\n\n\nOutput:\n\n\n\n---\n\nget_theme_tokens\n\nReturns Blend design token values by category.\n\n| Category     | Description                                  |\n| ------------ | -------------------------------------------- |\n| colors     | Full color palette and semantic color tokens |\n| spacing    | Spacing scale values                         |\n| borders    | Border widths and radius values              |\n| shadows    | Shadow definitions                           |\n| typography | Font families, sizes, and weights            |\n\nOmit category for an overview of all categories.\n\n---\n\ngenerate_component_documentation\n\nGenerates complete Markdown documentation for a component including props table, enum values, usage examples, and composition guide.\n\n---\n\nget_server_info\n\nReturns server status, manifest metadata, component count by category, and full tool inventory. Useful for verifying the server is connected and up-to-date.\n\n\n\nHow the Manifest Works\n\nThe server ships a manifest.json — a pre-built snapshot of all 50+ component props and enums extracted directly from the Blend TypeScript source. At startup the server loads this file and serves all tool responses from it. No live TypeScript compilation happens at runtime.\n\nThe manifest is regenerated automatically before every npm publish via prepublishOnly. To regenerate it manually after component changes:\n\n\n\nAdding LLM Context via Meta-Overrides\n\nEach component can have a meta-overrides/.json file with hand-authored descriptions and prop guidance that gets merged into the manifest at generation time:\n\n\n\nEnvironment Variables\n\nOnly one variable is supported:\n\n| Variable                     | Default                       | Description                                                                                                          |\n| ---------------------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------- |\n| BLEND_LIBRARY_PACKAGE_NAME | @juspay/blend-design-system | The package name used in generated import statements. Override only if you have forked or renamed the Blend package. |\n\nKeeping Up to Date\n\nnpx caches packages by version. When a new blend-ui-mcp version is published, you get it automatically on the next restart. To force the latest immediately:\n\n\n\nLinks\n\n| Resource                     | URL                                                                                                                                |\n| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |\n| Blend Design System (GitHub) | github.com/juspay/blend-design-system                                             |\n| Blend Design System (npm)    | npmjs.com/package/@juspay/blend-design-system                         |\n| MCP Server (npm)             | npmjs.com/package/blend-ui-mcp                                                       |\n| MCP Server (GitHub)          | github.com/juspay/blend-design-system/tree/dev/packages/mcp |\n| Issues                       | github.com/juspay/blend-design-system/issues                               |",
+        "excerpt": "The Blend MCP Server (blend-ui-mcp) connects MCP-compatible AI assistants — Claude, Cursor, Windsurf, Cline, and others — directly to the Blend design...",
+        "sections": [
+            {
+                "title": "What It Does",
+                "level": 2,
+                "id": "what-it-does"
+            },
+            {
+                "title": "Installation",
+                "level": 2,
+                "id": "installation"
+            },
+            {
+                "title": "Claude Desktop",
+                "level": 3,
+                "id": "claude-desktop"
+            },
+            {
+                "title": "Cursor",
+                "level": 3,
+                "id": "cursor"
+            },
+            {
+                "title": "Windsurf",
+                "level": 3,
+                "id": "windsurf"
+            },
+            {
+                "title": "Cline (VS Code)",
+                "level": 3,
+                "id": "cline-vs-code"
+            },
+            {
+                "title": "The 11 Tools",
+                "level": 2,
+                "id": "the-11-tools"
+            },
+            {
+                "title": "`list_blend_components`",
+                "level": 3,
+                "id": "list-blend-components"
+            },
+            {
+                "title": "`search_components`",
+                "level": 3,
+                "id": "search-components"
+            },
+            {
+                "title": "`get_blend_component_props`",
+                "level": 3,
+                "id": "get-blend-component-props"
+            },
+            {
+                "title": "`get_component_variants`",
+                "level": 3,
+                "id": "get-component-variants"
+            },
+            {
+                "title": "`get_component_composition`",
+                "level": 3,
+                "id": "get-component-composition"
+            },
+            {
+                "title": "`generate_blend_component`",
+                "level": 3,
+                "id": "generate-blend-component"
+            },
+            {
+                "title": "`scaffold_blend_section`",
+                "level": 3,
+                "id": "scaffold-blend-section"
+            },
+            {
+                "title": "`validate_component_usage`",
+                "level": 3,
+                "id": "validate-component-usage"
+            },
+            {
+                "title": "`get_theme_tokens`",
+                "level": 3,
+                "id": "get-theme-tokens"
+            },
+            {
+                "title": "`generate_component_documentation`",
+                "level": 3,
+                "id": "generate-component-documentation"
+            },
+            {
+                "title": "`get_server_info`",
+                "level": 3,
+                "id": "get-server-info"
+            },
+            {
+                "title": "How the Manifest Works",
+                "level": 2,
+                "id": "how-the-manifest-works"
+            },
+            {
+                "title": "Adding LLM Context via Meta-Overrides",
+                "level": 3,
+                "id": "adding-llm-context-via-meta-overrides"
+            },
+            {
+                "title": "Environment Variables",
+                "level": 2,
+                "id": "environment-variables"
+            },
+            {
+                "title": "Keeping Up to Date",
+                "level": 2,
+                "id": "keeping-up-to-date"
+            },
+            {
+                "title": "Links",
+                "level": 2,
+                "id": "links"
+            }
+        ]
+    },
+    "theme-provider-token-architecture": {
+        "title": "Blend Design System: Theme Provider & Token Architecture",
+        "description": "A comprehensive guide to understanding and using Blend's sophisticated design token system and theme provider architecture.",
+        "path": "blog/theme-provider-token-architecture",
+        "slug": "theme-provider-token-architecture",
+        "category": "architecture",
+        "tags": ["design-tokens", "theming", "architecture", "react"],
+        "content": "A comprehensive guide to understanding and using Blend's sophisticated design token system and theme provider architecture.\n\nIntroduction & Overview\n\nWhat are Design Tokens?\n\nDesign tokens are the fundamental building blocks of a design system - the \"DNA\" of your user interface. They store design decisions as data, making them reusable, consistent, and maintainable across your entire application.\n\nInstead of hardcoding values like #2B7FFF or 16px, design tokens provide semantic names like colors.primary[500] or unit[16]. This approach offers:\n\n- Consistency: Same visual properties across all components\n- Maintainability: Change once, update everywhere\n- Scalability: Easy theming and brand variations\n- Developer Experience: IntelliSense support and type safety\n\nBlend's Token Philosophy\n\nBlend uses a two-tier architecture:\n\n1. Foundation Tokens: Primitive values (colors, typography, spacing) that form the base\n2. Component Tokens: Semantic tokens that map foundation tokens to specific component use cases\n\nArchitecture Overview\n\n\n\nFoundation Token System\n\nFoundation tokens are located in packages/blend/lib/tokens/ and organized into six categories:\n\nColor Tokens\n\nBlend uses a numerical scale from 50-950 for each color family:\n\n\n\nScale Usage:\n\n- 50-200: Light tints for backgrounds and subtle accents\n- 300-400: Medium tints for disabled states and secondary elements\n- 500-600: Primary colors for actions and emphasis\n- 700-800: Dark shades for text and strong emphasis\n- 900-950: Very dark shades for high contrast\n\nTypography Tokens\n\nOrganized by semantic purpose with complete font information:\n\n\n\nSpacing, Border, Shadow & Opacity Tokens\n\n\n\nComponent Token Architecture\n\nToken Naming Convention\n\nBlend follows: $component.[$target].$property.[$variant].[$type].[$state]\n\n- $component (Required): BUTTON, INPUT, MODAL, etc.\n- [$target] (Optional): Component parts - default, iconOnly, inline\n- $property (Required): CSS property - backgroundColor, color, padding\n- [$variant] (Optional): Semantic variants - primary, secondary, danger\n- [$state] (Optional): Interactive states - default, hover, active, disabled\n\nToken Structure Example\n\nHere's a simplified example following the naming convention:\n\n\n\nKey Points:\n\n- References foundation tokens - Component tokens map to foundation values\n- Not all levels always present - padding skips $state since size doesn't change on interaction\n- Semantic naming - Use meaningful names that describe purpose, not appearance\n\nResponsive Design\n\nTokens are organized by breakpoint first:\n\n\n\nTheme Provider System\n\nCore Architecture at Blend Library Level\n\n\n\nImplementation Guide\n\nBasic Setup\n\n\n\n\n\nCustom Theming\n\nOverride Foundation Tokens\n\n\n\nDark Mode Implementation\n\n\n\nConclusion\n\nBlend's theme provider and token architecture provides:\n\n- Scalable Foundation: Robust base that grows with your needs\n- Semantic Component Tokens: Predictable and consistent styling\n- Type Safety: Full TypeScript support for confident development\n- Responsive Design: Built-in adaptive interface support\n- Flexible Customization: Theming without sacrificing consistency",
+        "excerpt": "A comprehensive guide to understanding and using Blend's sophisticated design token system and theme provider architecture.\n\nIntroduction & Overview...",
+        "sections": [
+            {
+                "title": "Introduction & Overview",
+                "level": 2,
+                "id": "introduction-overview"
+            },
+            {
+                "title": "What are Design Tokens?",
+                "level": 3,
+                "id": "what-are-design-tokens"
+            },
+            {
+                "title": "Blend's Token Philosophy",
+                "level": 3,
+                "id": "blend-s-token-philosophy"
+            },
+            {
+                "title": "Architecture Overview",
+                "level": 3,
+                "id": "architecture-overview"
+            },
+            {
+                "title": "Foundation Token System",
+                "level": 2,
+                "id": "foundation-token-system"
+            },
+            {
+                "title": "Color Tokens",
+                "level": 3,
+                "id": "color-tokens"
+            },
+            {
+                "title": "Typography Tokens",
+                "level": 3,
+                "id": "typography-tokens"
+            },
+            {
+                "title": "Spacing, Border, Shadow & Opacity Tokens",
+                "level": 3,
+                "id": "spacing-border-shadow-opacity-tokens"
+            },
+            {
+                "title": "Component Token Architecture",
+                "level": 2,
+                "id": "component-token-architecture"
+            },
+            {
+                "title": "Token Naming Convention",
+                "level": 3,
+                "id": "token-naming-convention"
+            },
+            {
+                "title": "Token Structure Example",
+                "level": 3,
+                "id": "token-structure-example"
+            },
+            {
+                "title": "Responsive Design",
+                "level": 3,
+                "id": "responsive-design"
+            },
+            {
+                "title": "Theme Provider System",
+                "level": 2,
+                "id": "theme-provider-system"
+            },
+            {
+                "title": "Core Architecture at Blend Library Level",
+                "level": 3,
+                "id": "core-architecture-at-blend-library-level"
+            },
+            {
+                "title": "Implementation Guide",
+                "level": 2,
+                "id": "implementation-guide"
+            },
+            {
+                "title": "Basic Setup",
+                "level": 3,
+                "id": "basic-setup"
+            },
+            {
+                "title": "Custom Theming",
+                "level": 3,
+                "id": "custom-theming"
+            },
+            {
+                "title": "Override Foundation Tokens",
+                "level": 4,
+                "id": "override-foundation-tokens"
+            },
+            {
+                "title": "Dark Mode Implementation",
+                "level": 4,
+                "id": "dark-mode-implementation"
+            },
+            {
+                "title": "Conclusion",
+                "level": 2,
+                "id": "conclusion"
+            }
+        ]
+    },
+    "why-we-named-it-blend": {
+        "title": "Why We Named It Blend ?",
+        "description": "At Juspay, no two products live in the same world. Learn how Blend was built to make every product feel familiar, no matter where users meet Juspay.",
+        "path": "blog/why-we-named-it-blend",
+        "slug": "why-we-named-it-blend",
+        "category": "philosophy",
+        "tags": ["blend", "design-system", "philosophy"],
+        "content": "At Juspay, no two products live in the same world.\n\nSome are built for consumers making quick payments. Some to support merchants running their businesses or power operations behind the scenes.\n\nDifferent users. Different contexts. Different pressures.\n\nBut for the people using them, these aren't separate products. They're all just Juspay.\n\nAnd that's where we noticed something important.\n\nLearning One Product Should Help You Use Another\n\nA merchant might move from onboarding to dashboards, reconciliation, or support tools within the same day.\n\nWhenever interfaces changed drastically, users paused — not because tasks were complex, but because they had to re-learn how things worked.\n\nWhere is the main action? Is this error critical? Can I safely proceed?\n\nWe realized empathy wasn't about making everything look identical. It was about respecting what users had already learned.\n\nOnce someone understands one Juspay product, the next shouldn't feel new. It should feel familiar. This belief became the foundation of our design system.\n\nDesigning for Difference Without Confusion\n\nJuspay products need flexibility. Teams work across different brands, partners, and product contexts.\n\nSo instead of enforcing visual sameness, we asked: Can experiences remain consistent even when visuals change?\n\nBlend enables variety without fragmentation.\n\nFor users:\n\n- Interfaces feel intuitive across products\n- Interactions behave predictably\n- Visual differences don't interrupt understanding\n\nBecause when users take critical actions, they shouldn't need to interpret design — only act with confidence.\n\nConsistency Beneath the Surface\n\nIn Blend, consistency isn't defined by colors or typography. It lives in behavior.\n\nAcross products:\n\n- Actions follow familiar hierarchy\n- Feedback appears where expected\n- Success, warning, and error states behave consistently\n\nEven as branding evolves, the experience doesn't reset. Users recognize how things work, not just how they look — reducing cognitive effort in operational workflows.\n\nFrom Design to Code\n\nBlend simplifies how design becomes production.\n\nInstead of translating visuals repeatedly, design decisions are defined as tokens shared between design and engineering. Colors, spacing, typography, and elevation exist as the same system in both Figma and code.\n\nThis allows teams to:\n\n- Design components once and reuse them across products\n- Implement interfaces without reinterpretation\n- Update themes or branding without rebuilding components\n\nDesign flows directly into development, reducing gaps, inconsistencies, and implementation effort. Blend turns design and code into parts of the same system.\n\nWhy the Name Blend Fits\n\nThe name reflects how the system works in practice.\n\nIt blends into different product identities. It blends flexibility with structural consistency. And it blends design and engineering through a shared token foundation.\n\nExperiences remain familiar for users, while implementation becomes faster for teams.\n\nBlend isn't just about visual harmony — it connects how products are designed, built, and scaled.\n\nBlend isn't a style. It's a promise:\n\nNo matter where users meet Juspay, or which team builds the product, they shouldn't have to start over.",
+        "excerpt": "At Juspay, no two products live in the same world.\n\nSome are built for consumers making quick payments. Some to support merchants running their busine...",
+        "sections": [
+            {
+                "title": "Learning One Product Should Help You Use Another",
+                "level": 2,
+                "id": "learning-one-product-should-help-you-use-another"
+            },
+            {
+                "title": "Designing for Difference Without Confusion",
+                "level": 2,
+                "id": "designing-for-difference-without-confusion"
+            },
+            {
+                "title": "Consistency Beneath the Surface",
+                "level": 2,
+                "id": "consistency-beneath-the-surface"
+            },
+            {
+                "title": "From Design to Code",
+                "level": 2,
+                "id": "from-design-to-code"
+            },
+            {
+                "title": "Why the Name Blend Fits",
+                "level": 2,
+                "id": "why-the-name-blend-fits"
+            }
+        ]
+    },
+    "v0.0.10": {
+        "title": "v0.0.10",
+        "path": "changelog/v0.0.10",
+        "slug": "v0.0.10",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.11": {
+        "title": "v0.0.11",
+        "path": "changelog/v0.0.11",
+        "slug": "v0.0.11",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.12": {
+        "title": "v0.0.12",
+        "path": "changelog/v0.0.12",
+        "slug": "v0.0.12",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.13": {
+        "title": "v0.0.13",
+        "path": "changelog/v0.0.13",
+        "slug": "v0.0.13",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.14": {
+        "title": "v0.0.14",
+        "description": "Enhanced core components with dynamic tabs, improved data tables, and richer select/sidebar features for better usability. Introduced new chart & stat card formatting (currency, percentage, number, date/time) with advanced props and display modes. Shipped updates to Figma Code Connect, OTP inputs, drawers, landing page, and documentation for improved consistency and developer experience",
+        "path": "changelog/v0.0.14",
+        "slug": "v0.0.14",
+        "content": "Dynamic Tab Management - Added comprehensive tab management system\n    allowing users to add any number of tabs, seamlessly switch between them via\n    an intuitive tab switcher, and close opened tabs with improved user\n    experience.\n\n\n\n    Add Tab Button - Introduced an \"Add Tab\" floating button that triggers a\n    fully customizable layout, giving developers flexibility to implement custom\n    tab creation workflows.\n\n\n\n\n\n\n\n    UI Cleanup - Removed unwanted horizontal scrollbar for a significantly\n    cleaner and more professional table interface.\n\n\n\n    Configurable Settings - Settings button visibility can now be controlled\n    via a dedicated prop, allowing for more customized table configurations\n    based on use case requirements.\n\n\n\n    Checkbox Default State - Checkbox column is now off by default,\n    providing a cleaner initial state and requiring explicit opt-in for\n    selection functionality.\n\n\n\n    Smart Tooltips - Long-text cells now intelligently show tooltips on\n    hover, improving content accessibility without cluttering the interface.\n\n\n\n    Pagination Layout Fix - Resolved layout issue where \"Rows per page\" text\n    awkwardly appeared across two lines, ensuring consistent single-line\n    display.\n\n\n\n    Column Manager Enhancement - Fixed column manager dropdown with improved\n    scrollability and prevented actionable elements from being cropped,\n    enhancing usability.\n\n\n\n    Cell Height Optimization - Added min-height to table cells following\n    design specifications to reduce visual congestion and improve content\n    hierarchy.\n\n\n\n    Header Overflow Protection - Added tooltip functionality in table\n    headers when text overflows, ensuring all header content remains\n    accessible regardless of column width.\n\n\n\n\n\n\n\n    Design System Alignment - Implemented correct padding and spacing by\n    default as per design specifications, ensuring consistent visual hierarchy\n    across all popover instances.\n\n\n\n    React Element Support (d13921a) - Added comprehensive support for\n    passing React elements, enabling fully custom popover UIs tailored to\n    specific use cases and design requirements.\n\n\n\n\n\n\n\n    Advanced Formatting System - Introduced comprehensive axis formatting\n    types for enhanced data visualization: - AxisType.CURRENCY → Transforms\n    125000 into \"$125K\" for financial data - AxisType.PERCENTAGE →\n    Converts 87.5 to \"87.5%\" for ratio displays - AxisType.NUMBER →\n    Formats 1250000 as \"1.25M\" for large numbers - AxisType.DATE_TIME →\n    Renders 1693036800 as \"Aug 26, 2023\" for temporal data\n\n\n\n    Smart Date Display Modes - Implemented intelligent date formatting\n    options: - dateOnly: true → Clean date-only display without time\n    components - smart: true → Dynamic time display that switches to date\n    format when day changes - Default mode → Comprehensive full date and time\n    information\n\n\n\n    API Restructuring - Streamlined axis configuration by removing\n    individual props in favor of grouped settings: - xAxisLabel → Migrated to\n    xAxis.label for better organization - yAxisLabel → Now accessible via\n    yAxis.label - xAxisInterval → Consolidated under xAxis.interval -\n    yAxisInterval → Moved to yAxis.interval for consistency\n\n\n\n    Enhanced Customization Props - Added powerful new properties for\n    advanced chart customization: - customTick → Support for custom SVG tick\n    components - tickFormatter → Flexible custom text formatting functions -\n    barSize → Precise control over bar width dimensions - xAxis and yAxis\n    → Comprehensive grouped axis configuration objects\n\n\n\n\n\n\n\n    Unified Formatting System - Integrated the same powerful formatting\n    support as Charts component, including CURRENCY, PERCENTAGE, NUMBER, and\n    DATE_TIME formatting for consistent data presentation across components.\n\n\n\n    Enhanced Configuration - Introduced 3 essential new props:\n    valueFormatter for custom value display, xAxis and yAxis for\n    comprehensive axis configuration, providing complete control over stat\n    visualization.\n\n\n\n\n\n\n\n    Multi-Tenant Support - Added comprehensive support for switching between\n    any number of tenants, providing scalable tenant management for\n    enterprise applications.\n\n\n\n    Smart Tenant Limits - Introduced single-select fallback mechanism\n    that automatically activates when maximum tenant count (from configuration)\n    is reached, ensuring optimal performance and user experience.\n\n\n\n\n\n\n\n    Value Truncation - Added intelligent truncation for values in both\n    single and multiselect components, preventing UI overflow while maintaining\n    readability.\n\n\n\n    Code Organization - Refactored selector logic into a dedicated file for\n    improved code clarity, maintainability, and easier future enhancements.\n\n\n\n    Form Integration Fix - Resolved critical form submission issues with\n    input fields, ensuring reliable data capture and form workflow integration.\n\n\n\n    Simplified Interface - Removed action button from default state,\n    providing a cleaner interface while maintaining optional action button\n    support for specific use cases.\n\n\n\n    Flexible Sizing - Added essential props: customWidth and\n    customMaxWidth for drawer components, enabling precise responsive design\n    control.\n\n\n\n    Search Enhancement - Added searchPlaceholder support in single select,\n    improving user guidance and search experience customization.\n\n\n\n\n\n\n\n    Prop Mapping Accuracy - Corrected prop mappings for updated components,\n    ensuring generated code and Figma design snippets remain perfectly\n    synchronized across development workflows.\n\n\n\n    MCP Server Integration - Updated mapping logic to work seamlessly with\n    Blend MCP servers, enhancing design-to-code workflow efficiency and\n    accuracy.\n\n\n\n\n\n\n\n    Design Alignment - Adjusted footer spacing to precisely align with\n    design specifications, ensuring consistent visual hierarchy across mobile\n    web calendar interfaces.\n\n\n\n    Actionable Footer - Added comprehensive support for displaying\n    customizable actionable buttons at the bottom, enabling flexible\n    call-to-action workflows within drawer components.\n\n\n\n    Enhanced Input Clearing - Enabled deletion via Backspace key for\n    significantly smoother and more intuitive input clearing experience.\n\n\n\n    Smart Focus Management - Introduced auto-focus functionality on\n    input boxes, streamlining user interaction and improving accessibility.\n\n\n\n    Clipboard Integration - Added robust copy-paste functionality,\n    allowing users to efficiently input OTP codes from external sources.\n\n\n\n    Configurable Length - Added a flexible prop to configure the number of\n    OTP input boxes, supporting various OTP code lengths and security\n    requirements.\n\n\n\n    Direct Tag Management - Added intuitive ability to remove and destruct\n    tags directly from the input field, improving tag management user\n    experience.\n\n\n\n    Positioning Control - Added comprehensive support for controlling\n    dropdown rendering position (left or right alignment), ensuring optimal\n    display in various layout contexts.\n\n\n\n\n\n\n\n    New Landing Page (a82a839) - Launched a comprehensive landing page\n    for the Blend Design System, providing centralized access to documentation,\n    components, and resources for the design system community.\n\n\n\n    README Enhancement - Completely updated README.md to accurately\n    reflect current usage patterns, clarify project purpose, and provide clear\n    community contribution guidelines for open-source collaboration.\n\n\n\n    Release Management - Merge pull request #281 from\n    juspay/release/update-stable-version-0.0.13 for stable version deployment.\n\n\n\n    Beta Release Pipeline - chore(release): v0.0.13-beta [BETA] (#278)\n    maintaining continuous beta release workflow.\n\n\n\n    Development Integration - Merge pull request #297 from juspay/dev\n    consolidating development branch improvements.\n\n\n\n    PR Template Update - Enhanced pull request template (#301) to improve\n    code review process and ensure consistent contribution standards.\n\n\n\n    Beta Release - chore(release): v0.0.14-beta [BETA] (#296) for\n    comprehensive testing before stable release.",
+        "excerpt": "Dynamic Tab Management - Added comprehensive tab management system\n    allowing users to add any number of tabs, seamlessly switch between them via...",
+        "sections": []
+    },
+    "v0.0.15": {
+        "title": "v0.0.15",
+        "description": "Performance enhancements with memoization, TypeScript improvements, component exports, chart enhancements, and various UI fixes",
+        "path": "changelog/v0.0.15",
+        "slug": "v0.0.15",
+        "content": "Portal Support - Added portal support for more flexible modal rendering,\n    enabling modals to be rendered outside their parent container hierarchy for\n    better z-index management and positioning control.\n\n\n\n\n\n\n\n    Empty State Handling - Added comprehensive empty state handling for\n    charts, providing meaningful feedback when no data is available to display.\n\n\n\n    Typography Improvements - Fixed font size inconsistencies for x/y axis\n    labels, legends, and chart text elements for better readability and design\n    consistency.\n\n\n\n    Axis Spacing - Resolved inconsistent spacing between consecutive ticks\n    on the x-axis, ensuring uniform visual spacing and improved chart\n    readability.\n\n\n\n    Legend Consistency - Fixed \"+n more\" legend inconsistency issues,\n    providing reliable legend display for charts with multiple data series.\n\n\n\n    Tick Overlap Prevention - Handled overlapping of first x/y axis ticks,\n    ensuring all tick labels remain visible and readable regardless of data\n    density.\n\n\n\n    ChartContainer Component - Introduced reusable ChartContainer wrapper\n    with consistent styling including borders, background, and radius for\n    unified chart presentation.\n\n\n\n    CoreChart Component - Introduced CoreChart for pure rendering with\n    external state support for hover and selection interactions, enabling\n    advanced chart customization.\n\n\n\n    Advanced Date/Time Formatting - Added comprehensive date/time formatting\n    system with timezone support (IANA zones like UTC, EST, PST), 12/24-hour\n    format via hour12 prop, smart formatting that adapts to time context, and\n    support for multiple input formats (POSIX, UTC strings, JS timestamps).\n\n\n\n\n\n\n\n    Empty State Handling - Added empty state handling for stats components,\n    providing consistent user feedback when no statistical data is available.\n\n\n\n\n\n\n\n    Scroll Behavior - Removed unwanted scroll for default table behavior,\n    providing cleaner table presentation without unnecessary scrollbars.\n\n\n\n    Column Filter States - Added active state for column filter items with\n    improved visual feedback and better tooltip positioning for enhanced user\n    experience.\n\n\n\n    Enhanced Search - Added no result found state in single/multiselect\n    components within data tables, improving user feedback during search\n    operations.\n\n\n\n    Column Management - Updated column filter dropdown with active state\n    indicators and improved tooltip positions for better usability.\n\n\n\n    Search Bar Focus - Fixed manage columns search bar focus issues,\n    ensuring proper keyboard navigation and accessibility.\n\n\n\n    Dropdown Alignment - Fixed manage columns dropdown alignment that was\n    positioned too far right, ensuring proper visual positioning.\n\n\n\n    Design Consistency - Updated search input states, fonts, and design\n    tokens for consistent visual design across all table search interfaces.\n\n\n\n    Tooltip Enhancement - Improved tooltip positioning in column manager for\n    better user experience and accessibility.\n\n\n\n\n\n\n\n    Advanced Selection Control - Updated multiselect to support maximum\n    items selected limits and always selected items functionality for better\n    data validation and user guidance.\n\n\n\n    No Results State - Added no result found state for both single and\n    multiselect components, providing clear feedback during search operations.\n\n\n\n    Design Alignment - Updated single and multiselect components with proper\n    padding, spacing, and design alignment for visual consistency.\n\n\n\n    Search Enhancement - Added searchPlaceholder support and improved\n    input states for better user guidance and interaction feedback.\n\n\n\n\n\n\n\n    State Typography - Updated font size for hover and active states,\n    ensuring consistent text hierarchy and improved visual feedback.\n\n\n\n    Active State Cleanup - Removed unwanted border and outline for active\n    state, providing cleaner visual presentation.\n\n\n\n    Visual Hierarchy - Differentiated title and actionable elements for\n    better visual hierarchy and improved user experience.\n\n\n\n    Tooltip Support - Added comprehensive tooltip support following the same\n    construction pattern as select components for consistent behavior.\n\n\n\n    New Component - Added complete Card component support as per design\n    specifications, expanding the component library with essential layout\n    building blocks.\n\n\n\n\n\n\n\n    Component Documentation - Added comprehensive documentation for each\n    component under /docs directory, improving developer experience and\n    component usage guidance.\n\n\n\n    Landing Page Enhancement - Added changelog page support to the landing\n    page (blend.juspay.design), providing centralized access to release\n    information.\n\n\n\n    Release Workflow - Updated release workflow for Blend library with\n    improved automation and introduced new staging branch for better release\n    management.",
+        "excerpt": "Portal Support - Added portal support for more flexible modal rendering,\n    enabling modals to be rendered outside their parent container hierarchy f...",
+        "sections": []
+    },
+    "v0.0.16": {
+        "title": "v0.0.16",
+        "path": "changelog/v0.0.16",
+        "slug": "v0.0.16",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.17": {
+        "title": "v0.0.17",
+        "path": "changelog/v0.0.17",
+        "slug": "v0.0.17",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.18": {
+        "title": "v0.0.18",
+        "path": "changelog/v0.0.18",
+        "slug": "v0.0.18",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.19": {
+        "title": "v0.0.19",
+        "path": "changelog/v0.0.19",
+        "slug": "v0.0.19",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.20": {
+        "title": "v0.0.20",
+        "path": "changelog/v0.0.20",
+        "slug": "v0.0.20",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.21": {
+        "title": "v0.0.21",
+        "path": "changelog/v0.0.21",
+        "slug": "v0.0.21",
+        "content": "Remove - duplicate props from button\n    \n\n\n\n    \n        Bug - fix/chart ticks\n    \n\n\n\n    \n        Feat/code - block\n    \n\n\n\n    \n        Update - table and sidebar component\n    \n\n\n\n    \n        Fixed - minor naming issue in menu documentation\n    \n\n\n\n    \n        Adjust - padding and remove minWidth from Snackbar\n    \n\n\n\n    \n        481 - data ids for tag tabs\n    \n\n\n\n    \n        Added - data ids for input fields\n    \n    \n        Add - isFirstRow prop to TableCell and update styling for first row\n    \n\n\n\n    \n        Simplify - VirtualList and Select components\n    \n\n\n\n    \n        Fix/workflows\n    \n    \n        Token - revamp",
+        "excerpt": "Remove - duplicate props from button\n    \n\n\n\n    \n        Bug - fix/chart ticks\n    \n\n\n\n    \n        Feat/code - block\n    \n\n\n\n    \n        Update - t...",
+        "sections": []
+    },
+    "v0.0.22": {
+        "title": "v0.0.22",
+        "path": "changelog/v0.0.22",
+        "slug": "v0.0.22",
+        "content": "Added - the height and minHeight prop to the card component\n    \n    \n        Add - Data-ids calendar table sidebar and update component(card,\n        table, calendar)\n    \n\n\n\n    \n        Enhance - DataTable to handle empty values with hyphen display\n    \n\n\n\n    \n        Added - the wrapping funcationality in key value pair component\n    \n\n\n\n    \n        sidebar:* - prevent tokens prop forwarding to DOM to remove React\n        unknown prop warnings\n    \n\n\n\n    \n        Added - stepper component with theme provider\n    \n\n\n\n    \n        Add - Upload component and integrate with context and demo\n    \n\n\n\n    \n        Added - the initial version of workflow canvas component\n    \n\n\n\n    \n        Firebase - credential rotation",
+        "excerpt": "Added - the height and minHeight prop to the card component\n    \n    \n        Add - Data-ids calendar table sidebar and update component(card,...",
+        "sections": []
+    },
+    "v0.0.23": {
+        "title": "v0.0.23",
+        "path": "changelog/v0.0.23",
+        "slug": "v0.0.23",
+        "content": "Update - SidebarDemo to use chatInput component\n    \n    \n        Add - ChatInput component with utility functions and demo\n        integration\n    \n    \n        Fixed - chat-input component\n    \n\n\n\n    \n        Matched - the height of sidebar header with the topbar\n    \n\n\n\n    \n        Added - gap control for directory\n    \n    \n        Remove - unnecessary type assertions",
+        "excerpt": "Update - SidebarDemo to use chatInput component\n    \n    \n        Add - ChatInput component with utility functions and demo\n        integration...",
+        "sections": []
+    },
+    "v0.0.24": {
+        "title": "v0.0.24",
+        "path": "changelog/v0.0.24",
+        "slug": "v0.0.24",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.25": {
+        "title": "v0.0.25",
+        "path": "changelog/v0.0.25",
+        "slug": "v0.0.25",
+        "content": "Add - ripple effect to Button and Tag component\n    \n\n\n\n    \n        Resolve - hover state issues and improve bar chart interactions\n    \n\n\n\n    \n        569 - Create mweb for sidebar and enhance data table\n    \n\n\n\n    \n        Fix/bugs(snackbar, - avatar, chat component)\n    \n\n\n\n    \n        Update - component documentation\n    \n    \n        Dark - theme setup\n    \n    \n        Add - CodeEditor component with syntax highlighting\n    \n    \n        Add - SkeletonTag component\n    \n\n\n\n    \n        Update - contributing and getting started guides\n    \n\n\n\n    \n        Feat/animate",
+        "excerpt": "Add - ripple effect to Button and Tag component\n    \n\n\n\n    \n        Resolve - hover state issues and improve bar chart interactions...",
+        "sections": []
+    },
+    "v0.0.26": {
+        "title": "v0.0.26",
+        "path": "changelog/v0.0.26",
+        "slug": "v0.0.26",
+        "content": "Fix - code editor and multi value input issues\n    \n\n\n\n    \n        Integrate - drag-and-drop column reordering in DataTable\n    \n\n\n\n    \n        Fix - multiselct and checkbox and add skeletons\n    \n\n\n\n    \n        Implement - tenant panel only mode in Sidebar\n    \n\n\n\n    \n        Added - variant support in split tag\n    \n\n\n\n    \n        Add - Tabs animation and skeleton\n    \n\n\n\n    \n        Add - Directory component and tokens",
+        "excerpt": "Fix - code editor and multi value input issues\n    \n\n\n\n    \n        Integrate - drag-and-drop column reordering in DataTable\n    \n\n\n\n    \n        Fix...",
+        "sections": []
+    },
+    "v0.0.27": {
+        "title": "v0.0.27",
+        "path": "changelog/v0.0.27",
+        "slug": "v0.0.27",
+        "content": "Update - tabs addition functionality and fix code editor",
+        "excerpt": "Update - tabs addition functionality and fix code editor",
+        "sections": []
+    },
+    "v0.0.28": {
+        "title": "v0.0.28",
+        "path": "changelog/v0.0.28",
+        "slug": "v0.0.28",
+        "content": "Add - skeleton for card, statcard and fix dropdown, switch, modal\n    \n\n\n\n    \n        Add - Sankey chart support to Charts\n    \n\n\n\n    \n        Tabs - code and update dynamic tabs management\n    \n    \n        Fix - tabs with underscore data\n    \n    \n        Fix - tabs with underscore data\n    \n\n\n\n    \n        Enhance - custom issue template and add Monaco editor styles",
+        "excerpt": "Add - skeleton for card, statcard and fix dropdown, switch, modal\n    \n\n\n\n    \n        Add - Sankey chart support to Charts\n    \n\n\n\n    \n        Tabs...",
+        "sections": []
+    },
+    "v0.0.29": {
+        "title": "v0.0.29",
+        "path": "changelog/v0.0.29",
+        "slug": "v0.0.29",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.30": {
+        "title": "v0.0.30",
+        "path": "changelog/v0.0.30",
+        "slug": "v0.0.30",
+        "content": "Improve - accessibility to meet wcag standards for avatar avatar\n        group breadcrumb menu and alert\n    \n\n\n\n    \n        Data - ids for Breadcrumb, Accordion, Single Select, Multi Select\n    \n\n\n\n    \n        Added - button type = button in primitive button\n    \n    \n        Add - accessibility dashboard with button component\n    \n    \n        Add - data attributes for button\n    \n\n\n\n    \n        734 - accessibility for cards statcards charts sidebar\n    \n\n\n\n    \n        Fixed - charts ticks issue\n    \n\n\n\n    \n        Add - data attribute for table and calendar\n    \n    \n        Fix - table dropdowns overlap issue\n    \n\n\n\n    \n        Improve - accessibility for table calendar, progressbar and upload\n    \n\n\n\n    \n        Fix - z index to resolve dropdown in drawer and fix accordion\n        chevron\n    \n\n\n\n    \n        Separate - disable options for dropdownInput\n    \n    \n        Updated - the dropdown tokens with designs\n    \n\n\n\n    \n        735 - improve accessibility for key value pair snackbar tabs and\n        accordion\n    \n\n\n\n    \n        Added - maxWidth, maxHeight, minWidth, minHeight, isCustom prop to\n        modal\n    \n\n\n\n    \n        725 - accessibility for modal popover tag tooltip\n    \n\n\n\n    \n        AvoidCollision - in multiselect and spacing fixes in keyValuePair/…\n    \n\n\n\n    \n        Bug-fix/sidebar-numberInput-otp\n    \n\n\n\n    \n        Improve - accessibility to meet wcag aaa standards for Single &\n        Multi selects\n    \n\n\n\n    \n        Tab - component's dropdown issues for large number of tab lists\n    \n    \n        Fix/tab - issues v1\n    \n\n\n\n    \n        Password - prop added to text input\n    \n\n\n\n    \n        Add - data-id attributes to textInput, avatar, and tags\n    \n\n\n\n    \n        Added - newLine functionality to tooltip\n    \n    \n        Fix/tooltip - data ids\n    \n\n\n\n    \n        File - Upload, Snackbar, SearchInput, OTPInput, Alert, Modal, Tabs…\n    \n\n\n\n    \n        Enhance - accessibility\n    \n\n\n\n    \n        Changed - the tokens of selectors\n    \n    \n        Update - react version\n    \n    \n        708 - accessibilty input component\n    \n    \n        Add - skeletons for differents components and fix minor bugs\n    \n    \n        Bug - fix/issues list\n    \n    \n        Improve - accessibility to meet wcag aaa standards",
+        "excerpt": "Improve - accessibility to meet wcag standards for avatar avatar\n        group breadcrumb menu and alert\n    \n\n\n\n    \n        Data - ids for Breadcrum...",
+        "sections": []
+    },
+    "v0.0.31": {
+        "title": "v0.0.31",
+        "path": "changelog/v0.0.31",
+        "slug": "v0.0.31",
+        "content": "Enhance - ButtonGroup with different stacking\n    \n\n\n\n    \n        Update - Card component padding handling for CUSTOM variant\n    \n\n\n\n    \n        Add - maxHeight to charts legend dropdown\n    \n    \n        Chart - legend data handling by removing capitalisation\n    \n\n\n\n    \n        Improve - Checkbox component checked state handling\n    \n\n\n\n    \n        Enhance - CodeEditor with customizable header slots and icon\n        visibility\n    \n    \n        Add - autoFocus prop to CodeEditor\n    \n\n\n\n    \n        Add - description tooltip support to DataTable component\n    \n    \n        Fix - table height and update rows sync with api for pagination\n    \n\n\n\n    \n        Add - timezone support to DateRangePicker\n    \n\n\n\n    \n        Removed - overflow from drawerbase\n    \n\n\n\n    \n        Api - call example for dropdown\n    \n\n\n\n    \n        Add - scroll lock for dropdowns inside modals\n    \n\n\n\n    \n        Fix/multiselect - placeholder color\n    \n\n\n\n    \n        Added - a prop in numberInput to prevent entry of neg value\n    \n    \n        Enhance - NumberInput with input sanitization\n    \n\n\n\n    \n        Bug - fix/otp input\n    \n\n\n\n    \n        Added - conditional virtual list to single select\n    \n\n\n\n    \n        Enhance - SingleSelect and multiselect with Tooltip integration\n    \n    \n        Corrected - the height for single/multi-select\n    \n\n\n\n    \n        Update - Snackbar component layout and structure\n    \n\n\n\n    \n        Fix - stat card mismatch between delta colorsign and graph color\n    \n\n\n\n    \n        Created - separate div for switch and sublable\n    \n\n\n\n    \n        Update - Tag component styles for better alignment and sizing\n    \n\n\n\n    \n        Update - error message display in ErrorState of upload\n    \n\n\n\n    \n        Upload - file error state file name added and Data Table hide column\n        manager on no Data\n    \n\n\n\n    \n        Wrap - state update calls in requestAnimationFrame\n    \n    \n        Input - field disabled lable fixed\n    \n\n\n\n    \n        Migrate - from blend-v1 to @juspay/blend-design-system\n    \n    \n        Bug - fix/issues\n    \n    \n        Enhance - TableHeader component layout and tooltip handling",
+        "excerpt": "Enhance - ButtonGroup with different stacking\n    \n\n\n\n    \n        Update - Card component padding handling for CUSTOM variant\n    \n\n\n\n    \n        Ad...",
+        "sections": []
+    },
+    "v0.0.32": {
+        "title": "v0.0.32",
+        "path": "changelog/v0.0.32",
+        "slug": "v0.0.32",
+        "content": "Accordion - overflow hiiden visibility fix\n    \n\n\n\n    \n        Button - icon disable color added\n    \n    \n        Update - ButtonBase sizing logic\n    \n\n\n\n    \n        Remove - overflow from card\n    \n\n\n\n    \n        Custom - legend for chart\n    \n    \n        Legends - total type\n    \n    \n        Linechart - overlap issue fixed\n    \n    \n        Text - spilling over tooltip box in Charts resolved\n    \n    \n        Feat/mulit - colored line chart\n    \n    \n        Feat/area - chart\n    \n    \n        Feat/charts - custom dot\n    \n\n\n\n    \n        Fix/chatinput - mweb(refactored)\n    \n\n\n\n    \n        Optimize - ColumnManager and MultiSelectMenu\n    \n\n\n\n    \n        Implement - delta sorting feature in DataTable\n    \n    \n        Data - table: space in search box and initialColumns renderCell\n        change sync\n    \n    \n        Change - DataTable overflow property from 'visible' to 'auto'\n    \n    \n        920 - datatable pagination control is not responsive goes out of\n        container\n    \n\n\n\n    \n        Add - full screen support for drawer\n    \n\n\n\n    \n        Enhance - TableCell with truncation logic and improve Menu\n    \n\n\n\n    \n        Add - prop to show clear button in multiselect\n    \n\n\n\n    \n        Enhance - MultiSelect, SingleSelect with disabled state\n    \n    \n        Enhance - MultiSelect, SingleSelect border styling\n    \n\n\n\n    \n        Enhance - NumberInput with interactive min/max and validation\n    \n\n\n\n    \n        Add - sidebar icon only state\n    \n\n\n\n    \n        Enhance - SingleSelect with width adjustments and demo updates\n    \n    \n        No - padding between 'No items available' in single select fixed\n    \n\n\n\n    \n        Fixed - the border issue in statCard help icon\n    \n\n\n\n    \n        Remove - tooltip exit animations for instant disappearance\n    \n\n\n\n    \n        Update - input components background colors\n    \n    \n        Improve - SelectItem performance\n    \n\n\n\n    \n        De-couple - delta sign with graph color (resolved)",
+        "excerpt": "Accordion - overflow hiiden visibility fix\n    \n\n\n\n    \n        Button - icon disable color added\n    \n    \n        Update - ButtonBase sizing logic...",
+        "sections": []
+    },
+    "v0.0.33": {
+        "title": "v0.0.33",
+        "path": "changelog/v0.0.33",
+        "slug": "v0.0.33",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
+    },
+    "v0.0.34": {
+        "title": "v0.0.34",
+        "path": "changelog/v0.0.34",
+        "slug": "v0.0.34",
+        "content": "Add - export in component index for tokens and accodion visibility\n        fix\n    \n\n\n\n    \n        Removed - maxWidth from alert\n    \n    \n        Feat/alert - v2\n    \n\n\n\n    \n        Introduce - ButtonV2\n    \n    \n        Fix/button - token change\n    \n\n\n\n    \n        Fix/card - data ids\n    \n\n\n\n    \n        Charts - outage not getting grey issue fixed\n    \n    \n        Color - should be map by keys instead of index in legend more\n    \n    \n        Fix/chart - legend menu\n    \n    \n        Fix/bar - chart aux not visible\n    \n    \n        Fix/chart - dot issue\n    \n    \n        Fix/chart - legend more color\n    \n    \n        Fix/color - mismatch legend chart\n    \n\n\n\n    \n        Checkboc - span data-id added\n    \n\n\n\n    \n        Improve - column state management in DataTable\n    \n    \n        Added - virtual list to data table filter\n    \n    \n        Focus - id added for data table\n    \n\n\n\n    \n        Data - table column msnager selection removed on close\n    \n\n\n\n    \n        Fix/offsets - support in the web drawer\n    \n\n\n\n    \n        Search - added to dropdowninput\n    \n\n\n\n    \n        Feat/multi - select group\n    \n    \n        Multiselect - new token added for disabled, removed border left from\n        x button\n    \n\n\n\n    \n        Added - prevent default hook to multiselect and singleselect\n    \n\n\n\n    \n        Enhance - MultiValueInput with left and right slot support\n    \n\n\n\n    \n        Fix/sidebar - intermediate state removed\n    \n\n\n\n    \n        Single - select diselect function removed\n    \n    \n        Feat/single - select group\n    \n\n\n\n    \n        Add - SnackbarV2 and demo\n    \n\n\n\n    \n        Add - showBorder prop to StatCard component for customizable border\n        display\n    \n    \n        Option - to hide delta value in Stat Card\n    \n\n\n\n    \n        Add - stickyHeader prop to Tabs\n    \n    \n        Ui - render issue fixed for tabs UNDERLINE varient\n    \n    \n        Tabs - render issue on api call resolved\n    \n    \n        Auto - change tab issue resolved & right slot applied\n    \n    \n        Tabs - underline issue fixed\n    \n    \n        Tabs - new flow added for add button\n    \n    \n        Fix/tabs - render issue\n    \n\n\n\n    \n        Feat/tagv2\n    \n\n\n\n    \n        Added - error msg to error tag in multi file upload\n    \n    \n        Ui - overflow issue reolved in fileupload\n    \n\n\n\n    \n        Data - id added for upload, tag, tooltip\n    \n\n\n\n    \n        Implement - virtual scrolling for submenus to enhance performance\n    \n    \n        Add - centralized accessibility utilities and add rfc for\n        refactoration\n    \n\n\n\n    \n        Table - Checkbox issue fixed\n    \n    \n        Added - divider line between up and down arrow\n    \n    \n        Undefined - restricted\n    \n    \n        Mapped - with key instead of index\n    \n    \n        Fixed - autofill overlapping issue in inputs\n    \n\n\n\n    \n        Fix/observer - loop\n    \n    \n        Added - demo for multiple labels\n    \n    \n        Fix - table filter popover opening",
+        "excerpt": "Add - export in component index for tokens and accodion visibility\n        fix\n    \n\n\n\n    \n        Removed - maxWidth from alert\n    \n    \n        Fe...",
+        "sections": []
+    },
+    "v0.0.35": {
+        "title": "v0.0.35",
+        "path": "changelog/v0.0.35",
+        "slug": "v0.0.35",
+        "content": "1058 - avatar components code refactor\n    \n\n\n\n    \n        Fix/button - border changed 1.5px from 1px\n    \n\n\n\n    \n        Update - table column to handle react element width and no data\n        available state\n    \n\n\n\n    \n        Enhance - dropdown interaction lock with selective pointer event\n        disabling\n    \n\n\n\n    \n        Add - portal in menu\n    \n\n\n\n    \n        Enhance - changelog generation with dynamic repository URL retrieval",
+        "excerpt": "1058 - avatar components code refactor\n    \n\n\n\n    \n        Fix/button - border changed 1.5px from 1px\n    \n\n\n\n    \n        Update - table column to h...",
+        "sections": []
+    },
+    "v0.0.36": {
+        "title": "v0.0.36",
+        "path": "changelog/v0.0.36",
+        "slug": "v0.0.36",
+        "content": "Removed - skip to buttons\n    \n\n\n\n    \n        Added - chart v2 first draft\n    \n    \n        Line-bar-chart\n    \n\n\n\n    \n        Added - questionarier aboub textbox in chat input\n    \n\n\n\n    \n        Refactor/checkbox - v2\n    \n\n\n\n    \n        Enhance - ColumnManager styling with new token properties\n    \n\n\n\n    \n        Add - showBulkActionBar prop to DataTable and update documentation\n    \n    \n        Update - DataTable column width handling\n    \n\n\n\n    \n        Refactor/key - value pair v2\n    \n\n\n\n    \n        Fix - multi select select all issue with filter\n    \n\n\n\n    \n        Enhance - MultiSelect and SingleSelect menus with search reset\n        functionality\n    \n\n\n\n    \n        Refactor/popover - v2\n    \n\n\n\n    \n        Refactor/Radio-V2\n    \n\n\n\n    \n        Added - href support for sidebar\n    \n\n\n\n    \n        Singleselect - and Multiselect refactoration with dark light theme\n        support\n    \n\n\n\n    \n        Add - Timeline and integrate into SidebarDemo\n    \n\n\n\n    \n        Refactor/tooltip - v2\n    \n\n\n\n    \n        Enhance - column reordering functionality\n    \n\n\n\n    \n        Fix/1252 - required heading prop causes empty row on single line\n        banners",
+        "excerpt": "Removed - skip to buttons\n    \n\n\n\n    \n        Added - chart v2 first draft\n    \n    \n        Line-bar-chart\n    \n\n\n\n    \n        Added - questionarie...",
+        "sections": []
+    },
+    "v0.0.7": {
+        "title": "v0.0.7",
+        "path": "changelog/v0.0.7",
+        "slug": "v0.0.7",
+        "content": "Stable release. No detailed changelog available for this version.",
+        "excerpt": "Stable release. No detailed changelog available for this version.",
+        "sections": []
     }
 }

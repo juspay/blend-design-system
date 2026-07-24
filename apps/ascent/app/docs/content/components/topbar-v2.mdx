@@ -1,0 +1,123 @@
+---
+version: 2
+title: Topbar
+description: The TopbarV2 component renders a responsive top navigation area with slots for actions, secondary navigation, merchant selection, and mobile back navigation.
+category: Navigation
+tags:
+    - topbar
+    - component
+    - navigation
+    - v2
+RepoFolderName: TopbarV2
+StorybookLink: components-topbar-topbarv2--docs
+---
+
+<TopbarV2Preview />
+
+## Usage
+
+```tsx
+import { TopbarV2, ButtonV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <TopbarV2
+            showBackButton
+            onBackClick={() => history.back()}
+            rightActions={<ButtonV2 text="Create" />}
+        >
+            Dashboard
+        </TopbarV2>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'children',
+                hintText: 'Optional content rendered inside the topbar.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isVisible',
+                hintText:
+                    'Controls topbar visibility. When provided, the component is controlled.',
+            },
+            { content: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'defaultIsVisible',
+                hintText:
+                    'Initial visibility for uncontrolled usage. Defaults to true.',
+            },
+            { content: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'leftAction',
+                hintText:
+                    'Custom element rendered on the left side of the topbar.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightActions',
+                hintText:
+                    'Custom actions rendered on the right side of the topbar.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showBackButton',
+                hintText:
+                    'Shows a mobile back button when no custom left action is provided.',
+            },
+            { content: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onBackClick',
+                hintText: 'Callback fired when the back button is clicked.',
+            },
+            { content: '() => void' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondarySidebar',
+                hintText:
+                    'Secondary sidebar metadata used to render contextual navigation controls.',
+            },
+            { content: 'SecondarySidebarInfo' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'merchantInfo',
+                hintText:
+                    'Merchant selector data including items, selected value, and selection callback.',
+            },
+            { content: 'MerchantInfoV2' },
+            { content: '' },
+        ],
+    ]}
+/>
+
+## Component Tokens
+
+You can style the TopbarV2 component using the `TOPBARV2` component token.

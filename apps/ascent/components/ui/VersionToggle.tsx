@@ -5,7 +5,11 @@ import { usePathname, useRouter } from 'next/navigation'
 import { motion } from 'motion/react'
 import { cn } from '@/lib/utils/cn'
 import { useDocsVersion, type Version } from '@/lib/hooks/useDocsVersion'
-import { useVersionPeerMap } from '@/app/docs/utils/DocsVersionContext'
+import {
+    useDocVersionMap,
+    useVersionPeerMap,
+} from '@/app/docs/utils/DocsVersionContext'
+import Tooltip from './Tooltip/Tooltip'
 
 const VERSIONS = ['1', '2'] as const satisfies readonly Version[]
 
@@ -31,9 +35,24 @@ export default function VersionToggle({ className }: VersionToggleProps) {
     const router = useRouter()
     const [version, setVersion] = useDocsVersion()
     const peerMap = useVersionPeerMap()
+    const docVersionMap = useDocVersionMap()
     const layoutId = useId()
     const [mounted, setMounted] = useState(false)
     const [isNavigating, setIsNavigating] = useState(false)
+    const currentSlug = pathname.match(/^\/docs\/components\/([^/]+)/)?.[1]
+    const currentDocVersion = currentSlug
+        ? docVersionMap.get(currentSlug)
+        : undefined
+    const activeVersion =
+        currentDocVersion === 1 || currentDocVersion === 2
+            ? (`${currentDocVersion}` as Version)
+            : version
+    const unavailableVersion =
+        currentSlug && currentDocVersion && !peerMap.has(currentSlug)
+            ? currentDocVersion === 1
+                ? '2'
+                : '1'
+            : undefined
 
     useEffect(() => {
         setMounted(true)
@@ -43,22 +62,44 @@ export default function VersionToggle({ className }: VersionToggleProps) {
         setIsNavigating(false)
     }, [pathname])
 
+    useEffect(() => {
+        if (!currentDocVersion || version === activeVersion) return
+
+        setVersion(activeVersion)
+    }, [activeVersion, currentDocVersion, setVersion, version])
+
     const handleVersionChange = useCallback(
         (newVersion: Version) => {
-            if (isNavigating || newVersion === version) return
-            setVersion(newVersion)
+            if (
+                isNavigating ||
+                newVersion === activeVersion ||
+                newVersion === unavailableVersion
+            ) {
+                return
+            }
 
             const slugMatch = pathname.match(/^\/docs\/components\/([^/]+)/)
-            if (!slugMatch) return
+            if (!slugMatch) {
+                setVersion(newVersion)
+                return
+            }
 
-            const currentSlug = slugMatch[1]
-            const targetSlug = peerMap.get(currentSlug)
+            const targetSlug = peerMap.get(slugMatch[1])
             if (!targetSlug) return
 
+            setVersion(newVersion)
             setIsNavigating(true)
-            router.push(pathname.replace(currentSlug, targetSlug))
+            router.push(pathname.replace(slugMatch[1], targetSlug))
         },
-        [pathname, peerMap, setVersion, router, version, isNavigating]
+        [
+            activeVersion,
+            isNavigating,
+            pathname,
+            peerMap,
+            router,
+            setVersion,
+            unavailableVersion,
+        ]
     )
 
     if (!pathname?.startsWith('/docs')) return null
@@ -76,7 +117,7 @@ export default function VersionToggle({ className }: VersionToggleProps) {
             {/* Sliding indicator layer — sits behind buttons, animates via layoutId */}
             <div className="absolute inset-1 flex gap-0.5 pointer-events-none">
                 {VERSIONS.map((v) =>
-                    version === v ? (
+                    activeVersion === v ? (
                         <motion.div
                             key={v}
                             layoutId={`activeVersion-${layoutId}`}
@@ -94,24 +135,47 @@ export default function VersionToggle({ className }: VersionToggleProps) {
                 )}
             </div>
 
-            {VERSIONS.map((v) => (
-                <button
-                    key={v}
-                    type="button"
-                    disabled={isNavigating}
-                    onClick={() => handleVersionChange(v)}
-                    aria-pressed={version === v}
-                    aria-label={`Switch to version ${v}`}
-                    className={cn(
-                        'relative flex-1 px-2.5 py-1 text-xs font-medium rounded-lg text-shadow-2xs/5 transition-colors z-20',
-                        version === v
-                            ? 'text-primary-foreground'
-                            : 'text-muted-foreground hover:text-foreground'
-                    )}
-                >
-                    <span className="relative z-10">V{v}</span>
-                </button>
-            ))}
+            {VERSIONS.map((v) => {
+                const isUnavailable = v === unavailableVersion
+                const isDisabled = isNavigating || isUnavailable
+                const button = (
+                    <button
+                        key={v}
+                        type="button"
+                        disabled={isDisabled}
+                        onClick={() => handleVersionChange(v)}
+                        aria-pressed={activeVersion === v}
+                        aria-label={`Switch to version ${v}`}
+                        className={cn(
+                            'relative flex-1 px-2.5 py-1 text-xs font-medium rounded-lg text-shadow-2xs/5 transition-colors z-20',
+                            activeVersion === v
+                                ? 'text-primary-foreground'
+                                : 'text-muted-foreground hover:text-foreground',
+                            isUnavailable &&
+                                'cursor-not-allowed opacity-45 hover:text-muted-foreground'
+                        )}
+                    >
+                        <span className="relative z-10">V{v}</span>
+                    </button>
+                )
+
+                if (!isUnavailable) return button
+
+                return (
+                    <Tooltip
+                        key={v}
+                        content={
+                            <span className="block max-w-34 rounded-md bg-black px-2 py-1 text-center text-[11px] leading-4 text-white shadow-md dark:bg-white dark:text-black">
+                                No V{v} version yet
+                            </span>
+                        }
+                    >
+                        <span className="relative z-20 flex flex-1">
+                            {button}
+                        </span>
+                    </Tooltip>
+                )
+            })}
         </div>
     )
 }

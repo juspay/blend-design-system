@@ -1,0 +1,132 @@
+---
+version: 2
+title: Timeline
+description: The Timeline component displays chronological events, labels, headers, nested substeps, comments, and show-more actions.
+category: Data
+tags:
+    - timeline
+    - component
+    - data
+    - activity
+    - v2
+RepoFolderName: Timeline
+StorybookLink: components-timeline--docs
+---
+
+<TimelinePreview />
+
+## Usage
+
+```tsx
+import { Timeline, TimelineNodeStatus } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <Timeline>
+            <Timeline.Label text="JAN 15, 2025" />
+            <Timeline.Header
+                title="Payment captured"
+                status={TimelineNodeStatus.SUCCESS}
+                timestamp="10:30 AM"
+            >
+                <Timeline.Substep
+                    title="Webhook delivered"
+                    description="The merchant endpoint returned 200."
+                    timestamp="10:31 AM"
+                />
+            </Timeline.Header>
+            <Timeline.Node
+                title="Internal note"
+                text="Risk review completed successfully."
+                time="10:45 AM"
+            />
+        </Timeline>
+    )
+}
+```
+
+## Composition
+
+Timeline supports both compound component usage and flat named exports.
+
+```tsx
+import {
+    Timeline,
+    TimelineLabel,
+    TimelineHeader,
+    TimelineSubstep,
+    TimelineNode,
+    TimelineShowMore,
+} from '@juspay/blend-design-system'
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'Timeline',
+                hintText:
+                    'Root container that draws the vertical track and positions timeline children.',
+            },
+            { content: 'TimelineRootProps' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Timeline.Label',
+                hintText: 'Section label for a date or grouping.',
+            },
+            { content: '{ text: string }' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Timeline.Header',
+                hintText:
+                    'Primary timeline event with title, status, timestamp, and optional nested children.',
+            },
+            { content: 'TimelineHeaderProps' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Timeline.Substep',
+                hintText:
+                    'Nested or standalone step with title, description, timestamp, and optional slots.',
+            },
+            { content: 'TimelineSubstepProps' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Timeline.Node',
+                hintText:
+                    'Timeline comment or note with optional title, text, user, avatar, time, and status.',
+            },
+            { content: 'TimelineNodeProps' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Timeline.ShowMore',
+                hintText: 'Action row for revealing additional timeline items.',
+            },
+            { content: 'TimelineShowMoreProps' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TimelineNodeStatus',
+                hintText: 'Status enum used by headers, nodes, and indicators.',
+            },
+            { content: 'SUCCESS, WARNING, ERROR, NEUTRAL' },
+            { content: 'NEUTRAL' },
+        ],
+    ]}
+/>
+
+## Component Tokens
+
+You can style the Timeline component using the `TIMELINE` component token.

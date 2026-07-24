@@ -15,12 +15,14 @@ const v1TokenReplacementMap: Partial<
     AVATAR: { component: 'Avatar', replacement: 'AvatarV2' },
     BREADCRUMB: { component: 'Breadcrumb', replacement: 'BreadcrumbV2' },
     BUTTON: { component: 'Button', replacement: 'ButtonV2' },
+    CARD: { component: 'Card', replacement: 'CardV2' },
     CHAT_INPUT: { component: 'ChatInput', replacement: 'ChatInputV2' },
     CHECKBOX: { component: 'Checkbox', replacement: 'CheckboxV2' },
     CHARTS: { component: 'Charts', replacement: 'ChartV2' },
     DRAWER: { component: 'Drawer', replacement: 'DrawerV2' },
     KEYVALUEPAIR: { component: 'KeyValuePair', replacement: 'KeyValuePairV2' },
     MENU: { component: 'Menu', replacement: 'MenuV2' },
+    MODAL: { component: 'Modal', replacement: 'ModalV2' },
     MULTI_SELECT: { component: 'MultiSelect', replacement: 'MultiSelectV2' },
     MULTI_VALUE_INPUT: {
         component: 'MultiValueInput',
@@ -44,6 +46,7 @@ const v1TokenReplacementMap: Partial<
     TEXT_INPUT: { component: 'TextInput', replacement: 'TextInputV2' },
     TOOLTIP: { component: 'Tooltip', replacement: 'TooltipV2' },
     TOPBAR: { component: 'Topbar', replacement: 'TopbarV2' },
+    UPLOAD: { component: 'Upload', replacement: 'UploadV2' },
 }
 
 const warnV1ComponentUsage = (component: string, replacement: string) => {

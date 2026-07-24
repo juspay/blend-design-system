@@ -9,6 +9,10 @@ import { CopyMarkdownButton } from './CopyMarkdownButton'
 interface ExtendedDocsPageProps extends DocsPageProps {
     mobileTrigger?: React.ReactNode
     rawMarkdown?: string
+    v1Warning?: {
+        replacementHref?: string
+        replacementLabel?: string
+    }
 }
 
 function DocsPage({
@@ -17,6 +21,7 @@ function DocsPage({
     breadcrumbItems,
     mobileTrigger,
     rawMarkdown,
+    v1Warning,
 }: ExtendedDocsPageProps) {
     return (
         <div className="flex flex-col mx-auto">
@@ -96,6 +101,42 @@ function DocsPage({
                                 )}
                             </div>
                         </div>
+                        {v1Warning && (
+                            <div
+                                className="mt-6 mb-8 flex gap-3 border border-amber-300/70 bg-amber-50 px-4 py-3 text-amber-950 dark:border-amber-500/40 dark:bg-amber-950/30 dark:text-amber-100"
+                                role="status"
+                            >
+                                <WarningOctagonIcon className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-300" />
+                                <div className="flex flex-col gap-1">
+                                    <p className="text-sm font-semibold leading-6">
+                                        This is a V1 component and will be
+                                        deprecated soon.
+                                    </p>
+                                    <p className="text-sm leading-6">
+                                        Blend V1 components will be removed
+                                        soon.
+                                        {v1Warning.replacementHref &&
+                                            v1Warning.replacementLabel && (
+                                                <>
+                                                    {' '}
+                                                    Please migrate to{' '}
+                                                    <a
+                                                        href={
+                                                            v1Warning.replacementHref
+                                                        }
+                                                        className="font-semibold underline underline-offset-4"
+                                                    >
+                                                        {
+                                                            v1Warning.replacementLabel
+                                                        }
+                                                    </a>
+                                                    .
+                                                </>
+                                            )}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
                         <div>{content}</div>
                     </div>
                 </article>

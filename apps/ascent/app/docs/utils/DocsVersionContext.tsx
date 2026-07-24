@@ -2,22 +2,36 @@
 
 import { createContext, useContext, type ReactNode } from 'react'
 
-const DocsVersionContext = createContext<Map<string, string>>(new Map())
+type DocsVersionContextValue = {
+    peerMap: Map<string, string>
+    versionMap: Map<string, number>
+}
+
+const DocsVersionContext = createContext<DocsVersionContextValue>({
+    peerMap: new Map(),
+    versionMap: new Map(),
+})
 
 export function DocsVersionProvider({
     children,
-    value,
+    peerMap,
+    versionMap,
 }: {
     children: ReactNode
-    value: Map<string, string>
+    peerMap: Map<string, string>
+    versionMap: Map<string, number>
 }) {
     return (
-        <DocsVersionContext.Provider value={value}>
+        <DocsVersionContext.Provider value={{ peerMap, versionMap }}>
             {children}
         </DocsVersionContext.Provider>
     )
 }
 
 export function useVersionPeerMap(): Map<string, string> {
-    return useContext(DocsVersionContext)
+    return useContext(DocsVersionContext).peerMap
+}
+
+export function useDocVersionMap(): Map<string, number> {
+    return useContext(DocsVersionContext).versionMap
 }

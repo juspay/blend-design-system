@@ -1,0 +1,148 @@
+---
+version: 2
+title: Upload
+description: The UploadV2 component provides a controlled file upload surface with drag-and-drop support, accepted type validation, file state display, progress state, and error handling.
+category: Display
+tags:
+    - upload
+    - upload-v2
+    - component
+    - file-upload
+    - drag-drop
+RepoFolderName: UploadV2
+StorybookLink: components-upload-v2--docs
+---
+
+<UploadV2Preview />
+
+## Usage
+
+```tsx
+import {
+    UploadFileV2,
+    UploadV2,
+    UploadV2State,
+} from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [files, setFiles] = useState<UploadFileV2[]>([])
+
+    return (
+        <UploadV2
+            label="Upload settlement file"
+            subLabel="CSV only"
+            description=".csv only | Max size 8 MB"
+            acceptedFileTypes={['.csv']}
+            maxSize={8 * 1024 * 1024}
+            maxFiles={2}
+            files={files}
+            onChange={setFiles}
+            state={UploadV2State.IDLE}
+            uploadHeaderText="Choose a file or drag & drop it here"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'label', hintText: 'Primary field label.' },
+            { content: 'string', hintText: 'Label text' },
+            { content: '' },
+        ],
+        [
+            { content: 'subLabel', hintText: 'Secondary label text.' },
+            { content: 'string', hintText: 'Sub label' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText: 'Helper description shown in the upload area.',
+            },
+            { content: 'string', hintText: 'Description' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'acceptedFileTypes',
+                hintText: 'Allowed extensions or MIME types.',
+            },
+            { content: 'string[]', hintText: 'Accepted types' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'files',
+                hintText:
+                    'Controlled list of uploaded files and validation state.',
+            },
+            { content: 'UploadFileV2[]', hintText: 'File state array' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Called when the selected files change.',
+            },
+            {
+                content: '(files: UploadFileV2[]) => void',
+                hintText: 'Change handler',
+            },
+            { content: '' },
+        ],
+        [
+            { content: 'state', hintText: 'Visual upload state.' },
+            {
+                content: 'UploadV2State',
+                hintText: 'idle, uploading, success, error, disabled',
+            },
+            { content: 'idle' },
+        ],
+        [
+            {
+                content: 'multiple',
+                hintText: 'Allows multiple file selection.',
+            },
+            { content: 'boolean', hintText: 'Multiple files' },
+            { content: 'false' },
+        ],
+        [
+            { content: 'maxSize', hintText: 'Maximum file size in bytes.' },
+            { content: 'number', hintText: 'Bytes' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxFiles',
+                hintText: 'Maximum number of files allowed.',
+            },
+            { content: 'number', hintText: 'File limit' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'progressBarValue',
+                hintText: 'Progress value for uploading state.',
+            },
+            { content: 'number', hintText: 'Progress value' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'uploadHeaderText',
+                hintText: 'Main call-to-action text in the upload surface.',
+            },
+            { content: 'string', hintText: 'Header text' },
+            { content: '' },
+        ],
+    ]}
+/>
+
+## Component Tokens
+
+You can style the UploadV2 component using the `UPLOADV2` component token.

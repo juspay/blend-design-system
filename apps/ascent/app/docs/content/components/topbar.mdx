@@ -1,0 +1,130 @@
+---
+version: 1
+title: Topbar
+description: The Topbar component renders a responsive top navigation area with slots for actions, merchant selection, left panel selection, and mobile back navigation.
+category: Navigation
+tags:
+    - topbar
+    - component
+    - navigation
+RepoFolderName: Topbar
+StorybookLink: components-topbar--docs
+---
+
+<TopbarPreview />
+
+## Usage
+
+```tsx
+import { Topbar, Button } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <Topbar
+            showBackButton
+            onBackClick={() => history.back()}
+            rightActions={<Button text="Create" />}
+        >
+            Dashboard
+        </Topbar>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'children',
+                hintText: 'Optional content rendered inside the topbar.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isExpanded',
+                hintText: 'Sidebar expansion state.',
+            },
+            { content: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isVisible',
+                hintText:
+                    'Controls topbar visibility. When provided, the component is controlled.',
+            },
+            { content: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'defaultIsVisible',
+                hintText:
+                    'Initial visibility for uncontrolled usage. Defaults to true.',
+            },
+            { content: 'boolean' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'leftAction',
+                hintText:
+                    'Custom element rendered on the left side of the topbar.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightActions',
+                hintText:
+                    'Custom actions rendered on the right side of the topbar.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showBackButton',
+                hintText:
+                    'Shows a mobile back button when no custom left action is provided.',
+            },
+            { content: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'onBackClick',
+                hintText: 'Callback fired when the back button is clicked.',
+            },
+            { content: '() => void' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftPanel',
+                hintText:
+                    'Left panel selector metadata used to render contextual navigation controls.',
+            },
+            { content: 'LeftPanelInfo' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'merchantInfo',
+                hintText:
+                    'Merchant selector data including items, selected value, and selection callback.',
+            },
+            { content: 'MerchantInfo' },
+            { content: '' },
+        ],
+    ]}
+/>
+
+## Component Tokens
+
+You can style the Topbar component using the `TOPBAR` component token.
