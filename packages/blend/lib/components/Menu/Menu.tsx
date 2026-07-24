@@ -356,13 +356,17 @@ const Menu = ({
                                         onChange={handleSearchChange}
                                         autoFocus
                                         onKeyDown={(e) => {
-                                            e.stopPropagation()
                                             if (e.key === 'Enter') {
+                                                e.stopPropagation()
                                                 e.preventDefault()
                                                 onEnter?.(
                                                     searchText,
                                                     filteredItems
                                                 )
+                                                return
+                                            }
+                                            if (e.key.length === 1) {
+                                                e.stopPropagation()
                                             }
                                         }}
                                         aria-label={`Search menu items${searchPlaceholder ? `: ${searchPlaceholder}` : ''}`}

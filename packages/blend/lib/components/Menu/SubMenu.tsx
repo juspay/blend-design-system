@@ -392,13 +392,17 @@ export const SubMenu = ({
                                 onChange={handleSearchChange}
                                 autoFocus
                                 onKeyDown={(e) => {
-                                    e.stopPropagation()
                                     if (e.key === 'Enter') {
+                                        e.stopPropagation()
                                         e.preventDefault()
                                         item.onSubMenuSearchEnter?.(
                                             searchText,
                                             filteredSubMenuItems
                                         )
+                                        return
+                                    }
+                                    if (e.key.length === 1) {
+                                        e.stopPropagation()
                                     }
                                 }}
                             />

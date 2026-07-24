@@ -36,9 +36,10 @@ export const getItemMatchRank = (
 export const defaultSearchSortFn: MenuSearchSortFn = (items, searchText) => {
     if (!searchText.trim()) return items
     const lower = searchText.toLowerCase()
-    return [...items].sort(
-        (a, b) => getItemMatchRank(a, lower) - getItemMatchRank(b, lower)
-    )
+    return items
+        .map((item) => ({ item, rank: getItemMatchRank(item, lower) }))
+        .sort((a, b) => a.rank - b.rank)
+        .map((x) => x.item)
 }
 
 // Utility: Recursively filter menu items and groups by search text
