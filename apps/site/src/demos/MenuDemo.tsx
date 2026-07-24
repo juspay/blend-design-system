@@ -5,8 +5,8 @@ import {
     MenuSide,
     MenuItemVariant,
     MenuItemActionType,
-    getItemMatchRank,
 } from '../../../../packages/blend/lib/components/Menu'
+import { getItemMatchRank } from '../../../../packages/blend/lib/components/Menu/utils'
 import type { MenuGroupType } from '../../../../packages/blend/lib/components/Menu/types'
 import {
     TooltipSide,
