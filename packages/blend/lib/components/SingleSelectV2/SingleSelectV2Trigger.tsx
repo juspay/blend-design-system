@@ -197,7 +197,9 @@ const SingleSelectV2Trigger = ({
                         as="span"
                         textAlign="left"
                         paddingTop={
-                            isSmallScreenWithLargeSize && isItemSelected
+                            isSmallScreenWithLargeSize &&
+                            isItemSelected &&
+                            label
                                 ? paddingTop * 1.5
                                 : 0
                         }

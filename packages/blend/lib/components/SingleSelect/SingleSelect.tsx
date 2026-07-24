@@ -449,7 +449,8 @@ const SingleSelect = ({
                                                 textAlign="left"
                                                 paddingTop={
                                                     isSmallScreenWithLargeSize &&
-                                                    isItemSelected
+                                                    isItemSelected &&
+                                                    label
                                                         ? paddingY * 1.5
                                                         : 0
                                                 }

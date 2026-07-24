@@ -492,7 +492,8 @@ const MultiSelect = ({
                                                 variant ===
                                                     MultiSelectVariant.CONTAINER &&
                                                 isSmallScreenWithLargeSize &&
-                                                isItemSelected
+                                                isItemSelected &&
+                                                label
                                                     ? paddingY * 1.5
                                                     : 0
                                             }
