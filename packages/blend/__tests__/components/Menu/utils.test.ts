@@ -169,11 +169,10 @@ describe('filterMenuGroups', () => {
         // Reverse-alphabetical custom sort
         const customSort = (items: MenuItemType[]) =>
             [...items].sort((a, b) => (b.label! < a.label! ? -1 : 1))
-        const result = filterMenuGroups(groups, '', customSort)
-        // Empty search returns groups unchanged (short-circuit), so test with
-        // a matching query instead
-        const result2 = filterMenuGroups(groups, 's', customSort)
+        // Empty search short-circuits and returns groups unchanged, so test
+        // with a matching query to exercise the custom sort path.
+        const result = filterMenuGroups(groups, 's', customSort)
         // matches: Search, Sort. custom sort reverses -> Sort before Search
-        expect(result2[0].items.map((i) => i.label)).toEqual(['Sort', 'Search'])
+        expect(result[0].items.map((i) => i.label)).toEqual(['Sort', 'Search'])
     })
 })
