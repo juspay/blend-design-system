@@ -1,9 +1,51 @@
-import { MenuGroupType, type MenuItemType } from './types'
+import {
+    MenuGroupType,
+    type MenuItemType,
+    type MenuSearchSortFn,
+} from './types'
+
+export enum MenuMatchRank {
+    EXACT = 0,
+    PREFIX = 1,
+    SUBSTRING = 2,
+    NONE = 3,
+}
+
+const getFieldMatchRank = (
+    fieldValue: string | undefined,
+    lower: string
+): MenuMatchRank => {
+    if (!fieldValue) return MenuMatchRank.NONE
+    const value = fieldValue.toLowerCase()
+    if (value === lower) return MenuMatchRank.EXACT
+    if (value.startsWith(lower)) return MenuMatchRank.PREFIX
+    if (value.includes(lower)) return MenuMatchRank.SUBSTRING
+    return MenuMatchRank.NONE
+}
+
+export const getItemMatchRank = (
+    item: MenuItemType,
+    lower: string
+): MenuMatchRank => {
+    return Math.min(
+        getFieldMatchRank(item.label, lower),
+        getFieldMatchRank(item.subLabel, lower)
+    ) as MenuMatchRank
+}
+
+export const defaultSearchSortFn: MenuSearchSortFn = (items, searchText) => {
+    if (!searchText.trim()) return items
+    const lower = searchText.toLowerCase()
+    return [...items].sort(
+        (a, b) => getItemMatchRank(a, lower) - getItemMatchRank(b, lower)
+    )
+}
 
 // Utility: Recursively filter menu items and groups by search text
 export const filterMenuGroups = (
     groups: MenuGroupType[],
-    searchText: string
+    searchText: string,
+    searchSortFn: MenuSearchSortFn = defaultSearchSortFn
 ): MenuGroupType[] => {
     if (!searchText) return groups
     const lower = searchText.toLowerCase()
@@ -17,7 +59,7 @@ export const filterMenuGroups = (
                 .map((item: MenuItemType) => filterMenuItem(item, lower))
                 .filter(Boolean) as MenuItemType[]
             if (filteredItems.length === 0) return null
-            return { ...group, items: filteredItems }
+            return { ...group, items: searchSortFn(filteredItems, searchText) }
         })
         .filter(Boolean) as MenuGroupType[]
 }

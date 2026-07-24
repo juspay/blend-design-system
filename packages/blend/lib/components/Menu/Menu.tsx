@@ -8,7 +8,7 @@ import {
     type MenuItemType,
 } from './types'
 import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react'
-import { filterMenuGroups } from './utils'
+import { filterMenuGroups, defaultSearchSortFn } from './utils'
 import MenuItem from './MenuItem'
 import Block from '../Primitives/Block/Block'
 import SearchInput from '../Inputs/SearchInput/SearchInput'
@@ -62,6 +62,8 @@ const Menu = ({
     maxHeight,
     enableSearch = false,
     searchPlaceholder = 'Search',
+    searchSortFn = defaultSearchSortFn,
+    onEnter,
     minWidth,
     maxWidth,
     open,
@@ -81,7 +83,7 @@ const Menu = ({
     const searchInputRef = useRef<HTMLInputElement>(null)
     const justOpenedRef = useRef(false)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-    const filteredItems = filterMenuGroups(items, searchText)
+    const filteredItems = filterMenuGroups(items, searchText, searchSortFn)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
     const { target: portalContainer } = useShadowRoot()
 
@@ -353,6 +355,16 @@ const Menu = ({
                                         value={searchText}
                                         onChange={handleSearchChange}
                                         autoFocus
+                                        onKeyDown={(e) => {
+                                            e.stopPropagation()
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault()
+                                                onEnter?.(
+                                                    searchText,
+                                                    filteredItems
+                                                )
+                                            }
+                                        }}
                                         aria-label={`Search menu items${searchPlaceholder ? `: ${searchPlaceholder}` : ''}`}
                                     />
                                 </Block>

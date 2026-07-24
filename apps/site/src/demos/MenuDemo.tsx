@@ -5,7 +5,8 @@ import {
     MenuSide,
     MenuItemVariant,
     MenuItemActionType,
-} from '../../../../packages/blend/lib/components/Menu/types'
+    getItemMatchRank,
+} from '../../../../packages/blend/lib/components/Menu'
 import type { MenuGroupType } from '../../../../packages/blend/lib/components/Menu/types'
 import {
     TooltipSide,
@@ -2615,6 +2616,259 @@ export const MenuDemo: React.FC = () => {
                         with unlimited nesting depth
                         <br />• <strong>Real-time updates</strong> - Instant
                         filtering as you type
+                    </Text>
+                </Block>
+            </Block>
+
+            {/* 5.6. Search Ranking & OnEnter Callback */}
+            <Block marginBottom="48px">
+                <Block marginBottom="16px">
+                    <Text fontSize={28} fontWeight="semibold">
+                        5.6. Search Ranking & OnEnter Callback
+                    </Text>
+                </Block>
+                <Block marginBottom="24px">
+                    <Text fontSize={14} color="gray.600">
+                        Search results are ranked by relevance (exact match →
+                        prefix match → substring match) by default. An optional
+                        onEnter callback enables command-palette-style "confirm
+                        search" behavior.
+                    </Text>
+                </Block>
+
+                <Block display="flex" gap="16px" flexWrap="wrap">
+                    {/* Default ranking demo */}
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="Default Ranking (exact → prefix → substring)"
+                            />
+                        }
+                        items={searchableMenuItems}
+                        enableSearch={true}
+                        searchPlaceholder="Try: search, sort, create..."
+                        maxHeight={400}
+                        minWidth={300}
+                    />
+
+                    {/* onEnter callback demo */}
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.SECONDARY}
+                                text="onEnter Callback (check console)"
+                            />
+                        }
+                        items={searchableMenuItems}
+                        enableSearch={true}
+                        searchPlaceholder="Type & press Enter..."
+                        maxHeight={400}
+                        minWidth={300}
+                        onEnter={(searchText, filteredGroups) => {
+                            const count = filteredGroups.reduce(
+                                (sum, g) => sum + g.items.length,
+                                0
+                            )
+                            console.log(
+                                `[onEnter] search="${searchText}", ${count} results across ${filteredGroups.length} groups`,
+                                filteredGroups
+                            )
+                        }}
+                    />
+
+                    {/* Custom searchSortFn demo */}
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.SUCCESS}
+                                text="Custom Sort (reversed ranking)"
+                            />
+                        }
+                        items={searchableMenuItems}
+                        enableSearch={true}
+                        searchPlaceholder="Try: search, sort, create..."
+                        maxHeight={400}
+                        minWidth={300}
+                        searchSortFn={(items, searchText) => {
+                            // Reversed: substring → prefix → exact
+                            const lower = searchText.toLowerCase()
+                            return [...items].sort(
+                                (a, b) =>
+                                    getItemMatchRank(b, lower) -
+                                    getItemMatchRank(a, lower)
+                            )
+                        }}
+                    />
+
+                    {/* Submenu search ranking + onSubMenuSearchEnter demo */}
+                    <Menu
+                        trigger={
+                            <Button
+                                buttonType={ButtonType.DANGER}
+                                text="Submenu Search: Ranking + onEnter"
+                            />
+                        }
+                        items={[
+                            {
+                                items: [
+                                    {
+                                        label: 'Commands',
+                                        slot1: <Search size={16} />,
+                                        enableSubMenuSearch: true,
+                                        subMenuSearchPlaceholder:
+                                            'Search commands... (try "create", "delete")',
+                                        onSubMenuSearchEnter: (
+                                            searchText,
+                                            filteredResults
+                                        ) => {
+                                            console.log(
+                                                `[onSubMenuSearchEnter] search="${searchText}", ${filteredResults.length} results`,
+                                                filteredResults
+                                            )
+                                        },
+                                        subMenu: [
+                                            {
+                                                label: 'Create Project',
+                                                subLabel: 'New project',
+                                                onClick: () =>
+                                                    console.log(
+                                                        'Create Project'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Create File',
+                                                subLabel: 'New file',
+                                                onClick: () =>
+                                                    console.log('Create File'),
+                                            },
+                                            {
+                                                label: 'Delete Project',
+                                                subLabel: 'Remove project',
+                                                onClick: () =>
+                                                    console.log(
+                                                        'Delete Project'
+                                                    ),
+                                            },
+                                            {
+                                                label: 'Delete File',
+                                                subLabel: 'Remove file',
+                                                onClick: () =>
+                                                    console.log('Delete File'),
+                                            },
+                                            {
+                                                label: 'Export',
+                                                subLabel: 'Export data',
+                                                onClick: () =>
+                                                    console.log('Export'),
+                                            },
+                                            {
+                                                label: 'Duplicate',
+                                                subLabel: 'Copy item',
+                                                onClick: () =>
+                                                    console.log('Duplicate'),
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ]}
+                        maxWidth={320}
+                    />
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="green.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="green.700"
+                        >
+                            Ranking Order (best → worst):
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="green.600" lineHeight="1.6">
+                        1. <strong>EXACT</strong> — label or subLabel exactly
+                        matches the search text (case-insensitive)
+                        <br />
+                        2. <strong>PREFIX</strong> — label or subLabel starts
+                        with the search text
+                        <br />
+                        3. <strong>SUBSTRING</strong> — label or subLabel
+                        contains the search text
+                        <br />
+                        4. Items keep their original relative order within the
+                        same rank tier (stable sort)
+                    </Text>
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="blue.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="blue.700"
+                        >
+                            New Props:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="blue.600" lineHeight="1.6">
+                        • <strong>searchSortFn?</strong> — custom sort function
+                        for top-level search results (defaults to exact → prefix
+                        → substring)
+                        <br />•{' '}
+                        <strong>onEnter?(searchText, filteredGroups)</strong> —
+                        fires when Enter is pressed in the search input
+                        <br />• <strong>subMenuSearchSortFn?</strong> — custom
+                        sort for submenu search results (per-item)
+                        <br />•{' '}
+                        <strong>
+                            onSubMenuSearchEnter?(searchText, filteredResults)
+                        </strong>{' '}
+                        — fires when Enter is pressed in a submenu search input
+                    </Text>
+                </Block>
+
+                <Block
+                    marginTop="16px"
+                    padding="16px"
+                    backgroundColor="orange.50"
+                    borderRadius="8px"
+                >
+                    <Block marginBottom="8px">
+                        <Text
+                            fontSize={14}
+                            fontWeight="medium"
+                            color="orange.700"
+                        >
+                            How to Test:
+                        </Text>
+                    </Block>
+                    <Text fontSize={12} color="orange.600" lineHeight="1.6">
+                        1. Open "Default Ranking" and type "search" — exact
+                        match "Search" appears before "Advanced Search" /
+                        "Global Search"
+                        <br />
+                        2. Open "onEnter Callback", type any query and press
+                        Enter — check the console for the search text & result
+                        count
+                        <br />
+                        3. Open "Custom Sort" and type "search" — results appear
+                        in reversed order (substring matches first)
+                        <br />
+                        4. Open "Submenu Search: Ranking + onEnter", type
+                        "create" or "delete" in the submenu search, press Enter
+                        — check console for onSubMenuSearchEnter output
                     </Text>
                 </Block>
             </Block>
