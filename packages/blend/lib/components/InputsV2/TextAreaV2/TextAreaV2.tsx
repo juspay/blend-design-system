@@ -85,8 +85,9 @@ const TextAreaV2 = forwardRef<HTMLTextAreaElement, TextAreaV2Props>(
                     size,
                     isSmallScreen,
                     inputFocusedOrWithValue,
+                    hasLabel: Boolean(label),
                 }),
-            [ic, size, isSmallScreen, inputFocusedOrWithValue]
+            [ic, size, isSmallScreen, inputFocusedOrWithValue, label]
         )
 
         const {

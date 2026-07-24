@@ -22,23 +22,21 @@ export const getInputState = (
 export const getVerticalInputPadding = ({
     isSmallScreenWithLargeSize,
     inputFocusedOrWithValue,
+    hasLabel,
     paddingTop,
     paddingBottom,
 }: {
     isSmallScreenWithLargeSize: boolean
     inputFocusedOrWithValue: boolean
+    hasLabel: boolean
     paddingTop: number
     paddingBottom: number
 }) => {
-    const top =
-        isSmallScreenWithLargeSize && inputFocusedOrWithValue
-            ? paddingTop * 1.5
-            : paddingTop
+    const shouldFloat =
+        hasLabel && isSmallScreenWithLargeSize && inputFocusedOrWithValue
 
-    const bottom =
-        isSmallScreenWithLargeSize && inputFocusedOrWithValue
-            ? paddingBottom / 2
-            : paddingBottom
+    const top = shouldFloat ? paddingTop * 1.5 : paddingTop
+    const bottom = shouldFloat ? paddingBottom / 2 : paddingBottom
 
     return { top, bottom }
 }

@@ -276,12 +276,16 @@ const NumberInput = ({
                     aria-describedby={ariaDescribedBy}
                     paddingX={paddingX}
                     paddingTop={
-                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                        label &&
+                        isSmallScreenWithLargeSize &&
+                        inputFocusedOrWithValue
                             ? paddingY * 1.5
                             : paddingY
                     }
                     paddingBottom={
-                        isSmallScreenWithLargeSize && inputFocusedOrWithValue
+                        label &&
+                        isSmallScreenWithLargeSize &&
+                        inputFocusedOrWithValue
                             ? paddingY / 2
                             : paddingY
                     }

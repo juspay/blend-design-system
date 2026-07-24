@@ -480,6 +480,7 @@ describe('TextAreaV2', () => {
                     size: InputSizeV2.MD,
                     isSmallScreen: true,
                     inputFocusedOrWithValue: true,
+                    hasLabel: true,
                 })
                 expect(r.paddingTop).toBe(20)
                 expect(r.paddingBottom).toBe(0)
@@ -496,6 +497,7 @@ describe('TextAreaV2', () => {
                     size: InputSizeV2.MD,
                     isSmallScreen: false,
                     inputFocusedOrWithValue: true,
+                    hasLabel: true,
                 })
                 expect(r.paddingTop).toBe(10)
                 expect(r.paddingBottom).toBe(10)

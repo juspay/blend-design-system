@@ -45,18 +45,20 @@ export function getTextAreaInputPadding({
     size,
     isSmallScreen,
     inputFocusedOrWithValue,
+    hasLabel,
 }: {
     inputContainer: TextAreaV2TokensType['inputContainer']
     size: InputSizeV2
     isSmallScreen: boolean
     inputFocusedOrWithValue: boolean
+    hasLabel: boolean
 }): TextAreaInputPadding {
     const paddingTopBase = toPixels(inputContainer.padding.top[size])
     const paddingBottomBase = toPixels(inputContainer.padding.bottom[size])
     const paddingLeft = toPixels(inputContainer.padding.left[size])
     const paddingRight = toPixels(inputContainer.padding.right[size])
 
-    const isFloating = isSmallScreen && inputFocusedOrWithValue
+    const isFloating = hasLabel && isSmallScreen && inputFocusedOrWithValue
     const paddingTop = isFloating
         ? paddingTopBase + paddingTopBase
         : paddingTopBase
