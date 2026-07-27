@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import styled from 'styled-components'
@@ -245,7 +245,10 @@ const VirtualizedDirectory = ({
     virtualization,
 }: DirectoryProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
-    const directoryData = normalizeDirectoryData(directoryDataProp)
+    const directoryData = useMemo(
+        () => normalizeDirectoryData(directoryDataProp),
+        [directoryDataProp]
+    )
     const scrollRef = useRef<HTMLDivElement | null>(null)
     const isActiveControlled = controlledActiveItem !== undefined
     const [internalActiveItem, setInternalActiveItem] = useState<string | null>(
@@ -268,6 +271,9 @@ const VirtualizedDirectory = ({
     const [openSections, setOpenSections] = useState<Set<number>>(() =>
         getDefaultOpenSections(directoryData)
     )
+    useEffect(() => {
+        setOpenSections(getDefaultOpenSections(directoryData))
+    }, [directoryData])
 
     const rows = useMemo(
         () =>
