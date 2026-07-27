@@ -1,5 +1,5 @@
 import React from 'react'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import Directory from '../../../lib/components/Directory/Directory'
 import type { DirectoryData } from '../../../lib/components/Directory/types'
@@ -18,6 +18,11 @@ const directoryData: DirectoryData[] = [
 ]
 
 describe('Directory', () => {
+    const waitForAnimationFrame = () =>
+        new Promise<void>((resolve) => {
+            window.requestAnimationFrame(() => resolve())
+        })
+
     it('renders hierarchy connector attributes only when enabled', async () => {
         const { user, unmount } = render(
             <Directory directoryData={directoryData} />
@@ -46,5 +51,107 @@ describe('Directory', () => {
         expect(
             document.querySelectorAll('[data-directory-hierarchy-item="true"]')
         ).toHaveLength(2)
+    })
+
+    it('supports controlled expanded items in virtualized mode', async () => {
+        const onExpandedItemsChange = vi.fn()
+        const { user } = render(
+            <Directory
+                directoryData={directoryData}
+                enableVirtualization
+                virtualization={{
+                    threshold: 0,
+                    rowHeight: 32,
+                    viewportHeight: 96,
+                    overscan: 1,
+                }}
+                expandedItems={[]}
+                onExpandedItemsChange={onExpandedItemsChange}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /acme/i }))
+
+        expect(onExpandedItemsChange).toHaveBeenCalledWith([
+            'Acme Commerce Group',
+        ])
+    })
+
+    it('only mounts visible rows for large virtualized trees', () => {
+        const largeDirectoryData: DirectoryData[] = [
+            {
+                label: 'Large tree',
+                isCollapsible: false,
+                items: [
+                    {
+                        label: 'Merchant Directory',
+                        items: Array.from({ length: 10000 }, (_, index) => ({
+                            label: `Merchant ${index + 1}`,
+                        })),
+                    },
+                ],
+            },
+        ]
+
+        render(
+            <Directory
+                directoryData={largeDirectoryData}
+                defaultExpandedItems={['Merchant Directory']}
+                enableVirtualization
+                virtualization={{
+                    threshold: 0,
+                    rowHeight: 32,
+                    viewportHeight: 96,
+                    overscan: 1,
+                }}
+            />
+        )
+
+        expect(
+            screen.getByRole('button', { name: /merchant directory/i })
+        ).toBeInTheDocument()
+        expect(
+            screen.getByRole('button', { name: /merchant 1/i })
+        ).toBeInTheDocument()
+        expect(
+            screen.queryByRole('button', { name: /merchant 1000/i })
+        ).not.toBeInTheDocument()
+    })
+
+    it('supports keyboard navigation between visible rows in virtualized mode', async () => {
+        const { user } = render(
+            <Directory
+                directoryData={directoryData}
+                defaultExpandedItems={['Acme Commerce Group']}
+                enableVirtualization
+                virtualization={{
+                    threshold: 0,
+                    rowHeight: 32,
+                    viewportHeight: 128,
+                    overscan: 1,
+                }}
+            />
+        )
+
+        screen.getByRole('button', { name: /acme/i }).focus()
+        await user.keyboard('{ArrowDown}')
+
+        expect(
+            screen.getByRole('button', { name: /helix network/i })
+        ).toHaveFocus()
+
+        await user.keyboard('{ArrowDown}')
+
+        expect(
+            screen.getByRole('button', { name: /orbit pharma/i })
+        ).toHaveFocus()
+
+        await user.keyboard('{ArrowUp}')
+
+        expect(
+            screen.getByRole('button', { name: /helix network/i })
+        ).toHaveFocus()
+
+        await waitForAnimationFrame()
     })
 })

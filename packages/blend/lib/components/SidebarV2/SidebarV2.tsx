@@ -73,6 +73,12 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             onSidebarStateChange,
             showHierarchyLines = false,
             hierarchyLineBorderRadius = 0,
+            expandedItems,
+            defaultExpandedItems,
+            onExpandedItemsChange,
+            onItemExpand,
+            enableVirtualization = false,
+            virtualization,
         },
         ref
     ) => {
@@ -329,6 +335,12 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 hierarchyLineBorderRadius={
                                     hierarchyLineBorderRadius
                                 }
+                                expandedItems={expandedItems}
+                                defaultExpandedItems={defaultExpandedItems}
+                                onExpandedItemsChange={onExpandedItemsChange}
+                                onItemExpand={onItemExpand}
+                                enableVirtualization={enableVirtualization}
+                                virtualization={virtualization}
                             />
                         )}
 
@@ -396,6 +408,14 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                     hierarchyLineBorderRadius={
                                         hierarchyLineBorderRadius
                                     }
+                                    expandedItems={expandedItems}
+                                    defaultExpandedItems={defaultExpandedItems}
+                                    onExpandedItemsChange={
+                                        onExpandedItemsChange
+                                    }
+                                    onItemExpand={onItemExpand}
+                                    enableVirtualization={enableVirtualization}
+                                    virtualization={virtualization}
                                 />
                             </Block>
                         )}

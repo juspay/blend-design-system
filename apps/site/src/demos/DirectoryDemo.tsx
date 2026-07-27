@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
     Building2,
     CreditCard,
@@ -12,6 +12,63 @@ import type { DirectoryData } from '../../../../packages/blend/lib/components/Di
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 
 const iconStyle = { width: '16px', height: '16px' }
+
+const rightSlotStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: '28px',
+    height: '20px',
+    padding: '0 6px',
+    borderRadius: '999px',
+    backgroundColor: '#F1F5F9',
+    color: '#475569',
+    fontSize: '11px',
+    fontWeight: 600,
+}
+
+const largeDirectoryGroups = [
+    'North India Operations',
+    'West India Operations',
+    'South India Operations',
+    'East India Operations',
+    'Central India Operations',
+    'Enterprise Accounts',
+    'Marketplace Sellers',
+    'Pharmacy Networks',
+    'Grocery Channels',
+    'Electronics Retail',
+    'Travel Partners',
+    'Subscription Billing',
+    'International Merchants',
+    'Risk Review Queue',
+    'Settlement Operations',
+    'Refund Management',
+    'Dispute Resolution',
+    'Payout Configurations',
+    'Routing Experiments',
+    'Failover Policies',
+    'Webhook Consumers',
+    'Invoice Collections',
+    'Reconciliation Jobs',
+    'Manual Review Workflows',
+    'Fraud Strategy',
+    'Gateway Health',
+    'Terminal Deployments',
+    'Partner Onboarding',
+    'Merchant Success',
+    'Escalation Desk',
+    'Compliance Review',
+    'KYC Verification',
+    'Tax Configuration',
+    'Pricing Experiments',
+    'Offer Campaigns',
+    'Loyalty Programs',
+    'Credit Products',
+    'Debit Products',
+    'UPI Mandates',
+    'Card Tokenization',
+]
 
 const commerceDirectoryData: DirectoryData[] = [
     {
@@ -236,6 +293,78 @@ const DirectoryDemo = () => {
     const [activeItem, setActiveItem] = useState<string | null>(
         'Acme Commerce Group/Helix Network/Orbit Pharma'
     )
+    const virtualizedExpandedItems = useMemo(
+        () => [
+            'Merchant Directory',
+            ...largeDirectoryGroups.map(
+                (group) => `Merchant Directory/${group}`
+            ),
+        ],
+        []
+    )
+    const virtualizedDirectoryData = useMemo<DirectoryData[]>(
+        () => [
+            {
+                label: 'Large merchant tree',
+                isCollapsible: false,
+                items: [
+                    {
+                        label: 'Merchant Directory',
+                        leftSlot: <FolderTree style={iconStyle} />,
+                        rightSlot: (
+                            <span style={rightSlotStyle}>
+                                {largeDirectoryGroups.length}
+                            </span>
+                        ),
+                        items: largeDirectoryGroups.map(
+                            (group, groupIndex) => ({
+                                label: group,
+                                leftSlot: <Network style={iconStyle} />,
+                                rightSlot: (
+                                    <span style={rightSlotStyle}>250</span>
+                                ),
+                                items: Array.from(
+                                    { length: 250 },
+                                    (_, index) => {
+                                        const merchantNumber =
+                                            groupIndex * 250 + index + 1
+                                        const paddedMerchantNumber = String(
+                                            merchantNumber
+                                        ).padStart(5, '0')
+                                        const routeType =
+                                            index % 4 === 0
+                                                ? 'Settlements'
+                                                : index % 4 === 1
+                                                  ? 'Refunds'
+                                                  : index % 4 === 2
+                                                    ? 'Risk Review'
+                                                    : 'Routing Rules'
+
+                                        return {
+                                            label: `${group} / ${routeType} / Merchant Operations Route ${paddedMerchantNumber}`,
+                                            leftSlot: (
+                                                <Store style={iconStyle} />
+                                            ),
+                                            rightSlot: (
+                                                <span style={rightSlotStyle}>
+                                                    {index % 3 === 0
+                                                        ? 'Live'
+                                                        : index % 3 === 1
+                                                          ? 'Beta'
+                                                          : 'QA'}
+                                                </span>
+                                            ),
+                                        }
+                                    }
+                                ),
+                            })
+                        ),
+                    },
+                ],
+            },
+        ],
+        []
+    )
 
     return (
         <div className="p-8 space-y-8">
@@ -377,6 +506,30 @@ const DirectoryDemo = () => {
                 <p className="text-xs text-gray-500">
                     Narrow container with intentionally long labels to inspect
                     truncation, tooltips, hover backgrounds, and line spacing.
+                </p>
+            </section>
+
+            <section className="space-y-3">
+                <h2 className="text-xl font-semibold">Virtualized 10K rows</h2>
+                <div className="h-96 w-full max-w-md rounded-lg border border-gray-200 bg-white p-3">
+                    <Directory
+                        directoryData={virtualizedDirectoryData}
+                        defaultExpandedItems={virtualizedExpandedItems}
+                        enableVirtualization
+                        virtualization={{
+                            rowHeight: 36,
+                            sectionHeight: 28,
+                            viewportHeight: 340,
+                            overscan: 8,
+                            threshold: 100,
+                        }}
+                        showHierarchyLines={showHierarchyLines}
+                        hierarchyLineBorderRadius={`${hierarchyLineBorderRadius}px`}
+                    />
+                </div>
+                <p className="text-xs text-gray-500">
+                    Opt-in viewport rendering for 40 expanded groups and 10,000
+                    merchant rows. Only visible rows plus overscan are mounted.
                 </p>
             </section>
         </div>
