@@ -5,7 +5,8 @@
         "Header slot for chart title and controls",
         "X and Y axis labels",
         "Configurable dimensions",
-        "Responsive width support"
+        "Responsive width support",
+        "Optional showAllLegends mode to render every legend item instead of using the + more overflow menu"
     ],
     "compositionPattern": null,
     "usageExamples": [
@@ -18,6 +19,11 @@
             "title": "Category distribution pie chart",
             "description": "Pie chart showing distribution of support tickets by category.",
             "code": "<Charts\n  chartType=\"PIE\"\n  data={[\n    { category: 'Billing', count: 42 },\n    { category: 'Technical', count: 58 },\n    { category: 'Account', count: 23 },\n    { category: 'Other', count: 15 },\n  ]}\n  width=\"100%\"\n  height={280}\n  chartHeaderSlot={<h3>Tickets by Category</h3>}\n/>"
+        },
+        {
+            "title": "Line bar chart with all legends visible",
+            "description": "Forces every legend item to render inline instead of collapsing overflow into + more.",
+            "code": "<Charts\n  chartType=\"LINE_BAR\"\n  data={data}\n  legends={[\n    { title: 'Paid out' },\n    { title: 'Payout in progress' },\n    { title: 'Failed' },\n    { title: 'Refunded' },\n  ]}\n  showAllLegends\n  chartHeaderSlot={<h3>Payout timeline</h3>}\n/>"
         }
     ],
     "propOverrides": {
@@ -40,6 +46,10 @@
         "yAxisLabel": {
             "llmContext": "Label for the vertical axis. Describe the metric and include units where relevant (e.g., 'Revenue ($)', 'Users', 'Conversion Rate (%)').",
             "propDescription": "Label for the y-axis"
+        },
+        "showAllLegends": {
+            "llmContext": "Set true when every legend item must remain visible. This disables the measured + more overflow menu and allows legend items to wrap to additional rows.",
+            "propDescription": "Force all legend items to render inline"
         }
     }
 }
