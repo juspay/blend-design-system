@@ -140,6 +140,16 @@ const DateRangePickerDemo = () => {
         endDate: new Date(),
     })
 
+    // Bounded & disabled dates demos
+    const [minMaxRange, setMinMaxRange] = useState<DateRange | undefined>({
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+    })
+    const [disabledDaysRange, setDisabledDaysRange] = useState<
+        DateRange | undefined
+    >()
+    const [maxRangeRange, setMaxRangeRange] = useState<DateRange | undefined>()
+
     // Simple yesterday range - component handles timezone internally
     const [yesterdayRange, setYesterdayRange] = useState<DateRange>(() => {
         const yesterday = new Date()
@@ -4258,6 +4268,137 @@ const DateRangePickerDemo = () => {
                         handles UI, formatting, preset detection, and timezone
                         conversion. Timezone support uses native Intl API.
                     </p>
+                </div>
+            </div>
+
+            {/* Bounded & Disabled Dates */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Bounded &amp; Disabled Dates
+                </h2>
+                <p className="text-gray-600">
+                    <code className="bg-gray-100 px-1 rounded">minDate</code>,{' '}
+                    <code className="bg-gray-100 px-1 rounded">maxDate</code>,{' '}
+                    <code className="bg-gray-100 px-1 rounded">
+                        customDisableDates
+                    </code>{' '}
+                    and{' '}
+                    <code className="bg-gray-100 px-1 rounded">
+                        maxRangeDays
+                    </code>{' '}
+                    are enforced in both the cell styling <em>and</em> the
+                    click/keyboard handlers — disabled dates cannot be selected
+                    via mouse or Enter/Space.
+                </p>
+
+                {/* minDate / maxDate */}
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                        minDate / maxDate — hard window
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        Only dates within{' '}
+                        <code className="bg-white px-1 rounded">minDate</code>{' '}
+                        and{' '}
+                        <code className="bg-white px-1 rounded">maxDate</code>{' '}
+                        are selectable. Days outside the window render disabled
+                        and ignore clicks and keyboard activation.
+                    </p>
+                    <DateRangePicker
+                        value={minMaxRange}
+                        onChange={setMinMaxRange}
+                        minDate={
+                            new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth(),
+                                1
+                            )
+                        }
+                        maxDate={
+                            new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth() + 1,
+                                0
+                            )
+                        }
+                        showDateTimePicker={false}
+                        showPresets={false}
+                    />
+                </div>
+
+                {/* customDisableDates — Sundays disabled */}
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                        customDisableDates — block Sundays
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        The callback receives{' '}
+                        <code className="bg-white px-1 rounded">
+                            (date, currentRange)
+                        </code>
+                        . Here Sundays are disabled. Try focusing a Sunday cell
+                        and pressing Enter — it stays blocked.
+                    </p>
+                    <DateRangePicker
+                        value={disabledDaysRange}
+                        onChange={setDisabledDaysRange}
+                        customDisableDates={(date) => date.getDay() === 0}
+                        showDateTimePicker={false}
+                        showPresets={false}
+                    />
+                </div>
+
+                {/* maxRangeDays */}
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                        maxRangeDays — cap in-progress range (7 days)
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        Pick a start date — days more than 7 away from the start
+                        become disabled until an end date is chosen. The cap is
+                        lifted once both start and end are set (a new click
+                        starts a fresh range).
+                    </p>
+                    <DateRangePicker
+                        value={maxRangeRange}
+                        onChange={setMaxRangeRange}
+                        maxRangeDays={7}
+                        showDateTimePicker={false}
+                        showPresets={false}
+                    />
+                </div>
+
+                {/* Combined */}
+                <div className="p-4 border border-indigo-200 rounded-lg bg-indigo-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-indigo-700">
+                        Combined — window + disabled days + range cap
+                    </h3>
+                    <p className="text-sm text-indigo-600">
+                        All three constraints active at once: bounded to this
+                        month, Sundays disabled, max 7-day range.
+                    </p>
+                    <DateRangePicker
+                        value={maxRangeRange}
+                        onChange={setMaxRangeRange}
+                        minDate={
+                            new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth(),
+                                1
+                            )
+                        }
+                        maxDate={
+                            new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth() + 1,
+                                0
+                            )
+                        }
+                        customDisableDates={(date) => date.getDay() === 0}
+                        maxRangeDays={7}
+                        showDateTimePicker={false}
+                        showPresets={false}
+                    />
                 </div>
             </div>
 
