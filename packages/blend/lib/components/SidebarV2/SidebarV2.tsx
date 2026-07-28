@@ -71,6 +71,14 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             onActiveItemChange,
             defaultActiveItem,
             onSidebarStateChange,
+            showHierarchyLines = false,
+            hierarchyLineBorderRadius = 0,
+            expandedItems,
+            defaultExpandedItems,
+            onExpandedItemsChange,
+            onItemExpand,
+            enableVirtualization = false,
+            virtualization,
         },
         ref
     ) => {
@@ -323,6 +331,16 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 setIsHovering={setIsHovering}
                                 sidebarState={sidebarStatus}
                                 tokens={tokens}
+                                showHierarchyLines={showHierarchyLines}
+                                hierarchyLineBorderRadius={
+                                    hierarchyLineBorderRadius
+                                }
+                                expandedItems={expandedItems}
+                                defaultExpandedItems={defaultExpandedItems}
+                                onExpandedItemsChange={onExpandedItemsChange}
+                                onItemExpand={onItemExpand}
+                                enableVirtualization={enableVirtualization}
+                                virtualization={virtualization}
                             />
                         )}
 
@@ -386,6 +404,18 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                     footer={footer}
                                     sidebarState={sidebarStatus}
                                     tokens={tokens}
+                                    showHierarchyLines={showHierarchyLines}
+                                    hierarchyLineBorderRadius={
+                                        hierarchyLineBorderRadius
+                                    }
+                                    expandedItems={expandedItems}
+                                    defaultExpandedItems={defaultExpandedItems}
+                                    onExpandedItemsChange={
+                                        onExpandedItemsChange
+                                    }
+                                    onItemExpand={onItemExpand}
+                                    enableVirtualization={enableVirtualization}
+                                    virtualization={virtualization}
                                 />
                             </Block>
                         )}

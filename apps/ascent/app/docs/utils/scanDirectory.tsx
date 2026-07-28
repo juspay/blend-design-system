@@ -181,6 +181,24 @@ export function buildVersionPeerMap(items: DocItem[]): Map<string, string> {
     return map
 }
 
+export function buildDocVersionMap(items: DocItem[]): Map<string, number> {
+    const map = new Map<string, number>()
+
+    function walk(children: DocItem[]): void {
+        for (const item of children) {
+            if (item.children?.length) {
+                walk(item.children)
+                continue
+            }
+
+            map.set(item.slug, item.version ?? 1)
+        }
+    }
+
+    walk(items)
+    return map
+}
+
 // Category builder for sidebar
 
 export function buildSidebarItemsWithCategories(items: DocItem[]): DocItem[] {

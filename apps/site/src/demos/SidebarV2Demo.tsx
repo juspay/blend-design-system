@@ -97,6 +97,7 @@ import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
+import CardV2Demo from './CardV2Demo'
 import {
     TextInput,
     Button,
@@ -113,6 +114,7 @@ import AllComponentsDemo from './AllComponentsDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
+import UploadV2Demo from './UploadV2Demo'
 import CodeBlockDemo from './CodeBlockDemo'
 import CodeEditorDemo from './CodeEditorDemo'
 import ChatInputDemo from './ChatInputDemo'
@@ -138,6 +140,7 @@ import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
 import RadioV2Demo from './RadioV2Demo'
+import DirectoryDemo from './DirectoryDemo'
 import {
     SingleSelectV2,
     SingleSelectV2Variant,
@@ -205,11 +208,13 @@ const SidebarV2Demo = () => {
         | 'stepper'
         | 'keyValuePair'
         | 'card'
+        | 'cardV2'
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
         | 'skeleton'
         | 'upload'
+        | 'uploadV2'
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
@@ -229,6 +234,7 @@ const SidebarV2Demo = () => {
         | 'timeline'
         | 'tooltipV2'
         | 'popoverV2'
+        | 'directory'
     >(() => {
         return (window.location.hash.slice(1) || 'popoverV2') as any
     })
@@ -476,14 +482,20 @@ const SidebarV2Demo = () => {
                 return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
+            case 'cardV2':
+                return <CardV2Demo />
             case 'skeleton':
                 return <SkeletonDemo />
             case 'allComponents':
                 return <AllComponentsDemo />
             case 'virtualList':
                 return <VirtualListDemo />
+            case 'directory':
+                return <DirectoryDemo />
             case 'upload':
                 return <UploadDemo />
+            case 'uploadV2':
+                return <UploadV2Demo />
             case 'codeBlock':
                 return <CodeBlockDemo />
             case 'codeEditor':
@@ -788,11 +800,29 @@ const SidebarV2Demo = () => {
                         showOnMobile: true,
                     },
                     {
+                        label: 'Directory',
+                        leftSlot: (
+                            <List style={{ width: '16px', height: '16px' }} />
+                        ),
+                        isSelected: activeComponent === 'directory',
+                        onClick: () => setActiveComponent('directory'),
+                        showOnMobile: true,
+                    },
+                    {
                         label: 'File Upload',
                         leftSlot: (
                             <Upload style={{ width: '16px', height: '16px' }} />
                         ),
+                        isSelected: activeComponent === 'upload',
                         onClick: () => setActiveComponent('upload'),
+                    },
+                    {
+                        label: 'File Upload V2',
+                        leftSlot: (
+                            <Upload style={{ width: '16px', height: '16px' }} />
+                        ),
+                        isSelected: activeComponent === 'uploadV2',
+                        onClick: () => setActiveComponent('uploadV2'),
                     },
                 ],
             },
@@ -1297,6 +1327,14 @@ const SidebarV2Demo = () => {
                         ),
                         isSelected: activeComponent === 'card',
                         onClick: () => setActiveComponent('card'),
+                    },
+                    {
+                        label: 'Card V2',
+                        leftSlot: (
+                            <Square style={{ width: '16px', height: '16px' }} />
+                        ),
+                        isSelected: activeComponent === 'cardV2',
+                        onClick: () => setActiveComponent('cardV2'),
                     },
                     {
                         label: 'Progress Bar',

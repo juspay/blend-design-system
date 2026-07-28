@@ -1,4 +1,11 @@
-import React, { forwardRef, useMemo, useRef, useEffect, useState } from 'react'
+import React, {
+    forwardRef,
+    useMemo,
+    useRef,
+    useEffect,
+    useState,
+    useCallback,
+} from 'react'
 import {
     Edit,
     Save,
@@ -18,6 +25,7 @@ import Menu from '../../Menu/Menu'
 import { MenuAlignment, MenuSide } from '../../Menu/types'
 import Skeleton from '../../Skeleton/Skeleton'
 import { getSkeletonState } from '../../Skeleton/utils'
+import { useRowFlip } from '../hooks/useRowFlip'
 
 import { Button, ButtonType, ButtonSize, ButtonSubType } from '../../Button'
 import { Checkbox, CheckboxSize } from '../../Checkbox'
@@ -571,6 +579,8 @@ const TableBody = forwardRef<
             isRowLoading,
             focusedCell,
             onCellFocus,
+            enableRowAnimation = false,
+            rowAnimationConfig,
         },
         ref
     ) => {
@@ -650,13 +660,33 @@ const TableBody = forwardRef<
             return `tbody-${len}-${firstId}-${lastId}`
         }, [currentData, dataVersion, idField])
 
+        const orderedRowIds = useMemo(
+            () => currentData.map((row) => String(row[idField])),
+            [currentData, idField]
+        )
+
+        const { register } = useRowFlip(
+            enableRowAnimation ? orderedRowIds : [],
+            rowAnimationConfig
+        )
+
+        const getFlipRefCallback = useCallback(
+            (rowId: string) => (el: HTMLTableRowElement | null) => {
+                if (!enableRowAnimation) return
+                register(rowId, el)
+            },
+            [enableRowAnimation, register]
+        )
+
+        const isPageTransition = !enableRowAnimation
+
         return (
             <motion.tbody
-                key={tbodyKey}
+                key={isPageTransition ? tbodyKey : undefined}
                 ref={ref}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
+                initial={isPageTransition ? { opacity: 0 } : undefined}
+                animate={isPageTransition ? { opacity: 1 } : undefined}
+                transition={isPageTransition ? { duration: 0.3 } : undefined}
                 style={{
                     backgroundColor: FOUNDATION_THEME.colors.gray[0],
                 }}
@@ -685,7 +715,6 @@ const TableBody = forwardRef<
                           const isSelected = selectedRows[rowId] || false
                           const rowAriaLabel = `Row ${index + 1}${isSelected ? ', selected' : ''}${isExpanded ? ', expanded' : ''}`
 
-                          // Helper to calculate absolute column index
                           const getAbsoluteColIndex = (
                               relativeColIndex: number
                           ) => {
@@ -695,11 +724,18 @@ const TableBody = forwardRef<
                               return colIndex
                           }
 
-                          const rowKey = `${rowId}-${index}`
+                          const rowKey = enableRowAnimation
+                              ? rowId
+                              : `${rowId}-${index}`
 
                           return (
                               <React.Fragment key={rowKey}>
                                   <TableRow
+                                      ref={
+                                          enableRowAnimation
+                                              ? getFlipRefCallback(rowId)
+                                              : undefined
+                                      }
                                       $isClickable={!!onRowClick}
                                       $customBackgroundColor={
                                           rowStyling.backgroundColor
@@ -1156,6 +1192,9 @@ const TableBody = forwardRef<
                                                           $hasCustomBackground={
                                                               hasCustomBackground
                                                           }
+                                                          $isFirstRow={
+                                                              index === 0
+                                                          }
                                                           data-row-index={index}
                                                           data-col-index={
                                                               absoluteColIndex
@@ -1188,9 +1227,6 @@ const TableBody = forwardRef<
                                                                   getFrozenBodyStyles()),
                                                               outline: 'none',
                                                           }}
-                                                          $isFirstRow={
-                                                              index === 0
-                                                          }
                                                       >
                                                           <Skeleton
                                                               variant={
@@ -1537,6 +1573,7 @@ const TableBody = forwardRef<
                                                       $hasCustomBackground={
                                                           hasCustomBackground
                                                       }
+                                                      $isFirstRow={index === 0}
                                                       data-row-index={index}
                                                       data-col-index={
                                                           columnManagerColIndex
@@ -1562,7 +1599,6 @@ const TableBody = forwardRef<
                                                           )
                                                       }
                                                       role="gridcell"
-                                                      $isFirstRow={index === 0}
                                                       style={{
                                                           minWidth:
                                                               FOUNDATION_THEME

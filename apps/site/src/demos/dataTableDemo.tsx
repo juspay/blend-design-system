@@ -11,6 +11,7 @@ import {
     DateColumnProps,
     DateFormat,
     PivotAggregationType,
+    RowAnimationConfig,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import type { PivotTableConfig } from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/types'
@@ -4280,6 +4281,8 @@ const DataTableDemo = () => {
 
             <EmptyDataTableExamples />
 
+            <RowAnimationDemo />
+
             <SkeletonLoadingDemo />
 
             <Modal
@@ -4381,6 +4384,758 @@ const DataTableDemo = () => {
                     </div>
                 </div>
             </Modal>
+        </div>
+    )
+}
+
+// Row Animation Demo Component
+const RowAnimationDemo = () => {
+    type AnimRow = {
+        id: number
+        name: string
+        category: string
+        price: number
+        status: TagColumnProps
+    }
+
+    const baseData: AnimRow[] = [
+        {
+            id: 1,
+            name: 'Wireless Headphones',
+            category: 'Audio',
+            price: 89,
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 2,
+            name: 'Mechanical Keyboard',
+            category: 'Peripherals',
+            price: 149,
+            status: {
+                text: 'Low Stock',
+                variant: 'subtle' as const,
+                color: 'warning' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 3,
+            name: 'USB-C Hub',
+            category: 'Accessories',
+            price: 45,
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 4,
+            name: '4K Monitor',
+            category: 'Displays',
+            price: 599,
+            status: {
+                text: 'Inactive',
+                variant: 'subtle' as const,
+                color: 'error' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 5,
+            name: 'Webcam HD',
+            category: 'Peripherals',
+            price: 79,
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+        },
+    ]
+
+    const [data, setData] = useState(baseData)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [nextId, setNextId] = useState(6)
+    const [transitionType, setTransitionType] = useState<'spring' | 'bezier'>(
+        'bezier'
+    )
+    // Spring config
+    const [springStiffness, setSpringStiffness] = useState(320)
+    const [springDamping, setSpringDamping] = useState(32)
+    const [springMass, setSpringMass] = useState(1)
+    const [bezierDuration, setBezierDuration] = useState(0.3)
+    const [bezierControl, setBezierControl] = useState<
+        [number, number, number, number]
+    >([0, 0.2, 0, 1])
+    const [enterDuration, setEnterDuration] = useState(0.65)
+    const [enterOffset, setEnterOffset] = useState(34)
+    const [animationEnabled, setAnimationEnabled] = useState(true)
+    const [showActiveOnly, setShowActiveOnly] = useState(false)
+
+    const bezierPresets: Record<string, [number, number, number, number]> = {
+        Apple: [0, 0.2, 0, 1],
+        Smooth: [0.22, 1, 0.36, 1],
+        'ease-out': [0, 0, 0.58, 1],
+        'ease-in': [0.42, 0, 1, 1],
+        'ease-in-out': [0.42, 0, 0.58, 1],
+        linear: [0, 0, 1, 1],
+    }
+
+    const animColumns: ColumnDefinition<AnimRow>[] = [
+        {
+            field: 'name',
+            header: 'Product',
+            type: ColumnType.TEXT,
+            isSortable: true,
+        },
+        {
+            field: 'category',
+            header: 'Category',
+            type: ColumnType.TEXT,
+            isSortable: true,
+        },
+        {
+            field: 'price',
+            header: 'Price',
+            type: ColumnType.NUMBER,
+            isSortable: true,
+        },
+        {
+            field: 'status',
+            header: 'Status',
+            type: ColumnType.TAG,
+            isSortable: true,
+            renderCell: (value: TagColumnProps) => (
+                <Tag
+                    text={value.text}
+                    variant={TagVariant.SUBTLE}
+                    color={
+                        value.color === 'success'
+                            ? TagColor.SUCCESS
+                            : value.color === 'error'
+                              ? TagColor.ERROR
+                              : value.color === 'warning'
+                                ? TagColor.WARNING
+                                : TagColor.NEUTRAL
+                    }
+                    size={TagSize.SM}
+                />
+            ),
+        },
+    ]
+
+    const handleSortByName = () => {
+        setData((prev) =>
+            [...prev].sort((a, b) => a.name.localeCompare(b.name))
+        )
+    }
+
+    const handleSortByPrice = () => {
+        setData((prev) => [...prev].sort((a, b) => a.price - b.price))
+    }
+
+    const handleShuffle = () => {
+        setData((prev) => {
+            const shuffled = [...prev]
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1))
+                ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+            }
+            return shuffled
+        })
+    }
+
+    const handleFilterActive = () => {
+        setShowActiveOnly((prev) => {
+            if (!prev) {
+                setData(baseData.filter((r) => r.status.text === 'Active'))
+            } else {
+                setData(baseData)
+            }
+            return !prev
+        })
+    }
+
+    const handleReset = () => {
+        setData(baseData)
+        setShowActiveOnly(false)
+    }
+
+    const handleAddRow = () => {
+        const categories = ['Audio', 'Peripherals', 'Accessories', 'Displays']
+        const statusOptions: TagColumnProps[] = [
+            {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            {
+                text: 'Low Stock',
+                variant: 'subtle' as const,
+                color: 'warning' as const,
+                size: 'sm' as const,
+            },
+            {
+                text: 'Inactive',
+                variant: 'subtle' as const,
+                color: 'error' as const,
+                size: 'sm' as const,
+            },
+        ]
+        const newRow: AnimRow = {
+            id: nextId,
+            name: `Product ${nextId}`,
+            category: categories[Math.floor(Math.random() * categories.length)],
+            price: Math.floor(Math.random() * 500) + 20,
+            status: statusOptions[
+                Math.floor(Math.random() * statusOptions.length)
+            ],
+        }
+        setData((prev) => [newRow, ...prev])
+        setNextId((prev) => prev + 1)
+    }
+
+    const handleDeleteRow = (row: Record<string, unknown>) => {
+        const rowId = row.id as number
+        setData((prev) => prev.filter((r) => r.id !== rowId))
+    }
+
+    const animationConfig: RowAnimationConfig = useMemo(() => {
+        if (transitionType === 'spring') {
+            return {
+                transitionType,
+                stiffness: springStiffness,
+                damping: springDamping,
+                mass: springMass,
+                enterDuration,
+                enterOffset,
+            }
+        }
+
+        return {
+            transitionType,
+            duration: bezierDuration,
+            bezier: bezierControl,
+            enterDuration,
+            enterOffset,
+        }
+    }, [
+        transitionType,
+        springStiffness,
+        springDamping,
+        springMass,
+        bezierDuration,
+        bezierControl,
+        enterDuration,
+        enterOffset,
+    ])
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0fdf4',
+                    borderRadius: '8px',
+                    border: '1px solid #bbf7d0',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#15803d',
+                    }}
+                >
+                    Row FLIP Animation Demo
+                </h3>
+                <p style={{ margin: 0, fontSize: '14px', color: '#166534' }}>
+                    Rows animate to their new positions when sorted, filtered,
+                    or shuffled. Uses framer-motion&apos;s <code>layout</code>{' '}
+                    prop for automatic FLIP animations.
+                    <br />
+                    <strong>enableRowAnimation</strong> is opt-in (default:
+                    false). Toggle between spring and tween transitions below.
+                </p>
+            </div>
+
+            <div
+                style={{
+                    marginBottom: '16px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                    alignItems: 'center',
+                }}
+            >
+                <span style={{ fontSize: '14px', color: '#666' }}>
+                    Transition:
+                </span>
+                <Button
+                    buttonType={
+                        transitionType === 'spring'
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() => setTransitionType('spring')}
+                    text="Spring"
+                />
+                <Button
+                    buttonType={
+                        transitionType === 'bezier'
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() => setTransitionType('bezier')}
+                    text="Bezier"
+                />
+                <Button
+                    buttonType={
+                        animationEnabled
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() => setAnimationEnabled((prev) => !prev)}
+                    text={animationEnabled ? 'Anim: On' : 'Anim: Off'}
+                />
+            </div>
+
+            {transitionType === 'spring' ? (
+                <div
+                    style={{
+                        marginBottom: '16px',
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(160px, 1fr))',
+                        gap: '12px',
+                        alignItems: 'center',
+                        padding: '12px',
+                        borderRadius: '6px',
+                        backgroundColor: '#fafafa',
+                        border: '1px solid #e5e5e5',
+                    }}
+                >
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Controls how tightly the spring pulls toward rest. Higher = faster movement."
+                        >
+                            Stiffness: {springStiffness}
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={10}
+                            max={500}
+                            step={10}
+                            value={springStiffness}
+                            onChange={(e) =>
+                                setSpringStiffness(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Controls how quickly oscillations die out. Higher = less bounce."
+                        >
+                            Damping: {springDamping}
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={1}
+                            max={100}
+                            step={1}
+                            value={springDamping}
+                            onChange={(e) =>
+                                setSpringDamping(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Virtual weight of the object. Higher = slower acceleration."
+                        >
+                            Mass: {springMass.toFixed(1)}
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0.1}
+                            max={5}
+                            step={0.1}
+                            value={springMass}
+                            onChange={(e) =>
+                                setSpringMass(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                </div>
+            ) : (
+                <div
+                    style={{
+                        marginBottom: '16px',
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(160px, 1fr))',
+                        gap: '12px',
+                        alignItems: 'center',
+                        padding: '12px',
+                        borderRadius: '6px',
+                        backgroundColor: '#fafafa',
+                        border: '1px solid #e5e5e5',
+                    }}
+                >
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="How long each row takes to move to its new position."
+                        >
+                            Duration: {(bezierDuration * 1000).toFixed(0)}ms
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0.05}
+                            max={2.0}
+                            step={0.01}
+                            value={bezierDuration}
+                            onChange={(e) =>
+                                setBezierDuration(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Pre-defined cubic-bezier curves for common easing styles."
+                        >
+                            Presets
+                            <Info size={12} color="#999" />
+                        </label>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                flexWrap: 'wrap',
+                                marginBottom: '8px',
+                            }}
+                        >
+                            {Object.entries(bezierPresets).map(
+                                ([label, curve]) => {
+                                    const isActive =
+                                        bezierControl[0] === curve[0] &&
+                                        bezierControl[1] === curve[1] &&
+                                        bezierControl[2] === curve[2] &&
+                                        bezierControl[3] === curve[3]
+                                    return (
+                                        <button
+                                            key={label}
+                                            type="button"
+                                            onClick={() =>
+                                                setBezierControl(curve)
+                                            }
+                                            style={{
+                                                fontSize: '13px',
+                                                padding: '4px 10px',
+                                                borderRadius: '4px',
+                                                border: '1px solid #ccc',
+                                                backgroundColor: isActive
+                                                    ? '#333'
+                                                    : '#fff',
+                                                color: isActive
+                                                    ? '#fff'
+                                                    : '#333',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            {label}
+                                        </button>
+                                    )
+                                }
+                            )}
+                        </div>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Custom cubic-bezier control points (p1.x, p1.y, p2.x, p2.y). Defines the acceleration curve."
+                        >
+                            Curve: cubic-bezier({bezierControl[0]},{' '}
+                            {bezierControl[1]}, {bezierControl[2]},{' '}
+                            {bezierControl[3]})
+                            <Info size={12} color="#999" />
+                        </label>
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '12px',
+                                maxWidth: '400px',
+                            }}
+                        >
+                            {[0, 1, 2, 3].map((i) => (
+                                <div key={i}>
+                                    <input
+                                        type="number"
+                                        step={0.01}
+                                        min={-0.5}
+                                        max={1.5}
+                                        value={bezierControl[i]}
+                                        onChange={(e) => {
+                                            const val = Number(e.target.value)
+                                            setBezierControl((prev) => {
+                                                const next = [...prev] as [
+                                                    number,
+                                                    number,
+                                                    number,
+                                                    number,
+                                                ]
+                                                next[i] = val
+                                                return next
+                                            })
+                                        }}
+                                        style={{
+                                            width: '100%',
+                                            padding: '4px 8px',
+                                            fontSize: '13px',
+                                            border: '1px solid #ccc',
+                                            borderRadius: '4px',
+                                            textAlign: 'center',
+                                        }}
+                                    />
+                                    <span
+                                        style={{
+                                            display: 'block',
+                                            textAlign: 'center',
+                                            fontSize: '11px',
+                                            color: '#999',
+                                            marginTop: '2px',
+                                        }}
+                                    >
+                                        {i < 2 ? 'p1' : 'p2'}.
+                                        {i % 2 === 0 ? 'x' : 'y'}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Time for newly added rows to fade in and slide into place."
+                        >
+                            Enter Duration: {(enterDuration * 1000).toFixed(0)}
+                            ms
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0.05}
+                            max={1.0}
+                            step={0.01}
+                            value={enterDuration}
+                            onChange={(e) =>
+                                setEnterDuration(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="How far new rows slide down before settling into place."
+                        >
+                            Enter Offset: {enterOffset}px
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0}
+                            max={50}
+                            step={1}
+                            value={enterOffset}
+                            onChange={(e) =>
+                                setEnterOffset(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                </div>
+            )}
+
+            <div
+                style={{
+                    marginBottom: '16px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                    alignItems: 'center',
+                }}
+            >
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    leadingIcon={<Filter size={14} />}
+                    onClick={handleSortByName}
+                    text="Sort by Name"
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    leadingIcon={<Filter size={14} />}
+                    onClick={handleSortByPrice}
+                    text="Sort by Price"
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleShuffle}
+                    text="Shuffle"
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleFilterActive}
+                    text={showActiveOnly ? 'Show All' : 'Active Only'}
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleReset}
+                    text="Reset"
+                />
+                <Button
+                    buttonType={ButtonType.PRIMARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleAddRow}
+                    text="Add Row"
+                />
+            </div>
+
+            <DataTable
+                data={data as Record<string, unknown>[]}
+                columns={
+                    animColumns as ColumnDefinition<Record<string, unknown>>[]
+                }
+                idField="id"
+                enableRowAnimation={animationEnabled}
+                rowAnimationConfig={
+                    animationEnabled ? animationConfig : undefined
+                }
+                enableSearch
+                pagination={{
+                    currentPage,
+                    pageSize: 10,
+                    totalRows: data.length,
+                    pageSizeOptions: [5, 10, 20],
+                }}
+                onPageChange={(page) => setCurrentPage(page)}
+                onPageSizeChange={() => setCurrentPage(1)}
+                rowActions={{
+                    showEditAction: false,
+                    slot1: {
+                        id: 'delete-row',
+                        text: 'Delete',
+                        buttonType: ButtonType.SECONDARY,
+                        size: ButtonSize.SMALL,
+                        leadingIcon: <Trash2 size={16} />,
+                        onClick: (row) => handleDeleteRow(row),
+                    },
+                }}
+            />
         </div>
     )
 }

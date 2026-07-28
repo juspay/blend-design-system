@@ -100,6 +100,14 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             defaultActiveItem,
             showLeftPanel = true,
             onSidebarStateChange,
+            showHierarchyLines = false,
+            hierarchyLineBorderRadius = 0,
+            expandedItems,
+            defaultExpandedItems,
+            onExpandedItemsChange,
+            onItemExpand,
+            enableVirtualization = false,
+            virtualization,
         },
         ref
     ) => {
@@ -402,6 +410,18 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     iconOnlyMode={iconOnlyMode}
                                     footer={footer}
                                     setIsHovering={setIsHovering}
+                                    showHierarchyLines={showHierarchyLines}
+                                    hierarchyLineBorderRadius={
+                                        hierarchyLineBorderRadius
+                                    }
+                                    expandedItems={expandedItems}
+                                    defaultExpandedItems={defaultExpandedItems}
+                                    onExpandedItemsChange={
+                                        onExpandedItemsChange
+                                    }
+                                    onItemExpand={onItemExpand}
+                                    enableVirtualization={enableVirtualization}
+                                    virtualization={virtualization}
                                 />
 
                                 {/* Intermediate Sidebar */}
@@ -491,6 +511,24 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             }
                                             iconOnlyMode={false}
                                             footer={footer}
+                                            showHierarchyLines={
+                                                showHierarchyLines
+                                            }
+                                            hierarchyLineBorderRadius={
+                                                hierarchyLineBorderRadius
+                                            }
+                                            expandedItems={expandedItems}
+                                            defaultExpandedItems={
+                                                defaultExpandedItems
+                                            }
+                                            onExpandedItemsChange={
+                                                onExpandedItemsChange
+                                            }
+                                            onItemExpand={onItemExpand}
+                                            enableVirtualization={
+                                                enableVirtualization
+                                            }
+                                            virtualization={virtualization}
                                         />
                                     </Block>
                                 )}

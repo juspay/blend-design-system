@@ -39,6 +39,10 @@ import type { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.t
 import type { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import type { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import {
+    getCardV2Tokens,
+    type ResponsiveCardV2Tokens,
+} from '../components/CardV2/cardV2.tokens'
+import {
     getTopbarTokens,
     type ResponsiveTopbarTokens,
 } from '../components/Topbar/topbar.tokens'
@@ -239,6 +243,12 @@ import {
     getChatInputV2MobileTokens,
     ChatInputV2MobileTokensType,
 } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
+import {
+    ResponsiveUploadV2Tokens,
+    getUploadV2Tokens,
+} from '../components/InputsV2/UploadV2/UploadV2.tokens'
+import { getModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
+import type { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens.types'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -275,6 +285,7 @@ export type ComponentTokenType = {
     STEPPER?: ResponsiveStepperTokens
     KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
     CARD?: ResponsiveCardTokens
+    CARDV2?: ResponsiveCardV2Tokens
     SKELETON?: ResponsiveSkeletonTokens
     TOPBAR?: ResponsiveTopbarTokens
     TOPBARV2?: ResponsiveTopbarV2Tokens
@@ -318,6 +329,8 @@ export type ComponentTokenType = {
     SEARCH_INPUT_V2?: ResponsiveSearchInputV2Tokens
     CHAT_INPUTV2_MOBILE?: ChatInputV2MobileTokensType
     STEPPERV2?: ResponsiveStepperV2Tokens
+    UPLOADV2?: ResponsiveUploadV2Tokens
+    MODALV2?: ResponsiveModalV2Tokens
 }
 
 type ThemeContextType = {
@@ -364,6 +377,7 @@ const ThemeContext = createContext<ThemeContextType>({
         STEPPER: getStepperTokens(FOUNDATION_THEME),
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
+        CARDV2: getCardV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
         TOPBARV2: getTopbarV2Tokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),
@@ -420,6 +434,8 @@ const ThemeContext = createContext<ThemeContextType>({
             Theme.LIGHT
         ),
         STEPPERV2: getStepperV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        UPLOADV2: getUploadV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        MODALV2: getModalV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

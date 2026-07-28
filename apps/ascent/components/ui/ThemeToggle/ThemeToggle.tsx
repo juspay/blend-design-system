@@ -9,7 +9,11 @@ export default function ThemeToggle() {
     useEffect(() => {
         setMounted(true)
         // Check for saved theme preference or default to system preference
-        const savedTheme = localStorage.getItem('theme')
+        const storage = window.localStorage
+        const savedTheme =
+            storage && typeof storage.getItem === 'function'
+                ? storage.getItem('theme')
+                : null
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
             .matches
             ? 'dark'
@@ -38,7 +42,10 @@ export default function ThemeToggle() {
     const toggleTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light'
         setTheme(newTheme)
-        localStorage.setItem('theme', newTheme)
+        const storage = window.localStorage
+        if (storage && typeof storage.setItem === 'function') {
+            storage.setItem('theme', newTheme)
+        }
         applyTheme(newTheme)
     }
 

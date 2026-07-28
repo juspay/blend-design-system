@@ -264,13 +264,16 @@ type CalendarSectionProps = {
     disablePastDates: boolean
     hideFutureDates: boolean
     hidePastDates: boolean
-    customDisableDates?: (date: Date) => boolean
+    customDisableDates?: (date: Date, currentRange?: DateRange) => boolean
     customRangeConfig?: import('./types').CustomRangeConfig
     onDateSelect: (range: DateRange) => void
     showDateTimePicker: boolean
     timezone?: string
     isSingleDatePicker?: boolean
     maxYearOffset?: number
+    minDate?: Date
+    maxDate?: Date
+    maxRangeDays?: number
 }
 
 const CalendarSection: React.FC<
@@ -291,6 +294,9 @@ const CalendarSection: React.FC<
     timezone,
     isSingleDatePicker,
     maxYearOffset,
+    minDate,
+    maxDate,
+    maxRangeDays,
 }) => (
     <Block flexGrow={1} minHeight={0} overflow="auto">
         <CalendarGrid
@@ -309,6 +315,9 @@ const CalendarSection: React.FC<
             timezone={timezone}
             isSingleDatePicker={isSingleDatePicker}
             maxYearOffset={maxYearOffset}
+            minDate={minDate}
+            maxDate={maxDate}
+            maxRangeDays={maxRangeDays}
         />
     </Block>
 )
@@ -386,6 +395,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             hidePastDates = false,
             customDisableDates,
             customRangeConfig,
+            minDate,
+            maxDate,
+            maxRangeDays,
             triggerElement = null,
             useDrawerOnMobile = true,
             skipQuickFiltersOnMobile = false,
@@ -534,7 +546,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 setSelectedRange(normalizedRange)
                 setActivePreset(
                     normalizedRange
-                        ? detectPresetFromRange(normalizedRange, timezone)
+                        ? detectPresetFromRange(
+                              normalizedRange,
+                              timezone,
+                              presetConfigs
+                          )
                         : DateRangePreset.CUSTOM
                 )
                 setStartDate(
@@ -573,7 +589,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     error: 'none',
                 })
             },
-            [timezone, dateFormat]
+            [timezone, dateFormat, presetConfigs]
         )
 
         useEffect(() => {
@@ -1279,6 +1295,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             timezone={timezone}
                             isSingleDatePicker={isSingleDatePicker}
                             maxYearOffset={maxYearOffset}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            maxRangeDays={maxRangeDays}
                         />
 
                         <FooterControls

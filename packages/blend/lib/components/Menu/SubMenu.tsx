@@ -11,7 +11,7 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import SearchInput from '../Inputs/SearchInput/SearchInput'
 import { FOUNDATION_THEME } from '../../tokens'
-import { filterMenuItem } from './utils'
+import { filterMenuItem, defaultSearchSortFn } from './utils'
 import React, { useState, useRef, useMemo, useCallback } from 'react'
 import { submenuContentAnimations } from './menu.animations'
 import { VirtualList, type VirtualListItem } from '../VirtualList'
@@ -183,10 +183,18 @@ export const SubMenu = ({
         if (!searchText || !item.enableSubMenuSearch) return item.subMenu
 
         const lower = searchText.toLowerCase()
-        return item.subMenu
+        const matched = item.subMenu
             .map((subItem) => filterMenuItem(subItem, lower))
             .filter(Boolean) as MenuItemType[]
-    }, [item.subMenu, searchText, item.enableSubMenuSearch])
+
+        const sortFn = item.subMenuSearchSortFn ?? defaultSearchSortFn
+        return sortFn(matched, searchText)
+    }, [
+        item.subMenu,
+        searchText,
+        item.enableSubMenuSearch,
+        item.subMenuSearchSortFn,
+    ])
 
     const totalItemCount = useMemo(() => {
         return filteredSubMenuItems.length
@@ -383,6 +391,20 @@ export const SubMenu = ({
                                 value={searchText}
                                 onChange={handleSearchChange}
                                 autoFocus
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.stopPropagation()
+                                        e.preventDefault()
+                                        item.onSubMenuSearchEnter?.(
+                                            searchText,
+                                            filteredSubMenuItems
+                                        )
+                                        return
+                                    }
+                                    if (e.key.length === 1) {
+                                        e.stopPropagation()
+                                    }
+                                }}
                             />
                         </Block>
                     )}

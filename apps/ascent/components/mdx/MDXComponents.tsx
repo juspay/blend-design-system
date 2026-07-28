@@ -182,7 +182,7 @@ export const MDXComponents = {
                 <code
                     dangerouslySetInnerHTML={{ __html: codeHTML }}
                     {...props}
-                    className="bg-code-background outline outline-code-border rounded-xl text-sm px-1.5 py-0.5"
+                    className="bg-code-background outline outline-code-border rounded-xl text-sm px-1.5 py-0.5 whitespace-pre-wrap wrap-break-word"
                 />
             )
         }

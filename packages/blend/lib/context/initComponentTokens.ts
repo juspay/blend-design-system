@@ -17,6 +17,7 @@ import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tok
 import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
+import { getModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
 import { getMenuTokens } from '../components/Menu/menu.tokens'
@@ -32,6 +33,7 @@ import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import { getStepperTokens } from '../components/Stepper/stepper.tokens'
 import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { getCardTokens } from '../components/Card/card.tokens'
+import { getCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 import { getTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
@@ -80,6 +82,7 @@ import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
+import { getUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
 const initTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
@@ -120,6 +123,9 @@ const initTokens = (
             getKeyValuePairTokens(foundationTokens),
         MODAL:
             componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
+        MODALV2:
+            componentTokens.MODALV2 ??
+            getModalV2Tokens(foundationTokens, theme),
         BREADCRUMB:
             componentTokens.BREADCRUMB ?? getBreadcrumbTokens(foundationTokens),
         POPOVER: componentTokens.POPOVER ?? getPopoverTokens(foundationTokens),
@@ -150,6 +156,8 @@ const initTokens = (
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
         STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
         CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+        CARDV2:
+            componentTokens.CARDV2 ?? getCardV2Tokens(foundationTokens, theme),
         SKELETON:
             componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
@@ -265,6 +273,9 @@ const initTokens = (
         STEPPERV2:
             componentTokens.STEPPERV2 ??
             getStepperV2Tokens(foundationTokens, theme),
+        UPLOADV2:
+            componentTokens.UPLOADV2 ??
+            getUploadV2Tokens(foundationTokens, theme),
     }
 }
 

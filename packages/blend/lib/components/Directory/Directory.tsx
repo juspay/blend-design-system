@@ -4,6 +4,7 @@ import React from 'react'
 import { createRef, useEffect, useRef } from 'react'
 import type { DirectoryProps } from './types'
 import Section from './Section'
+import VirtualizedDirectory from './VirtualizedDirectory'
 import Block from '../Primitives/Block/Block'
 import { handleSectionNavigation, normalizeDirectoryData } from './utils'
 import { ActiveItemProvider } from './NavItem'
@@ -17,6 +18,14 @@ const Directory = ({
     onActiveItemChange,
     defaultActiveItem,
     iconOnlyMode = false,
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
+    expandedItems,
+    defaultExpandedItems,
+    onExpandedItemsChange,
+    onItemExpand,
+    enableVirtualization = false,
+    virtualization,
 }: DirectoryProps) => {
     const directoryData = normalizeDirectoryData(directoryDataProp)
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
@@ -29,6 +38,26 @@ const Directory = ({
             createRef<HTMLDivElement | null>()
         )
     }, [directoryData])
+
+    if (enableVirtualization && !iconOnlyMode) {
+        return (
+            <VirtualizedDirectory
+                directoryData={directoryData}
+                idPrefix={idPrefix}
+                activeItem={activeItem}
+                onActiveItemChange={onActiveItemChange}
+                defaultActiveItem={defaultActiveItem}
+                showHierarchyLines={showHierarchyLines}
+                hierarchyLineBorderRadius={hierarchyLineBorderRadius}
+                expandedItems={expandedItems}
+                defaultExpandedItems={defaultExpandedItems}
+                onExpandedItemsChange={onExpandedItemsChange}
+                onItemExpand={onItemExpand}
+                enableVirtualization={enableVirtualization}
+                virtualization={virtualization}
+            />
+        )
+    }
 
     return (
         <ActiveItemProvider
@@ -57,6 +86,8 @@ const Directory = ({
                         sectionIndex={sectionIndex}
                         idPrefix={idPrefix}
                         iconOnlyMode={iconOnlyMode}
+                        showHierarchyLines={showHierarchyLines}
+                        hierarchyLineBorderRadius={hierarchyLineBorderRadius}
                         onNavigateBetweenSections={(direction, currentIndex) =>
                             handleSectionNavigation(
                                 direction,

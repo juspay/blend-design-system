@@ -21,6 +21,11 @@ export type MenuSkeletonProps = {
     variant?: SkeletonVariant
 }
 
+export type MenuSearchSortFn = (
+    items: MenuItemType[],
+    searchText: string
+) => MenuItemType[]
+
 export type MenuProps = {
     trigger: React.ReactNode
     items?: MenuGroupType[]
@@ -32,6 +37,8 @@ export type MenuProps = {
 
     enableSearch?: boolean
     searchPlaceholder?: string
+    searchSortFn?: MenuSearchSortFn
+    onEnter?: (searchText: string, filteredGroups: MenuGroupType[]) => void
     enableVirtualScrolling?: boolean
     virtualItemHeight?: number | ((item: MenuItemType, index: number) => number)
     virtualOverscan?: number
@@ -79,6 +86,13 @@ export type MenuItemType = {
     subMenu?: MenuItemType[]
     enableSubMenuSearch?: boolean
     subMenuSearchPlaceholder?: string
+    /** Custom sort function for submenu search results. Defaults to exact → prefix → substring. */
+    subMenuSearchSortFn?: MenuSearchSortFn
+    /** Called when the user presses Enter while focused on the submenu search input. */
+    onSubMenuSearchEnter?: (
+        searchText: string,
+        filteredResults: MenuItemType[]
+    ) => void
     tooltip?: string | React.ReactNode
     tooltipProps?: {
         side?: TooltipSide

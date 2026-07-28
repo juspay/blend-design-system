@@ -1,4 +1,16 @@
-import type { ReactNode } from 'react'
+import type { ReactNode, RefObject } from 'react'
+import type { CSSObject } from 'styled-components'
+
+export type DirectoryExpandedItems = Set<string> | string[]
+
+export type DirectoryVirtualizationConfig = {
+    viewportRef?: RefObject<HTMLElement | null>
+    rowHeight?: number
+    sectionHeight?: number
+    viewportHeight?: number
+    overscan?: number
+    threshold?: number
+}
 
 export type DirectoryProps = {
     directoryData: DirectoryData[] | null
@@ -7,6 +19,14 @@ export type DirectoryProps = {
     onActiveItemChange?: (item: string | null) => void
     defaultActiveItem?: string | null
     iconOnlyMode?: boolean
+    showHierarchyLines?: boolean
+    hierarchyLineBorderRadius?: CSSObject['borderRadius']
+    expandedItems?: DirectoryExpandedItems
+    defaultExpandedItems?: DirectoryExpandedItems
+    onExpandedItemsChange?: (items: string[]) => void
+    onItemExpand?: (item: NavbarItem, itemPath: string) => void | Promise<void>
+    enableVirtualization?: boolean
+    virtualization?: DirectoryVirtualizationConfig
 }
 
 export type DirectoryData = {
@@ -41,6 +61,8 @@ export type SectionProps = {
     ) => void
     idPrefix?: string
     iconOnlyMode?: boolean
+    showHierarchyLines?: boolean
+    hierarchyLineBorderRadius?: CSSObject['borderRadius']
 }
 
 export type NavItemProps = {
@@ -49,4 +71,24 @@ export type NavItemProps = {
     onNavigate: (direction: 'up' | 'down', currentIndex: number) => void
     itemPath?: string
     iconOnlyMode?: boolean
+    showHierarchyLines?: boolean
+    hierarchyLineBorderRadius?: CSSObject['borderRadius']
+    isLast?: boolean
+    isNested?: boolean
 }
+
+export type DirectoryFlatRow =
+    | {
+          type: 'section'
+          section: DirectoryData
+          sectionIndex: number
+      }
+    | {
+          type: 'item'
+          item: NavbarItem
+          sectionIndex: number
+          itemPath: string
+          depth: number
+          isLast: boolean
+          ancestorIsLast: boolean[]
+      }

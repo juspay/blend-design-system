@@ -14,6 +14,8 @@ import {
     Video,
     Music,
 } from 'lucide-react'
+import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
+import Text from '../../../../packages/blend/lib/components/Text/Text'
 
 const UploadDemo = () => {
     // Playground state
@@ -27,7 +29,14 @@ const UploadDemo = () => {
     // Simple state for reset buttons
     const [resetKey, setResetKey] = useState(0)
 
-    const renderCustomSlot = () => <UploadIcon size={32} color="#6366f1" />
+    const renderCustomSlot = () => (
+        <Block>
+            <Text fontSize="16px" fontWeight="bold" color="#6366f1">
+                Upload Files
+            </Text>
+            <UploadIcon size={32} color="#6366f1" />
+        </Block>
+    )
 
     return (
         <div className="p-8 space-y-12">

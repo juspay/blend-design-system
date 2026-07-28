@@ -46,6 +46,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'DateRangePicker',
     'CodeBlock',
     'Card',
+    'Topbar',
     'Upload',
     'KeyValuePair',
     'Stepper',
@@ -61,6 +62,7 @@ const PREVIEW_COMPONENT_NAMES = [
     'DrawerV2',
     'KeyValuePairV2',
     'MenuV2',
+    'ModalV2',
     'MultiSelectV2',
     'PopoverV2',
     'ProgressBarV2',
@@ -82,10 +84,14 @@ const PREVIEW_COMPONENT_NAMES = [
     'MultiValueInputV2',
     'ButtonV2',
     'ButtonGroupV2',
+    'CardV2',
     'SelectV2',
     'CheckboxV2',
     'RadioV2',
     'SwitchV2',
+    'Timeline',
+    'TopbarV2',
+    'UploadV2',
 ] as const
 
 // Generate all preview components programmatically

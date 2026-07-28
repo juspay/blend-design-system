@@ -29,6 +29,7 @@ const Charts: React.FC<ChartsProps> = ({
     chartHeaderSlot,
     stackedLegends = false,
     stackedLegendsData,
+    showAllLegends = false,
     barsize,
     xAxis,
     yAxis,
@@ -404,6 +405,7 @@ const Charts: React.FC<ChartsProps> = ({
                                               hoveredKey={hoveredKey}
                                               activeKeys={selectedKeys}
                                               stacked={false}
+                                              showAllLegends={showAllLegends}
                                           />
                                       }
                                       <Block
@@ -566,6 +568,7 @@ const Charts: React.FC<ChartsProps> = ({
                                               stackedLegendsData={
                                                   stackedLegendsData
                                               }
+                                              showAllLegends={showAllLegends}
                                           />
                                       </Block>
                                   </Block>
@@ -714,6 +717,9 @@ const Charts: React.FC<ChartsProps> = ({
                                                   hoveredKey={hoveredKey}
                                                   activeKeys={selectedKeys}
                                                   stacked={false}
+                                                  showAllLegends={
+                                                      showAllLegends
+                                                  }
                                               />
                                           </Block>
                                       )}
@@ -826,6 +832,9 @@ const Charts: React.FC<ChartsProps> = ({
                                                           }
                                                           stackedLegendsData={
                                                               stackedLegendsData
+                                                          }
+                                                          showAllLegends={
+                                                              showAllLegends
                                                           }
                                                       />
                                                   )}
@@ -987,6 +996,7 @@ const Charts: React.FC<ChartsProps> = ({
                                               stackedLegendsData={
                                                   stackedLegendsData
                                               }
+                                              showAllLegends={showAllLegends}
                                           />
                                       </Block>
                                   </Block>

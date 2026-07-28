@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import type { DirectoryData } from '../Directory/types'
+import type { DirectoryData, DirectoryProps } from '../Directory/types'
 import type { MerchantInfo } from '../Topbar/types'
 import type { TenantBadge } from '../Sidebar/types'
 
@@ -59,6 +59,14 @@ export type SidebarV2Props = {
     activeItem?: string | null
     onActiveItemChange?: (item: string | null) => void
     defaultActiveItem?: string | null
+    showHierarchyLines?: DirectoryProps['showHierarchyLines']
+    hierarchyLineBorderRadius?: DirectoryProps['hierarchyLineBorderRadius']
+    expandedItems?: DirectoryProps['expandedItems']
+    defaultExpandedItems?: DirectoryProps['defaultExpandedItems']
+    onExpandedItemsChange?: DirectoryProps['onExpandedItemsChange']
+    onItemExpand?: DirectoryProps['onItemExpand']
+    enableVirtualization?: DirectoryProps['enableVirtualization']
+    virtualization?: DirectoryProps['virtualization']
 }
 
 export type {

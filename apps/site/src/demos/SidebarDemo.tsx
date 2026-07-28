@@ -99,6 +99,7 @@ import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
+import CardV2Demo from './CardV2Demo'
 import { TextInput, Button } from '../../../../packages/blend/lib/main'
 import {
     ButtonType,
@@ -151,6 +152,9 @@ import SearchInputV2Demo from './SearchInputV2Demo'
 import BadgeDemo from './BadgeDemo'
 import ChatInputV2Demo from './ChatInputV2Demo'
 import StepperV2Demo from './StepperV2Demo'
+import UploadV2Demo from './UploadV2Demo'
+import ModalV2Demo from './ModalV2Demo'
+import DirectoryDemo from './DirectoryDemo'
 
 const SidebarDemo = () => {
     const [activeComponent, setActiveComponentState] = useState<
@@ -217,12 +221,14 @@ const SidebarDemo = () => {
         | 'stepper'
         | 'keyValuePair'
         | 'card'
+        | 'cardV2'
         | 'dataRangePicker'
         | 'allComponents'
         | 'themeProvider'
         | 'virtualList'
         | 'skeleton'
         | 'upload'
+        | 'uploadV2'
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
@@ -254,6 +260,8 @@ const SidebarDemo = () => {
         | 'searchInputV2'
         | 'chatInputV2'
         | 'stepperV2'
+        | 'modalV2'
+        | 'directory'
     >(() => {
         return (window.location.hash.slice(1) || 'checkbox') as any
     })
@@ -539,6 +547,8 @@ const SidebarDemo = () => {
                 return <TooltipDemo />
             case 'modal':
                 return <ModalDemo />
+            case 'modalV2':
+                return <ModalV2Demo />
             case 'radio':
                 return <RadioDemo />
             case 'radioV2':
@@ -575,6 +585,8 @@ const SidebarDemo = () => {
                 return <DrawerDemo />
             case 'drawerV2':
                 return <DrawerV2Demo />
+            case 'directory':
+                return <DirectoryDemo />
             case 'dropdownInput':
                 return <DropdownInputDemo />
             case 'dataRangePicker':
@@ -603,6 +615,8 @@ const SidebarDemo = () => {
                 return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
+            case 'cardV2':
+                return <CardV2Demo />
             case 'skeleton':
                 return <SkeletonDemo />
             case 'allComponents':
@@ -613,6 +627,8 @@ const SidebarDemo = () => {
                 return <VirtualListDemo />
             case 'upload':
                 return <UploadDemo />
+            case 'uploadV2':
+                return <UploadV2Demo />
             case 'codeBlock':
                 return <CodeBlockDemo />
             case 'codeEditor':
@@ -948,11 +964,29 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Directory',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'directory',
+                    onClick: () => setActiveComponent('directory'),
+                    showOnMobile: true,
+                },
+                {
                     label: 'File Upload',
                     leftSlot: (
                         <Upload style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'upload',
                     onClick: () => setActiveComponent('upload'),
+                },
+                {
+                    label: 'File Upload V2',
+                    leftSlot: (
+                        <Upload style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'uploadV2',
+                    onClick: () => setActiveComponent('uploadV2'),
                 },
             ],
         },
@@ -1378,6 +1412,12 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('modal'),
                 },
                 {
+                    label: 'Modal V2',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'modalV2',
+                    onClick: () => setActiveComponent('modalV2'),
+                },
+                {
                     label: 'Popover',
                     leftSlot: (
                         <MessageCircle
@@ -1496,6 +1536,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'card',
                     onClick: () => setActiveComponent('card'),
+                },
+                {
+                    label: 'Card V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'cardV2',
+                    onClick: () => setActiveComponent('cardV2'),
                 },
                 {
                     label: 'Progress Bar',

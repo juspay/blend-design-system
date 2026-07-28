@@ -17,7 +17,14 @@ function inferVersionFromUrl(): Version {
 }
 
 function getSnapshot(): Version {
-    const stored = localStorage.getItem(VERSION_STORAGE_KEY)
+    if (typeof window === 'undefined') return DEFAULT_VERSION
+
+    const storage = window.localStorage
+    if (!storage || typeof storage.getItem !== 'function') {
+        return inferVersionFromUrl()
+    }
+
+    const stored = storage.getItem(VERSION_STORAGE_KEY)
     if (isValidVersion(stored)) return stored
     return inferVersionFromUrl()
 }
@@ -51,7 +58,10 @@ export function useDocsVersion(): [Version, (version: Version) => void] {
 
     const setVersion = useCallback((newVersion: Version) => {
         if (!isValidVersion(newVersion)) return
-        localStorage.setItem(VERSION_STORAGE_KEY, newVersion)
+        const storage = window.localStorage
+        if (storage && typeof storage.setItem === 'function') {
+            storage.setItem(VERSION_STORAGE_KEY, newVersion)
+        }
         window.dispatchEvent(new Event('docs-version-change'))
     }, [])
 

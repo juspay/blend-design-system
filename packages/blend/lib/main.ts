@@ -52,6 +52,7 @@ export * from './components/Switch'
 export * from './components/Tabs'
 export * from './components/Tags'
 export * from './components/Tooltip'
+export * from './components/Topbar'
 export * from './components/Upload'
 export * from './components/VirtualList'
 
@@ -69,6 +70,7 @@ export * from './components/AvatarV2'
 export * from './components/TooltipV2'
 export * from './components/ProgressBarV2'
 export * from './components/StatCardV2'
+export * from './components/CardV2'
 export * from './components/AccordionV2'
 export * from './components/InputsV2/TextInputV2'
 export * from './components/InputsV2/TextAreaV2'
@@ -78,6 +80,7 @@ export * from './components/ChartsV2'
 export * from './components/ButtonV2/ButtonGroupV2'
 export * from './components/common/TruncatedTextWithTooltipV2'
 export * from './components/PopoverV2'
+export * from './components/ModalV2'
 export * from './components/SidebarV2'
 export * from './components/StepperV2'
 export * from './components/TagGroupV2'
@@ -88,6 +91,19 @@ export * from './components/InputsV2/MultiValueInputV2'
 export * from './components/InputsV2/NumberInputV2'
 export * from './components/InputsV2/OTPInputV2'
 export * from './components/InputsV2/SearchInputV2'
+export { UploadV2 } from './components/InputsV2/UploadV2'
+export {
+    UploadState as UploadV2State,
+    UploadDragState as UploadV2DragState,
+    UploadErrorReason,
+} from './components/InputsV2/UploadV2'
+export type {
+    UploadV2Props,
+    UploadFileV2,
+    UploadErrorReasonValue,
+    UploadV2TokensType,
+    ResponsiveUploadV2Tokens,
+} from './components/InputsV2/UploadV2'
 export * from './components/SnackbarV2'
 export * from './components/CodeEditorV2'
 export * from './components/KeyValuePairV2'

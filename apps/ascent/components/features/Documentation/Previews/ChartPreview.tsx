@@ -60,6 +60,7 @@ function MyComponent() {
       xAxis={{ label: "Month" }}
       yAxis={{ label: "Value" }}
       legendPosition={ChartLegendPosition.TOP}
+      showAllLegends
       chartHeaderSlot={<div>Monthly Performance</div>}
     />
   );
