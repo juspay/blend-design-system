@@ -17,6 +17,7 @@ import { getUnitInputTokens } from '../components/Inputs/UnitInput/unitInput.tok
 import { getMultiValueInputTokens } from '../components/Inputs/MultiValueInput/multiValueInput.tokens'
 import { getDropdownInputTokens } from '../components/Inputs/DropdownInput/dropdownInput.tokens'
 import { getModalComponentTokens } from '../components/Modal/modal.tokens'
+import { getModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
 import { getMenuTokens } from '../components/Menu/menu.tokens'
@@ -32,14 +33,17 @@ import { getSnackbarTokens } from '../components/Snackbar/snackbar.tokens'
 import { getStepperTokens } from '../components/Stepper/stepper.tokens'
 import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { getCardTokens } from '../components/Card/card.tokens'
+import { getCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
+import { getTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import { getProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import { getSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { getDirectoryTokens } from '../components/Directory/directory.tokens'
 import { getMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import { getMobileNavigationV2Tokens } from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
 import getChatInputTokens from '../components/ChatInput/chatInput.tokens'
@@ -58,10 +62,27 @@ import { getTextInputV2Tokens } from '../components/InputsV2/TextInputV2/TextInp
 import { getChartV2Tokens } from '../components/ChartsV2/chartV2.tokens'
 import { getTimelineTokens } from '../components/Timeline/timeline.token'
 import { getCheckboxV2Tokens } from '../components/SelectorV2/CheckboxV2/checkboxV2.tokens'
+import { getStatCardV2Tokens } from '../components/StatCardV2/statcardV2.tokens'
 import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
 import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
+import { getSidebarV2Tokens } from '../components/SidebarV2/sidebarV2.tokens'
+import { getTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
+import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
+import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
+import { getCodeEditorV2Tokens } from '../components/CodeEditorV2/codeEditorV2.tokens'
+import { getProgressBarV2Tokens } from '../components/ProgressBarV2/progressBarV2.tokens'
+import { getMultiValueInputV2Tokens } from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
+import { getNumberInputV2Tokens } from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import { getTextAreaV2Tokens } from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import { getBadgeTokens } from '../components/Badge/badge.tokens'
+import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 
+import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
+import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
+import { getUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
 const initTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
@@ -102,10 +123,15 @@ const initTokens = (
             getKeyValuePairTokens(foundationTokens),
         MODAL:
             componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
+        MODALV2:
+            componentTokens.MODALV2 ??
+            getModalV2Tokens(foundationTokens, theme),
         BREADCRUMB:
             componentTokens.BREADCRUMB ?? getBreadcrumbTokens(foundationTokens),
         POPOVER: componentTokens.POPOVER ?? getPopoverTokens(foundationTokens),
         MENU: componentTokens.MENU ?? getMenuTokens(foundationTokens),
+        MENU_V2:
+            componentTokens.MENU_V2 ?? getMenuV2Tokens(foundationTokens, theme),
         MULTI_SELECT:
             componentTokens.MULTI_SELECT ??
             getMultiSelectTokens(foundationTokens),
@@ -130,9 +156,14 @@ const initTokens = (
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
         STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
         CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+        CARDV2:
+            componentTokens.CARDV2 ?? getCardV2Tokens(foundationTokens, theme),
         SKELETON:
             componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
+        TOPBARV2:
+            componentTokens.TOPBARV2 ??
+            getTopbarV2Tokens(foundationTokens, theme),
         AVATAR: componentTokens.AVATAR ?? getAvatarTokens(foundationTokens),
         AVATAR_GROUP:
             componentTokens.AVATAR_GROUP ??
@@ -143,11 +174,20 @@ const initTokens = (
         MOBILE_NAVIGATION:
             componentTokens.MOBILE_NAVIGATION ??
             getMobileNavigationTokens(foundationTokens),
+        MOBILE_NAVIGATION_V2:
+            componentTokens.MOBILE_NAVIGATION_V2 ??
+            getMobileNavigationV2Tokens(foundationTokens, theme),
         UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
         CHAT_INPUT:
             componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
+        CHAT_INPUTV2:
+            componentTokens.CHAT_INPUTV2 ??
+            getChatInputV2Tokens(foundationTokens, theme),
+        CHAT_INPUTV2_MOBILE:
+            componentTokens.CHAT_INPUTV2_MOBILE ??
+            getChatInputV2MobileTokens(foundationTokens, theme),
         BUTTONV2:
             componentTokens.BUTTONV2 ??
             getButtonV2Tokens(foundationTokens, theme),
@@ -170,12 +210,18 @@ const initTokens = (
         MULTI_SELECT_V2:
             componentTokens.MULTI_SELECT_V2 ??
             getMultiSelectV2Tokens(foundationTokens, theme),
+        BREADCRUMBV2:
+            componentTokens.BREADCRUMBV2 ??
+            getBreadcrumbV2Tokens(foundationTokens, theme),
         AVATARV2:
             componentTokens.AVATARV2 ??
             getAvatarV2Tokens(foundationTokens, theme),
         TEXT_INPUTV2:
             componentTokens.TEXT_INPUTV2 ??
             getTextInputV2Tokens(foundationTokens, theme),
+        TEXT_AREA_V2:
+            componentTokens.TEXT_AREA_V2 ??
+            getTextAreaV2Tokens(foundationTokens, theme),
         CHARTSV2:
             componentTokens.CHARTSV2 ??
             getChartV2Tokens(foundationTokens, theme),
@@ -188,6 +234,9 @@ const initTokens = (
         KEYVALUEPAIRV2:
             componentTokens.KEYVALUEPAIRV2 ??
             getKeyValuePairV2Tokens(foundationTokens, theme),
+        STATCARDV2:
+            componentTokens.STATCARDV2 ??
+            getStatCardV2Tokens(foundationTokens, theme),
         TOOLTIPV2:
             componentTokens.TOOLTIPV2 ??
             getTooltipV2Tokens(foundationTokens, theme),
@@ -197,6 +246,36 @@ const initTokens = (
         POPOVERV2:
             componentTokens.POPOVERV2 ??
             getPopoverV2Tokens(foundationTokens, theme),
+        SIDEBARV2:
+            componentTokens.SIDEBARV2 ??
+            getSidebarV2Tokens(foundationTokens, theme),
+        TABSV2:
+            componentTokens.TABSV2 ?? getTabsV2Tokens(foundationTokens, theme),
+        CODEEDITORV2:
+            componentTokens.CODEEDITORV2 ??
+            getCodeEditorV2Tokens(foundationTokens, theme),
+        PROGRESS_BARV2:
+            componentTokens.PROGRESS_BARV2 ??
+            getProgressBarV2Tokens(foundationTokens, theme),
+        MULTI_VALUE_INPUT_V2:
+            componentTokens.MULTI_VALUE_INPUT_V2 ??
+            getMultiValueInputV2Tokens(foundationTokens, theme),
+        NUMBER_INPUT_V2:
+            componentTokens.NUMBER_INPUT_V2 ??
+            getNumberInputV2Tokens(foundationTokens, theme),
+        OTP_INPUTV2:
+            componentTokens.OTP_INPUTV2 ??
+            getOTPInputV2Tokens(foundationTokens, theme),
+        BADGE: componentTokens.BADGE ?? getBadgeTokens(foundationTokens, theme),
+        SEARCH_INPUT_V2:
+            componentTokens.SEARCH_INPUT_V2 ??
+            getSearchInputV2Tokens(foundationTokens, theme),
+        STEPPERV2:
+            componentTokens.STEPPERV2 ??
+            getStepperV2Tokens(foundationTokens, theme),
+        UPLOADV2:
+            componentTokens.UPLOADV2 ??
+            getUploadV2Tokens(foundationTokens, theme),
     }
 }
 

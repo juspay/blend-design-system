@@ -1,0 +1,86 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://studio.blend.juspay.design/schemas/blend-config.json",
+    "title": "Blend Token Studio Configuration",
+    "description": "Configuration file for Blend Token Studio CLI",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string",
+            "description": "JSON Schema reference"
+        },
+        "brand": {
+            "type": "string",
+            "description": "Current brand/branch ID (e.g., 'hdfc/retail')",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*/[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "theme": {
+            "type": "string",
+            "description": "Default theme",
+            "enum": ["light", "dark"],
+            "default": "light"
+        },
+        "output": {
+            "type": "string",
+            "description": "Output directory for generated files",
+            "default": "src/blend"
+        },
+        "components": {
+            "type": "array",
+            "description": "Components to generate tokens for (empty = all)",
+            "items": {
+                "type": "string"
+            },
+            "default": []
+        },
+        "studio": {
+            "type": "object",
+            "description": "Blend Token Studio connection settings",
+            "properties": {
+                "apiUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "API URL for Blend Token Studio",
+                    "default": "https://studio.blend.juspay.design"
+                },
+                "branch": {
+                    "type": "string",
+                    "description": "Branch ID if synced with studio"
+                },
+                "version": {
+                    "type": "string",
+                    "description": "Pinned version (if any)",
+                    "pattern": "^\\d+\\.\\d+\\.\\d+"
+                },
+                "autoSync": {
+                    "type": "boolean",
+                    "description": "Auto-sync with studio on build",
+                    "default": false
+                }
+            }
+        },
+        "generate": {
+            "type": "object",
+            "description": "Generation settings",
+            "properties": {
+                "typescript": {
+                    "type": "boolean",
+                    "description": "Generate TypeScript files",
+                    "default": true
+                },
+                "cssVariables": {
+                    "type": "boolean",
+                    "description": "Also generate CSS variables file",
+                    "default": false
+                },
+                "reactNative": {
+                    "type": "boolean",
+                    "description": "Generate React Native compatible output",
+                    "default": false
+                }
+            }
+        }
+    },
+    "required": [],
+    "additionalProperties": false
+}

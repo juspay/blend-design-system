@@ -1,9 +1,9 @@
 import type { CSSObject } from 'styled-components'
 
-export type TextOverflowMode = 'truncate' | 'wrap' | 'wrap-clamp'
+export type KeyValuePairV2TextOverflowMode = 'truncate' | 'wrap' | 'wrap-clamp'
 
 export const getTextStyles = (
-    textOverflow: TextOverflowMode,
+    textOverflow: KeyValuePairV2TextOverflowMode,
     maxLines: number,
     slotPresent: boolean
 ): CSSObject => {
@@ -46,7 +46,7 @@ export const getTextStyles = (
 }
 
 export const getPrimitiveTextStyles = (
-    textOverflow: TextOverflowMode
+    textOverflow: KeyValuePairV2TextOverflowMode
 ): CSSObject => {
     const baseStyles: CSSObject = {
         display: 'block',

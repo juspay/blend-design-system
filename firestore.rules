@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // ARCHITECTURE NOTE
+    // ═══════════════════════════════════════════════════════════════════════════
+    //
+    // PostgreSQL (managed separately):
+    //   - Users, Teams, Memberships
+    //   - Roles, Permissions
+    //   - Authentication
+    //   - Fuzzy search
+    //
+    // Firestore (this file):
+    //   - Brand configs (JSON blobs)
+    //   - Branches
+    //   - Versions (immutable)
+    //   - Snapshots
+    //
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    // ── Branches ──────────────────────────────────────────────────────────────
+    // Structure:
+    //   /branches/{branchId}                        ← brand config
+    //   /branches/{branchId}/versions/{versionId}   ← published versions
+    //   /branches/{branchId}/snapshots/{snapshotId} ← auto-saved drafts
+    //
+    // Security:
+    //   - Authenticated users can read all branches
+    //   - Branch owner (user uid) can write
+    //   - Team members can write based on role (checked via owner.teamId)
+    // ────────────────────────────────────────────────────────────────────────
+
+    match /branches/{branchId} {
+      // Read: Any authenticated user
+      allow read: if request.auth != null;
+
+      // Create: Any authenticated user
+      allow create: if
+        request.auth != null &&
+        request.resource.data.keys().hasAll(['id', 'name', 'owner', 'brandConfig']);
+
+      // Update: Owner only (team access checked in app layer)
+      allow update: if
+        request.auth != null &&
+        resource.data.owner.uid == request.auth.uid;
+
+      // Delete: Owner only
+      allow delete: if
+        request.auth != null &&
+        resource.data.owner.uid == request.auth.uid;
+
+      // Published versions (immutable)
+      match /versions/{versionId} {
+        allow read: if request.auth != null;
+        allow create: if
+          request.auth != null &&
+          get(/databases/$(database)/documents/branches/$(branchId)).data.owner.uid == request.auth.uid;
+        allow update, delete: if false;
+      }
+
+      // Auto-saved snapshots
+      match /snapshots/{snapshotId} {
+        allow read: if request.auth != null;
+        allow create, update, delete: if
+          request.auth != null &&
+          get(/databases/$(database)/documents/branches/$(branchId)).data.owner.uid == request.auth.uid;
+      }
+    }
+
+    // ── Telemetry (existing) ─────────────────────────────────────────────────
+
+    match /blend-telemetry/{repoId} {
+      allow create, update: if
+        request.auth != null &&
+        request.resource.data.keys().hasAll(['repoId', 'repoName', 'lastUpdated']) &&
+        request.resource.data.repoId == repoId &&
+        request.resource.data.repoId is string &&
+        request.resource.data.repoName is string &&
+        request.resource.data.repoId.size() <= 400 &&
+        request.resource.data.repoName.size() <= 400 &&
+        request.resource.data.size() <= 20;
+      allow read, delete: if false;
+    }
+
+    match /blend-telemetry/{repoId}/runs/{runId} {
+      allow create: if
+        request.auth != null &&
+        request.resource.data.keys().hasAll([
+          'repoId', 'repoName', 'generatedAt',
+          'adoptionRate', 'totalComponentsUsed'
+        ]) &&
+        request.resource.data.repoId == repoId &&
+        request.resource.data.repoId is string &&
+        request.resource.data.repoName is string &&
+        request.resource.data.generatedAt is string &&
+        request.resource.data.adoptionRate is number &&
+        request.resource.data.totalComponentsUsed is number &&
+        request.resource.data.repoId.size() <= 400 &&
+        request.resource.data.repoName.size() <= 400 &&
+        request.resource.data.size() <= 50;
+      allow read, delete: if false;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

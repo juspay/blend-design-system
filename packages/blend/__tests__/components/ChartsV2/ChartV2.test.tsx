@@ -16,6 +16,7 @@ const HighchartsReactSpy = vi.hoisted(() =>
 
 vi.mock('highcharts-react-official', () => ({
     __esModule: true,
+    HighchartsReact: HighchartsReactSpy,
     default: HighchartsReactSpy,
 }))
 

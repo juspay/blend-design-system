@@ -1,7 +1,7 @@
 ---
 title: SearchInput
 description: The SearchInput component provides a specialized input field for search functionality, featuring customizable left and right slots for icons, error states, and a clean minimalist design with underline borders.
-category: components
+category: Form Input
 tags:
     - searchinput
     - component
@@ -15,6 +15,7 @@ tags:
     - lookup
 RepoFolderName: SearchInput
 StorybookLink: components-searchinput--docs
+version: 1
 ---
 
 <SearchInputPreview />
@@ -184,6 +185,43 @@ function MyComponent() {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText:
                     'Function called with focus event when input loses focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.allowClear',
+                hintText:
+                    'When true, displays a clear button (X icon) on the right side when the input has a value. Clicking the button clears the input. When false or when rightSlot is provided, the clear button is not shown. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows clear button when input has value, false hides clear button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.onClear',
+                hintText:
+                    'Optional callback function invoked when the clear button is clicked. Receives no parameters. Use this for custom clear logic such as analytics tracking or additional cleanup. If not provided, the component clears the input by calling onChange with an empty string.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Function called when clear button is clicked',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SearchInput.clearIcon',
+                hintText:
+                    'Optional React element to use as the clear button icon. Defaults to X icon from lucide-react. Only visible when allowClear is true and rightSlot is not provided. Use this to customize the clear button appearance.',
+            },
+            {
+                content: 'React.ReactNode',
+                hintText: 'Custom icon element for the clear button',
             },
             { content: '' },
         ],

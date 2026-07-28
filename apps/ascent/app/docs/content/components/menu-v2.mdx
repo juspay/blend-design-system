@@ -1,0 +1,497 @@
+---
+version: 2
+title: Menu
+description: The MenuV2 component provides a dropdown menu with items, groups, search functionality, and virtual scrolling for large lists.
+category: Navigation
+tags:
+    - menu
+    - component
+    - dropdown
+    - actions
+    - navigation
+RepoFolderName: MenuV2
+StorybookLink: components-menu-menuv2--docs
+---
+
+<MenuV2Preview />
+
+## Usage
+
+```tsx
+import {
+    MenuV2,
+    MenuV2Alignment,
+    MenuV2Side,
+    MenuV2ItemVariant,
+    MenuV2ItemActionType,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const items = [
+        {
+            label: 'Actions',
+            items: [
+                {
+                    label: { text: 'Edit', leftSlot: <PencilIcon /> },
+                    onClick: () => console.log('Edit'),
+                },
+                {
+                    label: { text: 'Delete', leftSlot: <TrashIcon /> },
+                    variant: MenuV2ItemVariant.ACTION,
+                    actionType: MenuV2ItemActionType.DANGER,
+                    onClick: () => console.log('Delete'),
+                },
+            ],
+        },
+    ]
+
+    return (
+        <MenuV2
+            trigger={<Button text="Open Menu" />}
+            items={items}
+            alignment={MenuV2Alignment.START}
+            side={MenuV2Side.BOTTOM}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'trigger',
+                hintText: 'Required. Element that opens the menu when clicked.',
+            },
+            {
+                content: 'ReactElement',
+                hintText: 'Trigger element (typically a Button)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'items',
+                hintText: 'Array of menu groups containing menu items.',
+            },
+            {
+                content: 'MenuV2GroupType[]',
+                hintText: 'Array of groups with label and items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'dimensions',
+                hintText: 'Size constraints for the menu panel.',
+            },
+            {
+                content: 'MenuV2Dimensions',
+                hintText: 'minWidth, maxWidth, minHeight, maxHeight',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enableSearch',
+                hintText:
+                    'When true, displays a search input for filtering items.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables search functionality',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'searchPlaceholder',
+                hintText: 'Placeholder text for the search input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Search input placeholder',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enableVirtualScrolling',
+                hintText: 'When true, uses virtual rendering for large lists.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables virtualization',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'virtualScrolling',
+                hintText: 'Configuration for virtual scrolling behavior.',
+            },
+            {
+                content: 'MenuV2VirtualScrollingConfig',
+                hintText: 'itemHeight, overscan, threshold',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'open',
+                hintText: 'Controlled open state of the menu.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true opens the menu',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onOpenChange',
+                hintText: 'Callback fired when menu open state changes.',
+            },
+            {
+                content: '(open: boolean) => void',
+                hintText: 'Open state change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'asModal',
+                hintText: 'When true, renders as a modal on mobile devices.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true uses modal on mobile',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'alignment',
+                hintText:
+                    'Horizontal alignment of the menu relative to trigger.',
+            },
+            {
+                content: 'MenuV2Alignment',
+                hintText: 'Enum for horizontal alignment',
+            },
+            { content: 'start, center, end' },
+        ],
+        [
+            {
+                content: 'side',
+                hintText: 'Edge of the trigger where the menu appears.',
+            },
+            {
+                content: 'MenuV2Side',
+                hintText: 'Enum for menu position',
+            },
+            { content: 'top, left, right, bottom' },
+        ],
+        [
+            {
+                content: 'sideOffset',
+                hintText: 'Distance between trigger and menu in pixels.',
+            },
+            {
+                content: 'number',
+                hintText: 'Pixel offset value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'alignOffset',
+                hintText: 'Offset along the alignment axis in pixels.',
+            },
+            {
+                content: 'number',
+                hintText: 'Pixel offset value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'collisionBoundaryRef',
+                hintText:
+                    'Element(s) to use as collision boundary for positioning.',
+            },
+            {
+                content: 'HTMLElement | HTMLElement[] | null',
+                hintText: 'Boundary element(s)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'triggerProps',
+                hintText: 'Additional props passed to the trigger button.',
+            },
+            {
+                content: 'ButtonHTMLAttributes',
+                hintText: 'Standard button attributes',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Menu Item Types
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'label.text',
+                hintText: 'Display text for the menu item.',
+            },
+            {
+                content: 'string',
+                hintText: 'Item text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label.leftSlot',
+                hintText: 'Icon or element displayed before the label.',
+            },
+            {
+                content: 'ReactElement',
+                hintText: 'Left side element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText: 'Secondary text displayed below the main label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary description',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'id',
+                hintText: 'Unique identifier for the menu item.',
+            },
+            {
+                content: 'string',
+                hintText: 'Item identifier',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'Visual style of the menu item.',
+            },
+            {
+                content: 'MenuV2ItemVariant',
+                hintText: 'Enum for item style',
+            },
+            { content: 'default, action' },
+        ],
+        [
+            {
+                content: 'actionType',
+                hintText: 'Semantic type for action items affecting styling.',
+            },
+            {
+                content: 'MenuV2ItemActionType',
+                hintText: 'Enum for action type',
+            },
+            { content: 'primary, danger' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, item cannot be clicked.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the item',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClick',
+                hintText: 'Callback fired when item is clicked.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Click handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subMenu',
+                hintText: 'Nested submenu items for hierarchical navigation.',
+            },
+            {
+                content: 'MenuV2ItemType[]',
+                hintText: 'Array of submenu items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'tooltip',
+                hintText: 'Tooltip content shown on hover.',
+            },
+            {
+                content: 'string | ReactNode',
+                hintText: 'Tooltip text or element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'tooltipProps',
+                hintText: 'Configuration for item tooltip behavior.',
+            },
+            {
+                content: 'MenuV2ItemTooltipProps',
+                hintText: 'side, align, size, showArrow, delayDuration, offset',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enableSubMenuSearch',
+                hintText: 'When true, enables search within submenu.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables submenu search',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subMenuSearchPlaceholder',
+                hintText: 'Placeholder text for submenu search input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Search placeholder text',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the MenuV2 component using the following tokens:
+
+```tsx
+export type MenuV2TokensType = {
+    backgroundColor: CSSObject['backgroundColor']
+    border: CSSObject['border']
+    borderRadius: CSSObject['borderRadius']
+    boxShadow: CSSObject['boxShadow']
+    zIndex: CSSObject['zIndex']
+    minWidth: CSSObject['minWidth']
+    maxWidth: CSSObject['maxWidth']
+    paddingTop: CSSObject['paddingTop']
+    paddingRight: CSSObject['paddingRight']
+    paddingBottom: CSSObject['paddingBottom']
+    paddingLeft: CSSObject['paddingLeft']
+    searchIcon: {
+        width: CSSObject['width']
+    }
+    group: {
+        label: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            lineHeight: CSSObject['lineHeight']
+            color: CSSObject['color']
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+            marginTop: CSSObject['marginTop']
+            marginRight: CSSObject['marginRight']
+            marginBottom: CSSObject['marginBottom']
+            marginLeft: CSSObject['marginLeft']
+        }
+        item: {
+            paddingTop: CSSObject['paddingTop']
+            paddingRight: CSSObject['paddingRight']
+            paddingBottom: CSSObject['paddingBottom']
+            paddingLeft: CSSObject['paddingLeft']
+            marginTop: CSSObject['marginTop']
+            marginRight: CSSObject['marginRight']
+            marginBottom: CSSObject['marginBottom']
+            marginLeft: CSSObject['marginLeft']
+            gap: CSSObject['gap']
+            borderRadius: CSSObject['borderRadius']
+            backgroundColor: {
+                [key in MenuV2ItemVariant]: {
+                    [key in MenuV2ItemActionType]: {
+                        [key in MenuV2ItemStates]: CSSObject['backgroundColor']
+                    }
+                }
+            }
+            text: {
+                fontSize: CSSObject['fontSize']
+                fontWeight: CSSObject['fontWeight']
+                lineHeight: CSSObject['lineHeight']
+                color: {
+                    [key in MenuV2ItemVariant]: {
+                        [key in MenuV2ItemActionType]: {
+                            [key in MenuV2ItemStates]: CSSObject['color']
+                        }
+                    }
+                }
+                subText: {
+                    fontSize: CSSObject['fontSize']
+                    fontWeight: CSSObject['fontWeight']
+                    lineHeight: CSSObject['lineHeight']
+                    color: {
+                        [key in MenuV2ItemVariant]: {
+                            [key in MenuV2ItemActionType]: {
+                                [key in MenuV2ItemStates]: CSSObject['color']
+                            }
+                        }
+                    }
+                }
+                leftSlot: {
+                    maxWidth: CSSObject['maxWidth']
+                    maxHeight: CSSObject['maxHeight']
+                }
+                rightChevron: {
+                    color: CSSObject['color']
+                    width: CSSObject['width']
+                }
+            }
+        }
+    }
+    separator: {
+        color: CSSObject['color']
+        height: CSSObject['height']
+        marginTop: CSSObject['marginTop']
+        marginRight: CSSObject['marginRight']
+        marginBottom: CSSObject['marginBottom']
+        marginLeft: CSSObject['marginLeft']
+    }
+}
+```

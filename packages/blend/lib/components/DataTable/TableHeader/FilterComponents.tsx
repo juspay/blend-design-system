@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
+import type { VirtualItem } from '@tanstack/react-virtual'
 import { ArrowUp, ArrowDown, Search, ChevronRight, Check } from 'lucide-react'
+import {
+    TextAUnderlineIcon,
+    TrashSimpleIcon,
+    MathOperationsIcon,
+    ArrowLineLeftIcon,
+    ArrowLineRightIcon,
+    FunnelSimpleIcon,
+} from '@phosphor-icons/react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { SearchInput } from '../../Inputs/SearchInput'
@@ -32,8 +42,13 @@ import { Popover } from '../../Popover'
 import MobileFilterDrawer from './MobileFilterDrawer'
 import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
-import { VirtualList, VirtualListItem } from '../../VirtualList'
+import { VirtualListItem } from '../../VirtualList'
+import DateRangePicker from '../../DateRangePicker/DateRangePicker'
+import { DateRange } from '../../DateRangePicker/types'
+import { parseDateLike, toLocalDateString } from '../utils'
 
+const FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT = 40
+const FILTER_VIRTUAL_LIST_MAX_HEIGHT = 220
 type FilterComponentsProps = {
     column: ColumnDefinition<Record<string, unknown>>
     data?: Record<string, unknown>[]
@@ -43,9 +58,191 @@ type FilterComponentsProps = {
     filterState: FilterState
     sortState: SortState
     onColumnFilter?: ColumnFilterHandler
+    onRenameHeader?: () => void
+    onOperations?: () => void
+    onInsertLeft?: () => void
+    onInsertRight?: () => void
+    onDeleteColumn?: () => void
     onPopoverClose?: () => void
     onFilterApplied?: () => void
 }
+
+/** Reusable menu item for the column header popover */
+type MenuItemProps = {
+    icon: React.ReactNode
+    label: string
+    onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
+    /**
+     * Default true. Set false when MenuItem is used
+     * as a Radix `asChild` trigger (Popover, etc).
+     */
+    stopPropagationOnClick?: boolean
+    trailingIcon?: React.ReactNode
+    isDestructive?: boolean
+    tableToken: TableTokenType
+} & Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick' | 'onKeyDown'>
+
+const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
+    (
+        {
+            icon,
+            label,
+            onClick,
+            stopPropagationOnClick = true,
+            trailingIcon,
+            isDestructive,
+            tableToken,
+            ...props
+        },
+        ref
+    ) => {
+        const interactiveHandlers = onClick
+            ? {
+                  onClick: (e: React.MouseEvent<HTMLDivElement>) => {
+                      if (stopPropagationOnClick) e.stopPropagation()
+                      onClick(e)
+                  },
+                  onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          if (stopPropagationOnClick) e.stopPropagation()
+                          onClick(
+                              e as unknown as React.MouseEvent<HTMLDivElement>
+                          )
+                      }
+                  },
+              }
+            : {}
+
+        return (
+            <Block
+                ref={ref}
+                {...props}
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                gap={tableToken.dataTable.table.header.filter.itemGap}
+                padding={
+                    tableToken.dataTable.table.header.filter.sortOption.padding
+                }
+                borderRadius={
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .borderRadius
+                }
+                cursor="pointer"
+                backgroundColor="transparent"
+                _hover={{
+                    backgroundColor:
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .hoverBackground,
+                }}
+                {...interactiveHandlers}
+                tabIndex={0}
+                role="menuitem"
+                _focus={{ outline: 'none' }}
+                // _focusVisible={{
+                //     outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                //     outlineOffset: '2px',
+                // }}
+            >
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    gap={tableToken.dataTable.table.header.filter.itemGap}
+                >
+                    {icon}
+                    <PrimitiveText
+                        style={{
+                            fontSize:
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.fontSize,
+                            color: isDestructive
+                                ? FOUNDATION_THEME.colors.red[500]
+                                : tableToken.dataTable.table.header.filter
+                                      .sortOption.textColor,
+                            fontWeight: isDestructive
+                                ? 600
+                                : tableToken.dataTable.table.header.filter
+                                      .sortOption.fontWeight,
+                        }}
+                    >
+                        {label}
+                    </PrimitiveText>
+                </Block>
+                {trailingIcon}
+            </Block>
+        )
+    }
+)
+
+const renderSortOption = (
+    tableToken: TableTokenType,
+    icon: React.ReactNode,
+    label: string,
+    onClick: () => void,
+    isActive: boolean,
+    checkColor?: string
+) => (
+    <Block
+        display="flex"
+        alignItems="center"
+        gap={tableToken.dataTable.table.header.filter.itemGap}
+        padding={tableToken.dataTable.table.header.filter.sortOption.padding}
+        borderRadius={
+            tableToken.dataTable.table.header.filter.sortOption.borderRadius
+        }
+        cursor="pointer"
+        backgroundColor={
+            isActive
+                ? tableToken.dataTable.table.header.filter.sortOption
+                      .hoverBackground
+                : 'transparent'
+        }
+        _hover={{
+            backgroundColor:
+                tableToken.dataTable.table.header.filter.sortOption
+                    .hoverBackground,
+        }}
+        onClick={onClick}
+        onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                e.stopPropagation()
+                onClick()
+            }
+        }}
+        tabIndex={0}
+        role="menuitem"
+        _focus={{ outline: 'none' }}
+        _focusVisible={{
+            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+            outlineOffset: '2px',
+        }}
+    >
+        {icon}
+        <PrimitiveText
+            style={{
+                fontSize:
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .fontSize,
+                color: tableToken.dataTable.table.header.filter.sortOption
+                    .textColor,
+                fontWeight:
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .fontWeight,
+                flexGrow: 1,
+            }}
+        >
+            {label}
+        </PrimitiveText>
+        {isActive && (
+            <Check
+                size={FOUNDATION_THEME.unit[16]}
+                color={checkColor || FOUNDATION_THEME.colors.gray[900]}
+            />
+        )}
+    </Block>
+)
 
 export const SortOptions: React.FC<{
     column: ColumnDefinition<Record<string, unknown>>
@@ -89,89 +286,55 @@ export const SortOptions: React.FC<{
         currentDirection === SortDirection.DESCENDING &&
         currentSortType === 'delta'
 
-    const renderSortOption = (
-        icon: React.ReactNode,
-        label: string,
-        onClick: () => void,
-        isActive: boolean,
-        checkColor?: string
-    ) => (
-        <Block
-            display="flex"
-            alignItems="center"
-            gap={tableToken.dataTable.table.header.filter.itemGap}
-            padding={
-                tableToken.dataTable.table.header.filter.sortOption.padding
-            }
-            borderRadius={
-                tableToken.dataTable.table.header.filter.sortOption.borderRadius
-            }
-            cursor="pointer"
-            backgroundColor={
-                isActive
-                    ? tableToken.dataTable.table.header.filter.sortOption
-                          .hoverBackground
-                    : 'transparent'
-            }
-            _hover={{
-                backgroundColor:
-                    tableToken.dataTable.table.header.filter.sortOption
-                        .hoverBackground,
-            }}
-            onClick={onClick}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    onClick()
-                }
-            }}
-            tabIndex={0}
-            role="menuitem"
-            _focus={{ outline: 'none' }}
-            _focusVisible={{
-                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                outlineOffset: '2px',
-            }}
-        >
-            {icon}
-            <PrimitiveText
-                style={{
-                    fontSize:
-                        tableToken.dataTable.table.header.filter.sortOption
-                            .fontSize,
-                    color: tableToken.dataTable.table.header.filter.sortOption
-                        .textColor,
-                    fontWeight:
-                        tableToken.dataTable.table.header.filter.sortOption
-                            .fontWeight,
-                    flexGrow: 1,
-                }}
-            >
-                {label}
-            </PrimitiveText>
-            {isActive && (
-                <Check
-                    size={FOUNDATION_THEME.unit[16]}
-                    color={checkColor || FOUNDATION_THEME.colors.gray[900]}
-                />
-            )}
-        </Block>
-    )
-
     return (
         <Block
             display="flex"
             flexDirection="column"
-            paddingBottom={FOUNDATION_THEME.unit[2]}
-            role="menu"
+            gap={FOUNDATION_THEME.unit[2]}
         >
-            <Block
-                display="flex"
-                flexDirection="column"
-                gap={FOUNDATION_THEME.unit[2]}
-            >
-                {hasDeltaSort && (
+            {renderSortOption(
+                tableToken,
+                <ArrowUp
+                    size={FOUNDATION_THEME.unit[16]}
+                    color={
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .iconColor
+                    }
+                />,
+                'Sort Ascending',
+                () => {
+                    sortHandlers.handleSortAscending(fieldKey, 'primary')
+                    onFilterApplied?.()
+                    onPopoverClose?.()
+                },
+                isPrimaryAscendingActive,
+                FOUNDATION_THEME.colors.gray[900]
+            )}
+            {renderSortOption(
+                tableToken,
+                <ArrowDown
+                    size={FOUNDATION_THEME.unit[16]}
+                    color={
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .iconColor
+                    }
+                />,
+                'Sort Descending',
+                () => {
+                    sortHandlers.handleSortDescending(fieldKey, 'primary')
+                    onFilterApplied?.()
+                    onPopoverClose?.()
+                },
+                isPrimaryDescendingActive,
+                FOUNDATION_THEME.colors.green[900]
+            )}
+            {hasDeltaSort && (
+                <>
+                    <Block
+                        height="1px"
+                        backgroundColor={FOUNDATION_THEME.colors.gray[200]}
+                        marginY={FOUNDATION_THEME.unit[4]}
+                    />
                     <PrimitiveText
                         style={{
                             fontSize:
@@ -185,112 +348,44 @@ export const SortOptions: React.FC<{
                             letterSpacing: '0.5px',
                         }}
                     >
-                        Value
+                        Delta
                     </PrimitiveText>
-                )}
-                {renderSortOption(
-                    <ArrowUp
-                        size={FOUNDATION_THEME.unit[16]}
-                        color={
-                            tableToken.dataTable.table.header.filter.sortOption
-                                .iconColor
-                        }
-                    />,
-                    'Sort Ascending',
-                    () => {
-                        sortHandlers.handleSortAscending(fieldKey, 'primary')
-                        onFilterApplied?.()
-                        onPopoverClose?.()
-                    },
-                    isPrimaryAscendingActive,
-                    FOUNDATION_THEME.colors.gray[900]
-                )}
-                {renderSortOption(
-                    <ArrowDown
-                        size={FOUNDATION_THEME.unit[16]}
-                        color={
-                            tableToken.dataTable.table.header.filter.sortOption
-                                .iconColor
-                        }
-                    />,
-                    'Sort Descending',
-                    () => {
-                        sortHandlers.handleSortDescending(fieldKey, 'primary')
-                        onFilterApplied?.()
-                        onPopoverClose?.()
-                    },
-                    isPrimaryDescendingActive,
-                    FOUNDATION_THEME.colors.green[900]
-                )}
-            </Block>
-            {hasDeltaSort && (
-                <>
-                    <Block
-                        height="1px"
-                        backgroundColor={FOUNDATION_THEME.colors.gray[200]}
-                        marginY={FOUNDATION_THEME.unit[4]}
-                    />
-                    <Block
-                        display="flex"
-                        flexDirection="column"
-                        gap={FOUNDATION_THEME.unit[2]}
-                    >
-                        <PrimitiveText
-                            style={{
-                                fontSize:
-                                    tableToken.dataTable.table.header.filter
-                                        .groupLabelFontSize,
-                                color: tableToken.dataTable.table.header.filter
-                                    .groupLabelColor,
-                                fontWeight: 600,
-                                padding: `${FOUNDATION_THEME.unit[4]} ${tableToken.dataTable.table.header.filter.sortOption.padding}`,
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.5px',
-                            }}
-                        >
-                            Delta
-                        </PrimitiveText>
-                        {renderSortOption(
-                            <ArrowUp
-                                size={FOUNDATION_THEME.unit[16]}
-                                color={
-                                    tableToken.dataTable.table.header.filter
-                                        .sortOption.iconColor
-                                }
-                            />,
-                            'Sort Ascending',
-                            () => {
-                                sortHandlers.handleSortAscending(
-                                    fieldKey,
-                                    'delta'
-                                )
-                                onFilterApplied?.()
-                                onPopoverClose?.()
-                            },
-                            isDeltaAscendingActive,
-                            FOUNDATION_THEME.colors.gray[900]
-                        )}
-                        {renderSortOption(
-                            <ArrowDown
-                                size={FOUNDATION_THEME.unit[16]}
-                                color={
-                                    tableToken.dataTable.table.header.filter
-                                        .sortOption.iconColor
-                                }
-                            />,
-                            'Sort Descending',
-                            () => {
-                                sortHandlers.handleSortDescending(
-                                    fieldKey,
-                                    'delta'
-                                )
-                                onFilterApplied?.()
-                                onPopoverClose?.()
-                            },
-                            isDeltaDescendingActive,
-                            FOUNDATION_THEME.colors.green[900]
-                        )}
-                    </Block>
+                    {renderSortOption(
+                        tableToken,
+                        <ArrowUp
+                            size={FOUNDATION_THEME.unit[16]}
+                            color={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.iconColor
+                            }
+                        />,
+                        'Sort Ascending',
+                        () => {
+                            sortHandlers.handleSortAscending(fieldKey, 'delta')
+                            onFilterApplied?.()
+                            onPopoverClose?.()
+                        },
+                        isDeltaAscendingActive,
+                        FOUNDATION_THEME.colors.gray[900]
+                    )}
+                    {renderSortOption(
+                        tableToken,
+                        <ArrowDown
+                            size={FOUNDATION_THEME.unit[16]}
+                            color={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.iconColor
+                            }
+                        />,
+                        'Sort Descending',
+                        () => {
+                            sortHandlers.handleSortDescending(fieldKey, 'delta')
+                            onFilterApplied?.()
+                            onPopoverClose?.()
+                        },
+                        isDeltaDescendingActive,
+                        FOUNDATION_THEME.colors.green[900]
+                    )}
                 </>
             )}
         </Block>
@@ -369,116 +464,182 @@ export const SingleSelectItems: React.FC<{
             value: item.value,
         })
     )
+    const virtualScrollRef = useRef<HTMLDivElement>(null)
+    const virtualizer = useVirtualizer({
+        count: items.length,
+        getScrollElement: () => virtualScrollRef.current,
+        estimateSize: () => FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT,
+        overscan: 5,
+        getItemKey: (index: number) => items[index]?.id ?? index,
+    })
+    const virtualItems = virtualizer.getVirtualItems()
+    const viewportHeight = Math.min(
+        FILTER_VIRTUAL_LIST_MAX_HEIGHT,
+        Math.max(items.length * FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT, 0)
+    )
 
     return (
         <Block
             display="flex"
             flexDirection="column"
-            maxHeight={tableToken.dataTable.table.header.filter.maxHeight}
-            overflowY={tableToken.dataTable.table.header.filter.overflowY}
             marginTop={FOUNDATION_THEME.unit[2]}
-            padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[4]}`}
+            padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[4]}`}
         >
-            <VirtualList
-                items={items}
-                height={400}
-                itemHeight={60}
-                overscan={5}
-                renderItem={({ item }) => {
-                    const value = item.value as string
-                    const label = item.label as React.ReactNode
-                    const selectedValues =
-                        filterState.columnSelectedValues[fieldKey]
-                    const currentSelected = Array.isArray(selectedValues)
-                        ? selectedValues[0]
-                        : typeof selectedValues === 'string'
-                          ? selectedValues
-                          : ''
+            {items.length === 0 ? (
+                <PrimitiveText
+                    style={{
+                        fontSize:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .fontSize,
+                        color: tableToken.dataTable.table.header.filter
+                            .groupLabelColor,
+                        padding:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .padding,
+                    }}
+                >
+                    No results found
+                </PrimitiveText>
+            ) : (
+                <Block
+                    ref={virtualScrollRef}
+                    style={{
+                        maxHeight: viewportHeight,
+                        overflow: 'auto',
+                        position: 'relative',
+                    }}
+                >
+                    <Block
+                        style={{
+                            height: virtualizer.getTotalSize(),
+                            width: '100%',
+                            position: 'relative',
+                        }}
+                    >
+                        {virtualItems.map((virtualItem: VirtualItem) => {
+                            const item = items[virtualItem.index]
+                            const value = item.value as string
+                            const label = item.label as React.ReactNode
+                            const selectedValues =
+                                filterState.columnSelectedValues[fieldKey]
+                            const currentSelected = Array.isArray(
+                                selectedValues
+                            )
+                                ? selectedValues[0]
+                                : typeof selectedValues === 'string'
+                                  ? selectedValues
+                                  : ''
+                            const isSelected = currentSelected === value
 
-                    const isSelected = currentSelected === value
-
-                    return (
-                        <Block
-                            key={value}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            padding={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.padding
-                            }
-                            borderRadius={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.borderRadius
-                            }
-                            cursor="pointer"
-                            backgroundColor={
-                                isSelected
-                                    ? tableToken.dataTable.table.header.filter
-                                          .sortOption.hoverBackground
-                                    : 'transparent'
-                            }
-                            _hover={{
-                                backgroundColor:
-                                    tableToken.dataTable.table.header.filter
-                                        .sortOption.hoverBackground,
-                            }}
-                            onClick={() => {
-                                filterHandlers.handleSelectFilter(
-                                    column,
-                                    fieldKey,
-                                    value,
-                                    onColumnFilter
-                                )
-                                onPopoverClose?.()
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    filterHandlers.handleSelectFilter(
-                                        column,
-                                        fieldKey,
-                                        value,
-                                        onColumnFilter
-                                    )
-                                    onPopoverClose?.()
-                                }
-                            }}
-                            tabIndex={0}
-                            role="menuitemradio"
-                            aria-checked={isSelected}
-                            _focus={{ outline: 'none' }}
-                            _focusVisible={{
-                                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                                outlineOffset: '2px',
-                            }}
-                        >
-                            <PrimitiveText
-                                style={{
-                                    fontSize:
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.fontSize,
-                                    color: tableToken.dataTable.table.header
-                                        .filter.sortOption.textColor,
-                                    fontWeight:
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.fontWeight,
-                                    flexGrow: 1,
-                                }}
-                            >
-                                {label}
-                            </PrimitiveText>
-                            {isSelected && (
-                                <Check
-                                    size={FOUNDATION_THEME.unit[16]}
-                                    color={FOUNDATION_THEME.colors.gray[600]}
-                                />
-                            )}
-                        </Block>
-                    )
-                }}
-            />
+                            return (
+                                <Block
+                                    key={String(virtualItem.key)}
+                                    data-index={virtualItem.index}
+                                    ref={virtualizer.measureElement}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        transform: `translateY(${virtualItem.start}px)`,
+                                    }}
+                                >
+                                    <Block
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        padding={
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.padding
+                                        }
+                                        borderRadius={
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.borderRadius
+                                        }
+                                        cursor="pointer"
+                                        backgroundColor={
+                                            isSelected
+                                                ? tableToken.dataTable.table
+                                                      .header.filter.sortOption
+                                                      .hoverBackground
+                                                : 'transparent'
+                                        }
+                                        _hover={{
+                                            backgroundColor:
+                                                tableToken.dataTable.table
+                                                    .header.filter.sortOption
+                                                    .hoverBackground,
+                                        }}
+                                        onClick={() => {
+                                            filterHandlers.handleSelectFilter(
+                                                column,
+                                                fieldKey,
+                                                value,
+                                                onColumnFilter
+                                            )
+                                            onPopoverClose?.()
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'Enter' ||
+                                                e.key === ' '
+                                            ) {
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                                filterHandlers.handleSelectFilter(
+                                                    column,
+                                                    fieldKey,
+                                                    value,
+                                                    onColumnFilter
+                                                )
+                                                onPopoverClose?.()
+                                            }
+                                        }}
+                                        tabIndex={0}
+                                        role="menuitemradio"
+                                        aria-checked={isSelected}
+                                        _focus={{ outline: 'none' }}
+                                        _focusVisible={{
+                                            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                            outlineOffset: '2px',
+                                        }}
+                                    >
+                                        <PrimitiveText
+                                            style={{
+                                                fontSize:
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.fontSize,
+                                                color: tableToken.dataTable
+                                                    .table.header.filter
+                                                    .sortOption.textColor,
+                                                fontWeight:
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.fontWeight,
+                                                flexGrow: 1,
+                                                overflowWrap: 'break-word',
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            {label}
+                                        </PrimitiveText>
+                                        {isSelected && (
+                                            <Check
+                                                size={FOUNDATION_THEME.unit[16]}
+                                                color={
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[600]
+                                                }
+                                            />
+                                        )}
+                                    </Block>
+                                </Block>
+                            )
+                        })}
+                    </Block>
+                </Block>
+            )}
         </Block>
     )
 }
@@ -514,109 +675,174 @@ export const MultiSelectItems: React.FC<{
             value: item.value,
         })
     )
+    const virtualScrollRef = useRef<HTMLDivElement>(null)
+    const virtualizer = useVirtualizer({
+        count: items.length,
+        getScrollElement: () => virtualScrollRef.current,
+        estimateSize: () => FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT,
+        overscan: 5,
+        getItemKey: (index: number) => items[index]?.id ?? index,
+    })
+    const virtualItems = virtualizer.getVirtualItems()
+    const viewportHeight = Math.min(
+        FILTER_VIRTUAL_LIST_MAX_HEIGHT,
+        Math.max(items.length * FILTER_VIRTUAL_ITEM_ESTIMATE_HEIGHT, 0)
+    )
 
     return (
         <Block
             display="flex"
             flexDirection="column"
-            maxHeight={tableToken.dataTable.table.header.filter.maxHeight}
-            overflowY={tableToken.dataTable.table.header.filter.overflowY}
             marginTop={FOUNDATION_THEME.unit[2]}
+            padding={`${FOUNDATION_THEME.unit[0]} ${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[4]} ${FOUNDATION_THEME.unit[4]}`}
         >
-            <VirtualList
-                items={items}
-                height={400}
-                itemHeight={60}
-                overscan={5}
-                renderItem={({ item }) => {
-                    const value = item.value as string
-                    const label = item.label as React.ReactNode
-                    const selectedValues =
-                        filterState.columnSelectedValues[fieldKey]
-                    const currentSelected = Array.isArray(selectedValues)
-                        ? selectedValues
-                        : []
+            {items.length === 0 ? (
+                <PrimitiveText
+                    style={{
+                        fontSize:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .fontSize,
+                        color: tableToken.dataTable.table.header.filter
+                            .groupLabelColor,
+                        padding:
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .padding,
+                    }}
+                >
+                    No results found
+                </PrimitiveText>
+            ) : (
+                <Block
+                    ref={virtualScrollRef}
+                    style={{
+                        maxHeight: viewportHeight,
+                        overflow: 'auto',
+                        position: 'relative',
+                    }}
+                >
+                    <Block
+                        style={{
+                            height: virtualizer.getTotalSize(),
+                            width: '100%',
+                            position: 'relative',
+                        }}
+                    >
+                        {virtualItems.map((virtualItem: VirtualItem) => {
+                            const item = items[virtualItem.index]
+                            const value = item.value as string
+                            const label = item.label as React.ReactNode
+                            const selectedValues =
+                                filterState.columnSelectedValues[fieldKey]
+                            const currentSelected = Array.isArray(
+                                selectedValues
+                            )
+                                ? selectedValues
+                                : []
 
-                    const isSelected = currentSelected.includes(value)
+                            const isSelected = currentSelected.includes(value)
 
-                    return (
-                        <Block
-                            key={value}
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            padding={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.padding
-                            }
-                            borderRadius={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.borderRadius
-                            }
-                            cursor="pointer"
-                            backgroundColor={
-                                isSelected
-                                    ? tableToken.dataTable.table.header.filter
-                                          .sortOption.hoverBackground
-                                    : 'transparent'
-                            }
-                            _hover={{
-                                backgroundColor:
-                                    tableToken.dataTable.table.header.filter
-                                        .sortOption.hoverBackground,
-                            }}
-                            onClick={() => {
-                                filterHandlers.handleMultiSelectFilter(
-                                    column,
-                                    fieldKey,
-                                    value,
-                                    onColumnFilter
-                                )
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    filterHandlers.handleMultiSelectFilter(
-                                        column,
-                                        fieldKey,
-                                        value,
-                                        onColumnFilter
-                                    )
-                                }
-                            }}
-                            tabIndex={0}
-                            role="menuitemcheckbox"
-                            aria-checked={isSelected}
-                            _focus={{ outline: 'none' }}
-                            _focusVisible={{
-                                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                                outlineOffset: '2px',
-                            }}
-                        >
-                            <PrimitiveText
-                                style={{
-                                    fontSize:
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.fontSize,
-                                    color: tableToken.dataTable.table.header
-                                        .filter.sortOption.textColor,
-                                    fontWeight:
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.fontWeight,
-                                    flexGrow: 1,
-                                }}
-                            >
-                                {label}
-                            </PrimitiveText>
-                            <Checkbox
-                                checked={isSelected}
-                                size={CheckboxSize.SMALL}
-                            />
-                        </Block>
-                    )
-                }}
-            />
+                            return (
+                                <Block
+                                    key={String(virtualItem.key)}
+                                    data-index={virtualItem.index}
+                                    ref={virtualizer.measureElement}
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        transform: `translateY(${virtualItem.start}px)`,
+                                    }}
+                                >
+                                    <Block
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        padding={
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.padding
+                                        }
+                                        borderRadius={
+                                            tableToken.dataTable.table.header
+                                                .filter.sortOption.borderRadius
+                                        }
+                                        cursor="pointer"
+                                        backgroundColor={
+                                            isSelected
+                                                ? tableToken.dataTable.table
+                                                      .header.filter.sortOption
+                                                      .hoverBackground
+                                                : 'transparent'
+                                        }
+                                        _hover={{
+                                            backgroundColor:
+                                                tableToken.dataTable.table
+                                                    .header.filter.sortOption
+                                                    .hoverBackground,
+                                        }}
+                                        onClick={() => {
+                                            filterHandlers.handleMultiSelectFilter(
+                                                column,
+                                                fieldKey,
+                                                value,
+                                                onColumnFilter
+                                            )
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (
+                                                e.key === 'Enter' ||
+                                                e.key === ' '
+                                            ) {
+                                                e.preventDefault()
+                                                e.stopPropagation()
+                                                filterHandlers.handleMultiSelectFilter(
+                                                    column,
+                                                    fieldKey,
+                                                    value,
+                                                    onColumnFilter
+                                                )
+                                            }
+                                        }}
+                                        tabIndex={0}
+                                        role="menuitemcheckbox"
+                                        aria-checked={isSelected}
+                                        _focus={{ outline: 'none' }}
+                                        _focusVisible={{
+                                            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                            outlineOffset: '2px',
+                                        }}
+                                    >
+                                        <PrimitiveText
+                                            style={{
+                                                fontSize:
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.fontSize,
+                                                color: tableToken.dataTable
+                                                    .table.header.filter
+                                                    .sortOption.textColor,
+                                                fontWeight:
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.fontWeight,
+                                                flexGrow: 1,
+                                                overflowWrap: 'break-word',
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            {label}
+                                        </PrimitiveText>
+                                        <Checkbox
+                                            checked={isSelected}
+                                            size={CheckboxSize.SMALL}
+                                        />
+                                    </Block>
+                                </Block>
+                            )
+                        })}
+                    </Block>
+                </Block>
+            )}
         </Block>
     )
 }
@@ -871,6 +1097,117 @@ export const SliderFilter: React.FC<{
     )
 }
 
+export const DateFilter: React.FC<{
+    column: ColumnDefinition<Record<string, unknown>>
+    fieldKey: string
+    tableToken: TableTokenType
+    filterState: FilterState
+    onColumnFilter?: ColumnFilterHandler
+}> = ({ column, fieldKey, tableToken, filterState, onColumnFilter }) => {
+    const selectedValue = filterState.columnSelectedValues[fieldKey]
+    const selectedRange = Array.isArray(selectedValue)
+        ? selectedValue
+        : typeof selectedValue === 'string' && selectedValue
+          ? [selectedValue, selectedValue]
+          : []
+
+    const pickerValue: DateRange | undefined = (() => {
+        if (selectedRange.length === 0 || !selectedRange[0]) return undefined
+        const start = parseDateLike(selectedRange[0])
+        if (!start) return undefined
+        const end = parseDateLike(selectedRange[1] || selectedRange[0]) || start
+        return { startDate: start, endDate: end }
+    })()
+    const hasActiveDateRange = selectedRange.length > 0
+
+    return (
+        <Block display="flex" flexDirection="column">
+            <DateRangePicker
+                value={pickerValue}
+                onChange={(range) => {
+                    const start = toLocalDateString(range.startDate)
+                    const end = toLocalDateString(
+                        range.endDate || range.startDate
+                    )
+                    onColumnFilter?.(
+                        String(column.field),
+                        FilterType.DATE,
+                        [start, end],
+                        'range'
+                    )
+                }}
+                showDateTimePicker={false}
+                showDateInput={false}
+                showPresets={false}
+                allowSingleDateSelection={false}
+                useDrawerOnMobile={false}
+                popoverConfig={{
+                    side: 'right',
+                    align: 'start',
+                    sideOffset: 10,
+                }}
+                triggerConfig={{
+                    style: { width: '100%' },
+                    renderTrigger: ({ onClick }) => (
+                        <MenuItem
+                            icon={
+                                <FunnelSimpleIcon
+                                    size={FOUNDATION_THEME.unit[16]}
+                                    color={
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.iconColor
+                                    }
+                                    weight="bold"
+                                />
+                            }
+                            label="Filter"
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                onClick()
+                            }}
+                            trailingIcon={
+                                <ChevronRight
+                                    size={FOUNDATION_THEME.unit[16]}
+                                    color={
+                                        tableToken.dataTable.table.header.filter
+                                            .sortOption.iconColor
+                                    }
+                                />
+                            }
+                            tableToken={tableToken}
+                            style={{ width: '100%' }}
+                        />
+                    ),
+                }}
+            />
+            {hasActiveDateRange && (
+                <MenuItem
+                    icon={
+                        <TrashSimpleIcon
+                            size={FOUNDATION_THEME.unit[16]}
+                            color={FOUNDATION_THEME.colors.red[600]}
+                            weight="bold"
+                        />
+                    }
+                    label="Clear Filter"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onColumnFilter?.(
+                            String(column.field),
+                            FilterType.DATE,
+                            [],
+                            'range'
+                        )
+                    }}
+                    isDestructive
+                    tableToken={tableToken}
+                    style={{ width: '100%' }}
+                />
+            )}
+        </Block>
+    )
+}
+
 export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     column,
     data,
@@ -880,6 +1217,11 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     filterState,
     sortState,
     onColumnFilter,
+    onRenameHeader,
+    onOperations,
+    onInsertLeft,
+    onInsertRight,
+    onDeleteColumn,
     onPopoverClose,
     onFilterApplied,
 }) => {
@@ -894,6 +1236,10 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
 
     const isSortingEnabled =
         columnConfig.supportsSorting && column.isSortable !== false
+
+    const iconColor =
+        tableToken.dataTable.table.header.filter.sortOption.iconColor
+    const iconSize = FOUNDATION_THEME.unit[16]
 
     // Get all focusable menu items
     const getMenuItems = (): HTMLElement[] => {
@@ -910,7 +1256,6 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
         const items = getMenuItems()
         if (items.length === 0) return
 
-        // Find current focused item index
         const currentFocused = document.activeElement as HTMLElement
         const currentIndex = items.findIndex((item) => item === currentFocused)
         let newIndex = currentIndex >= 0 ? currentIndex : focusedIndex
@@ -950,14 +1295,12 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
         }
     }
 
-    // Reset focused index when nested filter opens/closes
     useEffect(() => {
         if (nestedFilterOpen) {
             setFocusedIndex(-1)
         }
     }, [nestedFilterOpen])
 
-    // Use mobile component for small screens
     if (isMobile) {
         return (
             <MobileFilterDrawer
@@ -986,6 +1329,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
             _focus={{ outline: 'none' }}
             _focusVisible={{ outline: 'none' }}
         >
+            {/* Sort — direct options */}
             {isSortingEnabled && (
                 <SortOptions
                     column={column}
@@ -998,88 +1342,38 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                 />
             )}
 
-            {isSortingEnabled && hasFiltering && (
-                <Separator tableToken={tableToken} />
+            {/* Filter — direct for date range, nested for others */}
+            {hasFiltering && columnConfig.filterComponent === 'dateRange' && (
+                <DateFilter
+                    column={column}
+                    fieldKey={fieldKey}
+                    tableToken={tableToken}
+                    filterState={filterState}
+                    onColumnFilter={onColumnFilter}
+                />
             )}
 
-            {hasFiltering && (
+            {hasFiltering && columnConfig.filterComponent !== 'dateRange' && (
                 <Popover
                     trigger={
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="space-between"
-                            gap={
-                                tableToken.dataTable.table.header.filter.itemGap
-                            }
-                            padding={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.padding
-                            }
-                            borderRadius={
-                                tableToken.dataTable.table.header.filter
-                                    .sortOption.borderRadius
-                            }
-                            cursor="pointer"
-                            backgroundColor="transparent"
-                            _hover={{
-                                backgroundColor:
-                                    tableToken.dataTable.table.header.filter
-                                        .sortOption.hoverBackground,
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    setNestedFilterOpen(!nestedFilterOpen)
-                                }
-                            }}
-                            tabIndex={0}
-                            role="menuitem"
-                            _focus={{ outline: 'none' }}
-                            _focusVisible={{
-                                outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
-                                outlineOffset: '2px',
-                            }}
-                        >
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                gap={
-                                    tableToken.dataTable.table.header.filter
-                                        .itemGap
-                                }
-                            >
-                                <Search
-                                    size={FOUNDATION_THEME.unit[16]}
-                                    color={
-                                        tableToken.dataTable.table.header.filter
-                                            .sortOption.iconColor
-                                    }
+                        <MenuItem
+                            icon={
+                                <FunnelSimpleIcon
+                                    size={iconSize}
+                                    color={iconColor}
+                                    weight="bold"
                                 />
-                                <PrimitiveText
-                                    style={{
-                                        fontSize:
-                                            tableToken.dataTable.table.header
-                                                .filter.sortOption.fontSize,
-                                        color: tableToken.dataTable.table.header
-                                            .filter.sortOption.textColor,
-                                        fontWeight:
-                                            tableToken.dataTable.table.header
-                                                .filter.sortOption.fontWeight,
-                                    }}
-                                >
-                                    Filter
-                                </PrimitiveText>
-                            </Block>
-                            <ChevronRight
-                                size={FOUNDATION_THEME.unit[16]}
-                                color={
-                                    tableToken.dataTable.table.header.filter
-                                        .sortOption.iconColor
-                                }
-                            />
-                        </Block>
+                            }
+                            label="Filter"
+                            stopPropagationOnClick={false}
+                            trailingIcon={
+                                <ChevronRight
+                                    size={iconSize}
+                                    color={iconColor}
+                                />
+                            }
+                            tableToken={tableToken}
+                        />
                     }
                     maxWidth={220}
                     minWidth={220}
@@ -1087,7 +1381,9 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     align="start"
                     sideOffset={10}
                     open={nestedFilterOpen}
-                    onOpenChange={setNestedFilterOpen}
+                    onOpenChange={(open) => {
+                        setNestedFilterOpen(open)
+                    }}
                 >
                     <Block
                         display="flex"
@@ -1148,6 +1444,109 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                         )}
                     </Block>
                 </Popover>
+            )}
+
+            {onOperations && (
+                <MenuItem
+                    icon={
+                        <MathOperationsIcon
+                            size={iconSize}
+                            color={iconColor}
+                            weight="bold"
+                        />
+                    }
+                    label="Operations"
+                    onClick={() => {
+                        setNestedFilterOpen(false)
+                        onOperations()
+                        onPopoverClose?.()
+                    }}
+                    tableToken={tableToken}
+                />
+            )}
+
+            {(onRenameHeader || onInsertLeft || onInsertRight) && (
+                <Separator tableToken={tableToken} />
+            )}
+
+            {onRenameHeader && (
+                <MenuItem
+                    icon={
+                        <TextAUnderlineIcon
+                            size={iconSize}
+                            color={iconColor}
+                            weight="bold"
+                        />
+                    }
+                    label="Rename"
+                    onClick={() => {
+                        setNestedFilterOpen(false)
+                        onRenameHeader()
+                        onPopoverClose?.()
+                    }}
+                    tableToken={tableToken}
+                />
+            )}
+
+            {/* Insert Left — callback */}
+            {onInsertLeft && (
+                <MenuItem
+                    icon={
+                        <ArrowLineLeftIcon
+                            size={iconSize}
+                            color={iconColor}
+                            weight="bold"
+                        />
+                    }
+                    label="Insert Left"
+                    onClick={() => {
+                        setNestedFilterOpen(false)
+                        onInsertLeft()
+                        onPopoverClose?.()
+                    }}
+                    tableToken={tableToken}
+                />
+            )}
+
+            {onInsertRight && (
+                <MenuItem
+                    icon={
+                        <ArrowLineRightIcon
+                            size={iconSize}
+                            color={iconColor}
+                            weight="bold"
+                        />
+                    }
+                    label="Insert Right"
+                    onClick={() => {
+                        setNestedFilterOpen(false)
+                        onInsertRight()
+                        onPopoverClose?.()
+                    }}
+                    tableToken={tableToken}
+                />
+            )}
+
+            {onDeleteColumn && <Separator tableToken={tableToken} />}
+
+            {onDeleteColumn && (
+                <MenuItem
+                    icon={
+                        <TrashSimpleIcon
+                            size={iconSize}
+                            color={FOUNDATION_THEME.colors.red[600]}
+                            weight="bold"
+                        />
+                    }
+                    label="Delete"
+                    isDestructive
+                    onClick={() => {
+                        setNestedFilterOpen(false)
+                        onDeleteColumn()
+                        onPopoverClose?.()
+                    }}
+                    tableToken={tableToken}
+                />
             )}
         </Block>
     )

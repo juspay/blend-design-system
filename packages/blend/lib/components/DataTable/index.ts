@@ -21,3 +21,7 @@ export type {
     ColumnTypeConfig,
     AvatarData as DataTableAvatarData,
 } from './columnTypes'
+
+// Pivot Table exports
+export { default as PivotTableModal } from './PivotTableModal'
+export * from './PivotTableModal/types'

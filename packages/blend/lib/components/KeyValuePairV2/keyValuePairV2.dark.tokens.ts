@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import { ResponsiveKeyValuePairV2Tokens } from './keyValuePairV2.tokens'
+import type { ResponsiveKeyValuePairV2Tokens } from './keyValuePairV2.tokens.types'
 import { KeyValuePairV2Size } from './keyValuePairV2.types'
 
 export const getKeyValuePairV2DarkTokens = (
@@ -26,7 +26,7 @@ export const getKeyValuePairV2DarkTokens = (
                         foundationToken.font.size.body.lg.fontSize,
                     [KeyValuePairV2Size.LG]: 18,
                 },
-                fontWeight: foundationToken.font.weight[600],
+                fontWeight: foundationToken.font.weight[500],
                 gap: foundationToken.unit[8],
             },
         },
@@ -51,7 +51,7 @@ export const getKeyValuePairV2DarkTokens = (
                     [KeyValuePairV2Size.LG]:
                         foundationToken.font.size.heading.sm.fontSize,
                 },
-                fontWeight: foundationToken.font.weight[600],
+                fontWeight: foundationToken.font.weight[500],
                 gap: foundationToken.unit[8],
             },
         },

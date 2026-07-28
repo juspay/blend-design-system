@@ -11,7 +11,7 @@ export enum KeyValuePairV2Size {
     LG = 'lg',
 }
 
-export type TextOverflowMode = 'truncate' | 'wrap' | 'wrap-clamp'
+export type KeyValuePairV2TextOverflowMode = 'truncate' | 'wrap' | 'wrap-clamp'
 
 export type KeyValuePairV2PropTypes = {
     keyString: string
@@ -26,7 +26,7 @@ export type KeyValuePairV2PropTypes = {
     }
     keyValuePairState?: KeyValuePairV2StateType
     maxWidth?: string
-    textOverflow?: TextOverflowMode
+    textOverflow?: KeyValuePairV2TextOverflowMode
     maxLines?: number
     showTooltipOnTruncate?: boolean
 } & Omit<

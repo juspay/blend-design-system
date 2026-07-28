@@ -89,4 +89,20 @@ describe('MultiSelectV2 Accessibility', () => {
         const listbox = await screen.findByRole('listbox')
         expect(listbox).toHaveAttribute('aria-multiselectable', 'true')
     })
+
+    it('meets WCAG standards when menuFooter is provided', async () => {
+        const user = userEvent.setup()
+        const { container } = render(
+            <MultiSelectV2
+                label="Select"
+                placeholder="Select"
+                items={createItems()}
+                selectedValues={[]}
+                onChange={() => {}}
+                menuFooter={<button onClick={() => {}}>Create new</button>}
+            />
+        )
+        await user.click(screen.getByRole('combobox', { name: /select/i }))
+        expect(await axe(container)).toHaveNoViolations()
+    })
 })

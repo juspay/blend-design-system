@@ -1,0 +1,235 @@
+---
+version: 2
+title: Badge
+description: The Badge component displays numerical counts, status indicators, or labels as overlays on other elements or as standalone indicators.
+category: Display
+tags:
+    - badge
+    - component
+    - notification
+    - indicator
+    - count
+    - status
+RepoFolderName: Badge
+StorybookLink: components-badge--docs
+---
+
+<BadgePreview />
+
+## Usage
+
+```tsx
+import { Badge, BadgeColor, BadgeSize } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        // Standalone badge with count
+        <Badge count={5} color={BadgeColor.ALERT} size={BadgeSize.MD} />
+
+        // Badge with text
+        <Badge text="New" color={BadgeColor.SUCCESS} />
+
+        // Badge as dot (no content)
+        <Badge color={BadgeColor.ALERT} />
+
+        // Badge wrapping an element
+        <Badge count={10} position="top-right">
+            <NotificationIcon />
+        </Badge>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'count',
+                hintText:
+                    'Numeric value to display in the badge. Will be formatted with maxCount limit.',
+            },
+            {
+                content: 'number',
+                hintText: 'Numeric count value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxCount',
+                hintText:
+                    'Maximum count to display. Values above this will show as "{maxCount}+".',
+            },
+            {
+                content: 'number',
+                hintText: 'Default is 99',
+            },
+            { content: '99' },
+        ],
+        [
+            {
+                content: 'text',
+                hintText:
+                    'Custom text to display instead of count. Useful for labels like "New" or "Beta".',
+            },
+            {
+                content: 'string',
+                hintText: 'Custom badge text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Determines the badge size. SM for small, MD for medium, LG for large.',
+            },
+            {
+                content: 'BadgeSize',
+                hintText: 'Enum for badge size',
+            },
+            { content: 'BadgeSize.MD' },
+        ],
+        [
+            {
+                content: 'color',
+                hintText:
+                    'Determines the badge color. ALERT for red, SUCCESS for green, WARNING for yellow, PRIMARY for brand color, NEUTRAL for gray.',
+            },
+            {
+                content: 'BadgeColor',
+                hintText: 'Enum for badge color',
+            },
+            { content: 'BadgeColor.ALERT' },
+        ],
+        [
+            {
+                content: 'showBadge',
+                hintText: 'Controls whether the badge is visible or hidden.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Visibility state',
+            },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'showZero',
+                hintText:
+                    'When true, shows the badge even when count is 0. When false, hides badge at 0.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Show zero value',
+            },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'position',
+                hintText:
+                    'Position of the badge relative to its children. Only used when wrapping an element.',
+            },
+            {
+                content: 'BadgePosition',
+                hintText: 'top-right, top-left, bottom-right, bottom-left',
+            },
+            { content: 'top-right' },
+        ],
+        [
+            {
+                content: 'offset',
+                hintText:
+                    'Custom offset for badge position as [x, y] tuple. Adjusts the default position.',
+            },
+            {
+                content: '[number, number]',
+                hintText: 'Offset values in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'isCircular',
+                hintText:
+                    'When true, adjusts positioning for circular wrapper elements.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'For circular containers',
+            },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText:
+                    'Element to wrap with the badge. When provided, badge is positioned absolutely relative to this element.',
+            },
+            {
+                content: 'ReactElement',
+                hintText: 'Wrapped element',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the Badge component using the following tokens:
+
+```tsx
+export type BadgeTokensType = {
+    dot: {
+        width: {
+            [key in BadgeSize]: CSSObject['width']
+        }
+        height: {
+            [key in BadgeSize]: CSSObject['height']
+        }
+        borderRadius: CSSObject['borderRadius']
+    }
+    pill: {
+        minWidth: {
+            [key in BadgeSize]: CSSObject['minWidth']
+        }
+        height: {
+            [key in BadgeSize]: CSSObject['height']
+        }
+        paddingLeft: {
+            [key in BadgeSize]: CSSObject['paddingLeft']
+        }
+        paddingRight: {
+            [key in BadgeSize]: CSSObject['paddingRight']
+        }
+        borderRadius: {
+            [key in BadgeSize]: CSSObject['borderRadius']
+        }
+    }
+    backgroundColor: {
+        [key in BadgeColor]: CSSObject['backgroundColor']
+    }
+    text: {
+        color: CSSObject['color']
+        fontSize: {
+            [key in BadgeSize]: CSSObject['fontSize']
+        }
+        fontWeight: CSSObject['fontWeight']
+        lineHeight: {
+            [key in BadgeSize]: CSSObject['lineHeight']
+        }
+    }
+    position: {
+        offset: {
+            [key in BadgeSize]: CSSObject['top']
+        }
+    }
+}
+```

@@ -10,7 +10,7 @@ import {
 } from '../../../../packages/blend/lib/components/MultiSelectV2/multiSelectV2.types'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import { User, Star, Shield, Briefcase } from 'lucide-react'
+import { User, Star, Shield, Briefcase, Plus } from 'lucide-react'
 
 const MultiSelectDemoV2 = () => {
     const [playgroundLabel, setPlaygroundLabel] = useState('Select options')
@@ -52,10 +52,34 @@ const MultiSelectDemoV2 = () => {
     const [playgroundFullWidth, setPlaygroundFullWidth] = useState(false)
     const [playgroundShowActionButtons, setPlaygroundShowActionButtons] =
         useState(false)
+    const [playgroundEnableVirtualization, setPlaygroundEnableVirtualization] =
+        useState(false)
 
     const [actionButtonsSelected, setActionButtonsSelected] = useState<
         string[]
     >([])
+    const [menuFooterSelected, setMenuFooterSelected] = useState<string[]>([])
+    const [menuFooterEmptySelected, setMenuFooterEmptySelected] = useState<
+        string[]
+    >([])
+    const handleMenuFooterChange = (value: string | string[]) => {
+        setMenuFooterSelected((prev) =>
+            Array.isArray(value)
+                ? value
+                : prev.includes(value)
+                  ? prev.filter((v) => v !== value)
+                  : [...prev, value]
+        )
+    }
+    const handleMenuFooterEmptyChange = (value: string | string[]) => {
+        setMenuFooterEmptySelected((prev) =>
+            Array.isArray(value)
+                ? value
+                : prev.includes(value)
+                  ? prev.filter((v) => v !== value)
+                  : [...prev, value]
+        )
+    }
     const handleActionButtonsChange = (value: string | string[]) => {
         if (Array.isArray(value)) {
             setActionButtonsSelected(value)
@@ -391,6 +415,15 @@ const MultiSelectDemoV2 = () => {
                                 )
                             }
                         />
+                        <Switch
+                            label="Enable virtual list"
+                            checked={playgroundEnableVirtualization}
+                            onChange={() =>
+                                setPlaygroundEnableVirtualization(
+                                    (prev) => !prev
+                                )
+                            }
+                        />
                     </div>
                 </div>
 
@@ -442,6 +475,9 @@ const MultiSelectDemoV2 = () => {
                                     : undefined
                             }
                             showActionButtons={playgroundShowActionButtons}
+                            enableVirtualization={
+                                playgroundEnableVirtualization
+                            }
                             primaryAction={
                                 playgroundShowActionButtons
                                     ? {
@@ -492,6 +528,91 @@ const MultiSelectDemoV2 = () => {
                             onClick: () => setActionButtonsSelected([]),
                         }}
                     />
+                </div>
+            </section>
+
+            <section className="space-y-4">
+                <h2 className="text-2xl font-bold">Menu Footer</h2>
+                <p className="text-gray-600">
+                    A{' '}
+                    <code className="rounded bg-gray-200 px-1">menuFooter</code>{' '}
+                    slot renders arbitrary content pinned at the bottom of the
+                    open menu. It stays visible even when the list is empty and
+                    is not treated as a selectable item.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="max-w-md rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-6">
+                        <MultiSelectV2
+                            label="With items"
+                            placeholder="Select options..."
+                            items={groupedItems}
+                            selectedValues={menuFooterSelected}
+                            onChange={handleMenuFooterChange}
+                            search={{ show: true }}
+                            menuDimensions={{ maxHeight: 320 }}
+                            menuFooter={
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        alert('Create new option clicked')
+                                    }
+                                    style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 8,
+                                        padding: '8px 12px',
+                                        borderRadius: 0,
+                                        border: 'none',
+                                        background: 'transparent',
+                                        cursor: 'pointer',
+                                        fontSize: 14,
+                                        fontWeight: 500,
+                                        color: '#4b5563',
+                                    }}
+                                >
+                                    <Plus size={16} />
+                                    Create new option
+                                </button>
+                            }
+                        />
+                    </div>
+                    <div className="max-w-md rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-6">
+                        <MultiSelectV2
+                            label="Empty list"
+                            placeholder="No items available..."
+                            items={[]}
+                            selectedValues={menuFooterEmptySelected}
+                            onChange={handleMenuFooterEmptyChange}
+                            search={{ show: true }}
+                            menuDimensions={{ maxHeight: 320 }}
+                            menuFooter={
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        alert('Create new option clicked')
+                                    }
+                                    style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 8,
+                                        padding: '8px 12px',
+                                        borderRadius: 0,
+                                        border: 'none',
+                                        background: 'transparent',
+                                        cursor: 'pointer',
+                                        fontSize: 14,
+                                        fontWeight: 500,
+                                        color: '#4b5563',
+                                    }}
+                                >
+                                    <Plus size={16} />
+                                    Create new option
+                                </button>
+                            }
+                        />
+                    </div>
                 </div>
             </section>
         </div>

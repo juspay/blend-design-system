@@ -23,6 +23,7 @@ const SingleSelectV2Search = ({
             right={0}
             zIndex={50}
             backgroundColor={backgroundColor}
+            flexShrink={0}
         >
             <SearchInput
                 ref={searchInputRef}

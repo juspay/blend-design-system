@@ -1,0 +1,232 @@
+---
+version: 2
+title: Charts
+description: The ChartsV2 component provides a Highcharts-powered visualization wrapper with skeleton loading and empty state handling.
+category: Data
+tags:
+    - charts
+    - component
+    - visualization
+    - data
+    - graph
+RepoFolderName: ChartsV2
+StorybookLink: components-charts-chartsv2--docs
+---
+
+<ChartsV2Preview />
+
+## Usage
+
+```tsx
+import { ChartV2 } from '@juspay/blend-design-system'
+import Highcharts from 'highcharts'
+
+function MyComponent() {
+    const options = {
+        title: {
+            text: 'Monthly Sales',
+        },
+        series: [
+            {
+                type: 'line',
+                name: 'Sales',
+                data: [1, 2, 3, 4, 5],
+            },
+        ],
+    }
+
+    return (
+        <ChartV2
+            highcharts={Highcharts}
+            options={options}
+            skeleton={{ show: false }}
+            noData={{
+                title: 'No Data Available',
+                subtitle: 'Try adjusting your filters',
+            }}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'highcharts',
+                hintText:
+                    'Highcharts instance to use for rendering. Required for server-side rendering support.',
+            },
+            {
+                content: 'ChartV2Type',
+                hintText: 'Highcharts constructor instance',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'options',
+                hintText:
+                    'Highcharts configuration options defining chart type, data, and styling.',
+            },
+            {
+                content: 'ChartV2Options',
+                hintText: 'Highcharts.Options configuration object',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Configuration for skeleton loading state displayed while chart data loads.',
+            },
+            {
+                content: 'ChartV2SkeletonProps',
+                hintText: 'Object with show, variant, and height properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'noData',
+                hintText:
+                    'Configuration for the empty state when chart has no data to display.',
+            },
+            {
+                content: 'ChartV2NoDataProps',
+                hintText:
+                    'Object with title, subtitle, slot, and button properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'callback',
+                hintText:
+                    'Callback function that receives the chart instance after initialization.',
+            },
+            {
+                content: '(chart: ChartV2) => void',
+                hintText: 'Function called with chart instance',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'constructorType',
+                hintText:
+                    'Highcharts constructor type for different chart types.',
+            },
+            {
+                content: '"chart" | "stockChart" | "mapChart" | "ganttChart"',
+                hintText: 'Constructor type string',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'containerProps',
+                hintText: 'Additional props passed to the chart container div.',
+            },
+            {
+                content: 'HTMLAttributes<HTMLDivElement>',
+                hintText: 'Standard div element props',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## ChartContainerV2
+
+A wrapper component for chart layouts:
+
+```tsx
+import { ChartContainerV2, ChartHeaderV2 } from '@juspay/blend-design-system'
+;<ChartContainerV2>
+    <ChartHeaderV2>
+        <h3>Sales Overview</h3>
+    </ChartHeaderV2>
+    <ChartV2 options={options} />
+</ChartContainerV2>
+```
+
+## ChartV2Legend
+
+Custom legend component for chart interactivity:
+
+```tsx
+import { ChartV2Legend } from '@juspay/blend-design-system'
+;<ChartV2Legend
+    chartRef={chartRef}
+    customLegendItems={[
+        { key: 'sales', name: 'Sales', color: '#00A6FF', value: 1200 },
+        { key: 'visits', name: 'Visits', color: '#10B981', value: 3400 },
+    ]}
+    layout="horizontal"
+/>
+```
+
+## ChartV2Fullscreen
+
+Wrapper component for fullscreen chart functionality:
+
+```tsx
+import { ChartV2Fullscreen, ChartV2 } from '@juspay/blend-design-system'
+;<ChartV2Fullscreen>
+    <ChartV2 options={options} />
+</ChartV2Fullscreen>
+```
+
+## ChartV2Skeleton
+
+Standalone skeleton loader for chart loading states:
+
+```tsx
+import { ChartV2Skeleton } from '@juspay/blend-design-system'
+;<ChartV2Skeleton show={true} variant="rectangular" height={300} />
+```
+
+## Component Tokens
+
+You can style the ChartsV2 component using the following tokens:
+
+```tsx
+export type ChartV2TokensType = {
+    container: {
+        background: CSSObject['background']
+        borderRadius: CSSObject['borderRadius']
+        border: CSSObject['border']
+        padding: CSSObject['padding']
+    }
+    skeleton: {
+        height: CSSObject['height']
+        borderRadius: CSSObject['borderRadius']
+    }
+    noData: {
+        container: {
+            padding: CSSObject['padding']
+            textAlign: CSSObject['textAlign']
+        }
+        title: {
+            fontSize: CSSObject['fontSize']
+            fontWeight: CSSObject['fontWeight']
+            color: CSSObject['color']
+        }
+        subtitle: {
+            fontSize: CSSObject['fontSize']
+            color: CSSObject['color']
+        }
+    }
+    header: {
+        padding: CSSObject['padding']
+        borderBottom: CSSObject['borderBottom']
+    }
+}
+```

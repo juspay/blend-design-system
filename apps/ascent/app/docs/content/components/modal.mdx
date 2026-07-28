@@ -1,7 +1,7 @@
 ---
 title: Modal
 description: The Modal component creates overlay dialogs that focus user attention on specific content or actions, with backdrop blur, animations, mobile drawer support, and extensive customization options.
-category: components
+category: Feedback
 tags:
     - modal
     - component
@@ -11,6 +11,7 @@ tags:
     - popup
 RepoFolderName: Modal
 StorybookLink: components-modal--docs
+version: 1
 ---
 
 <ModalPreview />
@@ -286,6 +287,22 @@ function MyComponent() {
                     'true uses drawer on mobile, false uses modal on all devices',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'Modal.skeleton',
+                hintText:
+                    'Optional configuration object for showing skeleton loading state. When enabled, displays skeleton placeholders in the header, body, and footer instead of actual content. Useful for showing loading UI while modal data is being fetched. The skeleton has configurable variant (pulse or shimmer) and body-specific sizing.',
+            },
+            {
+                content: 'ModalSkeletonProps',
+                hintText:
+                    'Object with show, variant, and bodySkeletonProps properties',
+            },
+            {
+                content:
+                    '{ show?: boolean; variant?: SkeletonVariant; bodySkeletonProps?: { show?: boolean; width?: string; height?: string } }',
+            },
         ],
         [
             {

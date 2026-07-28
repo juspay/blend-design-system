@@ -62,6 +62,12 @@ export type DirectoryTokenType = {
                     x: CSSObject['padding']
                     y: CSSObject['padding']
                 }
+                iconOnlyPadding: {
+                    paddingTop: CSSObject['paddingTop']
+                    paddingBottom: CSSObject['paddingBottom']
+                    paddingLeft: CSSObject['paddingLeft']
+                    paddingRight: CSSObject['paddingRight']
+                }
                 gap: CSSObject['gap'] // Gap between icon and text within item
                 borderRadius: CSSObject['borderRadius'] // Item border radius
                 fontWeight: CSSObject['fontWeight'] // Item text weight
@@ -100,6 +106,13 @@ export type DirectoryTokenType = {
                     width: CSSObject['width'] // Border line width
                     color: CSSObject['color'] // Border line color
                     leftOffset: CSSObject['left'] // Border line left position
+                }
+                connector: {
+                    itemInset: CSSObject['marginLeft'] // Keeps item backgrounds clear of hierarchy lines
+                    itemPaddingLeft: CSSObject['paddingLeft'] // Left padding for nested items when hierarchy lines are visible
+                    elbowTop: CSSObject['top'] // Top offset for the horizontal connector elbow
+                    elbowHeight: CSSObject['height'] // Height of the connector elbow
+                    elbowWidthOffset: CSSObject['width'] // Extra width that carries the elbow closer to the child row
                 }
             }
         }
@@ -146,6 +159,12 @@ export const getDirectoryTokens = (
                             x: foundationToken.unit[12],
                             y: foundationToken.unit[6],
                         },
+                        iconOnlyPadding: {
+                            paddingTop: foundationToken.unit[8],
+                            paddingBottom: foundationToken.unit[8],
+                            paddingLeft: foundationToken.unit[10],
+                            paddingRight: foundationToken.unit[10],
+                        },
                         gap: foundationToken.unit[12],
                         borderRadius: foundationToken.border.radius[4],
                         fontWeight: 500,
@@ -182,6 +201,13 @@ export const getDirectoryTokens = (
                             width: foundationToken.unit[1],
                             color: foundationToken.colors.gray[200],
                             leftOffset: foundationToken.unit[16],
+                        },
+                        connector: {
+                            itemInset: foundationToken.unit[8],
+                            itemPaddingLeft: foundationToken.unit[8],
+                            elbowTop: foundationToken.unit[5],
+                            elbowHeight: foundationToken.unit[10],
+                            elbowWidthOffset: foundationToken.unit[6],
                         },
                     },
                 },
@@ -204,7 +230,7 @@ export const getDirectoryTokens = (
                     label: {
                         fontSize: foundationToken.font.size.body.sm.fontSize,
                         color: foundationToken.colors.gray[400],
-                        fontWeight: 500,
+                        fontWeight: 600,
                     },
                     chevron: {
                         width: foundationToken.unit[16],
@@ -220,7 +246,13 @@ export const getDirectoryTokens = (
                             x: foundationToken.unit[12],
                             y: foundationToken.unit[6],
                         },
-                        gap: foundationToken.unit[12],
+                        iconOnlyPadding: {
+                            paddingTop: foundationToken.unit[8],
+                            paddingBottom: foundationToken.unit[8],
+                            paddingLeft: foundationToken.unit[10],
+                            paddingRight: foundationToken.unit[10],
+                        },
+                        gap: foundationToken.unit[10],
                         borderRadius: foundationToken.border.radius[4],
                         fontWeight: 500,
                         fontSize: foundationToken.font.size.body.md.fontSize,
@@ -239,7 +271,7 @@ export const getDirectoryTokens = (
                         },
 
                         icon: {
-                            width: foundationToken.unit[20],
+                            width: foundationToken.unit[14],
                         },
 
                         chevron: {
@@ -256,6 +288,13 @@ export const getDirectoryTokens = (
                             width: foundationToken.unit[1],
                             color: foundationToken.colors.gray[200],
                             leftOffset: foundationToken.unit[16],
+                        },
+                        connector: {
+                            itemInset: foundationToken.unit[8],
+                            itemPaddingLeft: foundationToken.unit[8],
+                            elbowTop: foundationToken.unit[5],
+                            elbowHeight: foundationToken.unit[10],
+                            elbowWidthOffset: foundationToken.unit[6],
                         },
                     },
                 },

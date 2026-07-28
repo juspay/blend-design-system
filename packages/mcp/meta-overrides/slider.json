@@ -1,0 +1,54 @@
+{
+    "componentDescription": "Slider is a range input that lets users select a numeric value by dragging a handle along a track. Use for settings with a continuous range (volume, brightness, opacity, price range). For precise numeric entry, use NumberInput instead or alongside the Slider.",
+    "features": [
+        "Configurable min, max, and step values",
+        "Controlled value with onChange callback",
+        "Disabled state",
+        "Optional label",
+        "Visual track with filled portion showing current value"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Volume control slider",
+            "description": "Slider for controlling audio volume from 0 to 100.",
+            "code": "<Slider\n  label=\"Volume\"\n  value={volume}\n  onChange={setVolume}\n  min={0}\n  max={100}\n  step={1}\n/>"
+        },
+        {
+            "title": "Price range slider",
+            "description": "Slider for filtering products by maximum price.",
+            "code": "<div>\n  <Slider\n    label={`Max price: $${maxPrice}`}\n    value={maxPrice}\n    onChange={setMaxPrice}\n    min={0}\n    max={1000}\n    step={10}\n  />\n</div>"
+        },
+        {
+            "title": "Opacity setting with precision step",
+            "description": "Slider for image opacity with 0.1 precision.",
+            "code": "<Slider\n  label={`Opacity: ${opacity}`}\n  value={opacity}\n  onChange={setOpacity}\n  min={0}\n  max={1}\n  step={0.1}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. The current numeric value within the min-max range. Always manage with useState. Initialize to a sensible default (e.g., the midpoint or a recommended setting).",
+            "propDescription": "Required. Current slider value"
+        },
+        "onChange": {
+            "llmContext": "Required. Callback fired with the new numeric value as the user drags. This fires frequently during dragging — avoid expensive operations directly here; use debouncing for API calls.",
+            "propDescription": "Required. Called with new numeric value during drag"
+        },
+        "min": {
+            "llmContext": "The minimum selectable value. Defaults to 0. Set based on the logical lower bound of your range (e.g., 0 for volume, 100 for minimum price).",
+            "propDescription": "Minimum value of the slider range"
+        },
+        "max": {
+            "llmContext": "The maximum selectable value. Defaults to 100. Set based on the logical upper bound (e.g., 100 for percentage, 1000 for price, 1 for opacity).",
+            "propDescription": "Maximum value of the slider range"
+        },
+        "step": {
+            "llmContext": "The increment between selectable values. Use 1 for integer values, 0.1 for one decimal place precision, 10 for coarser selections. Smaller steps give more precision but may make fine-tuning difficult.",
+            "propDescription": "Increment step between selectable values"
+        },
+        "disabled": {
+            "llmContext": "Set to true to prevent interaction. Use when the slider's controlled feature is unavailable (e.g., audio slider when muted).",
+            "propDescription": "Prevents slider interaction"
+        }
+    }
+}

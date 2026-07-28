@@ -1,7 +1,7 @@
 ---
 title: Multi Select
 description: The MultiSelect component allows users to select multiple options from a list, with search functionality, selection management, and customizable display options including count badges and text display.
-category: components
+category: Selection
 tags:
     - multi-select
     - component
@@ -18,6 +18,7 @@ tags:
     - accessibility
 RepoFolderName: MultiSelect
 StorybookLink: components-multiselect-multiselect--docs
+version: 1
 ---
 
 <MultiSelectPreview />
@@ -822,6 +823,19 @@ function MyComponent() {
                 content: '(open: boolean) => void',
                 hintText:
                     'Function called with boolean open state when menu visibility changes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.multiSelectGroupPosition',
+                hintText:
+                    'Optional positioning string for when MultiSelect is used within a button group. Controls border radius adjustments for proper visual grouping. "left" for the leftmost item, "right" for the rightmost item, "center" for middle items. If not provided, uses default border radius.',
+            },
+            {
+                content: "'center' | 'left' | 'right'",
+                hintText:
+                    'String indicating position within a button group for border radius adjustments',
             },
             { content: '' },
         ],

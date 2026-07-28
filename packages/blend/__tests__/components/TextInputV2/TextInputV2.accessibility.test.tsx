@@ -1,10 +1,32 @@
 import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Mail } from 'lucide-react'
 import TextInputV2 from '../../../lib/components/InputsV2/TextInputV2/TextInputV2'
+import { TextInputV2DropdownPosition } from '../../../lib/components/InputsV2/TextInputV2/TextInputV2.types'
 import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
+
+const A11Y_SELECT_ITEMS = [
+    {
+        items: [
+            { value: 'a', label: 'Option A' },
+            { value: 'b', label: 'Option B' },
+        ],
+    },
+]
+
+const embeddedSelectA11y = (
+    ariaLabel: string,
+    position: TextInputV2DropdownPosition
+) => ({
+    position,
+    items: A11Y_SELECT_ITEMS,
+    selected: 'a',
+    onSelect: () => {},
+    placeholder: 'Pick',
+    'aria-label': ariaLabel,
+})
 
 describe('TextInputV2 Accessibility', () => {
     describe('WCAG 2.1/2.2 Compliance (Level A, AA)', () => {
@@ -412,6 +434,146 @@ describe('TextInputV2 Accessibility', () => {
         })
     })
 
+    describe('Embedded dropdown (WCAG 4.1.2, axe)', () => {
+        const originalResizeObserver = globalThis.ResizeObserver
+
+        beforeEach(() => {
+            globalThis.ResizeObserver = class ResizeObserver {
+                observe() {}
+                unobserve() {}
+                disconnect() {}
+            } as unknown as typeof ResizeObserver
+        })
+
+        afterEach(() => {
+            if (originalResizeObserver) {
+                globalThis.ResizeObserver = originalResizeObserver
+            } else {
+                Reflect.deleteProperty(globalThis, 'ResizeObserver')
+            }
+        })
+
+        it('meets WCAG via axe with left select only', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="Phone"
+                    value=""
+                    onChange={() => {}}
+                    dropdown={embeddedSelectA11y(
+                        'Country code',
+                        TextInputV2DropdownPosition.LEFT
+                    )}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG via axe with right select only', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="Amount"
+                    value="10"
+                    onChange={() => {}}
+                    dropdown={embeddedSelectA11y(
+                        'Unit of measure',
+                        TextInputV2DropdownPosition.RIGHT
+                    )}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG via axe with both left and right selects', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="Composite"
+                    value="x"
+                    onChange={() => {}}
+                    dropdown={[
+                        embeddedSelectA11y(
+                            'Prefix',
+                            TextInputV2DropdownPosition.LEFT
+                        ),
+                        embeddedSelectA11y(
+                            'Suffix',
+                            TextInputV2DropdownPosition.RIGHT
+                        ),
+                    ]}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG via axe when disabled with embedded selects', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="Read only"
+                    value=""
+                    onChange={() => {}}
+                    disabled
+                    dropdown={[
+                        embeddedSelectA11y(
+                            'Prefix',
+                            TextInputV2DropdownPosition.LEFT
+                        ),
+                        embeddedSelectA11y(
+                            'Suffix',
+                            TextInputV2DropdownPosition.RIGHT
+                        ),
+                    ]}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('exposes distinct accessible names for left and right select triggers (4.1.2)', () => {
+            render(
+                <TextInputV2
+                    label="Field"
+                    value=""
+                    onChange={() => {}}
+                    dropdown={[
+                        embeddedSelectA11y(
+                            'Country code',
+                            TextInputV2DropdownPosition.LEFT
+                        ),
+                        embeddedSelectA11y(
+                            'Unit',
+                            TextInputV2DropdownPosition.RIGHT
+                        ),
+                    ]}
+                />
+            )
+            expect(
+                screen.getByRole('button', { name: 'Country code' })
+            ).toBeInTheDocument()
+            expect(
+                screen.getByRole('button', { name: 'Unit' })
+            ).toBeInTheDocument()
+        })
+
+        it('meets WCAG via axe when dropdown is empty and icon slot is used', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="With icon"
+                    value=""
+                    onChange={() => {}}
+                    dropdown={[]}
+                    leftSlot={{
+                        slot: <Mail size={16} aria-hidden="true" />,
+                        maxHeight: 16,
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
     describe('Focus and Blur Events (WCAG 3.2.1 On Focus - Level A)', () => {
         it('calls onFocus when input receives focus', () => {
             const handleFocus = vi.fn()
@@ -483,16 +645,31 @@ describe('TextInputV2 Accessibility', () => {
     })
 
     describe('Comprehensive WCAG compliance', () => {
+        const originalResizeObserver = globalThis.ResizeObserver
+
+        beforeEach(() => {
+            globalThis.ResizeObserver = class ResizeObserver {
+                observe() {}
+                unobserve() {}
+                disconnect() {}
+            } as unknown as typeof ResizeObserver
+        })
+
+        afterEach(() => {
+            if (originalResizeObserver) {
+                globalThis.ResizeObserver = originalResizeObserver
+            } else {
+                Reflect.deleteProperty(globalThis, 'ResizeObserver')
+            }
+        })
+
         it('meets WCAG standards with all features combined', async () => {
             const { container } = render(
                 <TextInputV2
                     label="Complete Test"
                     subLabel="Additional context"
                     hintText="Helpful hint"
-                    helpIconText={{
-                        text: 'Tooltip information',
-                        onClick: () => {},
-                    }}
+                    helpIconText="Tooltip information"
                     placeholder="Enter value"
                     value=""
                     onChange={() => {}}
@@ -553,6 +730,33 @@ describe('TextInputV2 Accessibility', () => {
                         ),
                         maxHeight: 16,
                     }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with left and right embedded selects', async () => {
+            const { container } = render(
+                <TextInputV2
+                    label="Composite"
+                    subLabel="Prefix and suffix"
+                    hintText="Select prefix and unit"
+                    placeholder="0"
+                    value="42"
+                    onChange={() => {}}
+                    name="amount"
+                    required
+                    dropdown={[
+                        embeddedSelectA11y(
+                            'Prefix selector',
+                            TextInputV2DropdownPosition.LEFT
+                        ),
+                        embeddedSelectA11y(
+                            'Unit selector',
+                            TextInputV2DropdownPosition.RIGHT
+                        ),
+                    ]}
                 />
             )
             const results = await axe(container)

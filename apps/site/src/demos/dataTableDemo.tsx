@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import {
     ColumnDefinition,
     SortDirection,
@@ -9,8 +9,16 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
+    DateFormat,
+    PivotAggregationType,
+    RowAnimationConfig,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
+import type { PivotTableConfig } from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/types'
+import {
+    buildPivotPreview,
+    normalizePivotValue,
+} from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/utils'
 import { Avatar } from '../../../../packages/blend/lib/components/Avatar'
 import { Tag } from '../../../../packages/blend/lib/components/Tags'
 import {
@@ -39,6 +47,9 @@ import {
     Settings,
     Download,
     Trash2,
+    Info,
+    FileText,
+    Filter,
 } from 'lucide-react'
 import { Modal } from '../../../../packages/blend/lib/components/Modal'
 import AdvancedFilterComponent, { FilterRule } from './AdvancedFilterComponent'
@@ -46,6 +57,25 @@ import {
     TooltipAlign,
     TooltipSide,
 } from '../../../../packages/blend/lib/components/Tooltip/types'
+
+const isDateOnlyString = (value: string): boolean =>
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+
+const parseDateOnlyLocal = (dateOnly: string): Date => {
+    const [y, m, d] = dateOnly.split('-').map((p) => Number(p))
+    return new Date(y, (m || 1) - 1, d || 1)
+}
+
+const parseDateLike = (value: unknown): Date | null => {
+    if (value instanceof Date) return isNaN(value.getTime()) ? null : value
+    if (typeof value !== 'string') return null
+    const trimmed = value.trim()
+    if (!trimmed) return null
+    const parsed = isDateOnlyString(trimmed)
+        ? parseDateOnlyLocal(trimmed)
+        : new Date(trimmed)
+    return isNaN(parsed.getTime()) ? null : parsed
+}
 
 const SimpleDataTableExample = () => {
     // Modal state for table demo
@@ -103,7 +133,7 @@ const SimpleDataTableExample = () => {
             price: 2499.99,
             launchDate: {
                 date: '2023-10-30',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -159,7 +189,7 @@ const SimpleDataTableExample = () => {
             price: 1199.99,
             launchDate: {
                 date: '2023-09-22',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -215,7 +245,7 @@ const SimpleDataTableExample = () => {
             price: 0, // Zero price to show hyphen (will be handled as empty)
             launchDate: {
                 date: '', // Empty date to show hyphen
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Discontinued',
@@ -271,7 +301,7 @@ const SimpleDataTableExample = () => {
             price: 3999.99,
             launchDate: {
                 date: '2023-06-05',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -333,7 +363,7 @@ const SimpleDataTableExample = () => {
             price: 599.99,
             launchDate: {
                 date: '2023-09-22',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -389,7 +419,7 @@ const SimpleDataTableExample = () => {
             price: 1299.99,
             launchDate: {
                 date: 'invalid-date', // Invalid date to show hyphen
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -454,7 +484,8 @@ const SimpleDataTableExample = () => {
             isEditable: false,
             renderCell: (value: unknown): React.ReactNode => {
                 const dateValue = value as DateColumnProps
-                const date = new Date(dateValue.date)
+                const date = parseDateLike(dateValue.date)
+                if (!date) return '-'
                 return (
                     <span>
                         {date.toLocaleDateString('en-US', {
@@ -517,7 +548,7 @@ const SimpleDataTableExample = () => {
                         <span>{selectedOption.label}</span>
                     </div>
                 ) : (
-                    // @ts-expect-error
+                    // @ts-expect-error selectedValue can be non-renderable type in demo data
                     <span>{dropdownValue.selectedValue}</span>
                 )
             },
@@ -793,6 +824,7 @@ const SimpleDataTableExample = () => {
                 enableColumnManager={true}
                 showSettings={true}
                 columnFreeze={0}
+                columnFreezeRight={1}
                 mobileColumnsToShow={2}
                 pagination={{
                     currentPage: 1,
@@ -1367,6 +1399,383 @@ const SimpleDataTableExample = () => {
     )
 }
 
+// Date column: custom format demo
+const DateColumnFormatDemo = () => {
+    type OrderRow = {
+        id: number
+        orderId: string
+        placedAt: DateColumnProps
+        nextBatch: DateColumnProps
+    }
+
+    const orderData: OrderRow[] = [
+        {
+            id: 1,
+            orderId: 'ORD-1001',
+            placedAt: { date: '2026-06-24T23:30:00Z' },
+            nextBatch: { date: '2026-06-28T00:15:00Z', format: 'DD/MM/YYYY' },
+        },
+        {
+            id: 2,
+            orderId: 'ORD-1002',
+            placedAt: { date: '2026-06-10T01:15:00Z' },
+            nextBatch: { date: '2026-06-30T23:45:00Z', format: 'DD/MM/YYYY' },
+        },
+        {
+            id: 3,
+            orderId: 'ORD-1003',
+            placedAt: { date: '2026-05-25T22:45:00Z' },
+            nextBatch: { date: '2026-06-29T22:30:00Z', format: 'DD/MM/YYYY' },
+        },
+    ]
+
+    const buildColumns = (
+        field: keyof OrderRow,
+        dateFormat: DateFormat,
+        header: string
+    ): ColumnDefinition<OrderRow>[] => [
+        {
+            field: 'orderId',
+            header: 'Order ID',
+            type: ColumnType.TEXT,
+            minWidth: '100px',
+            maxWidth: '120px',
+        },
+        {
+            field,
+            header,
+            type: ColumnType.DATE,
+            dateFormat,
+            minWidth: '180px',
+            maxWidth: '240px',
+        },
+    ]
+
+    const demoTables: {
+        title: string
+        field: keyof OrderRow
+        format: DateFormat
+        header: string
+        note: string
+    }[] = [
+        {
+            title: 'DD MMM YYYY',
+            field: 'placedAt',
+            format: 'DD MMM YYYY',
+            header: 'Placed',
+            note: 'Short month name, no time. The default when no format is set.',
+        },
+        {
+            title: 'DD/MM/YYYY',
+            field: 'placedAt',
+            format: 'DD/MM/YYYY',
+            header: 'Placed',
+            note: 'Numeric day/month/year, no time.',
+        },
+        {
+            title: 'MM/DD/YYYY',
+            field: 'placedAt',
+            format: 'MM/DD/YYYY',
+            header: 'Placed',
+            note: 'US-style numeric month/day/year.',
+        },
+        {
+            title: 'YYYY-MM-DD',
+            field: 'placedAt',
+            format: 'YYYY-MM-DD',
+            header: 'Placed',
+            note: 'ISO 8601 date only.',
+        },
+        {
+            title: 'DD MMM YYYY, hh:mm A',
+            field: 'placedAt',
+            format: 'DD MMM YYYY, hh:mm A',
+            header: 'Placed',
+            note: 'Short month + 12-hour clock with AM/PM. Default when showTime is true.',
+        },
+        {
+            title: 'DD MMM YYYY, HH:mm',
+            field: 'placedAt',
+            format: 'DD MMM YYYY, HH:mm',
+            header: 'Placed',
+            note: 'Short month + 24-hour clock.',
+        },
+        {
+            title: 'MMM DD, YYYY',
+            field: 'placedAt',
+            format: 'MMM DD, YYYY',
+            header: 'Placed',
+            note: 'Short month name first, US-style ordering.',
+        },
+        {
+            title: 'YYYY/MM/DD HH:mm',
+            field: 'placedAt',
+            format: 'YYYY/MM/DD HH:mm',
+            header: 'Placed',
+            note: 'Sortable year-first numeric date with 24-hour time.',
+        },
+        {
+            title: 'HH:mm:ss',
+            field: 'placedAt',
+            format: 'HH:mm:ss',
+            header: 'Time',
+            note: 'Time-only, 24-hour with seconds.',
+        },
+        {
+            title: 'Cell overrides column',
+            field: 'nextBatch',
+            format: 'YYYY-MM-DD',
+            header: 'Next Batch',
+            note: 'Column says YYYY-MM-DD, but each cell provides format: "DD/MM/YYYY" which wins.',
+        },
+    ]
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0f4ff',
+                    borderRadius: '8px',
+                    border: '1px solid #c7d2fe',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#3730a3',
+                    }}
+                >
+                    📅 Date Column: Custom Format
+                </h3>
+                <p
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '14px',
+                        color: '#312e81',
+                        maxWidth: '760px',
+                    }}
+                >
+                    Demonstrates the date fixes: (1) date cells inherit the
+                    standard 14px body font size; (2) a custom format string can
+                    be passed per-column via <code>dateFormat</code> or per-cell
+                    via <code>DateColumnProps.format</code>; (3) a small muted
+                    date label such as <code>(IST)</code> can be appended via{' '}
+                    <code>dateLabel</code> at the table, column, or cell level.
+                </p>
+            </div>
+
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                    gap: '24px',
+                }}
+            >
+                {demoTables.map((demo) => (
+                    <div key={demo.title}>
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '14px',
+                                fontWeight: 600,
+                                color: '#3730a3',
+                            }}
+                        >
+                            {demo.title}
+                        </h4>
+                        <p
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '13px',
+                                color: '#6b7280',
+                            }}
+                        >
+                            {demo.note}{' '}
+                            <code style={{ color: '#3730a3' }}>
+                                {demo.format}
+                            </code>
+                        </p>
+                        <DataTable
+                            data={
+                                orderData as unknown as Record<
+                                    string,
+                                    unknown
+                                >[]
+                            }
+                            columns={
+                                buildColumns(
+                                    demo.field,
+                                    demo.format,
+                                    demo.header
+                                ) as unknown as ColumnDefinition<
+                                    Record<string, unknown>
+                                >[]
+                            }
+                            idField="id"
+                            enableSearch={false}
+                            showFooter={false}
+                            showHeader={true}
+                        />
+                    </div>
+                ))}
+
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        Table-level dateLabel
+                    </h4>
+                    <p
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '13px',
+                            color: '#6b7280',
+                        }}
+                    >
+                        Applies <code>dateLabel=&quot;(IST)&quot;</code> to the
+                        whole table. Every date cell gets the muted suffix.
+                    </p>
+                    <DataTable
+                        data={orderData as unknown as Record<string, unknown>[]}
+                        columns={
+                            buildColumns(
+                                'placedAt',
+                                'MMM DD, YYYY hh:mm A',
+                                'Gateway Updated'
+                            ) as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        dateLabel="(IST)"
+                        enableSearch={false}
+                        showFooter={false}
+                        showHeader={true}
+                    />
+                </div>
+
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        Column + cell dateLabel override
+                    </h4>
+                    <p
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '13px',
+                            color: '#6b7280',
+                        }}
+                    >
+                        Column says <code>dateLabel=&quot;(PST)&quot;</code>,
+                        but the first cell overrides it with{' '}
+                        <code>dateLabel: &quot;(UTC)&quot;</code>.
+                    </p>
+                    <DataTable
+                        data={
+                            [
+                                {
+                                    ...orderData[0],
+                                    placedAt: {
+                                        ...orderData[0].placedAt,
+                                        dateLabel: '(UTC)',
+                                    },
+                                },
+                                orderData[1],
+                                orderData[2],
+                            ] as unknown as Record<string, unknown>[]
+                        }
+                        columns={
+                            [
+                                {
+                                    field: 'orderId',
+                                    header: 'Order ID',
+                                    type: ColumnType.TEXT,
+                                    minWidth: '100px',
+                                    maxWidth: '120px',
+                                },
+                                {
+                                    field: 'placedAt',
+                                    header: 'Placed',
+                                    type: ColumnType.DATE,
+                                    dateFormat: 'MMM DD, YYYY hh:mm A',
+                                    dateLabel: '(PST)',
+                                    minWidth: '200px',
+                                    maxWidth: '260px',
+                                },
+                            ] as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        enableSearch={false}
+                        showFooter={false}
+                        showHeader={true}
+                    />
+                </div>
+            </div>
+
+            <div
+                style={{
+                    marginTop: '16px',
+                    padding: '16px',
+                    background: '#f9fafb',
+                    borderRadius: '8px',
+                    border: '1px solid #e5e7eb',
+                    fontSize: '13px',
+                    color: '#374151',
+                    lineHeight: 1.6,
+                }}
+            >
+                <strong>How it works</strong>
+                <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                    <li>
+                        The first nine tables show the same{' '}
+                        <code>placedAt</code> data rendered with each of the
+                        preset <code>DateFormat</code> values, one per table.
+                    </li>
+                    <li>
+                        The last table uses <code>nextBatch</code> where the
+                        column-level <code>dateFormat</code> is{' '}
+                        <code>YYYY-MM-DD</code>, but each cell provides{' '}
+                        <code>format: &quot;DD/MM/YYYY&quot;</code> —
+                        demonstrating that the cell-level format takes
+                        precedence.
+                    </li>
+                    <li>
+                        Supported tokens: <code>YYYY</code>, <code>YY</code>,{' '}
+                        <code>MMM</code> (Jan), <code>MM</code> (01),{' '}
+                        <code>DD</code>/<code>dd</code>, <code>HH</code> (24h),{' '}
+                        <code>hh</code> (12h), <code>mm</code>, <code>ss</code>,{' '}
+                        <code>A</code>/<code>a</code> (AM/PM).
+                    </li>
+                    <li>
+                        Use <code>dateLabel</code> to append a timezone or any
+                        short marker after the date. It is rendered in a
+                        smaller, muted style and can be set at the table,
+                        column, or cell level — with cell winning over column,
+                        and column over table.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    )
+}
+
 // Simple Empty DataTable Examples
 const EmptyDataTableExamples = () => {
     // First empty table - Simple User Table
@@ -1602,6 +2011,15 @@ const DataTableDemo = () => {
     const [enableColumnManager, setEnableColumnManager] = useState(true)
     const [showSettings, setShowSettings] = useState(true)
 
+    // Insert column modal state
+    const [isInsertModalOpen, setIsInsertModalOpen] = useState(false)
+    const [insertDirection, setInsertDirection] = useState<'left' | 'right'>(
+        'right'
+    )
+    const [insertTargetField, setInsertTargetField] = useState<string>('')
+    const [newColumnTitle, setNewColumnTitle] = useState('')
+    const [newColumnField, setNewColumnField] = useState('')
+
     // Define strict user row type matching column requirements
     type UserRow = {
         id: number
@@ -1623,6 +2041,12 @@ const DataTableDemo = () => {
         growthRate: string
         delta_revenue: number
         delta_growthRate: number
+        metadata: {
+            createdAt: string
+            lastModified: string
+            version: string
+        }
+        action: string
     }
 
     // Generate larger dataset for server-side demo
@@ -1652,50 +2076,46 @@ const DataTableDemo = () => {
 
         const statuses = ['Active', 'Inactive', 'Pending', 'Suspended']
 
+        const joinDates = [
+            '2014-08-01',
+            '2015-09-01',
+            '2016-03-01',
+            '2017-11-01',
+            '2018-07-01',
+            '2019-01-01',
+            '2020-04-01',
+            '2021-06-01',
+            '2022-10-01',
+            '2023-02-01',
+            '2020-05-01',
+            '2021-12-01',
+            '2022-03-01',
+            '2023-08-01',
+            '2019-11-01',
+        ]
+
+        const formatJoinMonth = (dateString: string) => {
+            const parsed = parseDateLike(dateString)
+            if (!parsed) return '-'
+            return parsed.toLocaleDateString('en-US', {
+                month: 'long',
+                year: 'numeric',
+            })
+        }
+
         return Array.from({ length: count }, (_, index) => {
             const userName = names[index % names.length]
             const userStatus = statuses[index % statuses.length]
+            const joinDate = joinDates[index % joinDates.length]
 
             return {
                 id: index + 1,
                 name: {
                     label: userName,
-                    sublabel: [
-                        'August 2014',
-                        'September 2015',
-                        'March 2016',
-                        'November 2017',
-                        'July 2018',
-                        'January 2019',
-                        'April 2020',
-                        'June 2021',
-                        'October 2022',
-                        'February 2023',
-                        'May 2020',
-                        'December 2021',
-                        'March 2022',
-                        'August 2023',
-                        'November 2019',
-                    ][index % 15],
+                    sublabel: formatJoinMonth(joinDate),
                     imageUrl: `https://randomuser.me/api/portraits/${index % 2 ? 'men' : 'women'}/${index % 70}.jpg`,
                 } as AvatarColumnProps,
-                joinDate: [
-                    'August 2014',
-                    'September 2015',
-                    'March 2016',
-                    'November 2017',
-                    'July 2018',
-                    'January 2019',
-                    'April 2020',
-                    'June 2021',
-                    'October 2022',
-                    'February 2023',
-                    'May 2020',
-                    'December 2021',
-                    'March 2022',
-                    'August 2023',
-                    'November 2019',
-                ][index % 15],
+                joinDate,
                 number: `${300 + index}`,
                 gateway: [
                     'Gateway A',
@@ -1841,6 +2261,44 @@ const DataTableDemo = () => {
                     1.25, -0.87, 1.52, 2.21, -0.58, 0.93, 1.46, -0.74, 3.12,
                     1.89, 1.13, 2.57, -0.68, 1.95, 1.34,
                 ][index % 15],
+                metadata: {
+                    createdAt: [
+                        '2024-01-15',
+                        '2024-02-20',
+                        '2024-03-10',
+                        '2024-04-05',
+                        '2024-05-12',
+                        '2024-06-18',
+                        '2024-07-22',
+                        '2024-08-30',
+                        '2024-09-14',
+                        '2024-10-08',
+                        '2024-11-25',
+                        '2024-12-01',
+                        '2023-11-15',
+                        '2023-12-20',
+                        '2024-01-08',
+                    ][index % 15],
+                    lastModified: [
+                        '2024-12-01',
+                        '2024-11-28',
+                        '2024-11-25',
+                        '2024-11-20',
+                        '2024-11-15',
+                        '2024-11-10',
+                        '2024-11-05',
+                        '2024-11-01',
+                        '2024-10-28',
+                        '2024-10-25',
+                        '2024-10-20',
+                        '2024-10-15',
+                        '2024-10-10',
+                        '2024-10-05',
+                        '2024-10-01',
+                    ][index % 15],
+                    version: `v${1 + (index % 5)}.${index % 10}`,
+                },
+                action: `action-${index + 1}`,
             }
         })
     }
@@ -1862,7 +2320,7 @@ const DataTableDemo = () => {
         totalRecords: 3000,
     })
 
-    const columns: ColumnDefinition<UserRow>[] = [
+    const initialColumns: ColumnDefinition<UserRow>[] = [
         {
             field: 'name',
             header: 'User Profile Information and Account Details',
@@ -1901,6 +2359,25 @@ const DataTableDemo = () => {
             isEditable: true,
             minWidth: '150px',
             maxWidth: '250px',
+        },
+        {
+            field: 'joinDate',
+            header: 'Join Date',
+            headerSubtext: 'Date user joined',
+            type: ColumnType.DATE,
+            isSortable: true,
+            isEditable: false,
+            renderCell: (value: unknown): React.ReactNode => {
+                const parsedDate = parseDateLike(String(value))
+                if (!parsedDate) return '-'
+                return parsedDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: '2-digit',
+                })
+            },
+            minWidth: '130px',
+            maxWidth: '170px',
         },
         {
             field: 'role',
@@ -2083,7 +2560,98 @@ const DataTableDemo = () => {
             minWidth: '140px',
             maxWidth: '180px',
         },
+        {
+            field: 'metadata',
+            header: 'Metadata',
+            headerSubtext: 'Created, Modified & Version Info',
+            type: ColumnType.REACT_ELEMENT,
+            isSortable: false,
+            renderCell: (value: unknown) => {
+                const metadata = value as {
+                    createdAt: string
+                    lastModified: string
+                    version: string
+                }
+                return (
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    fontSize: '12px',
+                                    color: '#374151',
+                                }}
+                            >
+                                <FileText size={14} color="#6b7280" />
+                                <span>
+                                    Created:{' '}
+                                    {new Date(
+                                        metadata.createdAt
+                                    ).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    fontSize: '12px',
+                                    color: '#6b7280',
+                                }}
+                            >
+                                <Info size={14} color="#9ca3af" />
+                                <span>
+                                    Modified:{' '}
+                                    {new Date(
+                                        metadata.lastModified
+                                    ).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    fontSize: '11px',
+                                    color: '#9ca3af',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                <span
+                                    style={{
+                                        backgroundColor: '#f3f4f6',
+                                        padding: '2px 6px',
+                                        borderRadius: '4px',
+                                    }}
+                                >
+                                    {metadata.version}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )
+            },
+            minWidth: '180px',
+            maxWidth: '250px',
+        },
     ]
+
+    const [columns, setColumns] =
+        useState<ColumnDefinition<UserRow>[]>(initialColumns)
 
     const [currentPage, setCurrentPage] = useState(1)
     const [pageSize, setPageSize] = useState(10)
@@ -2091,6 +2659,48 @@ const DataTableDemo = () => {
         field: '',
         direction: SortDirection.NONE,
     })
+    const [pivotPreviewColumns, setPivotPreviewColumns] = useState<
+        Array<{ key: string; label: string }>
+    >([])
+    const [pivotPreviewRows, setPivotPreviewRows] = useState<
+        Array<Record<string, unknown> & { __pivotId: string }>
+    >([])
+
+    /**
+     * Generic pivot source adapter:
+     * - keeps numeric columns numeric for SUM/AVG/MIN/MAX
+     * - normalizes complex UI values (avatar/tag/multiselect objects) into readable strings
+     *
+     * Consumers can copy this pattern for API payloads before calling buildPivotPreview.
+     */
+    const pivotSourceData = useMemo(() => {
+        const parseNumeric = (value: unknown): number => {
+            if (typeof value === 'number') return value
+            const cleaned = normalizePivotValue(value)
+                .replace(/,/g, '')
+                .replace(/[^\d.-]/g, '')
+                .trim()
+            const parsed = Number(cleaned)
+            return Number.isFinite(parsed) ? parsed : 0
+        }
+
+        return (data as Record<string, unknown>[]).map((row) => {
+            const normalizedRow: Record<string, unknown> = {}
+
+            columns.forEach((column) => {
+                const field = String(column.field)
+                const rawValue = row[field]
+
+                if (column.type === ColumnType.NUMBER) {
+                    normalizedRow[field] = parseNumeric(rawValue)
+                } else {
+                    normalizedRow[field] = normalizePivotValue(rawValue)
+                }
+            })
+
+            return normalizedRow
+        })
+    }, [data, columns])
 
     // Simulate server-side API call
     const fetchServerData = async (
@@ -2504,7 +3114,12 @@ const DataTableDemo = () => {
                 `Last login: ${statusText === 'Active' ? '2 hours ago' : '1 week ago'}`,
                 `Profile updated: ${user.role === 'Admin' ? '1 day ago' : '3 days ago'}`,
                 `Password changed: ${user.gateway === 'Gateway A' ? '1 week ago' : '2 weeks ago'}`,
-                `Role assigned: ${user.joinDate}`,
+                `Role assigned: ${
+                    parseDateLike(user.joinDate)?.toLocaleDateString('en-US', {
+                        month: 'short',
+                        year: 'numeric',
+                    }) || '-'
+                }`,
             ]
             return activities
         }
@@ -2659,7 +3274,12 @@ const DataTableDemo = () => {
                             </div>
                             <div>
                                 <strong>Member Since:</strong>{' '}
-                                {userRow.joinDate}
+                                {parseDateLike(
+                                    userRow.joinDate
+                                )?.toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    year: 'numeric',
+                                }) || '-'}
                             </div>
                         </div>
                     </div>
@@ -2814,7 +3434,8 @@ const DataTableDemo = () => {
         }
 
         // Priority 3: Recently joined users - New members (2023+)
-        const joinYear = parseInt(userData.joinDate.split(' ')[1] || '2020')
+        const joinYear =
+            parseDateLike(userData.joinDate)?.getFullYear() ?? Number.NaN
         if (joinYear >= 2023) {
             return {
                 backgroundColor: '#f0fdf4', // Light green background
@@ -2890,6 +3511,23 @@ const DataTableDemo = () => {
         //     api.selectUser(rowData.id, rowData) // rowData has all 10 fields
         // }
     }
+
+    const handlePivotConfigChange = useCallback(
+        (config: PivotTableConfig<Record<string, unknown>>) => {
+            const preview = buildPivotPreview(
+                pivotSourceData,
+                config.rows,
+                config.columns,
+                config.values
+            )
+            setPivotPreviewColumns(preview.columns)
+            setPivotPreviewRows(preview.rows)
+        },
+        [pivotSourceData]
+    )
+    // Change this to 1 | 2 | 3 to render the Pivot trigger
+    // in any DataTable header slot.
+    const pivotTriggerSlot: 1 | 2 | 3 = 3
 
     return (
         <div>
@@ -3152,7 +3790,34 @@ const DataTableDemo = () => {
                 )}
             </div>
 
-            {/* 
+            <div
+                style={{
+                    marginBottom: '16px',
+                    padding: '12px 16px',
+                    backgroundColor: '#f5f7fa',
+                    border: '1px solid #e1e4ea',
+                    borderRadius: '8px',
+                }}
+            >
+                <div
+                    style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        marginBottom: '6px',
+                    }}
+                >
+                    Pivot Quick Guide (ready-to-use pattern)
+                </div>
+                <div style={{ fontSize: '13px', color: '#525866' }}>
+                    1) Use base-table columns as Rows/Columns/Values. <br />
+                    2) Filters are optional: they reduce source rows before
+                    aggregation (COUNT/SUM/AVG/etc.). <br />
+                    3) This demo normalizes complex cell values and keeps
+                    numeric columns numeric so pivot operations map correctly.
+                </div>
+            </div>
+
+            {/*
                 User Management Table - Demonstrating New Features:
                 
                 1. showExport: Set to false to hide the default Export button in BulkActionBar.
@@ -3204,7 +3869,39 @@ const DataTableDemo = () => {
                 columnFreeze={columnFreeze}
                 enableInlineEdit
                 enableRowExpansion
+                enablePivotTable
+                pivotTableConfig={{
+                    triggerSlot: pivotTriggerSlot,
+                    triggerButton: (
+                        <Button
+                            text="Pivot"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Filter size={16} />}
+                            size={ButtonSize.SMALL}
+                        />
+                    ),
+                    title: 'Create Pivot Table',
+                    showExport: true,
+                    availableAggregations: [
+                        PivotAggregationType.COUNT,
+                        PivotAggregationType.SUM,
+                        PivotAggregationType.AVERAGE,
+                        PivotAggregationType.MEAN,
+                        PivotAggregationType.MEDIAN,
+                        PivotAggregationType.MIN,
+                        PivotAggregationType.MAX,
+                    ],
+                    previewColumns: pivotPreviewColumns,
+                    previewRows: pivotPreviewRows,
+                    onConfigChange: handlePivotConfigChange,
+                }}
                 enableRowSelection={enableRowSelection}
+                rowSelectionConfig={{
+                    isDisabled: (row, _index) =>
+                        (row as UserRow).status.text === 'Inactive',
+                    disabledText: (row, _index) =>
+                        `User ${(row as UserRow).status.text} - Cannot be selected`,
+                }}
                 enableColumnManager={enableColumnManager}
                 columnManagerMaxSelections={9}
                 columnManagerAlwaysSelected={['name', 'email']}
@@ -3234,6 +3931,39 @@ const DataTableDemo = () => {
                 onSearchChange={handleSearchChange}
                 onFilterChange={handleFilterChange}
                 onAdvancedFiltersChange={handleAdvancedFiltersChange}
+                onOperations={(field) => {
+                    console.log('⚙️ Operations clicked for column:', field)
+                    alert(
+                        `Operations modal would open for column: ${String(field)}`
+                    )
+                }}
+                onInsertLeft={(field) => {
+                    setInsertTargetField(String(field))
+                    setInsertDirection('left')
+                    setNewColumnTitle('')
+                    setNewColumnField('')
+                    setIsInsertModalOpen(true)
+                }}
+                onInsertRight={(field) => {
+                    setInsertTargetField(String(field))
+                    setInsertDirection('right')
+                    setNewColumnTitle('')
+                    setNewColumnField('')
+                    setIsInsertModalOpen(true)
+                }}
+                onDeleteColumn={(field) => {
+                    if (
+                        confirm(
+                            `Are you sure you want to delete column: ${String(field)}?`
+                        )
+                    ) {
+                        setColumns((prev) =>
+                            prev.filter(
+                                (c) => String(c.field) !== String(field)
+                            )
+                        )
+                    }
+                }}
                 onRowSave={handleRowSave}
                 onRowCancel={handleRowCancel}
                 onRowExpansionChange={handleRowExpansionChange}
@@ -3392,6 +4122,8 @@ const DataTableDemo = () => {
 
             <SimpleDataTableExample />
 
+            <DateColumnFormatDemo />
+
             {/* Table Body Height Control Demo */}
             <div style={{ marginTop: '40px' }}>
                 <div
@@ -3549,7 +4281,861 @@ const DataTableDemo = () => {
 
             <EmptyDataTableExamples />
 
+            <RowAnimationDemo />
+
             <SkeletonLoadingDemo />
+
+            <Modal
+                isOpen={isInsertModalOpen}
+                onClose={() => setIsInsertModalOpen(false)}
+                title={`Insert Column ${insertDirection === 'left' ? 'Before' : 'After'} ${insertTargetField}`}
+                primaryAction={{
+                    text: 'Insert Column',
+                    onClick: () => {
+                        if (!newColumnTitle || !newColumnField) return
+
+                        setColumns((prev) => {
+                            const newCols = [...prev]
+                            const targetIndex = newCols.findIndex(
+                                (c) => String(c.field) === insertTargetField
+                            )
+                            if (targetIndex === -1) return prev
+
+                            const newCol: ColumnDefinition<UserRow> = {
+                                field: newColumnField as any,
+                                header: newColumnTitle,
+                                type: ColumnType.TEXT,
+                                isSortable: true,
+                                isEditable: true,
+                                minWidth: '150px',
+                            }
+
+                            const insertIndex =
+                                insertDirection === 'left'
+                                    ? targetIndex
+                                    : targetIndex + 1
+                            newCols.splice(insertIndex, 0, newCol)
+                            return newCols
+                        })
+                        setIsInsertModalOpen(false)
+                    },
+                    disabled: !newColumnTitle || !newColumnField,
+                }}
+                secondaryAction={{
+                    text: 'Cancel',
+                    buttonType: ButtonType.SECONDARY,
+                    onClick: () => setIsInsertModalOpen(false),
+                }}
+                minWidth="400px"
+            >
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '16px',
+                        padding: '8px 0',
+                    }}
+                >
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px',
+                        }}
+                    >
+                        <label style={{ fontSize: '14px', fontWeight: 500 }}>
+                            Column Title
+                        </label>
+                        <input
+                            type="text"
+                            value={newColumnTitle}
+                            onChange={(e) => setNewColumnTitle(e.target.value)}
+                            placeholder="e.g. Phone Number"
+                            style={{
+                                padding: '8px',
+                                borderRadius: '4px',
+                                border: '1px solid #d1d5db',
+                                width: '100%',
+                            }}
+                        />
+                    </div>
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: '8px',
+                        }}
+                    >
+                        <label style={{ fontSize: '14px', fontWeight: 500 }}>
+                            Field ID
+                        </label>
+                        <input
+                            type="text"
+                            value={newColumnField}
+                            onChange={(e) => setNewColumnField(e.target.value)}
+                            placeholder="e.g. phone"
+                            style={{
+                                padding: '8px',
+                                borderRadius: '4px',
+                                border: '1px solid #d1d5db',
+                                width: '100%',
+                            }}
+                        />
+                    </div>
+                </div>
+            </Modal>
+        </div>
+    )
+}
+
+// Row Animation Demo Component
+const RowAnimationDemo = () => {
+    type AnimRow = {
+        id: number
+        name: string
+        category: string
+        price: number
+        status: TagColumnProps
+    }
+
+    const baseData: AnimRow[] = [
+        {
+            id: 1,
+            name: 'Wireless Headphones',
+            category: 'Audio',
+            price: 89,
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 2,
+            name: 'Mechanical Keyboard',
+            category: 'Peripherals',
+            price: 149,
+            status: {
+                text: 'Low Stock',
+                variant: 'subtle' as const,
+                color: 'warning' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 3,
+            name: 'USB-C Hub',
+            category: 'Accessories',
+            price: 45,
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 4,
+            name: '4K Monitor',
+            category: 'Displays',
+            price: 599,
+            status: {
+                text: 'Inactive',
+                variant: 'subtle' as const,
+                color: 'error' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 5,
+            name: 'Webcam HD',
+            category: 'Peripherals',
+            price: 79,
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+        },
+    ]
+
+    const [data, setData] = useState(baseData)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [nextId, setNextId] = useState(6)
+    const [transitionType, setTransitionType] = useState<'spring' | 'bezier'>(
+        'bezier'
+    )
+    // Spring config
+    const [springStiffness, setSpringStiffness] = useState(320)
+    const [springDamping, setSpringDamping] = useState(32)
+    const [springMass, setSpringMass] = useState(1)
+    const [bezierDuration, setBezierDuration] = useState(0.3)
+    const [bezierControl, setBezierControl] = useState<
+        [number, number, number, number]
+    >([0, 0.2, 0, 1])
+    const [enterDuration, setEnterDuration] = useState(0.65)
+    const [enterOffset, setEnterOffset] = useState(34)
+    const [animationEnabled, setAnimationEnabled] = useState(true)
+    const [showActiveOnly, setShowActiveOnly] = useState(false)
+
+    const bezierPresets: Record<string, [number, number, number, number]> = {
+        Apple: [0, 0.2, 0, 1],
+        Smooth: [0.22, 1, 0.36, 1],
+        'ease-out': [0, 0, 0.58, 1],
+        'ease-in': [0.42, 0, 1, 1],
+        'ease-in-out': [0.42, 0, 0.58, 1],
+        linear: [0, 0, 1, 1],
+    }
+
+    const animColumns: ColumnDefinition<AnimRow>[] = [
+        {
+            field: 'name',
+            header: 'Product',
+            type: ColumnType.TEXT,
+            isSortable: true,
+        },
+        {
+            field: 'category',
+            header: 'Category',
+            type: ColumnType.TEXT,
+            isSortable: true,
+        },
+        {
+            field: 'price',
+            header: 'Price',
+            type: ColumnType.NUMBER,
+            isSortable: true,
+        },
+        {
+            field: 'status',
+            header: 'Status',
+            type: ColumnType.TAG,
+            isSortable: true,
+            renderCell: (value: TagColumnProps) => (
+                <Tag
+                    text={value.text}
+                    variant={TagVariant.SUBTLE}
+                    color={
+                        value.color === 'success'
+                            ? TagColor.SUCCESS
+                            : value.color === 'error'
+                              ? TagColor.ERROR
+                              : value.color === 'warning'
+                                ? TagColor.WARNING
+                                : TagColor.NEUTRAL
+                    }
+                    size={TagSize.SM}
+                />
+            ),
+        },
+    ]
+
+    const handleSortByName = () => {
+        setData((prev) =>
+            [...prev].sort((a, b) => a.name.localeCompare(b.name))
+        )
+    }
+
+    const handleSortByPrice = () => {
+        setData((prev) => [...prev].sort((a, b) => a.price - b.price))
+    }
+
+    const handleShuffle = () => {
+        setData((prev) => {
+            const shuffled = [...prev]
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1))
+                ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+            }
+            return shuffled
+        })
+    }
+
+    const handleFilterActive = () => {
+        setShowActiveOnly((prev) => {
+            if (!prev) {
+                setData(baseData.filter((r) => r.status.text === 'Active'))
+            } else {
+                setData(baseData)
+            }
+            return !prev
+        })
+    }
+
+    const handleReset = () => {
+        setData(baseData)
+        setShowActiveOnly(false)
+    }
+
+    const handleAddRow = () => {
+        const categories = ['Audio', 'Peripherals', 'Accessories', 'Displays']
+        const statusOptions: TagColumnProps[] = [
+            {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            {
+                text: 'Low Stock',
+                variant: 'subtle' as const,
+                color: 'warning' as const,
+                size: 'sm' as const,
+            },
+            {
+                text: 'Inactive',
+                variant: 'subtle' as const,
+                color: 'error' as const,
+                size: 'sm' as const,
+            },
+        ]
+        const newRow: AnimRow = {
+            id: nextId,
+            name: `Product ${nextId}`,
+            category: categories[Math.floor(Math.random() * categories.length)],
+            price: Math.floor(Math.random() * 500) + 20,
+            status: statusOptions[
+                Math.floor(Math.random() * statusOptions.length)
+            ],
+        }
+        setData((prev) => [newRow, ...prev])
+        setNextId((prev) => prev + 1)
+    }
+
+    const handleDeleteRow = (row: Record<string, unknown>) => {
+        const rowId = row.id as number
+        setData((prev) => prev.filter((r) => r.id !== rowId))
+    }
+
+    const animationConfig: RowAnimationConfig = useMemo(() => {
+        if (transitionType === 'spring') {
+            return {
+                transitionType,
+                stiffness: springStiffness,
+                damping: springDamping,
+                mass: springMass,
+                enterDuration,
+                enterOffset,
+            }
+        }
+
+        return {
+            transitionType,
+            duration: bezierDuration,
+            bezier: bezierControl,
+            enterDuration,
+            enterOffset,
+        }
+    }, [
+        transitionType,
+        springStiffness,
+        springDamping,
+        springMass,
+        bezierDuration,
+        bezierControl,
+        enterDuration,
+        enterOffset,
+    ])
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0fdf4',
+                    borderRadius: '8px',
+                    border: '1px solid #bbf7d0',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#15803d',
+                    }}
+                >
+                    Row FLIP Animation Demo
+                </h3>
+                <p style={{ margin: 0, fontSize: '14px', color: '#166534' }}>
+                    Rows animate to their new positions when sorted, filtered,
+                    or shuffled. Uses framer-motion&apos;s <code>layout</code>{' '}
+                    prop for automatic FLIP animations.
+                    <br />
+                    <strong>enableRowAnimation</strong> is opt-in (default:
+                    false). Toggle between spring and tween transitions below.
+                </p>
+            </div>
+
+            <div
+                style={{
+                    marginBottom: '16px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                    alignItems: 'center',
+                }}
+            >
+                <span style={{ fontSize: '14px', color: '#666' }}>
+                    Transition:
+                </span>
+                <Button
+                    buttonType={
+                        transitionType === 'spring'
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() => setTransitionType('spring')}
+                    text="Spring"
+                />
+                <Button
+                    buttonType={
+                        transitionType === 'bezier'
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() => setTransitionType('bezier')}
+                    text="Bezier"
+                />
+                <Button
+                    buttonType={
+                        animationEnabled
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() => setAnimationEnabled((prev) => !prev)}
+                    text={animationEnabled ? 'Anim: On' : 'Anim: Off'}
+                />
+            </div>
+
+            {transitionType === 'spring' ? (
+                <div
+                    style={{
+                        marginBottom: '16px',
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(160px, 1fr))',
+                        gap: '12px',
+                        alignItems: 'center',
+                        padding: '12px',
+                        borderRadius: '6px',
+                        backgroundColor: '#fafafa',
+                        border: '1px solid #e5e5e5',
+                    }}
+                >
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Controls how tightly the spring pulls toward rest. Higher = faster movement."
+                        >
+                            Stiffness: {springStiffness}
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={10}
+                            max={500}
+                            step={10}
+                            value={springStiffness}
+                            onChange={(e) =>
+                                setSpringStiffness(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Controls how quickly oscillations die out. Higher = less bounce."
+                        >
+                            Damping: {springDamping}
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={1}
+                            max={100}
+                            step={1}
+                            value={springDamping}
+                            onChange={(e) =>
+                                setSpringDamping(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Virtual weight of the object. Higher = slower acceleration."
+                        >
+                            Mass: {springMass.toFixed(1)}
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0.1}
+                            max={5}
+                            step={0.1}
+                            value={springMass}
+                            onChange={(e) =>
+                                setSpringMass(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                </div>
+            ) : (
+                <div
+                    style={{
+                        marginBottom: '16px',
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(160px, 1fr))',
+                        gap: '12px',
+                        alignItems: 'center',
+                        padding: '12px',
+                        borderRadius: '6px',
+                        backgroundColor: '#fafafa',
+                        border: '1px solid #e5e5e5',
+                    }}
+                >
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="How long each row takes to move to its new position."
+                        >
+                            Duration: {(bezierDuration * 1000).toFixed(0)}ms
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0.05}
+                            max={2.0}
+                            step={0.01}
+                            value={bezierDuration}
+                            onChange={(e) =>
+                                setBezierDuration(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Pre-defined cubic-bezier curves for common easing styles."
+                        >
+                            Presets
+                            <Info size={12} color="#999" />
+                        </label>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                flexWrap: 'wrap',
+                                marginBottom: '8px',
+                            }}
+                        >
+                            {Object.entries(bezierPresets).map(
+                                ([label, curve]) => {
+                                    const isActive =
+                                        bezierControl[0] === curve[0] &&
+                                        bezierControl[1] === curve[1] &&
+                                        bezierControl[2] === curve[2] &&
+                                        bezierControl[3] === curve[3]
+                                    return (
+                                        <button
+                                            key={label}
+                                            type="button"
+                                            onClick={() =>
+                                                setBezierControl(curve)
+                                            }
+                                            style={{
+                                                fontSize: '13px',
+                                                padding: '4px 10px',
+                                                borderRadius: '4px',
+                                                border: '1px solid #ccc',
+                                                backgroundColor: isActive
+                                                    ? '#333'
+                                                    : '#fff',
+                                                color: isActive
+                                                    ? '#fff'
+                                                    : '#333',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            {label}
+                                        </button>
+                                    )
+                                }
+                            )}
+                        </div>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Custom cubic-bezier control points (p1.x, p1.y, p2.x, p2.y). Defines the acceleration curve."
+                        >
+                            Curve: cubic-bezier({bezierControl[0]},{' '}
+                            {bezierControl[1]}, {bezierControl[2]},{' '}
+                            {bezierControl[3]})
+                            <Info size={12} color="#999" />
+                        </label>
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '12px',
+                                maxWidth: '400px',
+                            }}
+                        >
+                            {[0, 1, 2, 3].map((i) => (
+                                <div key={i}>
+                                    <input
+                                        type="number"
+                                        step={0.01}
+                                        min={-0.5}
+                                        max={1.5}
+                                        value={bezierControl[i]}
+                                        onChange={(e) => {
+                                            const val = Number(e.target.value)
+                                            setBezierControl((prev) => {
+                                                const next = [...prev] as [
+                                                    number,
+                                                    number,
+                                                    number,
+                                                    number,
+                                                ]
+                                                next[i] = val
+                                                return next
+                                            })
+                                        }}
+                                        style={{
+                                            width: '100%',
+                                            padding: '4px 8px',
+                                            fontSize: '13px',
+                                            border: '1px solid #ccc',
+                                            borderRadius: '4px',
+                                            textAlign: 'center',
+                                        }}
+                                    />
+                                    <span
+                                        style={{
+                                            display: 'block',
+                                            textAlign: 'center',
+                                            fontSize: '11px',
+                                            color: '#999',
+                                            marginTop: '2px',
+                                        }}
+                                    >
+                                        {i < 2 ? 'p1' : 'p2'}.
+                                        {i % 2 === 0 ? 'x' : 'y'}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Time for newly added rows to fade in and slide into place."
+                        >
+                            Enter Duration: {(enterDuration * 1000).toFixed(0)}
+                            ms
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0.05}
+                            max={1.0}
+                            step={0.01}
+                            value={enterDuration}
+                            onChange={(e) =>
+                                setEnterDuration(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="How far new rows slide down before settling into place."
+                        >
+                            Enter Offset: {enterOffset}px
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0}
+                            max={50}
+                            step={1}
+                            value={enterOffset}
+                            onChange={(e) =>
+                                setEnterOffset(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                </div>
+            )}
+
+            <div
+                style={{
+                    marginBottom: '16px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                    alignItems: 'center',
+                }}
+            >
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    leadingIcon={<Filter size={14} />}
+                    onClick={handleSortByName}
+                    text="Sort by Name"
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    leadingIcon={<Filter size={14} />}
+                    onClick={handleSortByPrice}
+                    text="Sort by Price"
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleShuffle}
+                    text="Shuffle"
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleFilterActive}
+                    text={showActiveOnly ? 'Show All' : 'Active Only'}
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleReset}
+                    text="Reset"
+                />
+                <Button
+                    buttonType={ButtonType.PRIMARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleAddRow}
+                    text="Add Row"
+                />
+            </div>
+
+            <DataTable
+                data={data as Record<string, unknown>[]}
+                columns={
+                    animColumns as ColumnDefinition<Record<string, unknown>>[]
+                }
+                idField="id"
+                enableRowAnimation={animationEnabled}
+                rowAnimationConfig={
+                    animationEnabled ? animationConfig : undefined
+                }
+                enableSearch
+                pagination={{
+                    currentPage,
+                    pageSize: 10,
+                    totalRows: data.length,
+                    pageSizeOptions: [5, 10, 20],
+                }}
+                onPageChange={(page) => setCurrentPage(page)}
+                onPageSizeChange={() => setCurrentPage(1)}
+                rowActions={{
+                    showEditAction: false,
+                    slot1: {
+                        id: 'delete-row',
+                        text: 'Delete',
+                        buttonType: ButtonType.SECONDARY,
+                        size: ButtonSize.SMALL,
+                        leadingIcon: <Trash2 size={16} />,
+                        onClick: (row) => handleDeleteRow(row),
+                    },
+                }}
+            />
         </div>
     )
 }

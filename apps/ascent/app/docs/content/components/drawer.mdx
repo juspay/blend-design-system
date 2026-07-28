@@ -1,7 +1,7 @@
 ---
 title: Drawer
 description: The Drawer component provides slide-out panels that appear from any side of the screen, offering flexible layout options for forms, navigation, detailed views, and contextual actions.
-category: components
+category: Feedback
 tags:
     - drawer
     - component
@@ -13,6 +13,7 @@ tags:
     - navigation
 RepoFolderName: Drawer
 StorybookLink: components-drawer--docs
+version: 1
 ---
 
 <DrawerPreview />
@@ -275,6 +276,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'Drawer.disableDrag',
+                hintText:
+                    'When true, prevents users from dragging the drawer to resize or dismiss it. The drag handle becomes non-draggable but the drawer can still be opened/closed programmatically or via click. Useful for drawers that should remain at a fixed size. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true disables drag functionality, false allows normal dragging',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'Drawer.children',
                 hintText:
                     'Required React elements representing the drawer trigger (DrawerTrigger) and content structure (DrawerPortal containing DrawerOverlay and DrawerContent). The children define the complete drawer structure including what opens it and what content it displays.',
@@ -334,6 +348,18 @@ function MyComponent() {
                 content: '() => void',
                 hintText:
                     'Function called when trigger is clicked, before drawer opens',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: "DrawerTrigger.'aria-label'",
+                hintText:
+                    'Optional accessibility label for the trigger button. Provides a descriptive name for screen readers describing what the trigger does (e.g., "Open navigation menu"). Useful when the trigger has no visible text or when the visible text is not descriptive enough.',
+            },
+            {
+                content: 'string',
+                hintText: 'Accessible label text for screen readers',
             },
             { content: '' },
         ],
@@ -456,6 +482,43 @@ function MyComponent() {
         ],
         [
             {
+                content: 'DrawerContent.offSet',
+                hintText:
+                    'Optional custom margin value that creates space around the drawer content. Accepts CSS values like "20px", "1rem" or numeric values (converted to pixels). When provided with direction=bottom, the drawer respects this margin at the bottom. Useful for positioning drawers with spacing from screen edges.',
+            },
+            {
+                content: 'string | number',
+                hintText:
+                    'CSS margin value (string with units) or number (pixels)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: "DrawerContent.'aria-label'",
+                hintText:
+                    "Optional accessibility label for the drawer dialog itself. Provides an accessible name when you don't have a visible DrawerTitle or when the title alone isn't descriptive enough. Used by screen readers to announce what the drawer contains.",
+            },
+            {
+                content: 'string',
+                hintText: 'Accessible label text for the drawer dialog',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: "DrawerContent.'aria-describedby'",
+                hintText:
+                    "Optional ID of the element that describes the drawer content (typically the DrawerDescription ID). Screen readers announce this description after the title, providing additional context about the drawer's purpose or contents.",
+            },
+            {
+                content: 'string',
+                hintText: 'ID of the element describing the drawer',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'DrawerContent.className',
                 hintText:
                     'Optional CSS class name string applied to the drawer content container. Useful for custom styling, animations, or integrating with CSS frameworks. The class is applied to the main content wrapper element.',
@@ -541,6 +604,18 @@ function MyComponent() {
         ],
         [
             {
+                content: 'DrawerTitle.id',
+                hintText:
+                    'Optional unique ID for the title element. Used for ARIA labeling - the DrawerContent automatically links to this ID via aria-labelledby for accessibility. If not provided, an ID is generated automatically.',
+            },
+            {
+                content: 'string',
+                hintText: 'Unique identifier for ARIA labeling',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'DrawerDescription.children',
                 hintText:
                     "Required React element (typically a string) representing the description text displayed below the title in the drawer header. Provides additional context, instructions, or explanation about the drawer's purpose. Styled as secondary text.",
@@ -561,6 +636,18 @@ function MyComponent() {
             {
                 content: 'string',
                 hintText: 'CSS class name to apply to the description element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'DrawerDescription.id',
+                hintText:
+                    'Optional unique ID for the description element. Used for ARIA description - the DrawerContent automatically links to this ID via aria-describedby for accessibility. If not provided, an ID is generated automatically.',
+            },
+            {
+                content: 'string',
+                hintText: 'Unique identifier for ARIA description',
             },
             { content: '' },
         ],
@@ -711,6 +798,31 @@ function MyComponent() {
                 content: 'boolean',
                 hintText:
                     'true disables close button, false allows normal close functionality',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'DrawerClose.asChild',
+                hintText:
+                    'When true, merges the close functionality props onto the child element instead of wrapping it in a button. Useful when you want a custom component (like a Button with specific styling) to handle the close action directly. The child element receives all necessary event handlers and accessibility attributes.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true merges props with child element, false renders a button wrapper',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: "DrawerClose.'aria-label'",
+                hintText:
+                    'Optional accessibility label for the close button. Providesiated descriptive name for screen readers (e.g., "Close drawer" or "Dismiss"). Useful when the close button has no visible text or when the visible text is not descriptive enough.',
+            },
+            {
+                content: 'string',
+                hintText: 'Accessible label text for the close button',
             },
             { content: '' },
         ],

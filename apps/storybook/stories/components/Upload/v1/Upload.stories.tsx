@@ -1,0 +1,523 @@
+import type { Meta, StoryObj } from '@storybook/react'
+import React, { useState } from 'react'
+import { Upload, UploadState } from '@juspay/blend-design-system'
+import { FileText } from 'lucide-react'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../../.storybook/a11y.config'
+
+const createMockFile = (name: string, size: number = 1024): File => {
+    if (typeof File !== 'undefined') {
+        const content = ['test content']
+        const file = new File(content, name, { type: 'text/plain' })
+        Object.defineProperty(file, 'size', { value: size, writable: false })
+        return file
+    }
+    const blob = new Blob(['test content'], { type: 'text/plain' })
+    const file = Object.create(blob) as File
+    Object.defineProperty(file, 'name', {
+        value: name,
+        writable: false,
+        enumerable: true,
+    })
+    Object.defineProperty(file, 'size', {
+        value: size,
+        writable: false,
+        enumerable: true,
+    })
+    Object.defineProperty(file, 'type', {
+        value: 'text/plain',
+        writable: false,
+        enumerable: true,
+    })
+    Object.defineProperty(file, 'lastModified', {
+        value: Date.now(),
+        writable: false,
+        enumerable: true,
+    })
+    return file
+}
+
+// ============================================================================
+// Meta Configuration
+// ============================================================================
+
+const meta: Meta<typeof Upload> = {
+    title: 'Components/Upload',
+    component: Upload,
+    parameters: {
+        layout: 'centered',
+        a11y: getA11yConfig('interactive'),
+        chromatic: CHROMATIC_CONFIG,
+        docsSubtitle:
+            'Upload component for file selection and upload with drag-and-drop support, multiple file handling, and comprehensive accessibility features.',
+        docs: {
+            description: {
+                component: `
+## Usage
+
+\`\`\`tsx
+import { Upload } from '@juspay/blend-design-system';
+
+<Upload
+  label="Upload Document"
+  description="PDF files only, max 5MB"
+  accept={['.pdf']}
+  maxSize={5 * 1024 * 1024}
+  onDrop={(acceptedFiles, rejectedFiles) => {
+    console.log('Accepted:', acceptedFiles);
+    console.log('Rejected:', rejectedFiles);
+  }}
+/>
+\`\`\`
+
+## Features
+- Single and multiple file uploads
+- Drag-and-drop support
+- File type validation
+- File size limits
+- Upload progress tracking
+- Error handling and validation
+- Custom file accept types
+- Help text and descriptions
+- Required field support
+- Disabled state
+- Custom children slots
+
+## Accessibility
+
+**WCAG Compliance**: 2.2 Level AA Compliant | Partial AAA Compliance
+
+**Level AA Compliance**: ✅ Fully Compliant
+- All Level A and Level AA criteria met
+- Keyboard accessible (Tab, Enter, Space on Browse Files button)
+- Screen reader support (VoiceOver/NVDA)
+- Proper label association via htmlFor/id
+- Error state support with visual and programmatic indicators (aria-invalid, aria-describedby)
+- Required state indicated with asterisk and required attribute
+- Description and hint text support via aria-describedby
+- Progress bar announces upload status via aria-valuenow, aria-valuemin, aria-valuemax
+- File remove buttons are keyboard accessible
+- Drag-and-drop area is keyboard accessible
+- Touch targets meet Level AA requirement (24x24px minimum)
+
+**Level AAA Compliance**: ⚠️ Partial (6 out of 9 applicable criteria)
+- ✅ **Compliant**: 1.4.8 Visual Presentation, 1.4.9 Images of Text, 2.1.3 Keyboard (No Exception), 2.2.3 No Timing, 2.2.4 Interruptions, 3.2.5 Change on Request
+- ❌ **Non-Compliant**: 1.4.6 Contrast (Enhanced) - requires 7:1 contrast ratio (currently 4.5:1 for AA)
+- ⚠️ **Verification Required**: 2.5.5 Target Size - File remove buttons need 44x44px minimum for AAA
+- ⚠️ **Application-Dependent**: 3.3.6 Error Prevention (All) - requires confirmation patterns for critical file operations
+
+**Keyboard Navigation**:
+- **Tab**: Navigate to Browse Files button
+- **Enter/Space**: Open file dialog (when Browse Files button is focused)
+- **Tab**: Navigate to file remove buttons (X icons)
+- **Enter/Space**: Remove file (when remove button is focused)
+- Drag-and-drop area is clickable but primary interaction is via Browse Files button
+
+**Screen Reader Support**:
+- Upload container has \`role="region"\` with \`aria-label\`
+- File input has proper label association
+- Description text associated via \`aria-describedby\`
+- Error messages announced via \`role="alert"\` and \`aria-live="polite"\`
+- Progress bar announces upload percentage
+- Help icon has \`aria-label\` attribute
+- File remove buttons have descriptive \`aria-label\` attributes
+
+**Touch Target Sizes**:
+- Browse Files button: ~36px height (meets AA 24px, does not meet AAA 44px)
+- File remove buttons (X icons): ~12px visible size (meets AA via padding, verification needed for AAA 44px)
+
+**Verification:**
+- **Storybook a11y addon**: Check Accessibility panel (0 violations expected for AA compliance)
+- **jest-axe**: Run \`pnpm test Upload.accessibility\` (automated tests covering WCAG 2.0, 2.1, 2.2 criteria)
+- **Manual**: Test with VoiceOver/NVDA, verify contrast ratios with WebAIM Contrast Checker
+- **Full Report**: See Accessibility Dashboard for detailed WCAG 2.0, 2.1, 2.2 compliance report
+
+### Form Integration
+
+For form integration, use \`value\` and \`onChange\` props:
+
+**Single File:**
+\`\`\`tsx
+const [file, setFile] = useState<File | null>(null);
+
+<Upload
+  label="Upload File"
+  value={file}
+  onChange={(value) => {
+    setFile(value); // File | null
+    // Extract metadata: value?.name, value?.type
+  }}
+/>
+\`\`\`
+
+**Multiple Files:**
+\`\`\`tsx
+const [files, setFiles] = useState<File[]>([]);
+
+<Upload
+  label="Upload Files"
+  multiple={true}
+  value={files}
+  onChange={(value) => {
+    setFiles(value); // File[]
+    // Extract metadata:
+    // const filenames = value.map(f => f.name);
+    // const filemimes = value.map(f => f.type);
+  }}
+/>
+\`\`\`
+        `,
+            },
+        },
+    },
+    argTypes: {
+        label: {
+            control: 'text',
+            description: 'Label text for the upload field',
+        },
+        subLabel: {
+            control: 'text',
+            description: 'Sub-label text displayed next to the label',
+        },
+        description: {
+            control: 'text',
+            description: 'Description text displayed below the label',
+        },
+        helpIconHintText: {
+            control: 'text',
+            description:
+                'Help text shown in tooltip when hovering over help icon',
+        },
+        multiple: {
+            control: 'boolean',
+            description: 'Allow multiple file selection',
+        },
+        accept: {
+            control: 'object',
+            description: 'Array of accepted file types for file validation',
+            table: {
+                type: {
+                    summary: 'string[]',
+                    detail: `Array of MIME types or file extensions.
+Examples:
+- ['.pdf', '.docx', '.txt'] - File extensions
+- ['image/*', 'application/pdf'] - MIME types
+- ['.jpg', '.png', 'image/gif'] - Mixed formats`,
+                },
+                category: 'Validation',
+            },
+        },
+        maxSize: {
+            control: 'number',
+            description: 'Maximum file size in bytes',
+        },
+        maxFiles: {
+            control: 'number',
+            description:
+                'Maximum number of files (only applies when multiple=true)',
+        },
+        progressSpeed: {
+            control: 'number',
+            description:
+                'Duration in milliseconds for progress animation (controls how fast the progress bar animates)',
+        },
+        disabled: {
+            control: 'boolean',
+            description: 'Disable the upload component',
+        },
+        required: {
+            control: 'boolean',
+            description: 'Mark the upload field as required',
+        },
+        errorText: {
+            control: 'text',
+            description: 'Error message to display',
+        },
+        state: {
+            control: 'select',
+            options: Object.values(UploadState),
+            description: 'Current upload state',
+        },
+        onStateChange: {
+            action: 'stateChanged',
+            description:
+                'Callback that provides the current upload state information. Useful for controlling external submit buttons based on error/success state.',
+        },
+    },
+    tags: ['autodocs'],
+}
+
+export default meta
+type Story = StoryObj<typeof Upload>
+
+// ============================================================================
+// Stories
+// ============================================================================
+
+export const Default: Story = {
+    render: (args) => {
+        const [uploadedFiles, setUploadedFiles] = useState<
+            Array<{ file: File; id: string; status: 'success' | 'error' }>
+        >([])
+        const [state, setState] = useState<UploadState>(UploadState.IDLE)
+
+        const handleDrop = (
+            acceptedFiles: File[],
+            rejectedFiles: Array<{
+                file: File
+                errors: Array<{ code: string; message: string }>
+            }>
+        ) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+
+            if (acceptedFiles.length > 0) {
+                // Set uploaded files
+                const newFiles = acceptedFiles.map((file, index) => ({
+                    file,
+                    id: `file-${Date.now()}-${index}`,
+                    status: 'success' as const,
+                }))
+                setUploadedFiles(newFiles)
+                setState(UploadState.SUCCESS)
+            } else if (rejectedFiles.length > 0) {
+                // Set failed files
+                const failedFiles = rejectedFiles.map((rejection, index) => ({
+                    file: rejection.file,
+                    id: `file-${Date.now()}-${index}`,
+                    status: 'error' as const,
+                    error: rejection.errors[0]?.message || 'File rejected',
+                }))
+                setUploadedFiles(failedFiles)
+                setState(UploadState.ERROR)
+            }
+        }
+
+        const handleFileRemove = (fileId: string) => {
+            setUploadedFiles((prev) => {
+                const updated = prev.filter((f) => f.id !== fileId)
+                if (updated.length === 0) {
+                    setState(UploadState.IDLE)
+                }
+                return updated
+            })
+        }
+
+        return (
+            <Upload
+                {...args}
+                state={state}
+                uploadedFiles={uploadedFiles.filter(
+                    (f) => f.status === 'success'
+                )}
+                failedFiles={uploadedFiles.filter((f) => f.status === 'error')}
+                onDrop={handleDrop}
+                onFileRemove={handleFileRemove}
+            />
+        )
+    },
+    args: {
+        label: 'Upload File',
+        description: 'Choose a file or drag & drop it here',
+        onDrop: () => {},
+    },
+}
+
+export const WithLabel: Story = {
+    args: {
+        label: 'Upload Document',
+        subLabel: 'PDF, DOCX only',
+        description: 'Maximum file size: 5MB',
+        helpIconHintText: 'Supported formats: PDF, DOCX. Maximum size: 5MB.',
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+    },
+}
+
+export const Required: Story = {
+    args: {
+        label: 'Upload Document',
+        description: 'Required field',
+        required: true,
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+    },
+}
+
+export const MultipleFiles: Story = {
+    args: {
+        label: 'Upload Files',
+        description: 'You can upload multiple files',
+        multiple: true,
+        maxFiles: 5,
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+    },
+}
+
+export const WithFileTypeRestriction: Story = {
+    args: {
+        label: 'Upload Image',
+        description: 'PNG, JPG, GIF only',
+        accept: ['.png', '.jpg', '.jpeg', '.gif'],
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+    },
+}
+
+export const WithSizeLimit: Story = {
+    args: {
+        label: 'Upload Document',
+        description: 'Maximum file size: 2MB',
+        maxSize: 2 * 1024 * 1024, // 2MB
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+    },
+}
+
+export const Disabled: Story = {
+    args: {
+        label: 'Upload File',
+        description: 'This upload is disabled',
+        disabled: true,
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+    },
+}
+
+export const WithError: Story = {
+    args: {
+        label: 'Upload File',
+        description: 'Please upload a valid file',
+        errorText: 'File upload failed. Please try again.',
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+    },
+}
+
+export const WithCustomChildren: Story = {
+    args: {
+        label: 'Upload File',
+        description: 'Custom upload area',
+        children: <FileText size={48} color="#6b7280" />,
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+    },
+}
+
+export const UploadingState: Story = {
+    args: {
+        label: 'Upload File',
+        description: 'Upload in progress',
+        state: UploadState.UPLOADING,
+        uploadingFiles: [
+            {
+                file: createMockFile('document.pdf'),
+                progress: 45,
+                status: UploadState.UPLOADING,
+                id: '1',
+            },
+        ],
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+    },
+}
+
+export const SuccessState: Story = {
+    args: {
+        label: 'Upload File',
+        description: 'File uploaded successfully',
+        state: UploadState.SUCCESS,
+        uploadedFiles: [
+            {
+                file: createMockFile('document.pdf'),
+                id: '1',
+                status: 'success',
+            },
+        ],
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+        onFileRemove: (fileId) => {
+            console.log('Remove file:', fileId)
+        },
+    },
+}
+
+export const SuccessStateMultiple: Story = {
+    args: {
+        label: 'Upload Files',
+        description: 'Files uploaded successfully',
+        multiple: true,
+        state: UploadState.SUCCESS,
+        uploadedFiles: [
+            {
+                file: createMockFile('document1.pdf'),
+                id: '1',
+                status: 'success',
+            },
+            {
+                file: createMockFile('image1.png'),
+                id: '2',
+                status: 'success',
+            },
+            {
+                file: createMockFile('document2.docx'),
+                id: '3',
+                status: 'success',
+            },
+        ],
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+        onFileRemove: (fileId) => {
+            console.log('Remove file:', fileId)
+        },
+    },
+}
+
+export const ErrorState: Story = {
+    args: {
+        label: 'Upload File',
+        description: 'Upload failed',
+        state: UploadState.ERROR,
+        errorText: 'File upload failed. Please try again.',
+        failedFiles: [
+            {
+                file: createMockFile('invalid.zip'),
+                id: '1',
+                status: 'error',
+                error: 'File type not supported',
+            },
+        ],
+        onDrop: (acceptedFiles, rejectedFiles) => {
+            console.log('Accepted files:', acceptedFiles)
+            console.log('Rejected files:', rejectedFiles)
+        },
+        onFileRemove: (fileId) => {
+            console.log('Remove file:', fileId)
+        },
+    },
+}

@@ -1,0 +1,143 @@
+---
+title: Button Group
+description: The ButtonGroup component is a container that groups multiple Button components together with flexible layout options and automatic positioning for cohesive action interfaces.
+category: Actions
+tags:
+    - button-group
+    - component
+    - layout
+    - container
+    - actions
+RepoFolderName: ButtonGroup
+StorybookLink: components-button-buttonv2--docs
+version: 2
+---
+
+<ButtonGroupV2Preview />
+
+## Usage
+
+```tsx
+import {
+    ButtonGroupV2,
+    ButtonV2,
+    ButtonV2Type,
+    ButtonV2Size,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <ButtonGroupV2 stacked={false}>
+            <ButtonV2
+                text="Cancel"
+                buttonType={ButtonV2Type.SECONDARY}
+                size={ButtonV2Size.MEDIUM}
+                onClick={() => console.log('Cancel clicked')}
+            />
+            <ButtonV2
+                text="Save Changes"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.MEDIUM}
+                onClick={() => console.log('Save clicked')}
+            />
+        </ButtonGroupV2>
+    )
+}
+```
+
+## Stacked Layout
+
+```tsx
+import {
+    ButtonGroupV2,
+    ButtonV2,
+    ButtonV2Type,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <ButtonGroupV2 stacked={true}>
+            <ButtonV2 text="Option 1" buttonType={ButtonV2Type.PRIMARY} />
+            <ButtonV2 text="Option 2" buttonType={ButtonV2Type.SECONDARY} />
+            <ButtonV2 text="Option 3" buttonType={ButtonV2Type.SECONDARY} />
+        </ButtonGroupV2>
+    )
+}
+```
+
+## With Custom Gap
+
+```tsx
+import { ButtonGroupV2, ButtonV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <ButtonGroupV2 gap={16}>
+            <ButtonV2 text="Cancel" />
+            <ButtonV2 text="Submit" />
+        </ButtonGroupV2>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'stacked',
+                hintText:
+                    'When true, buttons are arranged vertically in a stacked layout. When false, buttons are arranged horizontally in a row. Horizontal layout is useful for action buttons side-by-side, while stacked layout is better for mobile views or when vertical space is available. Defaults to false (horizontal layout).',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true arranges buttons vertically, false arranges them horizontally',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'gap',
+                hintText:
+                    'Custom gap between buttons. Accepts CSS gap values or number (pixels).',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS gap value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'children',
+                hintText:
+                    'Required ButtonV2 components to be grouped together. Can be a single ButtonV2 element or an array of ButtonV2 elements. The ButtonGroupV2 provides consistent spacing, border radius handling (for connected buttons), and layout management for all child buttons.',
+            },
+            {
+                content:
+                    'ReactElement<ButtonV2Props> | ReactElement<ButtonV2Props>[]',
+                hintText:
+                    'Single ButtonV2 element or array of ButtonV2 elements to group',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the ButtonGroup component using the following tokens:
+
+```tsx
+export type ButtonGroupTokenType = {
+    gap: {
+        horizontal: CSSObject['gap']
+        stacked: CSSObject['gap']
+    }
+}
+```

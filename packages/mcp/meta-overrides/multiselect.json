@@ -1,0 +1,81 @@
+{
+    "componentDescription": "MultiSelect allows selecting multiple values from a dropdown list. Use for tags, permissions, filters, category assignments, and any field where more than one option can be active simultaneously. Selected values appear as COUNT (number badge) or TEXT (comma-separated tags) in the trigger.",
+    "features": [
+        "Three sizes: SMALL, MEDIUM, LARGE",
+        "Two variants: CONTAINER (bordered trigger) and NO_CONTAINER (minimal)",
+        "Two selection tag display types: COUNT (shows number of selected) and TEXT (shows selected labels)",
+        "Select All option with customizable label",
+        "Max selections limit",
+        "Built-in search",
+        "Action buttons in footer (primaryAction/secondaryAction) for apply/cancel patterns",
+        "Clear All button",
+        "Virtualization for large lists",
+        "Infinite scroll support",
+        "Mobile drawer mode",
+        "Allow custom value entry"
+    ],
+    "compositionPattern": "Items follow the same SelectMenuGroupType[] shape as SingleSelect. selectedValues is a string[] of currently selected item values. Pass onChange to receive the updated string[] on every selection change.",
+    "usageExamples": [
+        {
+            "title": "Tag/category multi-select",
+            "description": "Multi-select for assigning categories to a post.",
+            "code": "<MultiSelect\n  label=\"Categories\"\n  placeholder=\"Select categories\"\n  selectedValues={selectedCategories}\n  onChange={setSelectedCategories}\n  enableSearch\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      items: categories.map(c => ({ label: c.name, value: c.id }))\n    }\n  ]}\n/>"
+        },
+        {
+            "title": "Permission selector with select all",
+            "description": "Multi-select for assigning permissions with a select all option and max limit.",
+            "code": "<MultiSelect\n  label=\"Permissions\"\n  placeholder=\"Select permissions\"\n  selectedValues={permissions}\n  onChange={setPermissions}\n  enableSelectAll\n  selectAllText=\"All permissions\"\n  maxSelections={10}\n  selectionTagType={MultiSelectSelectionTagType.COUNT}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      groupLabel: 'Read',\n      items: readPermissions.map(p => ({ label: p.label, value: p.value }))\n    },\n    {\n      groupLabel: 'Write',\n      items: writePermissions.map(p => ({ label: p.label, value: p.value }))\n    }\n  ]}\n/>"
+        },
+        {
+            "title": "Filter panel multi-select with action buttons",
+            "description": "Multi-select where changes are applied via an explicit 'Apply' button instead of immediately.",
+            "code": "<MultiSelect\n  label=\"Filter by status\"\n  placeholder=\"All statuses\"\n  selectedValues={pendingFilters}\n  onChange={setPendingFilters}\n  showActionButtons\n  primaryAction={{ label: 'Apply', onClick: handleApplyFilters }}\n  secondaryAction={{ label: 'Clear', onClick: handleClearFilters }}\n  showClearButton\n  onClearAllClick={handleClearAll}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[{ items: statuses.map(s => ({ label: s.label, value: s.value })) }]}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "label": {
+            "llmContext": "Required. Label displayed above the trigger. Describes what is being selected (e.g., 'Tags', 'Assignees', 'Countries').",
+            "propDescription": "Required. Label for the multi-select field"
+        },
+        "placeholder": {
+            "llmContext": "Required. Trigger text when no items are selected. Use 'Select ...' format or 'All [entity]' to indicate that no filter is active.",
+            "propDescription": "Required. Trigger text when nothing is selected"
+        },
+        "selectedValues": {
+            "llmContext": "Required. Array of currently selected value strings. Each string must match a value in your items array. Manage with useState initialized to [] for empty selection.",
+            "propDescription": "Required. Array of currently selected item values"
+        },
+        "onChange": {
+            "llmContext": "Required. Callback fired with the complete updated string[] when any selection changes. Replace your selectedValues state with the received array.",
+            "propDescription": "Required. Called with full updated selected values array"
+        },
+        "items": {
+            "llmContext": "Required. Same SelectMenuGroupType[] structure as SingleSelect. Each group has optional groupLabel, items array, and showSeparator. Each item: { label, value, subLabel?, slot1?, disabled? }.",
+            "propDescription": "Required. Grouped array of selectable items"
+        },
+        "selectionTagType": {
+            "llmContext": "COUNT shows a number badge (e.g., '3 selected') — use when labels are long or space is limited, or when the exact selections aren't important to see at a glance. TEXT shows the labels inline — use when the user needs to see which specific items are selected in the trigger.",
+            "propDescription": "How selected items are shown in the trigger"
+        },
+        "enableSelectAll": {
+            "llmContext": "Set to true to add a 'Select All' option at the top of the list. Use when selecting all items is a valid and common use case (e.g., selecting all permissions for an admin role). Provide selectAllText for a custom label.",
+            "propDescription": "Adds a 'Select All' option to the item list"
+        },
+        "maxSelections": {
+            "llmContext": "Limits the number of items that can be selected. Once the limit is reached, unselected items are disabled. Use for fields with a hard maximum (e.g., 'Choose up to 5 skills').",
+            "propDescription": "Maximum number of items that can be selected"
+        },
+        "showActionButtons": {
+            "llmContext": "Set to true to show Apply/Cancel buttons in the dropdown footer. Use for filter panels where selections should only take effect when explicitly applied, rather than on every change.",
+            "propDescription": "Shows action buttons (apply/cancel) in the dropdown footer"
+        },
+        "showClearButton": {
+            "llmContext": "Set to true to show a 'Clear all' button in the trigger or dropdown. Use for filter fields where clearing all selections should be easily accessible.",
+            "propDescription": "Shows a clear all button"
+        },
+        "enableVirtualization": {
+            "llmContext": "Set to true for lists with 100+ items. Prevents performance degradation by only rendering visible items.",
+            "propDescription": "Enables virtual rendering for large item lists"
+        }
+    }
+}

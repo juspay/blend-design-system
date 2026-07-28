@@ -1,4 +1,5 @@
-import { SkeletonVariant } from '../Skeleton'
+import React from 'react'
+import type { SkeletonVariant } from '../Skeleton/types'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum MultiSelectVariant {
@@ -115,8 +116,6 @@ export type MultiSelectProps = {
 
     // inline
     inline?: boolean
-    onBlur?: () => void
-    onFocus?: () => void
     onOpenChange?: (open: boolean) => void
 
     // error
@@ -158,7 +157,8 @@ export type MultiSelectProps = {
     showClearButton?: boolean
     onClearAllClick?: () => void
     multiSelectGroupPosition?: 'center' | 'left' | 'right'
-}
+    menuFooter?: React.ReactNode
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'slot' | 'onChange'>
 
 // Multi Select Menu Dropdpown
 export type MultiSelectMenuProps = {
@@ -226,4 +226,5 @@ export type MultiSelectMenuProps = {
     customValueLabel?: string
     menuId?: string
     collisionBoundary?: Element | null | Array<Element | null>
+    menuFooter?: React.ReactNode
 }

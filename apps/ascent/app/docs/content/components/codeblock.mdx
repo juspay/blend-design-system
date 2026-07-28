@@ -1,7 +1,7 @@
 ---
 title: Code Block
 description: The CodeBlock component displays code snippets with syntax highlighting, line numbers, and diff view capabilities for showcasing code examples and changes.
-category: components
+category: Display
 tags:
     - code-block
     - component
@@ -11,6 +11,7 @@ tags:
     - code-snippet
 RepoFolderName: CodeBlock
 StorybookLink: components-codeblock--docs
+version: 1
 ---
 
 <CodeBlockPreview />
@@ -143,6 +144,57 @@ function MyComponent() {
                 content: 'DiffLine[]',
                 hintText:
                     'Array of objects with content and type (ADDED, REMOVED, UNCHANGED) properties',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showCopyButton',
+                hintText:
+                    'When true, displays the copy button in the header that allows users to copy the code to clipboard. When false, hides the copy button while keeping other header elements. Useful when you want to show code without allowing copying, or when copy functionality is handled externally. Defaults to true.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows copy button, false hides it',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'autoFormat',
+                hintText:
+                    'When true, automatically formats the code before displaying. Uses a built-in formatter to handle indentation and spacing. Note: language prop must also be provided for autoFormat to work (supports: javascript, typescript, jsx, tsx, json, css, html). When false or when language is not provided, code is displayed as-is. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables auto-formatting, false displays code as-is',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'language',
+                hintText:
+                    'Optional string specifying the programming language for syntax highlighting and auto-formatting. Supported languages include: javascript, typescript, jsx, tsx, json, css, html, python, rust, haskell. The language is passed to the tokenizer to apply appropriate syntax highlighting colors. Required when using autoFormat. If not provided, falls back to typescript.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Programming language identifier for syntax highlighting',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxHeight',
+                hintText:
+                    'Optional CSS value that sets the maximum height of the code content area. When the code exceeds this height, the content scrolls vertically while the header remains fixed. Accepts any valid CSS dimension such as "300px", "20rem", or "50vh". When not provided, the code block expands to fit all content without scrolling.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'CSS max-height value (e.g. "300px", "20rem", "50vh")',
             },
             { content: '' },
         ],

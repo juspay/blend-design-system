@@ -1,0 +1,399 @@
+name: Deploy Studio & Backend (Staging)
+
+on:
+    push:
+        branches:
+            - staging
+        paths:
+            - 'apps/backend/**'
+            - 'apps/blend-studio/**'
+            - 'packages/token-engine/**'
+            - 'packages/blend/**'
+            - 'package.json'
+            - 'pnpm-lock.yaml'
+            - 'pnpm-workspace.yaml'
+            - 'turbo.json'
+            - '.github/workflows/deploy-staging.yml'
+    workflow_dispatch:
+        inputs:
+            deploy_backend:
+                description: 'Deploy backend to Cloud Run'
+                required: false
+                default: true
+                type: boolean
+            deploy_studio:
+                description: 'Deploy studio to Firebase Hosting'
+                required: false
+                default: true
+                type: boolean
+
+concurrency:
+    group: deploy-staging
+    cancel-in-progress: false
+
+permissions:
+    contents: read
+
+env:
+    PROJECT_ID: storybook-452807
+    REGION: us-central1
+    PNPM_VERSION: 10.21.0
+    NODE_VERSION: '20'
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+jobs:
+    # ------------------------------------------------------------------------
+    # 0. Preflight — fail fast if any required secret is missing. Cheaper to
+    #    stop here than halfway through a Cloud Build.
+    # ------------------------------------------------------------------------
+    preflight:
+        name: Preflight (validate secrets)
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        environment: staging
+        permissions:
+            contents: read
+        steps:
+            - name: Check required secrets
+              env:
+                  GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+                  STAGING_DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
+                  STAGING_DATABASE_NAME: ${{ secrets.STAGING_DATABASE_NAME }}
+                  DATABASE_USER: ${{ secrets.DATABASE_USER }}
+                  CLOUD_SQL_CONNECTION_NAME: ${{ secrets.CLOUD_SQL_CONNECTION_NAME }}
+                  STAGING_FRONTEND_URL: ${{ secrets.STAGING_FRONTEND_URL }}
+                  STAGING_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+                  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+                  GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+                  FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+                  FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+                  FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+                  FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+                  FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+                  FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+                  FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+                  FIREBASE_CI_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN }}
+              run: |
+                  set -euo pipefail
+                  missing=0
+                  for key in \
+                    GCP_SA_KEY STAGING_DB_PASSWORD STAGING_DATABASE_NAME DATABASE_USER \
+                    CLOUD_SQL_CONNECTION_NAME STAGING_FRONTEND_URL STAGING_API_BASE_URL \
+                    GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET \
+                    FIREBASE_API_KEY FIREBASE_AUTH_DOMAIN FIREBASE_PROJECT_ID \
+                    FIREBASE_STORAGE_BUCKET FIREBASE_MESSAGING_SENDER_ID \
+                    FIREBASE_APP_ID FIREBASE_DATABASE_URL \
+                    FIREBASE_CI_TOKEN
+                  do
+                    if [ -z "${!key:-}" ]; then
+                      echo "::error::Required secret '$key' is empty or not set"
+                      missing=$((missing+1))
+                    fi
+                  done
+                  if [ "$missing" -gt 0 ]; then
+                    echo "::error::$missing required secret(s) missing. Aborting."
+                    exit 1
+                  fi
+
+            - name: Validate staging URL secrets
+              env:
+                  STAGING_FRONTEND_URL: ${{ secrets.STAGING_FRONTEND_URL }}
+                  STAGING_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+              run: |
+                  set -euo pipefail
+
+                  validate_https_url() {
+                    local name="$1"
+                    local value="$2"
+
+                    if [ -z "${value}" ]; then
+                      echo "::error::${name} is empty."
+                      return 1
+                    fi
+
+                    if ! [[ "${value}" =~ ^https://[^[:space:]]+$ ]]; then
+                      echo "::error::${name} must start with https:// and be a valid absolute URL. Current value: ${value}"
+                      return 1
+                    fi
+
+                    if [[ "${value}" =~ localhost|127\.0\.0\.1 ]]; then
+                      echo "::error::${name} must be publicly reachable (not localhost/127.0.0.1). Current value: ${value}"
+                      return 1
+                    fi
+
+                    if [[ "${value}" =~ :([0-9]+) ]]; then
+                      local port="${BASH_REMATCH[1]}"
+                      if [ "${port}" != "443" ]; then
+                        echo "::error::${name} must not include a non-443 explicit port in staging/prod. Current value: ${value}"
+                        return 1
+                      fi
+                    fi
+
+                    if [[ "${value}" =~ /$ ]]; then
+                      echo "::warning::${name} has a trailing slash. It is recommended to store it without trailing slash."
+                    fi
+                  }
+
+                  validate_https_url "STAGING_FRONTEND_URL" "${STAGING_FRONTEND_URL}"
+                  validate_https_url "STAGING_API_BASE_URL" "${STAGING_API_BASE_URL}"
+
+    # ------------------------------------------------------------------------
+    # 1. Apply backend database migrations before any Cloud Run rollout.
+    # ------------------------------------------------------------------------
+    migrate-backend-db:
+        name: Apply backend migrations (staging)
+        runs-on: ubuntu-latest
+        needs: preflight
+        timeout-minutes: 15
+        environment: staging
+        if: >-
+            github.event_name == 'push' ||
+            github.event.inputs.deploy_backend != 'false'
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v5
+              with:
+                  version: ${{ env.PNPM_VERSION }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: pnpm
+                  cache-dependency-path: pnpm-lock.yaml
+
+            - name: Install backend dependencies
+              run: pnpm install --frozen-lockfile --filter "@blend-design/justbackend..."
+
+            - name: Validate Prisma schema
+              working-directory: apps/backend
+              env:
+                  DATABASE_URL: postgresql://placeholder:placeholder@127.0.0.1:5432/placeholder
+              run: pnpm exec prisma validate --schema=prisma/schema.prisma
+
+            - name: Authenticate to Google Cloud
+              uses: google-github-actions/auth@v2
+              with:
+                  credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+            - name: Set up Cloud SDK
+              uses: google-github-actions/setup-gcloud@v2
+              with:
+                  project_id: ${{ env.PROJECT_ID }}
+
+            - name: Install Cloud SQL Auth Proxy
+              run: |
+                  set -euo pipefail
+                  curl -fsSL -o "${RUNNER_TEMP}/cloud-sql-proxy" \
+                    https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.15.2/cloud-sql-proxy.linux.amd64
+                  chmod +x "${RUNNER_TEMP}/cloud-sql-proxy"
+
+            - name: Run Prisma migrate deploy (staging)
+              working-directory: apps/backend
+              env:
+                  DB_USER: ${{ secrets.DATABASE_USER }}
+                  DB_NAME: ${{ secrets.STAGING_DATABASE_NAME }}
+                  DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
+                  INSTANCE_CONNECTION_NAME: ${{ secrets.CLOUD_SQL_CONNECTION_NAME }}
+              run: |
+                  set -euo pipefail
+                  ENCODED_PASS=$(python3 -c "import os, urllib.parse; print(urllib.parse.quote(os.environ['DB_PASSWORD'], safe=''))")
+                  DATABASE_URL="postgresql://${DB_USER}:${ENCODED_PASS}@127.0.0.1:5432/${DB_NAME}?connection_limit=1&pool_timeout=60"
+                  echo "::add-mask::${DATABASE_URL}"
+
+                  "${RUNNER_TEMP}/cloud-sql-proxy" "${INSTANCE_CONNECTION_NAME}" --port 5432 --quiet &
+                  proxy_pid=$!
+                  trap 'kill ${proxy_pid} 2>/dev/null || true' EXIT
+
+                  for _ in $(seq 1 20); do
+                    if nc -z 127.0.0.1 5432; then
+                      break
+                    fi
+                    sleep 1
+                  done
+                  nc -z 127.0.0.1 5432
+
+                  DATABASE_URL="${DATABASE_URL}" pnpm exec prisma migrate deploy --schema=prisma/schema.prisma
+                  DATABASE_URL="${DATABASE_URL}" pnpm exec prisma migrate status --schema=prisma/schema.prisma
+
+    # ------------------------------------------------------------------------
+    # 1. Build & deploy backend via Cloud Build. Studio image is still built
+    #    inside the same Cloud Build (see cloudbuild.yaml) for parity.
+    # ------------------------------------------------------------------------
+    deploy-backend:
+        name: Build & deploy backend (Cloud Run)
+        runs-on: ubuntu-latest
+        needs: [preflight, migrate-backend-db]
+        timeout-minutes: 30
+        environment: staging
+        if: >-
+            github.event_name == 'push' ||
+            github.event.inputs.deploy_backend != 'false'
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Authenticate to Google Cloud
+              uses: google-github-actions/auth@v2
+              with:
+                  credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+            - name: Set up Cloud SDK
+              uses: google-github-actions/setup-gcloud@v2
+              with:
+                  project_id: ${{ env.PROJECT_ID }}
+
+            - name: Configure Docker for Artifact Registry
+              run: gcloud auth configure-docker gcr.io --quiet
+
+            - name: Build & Deploy via Cloud Build
+              env:
+                  FRONTEND_URL: ${{ secrets.STAGING_FRONTEND_URL }}
+                  API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+              run: |
+                  set -euo pipefail
+                  GOOGLE_REDIRECT_URI="${API_BASE_URL%/}/api/auth/google/callback"
+                  gcloud builds submit \
+                    --config=apps/blend-studio/cloudbuild.yaml \
+                    --region="${REGION}" \
+                    --substitutions="^|^_BACKEND_SERVICE=blend-backend-staging|_STUDIO_SERVICE=blend-studio-staging|_REGION=${REGION}|_INSTANCE_CONNECTION_NAME=${{ secrets.CLOUD_SQL_CONNECTION_NAME }}|_DATABASE_URL_SECRET=blend-backend-database-url-staging:latest|_DB_CONNECTION_LIMIT=6|_DB_POOL_TIMEOUT_SECONDS=20|_DB_CONNECT_RETRY_DELAY_MS=5000|_DB_CONNECT_MAX_ATTEMPTS=6|_FRONTEND_URL=${FRONTEND_URL}|_STUDIO_URL=${FRONTEND_URL}|_API_BASE_URL=${API_BASE_URL}|_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}|_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}|_GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}|_GOOGLE_FONTS_API_KEY=${{ secrets.GOOGLE_FONTS_API_KEY }}|_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}|_FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}|_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}|_FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}|_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}|_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}|_FIREBASE_DATABASE_URL=${{ secrets.FIREBASE_DATABASE_URL }}|_JWT_CLI_EXPORT_EXPIRES_IN=10m" \
+                    .
+
+            - name: Smoke test deployed backend
+              env:
+                  API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+              run: |
+                  set -euo pipefail
+                  base="${API_BASE_URL%/}"
+                  health_url="${base}/health"
+                  api_health_url="${base}/api/health"
+                  echo "Probing ${health_url} and ${api_health_url}"
+                  # Cloud Run can take a few seconds after deploy; retry with backoff.
+                  for attempt in 1 2 3 4 5 6; do
+                    for url in "${health_url}" "${api_health_url}"; do
+                      http_code="$(curl -sS -o /tmp/health.json -w '%{http_code}' "${url}" || true)"
+                      if [ "${http_code}" = "200" ]; then
+                        if python3 -c 'import json,sys; data=json.load(open("/tmp/health.json")); sys.exit(0 if data.get("database")=="connected" else 1)'; then
+                          echo "Backend healthy (${url}): $(cat /tmp/health.json)"
+                          exit 0
+                        fi
+                        echo "Attempt ${attempt} ${url} returned 200 but database is not connected: $(cat /tmp/health.json)"
+                      fi
+                      echo "Attempt ${attempt} ${url} -> HTTP ${http_code}"
+                    done
+                    sleep_seconds=$((attempt * 5))
+                    echo "Retrying in ${sleep_seconds}s..."
+                    sleep "${sleep_seconds}"
+                  done
+                  echo "::error::Backend health endpoint stayed in database=connecting after retries"
+                  exit 1
+
+            - name: Smoke test studio frontend URL
+              env:
+                  FRONTEND_URL: ${{ secrets.STAGING_FRONTEND_URL }}
+              run: |
+                  set -euo pipefail
+                  studio_app_url="${FRONTEND_URL%/}/studio/"
+                  echo "Probing ${studio_app_url}"
+                  app_code="$(curl -sS -o /tmp/studio_app.html -w '%{http_code}' "${studio_app_url}" || true)"
+                  if [ "${app_code}" != "200" ]; then
+                    echo "::error::Studio app probe failed: HTTP ${app_code}"
+                    exit 1
+                  fi
+
+    # ------------------------------------------------------------------------
+    # 2. Build + deploy Studio to Firebase Hosting in parallel with the
+    #    backend. Isolated so a backend Cloud Build failure does not block
+    #    frontend deploys.
+    # ------------------------------------------------------------------------
+    deploy-studio:
+        name: Build & deploy studio (Firebase Hosting)
+        runs-on: ubuntu-latest
+        needs: preflight
+        timeout-minutes: 20
+        environment: staging
+        if: >-
+            github.event_name == 'push' ||
+            github.event.inputs.deploy_studio != 'false'
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@v5
+              with:
+                  version: ${{ env.PNPM_VERSION }}
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: ${{ env.NODE_VERSION }}
+                  cache: pnpm
+                  cache-dependency-path: pnpm-lock.yaml
+
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+
+            - name: Build studio
+              env:
+                  VITE_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+                  VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+                  VITE_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+                  VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+                  VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+                  VITE_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+                  VITE_FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+                  VITE_API_BASE_URL: ${{ secrets.STAGING_API_BASE_URL }}
+              run: pnpm --filter blend-studio-web build
+
+            - name: Stage hosting dist for firebase.json
+              run: |
+                  rm -rf dist
+                  cp -R apps/blend-studio/dist ./dist
+
+            - name: Deploy to Firebase Hosting (staging)
+              run: |
+                  npx firebase-tools@latest deploy \
+                    --only hosting:blend-staging \
+                    --project "${PROJECT_ID}" \
+                    --token "${FIREBASE_TOKEN}" \
+                    --non-interactive
+              env:
+                  FIREBASE_TOKEN: ${{ secrets.FIREBASE_CI_TOKEN }}
+
+    # ------------------------------------------------------------------------
+    # 3. Summary (always runs, even on partial failure).
+    # ------------------------------------------------------------------------
+    summary:
+        name: Deployment summary
+        runs-on: ubuntu-latest
+        needs: [migrate-backend-db, deploy-backend, deploy-studio]
+        timeout-minutes: 5
+        environment: staging
+        if: always()
+        permissions:
+            contents: read
+        steps:
+            - name: Write summary
+              run: |
+                  {
+                    echo "## Staging deployment"
+                    echo ""
+                    echo "| Component | Status |"
+                    echo "|-----------|--------|"
+                    echo "| Backend DB migrations | ${{ needs.migrate-backend-db.result }} |"
+                    echo "| Backend (Cloud Run) | ${{ needs.deploy-backend.result }} |"
+                    echo "| Studio (Firebase Hosting) | ${{ needs.deploy-studio.result }} |"
+                  } >> "$GITHUB_STEP_SUMMARY"

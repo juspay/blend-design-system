@@ -177,3 +177,8 @@ apps/storybook/storybook-static/
 
 packages/blend/dist/*
 **/dist
+
+.claude/
+.blend-telemetry/
+# Generated route tree
+routeTree.gen.ts

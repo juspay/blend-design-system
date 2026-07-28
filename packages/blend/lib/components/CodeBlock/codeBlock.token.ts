@@ -90,6 +90,25 @@ export type CodeBlockTokenType = {
             comment: CSSObject['color']
             text: CSSObject['color']
         }
+        // Expand/collapse context gap tokens for diff mode
+        expandContext: {
+            backgroundColor: CSSObject['backgroundColor']
+            borderTop: CSSObject['borderTop']
+            borderBottom: CSSObject['borderBottom']
+            padding: CSSObject['padding']
+            color: CSSObject['color']
+            fontSize: CSSObject['fontSize']
+            letterSpacing: CSSObject['letterSpacing']
+            button: {
+                padding: CSSObject['padding']
+                dotsPadding: CSSObject['padding']
+                opacity: CSSObject['opacity']
+                disabledOpacity: CSSObject['opacity']
+                hoverBackgroundColor: CSSObject['backgroundColor']
+                borderRadius: CSSObject['borderRadius']
+                iconSize: number
+            }
+        }
     }
 }
 
@@ -111,9 +130,9 @@ export const getCodeBlockTokens = (
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
                     x: foundationToken.unit[12],
-                    y: foundationToken.unit[10],
+                    y: foundationToken.unit[8],
                 },
-                gap: foundationToken.unit[8],
+                gap: foundationToken.unit[6],
                 icon: {
                     width: 16,
                 },
@@ -179,6 +198,25 @@ export const getCodeBlockTokens = (
                     comment: foundationToken.colors.gray[400],
                     text: foundationToken.colors.gray[900],
                 },
+                expandContext: {
+                    backgroundColor: foundationToken.colors.primary[50],
+                    borderTop: `1px solid ${foundationToken.colors.primary[200]}`,
+                    borderBottom: `1px solid ${foundationToken.colors.primary[200]}`,
+                    padding: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
+                    color: foundationToken.colors.primary[700],
+                    fontSize: '11px',
+                    letterSpacing: '3px',
+                    button: {
+                        padding: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
+                        dotsPadding: `${foundationToken.unit[2]} ${foundationToken.unit[10]}`,
+                        opacity: 1,
+                        disabledOpacity: 0.35,
+                        hoverBackgroundColor:
+                            foundationToken.colors.primary[100],
+                        borderRadius: foundationToken.border.radius[4],
+                        iconSize: 12,
+                    },
+                },
             },
         },
         lg: {
@@ -191,11 +229,11 @@ export const getCodeBlockTokens = (
                 borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
                 padding: {
                     x: foundationToken.unit[16],
-                    y: foundationToken.unit[10],
+                    y: foundationToken.unit[8],
                 },
-                gap: foundationToken.unit[12],
+                gap: foundationToken.unit[8],
                 icon: {
-                    width: 20,
+                    width: 16,
                 },
                 text: {
                     fontSize: foundationToken.font.size.body.md.fontSize,
@@ -258,6 +296,25 @@ export const getCodeBlockTokens = (
                     variable: foundationToken.colors.gray[800],
                     comment: foundationToken.colors.gray[400],
                     text: foundationToken.colors.gray[900],
+                },
+                expandContext: {
+                    backgroundColor: foundationToken.colors.primary[50],
+                    borderTop: `1px solid ${foundationToken.colors.primary[200]}`,
+                    borderBottom: `1px solid ${foundationToken.colors.primary[200]}`,
+                    padding: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
+                    color: foundationToken.colors.primary[700],
+                    fontSize: '11px',
+                    letterSpacing: '3px',
+                    button: {
+                        padding: `${foundationToken.unit[2]} ${foundationToken.unit[6]}`,
+                        dotsPadding: `${foundationToken.unit[2]} ${foundationToken.unit[10]}`,
+                        opacity: 1,
+                        disabledOpacity: 0.35,
+                        hoverBackgroundColor:
+                            foundationToken.colors.primary[100],
+                        borderRadius: foundationToken.border.radius[4],
+                        iconSize: 12,
+                    },
                 },
             },
         },

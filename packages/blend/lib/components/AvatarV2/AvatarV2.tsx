@@ -1,4 +1,9 @@
-import React, { forwardRef, useState, type ReactElement } from 'react'
+import React, {
+    forwardRef,
+    useEffect,
+    useState,
+    type ReactElement,
+} from 'react'
 import {
     AvatarV2Props,
     AvatarV2Size,
@@ -21,7 +26,7 @@ import {
     getAriaLiveValue,
     getStatusPositionStyles,
     renderFallbackContent,
-    createKeyboardHandler,
+    createAvatarKeyboardHandler,
     isInteractive,
 } from './avatarV2.utils'
 
@@ -176,6 +181,10 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
     ) => {
         const [imageError, setImageError] = useState(false)
 
+        useEffect(() => {
+            setImageError(false)
+        }, [src])
+
         const tokens = useResponsiveTokens<AvatarV2TokensType>('AVATARV2')
 
         const hasImage = src && !imageError
@@ -209,7 +218,7 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
             onImageLoad?.()
         }
 
-        const keyboardHandler = createKeyboardHandler(rest.onClick)
+        const keyboardHandler = createAvatarKeyboardHandler(rest.onClick)
         const filteredProps = filterBlockedProps(rest)
 
         const renderAvatarContent = () => {

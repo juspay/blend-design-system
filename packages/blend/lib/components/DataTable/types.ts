@@ -35,6 +35,16 @@ export enum ColumnType {
     CUSTOM = 'custom',
 }
 
+export enum PivotAggregationType {
+    SUM = 'sum',
+    COUNT = 'count',
+    AVERAGE = 'average',
+    MEAN = 'mean',
+    MEDIAN = 'median',
+    MIN = 'min',
+    MAX = 'max',
+}
+
 export type AvatarColumnProps = {
     src?: string
     alt?: string
@@ -78,10 +88,30 @@ export type DropdownColumnProps = {
     onSelect?: (value: unknown) => void
 }
 
+/**
+ * Format string for date display in DataTable DATE columns.
+ * @example 'DD MMM YYYY'           → "24 Jun 2026"
+ * @example 'DD/MM/YYYY'            → "24/06/2026"
+ * @example 'DD MMM YYYY, hh:mm A'  → "24 Jun 2026, 10:30 AM"
+ */
+
+export type DateFormat =
+    | 'DD MMM YYYY'
+    | 'DD/MM/YYYY'
+    | 'MM/DD/YYYY'
+    | 'YYYY-MM-DD'
+    | 'DD MMM YYYY, hh:mm A'
+    | 'DD MMM YYYY, HH:mm'
+    | 'MMM DD, YYYY'
+    | 'YYYY/MM/DD HH:mm'
+    | 'HH:mm:ss'
+    | (string & {})
+
 export type DateColumnProps = {
     date: Date | string
-    format?: string
+    format?: DateFormat
     showTime?: boolean
+    dateLabel?: string
 }
 
 export type SliderColumnProps = {
@@ -243,8 +273,13 @@ export type ColumnDefinition<T> =
               row: T,
               index: number
           ) => ReactNode
-          dateFormat?: string
+          dateFormat?: DateFormat
           showTime?: boolean
+          /**
+           * Optional label appended after the formatted date, e.g. "(IST)".
+           * Column-level value can be overridden per-cell via DateColumnProps.dateLabel.
+           */
+          dateLabel?: string
       })
     | (BaseColumnDefinition<T> & {
           type: ColumnType.SLIDER
@@ -328,6 +363,40 @@ export type RowActionsConfig<T extends Record<string, unknown>> = {
     slot2?: RowActionConfig<T>
 }
 
+export type RowSelectionConfig<T extends Record<string, unknown>> = {
+    isDisabled?: (row: T, index: number) => boolean
+    disabledText?: (row: T, index: number) => string
+}
+
+type BaseRowAnimationConfig = {
+    /** Enter animation duration in seconds. */
+    enterDuration: number
+    /** Enter animation Y offset in pixels. */
+    enterOffset: number
+}
+
+export type RowAnimationConfig = BaseRowAnimationConfig &
+    (
+        | {
+              /** Transition type for layout animations. */
+              transitionType: 'bezier'
+              /** Bezier duration in seconds. */
+              duration: number
+              /** Bezier easing curve as [x1, y1, x2, y2] cubic-bezier control points. */
+              bezier: [number, number, number, number]
+          }
+        | {
+              /** Transition type for layout animations. */
+              transitionType: 'spring'
+              /** Spring stiffness. */
+              stiffness: number
+              /** Spring damping. */
+              damping: number
+              /** Spring mass. */
+              mass: number
+          }
+    )
+
 export type DataTableProps<T extends Record<string, unknown>> = {
     data: T[]
     columns: ColumnDefinition<T>[]
@@ -358,6 +427,8 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onFilterChange?: (filters: ColumnFilter[]) => void
     onAdvancedFiltersChange?: (filters: unknown[]) => void
     columnFreeze?: number
+    /** Freeze last N columns on the right side (sticky right). */
+    columnFreezeRight?: number
     enableColumnManager?: boolean
     enableColumnReordering?: boolean
     onColumnReorder?: (columns: ColumnDefinition<T>[]) => void
@@ -393,10 +464,12 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     headerSlot2?: ReactNode
 
     enableInlineEdit?: boolean
+    showActionsColumn?: boolean
     onRowSave?: (rowId: unknown, updatedRow: T) => void
     onRowCancel?: (rowId: unknown) => void
     onRowClick?: (row: T, index: number) => void
     onFieldChange?: (rowId: unknown, fieldName: keyof T, value: unknown) => void
+    onHeaderChange?: (field: keyof T, newHeader: string) => void
 
     enableRowExpansion?: boolean
     renderExpandedRow?: (expandedData: {
@@ -413,6 +486,7 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     ) => void
 
     enableRowSelection?: boolean
+    rowSelectionConfig?: RowSelectionConfig<T>
     showBulkActionBar?: boolean
     onRowSelectionChange?: (
         selectedRowIds: string[],
@@ -425,10 +499,69 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     rowActions?: RowActionsConfig<T>
 
+    onOperations?: (field: keyof T) => void
+    onInsertLeft?: (field: keyof T) => void
+    onInsertRight?: (field: keyof T) => void
+    onDeleteColumn?: (field: keyof T) => void
+
     getRowStyle?: (row: T, index: number) => React.CSSProperties
+
+    enableRowAnimation?: boolean
+    rowAnimationConfig?: RowAnimationConfig
 
     tableBodyHeight?: string | number
 
     // Mobile configuration
     mobileColumnsToShow?: number
+
+    /**
+     * Optional label appended after formatted dates in DATE columns,
+     * e.g. "(IST)". Can be overridden per-column or per-cell.
+     */
+    dateLabel?: string
+
+    // Internal pivot modal configuration
+    enablePivotTable?: boolean
+    pivotTableConfig?: {
+        triggerButton?: ReactNode
+        triggerSlot?: 1 | 2 | 3
+        title?: string
+        description?: string
+        showExport?: boolean
+        initialConfig?: {
+            rows?: (keyof T)[]
+            columns?: (keyof T)[]
+            values?: Array<{
+                field: keyof T
+                aggregation: PivotAggregationType
+            }>
+        }
+        previewColumns?: Array<{
+            key: string
+            label: string
+        }>
+        previewRows?: Array<Record<string, unknown> & { __pivotId: string }>
+        /**
+         * Configure which aggregation operations are available in the Values section.
+         * If not provided, all operations will be shown.
+         * @example ['sum', 'count', 'average'] // Show only sum, count, and average
+         */
+        availableAggregations?: PivotAggregationType[]
+        onConfigChange?: (config: {
+            rows: (keyof T)[]
+            columns: (keyof T)[]
+            values: Array<{
+                field: keyof T
+                aggregation: PivotAggregationType
+            }>
+        }) => void
+        onExport?: (config: {
+            rows: (keyof T)[]
+            columns: (keyof T)[]
+            values: Array<{
+                field: keyof T
+                aggregation: PivotAggregationType
+            }>
+        }) => void
+    }
 }

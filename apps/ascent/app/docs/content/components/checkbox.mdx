@@ -1,7 +1,7 @@
 ---
 title: Checkbox
 description: The Checkbox component allows users to select one or more options from a list, with support for indeterminate states, custom styling, and comprehensive accessibility features.
-category: components
+category: Form Input
 tags:
     - checkbox
     - component
@@ -11,6 +11,7 @@ tags:
     - control
 RepoFolderName: Checkbox
 StorybookLink: components-checkbox-checkbox--docs
+version: 1
 ---
 
 <CheckboxPreview />
@@ -55,14 +56,25 @@ function MyComponent() {
         ],
         [
             {
-                content: 'value',
+                content: 'label',
                 hintText:
-                    'Optional value string associated with the checkbox when used in forms. When the checkbox is checked and submitted in a form, this value is included in the form data. Useful for identifying which checkbox option was selected.',
+                    'Optional label text displayed next to the checkbox. Used for accessibility and as fallback when children are not provided.',
             },
             {
                 content: 'string',
+                hintText: 'Text label for the checkbox',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'name',
                 hintText:
-                    'Value submitted with form data when checkbox is checked',
+                    'Optional form field name for the checkbox. When used in forms, this name is submitted with the form data along with the checked state.',
+            },
+            {
+                content: 'string',
+                hintText: 'Form field name for form submission',
             },
             { content: '' },
         ],
@@ -190,6 +202,19 @@ function MyComponent() {
                 content: 'ReactNode',
                 hintText:
                     'Any React element to display after the label content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxLength',
+                hintText:
+                    'Optional configuration to truncate label and subtext with ellipsis when they exceed the specified character count. Displays full text in a tooltip when truncated. Useful for long text in constrained layouts.',
+            },
+            {
+                content: '{ label?: number; subtext?: number }',
+                hintText:
+                    'Object with optional label and subtext character limits',
             },
             { content: '' },
         ],

@@ -1,7 +1,7 @@
 ---
 title: Menu
 description: The Menu component provides dropdown navigation and action lists with support for grouping, search functionality, submenus, and various positioning options for organizing application functions.
-category: components
+category: Navigation
 tags:
     - menu
     - component
@@ -11,6 +11,7 @@ tags:
     - actions
 RepoFolderName: Menu
 StorybookLink: components-menu-menu--docs
+version: 1
 ---
 
 <MenuPreview />
@@ -124,19 +125,6 @@ function MyComponent() {
                 content: 'number',
                 hintText:
                     'Positive number representing maximum menu height in pixels',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'Menu.minHeight',
-                hintText:
-                    'Optional minimum height in pixels for the menu dropdown. The menu will not shrink below this height, ensuring minimum visibility. Useful for maintaining consistent menu sizing. If not provided, the menu height adapts to content.',
-            },
-            {
-                content: 'number',
-                hintText:
-                    'Positive number representing minimum menu height in pixels',
             },
             { content: '' },
         ],

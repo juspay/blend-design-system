@@ -1,0 +1,205 @@
+---
+version: 2
+title: Progress Bar
+description: The ProgressBarV2 component displays progress indicators in linear or circular formats with solid or segmented appearances.
+category: Feedback
+tags:
+    - progress-bar
+    - component
+    - progress
+    - loading
+    - indicator
+RepoFolderName: ProgressBarV2
+StorybookLink: components-progressbar-progressbarv2--docs
+---
+
+<ProgressBarV2Preview />
+
+## Usage
+
+```tsx
+import {
+    ProgressBarV2,
+    ProgressBarV2Size,
+    ProgressBarV2Variant,
+    ProgressBarV2Appearance,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <ProgressBarV2
+            value={75}
+            min={0}
+            max={100}
+            size={ProgressBarV2Size.MD}
+            variant={ProgressBarV2Variant.LINEAR}
+            appearance={ProgressBarV2Appearance.SOLID}
+            showLabel={true}
+        />
+    )
+}
+```
+
+## Circular Progress
+
+```tsx
+import {
+    ProgressBarV2,
+    ProgressBarV2Variant,
+} from '@juspay/blend-design-system'
+;<ProgressBarV2
+    value={60}
+    variant={ProgressBarV2Variant.CIRCULAR}
+    size={ProgressBarV2Size.LG}
+    showLabel={true}
+/>
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Required. Current progress value.',
+            },
+            {
+                content: 'number',
+                hintText: 'Current value between min and max',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'min',
+                hintText: 'Minimum value of the progress range. Defaults to 0.',
+            },
+            {
+                content: 'number',
+                hintText: 'Minimum range value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'max',
+                hintText:
+                    'Maximum value of the progress range. Defaults to 100.',
+            },
+            {
+                content: 'number',
+                hintText: 'Maximum range value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'Visual style determining the progress shape.',
+            },
+            {
+                content: 'ProgressBarV2Variant',
+                hintText: 'Enum for progress style',
+            },
+            { content: 'linear, circular' },
+        ],
+        [
+            {
+                content: 'appearance',
+                hintText: 'Fill style for the progress indicator.',
+            },
+            {
+                content: 'ProgressBarV2Appearance',
+                hintText: 'Enum for fill style',
+            },
+            { content: 'solid, segmented' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Overall size of the progress component.',
+            },
+            {
+                content: 'ProgressBarV2Size',
+                hintText: 'Enum for component size',
+            },
+            { content: 'sm, md, lg' },
+        ],
+        [
+            {
+                content: 'showLabel',
+                hintText: 'When true, displays the percentage label.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows percentage text',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the ProgressBarV2 component using the following tokens:
+
+```tsx
+export type ProgressBarV2TokenType = {
+    linear: {
+        height: {
+            [key in ProgressBarV2Size]: CSSObject['height']
+        }
+        fill: {
+            backgroundColor: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundColor']
+            }
+            borderRadius: {
+                [key in ProgressBarV2Appearance]: CSSObject['borderRadius']
+            }
+        }
+        empty: {
+            backgroundColor: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundColor']
+            }
+            backgroundImage: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundImage']
+            }
+            backgroundSize: {
+                [key in ProgressBarV2Appearance]: CSSObject['backgroundSize']
+            }
+        }
+        borderRadius: {
+            [key in ProgressBarV2Appearance]: CSSObject['borderRadius']
+        }
+        gap: CSSObject['gap']
+    }
+    circular: {
+        size: {
+            [key in ProgressBarV2Size]: CSSObject['width']
+        }
+        strokeWidth: {
+            [key in ProgressBarV2Size]: number
+        }
+        stroke: {
+            [key in ProgressBarV2Appearance]: CSSObject['stroke']
+        }
+        background: {
+            [key in ProgressBarV2Appearance]: CSSObject['stroke']
+        }
+        dashArray: {
+            [key in ProgressBarV2Appearance]: string
+        }
+        motion: string
+    }
+    label: {
+        fontSize: CSSObject['fontSize']
+        fontWeight: CSSObject['fontWeight']
+        color: CSSObject['color']
+    }
+    transition: string
+}
+```

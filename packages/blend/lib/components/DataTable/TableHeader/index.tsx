@@ -5,7 +5,7 @@ import React, {
     useEffect,
     useCallback,
 } from 'react'
-import { ChevronsUpDown, Edit2 } from 'lucide-react'
+import { EllipsisVertical, GripVertical } from 'lucide-react'
 import { styled } from 'styled-components'
 import type { DraggableAttributes } from '@dnd-kit/core'
 import type { useSortable } from '@dnd-kit/sortable'
@@ -31,7 +31,11 @@ import {
     SortState,
     FilterState,
 } from './handlers'
-import { getPopoverAlignment, getFrozenColumnStyles } from './utils'
+import {
+    getPopoverAlignment,
+    getFrozenColumnStyles,
+    getFrozenRightColumnStyles,
+} from './utils'
 import { ColumnFilter } from './FilterComponents'
 import { ColumnType } from '../types'
 import { getColumnTypeConfig } from '../columnTypes'
@@ -47,7 +51,7 @@ import {
 } from '../../Drawer'
 import { DraggableColumnHeader } from './DraggableColumnHeader'
 
-const FilterIcon = styled(ChevronsUpDown)<{ $isActive?: boolean }>`
+const FilterIcon = styled(EllipsisVertical)<{ $isActive?: boolean }>`
     cursor: pointer;
     color: ${({ $isActive }) =>
         $isActive
@@ -79,10 +83,6 @@ const FilterButton = styled(PrimitiveButton)<{ $isActive?: boolean }>`
         border-radius: 4px;
         box-shadow: 0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]};
     }
-`
-
-const EditIcon = styled(Edit2)`
-    cursor: pointer;
 `
 
 const TruncatedTextWithTooltip: React.FC<{
@@ -205,6 +205,7 @@ const TableHeader = forwardRef<
             selectAll,
             sortConfig,
             enableInlineEdit = false,
+            showActionsColumn = true,
             enableColumnManager = true,
             enableColumnReordering = false,
             showSkeleton = false,
@@ -219,6 +220,7 @@ const TableHeader = forwardRef<
             rowActions,
             data,
             columnFreeze = 0,
+            columnFreezeRight = 0,
             mobileConfig,
             mobileOverflowColumns = [],
             onMobileOverflowClick,
@@ -230,6 +232,10 @@ const TableHeader = forwardRef<
             onHeaderChange,
             onColumnFilter,
             columnFilters = [],
+            onOperations,
+            onInsertLeft,
+            onInsertRight,
+            onDeleteColumn,
             getColumnWidth,
             measuredFrozenWidths,
             onFrozenWidthsMeasured,
@@ -238,9 +244,9 @@ const TableHeader = forwardRef<
     ) => {
         const isDisabled = showSkeleton || isLoading
         const [editingField, setEditingField] = useState<string | null>(null)
-        const [hoveredField, setHoveredField] = useState<string | null>(null)
         const editableRef = useRef<HTMLDivElement>(null)
         const headerRowRef = useRef<HTMLTableRowElement>(null)
+        const isRenamingRef = useRef<boolean>(false)
 
         useEffect(() => {
             if (
@@ -291,10 +297,10 @@ const TableHeader = forwardRef<
 
         const extractFilterValues = (
             filters: typeof columnFilters
-        ): Record<string, string[] | { min: number; max: number }> => {
+        ): Record<string, string | string[] | { min: number; max: number }> => {
             const values: Record<
                 string,
-                string[] | { min: number; max: number }
+                string | string[] | { min: number; max: number }
             > = {}
 
             filters.forEach((filter) => {
@@ -315,7 +321,7 @@ const TableHeader = forwardRef<
                 ) {
                     values[filter.field] = filter.value
                 } else if (typeof filter.value === 'string') {
-                    values[filter.field] = [filter.value]
+                    values[filter.field] = filter.value
                 }
             })
 
@@ -433,8 +439,8 @@ const TableHeader = forwardRef<
             const handleScrollOrWheel = (e: Event) => {
                 if (!scrollCloseEnabled.current) return
 
-                const target = e.target as Element
-                if (target) {
+                const target = e.target
+                if (target && target instanceof Element) {
                     const popoverContent =
                         target.closest('[data-radix-popper-content-wrapper]') ||
                         target.closest('[role="dialog"]') ||
@@ -539,12 +545,23 @@ const TableHeader = forwardRef<
                 range.collapse(false)
                 selection?.removeAllRanges()
                 selection?.addRange(range)
+
+                // Scroll the editable element into view to ensure cursor is visible
+                editableRef.current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest',
+                    inline: 'end',
+                })
+
+                const scrollEditableToEnd = () => {
+                    if (!editableRef.current) return
+                    editableRef.current.scrollLeft =
+                        editableRef.current.scrollWidth
+                }
+                scrollEditableToEnd()
+                requestAnimationFrame(scrollEditableToEnd)
             }
         }, [editingField])
-
-        const handleHeaderEdit = (field: string) => {
-            setEditingField(field)
-        }
 
         const handleHeaderSave = (field: string, newValue?: string) => {
             const valueToSave =
@@ -567,7 +584,13 @@ const TableHeader = forwardRef<
                 )
                 onColumnChange?.(updatedColumns)
             }
+            isRenamingRef.current = false
             setEditingField(null)
+        }
+
+        const handleHeaderRename = (field: string) => {
+            isRenamingRef.current = true
+            setEditingField(field)
         }
 
         const handleHeaderKeyDown = (e: React.KeyboardEvent, field: string) => {
@@ -649,7 +672,17 @@ const TableHeader = forwardRef<
                                 scope="col"
                                 aria-label="Select all rows"
                                 tabIndex={0}
-                                onKeyDown={(e) => {
+                                onClick={(
+                                    e: React.MouseEvent<HTMLDivElement>
+                                ) => {
+                                    e.stopPropagation()
+                                    onSelectAll(
+                                        selectAll === true ? false : true
+                                    )
+                                }}
+                                onKeyDown={(
+                                    e: React.KeyboardEvent<HTMLDivElement>
+                                ) => {
                                     if (e.key === 'Enter' || e.key === ' ') {
                                         e.preventDefault()
                                         e.stopPropagation()
@@ -743,6 +776,9 @@ const TableHeader = forwardRef<
                             if (Array.isArray(selectedValues)) {
                                 return selectedValues.length > 0
                             }
+                            if (typeof selectedValues === 'string') {
+                                return selectedValues.trim() !== ''
+                            }
                             if (
                                 typeof selectedValues === 'object' &&
                                 selectedValues !== null &&
@@ -766,9 +802,29 @@ const TableHeader = forwardRef<
                             measuredFrozenWidths
                         )
 
+                        const rightStickyOffsetPx = enableColumnManager
+                            ? parseInt(
+                                  String(FOUNDATION_THEME.unit[48]).replace(
+                                      'px',
+                                      ''
+                                  ) || '48',
+                                  10
+                              )
+                            : 0
+                        const rightFrozenStyles = getFrozenRightColumnStyles(
+                            index,
+                            columnFreezeRight,
+                            visibleColumns,
+                            getColumnWidth,
+                            tableToken.dataTable.table.header.backgroundColor ||
+                                '#ffffff',
+                            rightStickyOffsetPx
+                        )
+
                         const isLastColumn =
                             !enableColumnManager &&
                             !(
+                                showActionsColumn &&
                                 (enableInlineEdit || rowActions) &&
                                 !(
                                     mobileConfig?.isMobile &&
@@ -791,6 +847,7 @@ const TableHeader = forwardRef<
                                 tableToken.dataTable.table.header.sortable),
                             ...columnStyles,
                             ...frozenStyles,
+                            ...rightFrozenStyles,
                             padding: cellPadding,
                             // Ensure border bottom is always present
                             borderBottom:
@@ -816,10 +873,6 @@ const TableHeader = forwardRef<
                                 gap="4px"
                                 width="100%"
                                 minWidth={0}
-                                onMouseEnter={() =>
-                                    setHoveredField(String(column.field))
-                                }
-                                onMouseLeave={() => setHoveredField(null)}
                             >
                                 <Block
                                     display="flex"
@@ -833,6 +886,7 @@ const TableHeader = forwardRef<
                                             ref={editableRef}
                                             contentEditable
                                             suppressContentEditableWarning
+                                            className="hide-scrollbar"
                                             onBlur={(e) =>
                                                 handleHeaderSave(
                                                     String(column.field),
@@ -852,7 +906,10 @@ const TableHeader = forwardRef<
                                                 outline: 'none',
                                                 cursor: 'text',
                                                 whiteSpace: 'nowrap',
-                                                overflow: 'hidden',
+                                                overflowX: 'auto',
+                                                overflowY: 'hidden',
+                                                scrollbarWidth: 'none',
+                                                msOverflowStyle: 'none',
                                             }}
                                         >
                                             {column.header}
@@ -868,6 +925,28 @@ const TableHeader = forwardRef<
                                                 overflow: 'hidden',
                                             }}
                                         >
+                                            {isDraggable && dragHandleProps && (
+                                                <Block
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                    flexShrink={0}
+                                                    style={{
+                                                        cursor: 'grab',
+                                                    }}
+                                                    {...(dragHandleProps.listeners ||
+                                                        {})}
+                                                >
+                                                    <GripVertical
+                                                        size={14}
+                                                        color={
+                                                            FOUNDATION_THEME
+                                                                .colors
+                                                                .gray[400]
+                                                        }
+                                                    />
+                                                </Block>
+                                            )}
                                             <Block
                                                 display="flex"
                                                 flexDirection="column"
@@ -885,15 +964,8 @@ const TableHeader = forwardRef<
                                                 flexGrow={1}
                                                 flexShrink={1}
                                                 style={{
-                                                    cursor: isDraggable
-                                                        ? 'grab'
-                                                        : 'default',
                                                     overflow: 'hidden',
                                                 }}
-                                                {...(isDraggable &&
-                                                dragHandleProps
-                                                    ? dragHandleProps.listeners
-                                                    : {})}
                                             >
                                                 <Block
                                                     style={{
@@ -935,9 +1007,7 @@ const TableHeader = forwardRef<
                                                                         '100%',
                                                                     display:
                                                                         'block',
-                                                                    cursor: isDraggable
-                                                                        ? 'grab'
-                                                                        : 'default',
+                                                                    cursor: 'default',
                                                                     fontSize:
                                                                         tableToken
                                                                             .dataTable
@@ -1010,9 +1080,7 @@ const TableHeader = forwardRef<
                                                                                 '100%',
                                                                             display:
                                                                                 'block',
-                                                                            cursor: isDraggable
-                                                                                ? 'grab'
-                                                                                : 'default',
+                                                                            cursor: 'default',
                                                                             fontSize:
                                                                                 tableToken
                                                                                     .dataTable
@@ -1039,37 +1107,6 @@ const TableHeader = forwardRef<
                                                     </Block>
                                                 )}
                                             </Block>
-                                            {enableInlineEdit && (
-                                                <Block
-                                                    data-element="edit-icon"
-                                                    as="span"
-                                                    className="edit-icon-wrapper"
-                                                    display="flex"
-                                                    alignItems="center"
-                                                    justifyContent="center"
-                                                    flexShrink={0}
-                                                    width="16px"
-                                                    height="16px"
-                                                    opacity={
-                                                        hoveredField ===
-                                                        String(column.field)
-                                                            ? 1
-                                                            : 0
-                                                    }
-                                                    transition="opacity 0.2s"
-                                                    style={{
-                                                        cursor: 'pointer',
-                                                    }}
-                                                    onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        handleHeaderEdit(
-                                                            String(column.field)
-                                                        )
-                                                    }}
-                                                >
-                                                    <EditIcon size={14} />
-                                                </Block>
-                                            )}
                                         </Block>
                                     )}
                                 </Block>
@@ -1194,7 +1231,11 @@ const TableHeader = forwardRef<
                                                                         scrollContainer?.scrollLeft ||
                                                                         0
 
-                                                                    buttonRef.focus()
+                                                                    if (
+                                                                        !isRenamingRef.current
+                                                                    ) {
+                                                                        buttonRef.focus()
+                                                                    }
 
                                                                     requestAnimationFrame(
                                                                         () => {
@@ -1302,6 +1343,108 @@ const TableHeader = forwardRef<
                                                                     onColumnFilter={
                                                                         onColumnFilter
                                                                     }
+                                                                    onRenameHeader={
+                                                                        enableInlineEdit
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  handleHeaderRename(
+                                                                                      String(
+                                                                                          column.field
+                                                                                      )
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
+                                                                    onOperations={
+                                                                        onOperations
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  onOperations(
+                                                                                      column.field
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
+                                                                    onInsertLeft={
+                                                                        onInsertLeft
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  onInsertLeft(
+                                                                                      column.field
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
+                                                                    onInsertRight={
+                                                                        onInsertRight
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  onInsertRight(
+                                                                                      column.field
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
+                                                                    onDeleteColumn={
+                                                                        onDeleteColumn
+                                                                            ? () => {
+                                                                                  setOpenPopovers(
+                                                                                      (
+                                                                                          prev
+                                                                                      ) => ({
+                                                                                          ...prev,
+                                                                                          [String(
+                                                                                              column.field
+                                                                                          )]:
+                                                                                              false,
+                                                                                      })
+                                                                                  )
+                                                                                  onDeleteColumn(
+                                                                                      column.field
+                                                                                  )
+                                                                              }
+                                                                            : undefined
+                                                                    }
                                                                     onPopoverClose={() => {
                                                                         setOpenPopovers(
                                                                             (
@@ -1324,7 +1467,8 @@ const TableHeader = forwardRef<
                                                                                         )
                                                                                     ]
                                                                                 if (
-                                                                                    buttonRef
+                                                                                    buttonRef &&
+                                                                                    !isRenamingRef.current
                                                                                 ) {
                                                                                     buttonRef.focus()
                                                                                 }
@@ -1354,7 +1498,8 @@ const TableHeader = forwardRef<
                                                                                         )
                                                                                     ]
                                                                                 if (
-                                                                                    buttonRef
+                                                                                    buttonRef &&
+                                                                                    !isRenamingRef.current
                                                                                 ) {
                                                                                     buttonRef.focus()
                                                                                 }
@@ -1507,6 +1652,108 @@ const TableHeader = forwardRef<
                                                         onColumnFilter={
                                                             onColumnFilter
                                                         }
+                                                        onRenameHeader={
+                                                            enableInlineEdit
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      handleHeaderRename(
+                                                                          String(
+                                                                              column.field
+                                                                          )
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onOperations={
+                                                            onOperations
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      onOperations(
+                                                                          column.field
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onInsertLeft={
+                                                            onInsertLeft
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      onInsertLeft(
+                                                                          column.field
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onInsertRight={
+                                                            onInsertRight
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      onInsertRight(
+                                                                          column.field
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
+                                                        onDeleteColumn={
+                                                            onDeleteColumn
+                                                                ? () => {
+                                                                      setOpenPopovers(
+                                                                          (
+                                                                              prev
+                                                                          ) => ({
+                                                                              ...prev,
+                                                                              [String(
+                                                                                  column.field
+                                                                              )]:
+                                                                                  false,
+                                                                          })
+                                                                      )
+                                                                      onDeleteColumn(
+                                                                          column.field
+                                                                      )
+                                                                  }
+                                                                : undefined
+                                                        }
                                                         onPopoverClose={() => {
                                                             setOpenPopovers(
                                                                 (prev) => ({
@@ -1524,7 +1771,10 @@ const TableHeader = forwardRef<
                                                                             column.field
                                                                         )
                                                                     ]
-                                                                if (buttonRef) {
+                                                                if (
+                                                                    buttonRef &&
+                                                                    !isRenamingRef.current
+                                                                ) {
                                                                     buttonRef.focus()
                                                                 }
                                                             }, 100)
@@ -1546,7 +1796,10 @@ const TableHeader = forwardRef<
                                                                             column.field
                                                                         )
                                                                     ]
-                                                                if (buttonRef) {
+                                                                if (
+                                                                    buttonRef &&
+                                                                    !isRenamingRef.current
+                                                                ) {
                                                                     buttonRef.focus()
                                                                 }
                                                             }, 100)
@@ -1629,7 +1882,8 @@ const TableHeader = forwardRef<
                         )
                     })}
 
-                    {(enableInlineEdit || rowActions) &&
+                    {showActionsColumn &&
+                        (enableInlineEdit || rowActions) &&
                         !(
                             mobileConfig?.isMobile &&
                             mobileConfig?.enableColumnOverflow

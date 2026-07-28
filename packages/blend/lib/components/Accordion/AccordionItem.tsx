@@ -158,8 +158,8 @@ const StyledAccordionContent = styled(RadixAccordion.Content)<{
     $accordionType: AccordionType
     $accordionToken: AccordionTokenType
 }>((props) => ({
-    overflow: 'visible',
-    transition: 'all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    overflow: 'hidden',
+    transition: 'height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
 
     '&[data-state="open"]': {
         animation: 'accordion-down 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
@@ -176,22 +176,18 @@ const StyledAccordionContent = styled(RadixAccordion.Content)<{
     '@keyframes accordion-down': {
         from: {
             height: 0,
-            opacity: 0,
         },
         to: {
             height: 'var(--radix-accordion-content-height)',
-            opacity: 1,
         },
     },
 
     '@keyframes accordion-up': {
         from: {
             height: 'var(--radix-accordion-content-height)',
-            opacity: 1,
         },
         to: {
             height: 0,
-            opacity: 0,
         },
     },
 

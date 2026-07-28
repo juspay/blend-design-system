@@ -1,0 +1,85 @@
+{
+    "componentDescription": "Accordion displays collapsible content sections. Use it for FAQs, progressive disclosure of settings, expandable detail rows, and any scenario where showing all content at once would overwhelm the user. Supports single and multi-expand modes.",
+    "features": [
+        "Two border styles: BORDER (with dividers) and NO_BORDER (seamless)",
+        "Single expand (default) or multi-expand mode via isMultiple",
+        "Controlled and uncontrolled modes",
+        "Chevron position: LEFT or RIGHT",
+        "Rich AccordionItem trigger: leftSlot, rightSlot, subtext, subtextSlot, triggerSlot",
+        "Individual AccordionItem disable support"
+    ],
+    "compositionPattern": "Accordion wraps AccordionItem children. Each AccordionItem must have a unique 'value' string, a 'title', and 'children' for the expandable content. The Accordion component manages which items are open. Use defaultValue (string or string[]) for uncontrolled initial state.",
+    "usageExamples": [
+        {
+            "title": "FAQ accordion",
+            "description": "Single-expand FAQ with bordered style.",
+            "code": "<Accordion\n  accordionType={AccordionType.BORDER}\n  defaultValue=\"faq-1\"\n>\n  <AccordionItem value=\"faq-1\" title=\"What payment methods do you accept?\">\n    <p>We accept Visa, Mastercard, American Express, and PayPal.</p>\n  </AccordionItem>\n  <AccordionItem value=\"faq-2\" title=\"Can I cancel my subscription?\">\n    <p>Yes, you can cancel at any time from your account settings. Your plan remains active until the end of the billing period.</p>\n  </AccordionItem>\n  <AccordionItem value=\"faq-3\" title=\"Do you offer a free trial?\">\n    <p>Yes, all new accounts get a 14-day free trial with full access.</p>\n  </AccordionItem>\n</Accordion>"
+        },
+        {
+            "title": "Multi-expand settings accordion",
+            "description": "Settings grouped in sections, multiple can be open simultaneously.",
+            "code": "<Accordion\n  accordionType={AccordionType.NO_BORDER}\n  isMultiple\n  defaultValue={['notifications', 'privacy']}\n>\n  <AccordionItem\n    value=\"notifications\"\n    title=\"Notifications\"\n    subtext=\"Email, SMS, and push settings\"\n    leftSlot={<BellIcon />}\n  >\n    <NotificationSettings />\n  </AccordionItem>\n  <AccordionItem\n    value=\"privacy\"\n    title=\"Privacy\"\n    subtext=\"Data sharing and visibility\"\n    leftSlot={<LockIcon />}\n  >\n    <PrivacySettings />\n  </AccordionItem>\n  <AccordionItem\n    value=\"billing\"\n    title=\"Billing\"\n    subtext=\"Payment methods and invoices\"\n    leftSlot={<CreditCardIcon />}\n    isDisabled\n  >\n    <BillingSettings />\n  </AccordionItem>\n</Accordion>"
+        },
+        {
+            "title": "Controlled accordion",
+            "description": "Accordion with external control over which item is expanded.",
+            "code": "<Accordion\n  accordionType={AccordionType.BORDER}\n  value={openItem}\n  onValueChange={setOpenItem}\n>\n  <AccordionItem value=\"step-1\" title=\"Step 1: Account details\">\n    <AccountForm onComplete={() => setOpenItem('step-2')} />\n  </AccordionItem>\n  <AccordionItem value=\"step-2\" title=\"Step 2: Payment\">\n    <PaymentForm onComplete={() => setOpenItem('step-3')} />\n  </AccordionItem>\n  <AccordionItem value=\"step-3\" title=\"Step 3: Review\">\n    <ReviewPanel />\n  </AccordionItem>\n</Accordion>"
+        }
+    ],
+    "propOverrides": {
+        "accordionType": {
+            "llmContext": "BORDER adds visible borders/dividers between items, good for structured content like FAQs and forms. NO_BORDER removes separators for a seamless appearance, suitable for sidebar navigation or embedded settings panels.",
+            "propDescription": "Controls border/divider style between accordion items"
+        },
+        "isMultiple": {
+            "llmContext": "Set to true to allow multiple AccordionItems to be open simultaneously. Use for independent settings sections where opening one shouldn't close others. Leave false (default) for FAQs and step-by-step flows where only one section should be active.",
+            "propDescription": "Allows multiple items to be open at the same time"
+        },
+        "defaultValue": {
+            "llmContext": "Set the initially open item(s) in uncontrolled mode. Pass a single value string for single-expand mode, or a string[] when isMultiple is true. Use to pre-expand the most relevant section.",
+            "propDescription": "Initially open item value(s) in uncontrolled mode"
+        },
+        "value": {
+            "llmContext": "The currently open item value(s) in controlled mode. Pass a string for single-expand or string[] for multi-expand. Pair with onValueChange for full control.",
+            "propDescription": "Currently open item value(s) in controlled mode"
+        },
+        "onValueChange": {
+            "llmContext": "Called with the new open value(s) when user expands or collapses an item. Update your state here. In single-expand mode, receives a string; in multi-expand mode, receives a string[].",
+            "propDescription": "Called with new open value(s) when expansion state changes"
+        }
+    },
+    "isCompound": true,
+    "subComponents": ["AccordionItem"],
+    "subComponentPropOverrides": {
+        "AccordionItem": {
+            "value": {
+                "llmContext": "Required. Unique string identifier for this item within the Accordion. Used by the Accordion to track open/closed state. Use descriptive identifiers like 'billing-settings' or 'faq-payment'.",
+                "propDescription": "Required. Unique identifier for this accordion item"
+            },
+            "title": {
+                "llmContext": "Required. The trigger text shown in the collapsed header. Should clearly describe the content inside. Use question form for FAQs, noun phrases for settings sections.",
+                "propDescription": "Required. Header text shown when the item is collapsed"
+            },
+            "leftSlot": {
+                "llmContext": "React node rendered left of the title in the trigger. Use for section icons that help users scan and identify sections quickly.",
+                "propDescription": "React node rendered to the left of the title"
+            },
+            "rightSlot": {
+                "llmContext": "React node rendered right of the title in the trigger (before the chevron). Use for status badges, counts, or secondary actions.",
+                "propDescription": "React node rendered to the right of the title"
+            },
+            "subtext": {
+                "llmContext": "Secondary text shown below the title in the trigger. Use to describe what the section contains without requiring the user to expand it.",
+                "propDescription": "Secondary descriptive text below the title"
+            },
+            "chevronPosition": {
+                "llmContext": "LEFT places the expand/collapse chevron on the left of the trigger. RIGHT places it on the right. RIGHT is the default and more conventional. Use LEFT for tree-style navigation patterns.",
+                "propDescription": "Position of the expand/collapse chevron icon"
+            },
+            "isDisabled": {
+                "llmContext": "Set to true to prevent this specific AccordionItem from being expanded. The item remains visible with a disabled appearance. Use for sections not available in the current plan or state.",
+                "propDescription": "Prevents this accordion item from being expanded"
+            }
+        }
+    }
+}

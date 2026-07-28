@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Manrope } from 'next/font/google'
 import { METADATA_CONFIG } from '@/lib/config'
-import { GoogleAnalytics } from '@/app/components/GoogleAnalytics'
+import { GoogleAnalytics } from '@/components/googleAnalytics/GoogleAnalytics'
 import './globals.css'
+import { ThemeScript } from '@/components/ui/ThemeToggle/ThemeScript'
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 
@@ -15,6 +16,12 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
     variable: '--font-geist-mono',
+    subsets: ['latin'],
+    display: 'swap',
+})
+
+const manrope = Manrope({
+    variable: '--font-manrope',
     subsets: ['latin'],
     display: 'swap',
 })
@@ -42,6 +49,7 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
+                <ThemeScript />
                 <meta
                     name="viewport"
                     content="width=device-width, initial-scale=1"
@@ -52,7 +60,7 @@ export default function RootLayout({
                 <meta name="theme-color" content="#000000" />
             </head>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+                className={`${geistSans.variable} ${geistMono.variable} ${manrope.variable} font-sans antialiased`}
                 suppressHydrationWarning
             >
                 {children}

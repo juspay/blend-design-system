@@ -25,6 +25,8 @@ import {
     getPresetLabel,
     getTodayInTimezone,
     validateDateInput,
+    isControlledDateRange,
+    isValidDate,
 } from './utils'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
@@ -37,7 +39,8 @@ import { Popover } from '../Popover'
 import { TextInput, TextInputSize } from '../Inputs/TextInput'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import { ButtonType, ButtonSize, Button, Tooltip } from '../../main'
+import { ButtonType, ButtonSize, Button } from '../Button'
+import { Tooltip } from '../Tooltip'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
@@ -261,13 +264,16 @@ type CalendarSectionProps = {
     disablePastDates: boolean
     hideFutureDates: boolean
     hidePastDates: boolean
-    customDisableDates?: (date: Date) => boolean
+    customDisableDates?: (date: Date, currentRange?: DateRange) => boolean
     customRangeConfig?: import('./types').CustomRangeConfig
     onDateSelect: (range: DateRange) => void
     showDateTimePicker: boolean
     timezone?: string
     isSingleDatePicker?: boolean
     maxYearOffset?: number
+    minDate?: Date
+    maxDate?: Date
+    maxRangeDays?: number
 }
 
 const CalendarSection: React.FC<
@@ -288,8 +294,11 @@ const CalendarSection: React.FC<
     timezone,
     isSingleDatePicker,
     maxYearOffset,
+    minDate,
+    maxDate,
+    maxRangeDays,
 }) => (
-    <Block>
+    <Block flexGrow={1} minHeight={0} overflow="auto">
         <CalendarGrid
             selectedRange={selectedRange}
             onDateSelect={onDateSelect}
@@ -306,6 +315,9 @@ const CalendarSection: React.FC<
             timezone={timezone}
             isSingleDatePicker={isSingleDatePicker}
             maxYearOffset={maxYearOffset}
+            minDate={minDate}
+            maxDate={maxDate}
+            maxRangeDays={maxRangeDays}
         />
     </Block>
 )
@@ -369,6 +381,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             value,
             onChange,
             onPresetSelection,
+            showDateInput = true,
             showDateTimePicker = true,
             showPresets: shouldShowPresets = true,
             customPresets,
@@ -382,12 +395,16 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             hidePastDates = false,
             customDisableDates,
             customRangeConfig,
+            minDate,
+            maxDate,
+            maxRangeDays,
             triggerElement = null,
             useDrawerOnMobile = true,
             skipQuickFiltersOnMobile = false,
             size = DateRangePickerSize.MEDIUM,
             formatConfig,
             triggerConfig,
+            popoverConfig,
             maxMenuHeight = 250,
             showPreset = false,
             timezone,
@@ -406,7 +423,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         const [selectedRange, setSelectedRange] = useState<
             DateRange | undefined
-        >(value)
+        >(() => (isControlledDateRange(value) ? value : undefined))
         const lastExternalValueRef = React.useRef<{
             start: number | null
             end: number | null
@@ -522,29 +539,49 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         const resetValues = useCallback(
             (dateRangeObj?: DateRange) => {
-                setSelectedRange(dateRangeObj)
+                const normalizedRange = isControlledDateRange(dateRangeObj)
+                    ? dateRangeObj
+                    : undefined
+
+                setSelectedRange(normalizedRange)
                 setActivePreset(
-                    dateRangeObj
-                        ? detectPresetFromRange(dateRangeObj, timezone)
+                    normalizedRange
+                        ? detectPresetFromRange(
+                              normalizedRange,
+                              timezone,
+                              presetConfigs
+                          )
                         : DateRangePreset.CUSTOM
                 )
                 setStartDate(
-                    dateRangeObj &&
-                        formatDate(dateRangeObj.startDate, dateFormat, timezone)
+                    normalizedRange &&
+                        formatDate(
+                            normalizedRange.startDate,
+                            dateFormat,
+                            timezone
+                        )
                 )
-                if (dateRangeObj && dateRangeObj.endDate) {
+                if (normalizedRange?.endDate) {
                     setEndDate(
-                        formatDate(dateRangeObj.endDate, dateFormat, timezone)
+                        formatDate(
+                            normalizedRange.endDate,
+                            dateFormat,
+                            timezone
+                        )
                     )
+                } else if (!normalizedRange) {
+                    setEndDate(undefined)
                 }
                 setStartTime(
-                    dateRangeObj &&
-                        formatDate(dateRangeObj.startDate, 'HH:mm', timezone)
+                    normalizedRange &&
+                        formatDate(normalizedRange.startDate, 'HH:mm', timezone)
                 )
-                if (dateRangeObj && dateRangeObj.endDate) {
+                if (normalizedRange?.endDate) {
                     setEndTime(
-                        formatDate(dateRangeObj.endDate, 'HH:mm', timezone)
+                        formatDate(normalizedRange.endDate, 'HH:mm', timezone)
                     )
+                } else if (!normalizedRange) {
+                    setEndTime(undefined)
                 }
                 setStartDateValidation({ isValid: true, error: 'none' })
                 setEndDateValidation({
@@ -552,18 +589,24 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     error: 'none',
                 })
             },
-            [timezone, dateFormat]
+            [timezone, dateFormat, presetConfigs]
         )
 
         useEffect(() => {
-            if (!value) {
-                lastExternalValueRef.current = null
+            if (!isControlledDateRange(value)) {
+                if (lastExternalValueRef.current !== null) {
+                    lastExternalValueRef.current = null
+                    resetValues(undefined)
+                }
                 return
             }
 
             const nextSignature = {
-                start: value.startDate.getTime() ?? null,
-                end: value.endDate?.getTime() ?? null,
+                start: value.startDate.getTime(),
+                end:
+                    value.endDate && isValidDate(value.endDate)
+                        ? value.endDate.getTime()
+                        : null,
                 dateFormat,
             }
 
@@ -870,13 +913,17 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                           isSingleDatePicker
                       )
 
-                return triggerConfig.renderTrigger({
-                    selectedRange: displayRange,
-                    isOpen,
-                    isDisabled,
-                    formattedValue,
-                    onClick: () => setIsOpen(!isOpen),
-                })
+                return (
+                    <Block width="100%" display="flex">
+                        {triggerConfig.renderTrigger({
+                            selectedRange: displayRange,
+                            isOpen,
+                            isDisabled,
+                            formattedValue,
+                            onClick: () => setIsOpen(!isOpen),
+                        })}
+                    </Block>
+                )
             }
 
             if (triggerConfig?.element || triggerElement) {
@@ -885,6 +932,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         style={{
                             opacity: isDisabled ? 0.5 : 1,
                             cursor: isDisabled ? 'not-allowed' : 'pointer',
+                            width: '100%',
                             ...triggerConfig?.style,
                         }}
                     >
@@ -972,6 +1020,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             return (
                 <PrimitiveButton
                     display="flex"
+                    width="100%"
                     alignItems="center"
                     justifyContent="space-between"
                     backgroundColor={
@@ -1157,6 +1206,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 data-datepicker={getPresetLabel(activePreset) || 'datepicker'}
                 ref={ref}
                 display="flex"
+                width="100%"
             >
                 {showPresets && !hasCustomTrigger && (
                     <QuickRangeSelector
@@ -1185,17 +1235,21 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         setIsOpen(open)
                     }}
                     trigger={renderTrigger()}
-                    side="bottom"
-                    align="start"
-                    sideOffset={4}
+                    side={popoverConfig?.side || 'bottom'}
+                    align={popoverConfig?.align || 'start'}
+                    sideOffset={popoverConfig?.sideOffset ?? 4}
                     shadow="sm"
                 >
                     <Block
                         style={{
                             ...calendarToken.calendar,
                         }}
+                        maxHeight="var(--radix-popper-available-height)"
+                        display="flex"
+                        flexDirection="column"
+                        overflow="hidden"
                     >
-                        {showDateTimePicker && (
+                        {showDateInput && (
                             <DateInputsSection
                                 startDate={startDate}
                                 endDate={endDate}
@@ -1241,6 +1295,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             timezone={timezone}
                             isSingleDatePicker={isSingleDatePicker}
                             maxYearOffset={maxYearOffset}
+                            minDate={minDate}
+                            maxDate={maxDate}
+                            maxRangeDays={maxRangeDays}
                         />
 
                         <FooterControls

@@ -1,23 +1,11 @@
-import React, { memo } from 'react'
-import { SharedDocLayout } from '@/components'
+import React from 'react'
 
 type BlogLayoutProps = {
     children: React.ReactNode
 }
 
 const BlogLayout: React.FC<BlogLayoutProps> = ({ children }) => {
-    return (
-        <SharedDocLayout
-            baseRoute="/blog"
-            sidebarItems={[]}
-            showSidebar={false}
-        >
-            {children}
-        </SharedDocLayout>
-    )
+    return <div>{children}</div>
 }
 
-BlogLayout.displayName = 'BlogLayout'
-
-// Memoize the component for performance
-export default memo(BlogLayout)
+export default BlogLayout

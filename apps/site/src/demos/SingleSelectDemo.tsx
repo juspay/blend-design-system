@@ -97,6 +97,9 @@ const SingleSelectDemo = () => {
     const [filterSortSelected, setFilterSortSelected] = useState('')
     const [filterTypeSelected, setFilterTypeSelected] = useState('')
 
+    // Menu footer demo state
+    const [menuFooterSelected, setMenuFooterSelected] = useState('')
+
     // Truncation demo state
     const [truncationBasicSelected, setTruncationBasicSelected] = useState('')
     const [truncationCustomSelected, setTruncationCustomSelected] = useState('')
@@ -574,11 +577,32 @@ const SingleSelectDemo = () => {
                                     // minDropdownWidth={100}
                                     error={playgroundError}
                                     errorMessage={playgroundErrorMessage}
+                                    onFocus={() => {
+                                        console.log('focus')
+                                    }}
                                     onBlur={() => {
                                         console.log('blur')
                                     }}
-                                    onFocus={() => {
-                                        console.log('focus')
+                                    onClick={() => {
+                                        console.log('click')
+                                    }}
+                                    onKeyDown={(e) => {
+                                        console.log('keydown', e.key)
+                                    }}
+                                    onKeyUp={(e) => {
+                                        console.log('keyup', e.key)
+                                    }}
+                                    onMouseEnter={() => {
+                                        console.log('mouse enter')
+                                    }}
+                                    onMouseLeave={() => {
+                                        console.log('mouse leave')
+                                    }}
+                                    onMouseDown={() => {
+                                        console.log('mouse down')
+                                    }}
+                                    onMouseUp={() => {
+                                        console.log('mouse up')
                                     }}
                                     // useDrawerOnMobile={false}
                                     label={playgroundLabel}
@@ -2027,6 +2051,114 @@ const SingleSelectDemo = () => {
                                         </button>
                                     )}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2 className="text-2xl font-bold mt-12">Menu Footer</h2>
+                    <p className="text-gray-600 mb-4">
+                        The <code>menuFooter</code> prop renders arbitrary
+                        content pinned at the bottom of the dropdown. It is not
+                        selectable, stays put while the list scrolls, and
+                        remains visible even when there are zero items.
+                    </p>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold">
+                                Create new (with items)
+                            </h3>
+                            <div className="space-y-4 p-6 border rounded-lg">
+                                <SingleSelect
+                                    label="Country"
+                                    items={groupedItems}
+                                    selected={menuFooterSelected}
+                                    onSelect={(value) => {
+                                        setMenuFooterSelected(value)
+                                        addSnackbar({
+                                            header: `Selected: ${value}`,
+                                        })
+                                    }}
+                                    placeholder="Select a country"
+                                    enableSearch
+                                    menuFooter={
+                                        <div
+                                            style={{
+                                                padding: '12px 16px',
+                                                borderTop: '1px solid #e5e7eb',
+                                            }}
+                                        >
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    addSnackbar({
+                                                        header: 'Open the "Create new" modal here',
+                                                    })
+                                                }
+                                                style={{
+                                                    width: '100%',
+                                                    padding: '8px 12px',
+                                                    background: 'transparent',
+                                                    border: '1px dashed #d1d5db',
+                                                    borderRadius: 8,
+                                                    cursor: 'pointer',
+                                                    color: '#374151',
+                                                    fontWeight: 500,
+                                                }}
+                                            >
+                                                + Create new country
+                                            </button>
+                                        </div>
+                                    }
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <h3 className="text-lg font-semibold">
+                                Empty list (footer still reachable)
+                            </h3>
+                            <div className="space-y-4 p-6 border rounded-lg">
+                                <SingleSelect
+                                    label="Country"
+                                    items={[]}
+                                    selected={menuFooterSelected}
+                                    onSelect={(value) => {
+                                        setMenuFooterSelected(value)
+                                        addSnackbar({
+                                            header: `Selected: ${value}`,
+                                        })
+                                    }}
+                                    placeholder="Select a country"
+                                    enableSearch
+                                    menuFooter={
+                                        <div
+                                            style={{
+                                                padding: '12px 16px',
+                                                borderTop: '1px solid #e5e7eb',
+                                            }}
+                                        >
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    addSnackbar({
+                                                        header: 'Open the "Create new" modal here',
+                                                    })
+                                                }
+                                                style={{
+                                                    width: '100%',
+                                                    padding: '8px 12px',
+                                                    background: 'transparent',
+                                                    border: '1px dashed #d1d5db',
+                                                    borderRadius: 8,
+                                                    cursor: 'pointer',
+                                                    color: '#374151',
+                                                    fontWeight: 500,
+                                                }}
+                                            >
+                                                + Create new country
+                                            </button>
+                                        </div>
+                                    }
+                                />
                             </div>
                         </div>
                     </div>

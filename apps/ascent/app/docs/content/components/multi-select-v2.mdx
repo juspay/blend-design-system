@@ -1,0 +1,617 @@
+---
+version: 2
+title: Multi Select
+description: The MultiSelectV2 component allows users to select multiple options from a dropdown menu with search, groups, and virtualization support.
+category: Selection
+tags:
+    - multi-select
+    - component
+    - selection
+    - dropdown
+    - form
+RepoFolderName: MultiSelectV2
+StorybookLink: components-multiselect-multiselectv2--docs
+---
+
+<MultiSelectV2Preview />
+
+## Usage
+
+```tsx
+import {
+    MultiSelectV2,
+    MultiSelectV2SelectionTagType,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    const [selected, setSelected] = useState(['apple'])
+    const items = [
+        {
+            groupLabel: 'Fruits',
+            items: [
+                { label: 'Apple', value: 'apple' },
+                { label: 'Banana', value: 'banana' },
+                { label: 'Cherry', value: 'cherry' },
+            ],
+        },
+    ]
+
+    return (
+        <MultiSelectV2
+            label="Select Fruits"
+            placeholder="Choose fruits..."
+            selectedValues={selected}
+            onChange={(value) =>
+                setSelected(Array.isArray(value) ? value : [value])
+            }
+            items={items}
+            selectionTagType={MultiSelectV2SelectionTagType.TEXT}
+            enableSelectAll={true}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'selectedValues',
+                hintText:
+                    'Required. Array of currently selected option values.',
+            },
+            {
+                content: 'string[]',
+                hintText: 'Array of selected value strings',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText:
+                    'Required. Callback fired when selection changes. Receives selected values array.',
+            },
+            {
+                content: '(value: string | string[]) => void',
+                hintText: 'Selection change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'items',
+                hintText: 'Grouped options available for selection.',
+            },
+            {
+                content: 'MultiSelectV2GroupType[]',
+                hintText: 'Array of groups with items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Required. Field label displayed above the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText:
+                    'Secondary label text displayed below the main label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText:
+                    'Required. Placeholder text shown when no options are selected.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper description',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconText',
+                hintText: 'Tooltip text for the help icon.',
+            },
+            {
+                content: 'string',
+                hintText: 'Help tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'When true, displays a required indicator.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true marks field as required',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'selectionTagType',
+                hintText: 'Display format for selected items in the input.',
+            },
+            {
+                content: 'MultiSelectV2SelectionTagType',
+                hintText: 'Enum for tag display type',
+            },
+            { content: 'COUNT, TEXT' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Size variant affecting input height and text sizing.',
+            },
+            {
+                content: 'MultiSelectV2Size',
+                hintText: 'Enum for component size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'variant',
+                hintText: 'Visual style of the select input.',
+            },
+            {
+                content: 'MultiSelectV2Variant',
+                hintText: 'Enum for visual style',
+            },
+            { content: 'CONTAINER, NO_CONTAINER' },
+        ],
+        [
+            {
+                content: 'search',
+                hintText: 'Configuration for search functionality in dropdown.',
+            },
+            {
+                content: 'MultiSelectV2SearchConfig',
+                hintText: 'Object with show and placeholder',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enableSelectAll',
+                hintText: 'When true, shows a "Select All" option in the menu.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables select all',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'selectAllText',
+                hintText: 'Label text for the select all option.',
+            },
+            {
+                content: 'string',
+                hintText: 'Custom select all label',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxSelections',
+                hintText: 'Maximum number of items that can be selected.',
+            },
+            {
+                content: 'number',
+                hintText: 'Maximum selection count',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText:
+                    'Custom element displayed alongside the selected values.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Additional slot content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Error state configuration.',
+            },
+            {
+                content: 'MultiSelectV2ErrorState',
+                hintText: 'Object with show and message',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showActionButtons',
+                hintText:
+                    'When true, shows Apply/Cancel buttons in the dropdown.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows action buttons',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'primaryAction',
+                hintText:
+                    'Configuration for the primary action button (Apply).',
+            },
+            {
+                content: 'object',
+                hintText: 'text, onClick, disabled, loading',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondaryAction',
+                hintText:
+                    'Configuration for the secondary action button (Cancel).',
+            },
+            {
+                content: 'object',
+                hintText: 'text, onClick, disabled, loading',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'enableVirtualization',
+                hintText: 'When true, uses virtual rendering for large lists.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables virtualization',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'virtualListItemHeight',
+                hintText: 'Height of each virtualized item in pixels.',
+            },
+            {
+                content: 'number',
+                hintText: 'Item height in px',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onEndReached',
+                hintText:
+                    'Callback fired when scrolling reaches the end of list.',
+            },
+            {
+                content: '() => void',
+                hintText: 'End reached handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hasMore',
+                hintText:
+                    'For infinite scroll: indicates more items are available.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true indicates more items available',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'allowCustomValue',
+                hintText:
+                    'When true, allows users to enter values not in the list.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables custom values',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showClearButton',
+                hintText: 'When true, shows a button to clear all selections.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows clear button',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, disables the select input.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the component',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'Form field name for the select input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Form field name',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'customTrigger',
+                hintText:
+                    'Custom trigger element to replace the default trigger.',
+            },
+            {
+                content: 'ReactElement',
+                hintText: 'Custom trigger component',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'usePanelOnMobile',
+                hintText: 'When true, uses a panel drawer on mobile screens.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Defaults to true',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'triggerDimensions',
+                hintText: 'Dimensions for the trigger element.',
+            },
+            {
+                content: 'object',
+                hintText: 'width, minWidth, maxWidth',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'menuDimensions',
+                hintText: 'Dimensions for the dropdown menu.',
+            },
+            {
+                content: 'object',
+                hintText: 'width, minWidth, maxHeight',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'menuPosition',
+                hintText: 'Position configuration for the dropdown menu.',
+            },
+            {
+                content: 'object',
+                hintText: 'alignment, side, offset',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'inline',
+                hintText: 'When true, renders the select in inline mode.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Inline display mode',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onOpenChange',
+                hintText: 'Callback fired when the dropdown opens or closes.',
+            },
+            {
+                content: '(open: boolean) => void',
+                hintText: 'Open state change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showItemDividers',
+                hintText: 'When true, shows dividers between menu items.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows item dividers',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showHeaderBorder',
+                hintText: 'When true, shows border below the menu header.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows header border',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'virtualListOverscan',
+                hintText: 'Number of items to render outside the visible area.',
+            },
+            {
+                content: 'number',
+                hintText: 'Defaults to 5',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'endReachedThreshold',
+                hintText: 'Threshold for triggering onEndReached callback.',
+            },
+            {
+                content: 'number',
+                hintText: 'Threshold in pixels',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'loadingComponent',
+                hintText: 'Custom loading component for infinite scroll.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Loading indicator component',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText: 'Configuration for skeleton loading state.',
+            },
+            {
+                content: 'object',
+                hintText: 'count, show, variant',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'customValueLabel',
+                hintText: 'Label for the custom value option.',
+            },
+            {
+                content: 'string',
+                hintText: "Defaults to 'Specify'",
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClearAllClick',
+                hintText: 'Custom callback for the clear button click.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Clear handler, defaults to onChange([])',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'multiSelectGroupPosition',
+                hintText: 'Position when used in a grouped multi-select.',
+            },
+            {
+                content: "'center' | 'left' | 'right'",
+                hintText: 'Group position for styling',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the MultiSelectV2 component using the following tokens:
+
+```tsx
+export type MultiSelectV2TokensType = {
+    trigger: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        border: {
+            default: CSSObject['border']
+            hover: CSSObject['border']
+            focus: CSSObject['border']
+            error: CSSObject['border']
+            disabled: CSSObject['border']
+        }
+        background: {
+            default: CSSObject['background']
+            disabled: CSSObject['background']
+        }
+    }
+    tag: {
+        padding: CSSObject['padding']
+        borderRadius: CSSObject['borderRadius']
+        background: CSSObject['background']
+        color: CSSObject['color']
+        fontSize: CSSObject['fontSize']
+    }
+    menu: {
+        background: CSSObject['background']
+        borderRadius: CSSObject['borderRadius']
+        border: CSSObject['border']
+        boxShadow: CSSObject['boxShadow']
+    }
+    item: {
+        padding: CSSObject['padding']
+        gap: CSSObject['gap']
+        fontSize: CSSObject['fontSize']
+        checkbox: {
+            size: CSSObject['width']
+            borderRadius: CSSObject['borderRadius']
+        }
+    }
+}
+```

@@ -5,7 +5,9 @@ import {
     useEffect,
     useRef,
     useCallback,
+    useMemo,
 } from 'react'
+import styled from 'styled-components'
 import { Check, Copy, FileCode } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
@@ -13,6 +15,14 @@ import { ButtonSize, ButtonSubType, ButtonType } from '../Button/types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { CodeBlockTokenType } from './codeBlock.token'
 import { CodeBlockVariant, DiffLineType, type CodeBlockProps } from './types'
+import CodeBlockDiffView from './CodeBlockDiffView/CodeBlockDiffView'
+import {
+    PreElement,
+    CodeLineWrapper,
+    LineNumberGutter,
+    TokenizedCodeLine,
+    type DiffRowRenderContext,
+} from './CodeBlockLineParts'
 import {
     tokenizeLine,
     getDiffLineBackground,
@@ -21,145 +31,23 @@ import {
     shouldShowLineNumbers as shouldShowLineNumbersUtil,
     processLines,
     formatCode,
-    type SyntaxToken,
+    buildDiffViewSegments,
 } from './utils'
-import { FOUNDATION_THEME } from '../../tokens'
 
-// Reusable Line Number Gutter Component
-type LineNumberGutterProps = {
-    lineIndex: number
-    width: string | number | undefined
-    color: string | undefined
-    style?: React.CSSProperties
-}
+const CopyOverlay = styled.div`
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
 
-const LineNumberGutter: React.FC<LineNumberGutterProps> = ({
-    lineIndex,
-    width,
-    color,
-    style,
-}) => (
-    <Block
-        width={width}
-        padding={FOUNDATION_THEME.unit[0] + ' ' + FOUNDATION_THEME.unit[10]}
-        color={color}
-        style={{
-            userSelect: 'none',
-            ...style,
-        }}
-        flexShrink="0"
-        textAlign="right"
-        alignSelf="stretch"
-        role="presentation"
-        aria-hidden="true"
-    >
-        {lineIndex + 1}
-    </Block>
-)
-
-// Reusable Tokenized Code Content Component
-type TokenizedCodeLineProps = {
-    tokens: SyntaxToken[]
-    getTokenColor: (type: string) => string
-    paddingTop?: string | number
-    paddingBottom?: string | number
-    paddingLeft?: string | number
-    paddingRight?: string | number
-}
-
-const TokenizedCodeLine: React.FC<TokenizedCodeLineProps> = ({
-    tokens,
-    getTokenColor,
-    paddingTop,
-    paddingBottom,
-    paddingLeft,
-    paddingRight,
-}) => (
-    <code
-        data-element="codeblock-line-code"
-        data-id={tokens.map((token) => token.value).join('')}
-        style={{
-            flex: 1,
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-            paddingTop:
-                typeof paddingTop === 'number' ? `${paddingTop}px` : paddingTop,
-            paddingBottom:
-                typeof paddingBottom === 'number'
-                    ? `${paddingBottom}px`
-                    : paddingBottom,
-            paddingLeft:
-                typeof paddingLeft === 'number'
-                    ? `${paddingLeft}px`
-                    : paddingLeft,
-            paddingRight:
-                typeof paddingRight === 'number'
-                    ? `${paddingRight}px`
-                    : paddingRight,
-            lineHeight: '18px',
-        }}
-    >
-        {tokens.map((token, tokenIndex) => (
-            <Block key={tokenIndex} as="span" color={getTokenColor(token.type)}>
-                {token.value}
-            </Block>
-        ))}
-    </code>
-)
-
-// Reusable Code Line Wrapper Component
-type CodeLineWrapperProps = {
-    children: React.ReactNode
-    style?: React.CSSProperties
-    lineIndex?: number
-}
-
-const CodeLineWrapper: React.FC<CodeLineWrapperProps> = ({
-    children,
-    style,
-    lineIndex,
-}) => (
-    <Block
-        data-element="codeblock-line"
-        data-numeric={
-            lineIndex !== undefined ? (lineIndex + 1).toString() : undefined
-        }
-        display="flex"
-        alignItems="flex-start"
-        style={style}
-    >
-        {children}
-    </Block>
-)
-
-// Reusable Pre Element Component
-type PreElementProps = {
-    children: React.ReactNode
-    fontFamily: string | undefined
-    fontSize: string | number | undefined
-    lineHeight: string | number | undefined
-}
-
-const PreElement: React.FC<
-    PreElementProps & {
-        id?: string
+    .code-body:hover & {
+        opacity: 1;
+        pointer-events: auto;
     }
-> = ({ children, fontFamily, fontSize, lineHeight, id }) => (
-    <pre
-        id={id}
-        style={{
-            margin: 0,
-            fontFamily: fontFamily || 'monospace',
-            fontSize: typeof fontSize === 'number' ? `${fontSize}px` : fontSize,
-            lineHeight:
-                typeof lineHeight === 'number'
-                    ? lineHeight.toString()
-                    : lineHeight || '1.5',
-        }}
-    >
-        {children}
-    </pre>
-)
+`
 
 const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
     (
@@ -175,6 +63,10 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
             showCopyButton = true,
             autoFormat = false,
             language,
+            isDiffUnchangedCollapsed = true,
+            diffContextLines = 3,
+            diffExpandChunk = 20,
+            maxHeight,
         },
         ref
     ) => {
@@ -198,6 +90,17 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
         const isDiffMode =
             variant === CodeBlockVariant.DIFF && Boolean(diffLines)
         const lines = processLines(isDiffMode, diffLines, formattedCode)
+
+        const diffViewSegments = useMemo(() => {
+            if (!isDiffMode || !diffLines?.length) {
+                return []
+            }
+            return buildDiffViewSegments(
+                diffLines,
+                diffContextLines,
+                isDiffUnchangedCollapsed
+            )
+        }, [isDiffMode, diffLines, diffContextLines, isDiffUnchangedCollapsed])
 
         const copyToClipboard = useCallback(() => {
             navigator.clipboard.writeText(formattedCode)
@@ -274,6 +177,29 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                 tokens.body.highlightedLine
             )
 
+        const diffRowCtx = useMemo<DiffRowRenderContext>(
+            () => ({
+                shouldShowLineNumbers,
+                tokens,
+                tokenizeLine: (line: string) => tokenizeLine(line, language),
+                getTokenColor: (type: string) =>
+                    getTokenColor(type, tokens.body.syntax),
+                getDiffGutterStyle: (lineType?: DiffLineType) =>
+                    getDiffGutterStyle(
+                        lineType,
+                        isDiffMode,
+                        tokens.body.gutter
+                    ),
+                getDiffLineBackground: (lineType?: DiffLineType) =>
+                    getDiffLineBackground(
+                        lineType,
+                        isDiffMode,
+                        tokens.body.highlightedLine
+                    ),
+            }),
+            [shouldShowLineNumbers, tokens, language, isDiffMode]
+        )
+
         return (
             <Block
                 ref={ref}
@@ -339,13 +265,13 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                             )}
                         </Block>
 
-                        {showCopyButton && (
+                        {showCopyButton && !isDiffMode && (
                             <Button
                                 data-element="copy-button"
                                 type="button"
                                 onClick={copyToClipboard}
                                 buttonType={ButtonType.SECONDARY}
-                                subType={ButtonSubType.ICON_ONLY}
+                                subType={ButtonSubType.INLINE}
                                 size={ButtonSize.SMALL}
                                 aria-label={
                                     isCopied
@@ -373,172 +299,53 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                             : `${tokens.body.padding.y} ${tokens.body.padding.x}`
                     }
                     backgroundColor={tokens.body.backgroundColor}
-                    overflow={isDiffMode ? 'hidden' : 'auto'}
+                    overflow="auto"
+                    position={
+                        !showHeader && showCopyButton && !isDiffMode
+                            ? 'relative'
+                            : undefined
+                    }
+                    className={
+                        !showHeader && showCopyButton && !isDiffMode
+                            ? 'code-body'
+                            : undefined
+                    }
+                    style={{ maxHeight: maxHeight || 'none' }}
                 >
-                    {isDiffMode ? (
-                        // Side-by-side diff layout
-                        <Block
-                            display="flex"
-                            gap="0"
-                            width="100%"
-                            height="100%"
-                        >
-                            {/* Left side - Old code (removed) */}
-                            <Block
-                                style={{ flex: 1 }}
-                                minWidth="0"
-                                borderRight={tokens.border}
-                                padding={`${tokens.body.padding.y} ${tokens.body.padding.x}`}
-                                alignSelf="stretch"
-                                backgroundColor={tokens.backgroundColor}
-                                role="group"
-                                aria-label="Removed code"
-                            >
-                                <PreElement
-                                    id={`${codeContentId}-removed`}
-                                    fontFamily={tokens.body.code.fontFamily}
-                                    fontSize={tokens.body.code.fontSize}
-                                    lineHeight={tokens.body.code.lineHeight}
-                                >
-                                    {diffLines
-                                        ?.filter(
-                                            (line) =>
-                                                line.type ===
-                                                    DiffLineType.REMOVED ||
-                                                line.type ===
-                                                    DiffLineType.UNCHANGED
-                                        )
-                                        .map((line, lineIndex) => (
-                                            <CodeLineWrapper
-                                                key={lineIndex}
-                                                lineIndex={lineIndex}
-                                                style={getDiffLineBackgroundLocal(
-                                                    line.type
-                                                )}
-                                            >
-                                                {shouldShowLineNumbers && (
-                                                    <LineNumberGutter
-                                                        lineIndex={lineIndex}
-                                                        width={
-                                                            tokens.body.gutter
-                                                                .width
-                                                        }
-                                                        color={
-                                                            tokens.body.gutter
-                                                                .color
-                                                        }
-                                                        style={getDiffGutterStyleLocal(
-                                                            line.type
-                                                        )}
-                                                    />
-                                                )}
-                                                <TokenizedCodeLine
-                                                    tokens={tokenizeLineLocal(
-                                                        line.content
-                                                    )}
-                                                    getTokenColor={
-                                                        getTokenColorLocal
-                                                    }
-                                                    paddingTop={
-                                                        tokens.body.code.padding
-                                                            .y
-                                                    }
-                                                    paddingBottom={
-                                                        tokens.body.code.padding
-                                                            .y
-                                                    }
-                                                    paddingLeft={
-                                                        tokens.body.code.padding
-                                                            .x.left
-                                                    }
-                                                    paddingRight={
-                                                        tokens.body.code.padding
-                                                            .x.right
-                                                    }
-                                                />
-                                            </CodeLineWrapper>
-                                        ))}
-                                </PreElement>
-                            </Block>
-
-                            {/* Right side - New code (added) */}
-                            <Block
-                                style={{ flex: 1 }}
-                                minWidth="0"
-                                padding={`${tokens.body.padding.y} ${tokens.body.padding.x}`}
-                                alignSelf="stretch"
-                                backgroundColor={tokens.backgroundColor}
-                                role="group"
-                                aria-label="Added code"
-                            >
-                                <PreElement
-                                    id={`${codeContentId}-added`}
-                                    fontFamily={tokens.body.code.fontFamily}
-                                    fontSize={tokens.body.code.fontSize}
-                                    lineHeight={tokens.body.code.lineHeight}
-                                >
-                                    {diffLines
-                                        ?.filter(
-                                            (line) =>
-                                                line.type ===
-                                                    DiffLineType.ADDED ||
-                                                line.type ===
-                                                    DiffLineType.UNCHANGED
-                                        )
-                                        .map((line, lineIndex) => (
-                                            <CodeLineWrapper
-                                                key={lineIndex}
-                                                lineIndex={lineIndex}
-                                                style={getDiffLineBackgroundLocal(
-                                                    line.type
-                                                )}
-                                            >
-                                                {shouldShowLineNumbers && (
-                                                    <LineNumberGutter
-                                                        lineIndex={lineIndex}
-                                                        width={
-                                                            tokens.body.gutter
-                                                                .width
-                                                        }
-                                                        color={
-                                                            tokens.body.gutter
-                                                                .color
-                                                        }
-                                                        style={getDiffGutterStyleLocal(
-                                                            line.type
-                                                        )}
-                                                    />
-                                                )}
-                                                <TokenizedCodeLine
-                                                    tokens={tokenizeLineLocal(
-                                                        line.content
-                                                    )}
-                                                    getTokenColor={
-                                                        getTokenColorLocal
-                                                    }
-                                                    paddingTop={
-                                                        tokens.body.code.padding
-                                                            .y
-                                                    }
-                                                    paddingBottom={
-                                                        tokens.body.code.padding
-                                                            .y
-                                                    }
-                                                    paddingLeft={
-                                                        tokens.body.code.padding
-                                                            .x.left
-                                                    }
-                                                    paddingRight={
-                                                        tokens.body.code.padding
-                                                            .x.right
-                                                    }
-                                                />
-                                            </CodeLineWrapper>
-                                        ))}
-                                </PreElement>
-                            </Block>
-                        </Block>
-                    ) : (
+                    {!showHeader && showCopyButton && !isDiffMode && (
+                        <CopyOverlay>
+                            <Button
+                                data-element="copy-button"
+                                type="button"
+                                onClick={copyToClipboard}
+                                buttonType={ButtonType.SECONDARY}
+                                subType={ButtonSubType.ICON_ONLY}
+                                size={ButtonSize.SMALL}
+                                aria-label={
+                                    isCopied
+                                        ? 'Code copied to clipboard'
+                                        : 'Copy code'
+                                }
+                                leadingIcon={
+                                    isCopied ? (
+                                        <Check size={16} aria-hidden="true" />
+                                    ) : (
+                                        <Copy size={16} aria-hidden="true" />
+                                    )
+                                }
+                            />
+                        </CopyOverlay>
+                    )}
+                    {isDiffMode && diffLines?.length ? (
+                        <CodeBlockDiffView
+                            diffLines={diffLines}
+                            diffViewSegments={diffViewSegments}
+                            codeContentId={codeContentId}
+                            tokens={tokens}
+                            rowCtx={diffRowCtx}
+                            diffExpandChunk={diffExpandChunk}
+                        />
+                    ) : !isDiffMode ? (
                         // Standard single column layout
                         <PreElement
                             fontFamily={tokens.body.code.fontFamily}
@@ -589,7 +396,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 )
                             })}
                         </PreElement>
-                    )}
+                    ) : null}
                 </Block>
             </Block>
         )

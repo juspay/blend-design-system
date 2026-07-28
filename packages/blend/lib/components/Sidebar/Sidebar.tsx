@@ -100,6 +100,14 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
             defaultActiveItem,
             showLeftPanel = true,
             onSidebarStateChange,
+            showHierarchyLines = false,
+            hierarchyLineBorderRadius = 0,
+            expandedItems,
+            defaultExpandedItems,
+            onExpandedItemsChange,
+            onItemExpand,
+            enableVirtualization = false,
+            virtualization,
         },
         ref
     ) => {
@@ -182,10 +190,12 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         const toggleSidebar = useCallback(() => {
             const newValue = !isExpanded
 
+            // Immediately reset hover state for smoother closing
+            setIsHovering(false)
+
             if (!isControlled) {
                 setInternalExpanded(newValue)
             }
-            setIsHovering(false)
 
             onExpandedChange?.(newValue)
         }, [isExpanded, isControlled, onExpandedChange])
@@ -262,8 +272,13 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         }, [shouldRenderMobileNavigation])
 
         useEffect(() => {
-            const directoryContainer = document.querySelector(
+            const allContainers = document.querySelectorAll(
                 '[data-directory-container]'
+            )
+            const directoryContainer = (
+                isHovering
+                    ? allContainers[allContainers.length - 1]
+                    : allContainers[0]
             ) as HTMLElement | null
             if (!directoryContainer) return
 
@@ -316,14 +331,24 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                 passive: true,
             })
 
-            const handleResize = () => setTimeout(updateBlurState, 50)
+            let resizeTimeoutId: ReturnType<typeof setTimeout> | null = null
+
+            const handleResize = () => {
+                if (resizeTimeoutId) {
+                    clearTimeout(resizeTimeoutId)
+                }
+                resizeTimeoutId = setTimeout(updateBlurState, 50)
+            }
             window.addEventListener('resize', handleResize, { passive: true })
 
             return () => {
                 scrollingElement.removeEventListener('scroll', updateBlurState)
                 window.removeEventListener('resize', handleResize)
+                if (resizeTimeoutId) {
+                    clearTimeout(resizeTimeoutId)
+                }
             }
-        }, [isExpanded, data])
+        }, [isExpanded, data, isHovering])
 
         return (
             <SectionStateContext.Provider value={sectionStateValue}>
@@ -385,6 +410,18 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                     iconOnlyMode={iconOnlyMode}
                                     footer={footer}
                                     setIsHovering={setIsHovering}
+                                    showHierarchyLines={showHierarchyLines}
+                                    hierarchyLineBorderRadius={
+                                        hierarchyLineBorderRadius
+                                    }
+                                    expandedItems={expandedItems}
+                                    defaultExpandedItems={defaultExpandedItems}
+                                    onExpandedItemsChange={
+                                        onExpandedItemsChange
+                                    }
+                                    onItemExpand={onItemExpand}
+                                    enableVirtualization={enableVirtualization}
+                                    virtualization={virtualization}
                                 />
 
                                 {/* Intermediate Sidebar */}
@@ -418,13 +455,21 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                                 ? '4px 0 16px 0 rgba(5, 5, 6, 0.07)'
                                                 : 'none'
                                         }
-                                        transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
+                                        transition="width 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
                                         pointerEvents={
                                             isHovering ? 'auto' : 'none'
                                         }
                                         onMouseLeave={() =>
                                             setIsHovering(false)
                                         }
+                                        style={{
+                                            willChange: 'width, box-shadow',
+                                            transform: 'translateZ(0)',
+                                            // Delay on close to prevent abrupt disappearance
+                                            transitionDelay: isHovering
+                                                ? '0ms'
+                                                : '50ms',
+                                        }}
                                     >
                                         {shouldRenderIntermediateLeftPanel && (
                                             <TenantPanel
@@ -466,6 +511,24 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                                             }
                                             iconOnlyMode={false}
                                             footer={footer}
+                                            showHierarchyLines={
+                                                showHierarchyLines
+                                            }
+                                            hierarchyLineBorderRadius={
+                                                hierarchyLineBorderRadius
+                                            }
+                                            expandedItems={expandedItems}
+                                            defaultExpandedItems={
+                                                defaultExpandedItems
+                                            }
+                                            onExpandedItemsChange={
+                                                onExpandedItemsChange
+                                            }
+                                            onItemExpand={onItemExpand}
+                                            enableVirtualization={
+                                                enableVirtualization
+                                            }
+                                            virtualization={virtualization}
                                         />
                                     </Block>
                                 )}

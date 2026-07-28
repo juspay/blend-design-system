@@ -1,0 +1,57 @@
+{
+    "componentDescription": "Radio and RadioGroup provide a mutually exclusive selection pattern. Use when the user must pick exactly one option from a small set (2–6 options). For larger sets or searchable options, use SingleSelect instead. RadioGroup is the required parent that manages the selected value and shared name.",
+    "features": [
+        "Two sizes: SMALL and MEDIUM",
+        "Controlled (value + onChange) and uncontrolled (defaultValue) modes at the group level",
+        "Error state propagation from RadioGroup to child Radios",
+        "Individual Radio disabled state",
+        "subtext slot for per-option descriptions",
+        "slot prop for supplementary React node content (icons, badges)"
+    ],
+    "compositionPattern": "Always wrap Radio components inside a RadioGroup. RadioGroup manages the selected value via value/defaultValue and onChange. Each Radio must have a unique value prop. The name prop on RadioGroup is required for form accessibility.",
+    "usageExamples": [
+        {
+            "title": "Basic radio group",
+            "description": "Subscription plan selection with three mutually exclusive options.",
+            "code": "<RadioGroup\n  id=\"plan\"\n  name=\"subscription-plan\"\n  label=\"Choose a plan\"\n  value={selectedPlan}\n  onChange={setSelectedPlan}\n>\n  <Radio value=\"free\" size={RadioSize.MEDIUM}>Free</Radio>\n  <Radio value=\"pro\" size={RadioSize.MEDIUM}>Pro — $12/mo</Radio>\n  <Radio value=\"enterprise\" size={RadioSize.MEDIUM}>Enterprise — Contact us</Radio>\n</RadioGroup>"
+        },
+        {
+            "title": "Radio group with subtext and disabled option",
+            "description": "Options with descriptions and a disabled option for an unavailable plan.",
+            "code": "<RadioGroup\n  id=\"deployment\"\n  name=\"deployment-type\"\n  label=\"Deployment type\"\n  value={deploymentType}\n  onChange={setDeploymentType}\n  required\n>\n  <Radio\n    value=\"cloud\"\n    size={RadioSize.MEDIUM}\n    subtext=\"Managed hosting, automatic updates\"\n  >\n    Cloud\n  </Radio>\n  <Radio\n    value=\"self-hosted\"\n    size={RadioSize.MEDIUM}\n    subtext=\"Full control over your infrastructure\"\n  >\n    Self-hosted\n  </Radio>\n  <Radio\n    value=\"hybrid\"\n    size={RadioSize.MEDIUM}\n    subtext=\"Available on Enterprise plans only\"\n    disabled\n  >\n    Hybrid\n  </Radio>\n</RadioGroup>"
+        },
+        {
+            "title": "Radio group with error state",
+            "description": "Validation error when no option is selected on form submit.",
+            "code": "<RadioGroup\n  id=\"consent\"\n  name=\"data-consent\"\n  label=\"Data usage consent\"\n  value={consent}\n  onChange={setConsent}\n  error={!consent && submitted}\n  required\n>\n  <Radio value=\"agree\" size={RadioSize.MEDIUM}>I agree to data collection</Radio>\n  <Radio value=\"disagree\" size={RadioSize.MEDIUM}>I do not agree</Radio>\n</RadioGroup>"
+        }
+    ],
+    "propOverrides": {
+        "name": {
+            "llmContext": "Required on RadioGroup. This is the HTML form field name. All Radio children share this name, enabling native radio exclusivity. Use a descriptive kebab-case string matching the form field (e.g., 'payment-method', 'delivery-option').",
+            "propDescription": "Required. HTML name attribute shared by all Radio children"
+        },
+        "value": {
+            "llmContext": "Controlled selected value on RadioGroup. Should match the value prop of the currently selected Radio child. Update via onChange. Use controlled mode when the selection affects other UI elements or needs validation.",
+            "propDescription": "Currently selected Radio value in controlled mode"
+        },
+        "onChange": {
+            "llmContext": "Called with the newly selected value string when the user picks a different Radio. Update your controlled value state here.",
+            "propDescription": "Called with new selected value when user changes selection"
+        },
+        "error": {
+            "llmContext": "Set to true on RadioGroup to apply error styling to all child Radio components. Use for required-field validation when no option has been selected.",
+            "propDescription": "Applies error styling to the radio group"
+        },
+        "subtext": {
+            "llmContext": "On individual Radio components, subtext provides a description below the option label. Use to explain what each option means, its consequences, or eligibility requirements.",
+            "propDescription": "Descriptive text below a Radio option label"
+        },
+        "disabled": {
+            "llmContext": "On RadioGroup, disables all Radio children. On individual Radio, disables that specific option. Use to indicate unavailable options (e.g., plan not available in user's region) while keeping them visible.",
+            "propDescription": "Prevents interaction with radio(s)"
+        }
+    },
+    "isCompound": true,
+    "subComponents": ["RadioGroup"]
+}

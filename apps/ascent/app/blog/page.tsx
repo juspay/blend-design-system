@@ -1,46 +1,26 @@
 import React from 'react'
-import {
-    getAllBlogPosts,
-    getFeaturedBlogPosts,
-    BlogPost,
-} from '@/blog/utils/getBlogPosts'
-import {
-    BlogHeader,
-    FeaturedPosts,
-    BlogPostGrid,
-} from '@/components/features/Blog'
-import { BLOG_CONFIG } from '@/blog/config'
+import { getAllBlogPosts } from '@/blog/utils/getBlogPosts'
+import SharedDocLayout from '@/components/layout/SharedLayout'
+import { BlogHeader, BlogPostGrid } from '@/components/blog'
 
-/**
- * Blog page component - server component for static export
- * @returns React component
- */
 export default function BlogPage() {
-    // Fetch data at build time (no need for useMemo in server components)
-    const allPosts = getAllBlogPosts()
-    const featuredPosts = getFeaturedBlogPosts()
-
-    // Filter regular posts
-    const regularPosts = allPosts.filter((post: BlogPost) => !post.featured)
-
-    // Calculate title
-    const gridTitle =
-        featuredPosts.length > 0
-            ? BLOG_CONFIG.latestSectionTitle
-            : BLOG_CONFIG.allSectionTitle
-
-    // Check whether to show featured section
-    const showFeaturedSection = featuredPosts.length > 0
+    const posts = getAllBlogPosts()
 
     return (
-        <div
-            className={`${BLOG_CONFIG.maxWidth} mx-auto ${BLOG_CONFIG.containerPadding}`}
-        >
-            <BlogHeader />
-
-            {showFeaturedSection && <FeaturedPosts posts={featuredPosts} />}
-
-            <BlogPostGrid posts={regularPosts} title={gridTitle} />
+        <div>
+            <SharedDocLayout
+                baseRoute="/blog"
+                showSidebar={false}
+                showFooter={true}
+            >
+                <div className="mx-auto flex w-full flex-col h-auto md:h-[calc(100vh-131px)]">
+                    <div className="relative">
+                        <BlogHeader />
+                        <div className="pointer-events-none absolute bottom-0 left-1/2 w-screen -translate-x-1/2 border-b border-border" />
+                    </div>
+                    <BlogPostGrid posts={posts} />
+                </div>
+            </SharedDocLayout>
         </div>
     )
 }

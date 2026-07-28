@@ -1,0 +1,228 @@
+---
+version: 2
+title: Switch
+description: The SwitchV2 component provides a toggle control for binary on/off states with support for labels, sub-labels, and comprehensive accessibility features.
+category: Selection
+tags:
+    - switch
+    - toggle
+    - component
+    - form
+    - input
+    - selection
+    - control
+RepoFolderName: SwitchV2
+StorybookLink: components-selectorv2-switchv2--docs
+---
+
+<SwitchV2Preview />
+
+## Usage
+
+```tsx
+import { SwitchV2, SelectorV2Size } from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [enabled, setEnabled] = useState(false)
+
+    return (
+        <SwitchV2
+            checked={enabled}
+            onCheckedChange={setEnabled}
+            size={SelectorV2Size.MD}
+            label="Enable notifications"
+            subLabel="Receive updates via email"
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'checked',
+                hintText:
+                    'Whether the switch is turned on (true) or off (false).',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Switch state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onCheckedChange',
+                hintText:
+                    'Callback invoked when the switch state changes. Receives the new checked state.',
+            },
+            {
+                content: '(checked: boolean) => void',
+                hintText: 'State change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Controls the dimensions of the switch. SM is compact, MD is standard, LG is large.',
+            },
+            {
+                content: 'SelectorV2Size',
+                hintText: 'Enum for switch sizes',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Primary label text displayed next to the switch.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText:
+                    'Secondary descriptive text displayed below the label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Sub-label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText:
+                    'When true, marks the switch as required with a visual indicator.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Required state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText:
+                    'When true, displays the switch in an error state with error styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Error state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText:
+                    'When true, disables the switch interaction and applies disabled styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Disabled state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText:
+                    'When true, disables the switch interaction and applies disabled styling.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Disabled state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText:
+                    'Optional custom element displayed after the label. Configurable with maxHeight.',
+            },
+            {
+                content: '{ slot: ReactElement; maxHeight?: string | number }',
+                hintText: 'Slot configuration',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxLength',
+                hintText:
+                    'Character limits for truncating label and subLabel with ellipsis.',
+            },
+            {
+                content: '{ label?: number; subLabel?: number }',
+                hintText: 'Max length configuration',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the SwitchV2 component using the following tokens:
+
+```tsx
+export type SwitchV2TokensType = {
+    gap: CSSObject['gap']
+    switch: {
+        height: { [key in SelectorV2Size]: CSSObject['height'] }
+        width: { [key in SelectorV2Size]: CSSObject['width'] }
+        backgroundColor: {
+            [key in SwitchV2Variant]: {
+                [key in SelectorV2InteractionState]: CSSObject['backgroundColor']
+            }
+        }
+        thumb: {
+            backgroundColor: CSSObject['backgroundColor']
+            border: CSSObject['border']
+            width: { [key in SelectorV2Size]: CSSObject['width'] }
+            height: { [key in SelectorV2Size]: CSSObject['height'] }
+            outline: CSSObject['outline']
+        }
+    }
+    content: {
+        gap: CSSObject['gap']
+        label: {
+            gap: CSSObject['gap']
+            color: { [key in SelectorV2InteractionState]: CSSObject['color'] }
+            fontSize: { [key in SelectorV2Size]: CSSObject['fontSize'] }
+            fontWeight: { [key in SelectorV2Size]: CSSObject['fontWeight'] }
+            lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
+            slot: {
+                maxHeight: { [key in SelectorV2Size]: CSSObject['maxHeight'] }
+            }
+        }
+        subLabel: {
+            color: { [key in SelectorV2InteractionState]: CSSObject['color'] }
+            fontSize: { [key in SelectorV2Size]: CSSObject['fontSize'] }
+            fontWeight: { [key in SelectorV2Size]: CSSObject['fontWeight'] }
+            lineHeight: { [key in SelectorV2Size]: CSSObject['lineHeight'] }
+        }
+        required: {
+            color: CSSObject['color']
+        }
+    }
+}
+```

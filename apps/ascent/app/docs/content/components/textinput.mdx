@@ -1,7 +1,7 @@
 ---
 title: TextInput
 description: The TextInput component provides a flexible and accessible text input field with support for labels, hints, error states, slots, and responsive floating labels on mobile devices.
-category: components
+category: Form Input
 tags:
     - textinput
     - component
@@ -13,6 +13,7 @@ tags:
     - responsive
 RepoFolderName: TextInput
 StorybookLink: components-textinput--docs
+version: 1
 ---
 
 <TextInputPreview />
@@ -215,6 +216,24 @@ function MyComponent() {
                 hintText: 'union type',
             },
             { content: 'text, pointer, default, not-allowed' },
+        ],
+        [
+            {
+                content: 'TextInput.passwordToggle',
+                hintText:
+                    'When true, displays a password visibility toggle button (eye icon) that allows users to show or hide the password text. The button includes proper accessibility attributes (aria-label, aria-pressed) and keyboard support. Useful for password inputs where users may want to verify their entry. Defaults to false.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'TextInput.textInputGroupPosition',
+                hintText:
+                    'Optional TextInputGroupPosition enum value that determines the border radius styling when this input is part of a text input group. CENTER removes border radius on left and right sides, LEFT removes border radius on the right side only, RIGHT removes border radius on the left side only. Useful for creating connected input groups.',
+            },
+            { content: 'TextInputGroupPosition', hintText: 'enum' },
+            { content: 'CENTER, LEFT, RIGHT' },
         ],
     ]}
     className="mb-8"

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
     Drawer,
     DrawerPortal,
@@ -45,6 +45,10 @@ export const MultiSelectDrawer = ({
     const [searchTerm, setSearchTerm] = useState('')
     const [internalSelectedValues, setInternalSelectedValues] =
         useState<string[]>(selectedValues)
+
+    useEffect(() => {
+        setInternalSelectedValues(selectedValues)
+    }, [selectedValues])
 
     const selectMobileOffset = {
         top: '74px',
@@ -385,6 +389,10 @@ export const SingleSelectDrawer = ({
     const [internalSelectedValue, setInternalSelectedValue] = useState<string>(
         selectedValue || ''
     )
+
+    useEffect(() => {
+        setInternalSelectedValue(selectedValue || '')
+    }, [selectedValue])
 
     const selectMobileOffset = {
         top: '74px',

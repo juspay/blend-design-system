@@ -7,8 +7,8 @@ import {
     MenuSide,
     type MenuItemType,
 } from './types'
-import React, { useState, useRef, useMemo, useCallback } from 'react'
-import { filterMenuGroups } from './utils'
+import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react'
+import { filterMenuGroups, defaultSearchSortFn } from './utils'
 import MenuItem from './MenuItem'
 import Block from '../Primitives/Block/Block'
 import SearchInput from '../Inputs/SearchInput/SearchInput'
@@ -19,7 +19,7 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { VirtualList, type VirtualListItem } from '../VirtualList'
 import { menuContentAnimations } from './menu.animations'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
-import { useDropdownInteractionLock } from '../../hooks'
+import { useDropdownInteractionLock, useShadowRoot } from '../../hooks'
 import useScrollLock from '../../hooks/useScrollLock'
 
 export const contentBaseStyle: CSSObject = {
@@ -62,6 +62,8 @@ const Menu = ({
     maxHeight,
     enableSearch = false,
     searchPlaceholder = 'Search',
+    searchSortFn = defaultSearchSortFn,
+    onEnter,
     minWidth,
     maxWidth,
     open,
@@ -81,11 +83,12 @@ const Menu = ({
     const searchInputRef = useRef<HTMLInputElement>(null)
     const justOpenedRef = useRef(false)
     const timeoutRef = useRef<NodeJS.Timeout | null>(null)
-    const filteredItems = filterMenuGroups(items, searchText)
+    const filteredItems = filterMenuGroups(items, searchText, searchSortFn)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
+    const { target: portalContainer } = useShadowRoot()
 
     const menuIsOpen = open ?? isOpen
-    useDropdownInteractionLock(menuIsOpen)
+    useDropdownInteractionLock(asModal && menuIsOpen)
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchText(e.target.value)
@@ -113,6 +116,14 @@ const Menu = ({
 
         onOpenChange?.(newOpen)
     }
+
+    useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current)
+            }
+        }
+    }, [])
 
     const handleOutsideInteraction = useCallback((e: Event) => {
         if (justOpenedRef.current) {
@@ -170,7 +181,7 @@ const Menu = ({
     const shouldUseVirtualScrolling =
         enableVirtualScrolling && totalItemCount >= virtualScrollThreshold
 
-    useScrollLock(menuIsOpen)
+    useScrollLock(asModal && menuIsOpen)
 
     const renderVirtualItem = useCallback(
         ({ item }: { item: VirtualListItem; index: number }) => {
@@ -187,12 +198,13 @@ const Menu = ({
                 return (
                     <RadixMenu.Label asChild>
                         <PrimitiveText
-                            fontSize={12}
-                            padding="6px 8px"
+                            fontSize={menuTokens.item.optionsLabel.fontSize}
+                            fontWeight={menuTokens.item.optionsLabel.fontWeight}
+                            padding={`${menuTokens.item.optionsLabel.padding.y} ${menuTokens.item.optionsLabel.padding.x}`}
+                            margin={`${menuTokens.item.optionsLabel.margin.y} ${menuTokens.item.optionsLabel.margin.x}`}
                             userSelect="none"
-                            margin="0px 6px"
                             textTransform="uppercase"
-                            color={FOUNDATION_THEME.colors.gray[400]}
+                            color={menuTokens.item.optionsLabel.color}
                             aria-label={label}
                         >
                             {label}
@@ -240,7 +252,7 @@ const Menu = ({
             onOpenChange={handleOpenChange}
         >
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
-            <RadixMenu.Portal>
+            <RadixMenu.Portal container={portalContainer ?? undefined}>
                 <Content
                     data-menu="menu"
                     data-dropdown="dropdown"
@@ -343,6 +355,20 @@ const Menu = ({
                                         value={searchText}
                                         onChange={handleSearchChange}
                                         autoFocus
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.stopPropagation()
+                                                e.preventDefault()
+                                                onEnter?.(
+                                                    searchText,
+                                                    filteredItems
+                                                )
+                                                return
+                                            }
+                                            if (e.key.length === 1) {
+                                                e.stopPropagation()
+                                            }
+                                        }}
                                         aria-label={`Search menu items${searchPlaceholder ? `: ${searchPlaceholder}` : ''}`}
                                     />
                                 </Block>

@@ -601,12 +601,16 @@ export const createUploadManager = () => {
         progressInterval: number = 200
     ): (() => void) => {
         let currentProgress = uploadFile.progress || 0
+        let completeTimeout: ReturnType<typeof setTimeout> | null = null
 
         const interval = setInterval(() => {
             if (currentProgress >= 100) {
                 clearInterval(interval)
-                runningUploads.delete(uploadFile.id)
-                setTimeout(() => onComplete(uploadFile.id), 500)
+                completeTimeout = setTimeout(() => {
+                    completeTimeout = null
+                    runningUploads.delete(uploadFile.id)
+                    onComplete(uploadFile.id)
+                }, 500)
                 return
             }
 
@@ -617,6 +621,10 @@ export const createUploadManager = () => {
 
         const cleanup = () => {
             clearInterval(interval)
+            if (completeTimeout !== null) {
+                clearTimeout(completeTimeout)
+                completeTimeout = null
+            }
             runningUploads.delete(uploadFile.id)
         }
 

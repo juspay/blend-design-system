@@ -39,10 +39,10 @@ import {
 } from '../multiSelectV2.types'
 import MultiSelectV2Trigger from '../MultiSelectV2Trigger'
 import {
-    filterMenuGroups,
+    filterMultiSelectV2MenuGroups,
     getAllAvailableValues,
     getSelectAllState,
-    getValueLabelMap,
+    getMultiSelectV2ValueLabelMap,
     handleSelectAll,
 } from '../utils'
 import {
@@ -103,7 +103,7 @@ const MobileMultiSelectV2 = ({
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
     const valueLabelMap = useMemo(
-        () => getValueLabelMap(safeItems),
+        () => getMultiSelectV2ValueLabelMap(safeItems),
         [safeItems]
     )
     const generatedId = useId()
@@ -132,7 +132,10 @@ const MobileMultiSelectV2 = ({
     )
 
     const filteredItems = useMemo(() => {
-        const baseFilteredItems = filterMenuGroups(safeItems, searchText)
+        const baseFilteredItems = filterMultiSelectV2MenuGroups(
+            safeItems,
+            searchText
+        )
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
@@ -343,10 +346,8 @@ const MobileMultiSelectV2 = ({
         <Block
             data-multi-select="multi-select"
             data-status={disabled ? 'disabled' : 'enabled'}
-            width={
-                isSmallScreen ? '100%' : (triggerDimensions?.width ?? '100%')
-            }
-            maxWidth={triggerDimensions?.maxWidth ?? '100%'}
+            width={triggerDimensions?.width}
+            maxWidth={triggerDimensions?.maxWidth}
             minWidth={triggerDimensions?.minWidth}
             display="flex"
             flexDirection="column"

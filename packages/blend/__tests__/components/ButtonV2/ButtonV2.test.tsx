@@ -9,10 +9,10 @@ import {
 import { axe } from 'jest-axe'
 import { ButtonV2 } from '../../../lib/components/ButtonV2'
 import {
-    ButtonType,
-    ButtonSize,
-    ButtonSubType,
-    ButtonState,
+    ButtonV2Type,
+    ButtonV2Size,
+    ButtonV2SubType,
+    ButtonV2State,
 } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -170,10 +170,10 @@ describe('ButtonV2', () => {
 
     describe('Button Types', () => {
         it.each([
-            [ButtonType.PRIMARY, 'primary'],
-            [ButtonType.SECONDARY, 'secondary'],
-            [ButtonType.DANGER, 'danger'],
-            [ButtonType.SUCCESS, 'success'],
+            [ButtonV2Type.PRIMARY, 'primary'],
+            [ButtonV2Type.SECONDARY, 'secondary'],
+            [ButtonV2Type.DANGER, 'danger'],
+            [ButtonV2Type.SUCCESS, 'success'],
         ])(
             'renders %s button type correctly',
             async (buttonType, expectedType) => {
@@ -195,9 +195,9 @@ describe('ButtonV2', () => {
 
     describe('Button Sizes', () => {
         it.each([
-            [ButtonSize.SMALL, 'sm'],
-            [ButtonSize.MEDIUM, 'md'],
-            [ButtonSize.LARGE, 'lg'],
+            [ButtonV2Size.SMALL, 'sm'],
+            [ButtonV2Size.MEDIUM, 'md'],
+            [ButtonV2Size.LARGE, 'lg'],
         ])('renders %s size correctly', async (size, sizeLabel) => {
             const { container } = render(
                 <ButtonV2 text={`Size ${sizeLabel}`} size={size} />
@@ -214,7 +214,7 @@ describe('ButtonV2', () => {
     describe('Button SubTypes', () => {
         it('renders default subtype', async () => {
             const { container } = render(
-                <ButtonV2 text="Default" subType={ButtonSubType.DEFAULT} />
+                <ButtonV2 text="Default" subType={ButtonV2SubType.DEFAULT} />
             )
             const button = screen.getByRole('button', { name: 'Default' })
             expect(button).toBeInTheDocument()
@@ -226,7 +226,7 @@ describe('ButtonV2', () => {
             const { container } = render(
                 <ButtonV2
                     leftSlot={{ slot: <MockIcon /> }}
-                    subType={ButtonSubType.ICON_ONLY}
+                    subType={ButtonV2SubType.ICON_ONLY}
                     aria-label="Save"
                 />
             )
@@ -238,7 +238,7 @@ describe('ButtonV2', () => {
 
         it('renders inline subtype', async () => {
             const { container } = render(
-                <ButtonV2 text="Inline" subType={ButtonSubType.INLINE} />
+                <ButtonV2 text="Inline" subType={ButtonV2SubType.INLINE} />
             )
             const button = screen.getByRole('button', { name: 'Inline' })
             expect(button).toBeInTheDocument()
@@ -335,7 +335,7 @@ describe('ButtonV2', () => {
         })
 
         it('applies correct state styling', () => {
-            render(<ButtonV2 text="State Test" state={ButtonState.HOVER} />)
+            render(<ButtonV2 text="State Test" state={ButtonV2State.HOVER} />)
             const button = screen.getByRole('button')
             expect(button).toBeInTheDocument()
         })
@@ -492,10 +492,10 @@ describe('ButtonV2', () => {
 
         it('meets WCAG standards for all button types', async () => {
             const buttonTypes = [
-                ButtonType.PRIMARY,
-                ButtonType.SECONDARY,
-                ButtonType.DANGER,
-                ButtonType.SUCCESS,
+                ButtonV2Type.PRIMARY,
+                ButtonV2Type.SECONDARY,
+                ButtonV2Type.DANGER,
+                ButtonV2Type.SUCCESS,
             ]
 
             for (const buttonType of buttonTypes) {
@@ -546,7 +546,7 @@ describe('ButtonV2', () => {
             const { container } = render(
                 <ButtonV2
                     leftSlot={{ slot: <MockIcon /> }}
-                    subType={ButtonSubType.ICON_ONLY}
+                    subType={ButtonV2SubType.ICON_ONLY}
                     aria-label="Save document"
                 />
             )
@@ -670,8 +670,8 @@ describe('ButtonV2', () => {
             const renderTime = await measureRenderTime(
                 <ButtonV2
                     text="Complex Button"
-                    buttonType={ButtonType.PRIMARY}
-                    size={ButtonSize.LARGE}
+                    buttonType={ButtonV2Type.PRIMARY}
+                    size={ButtonV2Size.LARGE}
                     leftSlot={{ slot: <MockIcon /> }}
                     rightSlot={{ slot: <MockIcon /> }}
                     width="100%"

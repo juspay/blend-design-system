@@ -4,8 +4,8 @@ import {
     NameType,
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
-import { ButtonProps } from '../Button'
-import { SkeletonVariant } from '../Skeleton'
+import type { ButtonProps } from '../Button/types'
+import type { SkeletonVariant } from '../Skeleton/types'
 
 export type DataPoint = {
     primary: {
@@ -151,7 +151,7 @@ export type RenderChartProps = {
 
 export type CoreChartProps = {
     chartType?: ChartType
-    data: NewNestedDataPoint[]
+    data?: NewNestedDataPoint[] | null
     colors?: { key: string; color: string }[]
     barsize?: number
     xAxis?: XAxisConfig
@@ -175,7 +175,7 @@ export type ChartsSkeletonProps = {
 
 export type ChartsProps = {
     chartType?: ChartType
-    data: NewNestedDataPoint[]
+    data?: NewNestedDataPoint[] | null
     colors?: { key: string; color: string }[]
     slot1?: ReactNode
     slot2?: ReactNode
@@ -184,6 +184,7 @@ export type ChartsProps = {
     chartHeaderSlot: ReactNode
     stackedLegends?: boolean
     stackedLegendsData?: StackedLegendsDataPoint[]
+    showAllLegends?: boolean
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
@@ -236,6 +237,7 @@ export type ChartLegendsProps = {
     isSmallScreen?: boolean
     stackedLegendsData?: StackedLegendsDataPoint[]
     legends?: { title: string; total?: string }[]
+    showAllLegends?: boolean
 }
 
 export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {

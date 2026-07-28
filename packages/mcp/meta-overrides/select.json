@@ -1,0 +1,46 @@
+{
+    "componentDescription": "Select is the lower-level primitive dropdown component. Use SingleSelect or MultiSelect for form fields — they provide labels, error states, and accessibility. Use Select directly only when you need a minimal dropdown without the form-field wrapper, such as a toolbar control or custom-composed UI.",
+    "features": [
+        "Flexible trigger element",
+        "Grouped items support",
+        "Single and multi-select modes",
+        "Built-in search",
+        "Modal rendering option",
+        "Alignment and side positioning"
+    ],
+    "compositionPattern": "Provide a trigger element (the rendered button/control) and items array. Select handles the dropdown portal and item selection. For form contexts, prefer SingleSelect or MultiSelect which layer label/error/hint text on top.",
+    "usageExamples": [
+        {
+            "title": "Toolbar dropdown selector",
+            "description": "Minimal select for a toolbar without form-field chrome.",
+            "code": "<Select\n  trigger={\n    <Button\n      buttonType={ButtonType.SECONDARY}\n      size={ButtonSize.SMALL}\n      text={selectedView}\n      trailingIcon={<ChevronDownIcon />}\n    />\n  }\n  selected={selectedView}\n  onSelect={setSelectedView}\n  items={[\n    { items: [\n      { label: 'List view', value: 'list' },\n      { label: 'Grid view', value: 'grid' },\n      { label: 'Table view', value: 'table' },\n    ]}\n  ]}\n/>"
+        },
+        {
+            "title": "Multi-select without form wrapper",
+            "description": "Multi-select dropdown for a filter bar without label/error chrome.",
+            "code": "<Select\n  allowMultiSelect\n  trigger={<Button buttonType={ButtonType.SECONDARY} size={ButtonSize.SMALL} text={`Status (${selected.length})`} />}\n  selected={selected}\n  onSelect={setSelected}\n  items={[{ items: statusOptions }]}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "trigger": {
+            "llmContext": "React node rendered as the trigger element. Unlike SingleSelect where the trigger is built-in, Select gives you full control over the trigger appearance. Use any Button variant, a text element, or a custom component.",
+            "propDescription": "React node rendered as the dropdown trigger"
+        },
+        "items": {
+            "llmContext": "Required. Same SelectMenuGroupType[] structure as SingleSelect/MultiSelect. Each group: { groupLabel?, items: SelectMenuItemType[], showSeparator? }. Each item: { label, value, disabled?, slot1?, slot2? }.",
+            "propDescription": "Required. Grouped array of dropdown items"
+        },
+        "allowMultiSelect": {
+            "llmContext": "Set to true to enable multi-select mode where multiple items can be checked. When using multi-select, pass selected as a string[] and onSelect receives a string[].",
+            "propDescription": "Enables multi-item selection"
+        },
+        "asModal": {
+            "llmContext": "Set to true to render the dropdown as a modal overlay instead of a positioned popup. Use in scrollable containers where the dropdown might clip, or on mobile where a full-screen modal provides better UX.",
+            "propDescription": "Renders dropdown as a modal overlay"
+        },
+        "enableSearch": {
+            "llmContext": "Set to true for lists with 7+ items to allow keyboard or type-to-filter search within the dropdown.",
+            "propDescription": "Adds a search input within the dropdown"
+        }
+    }
+}

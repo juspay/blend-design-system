@@ -8,3 +8,4 @@ export type {
 } from './types'
 export { SELECT_V2_MENU_Z_INDEX } from './selectV2.constants'
 export * from './selectV2.shared.types'
+export * from './useSelectV2MenuBehavior'

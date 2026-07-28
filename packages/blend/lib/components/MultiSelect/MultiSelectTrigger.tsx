@@ -26,14 +26,17 @@ export type MultiSelectTriggerProps = {
     selectionTagType: MultiSelectSelectionTagType
     valueLabelMap: Record<string, string>
     open: boolean
-    onClick?: () => void
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
     multiSelectTokens: MultiSelectTokensType
     inline?: boolean
     error?: boolean
     disabled?: boolean
     maxTriggerWidth?: number
     minTriggerWidth?: number
-}
+} & Omit<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    'slot' | 'onClick' | 'name' | 'disabled' | 'onChange'
+>
 const MultiSelectTrigger = ({
     selectedValues,
     slot,
@@ -167,7 +170,8 @@ const MultiSelectTrigger = ({
                         paddingTop={
                             variant === MultiSelectVariant.CONTAINER &&
                             isSmallScreenWithLargeSize &&
-                            isItemSelected
+                            isItemSelected &&
+                            label
                                 ? paddingY * 1.5
                                 : 0
                         }

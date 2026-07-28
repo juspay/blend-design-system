@@ -22,6 +22,7 @@ import type { ResponsiveModalTokens } from '../components/Modal/modal.tokens'
 import type { ResponsiveBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import type { ResponsivePopoverTokens } from '../components/Popover/popover.tokens'
 import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
+import type { ResponsiveMenuV2TokensType } from '../components/MenuV2/menuV2.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
@@ -38,9 +39,17 @@ import type { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.t
 import type { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import type { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import {
+    getCardV2Tokens,
+    type ResponsiveCardV2Tokens,
+} from '../components/CardV2/cardV2.tokens'
+import {
     getTopbarTokens,
     type ResponsiveTopbarTokens,
 } from '../components/Topbar/topbar.tokens'
+import {
+    getTopbarV2Tokens,
+    type ResponsiveTopbarV2Tokens,
+} from '../components/TopbarV2/topbarV2.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import type { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
@@ -69,6 +78,7 @@ import { getModalComponentTokens } from '../components/Modal/modal.tokens'
 import { getBreadcrumbTokens } from '../components/Breadcrumb/breadcrumb.tokens'
 import { getPopoverTokens } from '../components/Popover/popover.tokens'
 import { getMenuTokens } from '../components/Menu/menu.tokens'
+import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
 import { getMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import { getSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { getTableToken } from '../components/DataTable/dataTable.tokens'
@@ -93,6 +103,10 @@ import {
     getMobileNavigationTokens,
     type ResponsiveMobileNavigationTokens,
 } from '../components/Sidebar/SidebarMobile/mobile.tokens'
+import {
+    getMobileNavigationV2Tokens,
+    type ResponsiveMobileNavigationV2Tokens,
+} from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { getUploadTokens } from '../components/Upload/upload.tokens'
 import {
     getStepperTokens,
@@ -140,6 +154,10 @@ import {
     ResponsiveTextInputV2Tokens,
 } from '../components/InputsV2/TextInputV2/TextInputV2.tokens'
 import {
+    getTextAreaV2Tokens,
+    ResponsiveTextAreaV2Tokens,
+} from '../components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+import {
     getChartV2Tokens,
     ResponsiveChartV2Tokens,
 } from '../components/ChartsV2/chartV2.tokens'
@@ -156,6 +174,11 @@ import {
     ResponsiveKeyValuePairV2Tokens,
 } from '../components/KeyValuePairV2/keyValuePairV2.tokens'
 import {
+    getStatCardV2Tokens,
+    ResponsiveStatCardV2Tokens,
+} from '../components/StatCardV2/statcardV2.tokens'
+
+import {
     getTooltipV2Tokens,
     ResponsiveTooltipV2Tokens,
 } from '../components/TooltipV2/tooltipV2.tokens'
@@ -167,11 +190,70 @@ import {
     getPopoverV2Tokens,
     ResponsivePopoverV2Tokens,
 } from '../components/PopoverV2/popoverV2.token'
+import {
+    getSidebarV2Tokens,
+    ResponsiveSidebarV2Tokens,
+} from '../components/SidebarV2/sidebarV2.tokens'
+import {
+    getTabsV2Tokens,
+    ResponsiveTabsV2Tokens,
+} from '../components/TabsV2/tabsV2.tokens'
+import {
+    getCodeEditorV2Tokens,
+    ResponsiveCodeEditorV2Tokens,
+} from '../components/CodeEditorV2/codeEditorV2.tokens'
+import {
+    getProgressBarV2Tokens,
+    ResponsiveProgressBarV2Tokens,
+} from '../components/ProgressBarV2/progressBarV2.tokens'
+import {
+    getStepperV2Tokens,
+    ResponsiveStepperV2Tokens,
+} from '../components/StepperV2/stepperV2.tokens'
 
+import {
+    getBreadcrumbV2Tokens,
+    ResponsiveBreadcrumbV2Tokens,
+} from '../components/BreadcrumbV2/breadcrumbV2.tokens'
+import {
+    ResponsiveMultiValueInputV2Tokens,
+    getMultiValueInputV2Tokens,
+} from '../components/InputsV2/MultiValueInputV2/MultiValueInputV2.tokens'
+import {
+    getNumberInputV2Tokens,
+    ResponsiveNumberInputV2Tokens,
+} from '../components/InputsV2/NumberInputV2/numberInputV2.tokens'
+import {
+    ResponsiveOTPInputV2Tokens,
+    getOTPInputV2Tokens,
+} from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+import {
+    ResponsiveBadgeTokens,
+    getBadgeTokens,
+} from '../components/Badge/badge.tokens'
+import {
+    ResponsiveSearchInputV2Tokens,
+    getSearchInputV2Tokens,
+} from '../components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+import {
+    ResponsiveChatInputV2TokensType,
+    getChatInputV2Tokens,
+} from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
+import {
+    getChatInputV2MobileTokens,
+    ChatInputV2MobileTokensType,
+} from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
+import {
+    ResponsiveUploadV2Tokens,
+    getUploadV2Tokens,
+} from '../components/InputsV2/UploadV2/UploadV2.tokens'
+import { getModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
+import type { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens.types'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
     TEXT_AREA?: ResponsiveTextAreaTokens
+    TEXT_AREA_V2?: ResponsiveTextAreaV2Tokens
     RADIO?: ResponsiveRadioTokens
     SWITCH?: ResponsiveSwitchTokens
     TEXT_INPUT?: ResponsiveTextInputTokens
@@ -189,6 +271,7 @@ export type ComponentTokenType = {
     BREADCRUMB?: ResponsiveBreadcrumbTokens
     POPOVER?: ResponsivePopoverTokens
     MENU?: ResponsiveMenuTokensType
+    MENU_V2?: ResponsiveMenuV2TokensType
     MULTI_SELECT?: ResponsiveMultiSelectTokens
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: ResponsiveTableTokens
@@ -202,16 +285,20 @@ export type ComponentTokenType = {
     STEPPER?: ResponsiveStepperTokens
     KEYVALUEPAIR?: ResponsiveKeyValuePairTokens
     CARD?: ResponsiveCardTokens
+    CARDV2?: ResponsiveCardV2Tokens
     SKELETON?: ResponsiveSkeletonTokens
     TOPBAR?: ResponsiveTopbarTokens
+    TOPBARV2?: ResponsiveTopbarV2Tokens
     AVATAR?: ResponsiveAvatarTokens
     AVATAR_GROUP?: ResponsiveAvatarGroupTokens
     SIDEBAR?: ResponsiveSidebarTokens
     DIRECTORY?: ResponsiveDirectoryTokens
     MOBILE_NAVIGATION?: ResponsiveMobileNavigationTokens
+    MOBILE_NAVIGATION_V2?: ResponsiveMobileNavigationV2Tokens
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
+    CHAT_INPUTV2?: ResponsiveChatInputV2TokensType
     TIMELINE?: ResponsiveTimelineTokens
     BUTTONV2?: ResponsiveButtonV2Tokens
     TAGV2?: ResponsiveTagV2Tokens
@@ -226,9 +313,24 @@ export type ComponentTokenType = {
     CHARTSV2?: ResponsiveChartV2Tokens
     CHECKBOXV2?: ResponsiveCheckboxV2Tokens
     KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
+    STATCARDV2?: ResponsiveStatCardV2Tokens
     TOOLTIPV2?: ResponsiveTooltipV2Tokens
     RADIOV2?: ResponsiveRadioV2Tokens
     POPOVERV2?: ResponsivePopoverV2Tokens
+    SIDEBARV2?: ResponsiveSidebarV2Tokens
+    TABSV2?: ResponsiveTabsV2Tokens
+    BREADCRUMBV2?: ResponsiveBreadcrumbV2Tokens
+    CODEEDITORV2?: ResponsiveCodeEditorV2Tokens
+    PROGRESS_BARV2?: ResponsiveProgressBarV2Tokens
+    MULTI_VALUE_INPUT_V2?: ResponsiveMultiValueInputV2Tokens
+    NUMBER_INPUT_V2?: ResponsiveNumberInputV2Tokens
+    OTP_INPUTV2?: ResponsiveOTPInputV2Tokens
+    BADGE?: ResponsiveBadgeTokens
+    SEARCH_INPUT_V2?: ResponsiveSearchInputV2Tokens
+    CHAT_INPUTV2_MOBILE?: ChatInputV2MobileTokensType
+    STEPPERV2?: ResponsiveStepperV2Tokens
+    UPLOADV2?: ResponsiveUploadV2Tokens
+    MODALV2?: ResponsiveModalV2Tokens
 }
 
 type ThemeContextType = {
@@ -261,6 +363,7 @@ const ThemeContext = createContext<ThemeContextType>({
         BREADCRUMB: getBreadcrumbTokens(FOUNDATION_THEME),
         POPOVER: getPopoverTokens(FOUNDATION_THEME),
         MENU: getMenuTokens(FOUNDATION_THEME),
+        MENU_V2: getMenuV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         MULTI_SELECT: getMultiSelectTokens(FOUNDATION_THEME),
         SINGLE_SELECT: getSingleSelectTokens(FOUNDATION_THEME),
         TABLE: getTableToken(FOUNDATION_THEME),
@@ -274,13 +377,19 @@ const ThemeContext = createContext<ThemeContextType>({
         STEPPER: getStepperTokens(FOUNDATION_THEME),
         KEYVALUEPAIR: getKeyValuePairTokens(FOUNDATION_THEME),
         CARD: getCardTokens(FOUNDATION_THEME),
+        CARDV2: getCardV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
+        TOPBARV2: getTopbarV2Tokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME),
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
         DIRECTORY: getDirectoryTokens(FOUNDATION_THEME),
         MOBILE_NAVIGATION: getMobileNavigationTokens(FOUNDATION_THEME),
+        MOBILE_NAVIGATION_V2: getMobileNavigationV2Tokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
         CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
         CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),
@@ -292,6 +401,7 @@ const ThemeContext = createContext<ThemeContextType>({
         SWITCHV2: getSwitchV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         AVATARV2: getAvatarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TEXT_INPUTV2: getTextInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TEXT_AREA_V2: getTextAreaV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CHARTSV2: getChartV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
         SINGLE_SELECT_V2: getSingleSelectV2Tokens(
@@ -301,9 +411,31 @@ const ThemeContext = createContext<ThemeContextType>({
         MULTI_SELECT_V2: getMultiSelectV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CHECKBOXV2: getCheckboxV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         KEYVALUEPAIRV2: getKeyValuePairV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        STATCARDV2: getStatCardV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TOOLTIPV2: getTooltipV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         POPOVERV2: getPopoverV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SIDEBARV2: getSidebarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        TABSV2: getTabsV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        BREADCRUMBV2: getBreadcrumbV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CODEEDITORV2: getCodeEditorV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        PROGRESS_BARV2: getProgressBarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        MULTI_VALUE_INPUT_V2: getMultiValueInputV2Tokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
+        NUMBER_INPUT_V2: getNumberInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        OTP_INPUTV2: getOTPInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        BADGE: getBadgeTokens(FOUNDATION_THEME, Theme.LIGHT),
+        SEARCH_INPUT_V2: getSearchInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHAT_INPUTV2: getChatInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHAT_INPUTV2_MOBILE: getChatInputV2MobileTokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
+        STEPPERV2: getStepperV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        UPLOADV2: getUploadV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        MODALV2: getModalV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

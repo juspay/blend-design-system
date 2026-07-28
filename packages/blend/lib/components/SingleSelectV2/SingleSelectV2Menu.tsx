@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import styled from 'styled-components'
 import { useVirtualizer } from '@tanstack/react-virtual'
@@ -21,7 +21,7 @@ import {
 } from '../Select/selectUtils'
 import {
     flattenGroups,
-    filterMenuGroups,
+    filterSingleSelectV2MenuGroups,
     getVirtualRowEstimate,
     defaultSingleSelectV2Skeleton,
     MENU_SCROLL_SELECTORS,
@@ -33,20 +33,40 @@ import SingleSelectV2List from './SingleSelectV2List'
 import SingleSelectV2VirtualList from './SingleSelectV2VirtualList'
 import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
 import { useSelectV2MenuBehavior } from '../SelectV2/useSelectV2MenuBehavior'
+import {
+    getBaseVirtualViewportHeight,
+    getAdjustedVirtualViewportHeight,
+} from '../common/virtualViewport'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
     z-index: ${SELECT_V2_MENU_Z_INDEX};
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: none;
-    scrollbar-color: transparent transparent;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 
     &[data-state='closed'] {
         pointer-events: none;
     }
 
     ${menuContentAnimations}
+`
+
+const ScrollableContent = styled(Block)`
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    scrollbar-color: transparent transparent;
+    flex-grow: 1;
+    min-height: 0;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+`
+
+const MenuFooter = styled(Block)`
+    flex-shrink: 0;
 `
 
 const SingleSelectV2Menu = ({
@@ -74,6 +94,7 @@ const SingleSelectV2Menu = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     menuId,
+    menuFooter,
 }: SingleSelectV2MenuProps) => {
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
@@ -91,6 +112,7 @@ const SingleSelectV2Menu = ({
     const searchContainerRef = useRef<HTMLDivElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
     const virtualScrollRef = useRef<HTMLDivElement>(null)
+    const [virtualReady, setVirtualReady] = useState(false)
 
     usePreventParentScroll(open, contentRef, [...MENU_SCROLL_SELECTORS])
     useScrollLock(open)
@@ -101,7 +123,9 @@ const SingleSelectV2Menu = ({
     )
 
     const filteredItems = useMemo(() => {
-        const base = searchText ? filterMenuGroups(items, searchText) : items
+        const base = searchText
+            ? filterSingleSelectV2MenuGroups(items, searchText)
+            : items
         return getFilteredItemsWithCustomValue(
             base,
             searchText,
@@ -123,9 +147,17 @@ const SingleSelectV2Menu = ({
         () => flattenGroups(filteredItems),
         [filteredItems]
     )
-    const virtualViewportHeight = maxMenuHeight
-        ? Math.max(maxMenuHeight - (enableSearch ? 0 : 0), 120)
-        : 340
+    const virtualViewportHeight = getBaseVirtualViewportHeight(maxMenuHeight)
+
+    useEffect(() => {
+        if (enableVirtualization && open && virtualScrollRef.current) {
+            setVirtualReady(true)
+            return
+        }
+        if (!open) {
+            setVirtualReady(false)
+        }
+    }, [enableVirtualization, open])
 
     const virtualizer = useVirtualizer({
         count: flattenedItems.length,
@@ -139,7 +171,8 @@ const SingleSelectV2Menu = ({
             width: 0,
             height: virtualViewportHeight,
         },
-        enabled: enableVirtualization && flattenedItems.length > 0,
+        enabled:
+            enableVirtualization && flattenedItems.length > 0 && virtualReady,
     })
 
     const { searchHeight } = useSelectV2MenuBehavior({
@@ -158,9 +191,10 @@ const SingleSelectV2Menu = ({
         endReachedThreshold,
     })
 
-    const adjustedVirtualViewportHeight = maxMenuHeight
-        ? Math.max(maxMenuHeight - (enableSearch ? searchHeight : 0), 120)
-        : 340
+    const adjustedVirtualViewportHeight = getAdjustedVirtualViewportHeight(
+        maxMenuHeight,
+        enableSearch ? searchHeight : 0
+    )
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled && newOpen) return
@@ -178,9 +212,11 @@ const SingleSelectV2Menu = ({
         items.length === 0 ? 'No items available' : 'No results found'
 
     const showVirtualList =
-        enableVirtualization && flattenedItems.length > 0 && !showEmptyState
+        enableVirtualization &&
+        flattenedItems.length > 0 &&
+        !showEmptyState &&
+        virtualReady
     const virtualItems = virtualizer.getVirtualItems()
-    const hasVirtualRows = virtualItems.length > 0
 
     return (
         <RadixMenu.Root
@@ -267,63 +303,72 @@ const SingleSelectV2Menu = ({
                                 containerRef={searchContainerRef}
                             />
 
-                            {showEmptyState ? (
-                                <Block
-                                    display="flex"
-                                    justifyContent="center"
-                                    alignItems="center"
-                                    style={{
-                                        paddingTop: menuItem.paddingTop,
-                                        paddingRight: menuItem.paddingRight,
-                                        paddingBottom: menuItem.paddingBottom,
-                                        paddingLeft: menuItem.paddingLeft,
-                                    }}
-                                >
-                                    <Text
-                                        variant="body.md"
-                                        fontSize={
-                                            menuItem.groupLabelText.fontSize
-                                        }
-                                        fontWeight={
-                                            menuItem.groupLabelText.fontWeight
-                                        }
-                                        color={
-                                            menuItem.groupLabelText.color
-                                                .default
-                                        }
-                                        textAlign="center"
+                            <ScrollableContent>
+                                {showEmptyState ? (
+                                    <Block
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        style={{
+                                            paddingTop: menuItem.paddingTop,
+                                            paddingRight: menuItem.paddingRight,
+                                            paddingBottom:
+                                                menuItem.paddingBottom,
+                                            paddingLeft: menuItem.paddingLeft,
+                                        }}
                                     >
-                                        {emptyMessage}
-                                    </Text>
-                                </Block>
-                            ) : showVirtualList && hasVirtualRows ? (
-                                <SingleSelectV2VirtualList
-                                    flattenedItems={flattenedItems}
-                                    selected={selected}
-                                    onSelect={onSelect}
-                                    singleSelectTokens={singleSelectTokens}
-                                    size={size}
-                                    variant={variant}
-                                    virtualViewportHeight={
-                                        adjustedVirtualViewportHeight
-                                    }
-                                    virtualItems={virtualItems}
-                                    totalSize={virtualizer.getTotalSize()}
-                                    measureElement={virtualizer.measureElement}
-                                    loadingComponent={loadingComponent}
-                                    hasMore={hasMore}
-                                    virtualScrollRef={virtualScrollRef}
-                                />
-                            ) : (
-                                <SingleSelectV2List
-                                    filteredItems={filteredItems}
-                                    selected={selected}
-                                    onSelect={onSelect}
-                                    singleSelectTokens={singleSelectTokens}
-                                    size={size}
-                                    variant={variant}
-                                    enableSearch={enableSearch}
-                                />
+                                        <Text
+                                            variant="body.md"
+                                            fontSize={
+                                                menuItem.groupLabelText.fontSize
+                                            }
+                                            fontWeight={
+                                                menuItem.groupLabelText
+                                                    .fontWeight
+                                            }
+                                            color={
+                                                menuItem.groupLabelText.color
+                                                    .default
+                                            }
+                                            textAlign="center"
+                                        >
+                                            {emptyMessage}
+                                        </Text>
+                                    </Block>
+                                ) : showVirtualList ? (
+                                    <SingleSelectV2VirtualList
+                                        flattenedItems={flattenedItems}
+                                        selected={selected}
+                                        onSelect={onSelect}
+                                        singleSelectTokens={singleSelectTokens}
+                                        size={size}
+                                        variant={variant}
+                                        virtualViewportHeight={
+                                            adjustedVirtualViewportHeight
+                                        }
+                                        virtualItems={virtualItems}
+                                        totalSize={virtualizer.getTotalSize()}
+                                        measureElement={
+                                            virtualizer.measureElement
+                                        }
+                                        loadingComponent={loadingComponent}
+                                        hasMore={hasMore}
+                                        virtualScrollRef={virtualScrollRef}
+                                    />
+                                ) : (
+                                    <SingleSelectV2List
+                                        filteredItems={filteredItems}
+                                        selected={selected}
+                                        onSelect={onSelect}
+                                        singleSelectTokens={singleSelectTokens}
+                                        size={size}
+                                        variant={variant}
+                                        enableSearch={enableSearch}
+                                    />
+                                )}
+                            </ScrollableContent>
+                            {menuFooter && (
+                                <MenuFooter>{menuFooter}</MenuFooter>
                             )}
                         </>
                     )}

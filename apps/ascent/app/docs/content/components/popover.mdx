@@ -1,7 +1,7 @@
 ---
 title: Popover
 description: The Popover component displays floating content that appears when triggered by a user action, providing contextual information, forms, or actions without navigating away from the current page.
-category: components
+category: Feedback
 tags:
     - popover
     - component
@@ -15,6 +15,7 @@ tags:
     - actions
 RepoFolderName: Popover
 StorybookLink: components-popover-popover--docs
+version: 1
 ---
 
 <PopoverPreview />
@@ -427,6 +428,22 @@ function MyComponent() {
                     'true uses drawer on mobile, false uses popover on all devices',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'Popover.skeleton',
+                hintText:
+                    'Optional configuration object for showing skeleton loading state. When enabled, displays skeleton placeholders in the header, body, and footer instead of actual content. Useful for showing loading UI while popover data is being fetched.',
+            },
+            {
+                content: 'PopoverSkeletonProps',
+                hintText:
+                    'Object with show, variant, and bodySkeletonProps properties',
+            },
+            {
+                content:
+                    '{ show?: boolean; variant?: SkeletonVariant; bodySkeletonProps?: { show?: boolean; width?: string; height?: string | number } }',
+            },
         ],
         [
             {

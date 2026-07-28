@@ -97,9 +97,10 @@ export type MultiSelectV2MenuProps = {
     allowCustomValue?: boolean
     customValueLabel?: string
     menuId?: string
+    menuFooter?: ReactNode
 }
 
-export type MenuRootProps = SelectV2MenuRootPropsBase & {
+export type MultiSelectV2MenuRootProps = SelectV2MenuRootPropsBase & {
     onInteractOutside?: (e: Event) => void
     onPointerDownOutside?: (e: Event) => void
 }
@@ -170,4 +171,5 @@ export type MultiSelectV2Props = Omit<
     showClearButton?: boolean
     onClearAllClick?: () => void
     multiSelectGroupPosition?: 'center' | 'left' | 'right'
+    menuFooter?: ReactNode
 }

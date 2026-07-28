@@ -1,7 +1,7 @@
 ---
 title: NumberInput
 description: The NumberInput component provides a specialized input field for numeric values with built-in increment/decrement controls, validation, and support for min/max constraints and step intervals.
-category: components
+category: Form Input
 tags:
     - numberinput
     - component
@@ -15,6 +15,7 @@ tags:
     - controls
 RepoFolderName: NumberInput
 StorybookLink: components-numberinput--docs
+version: 1
 ---
 
 <NumberInputPreview />
@@ -273,6 +274,19 @@ function MyComponent() {
                 content: '(e: React.FocusEvent<HTMLInputElement>) => void',
                 hintText:
                     'Function called with focus event when input loses focus',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'NumberInput.preventNegative',
+                hintText:
+                    'When true, prevents the input from accepting negative values. The down stepper button is disabled at 0, and negative values cannot be entered via keyboard. Useful for quantities, counts, and other non-negative numeric values. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true prevents negative values, false allows negative values',
             },
             { content: '' },
         ],

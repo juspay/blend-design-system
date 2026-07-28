@@ -1,13 +1,14 @@
 ---
 title: Split Tag
 description: The SplitTag component is a specialized tag variant that can be split into multiple sections, useful for displaying complex labels or status indicators.
-category: components
+category: Display
 tags:
     - split-tag
     - component
     - label
 RepoFolderName: SplitTag
 StorybookLink: components-tags-splittag--docs
+version: 1
 ---
 
 <SplitTagPreview />
@@ -78,30 +79,6 @@ function MyComponent() {
             {
                 content: 'TagProps: see Tag component props',
             },
-        ],
-        [
-            {
-                content: 'SplitTag.leadingSlot',
-                hintText:
-                    'Optional React element displayed before the tags (on the left side). Can be used for icons, badges, or other content that appears before the split tag. The slot maintains proper spacing and alignment with the tags. Useful for adding visual context or additional information.',
-            },
-            {
-                content: 'ReactNode',
-                hintText: 'React element displayed before the split tag',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'SplitTag.trailingSlot',
-                hintText:
-                    'Optional React element displayed after the tags (on the right side). Can be used for icons, badges, or other content that appears after the split tag. The slot maintains proper spacing and alignment with the tags. Useful for adding visual context or additional information.',
-            },
-            {
-                content: 'ReactNode',
-                hintText: 'React element displayed after the split tag',
-            },
-            { content: '' },
         ],
         [
             {

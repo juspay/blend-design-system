@@ -1,0 +1,86 @@
+'use client'
+import { useState } from 'react'
+import type { ChangelogCardProps } from '@/lib/types'
+import Link from 'next/link'
+import { cn } from '@/lib'
+import { CaretRightIcon, CaretDownIcon } from '@phosphor-icons/react/dist/ssr'
+import { Timeline } from './Timeline'
+
+export const ChangelogCard = ({
+    summary,
+    children,
+    defaultExpanded = false,
+    commitHash,
+    commitUrl,
+}: ChangelogCardProps) => {
+    const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+    const commitHashes = Array.isArray(commitHash)
+        ? commitHash
+        : commitHash
+          ? [commitHash]
+          : []
+    const commitUrls = Array.isArray(commitUrl)
+        ? commitUrl
+        : commitUrl
+          ? [commitUrl]
+          : []
+
+    return (
+        <div className="border-x border-b border-border overflow-hidden">
+            <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className={cn(
+                    'sticky top-0 z-10 w-full px-4 sm:px-6 py-3 sm:py-4 text-left bg-surface hover:bg-sidebar-item-hover transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-inset border-border',
+                    isExpanded && 'border-b'
+                )}
+            >
+                <div className="flex flex-wrap sm:items-center justify-between gap-2 sm:gap-0">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <CaretDownIcon
+                            className={cn(
+                                'w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0',
+                                isExpanded ? 'rotate-0' : '-rotate-90'
+                            )}
+                        />
+                        <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 min-w-0">
+                            {summary}
+                        </h3>
+                    </div>
+
+                    {commitHashes.length > 0 && (
+                        <div className="flex items-center gap-3 text-sm ml-6 sm:ml-0">
+                            {commitHashes.length === 1 ? (
+                                <Link
+                                    href={
+                                        commitUrls[0] ||
+                                        `https://github.com/juspay/blend-design-system/commit/${commitHashes[0]}`
+                                    }
+                                    className="flex items-center gap-1 text-blue-600 dark:text-blue-500 hover:underline font-medium text-xs sm:text-sm"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    Commit
+                                    <CaretRightIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+                                </Link>
+                            ) : (
+                                <div
+                                    className="flex items-center gap-1 text-blue-600 dark:text-blue-500 font-medium text-xs sm:text-sm cursor-default"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {commitHashes.length} commits
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </button>
+
+            {isExpanded && (
+                <div className="py-2 sm:py-4 px-4 sm:px-6">
+                    <Timeline>{children}</Timeline>
+                </div>
+            )}
+        </div>
+    )
+}

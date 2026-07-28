@@ -1,7 +1,7 @@
 ---
 title: Chat Input
 description: The ChatInput component provides a rich text input interface for chat applications with file attachments, voice recording, auto-resize functionality, top queries suggestions, and comprehensive keyboard navigation.
-category: components
+category: Form Input
 tags:
     - chat-input
     - component
@@ -12,6 +12,7 @@ tags:
     - messaging
 RepoFolderName: ChatInput
 StorybookLink: components-chatinput--docs
+version: 1
 ---
 
 <ChatInputPreview />
@@ -23,17 +24,30 @@ import { ChatInput } from '@juspay/blend-design-system'
 
 function MyComponent() {
     const [message, setMessage] = useState('')
+    const [files, setFiles] = useState<AttachedFile[]>([])
 
-    const handleSend = (message: string, files: AttachedFile[]) => {
-        console.log('Sending message:', message)
-        console.log('Attached files:', files)
+    const handleAttachFiles = (newFiles: File[]) => {
+        // Convert File objects to AttachedFile format
+        const attachedFiles = newFiles.map((file) => ({
+            id: crypto.randomUUID(),
+            name: file.name,
+            type: file.type as AttachedFile['type'],
+            size: file.size,
+        }))
+        setFiles((prev) => [...prev, ...attachedFiles])
+    }
+
+    const handleFileRemove = (fileId: string) => {
+        setFiles((prev) => prev.filter((f) => f.id !== fileId))
     }
 
     return (
         <ChatInput
             value={message}
             onChange={setMessage}
-            onSend={handleSend}
+            onAttachFiles={handleAttachFiles}
+            onFileRemove={handleFileRemove}
+            attachedFiles={files}
             placeholder="Type a message..."
         />
     )
@@ -71,19 +85,6 @@ function MyComponent() {
         ],
         [
             {
-                content: 'onSend',
-                hintText:
-                    'Optional callback function invoked when the user sends a message. Triggered by pressing Enter (or Shift+Enter for new lines) or clicking the send button. Receives the message string and array of attached files as parameters.',
-            },
-            {
-                content: '(message: string, files: AttachedFile[]) => void',
-                hintText:
-                    'Function called with message text and attached files when sending',
-            },
-            { content: '' },
-        ],
-        [
-            {
                 content: 'onAttachFiles',
                 hintText:
                     'Optional callback function invoked when files are selected via the attach button. Receives an array of native File objects. Use this to handle file uploads, validation, or conversion to AttachedFile format for the attachedFiles prop.',
@@ -91,19 +92,6 @@ function MyComponent() {
             {
                 content: '(files: File[]) => void',
                 hintText: 'Function called with array of selected files',
-            },
-            { content: '' },
-        ],
-        [
-            {
-                content: 'onVoiceRecord',
-                hintText:
-                    'Optional callback function invoked when the voice recording button is clicked. Use this to trigger voice recording functionality, open recording dialogs, or handle voice input features.',
-            },
-            {
-                content: '() => void',
-                hintText:
-                    'Function called when voice recording button is clicked',
             },
             { content: '' },
         ],
@@ -249,27 +237,27 @@ function MyComponent() {
         ],
         [
             {
-                content: 'voiceButtonIcon',
+                content: 'slot1',
                 hintText:
-                    'Optional custom React element (typically an icon) to replace the default voice recording button icon. Allows branding customization or using different icon libraries. If not provided, uses default AudioLines icon.',
+                    'Optional React element displayed in the actions toolbar next to the attach button. Useful for adding custom action buttons like send, emoji picker, or other controls. Rendered inside the bottom actions area.',
             },
             {
                 content: 'ReactNode',
                 hintText:
-                    'Any React element (icon, image, etc.) for the voice button',
+                    'Any React element (button, icon, etc.) to display in the actions toolbar',
             },
             { content: '' },
         ],
         [
             {
-                content: 'sendButtonIcon',
+                content: 'slot2',
                 hintText:
-                    'Optional custom React element (typically an icon) to replace the default send button icon. Allows branding customization or using different icon libraries. If not provided, uses default send icon.',
+                    'Optional React element displayed above the textarea when there are attached files or when provided. Useful for displaying file upload progress, additional inputs, or custom content that should appear before the message input area.',
             },
             {
                 content: 'ReactNode',
                 hintText:
-                    'Any React element (icon, image, etc.) for the send button',
+                    'Any React element to display above the textarea input',
             },
             { content: '' },
         ],

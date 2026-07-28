@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { SingleSelectProps } from '../SingleSelect'
+import type { SingleSelectProps } from '../SingleSelect/types'
 import { AxisType } from '../Charts/types'
-import { SkeletonVariant } from '../Skeleton'
+import type { SkeletonVariant } from '../Skeleton/types'
 
 export type StatCardSkeletonProps = {
     variant: SkeletonVariant

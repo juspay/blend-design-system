@@ -1,9 +1,14 @@
-import { ColumnDefinition, RowActionsConfig } from '../types'
+import {
+    ColumnDefinition,
+    RowActionsConfig,
+    RowAnimationConfig,
+} from '../types'
 import { MobileDataTableConfig } from '../hooks/useMobileDataTable'
 import type { SkeletonVariant } from '../../Skeleton/skeleton.tokens'
 
 export type TableBodyProps<T extends Record<string, unknown>> = {
     currentData: T[]
+    dataVersion?: number | string
     visibleColumns: ColumnDefinition<T>[]
     idField: string
     tableTitle?: string
@@ -12,11 +17,18 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     editValues: Record<string, T>
     expandedRows: Record<string, boolean>
     enableInlineEdit?: boolean
+    showActionsColumn?: boolean
     enableColumnManager?: boolean
     enableRowExpansion?: boolean
     enableRowSelection?: boolean
+    rowSelectionConfig?: {
+        isDisabled?: (row: T, index: number) => boolean
+        disabledText?: (row: T, index: number) => string
+    }
     rowActions?: RowActionsConfig<T>
     columnFreeze?: number
+    /** Freeze last N columns on the right side (sticky right). */
+    columnFreezeRight?: number
     /** Measured pixel widths of frozen columns (from header ResizeObserver). Used for sticky left offset. */
     measuredFrozenWidths?: number[]
     mobileConfig?: MobileDataTableConfig
@@ -29,7 +41,7 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
         toggleExpansion: () => void
     }) => React.ReactNode
     isRowExpandable?: (row: T, index: number) => boolean
-    onRowSelect: (rowId: unknown) => void
+    onRowSelect: (rowId: unknown, rowIndex?: number) => void
     onEditRow: (rowId: unknown) => void
     onSaveRow: (rowId: unknown) => void
     onCancelEdit: (rowId: unknown) => void
@@ -42,10 +54,13 @@ export type TableBodyProps<T extends Record<string, unknown>> = {
     ) => React.CSSProperties
     getRowStyle?: (row: T, index: number) => React.CSSProperties
     getDisplayValue?: (value: unknown, column: ColumnDefinition<T>) => unknown
+    dateLabel?: string
     isLoading?: boolean
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     isRowLoading?: (row: T, index: number) => boolean
     focusedCell?: { rowIndex: number; colIndex: number } | null
     onCellFocus?: (rowIndex: number, colIndex: number) => void
+    enableRowAnimation?: boolean
+    rowAnimationConfig?: RowAnimationConfig
 }

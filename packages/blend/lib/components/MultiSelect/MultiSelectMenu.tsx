@@ -24,7 +24,11 @@ import {
 } from '../Select/selectUtils'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll, useScrollLock } from '../../hooks'
+import {
+    usePreventParentScroll,
+    useScrollLock,
+    useShadowRoot,
+} from '../../hooks'
 import Button from '../Button/Button'
 import { ButtonType, ButtonSize } from '../Button/types'
 import VirtualList from '../VirtualList/VirtualList'
@@ -79,6 +83,10 @@ const FixedActionButtons = styled(Block)(() => ({
     justifyContent: 'flex-end',
     margin: '0',
     backgroundColor: FOUNDATION_THEME.colors.gray[0],
+    flexShrink: 0,
+}))
+
+const MenuFooter = styled(Block)(() => ({
     flexShrink: 0,
 }))
 
@@ -167,9 +175,11 @@ const MultiSelectMenu = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     menuId,
+    menuFooter,
 }: MultiSelectMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
+    const { target: portalContainer } = useShadowRoot()
 
     const [searchText, setSearchText] = useState('')
     const searchInputRef = useRef<HTMLInputElement>(null)
@@ -371,7 +381,7 @@ const MultiSelectMenu = ({
                     {trigger}
                 </RadixMenu.Trigger>
             )}
-            <RadixMenu.Portal>
+            <RadixMenu.Portal container={portalContainer ?? undefined}>
                 <Content
                     id={menuId}
                     data-dropdown="dropdown"
@@ -887,6 +897,9 @@ const MultiSelectMenu = ({
                                         )}
                                     </FixedActionButtons>
                                 )}
+                            {menuFooter && (
+                                <MenuFooter>{menuFooter}</MenuFooter>
+                            )}
                         </>
                     )}
                 </Content>

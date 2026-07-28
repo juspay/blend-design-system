@@ -19,7 +19,7 @@ import {
     MultiSelectV2Variant,
 } from './multiSelectV2.types'
 import {
-    filterMenuGroups,
+    filterMultiSelectV2MenuGroups,
     flattenMenuGroups,
     getAllAvailableValues,
 } from './utils'
@@ -30,6 +30,7 @@ import MultiSelectV2MenuItems from './MultiSelectV2MenuItems'
 import MultiSelectV2MenuActions from './MultiSelectV2MenuActions'
 import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
 import { useSelectV2MenuBehavior } from '../SelectV2/useSelectV2MenuBehavior'
+import { VIRTUAL_MIN_VIEWPORT } from '../common/virtualViewport'
 
 const JUST_OPENED_DEBOUNCE_MS = 150
 const DEFAULT_MIN_MENU_WIDTH = 250
@@ -68,6 +69,10 @@ const ScrollableContent = styled(Block)(() => ({
     },
 }))
 
+const MenuFooter = styled(Block)`
+    flex-shrink: 0;
+`
+
 const MultiSelectV2Menu = ({
     items,
     selected,
@@ -103,6 +108,7 @@ const MultiSelectV2Menu = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     menuId,
+    menuFooter,
 }: MultiSelectV2MenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
@@ -163,7 +169,10 @@ const MultiSelectV2Menu = ({
     useScrollLock(isOpen)
 
     const filteredItems = useMemo(() => {
-        const baseFilteredItems = filterMenuGroups(items, searchText)
+        const baseFilteredItems = filterMultiSelectV2MenuGroups(
+            items,
+            searchText
+        )
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
@@ -427,11 +436,12 @@ const MultiSelectV2Menu = ({
                                         onSelect={onSelect}
                                         maxSelections={maxSelections}
                                         tokens={multiSelectTokens}
-                                        height={
+                                        height={Math.max(
                                             (maxMenuHeight ??
                                                 DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK) -
-                                            headerFooterHeight
-                                        }
+                                                headerFooterHeight,
+                                            VIRTUAL_MIN_VIEWPORT
+                                        )}
                                         itemHeight={virtualListItemHeight}
                                         overscan={virtualListOverscan}
                                         onEndReached={onEndReached}
@@ -461,6 +471,9 @@ const MultiSelectV2Menu = ({
                                     selected={selected}
                                     onClose={() => handleOpenChange(false)}
                                 />
+                            )}
+                            {menuFooter && (
+                                <MenuFooter>{menuFooter}</MenuFooter>
                             )}
                         </>
                     )}

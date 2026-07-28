@@ -55,8 +55,11 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
             }
             role="group"
             aria-label="Chart header"
+            width="100%"
         >
-            <Block data-element="chart-header-slot">{chartHeaderSlot}</Block>
+            <Block data-element="chart-header-slot" width="100%" minWidth="0">
+                {chartHeaderSlot}
+            </Block>
             <Block
                 display="flex"
                 alignItems="center"

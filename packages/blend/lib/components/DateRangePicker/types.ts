@@ -131,6 +131,12 @@ export type TriggerConfig = {
     }) => ReactNode
 }
 
+export type DateRangePickerPopoverConfig = {
+    side?: 'top' | 'right' | 'bottom' | 'left'
+    align?: 'start' | 'center' | 'end'
+    sideOffset?: number
+}
+
 /**
  * Date validation result
  */
@@ -188,11 +194,11 @@ export type CustomPresetDefinition = {
 /**
  * Presets configuration - can be predefined presets, custom configs, or custom definitions
  */
-export type PresetsConfig =
-    | DateRangePreset[]
-    | CustomPresetConfig[]
-    | CustomPresetDefinition[]
-    | (DateRangePreset | CustomPresetConfig | CustomPresetDefinition)[]
+export type PresetsConfig = (
+    | DateRangePreset
+    | CustomPresetConfig
+    | CustomPresetDefinition
+)[]
 
 // =============================================================================
 // COMPONENT PROPS
@@ -201,9 +207,13 @@ export type PresetsConfig =
 /**
  * Function type for custom date disabling logic
  * @param date The date to check
+ * @param currentRange The current in-progress selected range (if any)
  * @returns true if the date should be disabled, false otherwise
  */
-export type CustomDateDisableFunction = (date: Date) => boolean
+export type CustomDateDisableFunction = (
+    date: Date,
+    currentRange?: DateRange
+) => boolean
 
 /**
  * Function type for custom range calculation
@@ -303,6 +313,7 @@ export type DateRangePickerProps = {
     onChange?: (range: DateRange) => void
     onPresetSelection?: (data: PresetSelectionData) => void
     showDateTimePicker?: boolean
+    showDateInput?: boolean
     showPresets?: boolean
     customPresets?: PresetsConfig
     placeholder?: string
@@ -310,6 +321,7 @@ export type DateRangePickerProps = {
     icon?: ReactNode
     minDate?: Date
     maxDate?: Date
+    maxRangeDays?: number
     dateFormat?: string
     allowSingleDateSelection?: boolean
     isSingleDatePicker?: boolean
@@ -325,6 +337,7 @@ export type DateRangePickerProps = {
     size?: DateRangePickerSize
     formatConfig?: DateFormatConfig
     triggerConfig?: TriggerConfig
+    popoverConfig?: DateRangePickerPopoverConfig
     maxMenuHeight?: number
     showPreset?: boolean
     /**

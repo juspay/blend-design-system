@@ -13,6 +13,7 @@ import { arrangeTenants } from './utils'
 import type { TenantItem } from './types'
 import { Tooltip } from '../Tooltip'
 import { TooltipSide, TooltipSize } from '../Tooltip/types'
+import { Badge, BadgeColor, BadgeSize } from '../Badge'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SidebarTokenType } from './sidebar.tokens'
 
@@ -125,6 +126,56 @@ const TenantItem: React.FC<{
 }> = ({ tenant, isSelected, onSelect }) => {
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
+    const tenantButton = (
+        <PrimitiveButton
+            data-element="sidebar-section"
+            data-id={tenant.label}
+            data-status={isSelected ? 'selected' : 'not selected'}
+            type="button"
+            onClick={onSelect}
+            backgroundColor={tokens.leftPanel.item.backgroundColor.default}
+            width={tokens.leftPanel.item.width}
+            height={tokens.leftPanel.item.width}
+            borderRadius={tokens.leftPanel.item.borderRadius}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            cursor="pointer"
+            border={
+                isSelected
+                    ? tokens.leftPanel.item.border.active
+                    : tokens.leftPanel.item.border.default
+            }
+            aria-label={`Select tenant: ${tenant.label}`}
+            aria-pressed={isSelected}
+            style={{
+                transition: 'all 75ms ease',
+            }}
+            _hover={{
+                backgroundColor: tokens.leftPanel.item.backgroundColor.hover,
+                outline: isSelected
+                    ? tokens.leftPanel.item.border.active
+                    : tokens.leftPanel.item.border.hover,
+            }}
+        >
+            <span aria-hidden="true">{tenant.icon}</span>
+        </PrimitiveButton>
+    )
+
+    const trigger = tenant.badge ? (
+        <Badge
+            text={tenant.badge.text.slice(0, 2)}
+            size={BadgeSize.SM}
+            color={BadgeColor.NEUTRAL}
+            position={'bottom-right'}
+            isCircular
+        >
+            {tenantButton}
+        </Badge>
+    ) : (
+        tenantButton
+    )
+
     return (
         <Tooltip
             content={tenant.label}
@@ -132,40 +183,7 @@ const TenantItem: React.FC<{
             delayDuration={500}
             size={TooltipSize.SMALL}
         >
-            <PrimitiveButton
-                data-element="sidebar-section"
-                data-id={tenant.label}
-                data-status={isSelected ? 'selected' : 'not selected'}
-                type="button"
-                onClick={onSelect}
-                backgroundColor={tokens.leftPanel.item.backgroundColor.default}
-                width={tokens.leftPanel.item.width}
-                height={tokens.leftPanel.item.width}
-                borderRadius={tokens.leftPanel.item.borderRadius}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                cursor="pointer"
-                border={
-                    isSelected
-                        ? tokens.leftPanel.item.border.active
-                        : tokens.leftPanel.item.border.default
-                }
-                aria-label={`Select tenant: ${tenant.label}`}
-                aria-pressed={isSelected}
-                style={{
-                    transition: 'all 75ms ease',
-                }}
-                _hover={{
-                    backgroundColor:
-                        tokens.leftPanel.item.backgroundColor.hover,
-                    outline: isSelected
-                        ? tokens.leftPanel.item.border.active
-                        : tokens.leftPanel.item.border.hover,
-                }}
-            >
-                <span aria-hidden="true">{tenant.icon}</span>
-            </PrimitiveButton>
+            {trigger}
         </Tooltip>
     )
 }

@@ -1,28 +1,29 @@
 import { type ReactNode } from 'react'
-import type { DirectoryData, NavbarItem } from '../Directory/types'
-import type { MerchantInfo } from '../Topbar/types'
+import type {
+    DirectoryData,
+    DirectoryProps,
+    NavbarItem,
+} from '../Directory/types'
+import type {
+    MerchantInfo,
+    LeftPanelInfo,
+    TenantBadge,
+} from '../shared/layoutTypes'
 
-export type LeftPanelItem = {
-    label: string
-    icon: ReactNode
-    value?: string
-    showInPanel?: boolean
-}
-
-export type LeftPanelInfo = {
-    items: LeftPanelItem[]
-    selected: string
-    onSelect: (value: string) => void
-    tenantSlot1?: ReactNode
-    tenantSlot2?: ReactNode
-    tenantFooter?: ReactNode
-}
+// Re-exported for backward compatibility: these types were previously declared
+// here and are part of the public API via `Sidebar/index.ts` (`export * from './types'`).
+export type {
+    LeftPanelInfo,
+    LeftPanelItem,
+    TenantBadge,
+} from '../shared/layoutTypes'
 
 export type TenantItem = {
     label: string
     value?: string
     icon: ReactNode
     showInPanel?: boolean
+    badge?: TenantBadge
 }
 
 export type SidebarMerchantInfo = {
@@ -39,7 +40,7 @@ export type SidebarStateChangeType = 'collapsed' | 'expanded' | 'intermediate'
 export type SidebarProps = {
     showLeftPanel?: boolean
     children: ReactNode
-    data: DirectoryData[]
+    data: DirectoryData[] | null
     leftPanel?: LeftPanelInfo
     topbar: ReactNode
     footer?: ReactNode
@@ -68,6 +69,14 @@ export type SidebarProps = {
     onActiveItemChange?: (item: string | null) => void
     defaultActiveItem?: string | null
     onHoveringChange?: (isHovering: boolean) => void
+    showHierarchyLines?: DirectoryProps['showHierarchyLines']
+    hierarchyLineBorderRadius?: DirectoryProps['hierarchyLineBorderRadius']
+    expandedItems?: DirectoryProps['expandedItems']
+    defaultExpandedItems?: DirectoryProps['defaultExpandedItems']
+    onExpandedItemsChange?: DirectoryProps['onExpandedItemsChange']
+    onItemExpand?: DirectoryProps['onItemExpand']
+    enableVirtualization?: DirectoryProps['enableVirtualization']
+    virtualization?: DirectoryProps['virtualization']
 }
 
 export type MobileNavigationItem = NavbarItem & {

@@ -11,7 +11,12 @@ import { TableTokenType } from '../dataTable.tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { ColumnType, DropdownColumnProps, DateColumnProps } from '../types'
+import {
+    ColumnType,
+    DropdownColumnProps,
+    DateColumnProps,
+    DateFormat,
+} from '../types'
 import SingleSelect from '../../SingleSelect/SingleSelect'
 import { SelectMenuVariant } from '../../Select'
 import { SelectMenuGroupType } from '../../Select/types'
@@ -19,6 +24,7 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import Tooltip from '../../Tooltip/Tooltip'
 import { TooltipSize } from '../../Tooltip/types'
+import { parseDateLike, formatDateString } from '../utils'
 
 const StyledTableCell = styled.td<{
     width?: React.CSSProperties
@@ -59,13 +65,14 @@ const isEmptyValue = (value: unknown, columnType?: ColumnType): boolean => {
     }
 
     if (columnType === ColumnType.DATE) {
-        const dateData = value as DateColumnProps
+        const dateValue =
+            typeof value === 'object' && value !== null && 'date' in value
+                ? (value as DateColumnProps).date
+                : value
         if (
-            !dateData ||
-            !dateData.date ||
-            (typeof dateData.date === 'string' &&
-                dateData.date.trim() === '') ||
-            isNaN(new Date(dateData.date).getTime())
+            !dateValue ||
+            (typeof dateValue === 'string' && dateValue.trim() === '') ||
+            !parseDateLike(dateValue)
         ) {
             return true
         }
@@ -77,9 +84,13 @@ const isEmptyValue = (value: unknown, columnType?: ColumnType): boolean => {
 const TruncatedTextWithTooltip = ({
     text,
     style = {},
+    suffix,
+    tableToken,
 }: {
     text: string
     style?: React.CSSProperties
+    suffix?: string
+    tableToken?: TableTokenType
 }) => {
     const textRef = useRef<HTMLSpanElement>(null)
     const [isTruncated, setIsTruncated] = useState(false)
@@ -123,16 +134,32 @@ const TruncatedTextWithTooltip = ({
         <span
             ref={textRef}
             style={{
-                display: 'block',
+                display: 'inline-flex',
+                alignItems: 'baseline',
                 width: '100%',
                 minWidth: 0,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
+                gap: '3px',
                 ...style,
             }}
         >
             {text}
+            {suffix != null && (
+                <span
+                    style={{
+                        fontSize:
+                            tableToken?.dataTable.table.body.cell.dateLabel
+                                .fontSize,
+                        color: tableToken?.dataTable.table.body.cell.dateLabel
+                            .color,
+                        whiteSpace: 'nowrap',
+                    }}
+                >
+                    {suffix}
+                </span>
+            )}
         </span>
     )
 
@@ -175,6 +202,7 @@ const TableCell = forwardRef<
             hasCustomBackground,
             onFieldChange,
             getDisplayValue,
+            dateLabel,
             'data-row-index': dataRowIndex,
             'data-col-index': dataColIndex,
             tabIndex: cellTabIndex,
@@ -226,17 +254,31 @@ const TableCell = forwardRef<
                 attrs['data-numeric'] = String(valueToCheck || 0)
             } else if (column.type === ColumnType.DATE) {
                 attrs['data-type'] = 'date'
-                const dateData = valueToCheck as DateColumnProps
-                if (dateData && dateData.date) {
-                    const date = new Date(dateData.date)
-                    if (!isNaN(date.getTime())) {
-                        attrs['data-date'] = date.toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: '2-digit',
-                            hour: dateData.showTime ? '2-digit' : undefined,
-                            minute: dateData.showTime ? '2-digit' : undefined,
-                        })
+                const dateValue =
+                    typeof valueToCheck === 'object' &&
+                    valueToCheck !== null &&
+                    'date' in valueToCheck
+                        ? (valueToCheck as DateColumnProps).date
+                        : valueToCheck
+                const showTime =
+                    typeof valueToCheck === 'object' &&
+                    valueToCheck !== null &&
+                    'showTime' in valueToCheck
+                        ? Boolean((valueToCheck as DateColumnProps).showTime)
+                        : false
+                if (dateValue) {
+                    const parsedDate = parseDateLike(dateValue)
+                    if (parsedDate) {
+                        attrs['data-date'] = parsedDate.toLocaleDateString(
+                            'en-US',
+                            {
+                                year: 'numeric',
+                                month: 'short',
+                                day: '2-digit',
+                                hour: showTime ? '2-digit' : undefined,
+                                minute: showTime ? '2-digit' : undefined,
+                            }
+                        )
                     }
                 }
             } else if (
@@ -412,7 +454,15 @@ const TableCell = forwardRef<
             }
 
             if (column.type === ColumnType.DATE && !isEditing) {
-                const dateData = displayValue as DateColumnProps
+                const dateData =
+                    typeof displayValue === 'object' &&
+                    displayValue !== null &&
+                    'date' in displayValue
+                        ? (displayValue as DateColumnProps)
+                        : ({
+                              date: displayValue as Date | string,
+                              showTime: false,
+                          } as DateColumnProps)
 
                 if (isEmptyValue(dateData, ColumnType.DATE)) {
                     return (
@@ -428,26 +478,25 @@ const TableCell = forwardRef<
                     )
                 }
 
-                const date = new Date(dateData.date)
+                const date = parseDateLike(dateData.date)
                 const showTime = dateData.showTime || false
+
+                // Format string precedence: cell-level `DateColumnProps.format`
+                // beats column-level `dateFormat`. Falls back to a sensible
+                // default based on whether time should be shown.
+                const formatStr =
+                    dateData.format ||
+                    (column as { dateFormat?: DateFormat }).dateFormat ||
+                    (showTime ? 'DD MMM YYYY, hh:mm A' : 'DD MMM YYYY')
+
+                const dateLabelStr =
+                    dateData.dateLabel ||
+                    (column as { dateLabel?: string }).dateLabel ||
+                    dateLabel
 
                 const formatDate = (date: Date): string => {
                     if (isNaN(date.getTime())) return '-'
-
-                    const options: Intl.DateTimeFormatOptions = {
-                        year: 'numeric',
-                        month: 'short',
-                        day: '2-digit',
-                    }
-
-                    if (showTime) {
-                        options.hour = '2-digit'
-                        options.minute = '2-digit'
-                    }
-
-                    return new Intl.DateTimeFormat('en-US', options).format(
-                        date
-                    )
+                    return formatDateString(date, formatStr)
                 }
 
                 return (
@@ -459,12 +508,12 @@ const TableCell = forwardRef<
                         }}
                     >
                         <TruncatedTextWithTooltip
-                            text={formatDate(date)}
+                            text={date ? formatDate(date) : '-'}
                             style={{
-                                fontSize:
-                                    FOUNDATION_THEME.font.size.body.sm.fontSize,
                                 color: FOUNDATION_THEME.colors.gray[700],
                             }}
+                            suffix={dateLabelStr}
+                            tableToken={tableToken}
                         />
                     </Block>
                 )
@@ -527,8 +576,8 @@ const TableCell = forwardRef<
                     column.type === ColumnType.REACT_ELEMENT ||
                     (isEditing && column.isEditable)
                 }
-                $isFirstRow={isFirstRow}
                 $customBackgroundColor={customBackgroundColor}
+                $isFirstRow={isFirstRow}
                 $hasCustomBackground={hasCustomBackground}
                 data-row-index={dataRowIndex}
                 data-col-index={dataColIndex}

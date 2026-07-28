@@ -10,16 +10,40 @@ import {
     type ThemeType,
 } from '@juspay/blend-design-system'
 
-const meta: Meta = {
+const meta: Meta<typeof ThemeProvider> = {
     title: 'Foundations/Theme Provider',
+    component: ThemeProvider,
     parameters: {
+        docsSubtitle:
+            'Configure and customize themes for Blend Design System components.',
         docs: {
             description: {
-                component:
-                    'Configure and customize themes for Blend Design System components',
+                component: `
+## Features
+
+- Apply consistent theming across all components
+- Customize foundation tokens (colors, typography, spacing)
+- Override component-specific tokens
+- Support for light/dark mode
+- Full TypeScript support
+
+## Usage
+
+\`\`\`tsx
+import { ThemeProvider } from '@juspay/blend-design-system'
+
+function App() {
+  return (
+    <ThemeProvider>
+      {/* Your application components */}
+    </ThemeProvider>
+  )
+}
+\`\`\``,
             },
         },
     },
+    tags: ['autodocs'],
 }
 
 export default meta
@@ -27,25 +51,19 @@ type Story = StoryObj<typeof meta>
 
 export const BasicSetup: Story = {
     render: () => (
-        <div style={{ fontFamily: 'monospace', lineHeight: '1.6' }}>
-            <h2>Basic Theme Provider Setup</h2>
-            <p>
-                Wrap your application with ThemeProvider to enable theme
-                support:
-            </p>
+        <div className="leading-relaxed flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+                <h2 className="text-2xl font-medium">
+                    Basic Theme Provider Setup
+                </h2>
+                <p className="font-manrope text-gray-500 tracking-wide">
+                    Wrap your application with ThemeProvider to enable theme
+                    support:
+                </p>
+            </div>
 
-            <div
-                style={{
-                    backgroundColor: '#1e1e1e',
-                    color: '#d4d4d4',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    marginBottom: '24px',
-                }}
-            >
-                <pre
-                    style={{ margin: 0, whiteSpace: 'pre-wrap' }}
-                >{`import { ThemeProvider } from '@juspay/blend-design-system'
+            <div className="border border-gray-200 p-5 rounded-lg mb-6 text-blue-500 text-sm">
+                <pre className="m-0 whitespace-pre-wrap">{`import { ThemeProvider } from '@juspay/blend-design-system'
 
 function App() {
   return (
@@ -57,20 +75,13 @@ function App() {
 }`}</pre>
             </div>
 
-            <h3>TypeScript Support</h3>
-            <p>The ThemeProvider accepts the following props:</p>
+            <h3 className="text-2xl font-medium">TypeScript Support</h3>
+            <p className="font-manrope text-gray-500 tracking-wide">
+                The ThemeProvider accepts the following props:
+            </p>
 
-            <div
-                style={{
-                    backgroundColor: '#1e1e1e',
-                    color: '#d4d4d4',
-                    padding: '20px',
-                    borderRadius: '8px',
-                }}
-            >
-                <pre
-                    style={{ margin: 0, whiteSpace: 'pre-wrap' }}
-                >{`type ThemeProviderProps = {
+            <div className="border border-gray-200 p-5 rounded-lg mb-6 text-purple-500 text-sm">
+                <pre className="m-0 whitespace-pre-wrap">{`type ThemeProviderProps = {
   foundationTokens?: ThemeType      // Foundation design tokens
   componentTokens?: ComponentTokenType  // Component-specific tokens
   breakpoints?: BreakpointType      // Responsive breakpoints
@@ -83,25 +94,19 @@ function App() {
 
 export const CustomFoundationTokens: Story = {
     render: () => (
-        <div style={{ fontFamily: 'monospace', lineHeight: '1.6' }}>
-            <h2>Customizing Foundation Tokens</h2>
-            <p>
-                Override foundation tokens like colors, typography, spacing, and
-                shadows:
-            </p>
+        <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+                <h2 className="text-2xl font-medium">
+                    Customizing Foundation Tokens
+                </h2>
+                <p className="font-manrope text-gray-500 tracking-wide">
+                    Override foundation tokens like colors, typography, spacing,
+                    and shadows:
+                </p>
+            </div>
 
-            <div
-                style={{
-                    backgroundColor: '#1e1e1e',
-                    color: '#d4d4d4',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    marginBottom: '24px',
-                }}
-            >
-                <pre
-                    style={{ margin: 0, whiteSpace: 'pre-wrap' }}
-                >{`import { ThemeProvider, FOUNDATION_THEME } from '@juspay/blend-design-system'
+            <div className="border border-gray-200 p-5 rounded-lg mb-6 text-purple-500 text-sm">
+                <pre className="m-0 whitespace-pre-wrap">{`import { ThemeProvider, FOUNDATION_THEME } from '@juspay/blend-design-system'
 
 const customFoundationTokens = {
   ...FOUNDATION_THEME,
@@ -135,57 +140,47 @@ function App() {
 }`}</pre>
             </div>
 
-            <h3>Available Foundation Token Categories</h3>
-            <ul>
-                <li>
-                    <strong>colors</strong> - Primary, secondary, success,
-                    warning, danger, neutral colors
-                </li>
-                <li>
-                    <strong>font</strong> - Font families, sizes, weights, line
-                    heights, letter spacing
-                </li>
-                <li>
-                    <strong>unit</strong> - Spacing scale (2, 4, 8, 12, 16, 20,
-                    24, 32, 40, 48, 56, 64, 80, 96)
-                </li>
-                <li>
-                    <strong>shadows</strong> - Box shadow definitions for
-                    elevation
-                </li>
-                <li>
-                    <strong>border</strong> - Border radius and width scales
-                </li>
-                <li>
-                    <strong>opacity</strong> - Opacity scale for transparency
-                    effects
-                </li>
-            </ul>
+            <div className="flex flex-col gap-2">
+                <h3 className="text-2xl font-medium ">
+                    Available Foundation Token Categories
+                </h3>
+                <ul className="font-manrope tracking-wide text-gray-500 leading-7">
+                    <li>
+                        colors - Primary, secondary, success, warning, danger,
+                        neutral colors
+                    </li>
+                    <li>
+                        font - Font families, sizes, weights, line heights,
+                        letter spacing
+                    </li>
+                    <li>
+                        unit - Spacing scale (2, 4, 8, 12, 16, 20, 24, 32, 40,
+                        48, 56, 64, 80, 96)
+                    </li>
+                    <li>shadows - Box shadow definitions for elevation</li>
+                    <li>border - Border radius and width scales</li>
+                    <li>opacity - Opacity scale for transparency effects</li>
+                </ul>
+            </div>
         </div>
     ),
 }
 
 export const CustomComponentTokens: Story = {
     render: () => (
-        <div style={{ fontFamily: 'monospace', lineHeight: '1.6' }}>
-            <h2>Customizing Component Tokens</h2>
-            <p>
-                Override specific component styling while maintaining design
-                system consistency:
-            </p>
+        <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+                <h2 className="text-2xl font-medium">
+                    Customizing Component Tokens
+                </h2>
+                <p className="font-manrope text-gray-500 tracking-wide">
+                    Override specific component styling while maintaining design
+                    system consistency:
+                </p>
+            </div>
 
-            <div
-                style={{
-                    backgroundColor: '#1e1e1e',
-                    color: '#d4d4d4',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    marginBottom: '24px',
-                }}
-            >
-                <pre
-                    style={{ margin: 0, whiteSpace: 'pre-wrap' }}
-                >{`import { ThemeProvider } from '@juspay/blend-design-system'
+            <div className="border border-gray-200 p-5 rounded-lg mb-6 text-blue-500 text-sm">
+                <pre className="m-0 whitespace-pre-wrap">{`import { ThemeProvider } from '@juspay/blend-design-system'
 
 const customComponentTokens = {
   BUTTON: {
@@ -234,16 +229,15 @@ function App() {
 }`}</pre>
             </div>
 
-            <h3>Available Component Tokens</h3>
-            <p>You can customize tokens for these components:</p>
-            <div
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                    gap: '8px',
-                    marginTop: '16px',
-                }}
-            >
+            <div className="flex flex-col gap-2">
+                <h3 className="text-2xl font-medium">
+                    Available Component Tokens
+                </h3>
+                <p className="font-manrope text-gray-500 tracking-wide">
+                    You can customize tokens for these components:
+                </p>
+            </div>
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-2 mt-4">
                 {[
                     'BUTTON',
                     'ALERT',
@@ -279,15 +273,11 @@ function App() {
                     'AVATAR',
                     'SIDEBAR',
                     'TOOLTIPV2',
+                    'PROGRESS_BARV2',
                 ].map((component) => (
                     <code
                         key={component}
-                        style={{
-                            backgroundColor: '#f3f4f6',
-                            padding: '4px 8px',
-                            borderRadius: '4px',
-                            fontSize: '12px',
-                        }}
+                        className="bg-gray-100 px-2 py-1 rounded text-xs"
                     >
                         {component}
                     </code>
@@ -299,22 +289,18 @@ function App() {
 
 export const UsingThemeHook: Story = {
     render: () => (
-        <div style={{ fontFamily: 'monospace', lineHeight: '1.6' }}>
-            <h2>Using the useTheme Hook</h2>
-            <p>Access theme tokens programmatically in your components:</p>
+        <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+                <h2 className="text-2xl font-medium">
+                    Using the useTheme Hook
+                </h2>
+                <p className="font-manrope text-gray-500 tracking-wide">
+                    Access theme tokens programmatically in your components:
+                </p>
+            </div>
 
-            <div
-                style={{
-                    backgroundColor: '#1e1e1e',
-                    color: '#d4d4d4',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    marginBottom: '24px',
-                }}
-            >
-                <pre
-                    style={{ margin: 0, whiteSpace: 'pre-wrap' }}
-                >{`import { useTheme } from '@juspay/blend-design-system'
+            <div className="border border-gray-200 p-5 rounded-lg mb-6 text-blue-500 text-sm">
+                <pre className="m-0 whitespace-pre-wrap">{`import { useTheme } from '@juspay/blend-design-system'
 
 function CustomComponent() {
   const { foundationTokens, componentTokens, breakpoints } = useTheme()
@@ -336,31 +322,25 @@ function CustomComponent() {
 }`}</pre>
             </div>
 
-            <h3>Theme Hook Returns</h3>
-            <ul>
-                <li>
-                    <strong>foundationTokens</strong> - All foundation design
-                    tokens (colors, typography, spacing, etc.)
-                </li>
-                <li>
-                    <strong>componentTokens</strong> - Computed component tokens
-                    for all components
-                </li>
-                <li>
-                    <strong>breakpoints</strong> - Responsive breakpoint
-                    definitions
-                </li>
-            </ul>
+            <div className="flex flex-col gap-2">
+                <h3 className="text-2xl font-medium">Theme Hook Returns</h3>
+                <ul className="font-manrope tracking-wide text-gray-500 leading-7">
+                    <li>
+                        <strong>foundationTokens</strong> - All foundation
+                        design tokens (colors, typography, spacing, etc.)
+                    </li>
+                    <li>
+                        <strong>componentTokens</strong> - Computed component
+                        tokens for all components
+                    </li>
+                    <li>
+                        <strong>breakpoints</strong> - Responsive breakpoint
+                        definitions
+                    </li>
+                </ul>
+            </div>
 
-            <div
-                style={{
-                    backgroundColor: '#fef3c7',
-                    border: '1px solid #f59e0b',
-                    borderRadius: '8px',
-                    padding: '16px',
-                    marginTop: '20px',
-                }}
-            >
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-5 text-amber-800 text-sm font-manrope">
                 <strong>⚠️ Important:</strong> The useTheme hook must be used
                 within a component that's wrapped by ThemeProvider, or it will
                 throw an error.
@@ -371,25 +351,19 @@ function CustomComponent() {
 
 export const ResponsiveTokens: Story = {
     render: () => (
-        <div style={{ fontFamily: 'monospace', lineHeight: '1.6' }}>
-            <h2>Responsive Token Structure</h2>
-            <p>
-                Component tokens are structured by breakpoint for responsive
-                design:
-            </p>
+        <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+                <h2 className="text-2xl font-medium">
+                    Responsive Token Structure
+                </h2>
+                <p className="font-manrope text-gray-500 tracking-wide">
+                    Component tokens are structured by breakpoint for responsive
+                    design:
+                </p>
+            </div>
 
-            <div
-                style={{
-                    backgroundColor: '#1e1e1e',
-                    color: '#d4d4d4',
-                    padding: '20px',
-                    borderRadius: '8px',
-                    marginBottom: '24px',
-                }}
-            >
-                <pre
-                    style={{ margin: 0, whiteSpace: 'pre-wrap' }}
-                >{`// Component tokens follow this structure:
+            <div className="border border-gray-200 p-5 rounded-lg mb-6 text-blue-500 text-sm">
+                <pre className="m-0 whitespace-pre-wrap">{`// Component tokens follow this structure:
 componentTokens.COMPONENT_NAME = {
   sm: { /* tokens for small screens */ },
   md: { /* tokens for medium screens */ },
@@ -413,20 +387,13 @@ componentTokens.BUTTON = {
 }`}</pre>
             </div>
 
-            <h3>Breakpoint Definitions</h3>
-            <div
-                style={{
-                    backgroundColor: '#1e1e1e',
-                    color: '#d4d4d4',
-                    padding: '20px',
-                    borderRadius: '8px',
-                }}
-            >
-                <pre
-                    style={{ margin: 0, whiteSpace: 'pre-wrap' }}
-                >{`const BREAKPOINTS = {
+            <div className="flex flex-col gap-2">
+                <h3 className="text-2xl font-medium">Breakpoint Definitions</h3>
+            </div>
+            <div className="border border-gray-200 p-5 rounded-lg mb-6 text-purple-500 text-sm">
+                <pre className="m-0 whitespace-pre-wrap">{`const BREAKPOINTS = {
   sm: 640,   // Small screens (mobile)
-  md: 768,   // Medium screens (tablet)  
+  md: 768,   // Medium screens (tablet)
   lg: 1024,  // Large screens (desktop)
 }`}</pre>
             </div>
@@ -467,6 +434,11 @@ export const LiveExample: Story = {
             // Generate default button tokens structure
             const baseTokens = {
                 gap: foundationTokens.unit[6],
+                slotMaxHeight: {
+                    sm: foundationTokens.unit[16],
+                    md: foundationTokens.unit[18],
+                    lg: foundationTokens.unit[20],
+                },
                 backgroundColor: {
                     primary: {
                         default: {
@@ -800,68 +772,176 @@ export const LiveExample: Story = {
                 padding: {
                     sm: {
                         primary: {
-                            default: foundationTokens.unit[8],
-                            iconOnly: foundationTokens.unit[8],
-                            inline: foundationTokens.unit[4],
+                            default: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[4],
+                                y: foundationTokens.unit[4],
+                            },
                         },
                         secondary: {
-                            default: foundationTokens.unit[8],
-                            iconOnly: foundationTokens.unit[8],
-                            inline: foundationTokens.unit[4],
+                            default: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[4],
+                                y: foundationTokens.unit[4],
+                            },
                         },
                         danger: {
-                            default: foundationTokens.unit[8],
-                            iconOnly: foundationTokens.unit[8],
-                            inline: foundationTokens.unit[4],
+                            default: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[4],
+                                y: foundationTokens.unit[4],
+                            },
                         },
                         success: {
-                            default: foundationTokens.unit[8],
-                            iconOnly: foundationTokens.unit[8],
-                            inline: foundationTokens.unit[4],
+                            default: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[4],
+                                y: foundationTokens.unit[4],
+                            },
                         },
                     },
                     md: {
                         primary: {
-                            default: foundationTokens.unit[12],
-                            iconOnly: foundationTokens.unit[12],
-                            inline: foundationTokens.unit[6],
+                            default: {
+                                x: foundationTokens.unit[12],
+                                y: foundationTokens.unit[12],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[12],
+                                y: foundationTokens.unit[12],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[6],
+                                y: foundationTokens.unit[6],
+                            },
                         },
                         secondary: {
-                            default: foundationTokens.unit[12],
-                            iconOnly: foundationTokens.unit[12],
-                            inline: foundationTokens.unit[6],
+                            default: {
+                                x: foundationTokens.unit[12],
+                                y: foundationTokens.unit[12],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[12],
+                                y: foundationTokens.unit[12],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[6],
+                                y: foundationTokens.unit[6],
+                            },
                         },
                         danger: {
-                            default: foundationTokens.unit[12],
-                            iconOnly: foundationTokens.unit[12],
-                            inline: foundationTokens.unit[6],
+                            default: {
+                                x: foundationTokens.unit[12],
+                                y: foundationTokens.unit[12],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[12],
+                                y: foundationTokens.unit[12],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[6],
+                                y: foundationTokens.unit[6],
+                            },
                         },
                         success: {
-                            default: foundationTokens.unit[12],
-                            iconOnly: foundationTokens.unit[12],
-                            inline: foundationTokens.unit[6],
+                            default: {
+                                x: foundationTokens.unit[12],
+                                y: foundationTokens.unit[12],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[12],
+                                y: foundationTokens.unit[12],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[6],
+                                y: foundationTokens.unit[6],
+                            },
                         },
                     },
                     lg: {
                         primary: {
-                            default: foundationTokens.unit[16],
-                            iconOnly: foundationTokens.unit[16],
-                            inline: foundationTokens.unit[8],
+                            default: {
+                                x: foundationTokens.unit[16],
+                                y: foundationTokens.unit[16],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[16],
+                                y: foundationTokens.unit[16],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
                         },
                         secondary: {
-                            default: foundationTokens.unit[16],
-                            iconOnly: foundationTokens.unit[16],
-                            inline: foundationTokens.unit[8],
+                            default: {
+                                x: foundationTokens.unit[16],
+                                y: foundationTokens.unit[16],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[16],
+                                y: foundationTokens.unit[16],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
                         },
                         danger: {
-                            default: foundationTokens.unit[16],
-                            iconOnly: foundationTokens.unit[16],
-                            inline: foundationTokens.unit[8],
+                            default: {
+                                x: foundationTokens.unit[16],
+                                y: foundationTokens.unit[16],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[16],
+                                y: foundationTokens.unit[16],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
                         },
                         success: {
-                            default: foundationTokens.unit[16],
-                            iconOnly: foundationTokens.unit[16],
-                            inline: foundationTokens.unit[8],
+                            default: {
+                                x: foundationTokens.unit[16],
+                                y: foundationTokens.unit[16],
+                            },
+                            iconOnly: {
+                                x: foundationTokens.unit[16],
+                                y: foundationTokens.unit[16],
+                            },
+                            inline: {
+                                x: foundationTokens.unit[8],
+                                y: foundationTokens.unit[8],
+                            },
                         },
                     },
                 },
@@ -1218,31 +1298,24 @@ export const LiveExample: Story = {
         }
 
         return (
-            <div style={{ fontFamily: 'monospace', lineHeight: '1.6' }}>
-                <h2>Live Theme Customization Example</h2>
-                <p>
-                    Here's a live example showing default vs custom theme with
-                    complete component token structure:
-                </p>
+            <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2">
+                    <h2 className="text-2xl font-medium">
+                        Live Theme Customization Example
+                    </h2>
+                    <p className="font-manrope text-gray-500 tracking-wide">
+                        Here's a live example showing default vs custom theme
+                        with complete component token structure:
+                    </p>
+                </div>
 
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 1fr',
-                        gap: '24px',
-                        marginTop: '20px',
-                    }}
-                >
+                <div className="grid grid-cols-2 gap-6 mt-5">
                     <div>
-                        <h3>Default Theme</h3>
+                        <h3 className="text-xl font-medium mb-3">
+                            Default Theme
+                        </h3>
                         <ThemeProvider>
-                            <div
-                                style={{
-                                    padding: '16px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                }}
-                            >
+                            <div className="p-4 border border-gray-200 rounded-lg">
                                 <Button
                                     buttonType={ButtonType.PRIMARY}
                                     size={ButtonSize.MEDIUM}
@@ -1253,18 +1326,14 @@ export const LiveExample: Story = {
                     </div>
 
                     <div>
-                        <h3>Custom Theme (Complete Component Tokens)</h3>
+                        <h3 className="text-xl font-medium mb-3">
+                            Custom Theme (Complete Component Tokens)
+                        </h3>
                         <ThemeProvider
                             foundationTokens={customFoundationTokens}
                             componentTokens={customComponentTokens}
                         >
-                            <div
-                                style={{
-                                    padding: '16px',
-                                    border: '1px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                }}
-                            >
+                            <div className="p-4 border border-gray-200 rounded-lg">
                                 <Button
                                     buttonType={ButtonType.PRIMARY}
                                     size={ButtonSize.MEDIUM}
@@ -1275,18 +1344,8 @@ export const LiveExample: Story = {
                     </div>
                 </div>
 
-                <div
-                    style={{
-                        backgroundColor: '#1e1e1e',
-                        color: '#d4d4d4',
-                        padding: '20px',
-                        borderRadius: '8px',
-                        marginTop: '24px',
-                    }}
-                >
-                    <pre
-                        style={{ margin: 0, whiteSpace: 'pre-wrap' }}
-                    >{`import { 
+                <div className="border border-gray-200 p-5 rounded-lg mt-6 text-blue-500 text-sm">
+                    <pre className="m-0 whitespace-pre-wrap">{`import { 
   ThemeProvider, 
   Button, 
   FOUNDATION_THEME,

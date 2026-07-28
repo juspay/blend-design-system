@@ -1,0 +1,224 @@
+---
+version: 2
+title: Card
+description: The CardV2 component is a flexible surface for grouping content, media, metadata, actions, and footer content with improved composition and layout controls.
+category: Layout
+tags:
+    - card
+    - component
+    - container
+    - layout
+    - content
+    - v2
+RepoFolderName: CardV2
+StorybookLink: components-card-cardv2--docs
+---
+
+<CardV2Preview />
+
+## Usage
+
+```tsx
+import {
+    CardV2,
+    CardV2ActionPlacement,
+    CardV2Padding,
+    CardV2Variant,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <CardV2
+            variant={CardV2Variant.OUTLINED}
+            padding={CardV2Padding.COMFORTABLE}
+            title="Card title"
+            subtitle="Supporting information"
+            description="Use CardV2 to group related content and actions."
+            actions={{ text: 'Open', onClick: () => console.log('open') }}
+            actionPlacement={CardV2ActionPlacement.FOOTER}
+        />
+    )
+}
+```
+
+## Composition
+
+CardV2 supports both prop-driven usage and compound sections.
+
+```tsx
+import { CardV2 } from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <CardV2>
+            <CardV2.Header title="Card title" subtitle="Subtitle" />
+            <CardV2.Body description="Body description">
+                Custom content
+            </CardV2.Body>
+            <CardV2.Footer
+                actions={{ text: 'Open', onClick: () => console.log('open') }}
+            />
+        </CardV2>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'variant',
+                hintText:
+                    'Controls the card surface style. OUTLINED uses a visible border, ELEVATED adds elevation, and GHOST removes the visible container treatment.',
+            },
+            { content: 'CardV2Variant' },
+            { content: 'OUTLINED' },
+        ],
+        [
+            {
+                content: 'orientation',
+                hintText:
+                    'Controls the card layout direction for media and content.',
+            },
+            { content: 'CardV2Orientation' },
+            { content: 'VERTICAL' },
+        ],
+        [
+            {
+                content: 'padding',
+                hintText:
+                    'Controls internal spacing. NONE removes padding, COMPACT uses tighter spacing, and COMFORTABLE uses larger spacing.',
+            },
+            { content: 'CardV2Padding' },
+            { content: 'COMFORTABLE' },
+        ],
+        [
+            {
+                content: 'title',
+                hintText: 'Primary title rendered in the card header.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subtitle',
+                hintText: 'Secondary text rendered below the title.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'description',
+                hintText: 'Body description rendered in the card body.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'media',
+                hintText:
+                    'Optional media content rendered in the card media section.',
+            },
+            { content: 'ReactNode' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actions',
+                hintText:
+                    'One or more ButtonV2 action configs rendered in the body or footer.',
+            },
+            { content: 'CardV2Action | CardV2Action[]' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'actionPlacement',
+                hintText:
+                    'Controls whether actions render in the body or footer.',
+            },
+            { content: 'CardV2ActionPlacement' },
+            { content: 'BODY' },
+        ],
+        [
+            {
+                content: 'interactive',
+                hintText:
+                    'Applies interactive affordances for cards that behave like clickable surfaces.',
+            },
+            { content: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'selected',
+                hintText: 'Applies selected visual state.',
+            },
+            { content: 'boolean' },
+            { content: 'false' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Skeleton loading configuration. Pass show true to render the skeleton state.',
+            },
+            { content: 'CardV2SkeletonProps' },
+            { content: '' },
+        ],
+    ]}
+/>
+
+## Compound Sections
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'CardV2.Header' },
+            { content: 'CardV2HeaderProps' },
+            {
+                content:
+                    'Header section with title, subtitle, eyebrow, and slots.',
+            },
+        ],
+        [
+            { content: 'CardV2.Meta' },
+            { content: 'CardV2MetaProps' },
+            { content: 'Metadata-only title, subtitle, and eyebrow block.' },
+        ],
+        [
+            { content: 'CardV2.Media' },
+            { content: 'CardV2MediaProps' },
+            { content: 'Media section with size and orientation controls.' },
+        ],
+        [
+            { content: 'CardV2.Body' },
+            { content: 'CardV2BodyProps' },
+            { content: 'Body section for description, children, and actions.' },
+        ],
+        [
+            { content: 'CardV2.Content' },
+            { content: 'CardV2SectionProps' },
+            { content: 'Generic content section.' },
+        ],
+        [
+            { content: 'CardV2.Actions' },
+            { content: 'CardV2ActionsProps' },
+            { content: 'Action button group section.' },
+        ],
+        [
+            { content: 'CardV2.Footer' },
+            { content: 'CardV2FooterProps' },
+            { content: 'Footer section with optional divider and actions.' },
+        ],
+    ]}
+/>
+
+## Component Tokens
+
+You can style the CardV2 component using the `CARDV2` component token.

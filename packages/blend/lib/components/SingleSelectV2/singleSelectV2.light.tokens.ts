@@ -1,5 +1,5 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
-import type { ResponsiveSingleSelectV2Tokens } from './singleSelectV2.tokens'
+import type { ResponsiveSingleSelectV2Tokens } from './singleSelectV2.tokens.types'
 import {
     SingleSelectV2Size,
     SingleSelectV2Variant,
@@ -239,7 +239,7 @@ export const getSingleSelectV2LightTokens = (
                 },
             },
             groupLabel: {
-                margin: `0 ${foundationToken.unit[8]}`,
+                margin: '0',
                 paddingTop: foundationToken.unit[8],
                 paddingRight: foundationToken.unit[6],
                 paddingBottom: foundationToken.unit[8],
@@ -348,6 +348,14 @@ export const getSingleSelectV2LightTokens = (
                     color: foundationToken.colors.gray[600],
                 },
                 iconColor: foundationToken.colors.gray[400],
+            },
+            footer: {
+                paddingTop: foundationToken.unit[16],
+                paddingRight: foundationToken.unit[16],
+                paddingBottom: foundationToken.unit[16],
+                paddingLeft: foundationToken.unit[16],
+                backgroundColor: foundationToken.colors.gray[0],
+                borderTop: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
             },
         },
 

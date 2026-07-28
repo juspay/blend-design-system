@@ -1,0 +1,38 @@
+{
+    "componentDescription": "Menu is a dropdown list of actions triggered by clicking a button or icon. Use for contextual actions on items ('Edit', 'Delete', 'Duplicate'), toolbar action menus, and 'more options' (...) buttons. Unlike SingleSelect, Menu items trigger actions — they don't select values.",
+    "features": [
+        "Click-triggered dropdown with action items",
+        "Item icons and descriptions",
+        "Dividers between item groups",
+        "Disabled items",
+        "Destructive item styling for dangerous actions",
+        "Keyboard navigation"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Row actions menu",
+            "description": "Three-dot menu for actions on a table row.",
+            "code": "<Menu\n  trigger={\n    <Button\n      buttonType={ButtonType.SECONDARY}\n      size={ButtonSize.SMALL}\n      subType={ButtonSubType.ICON_ONLY}\n      leadingIcon={<MoreHorizontalIcon />}\n    />\n  }\n  items={[\n    { label: 'Edit', icon: <EditIcon />, onClick: () => handleEdit(item) },\n    { label: 'Duplicate', icon: <CopyIcon />, onClick: () => handleDuplicate(item) },\n    { label: 'Archive', icon: <ArchiveIcon />, onClick: () => handleArchive(item), disabled: item.archived },\n    { type: 'separator' },\n    { label: 'Delete', icon: <TrashIcon />, onClick: () => handleDelete(item), destructive: true },\n  ]}\n/>"
+        },
+        {
+            "title": "User account menu",
+            "description": "Dropdown menu from the user avatar for account actions.",
+            "code": "<Menu\n  trigger={<Avatar src={user.avatar} name={user.name} size=\"md\" />}\n  items={[\n    { label: 'Your profile', icon: <UserIcon />, onClick: () => navigate('/profile') },\n    { label: 'Account settings', icon: <SettingsIcon />, onClick: () => navigate('/settings') },\n    { type: 'separator' },\n    { label: 'Sign out', icon: <LogoutIcon />, onClick: handleSignOut },\n  ]}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "trigger": {
+            "llmContext": "Required. The element that opens the menu on click. Typically a Button with ICON_ONLY subType (three-dot / kebab icon), an Avatar, or any clickable element. The trigger is rendered inline.",
+            "propDescription": "Required. Element that opens the menu on click"
+        },
+        "items": {
+            "llmContext": "Required. Array of menu item objects. Each item: { label: string, icon?: ReactNode, onClick?: () => void, disabled?: boolean, destructive?: boolean } or { type: 'separator' } for dividers. Use destructive: true for delete/remove actions — renders in red to signal danger.",
+            "propDescription": "Required. Array of menu item definitions and separators"
+        },
+        "onSelect": {
+            "llmContext": "Optional global callback fired when any item is selected, receiving the item. Use when you need centralized handling instead of per-item onClick handlers.",
+            "propDescription": "Called with selected item when user picks a menu option"
+        }
+    }
+}

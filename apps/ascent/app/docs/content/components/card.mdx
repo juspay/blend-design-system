@@ -1,7 +1,7 @@
 ---
 title: Card
 description: The Card component is a flexible container component used to display content in a structured format with multiple variants, alignment options, and customizable slots for headers, body content, and actions.
-category: components
+category: Layout
 tags:
     - card
     - component
@@ -10,6 +10,7 @@ tags:
     - content
 RepoFolderName: Card
 StorybookLink: components-card--docs
+version: 1
 ---
 
 <CardPreview />
@@ -265,6 +266,20 @@ function MyComponent() {
             {
                 content: 'ReactNode',
                 hintText: 'Any React content for completely custom card layout',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Optional configuration for showing skeleton loading state. When show is true, displays skeleton placeholders instead of the actual card content. Useful for loading states while card data is being fetched.',
+            },
+            {
+                content:
+                    '{ show: boolean, variant: SkeletonVariant, height?: string, width?: string }',
+                hintText:
+                    'Object with show (required boolean), variant (required - pulse or shimmer), and optional height/width',
             },
             { content: '' },
         ],

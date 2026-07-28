@@ -48,7 +48,7 @@ const ComponentPreview = ({
 
     if (tabs.length === 0) {
         return (
-            <div className="w-full min-h-80 border-[var(--code-border)] border-1 rounded-md my-4 flex flex-col items-center justify-center">
+            <div className="w-full min-h-80 border-code-border border rounded-md my-4 flex flex-col items-center justify-center">
                 <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 p-6">
                     {children}
                 </div>
@@ -59,31 +59,36 @@ const ComponentPreview = ({
     return (
         <div
             data-component-preview
-            className="w-full min-h-80 border-[var(--code-border)] border-1 rounded-2xl mb-10 mt-25 flex flex-col items-center justify-center overflow-clip"
+            className="w-full min-h-80 border-code-border border rounded-2xl my-10 flex flex-col items-center justify-center overflow-clip"
         >
-            <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 debug bg-white p-6">
+            <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 bg-background p-6">
                 {children}
             </div>
-            <div className="w-full border-t border-[var(--code-border)]">
+            <div className="w-full border-t border-code-border bg-code-background">
                 <Tabs.Root
                     className="w-full"
                     value={activeTab}
                     onValueChange={setActiveTab}
                 >
-                    <Tabs.List className="w-full h-10 border-b border-[var(--code-border)] px-2">
-                        {tabs.map((tab) => (
-                            <Tabs.Trigger
-                                key={tab.id}
-                                value={tab.id}
-                                className="px-2 h-10 relative cursor-pointer data-[state=active]:text-[var(--foreground)] data-[state=inactive]:text-[var(--muted-foreground)] font-medium text-sm after:content-[''] after:block after:w-full after:h-[2px] after:bg-blue-500 after:absolute after:bottom-0 after:left-0 after:opacity-0 data-[state=active]:after:opacity-100 focus:outline-none"
-                                data-nav-content
-                            >
-                                {tab.label}
-                            </Tabs.Trigger>
-                        ))}
+                    <Tabs.List className="w-full pt-4 pb-2.5 px-2.5 md:px-5 flex items-center gap-1">
+                        <div className="p-1 bg-muted rounded-xl flex items-center gap-0 sm:gap-3 overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory max-w-full">
+                            {tabs.map((tab) => (
+                                <Tabs.Trigger
+                                    key={tab.id}
+                                    value={tab.id}
+                                    className="px-2 sm:px-3 h-7 rounded-lg cursor-pointer text-sm font-medium shrink-0 snap-start
+        data-[state=active]:bg-background data-[state=active]:text-foreground
+        data-[state=inactive]:text-gray-500 data-[state=inactive]:hover:text-gray-700
+        focus:outline-none transition-colors whitespace-nowrap"
+                                    data-nav-content
+                                >
+                                    {tab.label}
+                                </Tabs.Trigger>
+                            ))}
+                        </div>
                     </Tabs.List>
 
-                    <div className="w-full p-2 bg-[var(--code-background)]">
+                    <div className="w-full p-2 bg-code-background">
                         {tabs.map((tab) => (
                             <Tabs.Content key={tab.id} value={tab.id}>
                                 {Snippet(tab.content)}
@@ -117,7 +122,7 @@ export const Snippet = (code: string) => {
             <div className="overflow-x-auto">
                 <pre
                     data-code-snippet
-                    className="p-2 block whitespace-pre-wrap break-words"
+                    className="p-2 block whitespace-pre-wrap wrap-break-words"
                 >
                     {code || ''}
                 </pre>
@@ -131,7 +136,7 @@ export const Snippet = (code: string) => {
             <pre
                 data-code-snippet
                 dangerouslySetInnerHTML={{ __html: highlighted || code || '' }}
-                className="p-2 block whitespace-pre-wrap break-words"
+                className="p-2 block whitespace-pre-wrap wrap-break-words"
             ></pre>
         </div>
     )

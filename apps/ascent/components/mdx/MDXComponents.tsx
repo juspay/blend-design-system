@@ -26,7 +26,7 @@ export const MDXComponents = {
         const text = typeof children === 'string' ? children : ''
         const id = generateSlug(text)
         return (
-            <h1 id={id} className="text-2xl pt-12 font-bold" {...props}>
+            <h1 id={id} className="text-2xl pt-12 font-medium" {...props}>
                 {children}
             </h1>
         )
@@ -37,7 +37,7 @@ export const MDXComponents = {
         return (
             <h2
                 id={id}
-                className="font-heading mt-12 scroll-m-28 text-2xl font-medium tracking-tight first:mt-0 lg:mt-20 [&+p]:!mt-4 *:[code]:text-2xl"
+                className="font-heading scroll-m-28 text-2xl font-medium tracking-tight text-primary *:[code]:text-2xl mt-10 mb-2"
                 {...props}
             >
                 {children}
@@ -50,7 +50,7 @@ export const MDXComponents = {
         return (
             <h3
                 id={id}
-                className="font-heading mt-8 scroll-m-32 text-xl font-medium tracking-tight"
+                className="font-heading scroll-m-32 text-xl font-medium tracking-tight text-primary mt-10"
                 {...props}
             >
                 {children}
@@ -61,7 +61,7 @@ export const MDXComponents = {
         const text = typeof children === 'string' ? children : ''
         const id = generateSlug(text)
         return (
-            <h4 id={id} className="font-medium" {...props}>
+            <h4 id={id} className="font-medium text-primary mt-10" {...props}>
                 {children}
             </h4>
         )
@@ -70,7 +70,11 @@ export const MDXComponents = {
         const text = typeof children === 'string' ? children : ''
         const id = generateSlug(text)
         return (
-            <h5 id={id} className="font-medium text-sm" {...props}>
+            <h5
+                id={id}
+                className="font-medium text-sm text-primary mt-10"
+                {...props}
+            >
                 {children}
             </h5>
         )
@@ -79,21 +83,40 @@ export const MDXComponents = {
         const text = typeof children === 'string' ? children : ''
         const id = generateSlug(text)
         return (
-            <h6 id={id} className="font-medium text-sm" {...props}>
+            <h6
+                id={id}
+                className="font-medium text-sm text-primary mt-10"
+                {...props}
+            >
                 {children}
             </h6>
         )
     },
     p: (props: ParagraphProps) => (
-        <p className="leading-relaxed [&:not(:first-child)]:mt-6" {...props} />
+        <p
+            className="pt-2 md:leading-9 tracking-[-0.32px] md:text-justify text-foreground"
+            {...props}
+        />
     ),
+
     ol: (props: ListProps) => (
-        <ol className="list-decimal pl-5 space-y-2" {...props} />
+        <ol
+            className="list-decimal pl-5 space-y-2 md:leading-9 tracking-[-0.32px] text-foreground mt-3"
+            {...props}
+        />
     ),
     ul: (props: ListProps) => (
-        <ul className="list-disc pl-5 space-y-1" {...props} />
+        <ul
+            className="list-disc pl-5 space-y-1 md:leading-9 tracking-[-0.32px] text-foreground mt-3"
+            {...props}
+        />
     ),
-    li: (props: ListItemProps) => <li className="pl-1" {...props} />,
+    li: (props: ListItemProps) => (
+        <li
+            className="pl-1 md:leading-9 tracking-[-0.32px] text-foreground"
+            {...props}
+        />
+    ),
     em: (props: ComponentPropsWithoutRef<'em'>) => (
         <em className="font-medium" {...props} />
     ),
@@ -101,8 +124,7 @@ export const MDXComponents = {
         <strong className="font-medium" {...props} />
     ),
     a: ({ href, children, ...props }: AnchorProps) => {
-        const className =
-            'text-blue-500 hover:text-blue-700 dark:text-gray-400 hover:dark:text-gray-300 dark:underline dark:underline-offset-2 dark:decoration-gray-800'
+        const className = 'text-blue-500 hover:text-blue-700'
         if (href?.startsWith('/')) {
             return (
                 <Link
@@ -140,6 +162,11 @@ export const MDXComponents = {
             </a>
         )
     },
+    pre: (props: ComponentPropsWithoutRef<'pre'>) => (
+        <div className="overflow-x-auto w-full my-4">
+            <pre className="min-w-full" {...props} />
+        </div>
+    ),
     code: ({ children, ...props }: ComponentPropsWithoutRef<'code'>) => {
         const codeHTML = highlight(children as string)
 
@@ -155,15 +182,19 @@ export const MDXComponents = {
                 <code
                     dangerouslySetInnerHTML={{ __html: codeHTML }}
                     {...props}
-                    className="bg-[var(--code-background)] outline outline-[var(--code-border)] rounded-md text-sm px-1 py-0.5"
+                    className="bg-code-background outline outline-code-border rounded-xl text-sm px-1.5 py-0.5 whitespace-pre-wrap wrap-break-word"
                 />
             )
         }
     },
     blockquote: (props: BlockquoteProps) => (
         <blockquote
-            className="ml-[0.075em] border-l-3 border-gray-300 pl-4 text-gray-700 dark:border-zinc-600 dark:text-zinc-300"
+            className="ml-[0.075em] text-secondary-foreground"
             {...props}
         />
+    ),
+
+    hr: (props: ComponentPropsWithoutRef<'hr'>) => (
+        <hr className="my-6 border-t border-code-border" {...props} />
     ),
 }

@@ -3,7 +3,7 @@ import styled, { css, type CSSObject } from 'styled-components'
 
 type SpacingValue = string | number
 
-type StateStyles = {
+export type StateStyles = {
     _hover?: StyledBlockProps
     _focus?: StyledBlockProps
     _active?: StyledBlockProps
@@ -427,6 +427,7 @@ type SemanticTagType = keyof Pick<
     | 'nav'
     | 'hr'
     | 'label'
+    | 'button'
 >
 
 export type BlockProps = StyledBlockProps &

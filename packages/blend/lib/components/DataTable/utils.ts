@@ -6,6 +6,8 @@ import {
     FilterType,
     ColumnDefinition,
     ColumnType,
+    PivotAggregationType,
+    DateFormat,
 } from './types'
 import {
     validateColumnData,
@@ -16,6 +18,47 @@ import {
     DateData,
     DateRangeData,
 } from './columnTypes'
+
+export const isDateOnlyString = (value: string): boolean =>
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+
+/**
+ * Parse a date-only string (`YYYY-MM-DD`) as a local date at midnight.
+ * Avoids JS `new Date("YYYY-MM-DD")` UTC parsing and off-by-one issues.
+ */
+export const parseDateOnlyLocal = (dateOnly: string): Date => {
+    const [y, m, d] = dateOnly.split('-').map((p) => Number(p))
+    return new Date(y, (m || 1) - 1, d || 1)
+}
+
+export const parseDateLike = (value: unknown): Date | null => {
+    if (value instanceof Date) {
+        return isNaN(value.getTime()) ? null : value
+    }
+
+    if (typeof value === 'string') {
+        const trimmed = value.trim()
+        if (!trimmed) return null
+        const parsed = isDateOnlyString(trimmed)
+            ? parseDateOnlyLocal(trimmed)
+            : new Date(trimmed)
+        return isNaN(parsed.getTime()) ? null : parsed
+    }
+
+    if (typeof value === 'object' && value !== null && 'date' in value) {
+        const dateValue = (value as { date?: unknown }).date
+        return parseDateLike(dateValue)
+    }
+
+    return null
+}
+
+export const toLocalDateString = (date: Date): string => {
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
+}
 
 export const filterData = <T extends Record<string, unknown>>(
     data: T[],
@@ -300,11 +343,16 @@ export const applyColumnFilters = <T extends Record<string, unknown>>(
                 }
 
                 case FilterType.DATE:
-                    return applyDateFilter(
-                        cellValue,
-                        new Date(String(filterValue)),
-                        operator
-                    )
+                    if (operator === 'range' && Array.isArray(filterValue)) {
+                        const [startDate, endDate] = filterValue
+                        if (!startDate || !endDate) return true
+                        return applyDateRangeFilter(
+                            cellValue,
+                            startDate,
+                            endDate
+                        )
+                    }
+                    return applyDateFilter(cellValue, filterValue, operator)
 
                 default:
                     return true
@@ -377,14 +425,20 @@ const applyNumberFilter = (
 
 const applyDateFilter = (
     cellValue: unknown,
-    filterValue: Date,
+    filterValue: unknown,
     operator: string
 ): boolean => {
-    const cellDate = new Date(String(cellValue))
-    if (isNaN(cellDate.getTime())) return false
+    const parsedFilter = parseDateLike(filterValue)
+    if (!parsedFilter) return false
 
-    const cellTime = cellDate.getTime()
-    const filterTime = filterValue.getTime()
+    const parsedCell = parseDateLike(cellValue)
+    if (!parsedCell) return false
+
+    const normalizeToDateOnly = (date: Date): number =>
+        new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
+
+    const cellTime = normalizeToDateOnly(parsedCell)
+    const filterTime = normalizeToDateOnly(parsedFilter)
 
     switch (operator) {
         case 'equals':
@@ -400,6 +454,31 @@ const applyDateFilter = (
         default:
             return cellTime === filterTime
     }
+}
+
+const applyDateRangeFilter = (
+    cellValue: unknown,
+    startValue: string,
+    endValue: string
+): boolean => {
+    const startDate = parseDateLike(startValue)
+    const endDate = parseDateLike(endValue)
+    if (!startDate || !endDate) return false
+
+    const parsedCell = parseDateLike(cellValue)
+    if (!parsedCell) return false
+
+    const normalizeToDateOnly = (date: Date): number =>
+        new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime()
+
+    const cellTime = normalizeToDateOnly(parsedCell)
+    const startTime = normalizeToDateOnly(startDate)
+    const endTime = normalizeToDateOnly(endDate)
+
+    return (
+        cellTime >= Math.min(startTime, endTime) &&
+        cellTime <= Math.max(startTime, endTime)
+    )
 }
 
 export const getUniqueColumnValues = <T extends Record<string, unknown>>(
@@ -826,6 +905,91 @@ export const formatDate = (dateString: string): string => {
     }).format(date)
 }
 
+/**
+ * Token map for the lightweight format-string parser. Supports the common
+ * dashboard tokens; anything else is passed through literally.
+ *
+ *   YYYY  -> 4-digit year          YY   -> 2-digit year
+ *   MM    -> 2-digit month         MMM  -> short month name (Jan)
+ *   DD    -> 2-digit day           dd   -> 2-digit day (alias)
+ *   HH    -> 24h hour (2-digit)    hh   -> 12h hour (2-digit)
+ *   mm    -> minutes (2-digit)     ss   -> seconds (2-digit)
+ *   A     -> AM/PM                 a    -> am/pm
+ */
+const FORMAT_TOKEN_PATTERN = /YYYY|YY|MMM|MM|dd|DD|HH|hh|mm|ss|A|a/g
+
+const pad2 = (n: number): string => String(n).padStart(2, '0')
+
+// Format a Date using a format string like "DD MMM YYYY, hh:mm A"
+export const formatDateString = (date: Date, format: string): string => {
+    if (isNaN(date.getTime())) return '-'
+
+    const parts = new Intl.DateTimeFormat('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+    }).formatToParts(date)
+
+    const lookup: Record<string, string> = {}
+    for (const p of parts) {
+        if (p.type !== 'literal') lookup[p.type] = p.value
+    }
+
+    const year = lookup.year ?? ''
+    const monthNum = lookup.month ?? ''
+    const day = lookup.day ?? ''
+    const hour24 = lookup.hour ?? ''
+    const minute = lookup.minute ?? ''
+    const second = lookup.second ?? ''
+
+    // Short month name via a separate formatter (month: 'short' gives 'Jan' etc.)
+    const shortMonth = new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+    }).format(date)
+
+    // Normalize the 24-hour value: some browsers/locales return "24" for
+    // midnight instead of "00". Convert 24 -> 0 so HH always prints 00.
+    const hourNumRaw = parseInt(hour24, 10)
+    const hourNum = hourNumRaw === 24 ? 0 : hourNumRaw
+    const hour12 = (hourNum % 12 || 12).toString()
+    const ampm = hourNum < 12 ? 'AM' : 'PM'
+
+    FORMAT_TOKEN_PATTERN.lastIndex = 0
+    return format.replace(FORMAT_TOKEN_PATTERN, (token) => {
+        switch (token) {
+            case 'YYYY':
+                return year
+            case 'YY':
+                return year.slice(-2)
+            case 'MMM':
+                return shortMonth
+            case 'MM':
+                return monthNum
+            case 'DD':
+            case 'dd':
+                return day
+            case 'HH':
+                return pad2(hourNum)
+            case 'hh':
+                return pad2(parseInt(hour12, 10))
+            case 'mm':
+                return minute
+            case 'ss':
+                return second
+            case 'A':
+                return ampm
+            case 'a':
+                return ampm.toLowerCase()
+            default:
+                return token
+        }
+    })
+}
+
 export const updateColumnFilter = (
     currentFilters: ColumnFilter[],
     field: keyof Record<string, unknown>,
@@ -916,7 +1080,7 @@ const getExportValue = <T extends Record<string, unknown>>(
             ) {
                 const dateData = value as {
                     date: Date | string
-                    format?: string
+                    format?: DateFormat
                     showTime?: boolean
                 }
                 const date = new Date(dateData.date)
@@ -1189,7 +1353,7 @@ export const createMultiSelectData = (
 
 export const createDateData = (
     date: Date | string,
-    format?: string
+    format?: DateFormat
 ): DateData => ({
     date,
     format,
@@ -1198,7 +1362,7 @@ export const createDateData = (
 export const createDateRangeData = (
     startDate: Date | string,
     endDate: Date | string,
-    format?: string
+    format?: DateFormat
 ): DateRangeData => ({
     startDate,
     endDate,
@@ -1239,9 +1403,9 @@ const getExpectedTypeDescription = (columnType: ColumnType): string => {
         case ColumnType.MULTISELECT:
             return 'MultiSelectData { values: string[], labels?: string[] } or string[]'
         case ColumnType.DATE:
-            return 'DateData { date: Date | string, format?: string } or Date or string'
+            return 'DateData { date: Date | string, format?: DateFormat } or Date or string'
         case ColumnType.DATE_RANGE:
-            return 'DateRangeData { startDate: Date | string, endDate: Date | string, format?: string }'
+            return 'DateRangeData { startDate: Date | string, endDate: Date | string, format?: DateFormat }'
         case ColumnType.TEXT:
             return 'string or number'
         case ColumnType.NUMBER:
@@ -1278,4 +1442,200 @@ export const enforceDataTypeMatching = <T extends Record<string, unknown>>(
     }
 
     return !hasErrors
+}
+
+type PivotValueConfig<T extends Record<string, unknown>> = {
+    field: keyof T
+    aggregation: PivotAggregationType
+    label?: string
+}
+
+type PivotResultRow = Record<string, unknown>
+
+const normalizePivotValue = (value: unknown): string | number => {
+    if (value == null) return 'N/A'
+    if (typeof value === 'number') return value
+    if (typeof value === 'string') return value
+
+    if (typeof value === 'object' && value !== null) {
+        if ('text' in value) {
+            return String((value as { text: unknown }).text)
+        }
+        if ('label' in value) {
+            return String((value as { label: unknown }).label)
+        }
+        if ('value' in value) {
+            return String((value as { value: unknown }).value)
+        }
+        if ('selectedValue' in value) {
+            return String((value as { selectedValue: unknown }).selectedValue)
+        }
+    }
+
+    return String(value)
+}
+
+const aggregatePivotValues = (
+    values: number[],
+    aggregation: PivotAggregationType
+): number => {
+    if (aggregation === PivotAggregationType.COUNT) {
+        return values.length
+    }
+
+    if (values.length === 0) return 0
+
+    switch (aggregation) {
+        case PivotAggregationType.SUM:
+            return values.reduce((sum, value) => sum + value, 0)
+        case PivotAggregationType.AVERAGE:
+        case PivotAggregationType.MEAN:
+            return values.reduce((sum, value) => sum + value, 0) / values.length
+        case PivotAggregationType.MEDIAN: {
+            const sorted = [...values].sort((a, b) => a - b)
+            const middle = Math.floor(sorted.length / 2)
+            if (sorted.length % 2 === 0) {
+                return (sorted[middle - 1] + sorted[middle]) / 2
+            }
+            return sorted[middle]
+        }
+        case PivotAggregationType.MIN:
+            return Math.min(...values)
+        case PivotAggregationType.MAX:
+            return Math.max(...values)
+        default:
+            return values.reduce((sum, value) => sum + value, 0)
+    }
+}
+
+export const buildPivotData = <T extends Record<string, unknown>>(
+    data: T[],
+    rowFields: (keyof T)[],
+    columnFields: (keyof T)[],
+    valueConfigs: PivotValueConfig<T>[],
+    filterValues?: Record<string, string[]>
+): {
+    columns: Array<{ key: string; label: string }>
+    rows: PivotResultRow[]
+} => {
+    if (!data.length || !valueConfigs.length) {
+        return { columns: [], rows: [] }
+    }
+
+    const filteredData = data.filter((row) => {
+        if (!filterValues) return true
+        return Object.entries(filterValues).every(([field, selected]) => {
+            if (!selected.length) return true
+            const value = normalizePivotValue(row[field as keyof T])
+            return selected.includes(String(value))
+        })
+    })
+
+    const rowMap = new Map<string, PivotResultRow>()
+    const dynamicColumnOrder: string[] = []
+
+    filteredData.forEach((row) => {
+        const rowKeyParts = rowFields.map((field) =>
+            String(normalizePivotValue(row[field]))
+        )
+        const rowKey = rowKeyParts.join(' | ') || 'All Rows'
+
+        const columnKeyParts = columnFields.map((field) =>
+            String(normalizePivotValue(row[field]))
+        )
+        const columnKeyBase = columnKeyParts.join(' | ') || 'All Columns'
+
+        if (!rowMap.has(rowKey)) {
+            const baseRow: PivotResultRow = {}
+            rowFields.forEach((field, index) => {
+                baseRow[String(field)] = rowKeyParts[index] || 'N/A'
+            })
+            rowMap.set(rowKey, baseRow)
+        }
+
+        const resultRow = rowMap.get(rowKey)!
+
+        valueConfigs.forEach((valueConfig) => {
+            const rawValue = row[valueConfig.field]
+            const numericValue =
+                typeof rawValue === 'number'
+                    ? rawValue
+                    : Number(normalizePivotValue(rawValue))
+            const valueListKey = `__pivot_values__::${encodeURIComponent(columnKeyBase)}::${String(valueConfig.field)}::${valueConfig.aggregation}`
+            const existingValues = (resultRow[valueListKey] as number[]) || []
+            if (!Number.isNaN(numericValue)) {
+                existingValues.push(numericValue)
+            } else if (valueConfig.aggregation === PivotAggregationType.COUNT) {
+                existingValues.push(1)
+            }
+            resultRow[valueListKey] = existingValues
+        })
+    })
+
+    const rows = Array.from(rowMap.values()).map((row) => {
+        const outputRow: PivotResultRow = {}
+
+        rowFields.forEach((field) => {
+            outputRow[String(field)] = row[String(field)] || 'N/A'
+        })
+
+        Object.keys(row).forEach((key) => {
+            if (!key.startsWith('__pivot_values__')) return
+
+            const pivotKeyParts = key.split('::')
+            if (pivotKeyParts.length !== 4) return
+
+            const columnKey = decodeURIComponent(pivotKeyParts[1] || '')
+            const valueField = pivotKeyParts[2] || ''
+            const aggregation = pivotKeyParts[3] as PivotAggregationType
+            const values = (row[key] as unknown as number[]) || []
+            const label = `${columnKey} | ${valueField} (${aggregation})`
+            outputRow[label] = Number(
+                aggregatePivotValues(
+                    values,
+                    aggregation as PivotAggregationType
+                ).toFixed(2)
+            )
+            if (!dynamicColumnOrder.includes(label)) {
+                dynamicColumnOrder.push(label)
+            }
+        })
+
+        return outputRow
+    })
+
+    const columns = [
+        ...rowFields.map((field) => ({
+            key: String(field),
+            label: String(field),
+        })),
+        ...dynamicColumnOrder.map((key) => ({
+            key,
+            label: key,
+        })),
+    ]
+
+    return { columns, rows }
+}
+
+export const exportPivotToCSV = (
+    rows: PivotResultRow[],
+    columns: Array<{ key: string; label: string }>,
+    filename: string
+): void => {
+    if (!rows.length || !columns.length) {
+        throw new Error('No pivot data available for export')
+    }
+
+    const header = columns.map((column) => `"${column.label}"`).join(',')
+    const lines = rows.map((row) =>
+        columns
+            .map(
+                (column) =>
+                    `"${String(row[column.key] ?? '').replace(/"/g, '""')}"`
+            )
+            .join(',')
+    )
+
+    downloadCSV([header, ...lines].join('\n'), filename)
 }

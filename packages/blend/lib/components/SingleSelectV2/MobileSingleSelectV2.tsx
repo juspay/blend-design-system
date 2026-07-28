@@ -24,7 +24,7 @@ import SingleSelectV2Trigger from './SingleSelectV2Trigger'
 import { TextInput } from '../Inputs/TextInput'
 import { TextInputSize } from '../Inputs/TextInput/types'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
-import { setupAccessibility, getValueLabelMap } from './utils'
+import { setupAccessibility, getSingleSelectV2ValueLabelMap } from './utils'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
@@ -51,7 +51,11 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
     slot,
     customTrigger,
     inline = false,
-    triggerDimensions,
+    triggerDimensions = {
+        width: 'auto',
+        minWidth: 'auto',
+        maxWidth: 'auto',
+    },
     skeleton = {
         count: 3,
         show: false,
@@ -73,15 +77,80 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
     const isSmallScreen = breakPointLabel === 'sm'
     const enableSearch = search?.show
     const searchPlaceholder = search?.placeholder ?? 'Search options...'
-    const wrapperWidth = isSmallScreen
-        ? '100%'
-        : (triggerDimensions?.width ?? 'fit-content')
 
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
+
+    if (customTrigger !== undefined && !React.isValidElement(customTrigger)) {
+        throw new Error(
+            'SingleSelectV2: customTrigger must be a valid React element.'
+        )
+    }
+    const menuItemTokens = singleSelectTokens?.menu?.item ?? {
+        paddingTop: '0px',
+        paddingRight: '0px',
+        paddingBottom: '0px',
+        paddingLeft: '0px',
+        margin: '0px',
+        borderRadius: '0px',
+        gap: 4,
+        backgroundColor: {
+            default: 'transparent',
+            hover: 'transparent',
+            active: 'transparent',
+            focus: 'transparent',
+            focusVisible: 'transparent',
+            disabled: 'transparent',
+            selected: 'transparent',
+        },
+        groupLabelText: {
+            fontSize: '12px',
+            fontWeight: 400,
+            color: {
+                default: 'inherit',
+                hover: 'inherit',
+                active: 'inherit',
+                focus: 'inherit',
+                focusVisible: 'inherit',
+                disabled: 'inherit',
+                selected: 'inherit',
+            },
+        },
+        option: {
+            fontSize: '14px',
+            fontWeight: 400,
+            color: {
+                default: 'inherit',
+                hover: 'inherit',
+                active: 'inherit',
+                focus: 'inherit',
+                focusVisible: 'inherit',
+                disabled: 'inherit',
+                selected: 'inherit',
+            },
+        },
+        description: {
+            fontSize: '12px',
+            fontWeight: 400,
+            color: {
+                default: 'inherit',
+                hover: 'inherit',
+                active: 'inherit',
+                focus: 'inherit',
+                focusVisible: 'inherit',
+                disabled: 'inherit',
+                selected: 'inherit',
+            },
+        },
+        separator: {
+            color: 'transparent',
+            height: 1,
+            margin: '0px',
+        },
+    }
     const [panelOpen, setPanelOpen] = useState(false)
     const [searchText, setSearchText] = useState('')
-    const valueLabelMap = getValueLabelMap(items)
+    const valueLabelMap = getSingleSelectV2ValueLabelMap(items)
 
     const hasMatch = React.useMemo(
         () => checkExactMatch(searchText, items),
@@ -138,8 +207,9 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
     return (
         <Block
             data-single-select-v2={label || 'single-select-v2'}
+            data-single-select={label || 'single-select-v2'}
             data-status={disabled ? 'disabled' : 'enabled'}
-            width={wrapperWidth}
+            width={triggerDimensions?.width}
             display="flex"
             flexDirection="column"
             gap={8}
@@ -211,27 +281,19 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                     <Block
                                         style={{
                                             paddingTop:
-                                                singleSelectTokens.menu.item
-                                                    .paddingTop,
+                                                menuItemTokens.paddingTop,
                                             paddingRight:
-                                                singleSelectTokens.menu.item
-                                                    .paddingRight,
+                                                menuItemTokens.paddingRight,
                                             paddingBottom:
-                                                singleSelectTokens.menu.item
-                                                    .paddingBottom,
+                                                menuItemTokens.paddingBottom,
                                             paddingLeft:
-                                                singleSelectTokens.menu.item
-                                                    .paddingLeft,
+                                                menuItemTokens.paddingLeft,
                                         }}
                                         display="flex"
                                         flexDirection="column"
-                                        gap={
-                                            singleSelectTokens.menu.item.gap ||
-                                            4
-                                        }
+                                        gap={menuItemTokens.gap || 4}
                                         borderRadius={
-                                            singleSelectTokens.menu.item
-                                                .borderRadius
+                                            menuItemTokens.borderRadius
                                         }
                                         outline="none"
                                         border="none"
@@ -486,9 +548,7 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                                                 isSelected
                                                                             }
                                                                             itemTokens={
-                                                                                singleSelectTokens
-                                                                                    .menu
-                                                                                    .item
+                                                                                menuItemTokens
                                                                             }
                                                                             onSelect={(
                                                                                 value
@@ -510,23 +570,17 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                                 group.showSeparator && (
                                                                     <Block
                                                                         height={
-                                                                            singleSelectTokens
-                                                                                .menu
-                                                                                .item
+                                                                            menuItemTokens
                                                                                 .separator
                                                                                 .height
                                                                         }
                                                                         backgroundColor={
-                                                                            singleSelectTokens
-                                                                                .menu
-                                                                                .item
+                                                                            menuItemTokens
                                                                                 .separator
                                                                                 .color
                                                                         }
                                                                         margin={
-                                                                            singleSelectTokens
-                                                                                .menu
-                                                                                .item
+                                                                            menuItemTokens
                                                                                 .separator
                                                                                 .margin
                                                                         }

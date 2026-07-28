@@ -13,6 +13,7 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     selectAll: boolean | 'indeterminate'
     sortConfig?: SortConfig | null
     enableInlineEdit?: boolean
+    showActionsColumn?: boolean
     enableColumnManager?: boolean
     enableColumnReordering?: boolean
     showSkeleton?: boolean
@@ -37,6 +38,7 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     rowActions?: RowActionsConfig<T>
     data?: T[]
     columnFreeze?: number
+    columnFreezeRight?: number
     mobileConfig?: MobileDataTableConfig
     mobileOverflowColumns?: ColumnDefinition<T>[]
     onMobileOverflowClick?: (row: T) => void
@@ -68,6 +70,10 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
         operator?: string
     }>
     onHeaderChange?: (field: keyof T, newHeader: string) => void
+    onOperations?: (field: keyof T) => void
+    onInsertLeft?: (field: keyof T) => void
+    onInsertRight?: (field: keyof T) => void
+    onDeleteColumn?: (field: keyof T) => void
     getColumnWidth: (
         column: ColumnDefinition<T>,
         index: number

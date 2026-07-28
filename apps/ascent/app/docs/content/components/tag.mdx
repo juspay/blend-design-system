@@ -1,13 +1,14 @@
 ---
 title: Tag
 description: The Tag component is a versatile UI element used for displaying labels, categories, and status indicators with multiple variants, colors, and interactive options.
-category: components
+category: Display
 tags:
     - tag
     - component
     - label
 RepoFolderName: Tags
 StorybookLink: components-tags-tag--docs
+version: 1
 ---
 
 <TagPreview />
@@ -81,31 +82,83 @@ function MyComponent() {
         ],
         [
             {
-                content: 'leftSlot',
-                hintText: 'Content displayed before the text',
+                content: 'Tag.leftSlot',
+                hintText:
+                    'Optional React element displayed before the text content. Can be used for icons, badges, or other visual elements that provide additional context. The slot maintains proper spacing and alignment with the text.',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
             {
-                content: 'rightSlot',
-                hintText: 'Content displayed after the text',
+                content: 'Tag.rightSlot',
+                hintText:
+                    'Optional React element displayed after the text content. Can be used for icons, badges, or other visual elements that provide additional context. The slot maintains proper spacing and alignment with the text.',
             },
             { content: 'React.ReactNode', hintText: 'React node' },
             { content: '' },
         ],
         [
-            { content: 'onClick', hintText: 'Click handler function' },
+            {
+                content: 'Tag.onClick',
+                hintText:
+                    'Optional callback function invoked when the tag is clicked. Use this to handle click interactions such as filtering, navigation, or toggling states. When provided, the tag becomes interactive with hover and active states.',
+            },
             { content: '() => void', hintText: 'function' },
             { content: '' },
         ],
         [
             {
-                content: 'splitTagPosition',
-                hintText: 'Position for split tag styling',
+                content: 'Tag.splitTagPosition',
+                hintText:
+                    'Optional position value used when the tag is part of a SplitTag component. LEFT indicates this tag is the left/primary portion of a split tag, RIGHT indicates this tag is the right/secondary portion. Controls border radius adjustments where the tags meet.',
             },
             { content: "'left' | 'right'", hintText: 'string union' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.showSkeleton',
+                hintText:
+                    'When true, displays a skeleton loading placeholder instead of the actual tag content. This provides visual feedback during data loading, preventing layout shifts and improving perceived performance. Defaults to false.',
+            },
+            { content: 'boolean', hintText: 'boolean' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.skeletonVariant',
+                hintText:
+                    'Optional SkeletonVariant enum that determines the animation style for skeleton loading states. PULSE creates a gentle fade in/out effect, WAVE creates a shimmer wave animation, SHIMMER creates a bright shimmer effect. Defaults to PULSE.',
+            },
+            { content: 'SkeletonVariant', hintText: 'enum' },
+            { content: 'PULSE, WAVE, SHIMMER' },
+        ],
+        [
+            {
+                content: 'Tag.maxWidth',
+                hintText:
+                    'Optional CSS max-width value for the tag. Limits the maximum width of the tag, useful for preventing tags from growing too wide with long text. Text overflow is handled with ellipsis.',
+            },
+            { content: 'string | number', hintText: 'CSS max-width value' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.minWidth',
+                hintText:
+                    'Optional CSS min-width value for the tag. Sets a minimum width for the tag, ensuring consistent sizing even with short text content.',
+            },
+            { content: 'string | number', hintText: 'CSS min-width value' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Tag.width',
+                hintText:
+                    'Optional CSS width value for the tag. Sets a fixed width for the tag. If not provided, the tag sizes to fit its content.',
+            },
+            { content: 'string | number', hintText: 'CSS width value' },
             { content: '' },
         ],
     ]}

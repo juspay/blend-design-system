@@ -1,4 +1,62 @@
 /* Global styles for Storybook preview */
+@import 'tailwindcss';
+@source '../stories/**/*.{js,ts,jsx,tsx}';
+
+/* Font face declarations */
+@font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-sans/GeistVariableVF.woff2')
+        format('woff2-variations');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.2.0/dist/fonts/geist-mono/GeistMonoVariableVF.woff2')
+        format('woff2-variations');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Manrope';
+    src: url('https://fonts.gstatic.com/s/manrope/v15/xn7gYHE41ni1AdIRmmbx.woff2')
+        format('woff2-variations');
+    font-weight: 200 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* CSS variables for fonts */
+:root {
+    --font-geist:
+        'Geist', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+        sans-serif;
+    --font-geist-mono:
+        'Geist Mono', ui-monospace, 'SF Mono', Menlo, Monaco, Consolas,
+        monospace;
+    --font-manrope:
+        'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+        sans-serif;
+}
+
+/* Tailwind theme configuration */
+@theme {
+    --font-sans: var(--font-geist);
+    --font-mono: var(--font-geist-mono);
+    --font-manrope: var(--font-manrope);
+}
+
+/* Global font styles - Geist as default */
+html,
+body {
+    font-family: var(--font-geist);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
 /* Ensure the storybook preview container has proper positioning context */
 #storybook-root,
@@ -21,63 +79,9 @@
     overflow: visible !important;
 }
 
-/* Ensure the iframe body has enough height for dropdowns */
-body {
-    min-height: 100vh;
-    position: relative;
-}
-
-/* Fix for avatar group menu positioning */
-[role='group'] {
-    position: relative;
-}
-
 /* Ensure menus/dropdowns have high z-index */
 [role='menu'],
 [role='listbox'],
 .menu-container {
     z-index: 9999 !important;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    all: unset;
-}
-
-p {
-    all: unset;
-    display: block;
-}
-
-/* Reset input styles to prevent browser defaults */
-input {
-    border: none;
-    outline: none;
-    background: transparent;
-    box-sizing: border-box;
-    font-family: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    margin: 0;
-    padding: 0;
-}
-
-/* Remove any default input styling */
-input:focus {
-    outline: none;
-    box-shadow: none;
-}
-
-/* Remove browser autofill styles */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-    -webkit-box-shadow: none !important;
-    box-shadow: none !important;
-    transition: background-color 5000s ease-in-out 0s;
 }

@@ -2,9 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
+import { normalizeDirectoryData } from '../Directory/utils'
 import SidebarHeader from './SidebarHeader'
 import SidebarFooter from './SidebarFooter'
-import type { DirectoryData } from '../Directory/types'
+import type { DirectoryData, DirectoryProps } from '../Directory/types'
 import type { SidebarMerchantInfo, SidebarStateChangeType } from './types'
 
 const DirectoryContainer = styled(Block)<{
@@ -35,7 +36,7 @@ export type SidebarContentProps = {
     sidebarNavId?: string
     showTopBlur: boolean
     showBottomBlur: boolean
-    data: DirectoryData[]
+    data: DirectoryData[] | null
     idPrefix: string
     activeItem?: string | null
     onActiveItemChange?: (item: string | null) => void
@@ -44,6 +45,14 @@ export type SidebarContentProps = {
     footer?: React.ReactNode
     setIsHovering?: (isHovering: boolean) => void
     sidebarState?: SidebarStateChangeType
+    showHierarchyLines?: DirectoryProps['showHierarchyLines']
+    hierarchyLineBorderRadius?: DirectoryProps['hierarchyLineBorderRadius']
+    expandedItems?: DirectoryProps['expandedItems']
+    defaultExpandedItems?: DirectoryProps['defaultExpandedItems']
+    onExpandedItemsChange?: DirectoryProps['onExpandedItemsChange']
+    onItemExpand?: DirectoryProps['onItemExpand']
+    enableVirtualization?: DirectoryProps['enableVirtualization']
+    virtualization?: DirectoryProps['virtualization']
 }
 
 const SidebarContent: React.FC<SidebarContentProps> = ({
@@ -65,7 +74,17 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
     footer,
     setIsHovering,
     sidebarState = 'expanded',
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
+    expandedItems,
+    defaultExpandedItems,
+    onExpandedItemsChange,
+    onItemExpand,
+    enableVirtualization = false,
+    virtualization,
 }) => {
+    const directoryData = normalizeDirectoryData(data)
+
     return (
         <Block
             data-element="sidebar-content"
@@ -77,7 +96,12 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
             minWidth={0}
             flexShrink={0}
             overflow="hidden"
-            transition="width 0.25s ease-in-out"
+            transition="width 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
+            style={{
+                willChange: 'width',
+                transform: 'translateZ(0)',
+                contain: 'layout paint',
+            }}
         >
             <SidebarHeader
                 sidebarTopSlot={sidebarTopSlot}
@@ -100,12 +124,20 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                 onMouseEnter={() => setIsHovering?.(true)}
             >
                 <Directory
-                    directoryData={data}
+                    directoryData={directoryData}
                     idPrefix={idPrefix}
                     activeItem={activeItem}
                     onActiveItemChange={onActiveItemChange}
                     defaultActiveItem={defaultActiveItem}
                     iconOnlyMode={iconOnlyMode}
+                    showHierarchyLines={showHierarchyLines}
+                    hierarchyLineBorderRadius={hierarchyLineBorderRadius}
+                    expandedItems={expandedItems}
+                    defaultExpandedItems={defaultExpandedItems}
+                    onExpandedItemsChange={onExpandedItemsChange}
+                    onItemExpand={onItemExpand}
+                    enableVirtualization={enableVirtualization}
+                    virtualization={virtualization}
                 />
             </DirectoryContainer>
 

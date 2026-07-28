@@ -1,0 +1,269 @@
+---
+version: 2
+title: Tooltip
+description: The TooltipV2 component displays informative text when users hover over or focus on an element.
+category: Feedback
+tags:
+    - tooltip
+    - component
+    - overlay
+    - help
+    - info
+RepoFolderName: TooltipV2
+StorybookLink: components-tooltip-tooltipv2--docs
+---
+
+<TooltipV2Preview />
+
+## Usage
+
+```tsx
+import {
+    TooltipV2,
+    TooltipV2Side,
+    TooltipV2Align,
+    TooltipV2Size,
+    TooltipV2SlotDirection,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <TooltipV2
+            content="This is helpful information"
+            side={TooltipV2Side.TOP}
+            align={TooltipV2Align.CENTER}
+            size={TooltipV2Size.MD}
+            showArrow={true}
+        >
+            <Button text="Hover me" />
+        </TooltipV2>
+    )
+}
+```
+
+## With Slot
+
+```tsx
+import { TooltipV2, TooltipV2SlotDirection } from '@juspay/blend-design-system'
+;<TooltipV2
+    content="More details available"
+    slot={<InfoIcon />}
+    slotDirection={TooltipV2SlotDirection.RIGHT}
+>
+    <span>Status</span>
+</TooltipV2>
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'children',
+                hintText:
+                    'Required. Element that triggers the tooltip on hover/focus.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Trigger element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'content',
+                hintText: 'Required. Text or element displayed in the tooltip.',
+            },
+            {
+                content: 'ReactNode | string',
+                hintText: 'Tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'open',
+                hintText: 'Controlled open state of the tooltip.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows the tooltip',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onOpenChange',
+                hintText: 'Callback fired when tooltip open state changes.',
+            },
+            {
+                content: '(open: boolean) => void',
+                hintText: 'Open state change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'side',
+                hintText: 'Position of the tooltip relative to the trigger.',
+            },
+            {
+                content: 'TooltipV2Side',
+                hintText: 'Enum for tooltip position',
+            },
+            { content: 'top, right, bottom, left' },
+        ],
+        [
+            {
+                content: 'align',
+                hintText: 'Alignment of the tooltip along the trigger edge.',
+            },
+            {
+                content: 'TooltipV2Align',
+                hintText: 'Enum for alignment',
+            },
+            { content: 'start, center, end' },
+        ],
+        [
+            {
+                content: 'showArrow',
+                hintText:
+                    'When true, displays an arrow pointing to the trigger.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true shows the arrow',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Preset size affecting padding and max-width.',
+            },
+            {
+                content: 'TooltipV2Size',
+                hintText: 'Enum for tooltip size',
+            },
+            { content: 'sm, md, lg' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText:
+                    'Additional element displayed in the tooltip content.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Slot element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slotDirection',
+                hintText: 'Position of the slot relative to the content.',
+            },
+            {
+                content: 'TooltipV2SlotDirection',
+                hintText: 'Enum for slot position',
+            },
+            { content: 'left, right' },
+        ],
+        [
+            {
+                content: 'delayDuration',
+                hintText: 'Delay in milliseconds before showing the tooltip.',
+            },
+            {
+                content: 'number',
+                hintText: 'Delay in ms',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'offset',
+                hintText: 'Distance between trigger and tooltip in pixels.',
+            },
+            {
+                content: 'number',
+                hintText: 'Offset in px',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText: 'Maximum width constraint for the tooltip.',
+            },
+            {
+                content: 'string',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'fullWidth',
+                hintText:
+                    'When true, tooltip stretches to match trigger width.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true makes tooltip full-width',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disableInteractive',
+                hintText: 'When true, prevents hovering on tooltip content.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables tooltip interactivity',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the TooltipV2 component using the following tokens:
+
+```tsx
+export type TooltipV2TokensType = {
+    background: CSSObject['backgroundColor']
+    borderRadius: {
+        [key in TooltipV2Size]: CSSObject['borderRadius']
+    }
+    maxWidth: {
+        [key in TooltipV2Size]: CSSObject['maxWidth']
+    }
+    padding: {
+        [key in TooltipV2Size]: CSSObject['padding']
+    }
+    gap: {
+        [key in TooltipV2Size]: CSSObject['gap']
+    }
+    text: {
+        color: CSSObject['color']
+        fontWeight: {
+            [key in TooltipV2Size]: CSSObject['fontWeight']
+        }
+        fontSize: {
+            [key in TooltipV2Size]: CSSObject['fontSize']
+        }
+        lineHeight: {
+            [key in TooltipV2Size]: CSSObject['lineHeight']
+        }
+    }
+    zIndex: CSSObject['zIndex']
+}
+```

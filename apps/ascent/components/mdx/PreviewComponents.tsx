@@ -46,10 +46,52 @@ const PREVIEW_COMPONENT_NAMES = [
     'DateRangePicker',
     'CodeBlock',
     'Card',
+    'Topbar',
     'Upload',
     'KeyValuePair',
     'Stepper',
     'ChatInput',
+    // V2 Components
+    'AccordionV2',
+    'AlertV2',
+    'AvatarV2',
+    'Badge',
+    'BreadcrumbV2',
+    'ChartsV2',
+    'CodeEditorV2',
+    'DrawerV2',
+    'KeyValuePairV2',
+    'MenuV2',
+    'ModalV2',
+    'MultiSelectV2',
+    'PopoverV2',
+    'ProgressBarV2',
+    'SidebarV2',
+    'SingleSelectV2',
+    'SnackbarV2',
+    'StatCardV2',
+    'StepperV2',
+    'TabsV2',
+    'TagV2',
+    'TagGroupV2',
+    'TooltipV2',
+    'TextInputV2',
+    'TextAreaV2',
+    'NumberInputV2',
+    'SearchInputV2',
+    'ChatInputV2',
+    'OTPInputV2',
+    'MultiValueInputV2',
+    'ButtonV2',
+    'ButtonGroupV2',
+    'CardV2',
+    'SelectV2',
+    'CheckboxV2',
+    'RadioV2',
+    'SwitchV2',
+    'Timeline',
+    'TopbarV2',
+    'UploadV2',
 ] as const
 
 // Generate all preview components programmatically
@@ -104,3 +146,7 @@ export const UploadPreview = PreviewComponents.UploadPreview
 export const KeyValuePairPreview = PreviewComponents.KeyValuePairPreview
 export const StepperPreview = PreviewComponents.StepperPreview
 export const ChatInputPreview = PreviewComponents.ChatInputPreview
+export const ButtonV2Preview = PreviewComponents.ButtonV2Preview
+export const CheckboxV2Preview = PreviewComponents.CheckboxV2Preview
+export const RadioV2Preview = PreviewComponents.RadioV2Preview
+export const SwitchV2Preview = PreviewComponents.SwitchV2Preview

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
     Upload,
     UploadState,
@@ -14,6 +14,8 @@ import {
     Video,
     Music,
 } from 'lucide-react'
+import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
+import Text from '../../../../packages/blend/lib/components/Text/Text'
 
 const UploadDemo = () => {
     // Playground state
@@ -27,7 +29,14 @@ const UploadDemo = () => {
     // Simple state for reset buttons
     const [resetKey, setResetKey] = useState(0)
 
-    const renderCustomSlot = () => <UploadIcon size={32} color="#6366f1" />
+    const renderCustomSlot = () => (
+        <Block>
+            <Text fontSize="16px" fontWeight="bold" color="#6366f1">
+                Upload Files
+            </Text>
+            <UploadIcon size={32} color="#6366f1" />
+        </Block>
+    )
 
     return (
         <div className="p-8 space-y-12">
@@ -157,6 +166,9 @@ const UploadDemo = () => {
                     </p>
                 </div>
             </div>
+
+            {/* Unmount cleanup test */}
+            <UnmountCleanupExample />
 
             {/* Real-World API Upload Demo */}
             <div className="space-y-6">
@@ -484,6 +496,187 @@ const UploadDemo = () => {
                         </code>
                     </p>
                     <MultipleFilesFormExample />
+                </div>
+            </div>
+        </div>
+    )
+}
+
+const DEMO_UPLOAD_FILE_NAME = 'simulated-upload.txt'
+
+const UnmountCleanupExample = () => {
+    const [isMounted, setIsMounted] = useState(true)
+    const [mountKey, setMountKey] = useState(0)
+    const [logs, setLogs] = useState<string[]>([])
+    const containerRef = useRef<HTMLDivElement>(null)
+
+    const appendLog = (message: string) => {
+        setLogs((prev) => [
+            ...prev,
+            `${new Date().toLocaleTimeString()}: ${message}`,
+        ])
+    }
+
+    useEffect(() => {
+        const originalWarn = console.warn
+        const originalError = console.error
+
+        const captureReactLeak = (level: 'warn' | 'error', args: unknown[]) => {
+            const message = args.map((arg) => String(arg)).join(' ')
+            if (
+                message.includes('unmounted component') ||
+                message.includes('memory leak') ||
+                message.includes("Can't perform a React state update")
+            ) {
+                setLogs((prev) => [
+                    ...prev,
+                    `${new Date().toLocaleTimeString()}: [${level}] ${message}`,
+                ])
+            }
+        }
+
+        console.warn = (...args: unknown[]) => {
+            captureReactLeak('warn', args)
+            originalWarn(...args)
+        }
+        console.error = (...args: unknown[]) => {
+            captureReactLeak('error', args)
+            originalError(...args)
+        }
+
+        return () => {
+            console.warn = originalWarn
+            console.error = originalError
+        }
+    }, [])
+
+    const triggerUpload = () => {
+        if (!isMounted) {
+            appendLog('Upload is unmounted — click Remount first')
+            return
+        }
+
+        const file = new File(['demo content'], DEMO_UPLOAD_FILE_NAME, {
+            type: 'text/plain',
+        })
+        const fileInput = containerRef.current?.querySelector(
+            'input[type="file"]'
+        ) as HTMLInputElement | null
+
+        if (!fileInput) {
+            appendLog('Could not find file input inside Upload')
+            return
+        }
+
+        const dataTransfer = new DataTransfer()
+        dataTransfer.items.add(file)
+        fileInput.files = dataTransfer.files
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }))
+        appendLog(`Started simulated upload (${DEMO_UPLOAD_FILE_NAME})`)
+    }
+
+    const handleUnmount = () => {
+        setIsMounted(false)
+        appendLog('Upload component unmounted')
+    }
+
+    const handleRemount = () => {
+        setMountKey((key) => key + 1)
+        setIsMounted(true)
+        appendLog('Upload component remounted')
+    }
+
+    return (
+        <div className="space-y-6">
+            <h2 className="text-2xl font-bold">Unmount Cleanup Test</h2>
+            <p className="text-sm text-gray-600 max-w-3xl">
+                Verifies simulated upload timers are cancelled when Upload
+                unmounts. Steps: (1) click <strong>Start upload</strong> and
+                wait for progress to begin, (2) within ~1s click{' '}
+                <strong>Unmount</strong>. A fixed build should show no React
+                memory-leak warning in the panel below.
+            </p>
+
+            <div className="flex flex-wrap gap-3">
+                <button
+                    type="button"
+                    onClick={triggerUpload}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                >
+                    Start upload
+                </button>
+                <button
+                    type="button"
+                    onClick={handleUnmount}
+                    disabled={!isMounted}
+                    className="px-4 py-2 bg-amber-500 text-white rounded hover:bg-amber-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                    Unmount
+                </button>
+                <button
+                    type="button"
+                    onClick={handleRemount}
+                    disabled={isMounted}
+                    className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                >
+                    Remount
+                </button>
+                <button
+                    type="button"
+                    onClick={() => setLogs([])}
+                    className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors"
+                >
+                    Clear logs
+                </button>
+            </div>
+
+            <div
+                ref={containerRef}
+                className="min-h-48 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200 p-8"
+            >
+                {isMounted ? (
+                    <Upload
+                        key={`unmount-test-${mountKey}`}
+                        label="Simulated Upload"
+                        description="Internal progress simulation (200ms ticks)"
+                        accept={['.txt']}
+                        progressSpeed={200}
+                        style={{ width: '480px' }}
+                    >
+                        <UploadIcon size={32} color="#6366f1" />
+                    </Upload>
+                ) : (
+                    <p className="text-sm text-gray-500">
+                        Upload unmounted — progress timers should be cancelled
+                    </p>
+                )}
+            </div>
+
+            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 className="font-semibold text-sm mb-2">
+                    Captured console output
+                </h3>
+                <div className="text-xs space-y-1 max-h-48 overflow-y-auto font-mono bg-white p-3 rounded border">
+                    {logs.length > 0 ? (
+                        logs.map((log, index) => (
+                            <div
+                                key={index}
+                                className={
+                                    log.includes('[warn]') ||
+                                    log.includes('[error]')
+                                        ? 'text-red-700'
+                                        : 'text-gray-700'
+                                }
+                            >
+                                {log}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="text-gray-500">
+                            No warnings captured yet. Start an upload, then
+                            unmount quickly.
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

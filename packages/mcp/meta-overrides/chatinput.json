@@ -1,0 +1,50 @@
+{
+    "componentDescription": "ChatInput is a message composition input for chat and messaging interfaces. It includes a send button, supports attachment slots, and handles multi-line message entry. Use it for chat UIs, AI assistant interfaces, and comment boxes that need more affordance than a plain TextArea.",
+    "features": [
+        "Multi-line message input",
+        "Send button (enabled when input has content)",
+        "Optional attachment slot for file/image upload buttons",
+        "Character limit support",
+        "Disabled state during message sending",
+        "Submit on Enter (with Shift+Enter for new line)"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Basic chat message input",
+            "description": "Simple chat input that sends on button click or Enter.",
+            "code": "<ChatInput\n  value={message}\n  onSend={handleSendMessage}\n  placeholder=\"Type a message...\"\n  disabled={isSending}\n/>"
+        },
+        {
+            "title": "AI assistant input with attachments",
+            "description": "Chat input for an AI interface with file attachment option.",
+            "code": "<ChatInput\n  value={prompt}\n  onSend={handleSendPrompt}\n  placeholder=\"Ask anything...\"\n  maxLength={4000}\n  disabled={isGenerating}\n  attachmentSlot={\n    <Tooltip content=\"Attach file\">\n      <Button\n        buttonType={ButtonType.SECONDARY}\n        size={ButtonSize.SMALL}\n        subType={ButtonSubType.ICON_ONLY}\n        leadingIcon={<PaperclipIcon />}\n        onClick={triggerFileUpload}\n      />\n    </Tooltip>\n  }\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. Controlled message content string. Manage with useState. After sending, reset this to empty string. The send button is disabled when value is empty or only whitespace.",
+            "propDescription": "Required. Controlled message input value"
+        },
+        "onSend": {
+            "llmContext": "Required. Called with the current message string when the user clicks Send or presses Enter (without Shift). This fires only when the input has non-empty content. Reset value to empty string after calling your send handler.",
+            "propDescription": "Required. Called with message string when user sends"
+        },
+        "placeholder": {
+            "llmContext": "Hint text shown when the input is empty. Use conversational prompts like 'Type a message...', 'Ask a question...', or 'Reply...' to set expectations for the type of input expected.",
+            "propDescription": "Placeholder text shown when input is empty"
+        },
+        "disabled": {
+            "llmContext": "Set to true while a message is being sent or an AI response is being generated. Prevents duplicate submissions. Show a loading indicator alongside the disabled input so users know their message is processing.",
+            "propDescription": "Disables input during message processing"
+        },
+        "maxLength": {
+            "llmContext": "Maximum character limit for the message. Set based on your backend's limits (API token limits for AI, message size limits for chat). Shows a counter when the user approaches the limit.",
+            "propDescription": "Maximum character count for the message"
+        },
+        "attachmentSlot": {
+            "llmContext": "React node rendered inside the input area as an attachment affordance. Typically a paperclip icon button that triggers a file picker. Keep it compact — it sits inside the input chrome.",
+            "propDescription": "React node for attachment controls within the input"
+        }
+    }
+}

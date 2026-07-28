@@ -15,7 +15,12 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import MobileSingleSelectV2 from './MobileSingleSelectV2'
-import { getBorderRadius, getValueLabelMap, setupAccessibility } from './utils'
+import {
+    getSingleSelectV2BorderRadius,
+    getSingleSelectV2ValueLabelMap,
+    setupAccessibility,
+} from './utils'
+import { useDropdownInteractionLock } from '../../hooks'
 
 const SingleSelectV2 = ({
     label,
@@ -38,7 +43,11 @@ const SingleSelectV2 = ({
     usePanelOnMobile = true,
     menuPosition,
     menuDimensions,
-    triggerDimensions,
+    triggerDimensions = {
+        width: 'auto',
+        minWidth: 'auto',
+        maxWidth: 'auto',
+    },
     inline = false,
     enableVirtualization,
     virtualListItemHeight,
@@ -55,6 +64,7 @@ const SingleSelectV2 = ({
     allowCustomValue = false,
     customValueLabel = 'Specify',
     singleSelectGroupPosition,
+    menuFooter,
     ...rest
 }: SingleSelectV2Props) => {
     const { disabled, name, ...buttonRest } = rest as {
@@ -70,6 +80,12 @@ const SingleSelectV2 = ({
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
 
+    if (customTrigger !== undefined && !isValidElement(customTrigger)) {
+        throw new Error(
+            'SingleSelectV2: customTrigger must be a valid React element.'
+        )
+    }
+
     const [internalOpen, setInternalOpen] = useState(false)
     const open =
         controlledOpen !== undefined ? Boolean(controlledOpen) : internalOpen
@@ -82,7 +98,10 @@ const SingleSelectV2 = ({
         [controlledOpen, onControlledOpenChange]
     )
 
-    const valueLabelMap = useMemo(() => getValueLabelMap(items), [items])
+    const valueLabelMap = useMemo(
+        () => getSingleSelectV2ValueLabelMap(items),
+        [items]
+    )
     const safeItems = items ?? []
     const isItemSelected = Boolean(selected)
     const isSmallScreenWithLargeSize =
@@ -116,7 +135,7 @@ const SingleSelectV2 = ({
         'aria-invalid': ariaAttributes['aria-invalid'] as boolean | undefined,
     }
 
-    const borderConfig = getBorderRadius(
+    const borderConfig = getSingleSelectV2BorderRadius(
         size,
         variant,
         singleSelectGroupPosition,
@@ -134,11 +153,7 @@ const SingleSelectV2 = ({
     const shouldEnableVirtualization =
         enableVirtualization ?? safeItems.length > 20
 
-    if (customTrigger && !isValidElement(customTrigger)) {
-        throw new Error(
-            'SingleSelectV2: customTrigger must be a valid React element.'
-        )
-    }
+    useDropdownInteractionLock(!isSmallScreen && open)
 
     if (isSmallScreen && usePanelOnMobile) {
         return (
@@ -177,13 +192,12 @@ const SingleSelectV2 = ({
         )
     }
 
-    const triggerWidth = triggerDimensions?.width ?? 'fit-content'
-
     return (
         <Block
             data-single-select-v2={label || 'single-select-v2'}
+            data-single-select={label || 'single-select-v2'}
             data-status={disabled ? 'disabled' : 'enabled'}
-            width={triggerWidth === '100%' ? '100%' : 'fit-content'}
+            width={'auto'}
             display="flex"
             flexDirection="column"
             gap={singleSelectTokens.gap}
@@ -209,8 +223,8 @@ const SingleSelectV2 = ({
             >
                 <Block
                     position="relative"
-                    width={triggerWidth === '100%' ? '100%' : 'fit-content'}
-                    maxWidth={triggerWidth === '100%' ? '100%' : 'fit-content'}
+                    width={triggerDimensions.width}
+                    maxWidth={triggerDimensions.maxWidth}
                     display="flex"
                     alignItems="center"
                 >
@@ -235,6 +249,7 @@ const SingleSelectV2 = ({
                         allowCustomValue={allowCustomValue}
                         customValueLabel={customValueLabel}
                         menuId={menuId}
+                        menuFooter={menuFooter}
                         size={size}
                         variant={variant}
                         trigger={

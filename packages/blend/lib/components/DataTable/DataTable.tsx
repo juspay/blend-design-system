@@ -1,4 +1,4 @@
-import {
+import React, {
     useState,
     useEffect,
     useMemo,
@@ -61,6 +61,9 @@ import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import MobileColumnDrawer from './MobileColumnDrawer'
+// eslint-disable-next-line import-x/no-cycle -- intentional recursion: DataTable renders PivotTableModal whose preview renders a nested DataTable
+import PivotTableModal from './PivotTableModal'
+import type { PivotTableConfig } from './PivotTableModal/types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import styled from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -97,6 +100,7 @@ const DataTable = forwardRef(
             advancedFilterComponent,
             advancedFilters = [],
             columnFreeze = 0,
+            columnFreezeRight = 0,
             serverSideSearch = false,
             serverSideFiltering = false,
             serverSidePagination = false,
@@ -114,8 +118,10 @@ const DataTable = forwardRef(
             showSettings = false,
             showFooter = true,
             enableInlineEdit = false,
+            showActionsColumn = true,
             enableRowExpansion = false,
             enableRowSelection = false,
+            rowSelectionConfig,
             showBulkActionBar = true,
             onRowSelectionChange,
             renderExpandedRow,
@@ -144,9 +150,18 @@ const DataTable = forwardRef(
             headerSlot2,
             bulkActions,
             rowActions,
+            onOperations,
+            onInsertLeft,
+            onInsertRight,
+            onDeleteColumn,
             getRowStyle,
+            enableRowAnimation,
+            rowAnimationConfig,
             tableBodyHeight,
             mobileColumnsToShow,
+            enablePivotTable = false,
+            pivotTableConfig,
+            dateLabel,
             ...rest
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
@@ -198,6 +213,10 @@ const DataTable = forwardRef(
             return allVisibleColumns
         })
         useEffect(() => {
+            const existingVisibleKeys = new Set(
+                visibleColumns.map((c) => c.field)
+            )
+
             const updatedVisibleColumns: ColumnDefinition<T>[] = []
 
             visibleColumns.forEach((col) => {
@@ -206,20 +225,39 @@ const DataTable = forwardRef(
                 )
 
                 if (matchingColumn) {
-                    const updatedColumn = {
-                        ...col,
-                        ...matchingColumn,
-                    } as ColumnDefinition<T>
-                    updatedVisibleColumns.push(updatedColumn)
-                } else {
-                    updatedVisibleColumns.push(col)
+                    if (matchingColumn.isVisible !== false) {
+                        const updatedColumn = {
+                            ...col,
+                            ...matchingColumn,
+                        } as ColumnDefinition<T>
+                        updatedVisibleColumns.push(updatedColumn)
+                    }
                 }
             })
 
-            const hasChanges = updatedVisibleColumns.some(
-                (updatedCol, index) => {
+            const newColumns = initialColumns.filter(
+                (col) =>
+                    !existingVisibleKeys.has(col.field) &&
+                    col.isVisible !== false
+            )
+
+            newColumns.forEach((newCol) => {
+                const initialIndex = initialColumns.findIndex(
+                    (c) => c.field === newCol.field
+                )
+                const insertIndex = Math.min(
+                    initialIndex,
+                    updatedVisibleColumns.length
+                )
+                updatedVisibleColumns.splice(insertIndex, 0, newCol)
+            })
+
+            const hasChanges =
+                visibleColumns.length !== updatedVisibleColumns.length ||
+                updatedVisibleColumns.some((updatedCol, index) => {
                     const originalCol = visibleColumns[index]
                     if (!originalCol) return true
+                    if (updatedCol.field !== originalCol.field) return true
 
                     return (
                         updatedCol.headerSubtext !==
@@ -228,8 +266,7 @@ const DataTable = forwardRef(
                         (updatedCol.type === ColumnType.CUSTOM &&
                             updatedCol.renderCell !== originalCol.renderCell)
                     )
-                }
-            )
+                })
 
             if (hasChanges) {
                 setVisibleColumns(updatedVisibleColumns)
@@ -286,6 +323,7 @@ const DataTable = forwardRef(
         >({})
 
         const [isFormatEnabled, setIsFormatEnabled] = useState<boolean>(true)
+        const [isPivotModalOpen, setIsPivotModalOpen] = useState<boolean>(false)
 
         const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false)
         const [selectedRowForDrawer, setSelectedRowForDrawer] =
@@ -623,20 +661,67 @@ const DataTable = forwardRef(
             pagination?.pageSize,
         ])
 
+        // Stable row ID list for the current page. Used for selection state and
+        // as a cheap signal to remount the tbody when results change (e.g. server-side search).
+        const currentPageRowIds = useMemo(() => {
+            return currentData.map((row) => String(row[idField]))
+        }, [currentData, idField])
+
+        // Monotonically increasing "dataVersion" for the current page's row IDs.
+        // This avoids expensive per-character hashing in TableBody while still
+        // forcing a remount when IDs change but length/first/last stay the same.
+        const [tbodyDataVersion, setTbodyDataVersion] = useState(0)
+        const prevPageRowIdsRef = useRef<string[] | null>(null)
+        useEffect(() => {
+            const prev = prevPageRowIdsRef.current
+            let changed =
+                prev == null || prev.length !== currentPageRowIds.length
+
+            if (!changed && prev) {
+                for (let i = 0; i < prev.length; i++) {
+                    if (prev[i] !== currentPageRowIds[i]) {
+                        changed = true
+                        break
+                    }
+                }
+            }
+
+            if (changed) {
+                setTbodyDataVersion((v) => v + 1)
+            }
+            prevPageRowIdsRef.current = currentPageRowIds
+        }, [currentPageRowIds])
+
         const updateSelectAllState = (
             selectedRowsState: Record<string, boolean>
         ) => {
-            const currentPageRowIds = currentData.map((row) =>
-                String(row[idField])
-            )
-            const selectedCurrentPageRows = currentPageRowIds.filter(
+            const selectableRowIds = currentData
+                .map((row, index) => ({
+                    row,
+                    rowId: String(row[idField]),
+                    index,
+                }))
+                .filter(
+                    ({ row, index }) =>
+                        !(isRowDisabledFn && isRowDisabledFn(row, index))
+                )
+                .map(({ rowId }) => rowId)
+
+            const totalSelectableCount = selectableRowIds.length
+
+            if (totalSelectableCount === 0) {
+                setSelectAll(false)
+                return
+            }
+
+            const selectedCurrentPageRows = selectableRowIds.filter(
                 (rowId) => selectedRowsState[rowId]
             )
 
             if (selectedCurrentPageRows.length === 0) {
                 setSelectAll(false)
             } else if (
-                selectedCurrentPageRows.length === currentPageRowIds.length
+                selectedCurrentPageRows.length === totalSelectableCount
             ) {
                 setSelectAll(true)
             } else {
@@ -648,19 +733,27 @@ const DataTable = forwardRef(
             updateSelectAllState(selectedRows)
         }, [currentData, selectedRows])
 
+        const hasMountedScrollRef = useRef(false)
         useEffect(() => {
             const currentColumnCount = visibleColumns.length
 
-            if (
-                currentColumnCount > previousColumnCount &&
-                scrollContainerRef.current
-            ) {
-                setTimeout(() => {
-                    if (scrollContainerRef.current) {
-                        scrollContainerRef.current.scrollLeft =
-                            scrollContainerRef.current.scrollWidth
-                    }
-                }, 100)
+            if (hasMountedScrollRef.current) {
+                const el = scrollContainerRef.current
+                const shouldScrollToEnd =
+                    currentColumnCount > previousColumnCount &&
+                    !!el &&
+                    el.scrollWidth - (el.scrollLeft + el.clientWidth) < 16
+
+                if (shouldScrollToEnd) {
+                    setTimeout(() => {
+                        if (scrollContainerRef.current) {
+                            scrollContainerRef.current.scrollLeft =
+                                scrollContainerRef.current.scrollWidth
+                        }
+                    }, 100)
+                }
+            } else {
+                hasMountedScrollRef.current = true
             }
 
             setPreviousColumnCount(currentColumnCount)
@@ -672,9 +765,12 @@ const DataTable = forwardRef(
             const newSelectedRows = { ...selectedRows }
 
             if (newSelectAll) {
-                currentData.forEach((row) => {
+                currentData.forEach((row, index) => {
                     const rowId = String(row[idField])
-                    newSelectedRows[rowId] = true
+                    // Only select rows that are not disabled
+                    if (!(isRowDisabledFn && isRowDisabledFn(row, index))) {
+                        newSelectedRows[rowId] = true
+                    }
                 })
             } else {
                 currentData.forEach((row) => {
@@ -713,8 +809,69 @@ const DataTable = forwardRef(
             }
         }
 
-        const handleRowSelect = (rowId: unknown) => {
+        const isRowDisabledFn = rowSelectionConfig?.isDisabled
+
+        const handleRowSelect = (rowId: unknown, rowIndex?: number) => {
             const rowIdStr = String(rowId)
+
+            // If no index provided, fall back to find (for backwards compatibility)
+            if (rowIndex === undefined) {
+                const row = currentData.find(
+                    (r) => String(r[idField]) === rowIdStr
+                )
+                if (!row || (isRowDisabledFn && isRowDisabledFn(row, -1))) {
+                    return
+                }
+                // Continue with the found row
+                const isSelected = !selectedRows[rowIdStr]
+                const newSelectedRows = {
+                    ...selectedRows,
+                    [rowIdStr]: isSelected,
+                }
+                setSelectedRows(newSelectedRows)
+                updateSelectAllState(newSelectedRows)
+
+                if (onRowSelectionChange) {
+                    const selectedRowIds = Object.entries(newSelectedRows)
+                        .filter(([, selected]) => selected)
+                        .map(([id]) => id)
+
+                    const rawRowData = data.find(
+                        (d) => String(d[idField]) === rowIdStr
+                    )
+                    const rowDataFromCurrent = currentData.find(
+                        (row) => String(row[idField]) === rowIdStr
+                    )
+                    const rowDataToPass = (rawRowData ||
+                        rowDataFromCurrent) as T
+
+                    if (rowDataToPass) {
+                        onRowSelectionChange(
+                            selectedRowIds,
+                            isSelected,
+                            rowIdStr,
+                            rowDataToPass
+                        )
+                    }
+                }
+                return
+            }
+
+            // Bounds check and use index directly instead of scanning
+            if (
+                rowIndex < 0 ||
+                rowIndex >= currentData.length ||
+                String(currentData[rowIndex][idField]) !== rowIdStr
+            ) {
+                return
+            }
+
+            const row = currentData[rowIndex]
+
+            if (isRowDisabledFn && isRowDisabledFn(row, rowIndex)) {
+                return
+            }
+
             const isSelected = !selectedRows[rowIdStr]
 
             const newSelectedRows = {
@@ -789,6 +946,14 @@ const DataTable = forwardRef(
         }
 
         const sortTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+        useEffect(() => {
+            return () => {
+                if (sortTimeoutRef.current) {
+                    clearTimeout(sortTimeoutRef.current)
+                }
+            }
+        }, [])
 
         const applySortConfig = (
             field: keyof T,
@@ -1078,10 +1243,14 @@ const DataTable = forwardRef(
 
         const handleRowExpand = (rowId: unknown) => {
             const rowIdStr = String(rowId)
-            const newExpandedRows = {
-                ...expandedRows,
-                [rowIdStr]: !expandedRows[rowIdStr],
+            const isCurrentlyExpanded = expandedRows[rowIdStr]
+
+            const newExpandedRows: Record<string, boolean> = {}
+
+            if (!isCurrentlyExpanded) {
+                newExpandedRows[rowIdStr] = true
             }
+
             setExpandedRows(newExpandedRows)
 
             if (onRowExpansionChange) {
@@ -1089,11 +1258,7 @@ const DataTable = forwardRef(
                     (row) => row[idField] === rowId
                 )
                 if (rowData) {
-                    onRowExpansionChange(
-                        rowId,
-                        !expandedRows[rowIdStr],
-                        rowData
-                    )
+                    onRowExpansionChange(rowId, !isCurrentlyExpanded, rowData)
                 }
             }
         }
@@ -1125,7 +1290,8 @@ const DataTable = forwardRef(
             effectiveVisibleColumns.length +
             (enableRowSelection ? 1 : 0) +
             (enableRowExpansion ? 1 : 0) +
-            ((enableInlineEdit || rowActions) &&
+            (showActionsColumn &&
+            (enableInlineEdit || rowActions) &&
             !(mobileConfig.isMobile && mobileConfig.enableColumnOverflow)
                 ? 1
                 : 0) +
@@ -1278,6 +1444,53 @@ const DataTable = forwardRef(
             [ref]
         )
 
+        const pivotTriggerSlot = pivotTableConfig?.triggerSlot || 2
+
+        const pivotTriggerButton = useMemo(() => {
+            if (!enablePivotTable || !pivotTableConfig?.triggerButton) {
+                return null
+            }
+
+            const triggerNode = pivotTableConfig.triggerButton
+            if (!React.isValidElement(triggerNode)) {
+                return triggerNode
+            }
+
+            const existingOnClick = (
+                triggerNode.props as { onClick?: (event: unknown) => void }
+            ).onClick
+
+            return React.cloneElement(
+                triggerNode as React.ReactElement<{
+                    onClick?: (event: unknown) => void
+                }>,
+                {
+                    onClick: (event: unknown) => {
+                        existingOnClick?.(event)
+                        setIsPivotModalOpen(true)
+                    },
+                }
+            )
+        }, [enablePivotTable, pivotTableConfig?.triggerButton])
+
+        const effectiveHeaderSlot1 =
+            pivotTriggerSlot === 1 && pivotTriggerButton
+                ? pivotTriggerButton
+                : headerSlot1
+        const effectiveHeaderSlot2 =
+            pivotTriggerSlot === 2 && pivotTriggerButton
+                ? pivotTriggerButton
+                : headerSlot2
+        const effectiveHeaderSlot3 =
+            pivotTriggerSlot === 3 ? (
+                <>
+                    {headerSlot2}
+                    {pivotTriggerButton}
+                </>
+            ) : (
+                effectiveHeaderSlot2
+            )
+
         return (
             <Block
                 ref={containerRefCallback}
@@ -1358,8 +1571,8 @@ const DataTable = forwardRef(
                             </>
                         ) : null
                     }
-                    headerSlot2={headerSlot1}
-                    headerSlot3={headerSlot2}
+                    headerSlot2={effectiveHeaderSlot1}
+                    headerSlot3={effectiveHeaderSlot3}
                     {...rest}
                 />
 
@@ -1499,6 +1712,9 @@ const DataTable = forwardRef(
                                             selectAll={selectAll}
                                             sortConfig={sortConfig}
                                             enableInlineEdit={enableInlineEdit}
+                                            showActionsColumn={
+                                                showActionsColumn
+                                            }
                                             enableColumnManager={
                                                 effectiveEnableColumnManager
                                             }
@@ -1565,6 +1781,10 @@ const DataTable = forwardRef(
                                             onSortDescending={
                                                 handleSortDescending
                                             }
+                                            onOperations={onOperations}
+                                            onInsertLeft={onInsertLeft}
+                                            onInsertRight={onInsertRight}
+                                            onDeleteColumn={onDeleteColumn}
                                             onSelectAll={handleSelectAll}
                                             onColumnChange={(columns) =>
                                                 setVisibleColumns(
@@ -1582,6 +1802,9 @@ const DataTable = forwardRef(
                                                 ) => React.CSSProperties
                                             }
                                             columnFreeze={effectiveColumnFreeze}
+                                            columnFreezeRight={
+                                                columnFreezeRight
+                                            }
                                             measuredFrozenWidths={
                                                 measuredFrozenWidths
                                             }
@@ -1592,6 +1815,7 @@ const DataTable = forwardRef(
                                         {currentData.length > 0 && (
                                             <TableBodyComponent
                                                 currentData={currentData}
+                                                dataVersion={tbodyDataVersion}
                                                 visibleColumns={
                                                     effectiveVisibleColumns as ColumnDefinition<
                                                         Record<string, unknown>
@@ -1617,6 +1841,9 @@ const DataTable = forwardRef(
                                                 enableInlineEdit={
                                                     enableInlineEdit
                                                 }
+                                                showActionsColumn={
+                                                    showActionsColumn
+                                                }
                                                 enableColumnManager={
                                                     effectiveEnableColumnManager
                                                 }
@@ -1626,8 +1853,31 @@ const DataTable = forwardRef(
                                                 enableRowSelection={
                                                     enableRowSelection
                                                 }
+                                                rowSelectionConfig={
+                                                    rowSelectionConfig as
+                                                        | {
+                                                              isDisabled?: (
+                                                                  row: Record<
+                                                                      string,
+                                                                      unknown
+                                                                  >,
+                                                                  index: number
+                                                              ) => boolean
+                                                              disabledText?: (
+                                                                  row: Record<
+                                                                      string,
+                                                                      unknown
+                                                                  >,
+                                                                  index: number
+                                                              ) => string
+                                                          }
+                                                        | undefined
+                                                }
                                                 columnFreeze={
                                                     effectiveColumnFreeze
+                                                }
+                                                columnFreezeRight={
+                                                    columnFreezeRight
                                                 }
                                                 measuredFrozenWidths={
                                                     measuredFrozenWidths
@@ -1728,6 +1978,7 @@ const DataTable = forwardRef(
                                                           >
                                                         | undefined
                                                 }
+                                                dateLabel={dateLabel}
                                                 isLoading={
                                                     isLoading ||
                                                     (serverSidePagination &&
@@ -1747,6 +1998,12 @@ const DataTable = forwardRef(
                                                               index: number
                                                           ) => boolean)
                                                         | undefined
+                                                }
+                                                enableRowAnimation={
+                                                    enableRowAnimation
+                                                }
+                                                rowAnimationConfig={
+                                                    rowAnimationConfig
                                                 }
                                             />
                                         )}
@@ -1848,6 +2105,7 @@ const DataTable = forwardRef(
                             currentPage={currentPage}
                             pageSize={pageSize}
                             totalRows={totalRows}
+                            visibleRows={currentData.length}
                             isLoading={isLoading}
                             showSkeleton={showSkeleton}
                             hasData={currentData.length > 0}
@@ -1857,6 +2115,58 @@ const DataTable = forwardRef(
                         />
                     )}
                 </Block>
+
+                {enablePivotTable && (
+                    <PivotTableModal
+                        isOpen={isPivotModalOpen}
+                        onClose={() => setIsPivotModalOpen(false)}
+                        data={processedData as Record<string, unknown>[]}
+                        columns={
+                            visibleColumns as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        title={pivotTableConfig?.title}
+                        description={pivotTableConfig?.description}
+                        showExport={pivotTableConfig?.showExport}
+                        previewColumns={pivotTableConfig?.previewColumns}
+                        previewRows={
+                            pivotTableConfig?.previewRows as
+                                | ({
+                                      __pivotId: string
+                                  } & Record<string, unknown>)[]
+                                | undefined
+                        }
+                        availableAggregations={
+                            pivotTableConfig?.availableAggregations
+                        }
+                        initialConfig={
+                            pivotTableConfig?.initialConfig as
+                                | Partial<
+                                      PivotTableConfig<Record<string, unknown>>
+                                  >
+                                | undefined
+                        }
+                        onConfigChange={
+                            pivotTableConfig?.onConfigChange as
+                                | ((
+                                      config: PivotTableConfig<
+                                          Record<string, unknown>
+                                      >
+                                  ) => void)
+                                | undefined
+                        }
+                        onExport={
+                            pivotTableConfig?.onExport as
+                                | ((
+                                      config: PivotTableConfig<
+                                          Record<string, unknown>
+                                      >
+                                  ) => void)
+                                | undefined
+                        }
+                    />
+                )}
 
                 {mobileConfig.enableColumnOverflow && selectedRowForDrawer && (
                     <MobileColumnDrawer

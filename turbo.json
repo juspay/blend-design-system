@@ -29,6 +29,17 @@
         "preview-storybook": {
             "dependsOn": ["^build"],
             "cache": false
+        },
+        "generate-manifest": {
+            "inputs": [
+                "../../packages/blend/lib/components/**/types.ts",
+                "../../packages/blend/lib/components/**/types.tsx",
+                "../../packages/blend/lib/tokens/*.tokens.ts",
+                "meta-overrides/**/*.json",
+                "generateManifest.js"
+            ],
+            "outputs": ["manifest.json"],
+            "cache": true
         }
     }
 }

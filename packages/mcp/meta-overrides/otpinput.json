@@ -1,0 +1,55 @@
+{
+    "componentDescription": "OTPInput renders a row of individual input boxes for one-time password entry. Use it for SMS verification codes, email verification, two-factor authentication, and any numeric/alphanumeric code entry flow.",
+    "features": [
+        "Configurable number of input boxes (default 6)",
+        "Auto-advance to next box on input",
+        "Paste support for the full code",
+        "Error state styling",
+        "Auto-focus on mount",
+        "Disabled state"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "SMS verification OTP",
+            "description": "6-digit OTP input for SMS phone verification.",
+            "code": "<OTPInput\n  value={otpValue}\n  onChange={setOtpValue}\n  length={6}\n  autoFocus\n  error={isInvalid}\n/>"
+        },
+        {
+            "title": "4-digit PIN entry",
+            "description": "4-digit PIN input for a payment confirmation screen.",
+            "code": "<OTPInput\n  value={pin}\n  onChange={setPin}\n  length={4}\n  error={pinError}\n/>"
+        },
+        {
+            "title": "OTP with auto-submit on complete",
+            "description": "OTP that automatically submits when all boxes are filled.",
+            "code": "<OTPInput\n  value={otp}\n  onChange={(value) => {\n    setOtp(value);\n    if (value.length === 6) handleVerify(value);\n  }}\n  length={6}\n  autoFocus\n  disabled={isVerifying}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. The current OTP string value (e.g., '123456' for a filled 6-digit code, '12' for partially entered). Manage with useState initialized to empty string ''.",
+            "propDescription": "Required. Current OTP value string"
+        },
+        "onChange": {
+            "llmContext": "Required. Called with the updated OTP string as the user types. The string length grows from 0 to the configured length as boxes are filled. Check value.length === length to detect completion.",
+            "propDescription": "Required. Called with updated OTP string on input"
+        },
+        "length": {
+            "llmContext": "Number of OTP digit boxes to render. Common values: 4 for PINs, 6 for standard OTPs, 8 for longer codes. Match the exact length of the code your backend generates.",
+            "propDescription": "Number of OTP input boxes"
+        },
+        "error": {
+            "llmContext": "Set to true when OTP verification fails to show error styling on all boxes. Always also show an error message text below the OTP input explaining the failure.",
+            "propDescription": "Applies error styling to all OTP boxes"
+        },
+        "autoFocus": {
+            "llmContext": "Set to true to focus the first OTP box immediately on mount. Almost always use this for dedicated verification pages where OTP entry is the primary action — removes the need for the user to click the input.",
+            "propDescription": "Auto-focuses the first OTP box on mount"
+        },
+        "disabled": {
+            "llmContext": "Set to true while the OTP is being verified after submission. Prevents the user from modifying the code while the verification API call is in progress.",
+            "propDescription": "Prevents input while verification is in progress"
+        }
+    }
+}

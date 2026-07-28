@@ -1,0 +1,288 @@
+---
+version: 2
+title: Button
+description: The ButtonV2 component is a versatile UI element for user interactions, featuring multiple variants, sizes, and states with enhanced styling flexibility.
+category: Actions
+tags:
+    - button
+    - component
+    - interaction
+    - action
+    - primary
+RepoFolderName: ButtonV2
+StorybookLink: components-button-buttonv2--docs
+---
+
+<ButtonV2Preview />
+
+## Usage
+
+```tsx
+import {
+    ButtonV2,
+    ButtonV2Type,
+    ButtonV2Size,
+    ButtonV2SubType,
+} from '@juspay/blend-design-system'
+
+function MyComponent() {
+    return (
+        <ButtonV2
+            buttonType={ButtonV2Type.PRIMARY}
+            size={ButtonV2Size.MEDIUM}
+            subType={ButtonV2SubType.DEFAULT}
+            text="Get Started"
+            onClick={() => console.log('Button clicked')}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'buttonType',
+                hintText:
+                    'Defines the visual style and semantic meaning of the button. PRIMARY for main actions, SECONDARY for secondary actions, DANGER for destructive actions, SUCCESS for positive actions.',
+            },
+            {
+                content: 'ButtonV2Type',
+                hintText: 'Enum for button type variants',
+            },
+            { content: 'PRIMARY, SECONDARY, DANGER, SUCCESS' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText:
+                    'Controls the dimensions and padding. SMALL is compact, MEDIUM is standard, LARGE is prominent. Affects padding, font size, and overall dimensions.',
+            },
+            {
+                content: 'ButtonV2Size',
+                hintText: 'Enum for button sizes',
+            },
+            { content: 'SMALL, MEDIUM, LARGE' },
+        ],
+        [
+            {
+                content: 'subType',
+                hintText:
+                    'Controls layout and content arrangement. DEFAULT for standard text with optional icons, ICON_ONLY for icon-only buttons, INLINE for text-only inline buttons.',
+            },
+            {
+                content: 'ButtonV2SubType',
+                hintText: 'Enum for button layout variants',
+            },
+            { content: 'DEFAULT, ICON_ONLY, INLINE' },
+        ],
+        [
+            {
+                content: 'text',
+                hintText:
+                    'Text displayed inside the button. Required for DEFAULT and INLINE subtypes.',
+            },
+            {
+                content: 'string',
+                hintText: 'Button label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText:
+                    'Optional slot content (icon/element) displayed on the left side of the button text. Configurable with maxHeight.',
+            },
+            {
+                content: '{ slot: ReactNode; maxHeight?: string | number }',
+                hintText: 'Left slot configuration',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText:
+                    'Optional slot content (icon/element) displayed on the right side of the button text. Configurable with maxHeight.',
+            },
+            {
+                content: '{ slot: ReactNode; maxHeight?: string | number }',
+                hintText: 'Right slot configuration',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'loading',
+                hintText:
+                    'When true, displays a loading spinner and disables interaction. Useful for async operations.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Loading state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText:
+                    'When true, the button becomes non-interactive and appears visually muted.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Disabled state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClick',
+                hintText:
+                    'Callback function invoked when the button is clicked.',
+            },
+            {
+                content: '() => void',
+                hintText: 'Click handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'width',
+                hintText:
+                    'Optional fixed width value. Accepts CSS width values or number (pixels).',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'minWidth',
+                hintText:
+                    'Optional minimum width value. Accepts CSS width values or number (pixels).',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS min-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'maxWidth',
+                hintText:
+                    'Optional maximum width value. Accepts CSS width values or number (pixels).',
+            },
+            {
+                content: 'string | number',
+                hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText: 'Configuration for skeleton loading state.',
+            },
+            {
+                content:
+                    '{ showSkeleton?: boolean; skeletonVariant?: SkeletonVariant }',
+                hintText: 'Skeleton configuration object',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'state',
+                hintText:
+                    'Override the visual state of the button (for controlled styling).',
+            },
+            {
+                content: 'ButtonV2State',
+                hintText: 'Enum for button state',
+            },
+            { content: 'DEFAULT, HOVER, ACTIVE, DISABLED' },
+        ],
+        [
+            {
+                content: 'buttonGroupPosition',
+                hintText:
+                    'Controls border radius when used within a ButtonGroup. Used automatically by ButtonGroupV2.',
+            },
+            {
+                content: "'center' | 'left' | 'right'",
+                hintText: 'Position within button group',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the ButtonV2 component using the following tokens:
+
+```tsx
+export type ButtonV2TokensType = {
+    gap: CSSObject['gap']
+    backgroundColor: {
+        [key in ButtonV2Type]: {
+            [key in ButtonV2SubType]: {
+                [key in ButtonV2State]: CSSObject['background']
+            }
+        }
+    }
+    borderRadius: {
+        [key in ButtonV2Size]: {
+            [key in ButtonV2Type]: {
+                [key in ButtonV2SubType]: CSSObject['borderRadius']
+            }
+        }
+    }
+    padding: {
+        [key in PaddingDirection]: {
+            [key in ButtonV2Size]: {
+                [key in ButtonV2Type]: {
+                    [key in ButtonV2SubType]: CSSObject['padding']
+                }
+            }
+        }
+    }
+    border: {
+        [key in ButtonV2Type]: {
+            [key in ButtonV2SubType]: {
+                [key in ButtonV2State]: CSSObject['border']
+            }
+        }
+    }
+    shadow: {
+        [key in ButtonV2Type]: {
+            [key in ButtonV2SubType]: {
+                [key in ButtonV2State]: CSSObject['boxShadow']
+            }
+        }
+    }
+    text: {
+        color: {
+            [key in ButtonV2Type]: {
+                [key in ButtonV2SubType]: {
+                    [key in ButtonV2State]: CSSObject['color']
+                }
+            }
+        }
+        fontSize: { [key in ButtonV2Size]: CSSObject['fontSize'] }
+        fontWeight: { [key in ButtonV2Size]: CSSObject['fontWeight'] }
+        lineHeight: { [key in ButtonV2Size]: CSSObject['lineHeight'] }
+    }
+}
+```

@@ -97,6 +97,9 @@ const MultiSelectDemo = () => {
     // Advanced Examples state
     const [skillsSelected, setSkillsSelected] = useState<string[]>([])
     const [permissionsSelected, setPermissionsSelected] = useState<string[]>([])
+
+    // Menu footer demo state
+    const [menuFooterSelected, setMenuFooterSelected] = useState<string[]>([])
     const [preSelectedValues, setPreSelectedValues] = useState<string[]>([
         'react',
         'nodejs',
@@ -1228,6 +1231,27 @@ const MultiSelectDemo = () => {
                                     }}
                                     onFocus={() => {
                                         console.log('MultiSelect focus')
+                                    }}
+                                    onClick={() => {
+                                        console.log('click')
+                                    }}
+                                    onKeyDown={(e) => {
+                                        console.log('keydown', e.key)
+                                    }}
+                                    onKeyUp={(e) => {
+                                        console.log('keyup', e.key)
+                                    }}
+                                    onMouseEnter={() => {
+                                        console.log('mouse enter')
+                                    }}
+                                    onMouseLeave={() => {
+                                        console.log('mouse leave')
+                                    }}
+                                    onMouseDown={() => {
+                                        console.log('mouse down')
+                                    }}
+                                    onMouseUp={() => {
+                                        console.log('mouse up')
                                     }}
                                     useDrawerOnMobile={true}
                                     height={62}
@@ -4586,6 +4610,110 @@ const MultiSelectDemo = () => {
                             </ul>
                         </div>
                     </div> */}
+                </div>
+
+                <h2 className="text-2xl font-bold mt-12">Menu Footer</h2>
+                <p className="text-gray-600 mb-4">
+                    The <code>menuFooter</code> prop renders arbitrary content
+                    pinned at the bottom of the dropdown. It is not selectable,
+                    stays put while the list scrolls, and remains visible even
+                    when there are zero items.
+                </p>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Create new (with items)
+                        </h3>
+                        <MultiSelect
+                            label="Skills"
+                            sublabel="Select your expertise areas"
+                            items={skillItems}
+                            selectedValues={menuFooterSelected}
+                            onChange={handleMultiSelectChange(
+                                menuFooterSelected,
+                                setMenuFooterSelected
+                            )}
+                            placeholder="Select your skills"
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            enableSearch
+                            menuFooter={
+                                <div
+                                    style={{
+                                        padding: '12px 16px',
+                                        borderTop: '1px solid #e5e7eb',
+                                    }}
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            addSnackbar({
+                                                header: 'Open the "Create new" modal here',
+                                            })
+                                        }
+                                        style={{
+                                            width: '100%',
+                                            padding: '8px 12px',
+                                            background: 'transparent',
+                                            border: '1px dashed #d1d5db',
+                                            borderRadius: 8,
+                                            cursor: 'pointer',
+                                            color: '#374151',
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        + Create new skill
+                                    </button>
+                                </div>
+                            }
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <h3 className="font-semibold">
+                            Empty list (footer still reachable)
+                        </h3>
+                        <MultiSelect
+                            label="Skills"
+                            sublabel="Select your expertise areas"
+                            items={[]}
+                            selectedValues={menuFooterSelected}
+                            onChange={handleMultiSelectChange(
+                                menuFooterSelected,
+                                setMenuFooterSelected
+                            )}
+                            placeholder="Select your skills"
+                            selectionTagType={MultiSelectSelectionTagType.TEXT}
+                            enableSearch
+                            menuFooter={
+                                <div
+                                    style={{
+                                        padding: '12px 16px',
+                                        borderTop: '1px solid #e5e7eb',
+                                    }}
+                                >
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            addSnackbar({
+                                                header: 'Open the "Create new" modal here',
+                                            })
+                                        }
+                                        style={{
+                                            width: '100%',
+                                            padding: '8px 12px',
+                                            background: 'transparent',
+                                            border: '1px dashed #d1d5db',
+                                            borderRadius: 8,
+                                            cursor: 'pointer',
+                                            color: '#374151',
+                                            fontWeight: 500,
+                                        }}
+                                    >
+                                        + Create new skill
+                                    </button>
+                                </div>
+                            }
+                        />
+                    </div>
                 </div>
             </div>
         </div>

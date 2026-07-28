@@ -1,7 +1,7 @@
 ---
 title: OTPInput
 description: The OTPInput component provides a specialized input field for one-time passwords and verification codes, featuring multiple individual digit inputs with automatic focus management, clipboard support, and keyboard navigation.
-category: components
+category: Form Input
 tags:
     - otpinput
     - component
@@ -15,6 +15,7 @@ tags:
     - 2fa
 RepoFolderName: OTPInput
 StorybookLink: components-otpinput--docs
+version: 1
 ---
 
 <OTPInputPreview />
@@ -224,6 +225,19 @@ function MyComponent() {
             {
                 content: 'string',
                 hintText: 'Form ID to associate the inputs with',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'OTPInput.placeholder',
+                hintText:
+                    'Optional placeholder text displayed in each digit input when empty. Note that placeholder color is set to transparent by default, so placeholder text may not be visible.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Placeholder text shown in each digit input when empty',
             },
             { content: '' },
         ],

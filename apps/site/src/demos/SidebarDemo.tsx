@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ButtonDemo from './ButtonDemo'
 import ButtonV2Demo from './ButtonV2Demo'
 import {
@@ -40,7 +40,10 @@ import {
     SearchIcon,
 } from 'lucide-react'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
-import { Sidebar } from '../../../../packages/blend/lib/components/Sidebar'
+import {
+    LeftPanelInfo,
+    Sidebar,
+} from '../../../../packages/blend/lib/components/Sidebar'
 import ButtonGroupDemo from './ButtonGroupDemo'
 import ButtonGroupV2Demo from './ButtonGroupV2Demo'
 import TagDemo from './TagDemo'
@@ -86,6 +89,7 @@ import MultiSelectGroupDemo from './MultiSelectGroupDemo'
 import MultiSelectDemo from './MultiSelectDemo'
 import DropdownInputDemo from './DropdownInputDemo'
 import DrawerDemo from './DrawerDemo'
+import DrawerV2Demo from './DrawerV2Demo'
 import DateRangePickerDemo from './DateRangePickerDemo'
 import DataTableDemo from './dataTableDemo'
 import ChartsDemo from './ChartsDemo'
@@ -95,6 +99,7 @@ import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
+import CardV2Demo from './CardV2Demo'
 import { TextInput, Button } from '../../../../packages/blend/lib/main'
 import {
     ButtonType,
@@ -103,6 +108,7 @@ import {
 import StepperDemo from './StepperDemo'
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'
+import ThemeProviderDemo from './ThemeProviderDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
@@ -124,6 +130,7 @@ import SnackbarV2Demo from './SnackbarV2Demo'
 import SwitchV2Demo from './SwitchV2Demo'
 import SingleSelectDemoV2 from './SingleSelectDemoV2'
 import MultiSelectDemoV2 from './MultiSelectDemoV2'
+import MenuV2Demo from './MenuV2Demo'
 import KeyValuePairV2Demo from './KeyValuePairV2Demo'
 import AvatarV2Demo from './AvatarV2Demo'
 import TextInputV2Demo from './TextInputV2Demo'
@@ -131,10 +138,26 @@ import TextInputAutofillTestV2 from './TextInputAutofillTestV2'
 import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
+import StatCardV2Demo from './StatCardV2Demo'
 import RadioV2Demo from './RadioV2Demo'
+import TabsV2Demo from './TabsV2Demo'
+import BreadcrumbV2Demo from './BreadcrumbV2Demo'
+import CodeEditorV2Demo from './CodeEditorV2Demo'
+import ProgressBarV2Demo from './ProgressBarV2Demo'
+import MultiValueInputV2Demo from './MultiValueInputV2Demo'
+import NumberInputV2Demo from './NumberInputV2Demo'
+import OTPInputV2Demo from './OTPInputV2Demo'
+import TextAreaV2Demo from './TextAreaV2Demo'
+import SearchInputV2Demo from './SearchInputV2Demo'
+import BadgeDemo from './BadgeDemo'
+import ChatInputV2Demo from './ChatInputV2Demo'
+import StepperV2Demo from './StepperV2Demo'
+import UploadV2Demo from './UploadV2Demo'
+import ModalV2Demo from './ModalV2Demo'
+import DirectoryDemo from './DirectoryDemo'
 
 const SidebarDemo = () => {
-    const [activeComponent, setActiveComponent] = useState<
+    const [activeComponent, setActiveComponentState] = useState<
         | 'buttons'
         | 'buttonV2'
         | 'accessibility'
@@ -144,6 +167,7 @@ const SidebarDemo = () => {
         | 'tagGroupV2'
         | 'breadcrumb'
         | 'tabs'
+        | 'tabsV2'
         | 'checkbox'
         | 'checkboxV2'
         | 'radio'
@@ -163,6 +187,7 @@ const SidebarDemo = () => {
         | 'avatars'
         | 'avatarV2'
         | 'menu'
+        | 'menuV2'
         | 'dropdown'
         | 'accordion'
         | 'statCard'
@@ -176,6 +201,7 @@ const SidebarDemo = () => {
         | 'snackbar'
         | 'dataTable'
         | 'drawer'
+        | 'drawerV2'
         | 'colorPalette'
         | 'popover'
         | 'progressBar'
@@ -195,11 +221,14 @@ const SidebarDemo = () => {
         | 'stepper'
         | 'keyValuePair'
         | 'card'
+        | 'cardV2'
         | 'dataRangePicker'
         | 'allComponents'
+        | 'themeProvider'
         | 'virtualList'
         | 'skeleton'
         | 'upload'
+        | 'uploadV2'
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
@@ -217,10 +246,41 @@ const SidebarDemo = () => {
         | 'textInputGroup'
         | 'singleSelectV2'
         | 'timeline'
+        | 'statCardV2'
         | 'tooltipV2'
-        | 'singleSelectV2'
+        | 'breadcrumbV2'
+        | 'codeEditorV2'
         | 'popoverV2'
-    >('popoverV2')
+        | 'progressBarV2'
+        | 'multiValueInputV2'
+        | 'numberInputV2'
+        | 'otpInputV2'
+        | 'textAreaV2'
+        | 'badge'
+        | 'searchInputV2'
+        | 'chatInputV2'
+        | 'stepperV2'
+        | 'modalV2'
+        | 'directory'
+    >(() => {
+        return (window.location.hash.slice(1) || 'checkbox') as any
+    })
+
+    const setActiveComponent = (id: string) => {
+        setActiveComponentState(id as any)
+        window.location.hash = id
+    }
+
+    useEffect(() => {
+        const handler = (e: CustomEvent) => {
+            const { demoId } = e.detail
+            setActiveComponentState(demoId as any)
+            window.location.hash = demoId
+        }
+        window.addEventListener('select-demo', handler as EventListener)
+        return () =>
+            window.removeEventListener('select-demo', handler as EventListener)
+    }, [])
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -236,8 +296,9 @@ const SidebarDemo = () => {
         useState<boolean>(false)
     const [isExpanded, setIsExpanded] = useState<boolean>(true)
     const [, setSidebarState] = useState('expanded')
+    // const [sidebarTopMenuOpen, setSidebarTopMenuOpen] = useState<boolean>(false)
 
-    const tenants = [
+    const tenants: LeftPanelInfo['items'] = [
         {
             label: 'Juspay',
             icon: (
@@ -247,6 +308,9 @@ const SidebarDemo = () => {
                 />
             ),
             value: 'juspay',
+            badge: {
+                text: 'IN',
+            },
             showInPanel: true, // Visible in panel
         },
         {
@@ -279,6 +343,9 @@ const SidebarDemo = () => {
                     color={FOUNDATION_THEME.colors.gray[600]}
                 />
             ),
+            badge: {
+                text: 'USA',
+            },
             value: 'paypal',
             showInPanel: true, // Visible in panel
         },
@@ -440,14 +507,20 @@ const SidebarDemo = () => {
                 return <InputDemo />
             case 'searchInput':
                 return <SearchInputDemo />
+            case 'searchInputV2':
+                return <SearchInputV2Demo />
             case 'unitInput':
                 return <UnitInputDemo />
             case 'numberInput':
                 return <NumberInputDemo />
+            case 'numberInputV2':
+                return <NumberInputV2Demo />
             case 'textArea':
                 return <TextAreaDemo />
             case 'chatInput':
                 return <ChatInputDemo />
+            case 'chatInputV2':
+                return <ChatInputV2Demo />
             case 'otpInput':
                 return <OTPInputDemo />
             case 'alerts':
@@ -460,6 +533,8 @@ const SidebarDemo = () => {
                 return <SnackbarV2Demo />
             case 'tabs':
                 return <TabsDemo />
+            case 'tabsV2':
+                return <TabsV2Demo />
             case 'accordion':
                 return <AccordionDemo />
             case 'statCard':
@@ -472,6 +547,8 @@ const SidebarDemo = () => {
                 return <TooltipDemo />
             case 'modal':
                 return <ModalDemo />
+            case 'modalV2':
+                return <ModalV2Demo />
             case 'radio':
                 return <RadioDemo />
             case 'radioV2':
@@ -488,6 +565,8 @@ const SidebarDemo = () => {
                 return <CheckboxV2Demo />
             case 'menu':
                 return <MenuDemo />
+            case 'menuV2':
+                return <MenuV2Demo />
             case 'singleSelect':
                 return <SingleSelectDemo />
             case 'singleSelectGroup':
@@ -504,6 +583,10 @@ const SidebarDemo = () => {
                 return <ProgressBarDemo />
             case 'drawer':
                 return <DrawerDemo />
+            case 'drawerV2':
+                return <DrawerV2Demo />
+            case 'directory':
+                return <DirectoryDemo />
             case 'dropdownInput':
                 return <DropdownInputDemo />
             case 'dataRangePicker':
@@ -522,6 +605,8 @@ const SidebarDemo = () => {
                 return <PopoverV2Demo />
             case 'multiValueInput':
                 return <MultiValueInputDemo />
+            case 'multiValueInputV2':
+                return <MultiValueInputV2Demo />
             case 'stepper':
                 return <StepperDemo />
             case 'topbar':
@@ -530,14 +615,20 @@ const SidebarDemo = () => {
                 return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
+            case 'cardV2':
+                return <CardV2Demo />
             case 'skeleton':
                 return <SkeletonDemo />
             case 'allComponents':
                 return <AllComponentsDemo />
+            case 'themeProvider':
+                return <ThemeProviderDemo />
             case 'virtualList':
                 return <VirtualListDemo />
             case 'upload':
                 return <UploadDemo />
+            case 'uploadV2':
+                return <UploadV2Demo />
             case 'codeBlock':
                 return <CodeBlockDemo />
             case 'codeEditor':
@@ -558,8 +649,24 @@ const SidebarDemo = () => {
                 return <TimelineDemo />
             case 'keyValuePairV2':
                 return <KeyValuePairV2Demo />
+            case 'statCardV2':
+                return <StatCardV2Demo />
             case 'tooltipV2':
                 return <TooltipV2Demo />
+            case 'breadcrumbV2':
+                return <BreadcrumbV2Demo />
+            case 'codeEditorV2':
+                return <CodeEditorV2Demo />
+            case 'progressBarV2':
+                return <ProgressBarV2Demo />
+            case 'otpInputV2':
+                return <OTPInputV2Demo />
+            case 'textAreaV2':
+                return <TextAreaV2Demo />
+            case 'badge':
+                return <BadgeDemo />
+            case 'stepperV2':
+                return <StepperV2Demo />
             default:
                 return (
                     <div className="p-8">
@@ -783,6 +890,15 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Badge',
+                    leftSlot: (
+                        <TagIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'badge',
+                    onClick: () => setActiveComponent('badge'),
+                    showOnMobile: true,
+                },
+                {
                     label: 'Avatar',
                     leftSlot: (
                         <Users style={{ width: '16px', height: '16px' }} />
@@ -824,6 +940,15 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Breadcrumb V2',
+                    leftSlot: (
+                        <Grid style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'breadcrumbV2',
+                    onClick: () => setActiveComponent('breadcrumbV2'),
+                    showOnMobile: true,
+                },
+                {
                     label: 'Virtual List',
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
@@ -839,11 +964,29 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Directory',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'directory',
+                    onClick: () => setActiveComponent('directory'),
+                    showOnMobile: true,
+                },
+                {
                     label: 'File Upload',
                     leftSlot: (
                         <Upload style={{ width: '16px', height: '16px' }} />
                     ),
+                    isSelected: activeComponent === 'upload',
                     onClick: () => setActiveComponent('upload'),
+                },
+                {
+                    label: 'File Upload V2',
+                    leftSlot: (
+                        <Upload style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'uploadV2',
+                    onClick: () => setActiveComponent('uploadV2'),
                 },
             ],
         },
@@ -901,12 +1044,28 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('searchInput'),
                 },
                 {
+                    label: 'Search Input V2',
+                    leftSlot: (
+                        <Search style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'searchInputV2',
+                    onClick: () => setActiveComponent('searchInputV2'),
+                },
+                {
                     label: 'OTP Input',
                     leftSlot: (
                         <Shield style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'otpInput',
                     onClick: () => setActiveComponent('otpInput'),
+                },
+                {
+                    label: 'OTP Input V2',
+                    leftSlot: (
+                        <Shield style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'otpInputV2',
+                    onClick: () => setActiveComponent('otpInputV2'),
                 },
                 {
                     label: 'Unit Input',
@@ -927,6 +1086,16 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('numberInput'),
                 },
                 {
+                    label: 'Number Input V2',
+                    leftSlot: (
+                        <DecimalsArrowRightIcon
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'numberInputV2',
+                    onClick: () => setActiveComponent('numberInputV2'),
+                },
+                {
                     label: 'Dropdown Input',
                     leftSlot: (
                         <DecimalsArrowRightIcon
@@ -945,6 +1114,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('textArea'),
                 },
                 {
+                    label: 'Text Area V2',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'textAreaV2',
+                    onClick: () => setActiveComponent('textAreaV2'),
+                },
+                {
                     label: 'Chat Input',
                     leftSlot: (
                         <MessageCircle
@@ -956,12 +1133,30 @@ const SidebarDemo = () => {
                     showOnMobile: true,
                 },
                 {
+                    label: 'Chat Input V2',
+                    leftSlot: (
+                        <MessageCircle
+                            style={{ width: '16px', height: '16px' }}
+                        />
+                    ),
+                    isSelected: activeComponent === 'chatInputV2',
+                    onClick: () => setActiveComponent('chatInputV2'),
+                },
+                {
                     label: 'Multi Value Input',
                     leftSlot: (
                         <ListFilter style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'multiValueInput',
                     onClick: () => setActiveComponent('multiValueInput'),
+                },
+                {
+                    label: 'Multi Value Input V2',
+                    leftSlot: (
+                        <ListFilter style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'multiValueInputV2',
+                    onClick: () => setActiveComponent('multiValueInputV2'),
                 },
                 {
                     label: 'Key Value Pair',
@@ -1066,6 +1261,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('singleSelectV2'),
                 },
                 {
+                    label: 'Menu V2',
+                    leftSlot: (
+                        <MenuIcon style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'menuV2',
+                    onClick: () => setActiveComponent('menuV2'),
+                },
+                {
                     label: 'Single Select Group',
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
@@ -1106,6 +1309,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('tabs'),
                 },
                 {
+                    label: 'Tabs V2',
+                    leftSlot: (
+                        <Layout style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'tabsV2',
+                    onClick: () => setActiveComponent('tabsV2'),
+                },
+                {
                     label: 'Accordion',
                     leftSlot: (
                         <List style={{ width: '16px', height: '16px' }} />
@@ -1127,6 +1338,14 @@ const SidebarDemo = () => {
                         <List style={{ width: '16px', height: '16px' }} />
                     ),
                     onClick: () => setActiveComponent('stepper'),
+                },
+                {
+                    label: 'Stepper V2',
+                    leftSlot: (
+                        <List style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'stepperV2',
+                    onClick: () => setActiveComponent('stepperV2'),
                 },
             ],
         },
@@ -1193,6 +1412,12 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('modal'),
                 },
                 {
+                    label: 'Modal V2',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'modalV2',
+                    onClick: () => setActiveComponent('modalV2'),
+                },
+                {
                     label: 'Popover',
                     leftSlot: (
                         <MessageCircle
@@ -1217,6 +1442,13 @@ const SidebarDemo = () => {
                     leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
                     isSelected: activeComponent === 'drawer',
                     onClick: () => setActiveComponent('drawer'),
+                    showOnMobile: true,
+                },
+                {
+                    label: 'Drawer V2',
+                    leftSlot: <Box style={{ width: '16px', height: '16px' }} />,
+                    isSelected: activeComponent === 'drawerV2',
+                    onClick: () => setActiveComponent('drawerV2'),
                     showOnMobile: true,
                 },
             ],
@@ -1282,6 +1514,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('statCard'),
                 },
                 {
+                    label: 'Stat Card V2',
+                    leftSlot: (
+                        <FileText style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'statCardV2',
+                    onClick: () => setActiveComponent('statCardV2'),
+                },
+                {
                     label: 'Skeleton',
                     leftSlot: (
                         <Square style={{ width: '16px', height: '16px' }} />
@@ -1298,12 +1538,28 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('card'),
                 },
                 {
+                    label: 'Card V2',
+                    leftSlot: (
+                        <Square style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'cardV2',
+                    onClick: () => setActiveComponent('cardV2'),
+                },
+                {
                     label: 'Progress Bar',
                     leftSlot: (
                         <BarChart2 style={{ width: '16px', height: '16px' }} />
                     ),
                     isSelected: activeComponent === 'progressBar',
                     onClick: () => setActiveComponent('progressBar'),
+                },
+                {
+                    label: 'Progress Bar V2',
+                    leftSlot: (
+                        <BarChart2 style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'progressBarV2',
+                    onClick: () => setActiveComponent('progressBarV2'),
                 },
                 {
                     label: 'Data Table',
@@ -1339,6 +1595,14 @@ const SidebarDemo = () => {
                     ),
                     isSelected: activeComponent === 'codeEditor',
                     onClick: () => setActiveComponent('codeEditor'),
+                },
+                {
+                    label: 'Code Editor V2',
+                    leftSlot: (
+                        <Code style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'codeEditorV2',
+                    onClick: () => setActiveComponent('codeEditorV2'),
                 },
                 {
                     label: 'Timeline',
@@ -1455,6 +1719,14 @@ const SidebarDemo = () => {
                     onClick: () => setActiveComponent('allComponents'),
                 },
                 {
+                    label: 'ThemeProvider render test',
+                    leftSlot: (
+                        <Palette style={{ width: '16px', height: '16px' }} />
+                    ),
+                    isSelected: activeComponent === 'themeProvider',
+                    onClick: () => setActiveComponent('themeProvider'),
+                },
+                {
                     label: 'Accessibility',
                     leftSlot: (
                         <Shield style={{ width: '16px', height: '16px' }} />
@@ -1491,7 +1763,7 @@ const SidebarDemo = () => {
               }
 
     return (
-        <div className="w-screen h-screen">
+        <div className="w-full h-screen">
             <ThemeProvider {...themeProps}>
                 <Sidebar
                     onSidebarStateChange={(state) => setSidebarState(state)}
@@ -1675,7 +1947,62 @@ const SidebarDemo = () => {
                             selected={activeMerchant}
                             onSelect={(value) => setActiveMerchant(value)}
                         />
-                        // <div>aryan</div>
+                        // <Menu
+                        //     open={sidebarTopMenuOpen}
+                        //     onOpenChange={setSidebarTopMenuOpen}
+                        //     trigger={
+                        //         <button
+                        //             className="flex items-center justify-center border-none rounded-lg cursor-pointer transition-colors duration-150 hover:bg-gray-200"
+                        //             style={{
+                        //                 width: 32,
+                        //                 height: 32,
+                        //                 backgroundColor:
+                        //                     FOUNDATION_THEME.colors.gray[100],
+                        //             }}
+                        //             title="Sidebar Menu"
+                        //             aria-label="Sidebar top menu"
+                        //         >
+                        //             <MenuIcon
+                        //                 size={18}
+                        //                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                 aria-hidden="true"
+                        //             />
+                        //         </button>
+                        //     }
+                        //     items={
+                        //         [
+                        //             {
+                        //                 items: [
+                        //                     {
+                        //                         label: 'Menu Item 1',
+                        //                         slot1: (
+                        //                             <Square
+                        //                                 size={16}
+                        //                                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                             />
+                        //                         ),
+                        //                         onClick: () =>
+                        //                             alert('Menu item 1 clicked'),
+                        //                     },
+                        //                     {
+                        //                         label: 'Menu Item 2',
+                        //                         slot1: (
+                        //                             <Square
+                        //                                 size={16}
+                        //                                 color={FOUNDATION_THEME.colors.gray[600]}
+                        //                             />
+                        //                         ),
+                        //                         onClick: () =>
+                        //                             alert('Menu item 2 clicked'),
+                        //                     },
+                        //                 ],
+                        //             },
+                        //         ] as MenuGroupType[]
+                        //     }
+                        //     side={MenuSide.TOP}
+                        //     alignment={MenuAlignment.END}
+                        //     sideOffset={8}
+                        // />
                     }
                     rightActions={
                         <div className="flex items-center gap-1">
@@ -1702,13 +2029,20 @@ const SidebarDemo = () => {
                     data={sampleData}
                     topbar={
                         <div className="flex items-center justify-between gap-2">
-                            <div className=" flex items-center gap-3 ">
+                            <div
+                                className=" flex items-center gap-3 cursor-pointer border py-1 px-2 rounded-lg border-gray-300"
+                                onClick={() =>
+                                    window.dispatchEvent(
+                                        new CustomEvent('open-command-search')
+                                    )
+                                }
+                            >
                                 {' '}
                                 <div className="text-sm text-gray-400 flex items-center gap-1">
                                     <SearchIcon
                                         size={16}
                                         color={
-                                            FOUNDATION_THEME.colors.gray[600]
+                                            FOUNDATION_THEME.colors.gray[400]
                                         }
                                     />{' '}
                                     Search
@@ -1720,7 +2054,7 @@ const SidebarDemo = () => {
                                             .gray[400],
                                     }}
                                 >
-                                    {`(⌘K)`}
+                                    {`⌘ + K`}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2">

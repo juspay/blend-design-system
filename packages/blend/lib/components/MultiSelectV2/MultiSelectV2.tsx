@@ -31,7 +31,7 @@ import MobileMultiSelectV2 from './MobileMultiSelectV2'
 import {
     getMultiSelectBorderRadius,
     getMultiSelectCrossBorderRadius,
-    getValueLabelMap,
+    getMultiSelectV2ValueLabelMap,
     handleSelectAll,
 } from './utils'
 
@@ -59,7 +59,11 @@ const MultiSelectV2 = ({
     maxSelections,
     customTrigger,
     usePanelOnMobile = true,
-    triggerDimensions,
+    triggerDimensions = {
+        width: 'auto',
+        minWidth: 'auto',
+        maxWidth: 'auto',
+    },
     menuDimensions,
     menuPosition,
     inline = false,
@@ -87,6 +91,7 @@ const MultiSelectV2 = ({
     onClearAllClick,
     onOpenChange,
     multiSelectGroupPosition,
+    menuFooter,
     ...rest
 }: MultiSelectV2Props) => {
     const { disabled, name, ...buttonRest } = rest as {
@@ -105,7 +110,7 @@ const MultiSelectV2 = ({
     const [open, setOpen] = useState(false)
     const safeItems = items ?? []
     const valueLabelMap = useMemo(
-        () => getValueLabelMap(safeItems),
+        () => getMultiSelectV2ValueLabelMap(safeItems),
         [safeItems]
     )
     const shouldVirtualize = enableVirtualization && safeItems.length > 20
@@ -226,8 +231,6 @@ const MultiSelectV2 = ({
         return <MobileMultiSelectV2 {...mobileSharedProps} />
     }
 
-    const fullWidth = triggerDimensions?.width === '100%'
-
     const borderRadius = getMultiSelectBorderRadius(
         size,
         variant,
@@ -252,8 +255,8 @@ const MultiSelectV2 = ({
         <Block
             data-multi-select="multi-select"
             data-status={disabled ? 'disabled' : 'enabled'}
-            width={fullWidth ? '100%' : 'fit-content'}
-            maxWidth={fullWidth ? '100%' : '100%'}
+            width={triggerDimensions?.width}
+            maxWidth={triggerDimensions?.maxWidth}
             display="flex"
             flexDirection="column"
             gap={multiSelectTokens.gap}
@@ -281,9 +284,9 @@ const MultiSelectV2 = ({
                 <Wrapper
                     position="relative"
                     style={getErrorShakeStyle(shouldShake)}
-                    width={fullWidth ? '100%' : 'fit-content'}
-                    maxWidth={fullWidth ? '100%' : '100%'}
-                    minWidth={0}
+                    width={triggerDimensions?.width}
+                    maxWidth={triggerDimensions?.maxWidth}
+                    minWidth={triggerDimensions?.minWidth}
                     display="flex"
                     alignItems={shouldShowClearButton ? 'stretch' : 'center'}
                 >
@@ -364,6 +367,7 @@ const MultiSelectV2 = ({
                         }
                         allowCustomValue={allowCustomValue}
                         customValueLabel={customValueLabel}
+                        menuFooter={menuFooter}
                     />
 
                     {shouldShowClearButton && (

@@ -1,4 +1,5 @@
-import { SkeletonVariant } from '../Skeleton'
+import React from 'react'
+import type { SkeletonVariant } from '../Skeleton/types'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum SelectMenuAlignment {
@@ -112,8 +113,6 @@ export type SingleSelectProps = {
     maxMenuWidth?: number
     maxMenuHeight?: number
     inline?: boolean
-    onBlur?: () => void
-    onFocus?: () => void
 
     // error
     error?: boolean
@@ -139,4 +138,5 @@ export type SingleSelectProps = {
     singleSelectGroupPosition?: 'center' | 'left' | 'right'
 
     allowDeselect?: boolean
-}
+    menuFooter?: React.ReactNode
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'slot' | 'onSelect'>

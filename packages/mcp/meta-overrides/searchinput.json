@@ -1,0 +1,45 @@
+{
+    "componentDescription": "SearchInput is a text input pre-configured for search interactions — includes a search icon, clear button, and optional search submission. Use it for filtering lists, searching databases, and any search UX pattern. For general text fields, use TextInput.",
+    "features": [
+        "Built-in search icon on the left",
+        "Clear button that appears when input has value",
+        "Optional search submission via onSearch",
+        "Multiple sizes",
+        "Disabled state"
+    ],
+    "compositionPattern": null,
+    "usageExamples": [
+        {
+            "title": "Live filter search",
+            "description": "Search that filters a list in real-time as the user types.",
+            "code": "<SearchInput\n  placeholder=\"Search users...\"\n  value={searchQuery}\n  onChange={setSearchQuery}\n  onClear={() => setSearchQuery('')}\n  size={TextInputSize.MEDIUM}\n/>"
+        },
+        {
+            "title": "Search with submit",
+            "description": "Search input that triggers a search on Enter or button click.",
+            "code": "<SearchInput\n  placeholder=\"Search documentation...\"\n  value={searchQuery}\n  onChange={setSearchQuery}\n  onSearch={handleSearch}\n  onClear={() => { setSearchQuery(''); setResults([]); }}\n  size={TextInputSize.LARGE}\n/>"
+        }
+    ],
+    "propOverrides": {
+        "value": {
+            "llmContext": "Required. Controlled search query string. Manage with useState. For live-filter search, also use this value to filter your data — no separate state needed.",
+            "propDescription": "Required. Controlled search input value"
+        },
+        "onChange": {
+            "llmContext": "Required. Called with new string on every keystroke. For live filtering, use this to filter your data directly. For submitted search, just update state and trigger search in onSearch.",
+            "propDescription": "Required. Called with new value string on every keypress"
+        },
+        "onSearch": {
+            "llmContext": "Callback triggered when the user presses Enter. Use for server-side search that should only fire on explicit submission, not on every keystroke. If not provided, search only occurs via onChange.",
+            "propDescription": "Called when user presses Enter to submit search"
+        },
+        "onClear": {
+            "llmContext": "Callback fired when the user clicks the X clear button. Always set the search value to empty string here and clear any search results or reset filters.",
+            "propDescription": "Called when user clicks the clear button"
+        },
+        "placeholder": {
+            "llmContext": "Hint text describing what can be searched. Use specific descriptions like 'Search users by name or email' rather than generic 'Search...' to help users understand the search scope.",
+            "propDescription": "Placeholder text in the search input"
+        }
+    }
+}

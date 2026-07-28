@@ -1,0 +1,45 @@
+{
+    "componentDescription": "Topbar is the horizontal navigation bar fixed at the top of the application. Use it as the primary chrome for branding, global navigation, search, and user controls. Typically used alongside a Sidebar for full application layouts.",
+    "features": [
+        "Logo slot on the left",
+        "Left, center, and right content slots",
+        "Configurable height",
+        "Sticky positioning option",
+        "Consistent elevation/shadow"
+    ],
+    "compositionPattern": "Place the application logo in the logo prop. Use leftSlot for secondary navigation or breadcrumbs. Use centerSlot for a global search bar. Use rightSlot for user avatar menu, notifications, and settings.",
+    "usageExamples": [
+        {
+            "title": "Standard app topbar",
+            "description": "Topbar with logo, search, and user controls.",
+            "code": "<Topbar\n  logo={<AppLogo />}\n  centerSlot={\n    <SearchInput\n      value={searchQuery}\n      onChange={setSearchQuery}\n      placeholder=\"Search...\"\n      size={TextInputSize.SMALL}\n    />\n  }\n  rightSlot={\n    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>\n      <Tooltip content=\"Notifications\">\n        <Button buttonType={ButtonType.SECONDARY} subType={ButtonSubType.ICON_ONLY} size={ButtonSize.SMALL} leadingIcon={<BellIcon />} onClick={() => setNotifOpen(true)} />\n      </Tooltip>\n      <Menu trigger={<Avatar src={user.avatar} name={user.name} size=\"sm\" />} items={userMenuItems} />\n    </div>\n  }\n  sticky\n/>"
+        },
+        {
+            "title": "Topbar with breadcrumb navigation",
+            "description": "Topbar with breadcrumbs in the left slot for context.",
+            "code": "<Topbar\n  logo={<AppLogo />}\n  leftSlot={\n    <Breadcrumb\n      items={[\n        { label: 'Projects', onClick: () => navigate('/projects') },\n        { label: currentProject.name, onClick: () => navigate(`/projects/${currentProject.id}`) },\n        { label: 'Settings' },\n      ]}\n    />\n  }\n  rightSlot={<UserMenu user={currentUser} />}\n  sticky\n/>"
+        }
+    ],
+    "propOverrides": {
+        "logo": {
+            "llmContext": "React node for the application or brand logo on the left side. Should be compact — typically 32-40px tall. Make it a link to the home page for conventional navigation.",
+            "propDescription": "Logo or brand element on the left side"
+        },
+        "leftSlot": {
+            "llmContext": "React node rendered next to the logo on the left. Use for secondary navigation like breadcrumbs, page title, or environment selector (Production / Staging).",
+            "propDescription": "Content rendered in the left section of the topbar"
+        },
+        "centerSlot": {
+            "llmContext": "React node rendered in the horizontal center of the topbar. Best used for a global search input — it provides prominent access to search from any page.",
+            "propDescription": "Content rendered in the center of the topbar"
+        },
+        "rightSlot": {
+            "llmContext": "React node rendered on the far right. Use for user account controls — notification bell, help link, settings icon, and user avatar menu. Keep this area compact.",
+            "propDescription": "Content rendered in the right section of the topbar"
+        },
+        "sticky": {
+            "llmContext": "Set to true to keep the topbar fixed at the top of the viewport when the page scrolls. Use for application-level topbars that should always be accessible. If using sticky, ensure stickyHeader on Tabs uses the correct offsetTop.",
+            "propDescription": "Fixes the topbar to the top of the viewport on scroll"
+        }
+    }
+}

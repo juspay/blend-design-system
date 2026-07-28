@@ -1,8 +1,20 @@
-import { SkeletonVariant } from '../Skeleton'
+import type { SkeletonVariant } from '../Skeleton/types'
 
 export type BreadcrumbSkeletonProps = {
     show: boolean
     variant: SkeletonVariant
+}
+
+/** Replace null, undefined, or non-array `items` with `[]`. */
+export function normalizeBreadcrumbItems(
+    items: BreadcrumbItemType[] | null | undefined
+): BreadcrumbItemType[] {
+    return Array.isArray(items) ? items : []
+}
+
+export type BreadcrumbProps = {
+    items: BreadcrumbItemType[] | null
+    skeleton?: BreadcrumbSkeletonProps
 }
 
 export type BreadcrumbItemType = {

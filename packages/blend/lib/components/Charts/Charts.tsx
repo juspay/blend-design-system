@@ -5,7 +5,7 @@ import ChartHeader from './ChartHeader'
 import ChartLegends from './ChartLegend'
 import { useRef, useState, useEffect, useCallback, useId, useMemo } from 'react'
 import { renderChart } from './renderChart'
-import { transformNestedData } from './ChartUtils'
+import { normalizeChartData, transformNestedData } from './ChartUtils'
 import Block from '../../components/Primitives/Block/Block'
 import { ChartTokensType } from './chart.tokens'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -20,7 +20,7 @@ import ChartsSkeleton from './ChartsSkeleton'
 
 const Charts: React.FC<ChartsProps> = ({
     chartType = ChartType.LINE,
-    data,
+    data: dataProp,
     colors,
     slot1,
     slot2,
@@ -29,6 +29,7 @@ const Charts: React.FC<ChartsProps> = ({
     chartHeaderSlot,
     stackedLegends = false,
     stackedLegendsData,
+    showAllLegends = false,
     barsize,
     xAxis,
     yAxis,
@@ -46,6 +47,8 @@ const Charts: React.FC<ChartsProps> = ({
     lineSeriesKeys,
     ...props
 }) => {
+    const data = normalizeChartData(dataProp)
+
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
@@ -402,6 +405,7 @@ const Charts: React.FC<ChartsProps> = ({
                                               hoveredKey={hoveredKey}
                                               activeKeys={selectedKeys}
                                               stacked={false}
+                                              showAllLegends={showAllLegends}
                                           />
                                       }
                                       <Block
@@ -564,6 +568,7 @@ const Charts: React.FC<ChartsProps> = ({
                                               stackedLegendsData={
                                                   stackedLegendsData
                                               }
+                                              showAllLegends={showAllLegends}
                                           />
                                       </Block>
                                   </Block>
@@ -712,6 +717,9 @@ const Charts: React.FC<ChartsProps> = ({
                                                   hoveredKey={hoveredKey}
                                                   activeKeys={selectedKeys}
                                                   stacked={false}
+                                                  showAllLegends={
+                                                      showAllLegends
+                                                  }
                                               />
                                           </Block>
                                       )}
@@ -824,6 +832,9 @@ const Charts: React.FC<ChartsProps> = ({
                                                           }
                                                           stackedLegendsData={
                                                               stackedLegendsData
+                                                          }
+                                                          showAllLegends={
+                                                              showAllLegends
                                                           }
                                                       />
                                                   )}
@@ -985,6 +996,7 @@ const Charts: React.FC<ChartsProps> = ({
                                               stackedLegendsData={
                                                   stackedLegendsData
                                               }
+                                              showAllLegends={showAllLegends}
                                           />
                                       </Block>
                                   </Block>

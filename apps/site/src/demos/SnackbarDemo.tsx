@@ -559,6 +559,71 @@ const SnackbarDemo = () => {
                 </div>
             </div>
 
+            {/* Header Wrapping */}
+            <div className="flex flex-col gap-4">
+                <h2 className="text-lg font-semibold">
+                    Header Wrapping (wrap prop)
+                </h2>
+                <p className="text-sm text-gray-600">
+                    By default, the Snackbar header is truncated with an
+                    ellipsis on a single line. Pass <code>wrap: true</code> to
+                    allow the header to wrap onto multiple lines instead of
+                    being cut off.
+                </p>
+                <div className="flex gap-4 flex-wrap">
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Oops, something went wrong with the download. Please try again later.',
+                                description:
+                                    'The header above is truncated with an ellipsis (default behavior).',
+                                variant: SnackbarVariant.WARNING,
+                            })
+                        }
+                        text="Long Header (default, truncated)"
+                    />
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Oops, something went wrong with the download. Please try again later.',
+                                description:
+                                    'The header above wraps fully because wrap: true was passed.',
+                                variant: SnackbarVariant.WARNING,
+                                wrap: true,
+                            })
+                        }
+                        text="Long Header (wrap: true, wraps)"
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Oops, something went wrong with the download. Please try again later.',
+                                variant: SnackbarVariant.ERROR,
+                            })
+                        }
+                        text="Long Header Only (default, truncated)"
+                    />
+                    <Button
+                        buttonType={ButtonType.PRIMARY}
+                        size={ButtonSize.MEDIUM}
+                        onClick={() =>
+                            addSnackbar({
+                                header: 'Oops, something went wrong with the download. Please try again later.',
+                                variant: SnackbarVariant.ERROR,
+                                wrap: true,
+                            })
+                        }
+                        text="Long Header Only (wrap: true, wraps)"
+                    />
+                </div>
+            </div>
+
             {/* Snackbar Component (required for the toasts to appear) */}
             <Snackbar
                 position={SnackbarPosition.BOTTOM_RIGHT}

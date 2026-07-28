@@ -3,58 +3,13 @@ import Block from '../../../Primitives/Block/Block'
 import Text from '../../../Text/Text'
 import { Tooltip, TooltipSize } from '../../../Tooltip'
 import { InputSizeV2, InputStateV2 } from '../../inputV2.types'
-import { CSSObject } from 'styled-components'
 import { addPxToValue } from '../../../../global-utils/GlobalUtils'
-
-export type InputLabelsV2Tokens = {
-    label: {
-        fontSize: {
-            [key in InputSizeV2]: CSSObject['fontSize']
-        }
-        fontWeight: {
-            [key in InputSizeV2]: CSSObject['fontWeight']
-        }
-        lineHeight: {
-            [key in InputSizeV2]: CSSObject['lineHeight']
-        }
-        color: {
-            [key in InputStateV2]: CSSObject['color']
-        }
-    }
-    subLabel: {
-        fontSize: {
-            [key in InputSizeV2]: CSSObject['fontSize']
-        }
-        fontWeight: {
-            [key in InputSizeV2]: CSSObject['fontWeight']
-        }
-        lineHeight: {
-            [key in InputSizeV2]: CSSObject['lineHeight']
-        }
-        color: {
-            [key in InputStateV2]: CSSObject['color']
-        }
-    }
-    required: {
-        color: CSSObject['color']
-    }
-    helpIcon: {
-        width: {
-            [key in InputSizeV2]: CSSObject['width']
-        }
-        color: {
-            [key in InputStateV2]: CSSObject['color']
-        }
-    }
-}
+import type { InputLabelsV2Tokens } from '../../inputV2.tokens'
 
 export type InputLabelsV2Props = {
     label?: string
     sublabel?: string
-    helpIconText?: {
-        text: string
-        onClick?: () => void
-    }
+    helpIconText?: string
     name?: string
     inputId?: string
     required?: boolean
@@ -120,14 +75,9 @@ const InputLabelsV2 = ({
                 )}
 
                 {helpIconText && (
-                    <Block
-                        data-element="icon"
-                        contentCentered
-                        size={16}
-                        onClick={helpIconText.onClick}
-                    >
+                    <Block data-element="icon" contentCentered size={16}>
                         <Tooltip
-                            content={helpIconText.text}
+                            content={helpIconText}
                             size={TooltipSize.SMALL}
                         >
                             <HelpCircleIcon

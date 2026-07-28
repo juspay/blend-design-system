@@ -1,4 +1,11 @@
-import React, { forwardRef, useMemo, useRef, useEffect, useState } from 'react'
+import React, {
+    forwardRef,
+    useMemo,
+    useRef,
+    useEffect,
+    useState,
+    useCallback,
+} from 'react'
 import {
     Edit,
     Save,
@@ -10,7 +17,7 @@ import {
 import { styled, css } from 'styled-components'
 import { motion } from 'framer-motion'
 import { TableBodyProps } from './types'
-import { getFrozenLeftOffset } from '../TableHeader/utils'
+import { getFrozenLeftOffset, getFrozenRightOffset } from '../TableHeader/utils'
 import TableCell from '../TableCell'
 import Block from '../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -18,27 +25,32 @@ import Menu from '../../Menu/Menu'
 import { MenuAlignment, MenuSide } from '../../Menu/types'
 import Skeleton from '../../Skeleton/Skeleton'
 import { getSkeletonState } from '../../Skeleton/utils'
+import { useRowFlip } from '../hooks/useRowFlip'
 
-import {
-    Button,
-    ButtonType,
-    ButtonSize,
-    ButtonSubType,
-    Checkbox,
-    CheckboxSize,
-    TableTokenType,
-} from '../../../main'
+import { Button, ButtonType, ButtonSize, ButtonSubType } from '../../Button'
+import { Checkbox, CheckboxSize } from '../../Checkbox'
+import { Tooltip } from '../../Tooltip'
+import type { TableTokenType } from '../dataTable.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip/types'
 
 const TableRow = styled.tr<{
     $isClickable?: boolean
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
+    $isSticky?: boolean
+    $headerHeight?: string
 }>`
     border-bottom: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
     background-color: ${FOUNDATION_THEME.colors.gray[0]};
 
-    ${({ $customBackgroundColor, $isClickable, $hasCustomBackground }) => css`
+    ${({
+        $customBackgroundColor,
+        $isClickable,
+        $hasCustomBackground,
+        $isSticky,
+        $headerHeight,
+    }) => css`
         ${$customBackgroundColor &&
         css`
             background-color: ${$customBackgroundColor} !important;
@@ -47,6 +59,13 @@ const TableRow = styled.tr<{
         ${$isClickable &&
         css`
             cursor: pointer;
+        `}
+
+        ${$isSticky &&
+        css`
+            position: sticky;
+            top: ${$headerHeight || '46px'};
+            z-index: 15;
         `}
     
     ${!$hasCustomBackground &&
@@ -108,6 +127,17 @@ const StyledTableCell = styled.td<{
 const ExpandedCell = styled.td`
     padding: ${FOUNDATION_THEME.unit[16]};
     background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+`
+
+const ExpandedRow = styled(TableRow)`
+    background-color: ${FOUNDATION_THEME.colors.gray[50]};
+
+    td {
+        background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
+    }
 `
 
 const ExpandButton = styled.button`
@@ -509,6 +539,7 @@ const TableBody = forwardRef<
     (
         {
             currentData,
+            dataVersion,
             visibleColumns,
             idField,
             tableTitle,
@@ -517,11 +548,14 @@ const TableBody = forwardRef<
             editValues,
             expandedRows,
             enableInlineEdit = false,
+            showActionsColumn = true,
             enableColumnManager = true,
             enableRowExpansion = false,
             enableRowSelection = true,
+            rowSelectionConfig,
             rowActions,
             columnFreeze = 0,
+            columnFreezeRight = 0,
             measuredFrozenWidths,
             mobileConfig,
             mobileOverflowColumns = [],
@@ -538,12 +572,15 @@ const TableBody = forwardRef<
             getColumnWidth,
             getRowStyle,
             getDisplayValue,
+            dateLabel,
             isLoading = false,
             showSkeleton = false,
             skeletonVariant = 'pulse',
             isRowLoading,
             focusedCell,
             onCellFocus,
+            enableRowAnimation = false,
+            rowAnimationConfig,
         },
         ref
     ) => {
@@ -553,6 +590,7 @@ const TableBody = forwardRef<
             if (enableRowExpansion) span += 1
             // Actions column - only on desktop or when not using mobile column overflow
             if (
+                showActionsColumn &&
                 (enableInlineEdit || rowActions) &&
                 !(mobileConfig?.isMobile && mobileConfig?.enableColumnOverflow)
             ) {
@@ -564,6 +602,7 @@ const TableBody = forwardRef<
             visibleColumns.length,
             enableRowSelection,
             enableRowExpansion,
+            showActionsColumn,
             enableInlineEdit,
             enableColumnManager,
             rowActions,
@@ -571,6 +610,11 @@ const TableBody = forwardRef<
         ])
 
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
+
+        const hasAnySubtext = visibleColumns.some(
+            (col) => col.headerSubtext && col.headerSubtext.trim() !== ''
+        )
+        const headerHeight = hasAnySubtext ? '56px' : '46px'
 
         const globalLoadingState = isLoading || showSkeleton
         const { shouldShowSkeleton: globalShouldShowSkeleton } =
@@ -605,18 +649,44 @@ const TableBody = forwardRef<
                 skeletonVariant: variant,
             }
         }
-        const tbodyKey =
-            currentData.length > 0
-                ? `tbody-${currentData.length}-${String(currentData[0][idField])}-${String(currentData[currentData.length - 1][idField])}`
-                : 'tbody-empty'
+        const tbodyKey = useMemo(() => {
+            if (dataVersion !== undefined) return `tbody-${String(dataVersion)}`
+
+            const len = currentData.length
+            if (len === 0) return 'tbody-empty'
+
+            const firstId = String(currentData[0][idField])
+            const lastId = String(currentData[len - 1][idField])
+            return `tbody-${len}-${firstId}-${lastId}`
+        }, [currentData, dataVersion, idField])
+
+        const orderedRowIds = useMemo(
+            () => currentData.map((row) => String(row[idField])),
+            [currentData, idField]
+        )
+
+        const { register } = useRowFlip(
+            enableRowAnimation ? orderedRowIds : [],
+            rowAnimationConfig
+        )
+
+        const getFlipRefCallback = useCallback(
+            (rowId: string) => (el: HTMLTableRowElement | null) => {
+                if (!enableRowAnimation) return
+                register(rowId, el)
+            },
+            [enableRowAnimation, register]
+        )
+
+        const isPageTransition = !enableRowAnimation
 
         return (
             <motion.tbody
-                key={tbodyKey}
+                key={isPageTransition ? tbodyKey : undefined}
                 ref={ref}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3 }}
+                initial={isPageTransition ? { opacity: 0 } : undefined}
+                animate={isPageTransition ? { opacity: 1 } : undefined}
+                transition={isPageTransition ? { duration: 0.3 } : undefined}
                 style={{
                     backgroundColor: FOUNDATION_THEME.colors.gray[0],
                 }}
@@ -645,7 +715,6 @@ const TableBody = forwardRef<
                           const isSelected = selectedRows[rowId] || false
                           const rowAriaLabel = `Row ${index + 1}${isSelected ? ', selected' : ''}${isExpanded ? ', expanded' : ''}`
 
-                          // Helper to calculate absolute column index
                           const getAbsoluteColIndex = (
                               relativeColIndex: number
                           ) => {
@@ -655,16 +724,25 @@ const TableBody = forwardRef<
                               return colIndex
                           }
 
-                          const rowKey = `${rowId}-${index}`
+                          const rowKey = enableRowAnimation
+                              ? rowId
+                              : `${rowId}-${index}`
 
                           return (
                               <React.Fragment key={rowKey}>
                                   <TableRow
+                                      ref={
+                                          enableRowAnimation
+                                              ? getFlipRefCallback(rowId)
+                                              : undefined
+                                      }
                                       $isClickable={!!onRowClick}
                                       $customBackgroundColor={
                                           rowStyling.backgroundColor
                                       }
                                       $hasCustomBackground={hasCustomBackground}
+                                      $isSticky={isExpanded}
+                                      $headerHeight={headerHeight}
                                       role="row"
                                       aria-rowindex={index + 1}
                                       aria-selected={
@@ -880,22 +958,84 @@ const TableBody = forwardRef<
                                                       e.stopPropagation()
                                                   }
                                               >
-                                                  <Checkbox
-                                                      checked={
-                                                          !!selectedRows[rowId]
-                                                      }
-                                                      onCheckedChange={() =>
-                                                          onRowSelect(
-                                                              row[idField]
-                                                          )
-                                                      }
-                                                      size={CheckboxSize.MEDIUM}
-                                                      disabled={
+                                                  {(() => {
+                                                      const isDisabledByConfig =
+                                                          rowSelectionConfig?.isDisabled
+                                                              ? rowSelectionConfig.isDisabled(
+                                                                    row,
+                                                                    index
+                                                                )
+                                                              : false
+
+                                                      const isRowDisabled =
                                                           isEditing ||
-                                                          rowShouldShowSkeleton
-                                                      }
-                                                      aria-label={`Select row ${index + 1}${tableTitle ? ` in ${tableTitle}` : ''}`}
-                                                  />
+                                                          rowShouldShowSkeleton ||
+                                                          isDisabledByConfig
+
+                                                      const tooltipText =
+                                                          isDisabledByConfig &&
+                                                          rowSelectionConfig?.disabledText
+                                                              ? rowSelectionConfig.disabledText(
+                                                                    row,
+                                                                    index
+                                                                )
+                                                              : null
+
+                                                      const checkboxElement = (
+                                                          <Checkbox
+                                                              checked={
+                                                                  !!selectedRows[
+                                                                      rowId
+                                                                  ]
+                                                              }
+                                                              onCheckedChange={() =>
+                                                                  onRowSelect(
+                                                                      row[
+                                                                          idField
+                                                                      ],
+                                                                      index
+                                                                  )
+                                                              }
+                                                              size={
+                                                                  CheckboxSize.MEDIUM
+                                                              }
+                                                              disabled={
+                                                                  isRowDisabled
+                                                              }
+                                                              aria-label={`Select row ${index + 1}${tableTitle ? ` in ${tableTitle}` : ''}`}
+                                                          />
+                                                      )
+
+                                                      return tooltipText ? (
+                                                          <Tooltip
+                                                              content={
+                                                                  tooltipText
+                                                              }
+                                                              side={
+                                                                  TooltipSide.TOP
+                                                              }
+                                                              align={
+                                                                  TooltipAlign.CENTER
+                                                              }
+                                                              size={
+                                                                  TooltipSize.SMALL
+                                                              }
+                                                          >
+                                                              <div
+                                                                  style={{
+                                                                      display:
+                                                                          'inline-block',
+                                                                  }}
+                                                              >
+                                                                  {
+                                                                      checkboxElement
+                                                                  }
+                                                              </div>
+                                                          </Tooltip>
+                                                      ) : (
+                                                          checkboxElement
+                                                      )
+                                                  })()}
                                               </Block>
                                           </StyledTableCell>
                                       )}
@@ -915,6 +1055,55 @@ const TableBody = forwardRef<
 
                                               const getFrozenBodyStyles =
                                                   (): React.CSSProperties => {
+                                                      const rightStickyOffsetPx =
+                                                          enableColumnManager
+                                                              ? parseInt(
+                                                                    String(
+                                                                        FOUNDATION_THEME
+                                                                            .unit[48]
+                                                                    ).replace(
+                                                                        'px',
+                                                                        ''
+                                                                    ) || '48',
+                                                                    10
+                                                                )
+                                                              : 0
+                                                      const rightFreezeStartIndex =
+                                                          Math.max(
+                                                              visibleColumns.length -
+                                                                  columnFreezeRight,
+                                                              0
+                                                          )
+
+                                                      if (
+                                                          columnFreezeRight >
+                                                              0 &&
+                                                          colIndex >=
+                                                              rightFreezeStartIndex
+                                                      ) {
+                                                          return {
+                                                              position:
+                                                                  'sticky' as const,
+                                                              right: `${getFrozenRightOffset(
+                                                                  colIndex,
+                                                                  columnFreezeRight,
+                                                                  visibleColumns,
+                                                                  getColumnWidth,
+                                                                  rightStickyOffsetPx
+                                                              )}px`,
+                                                              zIndex: 8,
+                                                              backgroundColor:
+                                                                  rowStyling.backgroundColor ||
+                                                                  FOUNDATION_THEME
+                                                                      .colors
+                                                                      .gray[0],
+                                                              ...(colIndex ===
+                                                                  rightFreezeStartIndex && {
+                                                                  borderLeft: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
+                                                              }),
+                                                          }
+                                                      }
+
                                                       if (
                                                           colIndex >=
                                                           columnFreeze
@@ -1003,6 +1192,9 @@ const TableBody = forwardRef<
                                                           $hasCustomBackground={
                                                               hasCustomBackground
                                                           }
+                                                          $isFirstRow={
+                                                              index === 0
+                                                          }
                                                           data-row-index={index}
                                                           data-col-index={
                                                               absoluteColIndex
@@ -1035,9 +1227,6 @@ const TableBody = forwardRef<
                                                                   getFrozenBodyStyles()),
                                                               outline: 'none',
                                                           }}
-                                                          $isFirstRow={
-                                                              index === 0
-                                                          }
                                                       >
                                                           <Skeleton
                                                               variant={
@@ -1137,12 +1326,14 @@ const TableBody = forwardRef<
                                                       getDisplayValue={
                                                           getDisplayValue
                                                       }
+                                                      dateLabel={dateLabel}
                                                   />
                                               )
                                           }
                                       )}
 
-                                      {(enableInlineEdit || rowActions) &&
+                                      {showActionsColumn &&
+                                          (enableInlineEdit || rowActions) &&
                                           !(
                                               mobileConfig?.isMobile &&
                                               mobileConfig?.enableColumnOverflow
@@ -1382,6 +1573,7 @@ const TableBody = forwardRef<
                                                       $hasCustomBackground={
                                                           hasCustomBackground
                                                       }
+                                                      $isFirstRow={index === 0}
                                                       data-row-index={index}
                                                       data-col-index={
                                                           columnManagerColIndex
@@ -1407,7 +1599,6 @@ const TableBody = forwardRef<
                                                           )
                                                       }
                                                       role="gridcell"
-                                                      $isFirstRow={index === 0}
                                                       style={{
                                                           minWidth:
                                                               FOUNDATION_THEME
@@ -1440,7 +1631,7 @@ const TableBody = forwardRef<
                                       isExpanded &&
                                       renderExpandedRow &&
                                       canExpand && (
-                                          <TableRow
+                                          <ExpandedRow
                                               key={`${rowKey}-expanded`}
                                               $isClickable={false}
                                           >
@@ -1455,7 +1646,7 @@ const TableBody = forwardRef<
                                                           ),
                                                   })}
                                               </ExpandedCell>
-                                          </TableRow>
+                                          </ExpandedRow>
                                       )}
                               </React.Fragment>
                           )

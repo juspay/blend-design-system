@@ -1,7 +1,7 @@
 ---
 title: Avatar
 description: The Avatar component displays user profile images, initials, or fallback icons with various sizes and styling options for user identification and personalization.
-category: components
+category: Display
 tags:
     - avatar
     - component
@@ -10,6 +10,7 @@ tags:
     - image
 RepoFolderName: Avatar
 StorybookLink: components-avatar--docs
+version: 1
 ---
 
 <AvatarPreview />
@@ -78,14 +79,14 @@ function MyComponent() {
             {
                 content: 'size',
                 hintText:
-                    'Controls the dimensions of the avatar. Options range from XS (extra small, ~16px) to XL (extra large, ~64px), with MD (medium, ~40px) as the default. Size affects both the avatar container and any text/initials displayed within.',
+                    'Controls the dimensions of the avatar. Options range from SM (small) to XL (extra large), with MD (medium) as the default. Size affects both the avatar container and any text/initials displayed within.',
             },
             {
                 content: 'AvatarSize',
                 hintText:
                     'Enum that determines the width and height dimensions of the avatar',
             },
-            { content: 'XS, SM, MD, LG, XL' },
+            { content: 'SM, REGULAR, MD, LG, XL' },
         ],
         [
             {
@@ -109,6 +110,45 @@ function MyComponent() {
             {
                 content: 'boolean',
                 hintText: 'true shows online status indicator, false hides it',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onlinePosition',
+                hintText:
+                    'Controls the position of the online status indicator dot. TOP places the indicator at the top-right corner, BOTTOM places it at the bottom-right corner. Defaults to TOP.',
+            },
+            {
+                content: 'AvatarOnlinePosition',
+                hintText:
+                    'Enum that determines the position of the online indicator',
+            },
+            { content: 'TOP, BOTTOM' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText:
+                    'Configuration object for showing a skeleton loading state. When show is true, displays a skeleton loader instead of the avatar content. Optionally customize the skeleton variant.',
+            },
+            {
+                content: '{ show: boolean, variant?: SkeletonVariant }',
+                hintText:
+                    'Object with show (required boolean) and optional variant (pulse, shimmer, etc.)',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClick',
+                hintText:
+                    'Optional click handler that makes the avatar interactive. When provided, the avatar becomes focusable and responds to keyboard events (Enter/Space). Also inherits all standard HTML div attributes like onMouseEnter, onFocus, style, className, etc.',
+            },
+            {
+                content: '(e: MouseEvent) => void',
+                hintText:
+                    'Function called when the avatar is clicked or activated via keyboard',
             },
             { content: '' },
         ],

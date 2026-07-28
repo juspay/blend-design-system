@@ -1,7 +1,7 @@
 ---
 title: Data Table
 description: The DataTable component displays structured data in a tabular format with sorting, filtering, pagination, and selection capabilities for managing large datasets efficiently.
-category: components
+category: Data
 tags:
     - data-table
     - component
@@ -11,6 +11,7 @@ tags:
     - filtering
 RepoFolderName: DataTable
 StorybookLink: components-datatable--docs
+version: 1
 ---
 
 <DataTablePreview />
@@ -883,6 +884,19 @@ function CompactTable() {
         ],
         [
             {
+                content: 'isHoverable',
+                hintText:
+                    'When true, enables hover effects on table rows, highlighting the row when the user hovers over it with the mouse cursor. This provides better visual feedback and improves the user experience when scanning through data. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true enables hover effects on rows, false disables hover highlighting',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'headerSlot1',
                 hintText:
                     'Optional React element displayed in the first position of the table header, before the title. Useful for adding icons, badges, or other visual elements that should appear at the start of the header area.',
@@ -1037,6 +1051,20 @@ function CompactTable() {
                 content: 'boolean',
                 hintText:
                     'true enables row selection, false disables selection checkboxes',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rowSelectionConfig',
+                hintText:
+                    'Optional configuration object for customizing row selection behavior. Contains isDisabled function to control which rows cannot be selected, and disabledText function to provide tooltip text when hovering over disabled checkboxes. When isDisabled returns true for a row, its checkbox is disabled, click events are ignored, and it is excluded from "Select All" functionality. The disabledText function receives the same row and index parameters and should return the tooltip message to display.',
+            },
+            {
+                content:
+                    '{ isDisabled?: (row: T, index: number) => boolean; disabledText?: (row: T, index: number) => string }',
+                hintText:
+                    'Configuration object with isDisabled and disabledText functions',
             },
             { content: '' },
         ],

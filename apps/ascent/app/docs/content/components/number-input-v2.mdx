@@ -1,0 +1,375 @@
+---
+version: 2
+title: Number Input
+description: The NumberInputV2 component provides a numeric input field with increment/decrement controls and validation.
+category: Form Input
+tags:
+    - number-input
+    - component
+    - input
+    - form
+    - numeric
+RepoFolderName: NumberInputV2
+StorybookLink: components-inputs-numberinputv2--docs
+---
+
+<NumberInputV2Preview />
+
+## Usage
+
+```tsx
+import { NumberInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [value, setValue] = useState<number | null>(0)
+
+    return (
+        <NumberInputV2
+            label={{ text: 'Quantity' }}
+            value={value}
+            onChange={(e) => setValue(Number(e.target.value))}
+            min={0}
+            max={100}
+            step={1}
+            size={InputSizeV2.MD}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Required. Current numeric value.',
+            },
+            {
+                content: 'number',
+                hintText: 'Numeric value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Required. Callback fired when value changes.',
+            },
+            {
+                content: '(e: ChangeEvent<HTMLInputElement>) => void',
+                hintText: 'Change event handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text when empty.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Field label displayed above the input.',
+            },
+            {
+                content: '{ text: string; subtext?: string }',
+                hintText: 'Label object with text and optional subtext',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'subLabel',
+                hintText: 'Secondary label text below the main label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size affecting input height and text sizing.',
+            },
+            {
+                content: 'InputSizeV2',
+                hintText: 'Enum for input size',
+            },
+            { content: 'SM, MD, LG' },
+        ],
+        [
+            {
+                content: 'min',
+                hintText: 'Minimum allowed value.',
+            },
+            {
+                content: 'number',
+                hintText: 'Minimum value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'max',
+                hintText: 'Maximum allowed value.',
+            },
+            {
+                content: 'number',
+                hintText: 'Maximum value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'step',
+                hintText: 'Increment/decrement step size.',
+            },
+            {
+                content: 'number',
+                hintText: 'Step value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper description',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconText',
+                hintText: 'Tooltip text for the help icon.',
+            },
+            {
+                content: 'string',
+                hintText: 'Help tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'required',
+                hintText: 'When true, displays a required indicator.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true marks field as required',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, input is non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'Error state configuration.',
+            },
+            {
+                content: '{ show: boolean; message?: string }',
+                hintText: 'Error display settings',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'slot',
+                hintText:
+                    'Elements displayed at the start and/or end of the input.',
+            },
+            {
+                content: '{ left?: ReactNode; right?: ReactNode }',
+                hintText: 'Slot configuration object',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'unit',
+                hintText: 'Unit label displayed with the input value.',
+            },
+            {
+                content: 'string',
+                hintText: 'Unit text (e.g., "kg", "px")',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'unitDirection',
+                hintText: 'Position of the unit label relative to the input.',
+            },
+            {
+                content: 'NumberInputV2Direction',
+                hintText: 'LEFT or RIGHT',
+            },
+            { content: 'RIGHT' },
+        ],
+        [
+            {
+                content: 'preventNegative',
+                hintText: 'When true, prevents entering negative values.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true prevents negative values',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'name',
+                hintText: 'Name attribute for the input element.',
+            },
+            {
+                content: 'string',
+                hintText: 'Input name',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onBlur',
+                hintText: 'Callback fired when input loses focus.',
+            },
+            {
+                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                hintText: 'Blur handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onFocus',
+                hintText: 'Callback fired when input gains focus.',
+            },
+            {
+                content: '(e: FocusEvent<HTMLInputElement>) => void',
+                hintText: 'Focus handler',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the NumberInputV2 component using the following tokens:
+
+```tsx
+export type NumberInputV2TokensType = {
+    gap: CSSObject['gap']
+    topContainer: InputLabelsV2Tokens
+    inputContainer: {
+        placeholder: {
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+            fontSize: {
+                [key in InputSizeV2]: CSSObject['fontSize']
+            }
+            fontWeight: {
+                [key in InputSizeV2]: CSSObject['fontWeight']
+            }
+            lineHeight: {
+                [key in InputSizeV2]: CSSObject['lineHeight']
+            }
+        }
+        fontSize: {
+            [key in InputSizeV2]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in InputSizeV2]: CSSObject['fontWeight']
+        }
+        color: {
+            [key in InputStateV2]: CSSObject['color']
+        }
+        borderRadius: {
+            [key in InputSizeV2]: CSSObject['borderRadius']
+        }
+        boxShadow: CSSObject['boxShadow']
+        paddingTop: { [key in InputSizeV2]: CSSObject['paddingTop'] }
+        paddingRight: { [key in InputSizeV2]: CSSObject['paddingRight'] }
+        paddingBottom: { [key in InputSizeV2]: CSSObject['paddingBottom'] }
+        paddingLeft: { [key in InputSizeV2]: CSSObject['paddingLeft'] }
+        border: {
+            [key in InputStateV2]: CSSObject['border']
+        }
+        lineHeight: {
+            [key in InputSizeV2]: CSSObject['lineHeight']
+        }
+        backgroundColor: {
+            [key in InputStateV2]: CSSObject['backgroundColor']
+        }
+        stepperButton: {
+            width: {
+                [key in InputSizeV2]: CSSObject['width']
+            }
+            backgroundColor: {
+                [key in InputStateV2]: CSSObject['backgroundColor']
+            }
+            icon: {
+                color: {
+                    [key in InputStateV2]: CSSObject['color']
+                }
+                width: {
+                    [key in InputSizeV2]: CSSObject['width']
+                }
+            }
+        }
+        slot: {
+            left: {
+                width: { [key in InputSizeV2]: CSSObject['width'] }
+                height: { [key in InputSizeV2]: CSSObject['height'] }
+                margin: { [key in InputSizeV2]: CSSObject['margin'] }
+            }
+            right: {
+                width: { [key in InputSizeV2]: CSSObject['width'] }
+                height: { [key in InputSizeV2]: CSSObject['height'] }
+                margin: { [key in InputSizeV2]: CSSObject['margin'] }
+            }
+        }
+    }
+    unit: {
+        fontSize: { [key in InputSizeV2]: CSSObject['fontSize'] }
+        fontWeight: { [key in InputSizeV2]: CSSObject['fontWeight'] }
+        paddingTop: { [key in InputSizeV2]: CSSObject['paddingTop'] }
+        paddingRight: { [key in InputSizeV2]: CSSObject['paddingRight'] }
+        paddingBottom: { [key in InputSizeV2]: CSSObject['paddingBottom'] }
+        paddingLeft: { [key in InputSizeV2]: CSSObject['paddingLeft'] }
+        borderRadius: { [key in InputSizeV2]: CSSObject['borderRadius'] }
+        border: { [key in InputStateV2]: CSSObject['border'] }
+        color: { [key in InputStateV2]: CSSObject['color'] }
+    }
+    floatingLabels: FloatingLabelsV2Tokens
+    bottomContainer: InputFooterV2Tokens
+}
+```

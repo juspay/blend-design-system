@@ -1,28 +1,9 @@
 import Text from '../../../Text/Text'
 import Block from '../../../Primitives/Block/Block'
-import { InputSizeV2, InputStateV2 } from '../../inputV2.types'
-import { CSSObject } from 'styled-components'
+import type { InputSizeV2, InputStateV2 } from '../../inputV2.types'
 import { addPxToValue } from '../../../../global-utils/GlobalUtils'
-
-export type FloatingLabelsV2Tokens = {
-    placeholder: {
-        color: {
-            [key in InputStateV2]: CSSObject['color']
-        }
-        fontSize: {
-            [key in InputSizeV2]: CSSObject['fontSize']
-        }
-        fontWeight: {
-            [key in InputSizeV2]: CSSObject['fontWeight']
-        }
-        lineHeight: {
-            [key in InputSizeV2]: CSSObject['lineHeight']
-        }
-    }
-    required: {
-        color: CSSObject['color']
-    }
-}
+import type { FloatingLabelsV2Tokens } from '../../inputV2.tokens'
+import type { CSSObject } from 'styled-components'
 
 const FloatingLabelsV2 = ({
     label,
@@ -35,6 +16,7 @@ const FloatingLabelsV2 = ({
     tokens,
     size,
     state,
+    backgroundColor = 'transparent',
 }: {
     label: string
     required: boolean
@@ -46,6 +28,7 @@ const FloatingLabelsV2 = ({
     tokens: FloatingLabelsV2Tokens
     size: InputSizeV2
     state: InputStateV2
+    backgroundColor?: CSSObject['backgroundColor']
 }) => {
     const top = isInputFocusedOrWithValue ? topPadding : '50%'
 
@@ -62,6 +45,8 @@ const FloatingLabelsV2 = ({
                 transform: 'translateY(-50%)',
                 transformOrigin: 'left center',
                 pointerEvents: 'none',
+                width: '90%',
+                backgroundColor: backgroundColor,
             }}
         >
             <Block display="flex" alignItems="center" gap={4} width="100%">

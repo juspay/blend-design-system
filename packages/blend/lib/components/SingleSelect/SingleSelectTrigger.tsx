@@ -18,7 +18,7 @@ export type SingleSelectTriggerProps = {
     required: boolean
     valueLabelMap: Record<string, string>
     open: boolean
-    onClick?: () => void
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
     slot: React.ReactNode
     variant: SelectMenuVariant
     isSmallScreenWithLargeSize: boolean
@@ -130,7 +130,9 @@ const SingleSelectTrigger = ({
                             as="span"
                             textAlign="left"
                             paddingTop={
-                                isSmallScreenWithLargeSize && isItemSelected
+                                isSmallScreenWithLargeSize &&
+                                isItemSelected &&
+                                label
                                     ? paddingY * 1.5
                                     : 0
                             }

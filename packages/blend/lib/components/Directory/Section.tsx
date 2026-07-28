@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useCallback } from 'react'
+import React, {
+    createContext,
+    useContext,
+    useCallback,
+    useRef,
+    useLayoutEffect,
+} from 'react'
 import type { SectionProps } from './types'
 import { ChevronDown } from 'lucide-react'
 import NavItem from './NavItem'
@@ -7,6 +13,7 @@ import Text from '../Text/Text'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
+import { useSectionScroll } from '../../hooks/useSectionScroll'
 
 type SectionStateContextValue = {
     sectionStates: Map<number, boolean>
@@ -22,15 +29,20 @@ const useSectionState = () => {
 
 export { SectionStateContext }
 
-const ChevronWrapper = styled(Block)<{ $isOpen: boolean }>`
+const ChevronWrapper = styled(Block)<{
+    $isOpen: boolean
+    $tokens: DirectoryTokenType
+}>`
     display: flex;
     align-items: center;
     justify-content: center;
     margin-left: auto;
 
     & > svg {
-        width: 16px;
-        height: 16px;
+        width: ${({ $tokens }) =>
+            $tokens.section.header.chevron.width} !important;
+        height: ${({ $tokens }) =>
+            $tokens.section.header.chevron.width} !important;
         transition: transform 150ms;
         transform: ${({ $isOpen }) =>
             $isOpen ? 'rotate(180deg)' : 'rotate(0)'};
@@ -40,19 +52,22 @@ const ChevronWrapper = styled(Block)<{ $isOpen: boolean }>`
 const Section = ({
     section,
     sectionIndex,
-    // totalSections,
     onNavigateBetweenSections,
     idPrefix,
     iconOnlyMode = false,
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const sectionStateContext = useSectionState()
+    const { scrollIntoView } = useSectionScroll()
 
     const defaultIsOpen = section.defaultOpen !== false
     const sharedIsOpen = sectionStateContext?.sectionStates.get(sectionIndex)
     const [localIsOpen, setLocalIsOpen] = React.useState(defaultIsOpen)
 
     const isOpen = sharedIsOpen !== undefined ? sharedIsOpen : localIsOpen
+    const previousIsOpen = useRef(isOpen)
 
     const setIsOpen = useCallback(
         (value: boolean) => {
@@ -64,11 +79,9 @@ const Section = ({
         },
         [sectionIndex, sectionStateContext]
     )
-    const sectionRef = React.useRef<HTMLDivElement>(null)
-    const headerRef = React.useRef<HTMLDivElement>(null)
-    const itemRefs = React.useRef<Array<React.RefObject<HTMLElement | null>>>(
-        []
-    )
+    const sectionRef = useRef<HTMLDivElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
+    const itemRefs = useRef<Array<React.RefObject<HTMLElement | null>>>([])
 
     React.useEffect(() => {
         if (section.items) {
@@ -77,6 +90,16 @@ const Section = ({
             )
         }
     }, [section.items])
+
+    useLayoutEffect(() => {
+        const wasCollapsed = !previousIsOpen.current
+        const isExpanding = isOpen && wasCollapsed
+        previousIsOpen.current = isOpen
+
+        if (isExpanding && sectionRef.current) {
+            scrollIntoView(sectionRef.current)
+        }
+    }, [isOpen, scrollIntoView])
 
     const toggleSection = () => {
         if (!iconOnlyMode) {
@@ -158,10 +181,8 @@ const Section = ({
                     alignItems="center"
                     paddingX={tokens.section.header.padding.x}
                     paddingY={tokens.section.header.padding.y}
-                    // userSelect="none"
                     cursor={isCollapsible ? 'pointer' : undefined}
                     ref={headerRef}
-                    // $isCollapsible={isCollapsible}
                     onClick={isCollapsible ? toggleSection : undefined}
                     onKeyDown={isCollapsible ? handleKeyDown : undefined}
                     role={isCollapsible ? 'button' : undefined}
@@ -184,14 +205,19 @@ const Section = ({
                         variant="body.sm"
                         color={tokens.section.header.label.color}
                         fontWeight={tokens.section.header.label.fontWeight}
+                        fontSize={tokens.section.header.label.fontSize}
+                        style={{ whiteSpace: 'nowrap' }}
                     >
                         {section.label.toUpperCase()}
                     </Text>
                     {isCollapsible && (
-                        <ChevronWrapper $isOpen={isOpen} aria-hidden="true">
+                        <ChevronWrapper
+                            $isOpen={isOpen}
+                            $tokens={tokens}
+                            aria-hidden="true"
+                        >
                             <ChevronDown
                                 color={tokens.section.header.chevron.color}
-                                size={tokens.section.header.chevron.width}
                             />
                         </ChevronWrapper>
                     )}
@@ -235,6 +261,13 @@ const Section = ({
                             index={itemIdx}
                             itemPath={item.label}
                             iconOnlyMode={iconOnlyMode}
+                            showHierarchyLines={showHierarchyLines}
+                            hierarchyLineBorderRadius={
+                                hierarchyLineBorderRadius
+                            }
+                            isLast={
+                                itemIdx === (section.items?.length || 0) - 1
+                            }
                             onNavigate={handleItemNavigation}
                         />
                     ))}

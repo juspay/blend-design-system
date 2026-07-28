@@ -1,0 +1,277 @@
+---
+version: 2
+title: Multi Value Input
+description: The MultiValueInputV2 component allows entering multiple values as tags with input validation.
+category: Form Input
+tags:
+    - multi-value-input
+    - component
+    - input
+    - tags
+    - tokens
+RepoFolderName: MultiValueInputV2
+StorybookLink: components-inputs-multivalueinputv2--docs
+---
+
+<MultiValueInputV2Preview />
+
+## Usage
+
+```tsx
+import { MultiValueInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [value, setValue] = useState('')
+
+    return (
+        <MultiValueInputV2
+            label="Tags"
+            placeholder="Add tags..."
+            value={value}
+            onChange={setValue}
+            size={InputSizeV2.MD}
+            onTagAdd={(tag) => console.log('Added:', tag)}
+            onTagRemove={(tag) => console.log('Removed:', tag)}
+        />
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'value',
+                hintText: 'Current input value.',
+            },
+            {
+                content: 'string',
+                hintText: 'Input value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onChange',
+                hintText: 'Callback fired when input value changes.',
+            },
+            {
+                content: '(value: string) => void',
+                hintText: 'Change handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onTagAdd',
+                hintText: 'Callback fired when a tag is added.',
+            },
+            {
+                content: '(tag: string) => void',
+                hintText: 'Tag add handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onTagRemove',
+                hintText: 'Callback fired when a tag is removed.',
+            },
+            {
+                content: '(tag: string) => void',
+                hintText: 'Tag remove handler',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'label',
+                hintText: 'Field label displayed above the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'placeholder',
+                hintText: 'Placeholder text when empty.',
+            },
+            {
+                content: 'string',
+                hintText: 'Placeholder content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'size',
+                hintText: 'Size affecting tag and input sizing.',
+            },
+            {
+                content: 'InputSizeV2',
+                hintText: 'Enum for input size',
+            },
+            { content: 'sm, md, lg' },
+        ],
+        [
+            {
+                content: 'sublabel',
+                hintText:
+                    'Secondary label text displayed below the main label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Secondary label text',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'helpIconHintText',
+                hintText: 'Tooltip text for the help icon next to the label.',
+            },
+            {
+                content: 'string',
+                hintText: 'Help icon tooltip content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'hintText',
+                hintText: 'Helper text displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Helper text content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'leftSlot',
+                hintText: 'Element displayed on the left side of the input.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Left slot element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'rightSlot',
+                hintText: 'Element displayed on the right side of the input.',
+            },
+            {
+                content: 'ReactNode',
+                hintText: 'Right slot element',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'disabled',
+                hintText: 'When true, input is non-interactive.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true disables the input',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'error',
+                hintText: 'When true, displays the input in error state.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables error state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'errorMessage',
+                hintText: 'Error message displayed below the input.',
+            },
+            {
+                content: 'string',
+                hintText: 'Error text content',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Component Tokens
+
+You can style the MultiValueInputV2 component using the following tokens:
+
+```tsx
+export type MultiValueInputV2TokensType = {
+    gap: CSSObject['gap']
+    borderRadius: CSSObject['borderRadius']
+    topContainer: InputLabelsV2Tokens
+    inputContainer: {
+        offSet: number
+        fontSize: {
+            [key in InputSizeV2]: CSSObject['fontSize']
+        }
+        fontWeight: {
+            [key in InputSizeV2]: CSSObject['fontWeight']
+        }
+        gap: CSSObject['gap']
+        borderRadius?: CSSObject['borderRadius']
+        boxShadow: {
+            [key in InputStateV2]: CSSObject['boxShadow']
+        }
+        paddingTop: { [key in InputSizeV2]: CSSObject['paddingTop'] }
+        paddingRight: { [key in InputSizeV2]: CSSObject['paddingRight'] }
+        paddingBottom: { [key in InputSizeV2]: CSSObject['paddingBottom'] }
+        paddingLeft: { [key in InputSizeV2]: CSSObject['paddingLeft'] }
+        border: {
+            [key in InputStateV2]: CSSObject['border']
+        }
+        color: {
+            [key in InputStateV2]: CSSObject['color']
+        }
+        placeholderColor: {
+            default: CSSObject['color']
+            focus: CSSObject['color']
+            hover: CSSObject['color']
+            error: CSSObject['color']
+            disabled: CSSObject['color']
+        }
+        backgroundColor: {
+            [key in InputStateV2]: CSSObject['backgroundColor']
+        }
+        closeButton: {
+            width: CSSObject['width']
+        }
+        leftSlot: {
+            width: CSSObject['width']
+            height: CSSObject['height']
+        }
+        rightSlot: {
+            width: CSSObject['width']
+            height: CSSObject['height']
+        }
+        slotAlignTop: {
+            withTags: CSSObject['top']
+            withoutTags: CSSObject['top']
+        }
+    }
+    bottomContainer: InputFooterV2Tokens
+}
+```

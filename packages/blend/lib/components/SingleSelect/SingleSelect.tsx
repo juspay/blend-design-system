@@ -84,9 +84,6 @@ const SingleSelect = ({
     minMenuWidth,
     maxMenuWidth,
     maxMenuHeight,
-
-    onBlur,
-    onFocus,
     inline = false,
     fullWidth = false,
     enableVirtualization = items.length > 20 ? true : false,
@@ -107,8 +104,14 @@ const SingleSelect = ({
     customValueLabel = 'Specify',
     singleSelectGroupPosition,
     allowDeselect = false,
+    menuFooter,
     ...rest
 }: SingleSelectProps) => {
+    const { onFocus, onBlur, ...buttonRest } = rest
+    const buttonRestWithoutAria = { ...buttonRest } as Record<string, unknown>
+    delete buttonRestWithoutAria['aria-describedby']
+    delete buttonRestWithoutAria['aria-label']
+    delete buttonRestWithoutAria['aria-labelledby']
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const slotRef = useRef<HTMLDivElement>(null)
@@ -136,7 +139,7 @@ const SingleSelect = ({
             hintText,
             error,
             errorMessage,
-            rest,
+            rest: buttonRest,
             prefix: 'singleselect',
             needsMenuId: true,
         })
@@ -165,6 +168,18 @@ const SingleSelect = ({
     )
     const shouldShake = useErrorShake(error)
 
+    const callOnFocus = () => {
+        if (typeof onFocus === 'function') {
+            onFocus(undefined as unknown as React.FocusEvent<HTMLButtonElement>)
+        }
+    }
+
+    const callOnBlur = () => {
+        if (typeof onBlur === 'function') {
+            onBlur(undefined as unknown as React.FocusEvent<HTMLButtonElement>)
+        }
+    }
+
     useDropdownInteractionLock(!isMobile && open)
 
     if (isMobile && useDrawerOnMobile) {
@@ -189,8 +204,6 @@ const SingleSelect = ({
                 searchPlaceholder={searchPlaceholder}
                 slot={slot}
                 customTrigger={customTrigger}
-                onBlur={onBlur}
-                onFocus={onFocus}
                 inline={inline}
                 enableVirtualization={enableVirtualization}
                 virtualListItemHeight={virtualListItemHeight}
@@ -204,6 +217,9 @@ const SingleSelect = ({
                 minTriggerWidth={minTriggerWidth}
                 allowCustomValue={allowCustomValue}
                 customValueLabel={customValueLabel}
+                onFocus={callOnFocus}
+                onBlur={callOnBlur}
+                {...buttonRest}
             />
         )
     }
@@ -250,9 +266,9 @@ const SingleSelect = ({
                         onOpenChange={(isOpen) => {
                             setOpen(isOpen)
                             if (isOpen) {
-                                onFocus?.()
+                                callOnFocus()
                             } else {
-                                onBlur?.()
+                                callOnBlur()
                             }
                         }}
                         items={items}
@@ -283,6 +299,7 @@ const SingleSelect = ({
                         allowCustomValue={allowCustomValue}
                         customValueLabel={customValueLabel}
                         menuId={menuId}
+                        menuFooter={menuFooter}
                         trigger={
                             customTrigger || (
                                 <PrimitiveButton
@@ -395,6 +412,13 @@ const SingleSelect = ({
                                                 .color.disabled,
                                         },
                                     })}
+                                    onFocus={() => {
+                                        callOnFocus()
+                                    }}
+                                    onBlur={() => {
+                                        callOnBlur()
+                                    }}
+                                    {...buttonRestWithoutAria}
                                 >
                                     <Block
                                         display="flex"
@@ -425,7 +449,8 @@ const SingleSelect = ({
                                                 textAlign="left"
                                                 paddingTop={
                                                     isSmallScreenWithLargeSize &&
-                                                    isItemSelected
+                                                    isItemSelected &&
+                                                    label
                                                         ? paddingY * 1.5
                                                         : 0
                                                 }
