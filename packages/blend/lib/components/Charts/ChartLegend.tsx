@@ -196,6 +196,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     stacked = false,
     isSmallScreen = false,
     stackedLegendsData,
+    showAllLegends = false,
 }) => {
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
     const legendTokens = chartTokens.content.legend
@@ -211,6 +212,12 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     const isExpanding = useRef<boolean>(false)
     // Have to revisit from optimizaion POV.
     const handleResize = useCallback(() => {
+        if (showAllLegends) {
+            setCuttOffIndex(displayLegends.length)
+            setIsLoading(false)
+            return
+        }
+
         if (!legendItemsContainerRef.current) {
             setIsLoading(false)
             return
@@ -270,11 +277,16 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         const newCutoff = Math.max(1, Math.min(optimalCutoff, totalLegends))
         setCuttOffIndex(newCutoff)
         setIsLoading(false)
-    }, [displayLegends, legendTokens.gap])
+    }, [displayLegends, legendTokens.gap, showAllLegends])
 
     const debouncedResize = useDebounce(handleResize, 150)
 
     useResizeObserver(chartContainerRef, ({ width }) => {
+        if (showAllLegends) {
+            lastWidth.current = width
+            return
+        }
+
         if (width && Math.abs(width - lastWidth.current) > 10) {
             setIsLoading(true)
             if (width > lastWidth.current + 20) {
@@ -287,6 +299,13 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     })
 
     useEffect(() => {
+        if (showAllLegends) {
+            setIsLoading(false)
+            setCuttOffIndex(displayLegends.length)
+            isExpanding.current = false
+            return
+        }
+
         setIsLoading(true)
         setCuttOffIndex(displayLegends.length)
         isExpanding.current = false
@@ -296,7 +315,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
         }, 150)
 
         return () => clearTimeout(timeoutId)
-    }, [displayLegends, handleResize])
+    }, [displayLegends, handleResize, showAllLegends])
 
     const getItemOpacity = (dataKey: string) => {
         if (hoveredKey) {
@@ -367,11 +386,12 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
             <Block
                 ref={legendItemsContainerRef}
                 display="flex"
-                height={FOUNDATION_THEME.unit[28]}
+                height={showAllLegends ? 'auto' : FOUNDATION_THEME.unit[28]}
                 alignItems="center"
-                overflowX="hidden"
+                flexWrap={showAllLegends ? 'wrap' : 'nowrap'}
+                overflowX={showAllLegends ? 'visible' : 'hidden'}
                 overflowY="visible"
-                whiteSpace="nowrap"
+                whiteSpace={showAllLegends ? 'normal' : 'nowrap'}
                 style={{ flex: 1, opacity: isLoading ? 0 : 1 }}
                 justifyContent={isSmallScreen ? 'center' : 'start'}
                 gap={legendTokens.gap}

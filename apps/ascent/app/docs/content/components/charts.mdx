@@ -57,6 +57,7 @@ function MyComponent() {
             data={data}
             chartHeaderSlot={<h3>Monthly Performance Dashboard</h3>}
             legendPosition={ChartLegendPosition.TOP}
+            showAllLegends
             xAxis={{
                 label: 'Month',
                 type: AxisType.DATE_TIME,
@@ -71,6 +72,27 @@ function MyComponent() {
     )
 }
 ```
+
+## Show All Legends
+
+```tsx
+<Charts
+    chartType={ChartType.LINE_BAR}
+    data={data}
+    legends={[
+        { title: 'Paid out' },
+        { title: 'Payout in progress' },
+        { title: 'Failed' },
+        { title: 'Refunded' },
+    ]}
+    showAllLegends
+    chartHeaderSlot={<h3>Payout timeline</h3>}
+/>
+```
+
+Use `showAllLegends` when every legend tag should remain visible. Without it,
+the legend measures available width and moves overflow items into the `+ more`
+menu.
 
 ### Sankey Charts (Flow Diagrams)
 
@@ -263,6 +285,18 @@ function SankeyChart() {
                     'Array of objects with value, delta, and changeType properties',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'showAllLegends',
+                hintText:
+                    'When true, disables the + more overflow menu and renders all legend items inline, wrapping to additional rows when needed. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true forces all legend items to display',
+            },
+            { content: 'false' },
         ],
         [
             {
