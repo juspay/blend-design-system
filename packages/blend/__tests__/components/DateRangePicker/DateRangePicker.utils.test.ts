@@ -1,14 +1,17 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import {
     isControlledDateRange,
     detectPresetFromRange,
     processCustomPresets,
     getPresetLabelWithCustom,
+    handleCalendarDateClick,
+    handleCustomRangeCalendarDateClick,
 } from '../../../lib/components/DateRangePicker/utils'
 import { DateRangePreset } from '../../../lib/components/DateRangePicker/types'
 import type {
     CustomPresetConfig,
     CustomPresetDefinition,
+    DateRange,
 } from '../../../lib/components/DateRangePicker/types'
 
 describe('isControlledDateRange', () => {
@@ -184,5 +187,383 @@ describe('getPresetLabelWithCustom', () => {
         expect(getPresetLabelWithCustom(DateRangePreset.LAST_7_DAYS)).toBe(
             'Last 7 days'
         )
+    })
+})
+
+describe('handleCalendarDateClick - minDate/maxDate/customDisableDates/maxRangeDays guards', () => {
+    const today = new Date('2026-06-15T12:00:00')
+
+    it('blocks clicks before minDate and allows clicks on/after minDate', () => {
+        const minDate = new Date('2026-06-10')
+        const before = new Date('2026-06-09')
+        const on = new Date('2026-06-10')
+        const after = new Date('2026-06-11')
+
+        expect(
+            handleCalendarDateClick(
+                before,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                minDate
+            )
+        ).toBeNull()
+
+        expect(
+            handleCalendarDateClick(
+                on,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                minDate
+            )
+        ).not.toBeNull()
+
+        expect(
+            handleCalendarDateClick(
+                after,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                minDate
+            )
+        ).not.toBeNull()
+    })
+
+    it('blocks clicks after maxDate and allows clicks on/before maxDate', () => {
+        const maxDate = new Date('2026-06-20')
+        const before = new Date('2026-06-19')
+        const on = new Date('2026-06-20')
+        const after = new Date('2026-06-21')
+
+        expect(
+            handleCalendarDateClick(
+                before,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                maxDate
+            )
+        ).not.toBeNull()
+
+        expect(
+            handleCalendarDateClick(
+                on,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                maxDate
+            )
+        ).not.toBeNull()
+
+        expect(
+            handleCalendarDateClick(
+                after,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                maxDate
+            )
+        ).toBeNull()
+    })
+
+    it('blocks clicks when customDisableDates returns true', () => {
+        const disableSundays = (d: Date) => d.getDay() === 0
+        const sunday = new Date('2026-06-21') // Sunday
+        const monday = new Date('2026-06-22') // Monday
+
+        expect(
+            handleCalendarDateClick(
+                sunday,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                undefined,
+                disableSundays
+            )
+        ).toBeNull()
+
+        expect(
+            handleCalendarDateClick(
+                monday,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                undefined,
+                disableSundays
+            )
+        ).not.toBeNull()
+    })
+
+    it('passes the current selectedRange as the second arg to customDisableDates', () => {
+        const spy = vi.fn(() => false)
+        const range: DateRange = {
+            startDate: new Date('2026-06-10'),
+            endDate: new Date('2026-06-12'),
+        }
+        const clicked = new Date('2026-06-11')
+
+        handleCalendarDateClick(
+            clicked,
+            false,
+            today,
+            false,
+            false,
+            false,
+            undefined,
+            range,
+            false,
+            undefined,
+            undefined,
+            spy
+        )
+
+        expect(spy).toHaveBeenCalledWith(clicked, range)
+    })
+
+    it('maxRangeDays blocks clicks beyond start + maxRangeDays when range is half-selected', () => {
+        const start = new Date('2026-06-10')
+        const selectedRange: DateRange = { startDate: start }
+        const maxRangeDays = 7
+
+        // within window — allowed
+        const within = new Date('2026-06-17') // 7 days away (== maxRangeDays, allowed)
+        expect(
+            handleCalendarDateClick(
+                within,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                selectedRange,
+                false,
+                undefined,
+                undefined,
+                undefined,
+                maxRangeDays
+            )
+        ).not.toBeNull()
+
+        // beyond window — blocked
+        const beyond = new Date('2026-06-19') // 9 days away
+        expect(
+            handleCalendarDateClick(
+                beyond,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                selectedRange,
+                false,
+                undefined,
+                undefined,
+                undefined,
+                maxRangeDays
+            )
+        ).toBeNull()
+    })
+
+    it('maxRangeDays is inactive when no start date is selected yet', () => {
+        const clicked = new Date('2026-06-25')
+        // No selectedRange — even a far-future click should not be blocked by maxRangeDays
+        expect(
+            handleCalendarDateClick(
+                clicked,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                undefined,
+                undefined,
+                7
+            )
+        ).not.toBeNull()
+    })
+
+    it('minDate with a time component does not disable same-day clicks', () => {
+        // minDate at noon on June 10; a midnight click on June 10 must still be allowed
+        const minDate = new Date('2026-06-10T12:00:00')
+        const sameDay = new Date('2026-06-10T00:00:00')
+
+        expect(
+            handleCalendarDateClick(
+                sameDay,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                minDate
+            )
+        ).not.toBeNull()
+    })
+
+    it('maxDate with a time component does not disable same-day clicks', () => {
+        // maxDate at midnight on June 20; a noon click on June 20 must still be allowed
+        const maxDate = new Date('2026-06-20T00:00:00')
+        const sameDay = new Date('2026-06-20T12:00:00')
+
+        expect(
+            handleCalendarDateClick(
+                sameDay,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                maxDate
+            )
+        ).not.toBeNull()
+    })
+})
+
+describe('handleCustomRangeCalendarDateClick - minDate/maxDate/customDisableDates guards', () => {
+    const today = new Date('2026-06-15T12:00:00')
+
+    it('blocks clicks before minDate even with custom range config absent', () => {
+        const minDate = new Date('2026-06-10')
+        const before = new Date('2026-06-09')
+        const on = new Date('2026-06-10')
+
+        expect(
+            handleCustomRangeCalendarDateClick(
+                before,
+                false,
+                today,
+                false,
+                false,
+                undefined,
+                false,
+                undefined,
+                undefined,
+                false,
+                minDate
+            )
+        ).toBeNull()
+
+        expect(
+            handleCustomRangeCalendarDateClick(
+                on,
+                false,
+                today,
+                false,
+                false,
+                undefined,
+                false,
+                undefined,
+                undefined,
+                false,
+                minDate
+            )
+        ).not.toBeNull()
+    })
+
+    it('blocks clicks when customDisableDates returns true', () => {
+        const disableSundays = (d: Date) => d.getDay() === 0
+        const sunday = new Date('2026-06-21')
+
+        expect(
+            handleCustomRangeCalendarDateClick(
+                sunday,
+                false,
+                today,
+                false,
+                false,
+                undefined,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                undefined,
+                disableSundays
+            )
+        ).toBeNull()
+    })
+
+    it('maxRangeDays blocks clicks beyond start + maxRangeDays when half-selected', () => {
+        const start = new Date('2026-06-10')
+        const selectedRange: DateRange = { startDate: start }
+        const beyond = new Date('2026-06-25') // 15 days away
+
+        expect(
+            handleCustomRangeCalendarDateClick(
+                beyond,
+                false,
+                today,
+                false,
+                false,
+                undefined,
+                false,
+                undefined,
+                selectedRange,
+                false,
+                undefined,
+                undefined,
+                undefined,
+                7
+            )
+        ).toBeNull()
     })
 })

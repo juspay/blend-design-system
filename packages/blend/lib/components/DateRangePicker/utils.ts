@@ -1040,6 +1040,10 @@ export const createSingleDateRange = (
     return { startDate, endDate }
 }
 
+/** Normalizes a date to midnight so comparisons only consider the calendar day. */
+const startOfDay = (date: Date): Date =>
+    new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
 /**
  * Creates a date at start of day (00:00:00)
  */
@@ -1115,7 +1119,11 @@ export const handleCalendarDateClick = (
     isDoubleClick: boolean = false,
     timezone?: string,
     selectedRange?: DateRange,
-    isSingleDatePicker?: boolean
+    isSingleDatePicker?: boolean,
+    minDate?: Date,
+    maxDate?: Date,
+    customDisableDates?: (date: Date, currentRange?: DateRange) => boolean,
+    maxRangeDays?: number
 ): DateRange | null => {
     // Validate date is not disabled
     if (
@@ -1123,6 +1131,24 @@ export const handleCalendarDateClick = (
         (disablePastDates && clickedDate < today)
     ) {
         return null
+    }
+
+    // minDate / maxDate hard bounds (day-level comparison)
+    if (minDate && startOfDay(clickedDate) < startOfDay(minDate)) return null
+    if (maxDate && startOfDay(clickedDate) > startOfDay(maxDate)) return null
+    // customDisableDates honoured in the click path
+    if (customDisableDates && customDisableDates(clickedDate, selectedRange))
+        return null
+    // maxRangeDays: block clicks on days beyond start + maxRangeDays
+    if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
+        const diffDays = Math.abs(
+            Math.floor(
+                (startOfDay(clickedDate).getTime() -
+                    startOfDay(selectedRange.startDate).getTime()) /
+                    (1000 * 60 * 60 * 24)
+            )
+        )
+        if (diffDays > maxRangeDays) return null
     }
 
     // Create clean date without time components for comparison
@@ -1504,15 +1530,33 @@ export const getDateCellStates = (
     today: Date,
     disableFutureDates: boolean = false,
     disablePastDates: boolean = false,
-    customDisableDates?: (date: Date) => boolean,
+    customDisableDates?: (date: Date, currentRange?: DateRange) => boolean,
     timezone?: string,
-    isSingleDatePicker?: boolean
+    isSingleDatePicker?: boolean,
+    minDate?: Date,
+    maxDate?: Date,
+    maxRangeDays?: number
 ) => {
     const isTodayDay = isDateToday(date, today)
+
+    // maxRangeDays: only active while a range is half-selected (start picked,
+    // end not yet chosen). Once both start and end are set, a new click resets
+    // to a fresh start, so capping is not needed there.
+    let isBeyondMaxRange = false
+    if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
+        const start = selectedRange.startDate
+        const diffMs = startOfDay(date).getTime() - startOfDay(start).getTime()
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+        isBeyondMaxRange = Math.abs(diffDays) > maxRangeDays
+    }
+
     const isDisabled = Boolean(
         (disableFutureDates && date > today) ||
         (disablePastDates && date < today) ||
-        (customDisableDates && customDisableDates(date))
+        (minDate && startOfDay(date) < startOfDay(minDate)) ||
+        (maxDate && startOfDay(date) > startOfDay(maxDate)) ||
+        (customDisableDates && customDisableDates(date, selectedRange)) ||
+        isBeyondMaxRange
     )
 
     if (!selectedRange) {
@@ -2249,9 +2293,12 @@ export const calculateDayCellProps = (
     disableFutureDates: boolean,
     disablePastDates: boolean,
     calendarToken: CalendarTokenType,
-    customDisableDates?: (date: Date) => boolean,
+    customDisableDates?: (date: Date, currentRange?: DateRange) => boolean,
     timezone?: string,
-    isSingleDatePicker?: boolean
+    isSingleDatePicker?: boolean,
+    minDate?: Date,
+    maxDate?: Date,
+    maxRangeDays?: number
 ): {
     dateStates: ReturnType<typeof getDateCellStates>
     styles: Record<string, unknown>
@@ -2266,7 +2313,10 @@ export const calculateDayCellProps = (
         disablePastDates,
         customDisableDates,
         timezone,
-        isSingleDatePicker
+        isSingleDatePicker,
+        minDate,
+        maxDate,
+        maxRangeDays
     )
 
     const getCellStyles = () => {
@@ -3597,7 +3647,11 @@ export const handleCustomRangeCalendarDateClick = (
     isDoubleClick: boolean = false,
     timezone?: string,
     selectedRange?: DateRange,
-    isSingleDatePicker?: boolean
+    isSingleDatePicker?: boolean,
+    minDate?: Date,
+    maxDate?: Date,
+    customDisableDates?: (date: Date, currentRange?: DateRange) => boolean,
+    maxRangeDays?: number
 ): DateRange | null => {
     // Validate date is not disabled
     if (
@@ -3605,6 +3659,24 @@ export const handleCustomRangeCalendarDateClick = (
         (disablePastDates && clickedDate < today)
     ) {
         return null
+    }
+
+    // minDate / maxDate hard bounds (day-level comparison)
+    if (minDate && startOfDay(clickedDate) < startOfDay(minDate)) return null
+    if (maxDate && startOfDay(clickedDate) > startOfDay(maxDate)) return null
+    // customDisableDates honoured in the click path
+    if (customDisableDates && customDisableDates(clickedDate, selectedRange))
+        return null
+    // maxRangeDays: block clicks on days beyond start + maxRangeDays
+    if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
+        const diffDays = Math.abs(
+            Math.floor(
+                (startOfDay(clickedDate).getTime() -
+                    startOfDay(selectedRange.startDate).getTime()) /
+                    (1000 * 60 * 60 * 24)
+            )
+        )
+        if (diffDays > maxRangeDays) return null
     }
 
     // If no custom range config, use standard logic
@@ -3618,7 +3690,11 @@ export const handleCustomRangeCalendarDateClick = (
             isDoubleClick,
             timezone,
             selectedRange,
-            isSingleDatePicker
+            isSingleDatePicker,
+            minDate,
+            maxDate,
+            customDisableDates,
+            maxRangeDays
         )
     }
 
@@ -3666,7 +3742,11 @@ export const handleCustomRangeCalendarDateClick = (
                 isDoubleClick,
                 timezone,
                 selectedRange,
-                isSingleDatePicker
+                isSingleDatePicker,
+                minDate,
+                maxDate,
+                customDisableDates,
+                maxRangeDays
             )
         }
         endDate = calculatedDate
@@ -3681,7 +3761,11 @@ export const handleCustomRangeCalendarDateClick = (
             isDoubleClick,
             timezone,
             selectedRange,
-            isSingleDatePicker
+            isSingleDatePicker,
+            minDate,
+            maxDate,
+            customDisableDates,
+            maxRangeDays
         )
     }
 
