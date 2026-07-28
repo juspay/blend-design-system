@@ -433,6 +433,49 @@ describe('handleCalendarDateClick - minDate/maxDate/customDisableDates/maxRangeD
             )
         ).not.toBeNull()
     })
+
+    it('minDate with a time component does not disable same-day clicks', () => {
+        // minDate at noon on June 10; a midnight click on June 10 must still be allowed
+        const minDate = new Date('2026-06-10T12:00:00')
+        const sameDay = new Date('2026-06-10T00:00:00')
+
+        expect(
+            handleCalendarDateClick(
+                sameDay,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                minDate
+            )
+        ).not.toBeNull()
+    })
+
+    it('maxDate with a time component does not disable same-day clicks', () => {
+        // maxDate at midnight on June 20; a noon click on June 20 must still be allowed
+        const maxDate = new Date('2026-06-20T00:00:00')
+        const sameDay = new Date('2026-06-20T12:00:00')
+
+        expect(
+            handleCalendarDateClick(
+                sameDay,
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                maxDate
+            )
+        ).not.toBeNull()
+    })
 })
 
 describe('handleCustomRangeCalendarDateClick - minDate/maxDate/customDisableDates guards', () => {

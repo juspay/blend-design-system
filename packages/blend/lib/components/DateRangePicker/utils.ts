@@ -1040,6 +1040,10 @@ export const createSingleDateRange = (
     return { startDate, endDate }
 }
 
+/** Normalizes a date to midnight so comparisons only consider the calendar day. */
+const startOfDay = (date: Date): Date =>
+    new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
 /**
  * Creates a date at start of day (00:00:00)
  */
@@ -1129,9 +1133,9 @@ export const handleCalendarDateClick = (
         return null
     }
 
-    // minDate / maxDate hard bounds
-    if (minDate && clickedDate < minDate) return null
-    if (maxDate && clickedDate > maxDate) return null
+    // minDate / maxDate hard bounds (day-level comparison)
+    if (minDate && startOfDay(clickedDate) < startOfDay(minDate)) return null
+    if (maxDate && startOfDay(clickedDate) > startOfDay(maxDate)) return null
     // customDisableDates honoured in the click path
     if (customDisableDates && customDisableDates(clickedDate, selectedRange))
         return null
@@ -1139,7 +1143,8 @@ export const handleCalendarDateClick = (
     if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
         const diffDays = Math.abs(
             Math.floor(
-                (clickedDate.getTime() - selectedRange.startDate.getTime()) /
+                (startOfDay(clickedDate).getTime() -
+                    startOfDay(selectedRange.startDate).getTime()) /
                     (1000 * 60 * 60 * 24)
             )
         )
@@ -1540,7 +1545,7 @@ export const getDateCellStates = (
     let isBeyondMaxRange = false
     if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
         const start = selectedRange.startDate
-        const diffMs = date.getTime() - start.getTime()
+        const diffMs = startOfDay(date).getTime() - startOfDay(start).getTime()
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
         isBeyondMaxRange = Math.abs(diffDays) > maxRangeDays
     }
@@ -1548,8 +1553,8 @@ export const getDateCellStates = (
     const isDisabled = Boolean(
         (disableFutureDates && date > today) ||
         (disablePastDates && date < today) ||
-        (minDate && date < minDate) ||
-        (maxDate && date > maxDate) ||
+        (minDate && startOfDay(date) < startOfDay(minDate)) ||
+        (maxDate && startOfDay(date) > startOfDay(maxDate)) ||
         (customDisableDates && customDisableDates(date, selectedRange)) ||
         isBeyondMaxRange
     )
@@ -3656,9 +3661,9 @@ export const handleCustomRangeCalendarDateClick = (
         return null
     }
 
-    // minDate / maxDate hard bounds
-    if (minDate && clickedDate < minDate) return null
-    if (maxDate && clickedDate > maxDate) return null
+    // minDate / maxDate hard bounds (day-level comparison)
+    if (minDate && startOfDay(clickedDate) < startOfDay(minDate)) return null
+    if (maxDate && startOfDay(clickedDate) > startOfDay(maxDate)) return null
     // customDisableDates honoured in the click path
     if (customDisableDates && customDisableDates(clickedDate, selectedRange))
         return null
@@ -3666,7 +3671,8 @@ export const handleCustomRangeCalendarDateClick = (
     if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
         const diffDays = Math.abs(
             Math.floor(
-                (clickedDate.getTime() - selectedRange.startDate.getTime()) /
+                (startOfDay(clickedDate).getTime() -
+                    startOfDay(selectedRange.startDate).getTime()) /
                     (1000 * 60 * 60 * 24)
             )
         )
