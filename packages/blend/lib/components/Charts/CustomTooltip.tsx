@@ -275,9 +275,10 @@ const BarChartTooltip = ({
                         .map((key, index) => (
                             <Block
                                 display="flex"
-                                flexDirection="column"
+                                alignItems="center"
+                                justifyContent="space-between"
                                 key={`bar-${index}`}
-                                alignItems="flex-start"
+                                width="100%"
                             >
                                 <Block
                                     display="flex"
@@ -309,10 +310,7 @@ const BarChartTooltip = ({
                                         {key}
                                     </Text>
                                 </Block>
-                                <Block
-                                    paddingLeft={FOUNDATION_THEME.unit[10]}
-                                    width="100%"
-                                >
+                                <Block>
                                     <Text
                                         fontSize={
                                             FOUNDATION_THEME.font.size.body.sm
