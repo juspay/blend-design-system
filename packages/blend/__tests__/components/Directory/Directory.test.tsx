@@ -53,6 +53,98 @@ describe('Directory', () => {
         ).toHaveLength(2)
     })
 
+    it('keys expansion by item id when provided, so duplicate sibling labels stay independent', async () => {
+        const onExpandedItemsChange = vi.fn()
+        const duplicateLabelData: DirectoryData[] = [
+            {
+                label: 'Merchants',
+                isCollapsible: false,
+                items: [
+                    {
+                        id: 'mid_001',
+                        label: 'sanavi S',
+                        items: [{ id: 'sub_1', label: 'Store 1' }],
+                    },
+                    {
+                        id: 'mid_002',
+                        label: 'sanavi S',
+                        items: [{ id: 'sub_2', label: 'Store 2' }],
+                    },
+                ],
+            },
+        ]
+        const { user } = render(
+            <Directory
+                directoryData={duplicateLabelData}
+                enableVirtualization
+                virtualization={{
+                    threshold: 0,
+                    rowHeight: 32,
+                    viewportHeight: 320,
+                    overscan: 2,
+                }}
+                expandedItems={[]}
+                onExpandedItemsChange={onExpandedItemsChange}
+            />
+        )
+
+        const [firstDuplicate] = screen.getAllByRole('button', {
+            name: 'sanavi S',
+        })
+        await user.click(firstDuplicate)
+
+        // the id — not the shared label — identifies the expanded item
+        expect(onExpandedItemsChange).toHaveBeenCalledWith(['mid_001'])
+    })
+
+    it('honors controlled expansion props without virtualization', async () => {
+        const onExpandedItemsChange = vi.fn()
+        const onItemExpand = vi.fn()
+        const { user } = render(
+            <Directory
+                directoryData={directoryData}
+                expandedItems={[]}
+                onExpandedItemsChange={onExpandedItemsChange}
+                onItemExpand={onItemExpand}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /acme/i }))
+
+        expect(onExpandedItemsChange).toHaveBeenCalledWith([
+            'Acme Commerce Group',
+        ])
+        expect(onItemExpand).toHaveBeenCalledWith(
+            expect.objectContaining({ label: 'Acme Commerce Group' }),
+            'Acme Commerce Group'
+        )
+    })
+
+    it('fires onClick for parent rows when toggling expansion', async () => {
+        const onParentClick = vi.fn()
+        const parentClickData: DirectoryData[] = [
+            {
+                label: 'Organizations',
+                isCollapsible: false,
+                items: [
+                    {
+                        label: 'Acme Commerce Group',
+                        onClick: onParentClick,
+                        items: [{ label: 'Helix Network' }],
+                    },
+                ],
+            },
+        ]
+        const { user } = render(<Directory directoryData={parentClickData} />)
+
+        await user.click(screen.getByRole('button', { name: /acme/i }))
+
+        expect(onParentClick).toHaveBeenCalledTimes(1)
+        expect(
+            screen.getByRole('button', { name: /helix network/i })
+        ).toBeInTheDocument()
+    })
+
     it('supports controlled expanded items in virtualized mode', async () => {
         const onExpandedItemsChange = vi.fn()
         const { user } = render(

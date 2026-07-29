@@ -597,7 +597,7 @@ const NavItem = ({
                 hasChildren && !iconOnlyMode ? isExpanded : undefined
             }
             data-element="sidebar-sub-section"
-            data-id={item.label}
+            data-id={item.id ?? item.label}
             data-status={isActive ? 'selected' : 'not selected'}
         >
             {renderContent()}

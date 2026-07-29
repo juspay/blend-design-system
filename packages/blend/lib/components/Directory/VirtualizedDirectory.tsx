@@ -529,7 +529,7 @@ const VirtualizedDirectory = ({
                     aria-expanded={hasChildren ? isExpanded : undefined}
                     aria-label={row.item.label}
                     data-element="sidebar-sub-section"
-                    data-id={row.item.label}
+                    data-id={row.item.id ?? row.item.label}
                     data-status={isActive ? 'selected' : 'not selected'}
                     data-directory-row-index={rowIndex}
                     onClick={(event: React.MouseEvent<HTMLElement>) => {
