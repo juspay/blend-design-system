@@ -155,7 +155,7 @@ Releases are manual `workflow_dispatch` runs with confirmation strings: `create-
 
 ## Skill routing
 
-When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill.
+When the user's request matches an available skill, invoke it via the Skill tool. When in doubt, invoke the skill. If a referenced skill is unavailable, continue with the best available workflow.
 
 Key routing rules:
 
