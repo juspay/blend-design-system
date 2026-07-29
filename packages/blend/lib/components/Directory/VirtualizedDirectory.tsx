@@ -247,6 +247,7 @@ const VirtualizedDirectory = ({
     onItemExpand,
     onEndReached,
     endReachedThreshold = DEFAULT_END_REACHED_THRESHOLD,
+    enableParentSelection = false,
     virtualization,
 }: DirectoryProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
@@ -457,10 +458,11 @@ const VirtualizedDirectory = ({
     ) => {
         const hasChildren = !!row.item.items?.length
         const isExpanded = currentExpandedItems.has(row.itemPath)
+        const isSelectable = enableParentSelection || !hasChildren
         const isActive =
             row.item.isSelected !== undefined
-                ? row.item.isSelected && !hasChildren
-                : !hasChildren &&
+                ? row.item.isSelected && isSelectable
+                : isSelectable &&
                   (activeItem === row.itemPath || activeItem === row.item.label)
 
         const Element = row.item.href ? 'a' : 'button'
@@ -480,6 +482,9 @@ const VirtualizedDirectory = ({
         const activateItem = () => {
             if (hasChildren) {
                 setExpanded(row.item, row.itemPath, !isExpanded)
+                if (enableParentSelection) {
+                    setActiveItem(row.itemPath)
+                }
                 row.item.onClick?.()
             } else {
                 setActiveItem(row.itemPath)

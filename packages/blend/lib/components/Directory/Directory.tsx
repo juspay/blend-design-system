@@ -31,6 +31,7 @@ const Directory = ({
     onItemExpand,
     onEndReached,
     endReachedThreshold = DEFAULT_END_REACHED_THRESHOLD,
+    enableParentSelection = false,
     enableVirtualization = false,
     virtualization,
 }: DirectoryProps) => {
@@ -71,6 +72,7 @@ const Directory = ({
                 onItemExpand={onItemExpand}
                 onEndReached={onEndReached}
                 endReachedThreshold={endReachedThreshold}
+                enableParentSelection={enableParentSelection}
                 enableVirtualization={enableVirtualization}
                 virtualization={virtualization}
             />
@@ -115,6 +117,7 @@ const Directory = ({
                             hierarchyLineBorderRadius={
                                 hierarchyLineBorderRadius
                             }
+                            enableParentSelection={enableParentSelection}
                             onNavigateBetweenSections={(
                                 direction,
                                 currentIndex

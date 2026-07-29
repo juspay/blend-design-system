@@ -58,6 +58,7 @@ const Section = ({
     iconOnlyMode = false,
     showHierarchyLines = false,
     hierarchyLineBorderRadius = 0,
+    enableParentSelection = false,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const sectionStateContext = useSectionState()
@@ -269,6 +270,7 @@ const Section = ({
                             isLast={
                                 itemIdx === (section.items?.length || 0) - 1
                             }
+                            enableParentSelection={enableParentSelection}
                             onNavigate={handleItemNavigation}
                         />
                     ))}

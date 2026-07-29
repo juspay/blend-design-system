@@ -262,11 +262,11 @@ export const ActiveItemProvider: React.FC<ActiveItemProviderProps> = ({
 
     const setActiveItem = useCallback(
         (item: string | null) => {
-            if (isControlled) {
-                onActiveItemChange?.(item)
-            } else {
+            if (!isControlled) {
                 setInternalActiveItem(item)
             }
+            // fired in both modes, matching the virtualized renderer
+            onActiveItemChange?.(item)
         },
         [isControlled, onActiveItemChange]
     )
@@ -387,6 +387,7 @@ const NavItem = ({
     hierarchyLineBorderRadius = 0,
     isLast = false,
     isNested = false,
+    enableParentSelection = false,
 }: NavItemProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const { isItemExpanded, setItemExpanded } = useExpandedItemsContext()
@@ -395,10 +396,11 @@ const NavItem = ({
         setItemExpanded(item, itemPath, value)
     const { activeItem, setActiveItem } = useActiveItemContext()
     const hasChildren = item.items && item.items.length > 0
+    const isSelectable = enableParentSelection || !hasChildren
     const isActive =
         item.isSelected !== undefined
-            ? item.isSelected && !hasChildren
-            : !hasChildren &&
+            ? item.isSelected && isSelectable
+            : isSelectable &&
               (activeItem === itemPath || activeItem === item.label)
 
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
@@ -428,6 +430,9 @@ const NavItem = ({
     const activateItem = () => {
         if (hasChildren && !iconOnlyMode) {
             setIsExpanded(!isExpanded)
+            if (enableParentSelection) {
+                setActiveItem(itemPath)
+            }
             item.onClick?.()
         } else {
             setActiveItem(itemPath)
@@ -654,6 +659,9 @@ const NavItem = ({
                                         (item.items?.length || 0) - 1
                                     }
                                     isNested
+                                    enableParentSelection={
+                                        enableParentSelection
+                                    }
                                     onNavigate={(direction, currentIndex) => {
                                         if (
                                             direction === 'up' &&

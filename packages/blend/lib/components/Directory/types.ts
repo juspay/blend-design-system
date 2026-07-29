@@ -36,6 +36,13 @@ export type DirectoryProps = {
      * @default 200
      */
     endReachedThreshold?: number
+    /**
+     * When true, clicking a parent row selects it (updates activeItem) in
+     * addition to toggling expansion, and parent rows can render as
+     * selected. When false, only leaf rows can be selected.
+     * @default false
+     */
+    enableParentSelection?: boolean
     enableVirtualization?: boolean
     virtualization?: DirectoryVirtualizationConfig
 }
@@ -80,6 +87,7 @@ export type SectionProps = {
     iconOnlyMode?: boolean
     showHierarchyLines?: boolean
     hierarchyLineBorderRadius?: CSSObject['borderRadius']
+    enableParentSelection?: boolean
 }
 
 export type NavItemProps = {
@@ -92,6 +100,7 @@ export type NavItemProps = {
     hierarchyLineBorderRadius?: CSSObject['borderRadius']
     isLast?: boolean
     isNested?: boolean
+    enableParentSelection?: boolean
 }
 
 export type DirectoryFlatRow =

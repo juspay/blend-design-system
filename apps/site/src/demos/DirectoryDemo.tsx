@@ -503,6 +503,7 @@ const DirectoryDemo = () => {
                                 onActiveItemChange={setActiveItem}
                                 showHierarchyLines={showHierarchyLines}
                                 hierarchyLineBorderRadius={`${hierarchyLineBorderRadius}px`}
+                                enableParentSelection
                             />
                         </div>
                         <p className="text-xs text-gray-500">

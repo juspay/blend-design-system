@@ -145,6 +145,45 @@ describe('Directory', () => {
         ).toBeInTheDocument()
     })
 
+    it('selects parent rows on click when enableParentSelection is set', async () => {
+        const onActiveItemChange = vi.fn()
+        const { user } = render(
+            <Directory
+                directoryData={directoryData}
+                enableParentSelection
+                onActiveItemChange={onActiveItemChange}
+            />
+        )
+
+        const parent = screen.getByRole('button', { name: /acme/i })
+        await user.click(parent)
+
+        expect(onActiveItemChange).toHaveBeenCalledWith('Acme Commerce Group')
+        expect(parent).toHaveAttribute('data-status', 'selected')
+
+        // selection moves to the leaf, then back to the parent on collapse
+        await user.click(screen.getByRole('button', { name: /helix network/i }))
+        expect(onActiveItemChange).toHaveBeenLastCalledWith(
+            'Acme Commerce Group/Helix Network'
+        )
+        expect(parent).toHaveAttribute('data-status', 'not selected')
+
+        await user.click(parent)
+        expect(onActiveItemChange).toHaveBeenLastCalledWith(
+            'Acme Commerce Group'
+        )
+        expect(parent).toHaveAttribute('data-status', 'selected')
+    })
+
+    it('keeps parent rows unselectable by default', async () => {
+        const { user } = render(<Directory directoryData={directoryData} />)
+
+        const parent = screen.getByRole('button', { name: /acme/i })
+        await user.click(parent)
+
+        expect(parent).toHaveAttribute('data-status', 'not selected')
+    })
+
     it('supports controlled expanded items in virtualized mode', async () => {
         const onExpandedItemsChange = vi.fn()
         const { user } = render(
