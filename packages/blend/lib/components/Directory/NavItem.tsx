@@ -397,11 +397,14 @@ const NavItem = ({
     const { activeItem, setActiveItem } = useActiveItemContext()
     const hasChildren = item.items && item.items.length > 0
     const isSelectable = enableParentSelection || !hasChildren
+    // bare-label matching is a backward-compat fallback for id-less items
+    // only, so a label-valued activeItem can't co-select id'd duplicates
     const isActive =
         item.isSelected !== undefined
             ? item.isSelected && isSelectable
             : isSelectable &&
-              (activeItem === itemPath || activeItem === item.label)
+              (activeItem === itemPath ||
+                  (!item.id && activeItem === item.label))
 
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
     const nestedListRef = useRef<HTMLUListElement>(null)
@@ -602,7 +605,7 @@ const NavItem = ({
                 hasChildren && !iconOnlyMode ? isExpanded : undefined
             }
             data-element="sidebar-sub-section"
-            data-id={item.id ?? item.label}
+            data-id={getItemPathSegment(item)}
             data-status={isActive ? 'selected' : 'not selected'}
         >
             {renderContent()}

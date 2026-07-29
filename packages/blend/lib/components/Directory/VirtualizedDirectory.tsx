@@ -12,6 +12,7 @@ import { DirectoryTokenType } from './directory.tokens'
 import {
     DEFAULT_END_REACHED_THRESHOLD,
     flattenDirectoryData,
+    getItemPathSegment,
     handleKeyDown,
     normalizeExpandedItems,
     normalizeDirectoryData,
@@ -459,11 +460,14 @@ const VirtualizedDirectory = ({
         const hasChildren = !!row.item.items?.length
         const isExpanded = currentExpandedItems.has(row.itemPath)
         const isSelectable = enableParentSelection || !hasChildren
+        // bare-label matching is a backward-compat fallback for id-less items
+        // only, so a label-valued activeItem can't co-select id'd duplicates
         const isActive =
             row.item.isSelected !== undefined
                 ? row.item.isSelected && isSelectable
                 : isSelectable &&
-                  (activeItem === row.itemPath || activeItem === row.item.label)
+                  (activeItem === row.itemPath ||
+                      (!row.item.id && activeItem === row.item.label))
 
         const Element = row.item.href ? 'a' : 'button'
         const elementProps = row.item.href
@@ -534,7 +538,7 @@ const VirtualizedDirectory = ({
                     aria-expanded={hasChildren ? isExpanded : undefined}
                     aria-label={row.item.label}
                     data-element="sidebar-sub-section"
-                    data-id={row.item.id ?? row.item.label}
+                    data-id={getItemPathSegment(row.item)}
                     data-status={isActive ? 'selected' : 'not selected'}
                     data-directory-row-index={rowIndex}
                     onClick={(event: React.MouseEvent<HTMLElement>) => {

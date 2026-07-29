@@ -144,6 +144,44 @@ describe('Directory', () => {
         expect(onActiveItemChange).toHaveBeenCalledWith('mid_001/sub_1')
     })
 
+    it('does not co-select id-having duplicates via a bare-label activeItem', () => {
+        const duplicateLabelData: DirectoryData[] = [
+            {
+                label: 'Merchants',
+                isCollapsible: false,
+                items: [
+                    { id: 'mid_001', label: 'sanavi S' },
+                    { id: 'mid_002', label: 'sanavi S' },
+                    { label: 'Legacy Store' },
+                ],
+            },
+        ]
+        const { unmount } = render(
+            <Directory
+                directoryData={duplicateLabelData}
+                activeItem="sanavi S"
+            />
+        )
+
+        for (const duplicate of screen.getAllByRole('button', {
+            name: 'sanavi S',
+        })) {
+            expect(duplicate).toHaveAttribute('data-status', 'not selected')
+        }
+        unmount()
+
+        // id-less items keep the backward-compat bare-label matching
+        render(
+            <Directory
+                directoryData={duplicateLabelData}
+                activeItem="Legacy Store"
+            />
+        )
+        expect(
+            screen.getByRole('button', { name: 'Legacy Store' })
+        ).toHaveAttribute('data-status', 'selected')
+    })
+
     it('honors controlled expansion props without virtualization', async () => {
         const onExpandedItemsChange = vi.fn()
         const onItemExpand = vi.fn()

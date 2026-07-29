@@ -58,11 +58,11 @@ export type NavbarItem = {
     label: string
     /**
      * Stable identifier used as this item's path segment (itemPath, expansion
-     * state, virtualizer keys). Falls back to label when omitted — provide it
-     * when sibling labels can collide. Must be non-empty and must not contain
-     * "/" (the path separator). Note: active-state matching also accepts the
-     * raw label as a fallback, so a label-valued activeItem can match rows
-     * regardless of their id.
+     * state, virtualizer keys, data-id). Falls back to label when omitted or
+     * empty — provide it when sibling labels can collide. Must not contain
+     * "/" (the path separator). Items without an id also match a bare-label
+     * activeItem for backward compatibility; items with an id match only
+     * their id-based path.
      */
     id?: string
     items?: NavbarItem[]

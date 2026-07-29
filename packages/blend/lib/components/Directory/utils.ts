@@ -66,8 +66,10 @@ export const normalizeExpandedItems = (
 ): Set<string> =>
     expandedItems ? new Set(Array.from(expandedItems)) : new Set<string>()
 
+// || (not ??) so an empty-string id falls back to the label instead of
+// silently producing colliding empty path segments
 export const getItemPathSegment = (item: NavbarItem): string =>
-    item.id ?? item.label
+    item.id || item.label
 
 const getItemPath = (parentPath: string, item: NavbarItem): string => {
     const segment = getItemPathSegment(item)
