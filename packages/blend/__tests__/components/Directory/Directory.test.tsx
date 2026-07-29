@@ -182,6 +182,60 @@ describe('Directory', () => {
         ).toHaveAttribute('data-status', 'selected')
     })
 
+    it('does not refire onEndReached when re-rendered with fresh data references', () => {
+        const onEndReached = vi.fn()
+        const buildData = (): DirectoryData[] => [
+            {
+                label: 'Merchants',
+                isCollapsible: false,
+                items: [{ label: 'Store 1' }, { label: 'Store 2' }],
+            },
+        ]
+        // jsdom reports zero dimensions, so the viewport counts as "at the
+        // end" — the hook fires once on bind and must stay disarmed across
+        // re-renders that only change the data array's reference identity
+        const { rerender } = render(
+            <Directory
+                directoryData={buildData()}
+                onEndReached={onEndReached}
+            />
+        )
+        expect(onEndReached).toHaveBeenCalledTimes(1)
+
+        rerender(
+            <Directory
+                directoryData={buildData()}
+                onEndReached={onEndReached}
+            />
+        )
+        rerender(
+            <Directory
+                directoryData={buildData()}
+                onEndReached={onEndReached}
+            />
+        )
+        expect(onEndReached).toHaveBeenCalledTimes(1)
+
+        // an actual content change re-arms and fires again
+        rerender(
+            <Directory
+                directoryData={[
+                    {
+                        label: 'Merchants',
+                        isCollapsible: false,
+                        items: [
+                            { label: 'Store 1' },
+                            { label: 'Store 2' },
+                            { label: 'Store 3' },
+                        ],
+                    },
+                ]}
+                onEndReached={onEndReached}
+            />
+        )
+        expect(onEndReached).toHaveBeenCalledTimes(2)
+    })
+
     it('honors controlled expansion props without virtualization', async () => {
         const onExpandedItemsChange = vi.fn()
         const onItemExpand = vi.fn()

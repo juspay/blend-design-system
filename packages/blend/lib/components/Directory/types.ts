@@ -4,6 +4,11 @@ import type { CSSObject } from 'styled-components'
 export type DirectoryExpandedItems = Set<string> | string[]
 
 export type DirectoryVirtualizationConfig = {
+    /**
+     * External scroll container. Must be mounted (ref.current set) by the
+     * time Directory mounts — onEndReached binds its scroll listener once
+     * and does not retry when the element appears later.
+     */
     viewportRef?: RefObject<HTMLElement | null>
     rowHeight?: number
     sectionHeight?: number

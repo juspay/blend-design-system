@@ -7,6 +7,7 @@ import Section from './Section'
 import VirtualizedDirectory from './VirtualizedDirectory'
 import Block from '../Primitives/Block/Block'
 import {
+    countDirectoryItems,
     DEFAULT_END_REACHED_THRESHOLD,
     handleSectionNavigation,
     normalizeDirectoryData,
@@ -53,7 +54,7 @@ const Directory = ({
         onEndReached:
             enableVirtualization && !iconOnlyMode ? undefined : onEndReached,
         threshold: endReachedThreshold,
-        contentKey: directoryData,
+        contentKey: countDirectoryItems(directoryData),
     })
 
     if (enableVirtualization && !iconOnlyMode) {

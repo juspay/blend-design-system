@@ -71,6 +71,18 @@ export const normalizeExpandedItems = (
 export const getItemPathSegment = (item: NavbarItem): string =>
     item.id || item.label
 
+const countItems = (items: NavbarItem[] | undefined): number =>
+    (items ?? []).reduce((total, item) => total + 1 + countItems(item.items), 0)
+
+// Stable end-reached contentKey: reference identity of directoryData is
+// useless here (inline arrays / null re-normalize to fresh references every
+// render), so key on the total item count like the virtualized rows.length.
+export const countDirectoryItems = (directoryData: DirectoryData[]): number =>
+    directoryData.reduce(
+        (total, section) => total + countItems(section.items),
+        0
+    )
+
 const getItemPath = (parentPath: string, item: NavbarItem): string => {
     const segment = getItemPathSegment(item)
     return parentPath ? `${parentPath}/${segment}` : segment
