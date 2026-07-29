@@ -97,6 +97,53 @@ describe('Directory', () => {
         expect(onExpandedItemsChange).toHaveBeenCalledWith(['mid_001'])
     })
 
+    it('uses id-based paths in the non-virtualized renderer too', async () => {
+        const onExpandedItemsChange = vi.fn()
+        const onActiveItemChange = vi.fn()
+        const duplicateLabelData: DirectoryData[] = [
+            {
+                label: 'Merchants',
+                isCollapsible: false,
+                items: [
+                    {
+                        id: 'mid_001',
+                        label: 'sanavi S',
+                        items: [{ id: 'sub_1', label: 'Store 1' }],
+                    },
+                    {
+                        id: 'mid_002',
+                        label: 'sanavi S',
+                        items: [{ id: 'sub_2', label: 'Store 2' }],
+                    },
+                ],
+            },
+        ]
+        const { user } = render(
+            <Directory
+                directoryData={duplicateLabelData}
+                onExpandedItemsChange={onExpandedItemsChange}
+                onActiveItemChange={onActiveItemChange}
+            />
+        )
+
+        const [firstDuplicate] = screen.getAllByRole('button', {
+            name: 'sanavi S',
+        })
+        await user.click(firstDuplicate)
+
+        // same id-based identity as the virtualized renderer
+        expect(onExpandedItemsChange).toHaveBeenCalledWith(['mid_001'])
+        expect(
+            screen.getByRole('button', { name: 'Store 1' })
+        ).toBeInTheDocument()
+        expect(
+            screen.queryByRole('button', { name: 'Store 2' })
+        ).not.toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', { name: 'Store 1' }))
+        expect(onActiveItemChange).toHaveBeenCalledWith('mid_001/sub_1')
+    })
+
     it('honors controlled expansion props without virtualization', async () => {
         const onExpandedItemsChange = vi.fn()
         const onItemExpand = vi.fn()
