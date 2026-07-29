@@ -13,7 +13,7 @@ import Block from '../Primitives/Block/Block'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
-import { handleKeyDown } from './utils'
+import { getItemPathSegment, handleKeyDown } from './utils'
 import { TooltipV2 } from '../TooltipV2/TooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
@@ -286,7 +286,7 @@ const NavItem = ({
     item,
     index,
     onNavigate,
-    itemPath = item.label,
+    itemPath = getItemPathSegment(item),
     iconOnlyMode = false,
     showHierarchyLines = false,
     hierarchyLineBorderRadius = 0,
@@ -498,7 +498,7 @@ const NavItem = ({
                 hasChildren && !iconOnlyMode ? isExpanded : undefined
             }
             data-element="sidebar-sub-section"
-            data-id={item.label}
+            data-id={item.id ?? item.label}
             data-status={isActive ? 'selected' : 'not selected'}
         >
             {renderContent()}
@@ -544,7 +544,7 @@ const NavItem = ({
                                     key={childIdx}
                                     item={childItem}
                                     index={childIdx}
-                                    itemPath={`${itemPath}/${childItem.label}`}
+                                    itemPath={`${itemPath}/${getItemPathSegment(childItem)}`}
                                     iconOnlyMode={iconOnlyMode}
                                     showHierarchyLines={showHierarchyLines}
                                     hierarchyLineBorderRadius={

@@ -14,8 +14,13 @@ export const normalizeExpandedItems = (
 ): Set<string> =>
     expandedItems ? new Set(Array.from(expandedItems)) : new Set<string>()
 
+export const getItemPathSegment = (item: NavbarItem): string =>
+    item.id ?? item.label
+
 const getItemPath = (parentPath: string, item: NavbarItem): string =>
-    parentPath ? `${parentPath}/${item.label}` : item.label
+    parentPath
+        ? `${parentPath}/${getItemPathSegment(item)}`
+        : getItemPathSegment(item)
 
 const flattenDirectoryItems = (
     items: NavbarItem[],

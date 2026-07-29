@@ -37,6 +37,13 @@ export type DirectoryData = {
 }
 
 export type NavbarItem = {
+    /**
+     * Stable unique identity for the item among its siblings. When present it
+     * is used (instead of `label`) to build the item's path — the value that
+     * keys expansion state, virtualized row keys and `onItemExpand`. Provide it
+     * whenever sibling labels can repeat.
+     */
+    id?: string
     label: string
     items?: NavbarItem[]
     leftSlot?: ReactNode

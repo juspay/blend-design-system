@@ -53,6 +53,50 @@ describe('Directory', () => {
         ).toHaveLength(2)
     })
 
+    it('keys expansion by item id when provided, so duplicate sibling labels stay independent', async () => {
+        const onExpandedItemsChange = vi.fn()
+        const duplicateLabelData: DirectoryData[] = [
+            {
+                label: 'Merchants',
+                isCollapsible: false,
+                items: [
+                    {
+                        id: 'mid_001',
+                        label: 'sanavi S',
+                        items: [{ id: 'sub_1', label: 'Store 1' }],
+                    },
+                    {
+                        id: 'mid_002',
+                        label: 'sanavi S',
+                        items: [{ id: 'sub_2', label: 'Store 2' }],
+                    },
+                ],
+            },
+        ]
+        const { user } = render(
+            <Directory
+                directoryData={duplicateLabelData}
+                enableVirtualization
+                virtualization={{
+                    threshold: 0,
+                    rowHeight: 32,
+                    viewportHeight: 320,
+                    overscan: 2,
+                }}
+                expandedItems={[]}
+                onExpandedItemsChange={onExpandedItemsChange}
+            />
+        )
+
+        const [firstDuplicate] = screen.getAllByRole('button', {
+            name: 'sanavi S',
+        })
+        await user.click(firstDuplicate)
+
+        // the id — not the shared label — identifies the expanded item
+        expect(onExpandedItemsChange).toHaveBeenCalledWith(['mid_001'])
+    })
+
     it('supports controlled expanded items in virtualized mode', async () => {
         const onExpandedItemsChange = vi.fn()
         const { user } = render(
