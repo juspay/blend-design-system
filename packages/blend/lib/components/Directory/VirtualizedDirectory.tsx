@@ -76,7 +76,7 @@ const ConnectorVerticalLine = styled.span<{
     top: 0;
     height: ${({ $tokens, $isCurrent, $isLast }) =>
         $isCurrent && $isLast
-            ? `calc(${$tokens.section.itemList.nested.connector.elbowTop} + ${$tokens.section.itemList.nested.connector.elbowHeight})`
+            ? $tokens.section.itemList.nested.connector.elbowTop
             : '100%'};
     border-left: ${({ $tokens }) =>
         `${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color}`};
