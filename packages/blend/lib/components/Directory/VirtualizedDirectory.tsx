@@ -10,10 +10,12 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { DirectoryTokenType } from './directory.tokens'
 import {
+    DEFAULT_END_REACHED_THRESHOLD,
     flattenDirectoryData,
     handleKeyDown,
     normalizeExpandedItems,
     normalizeDirectoryData,
+    useDirectoryEndReached,
 } from './utils'
 import type { DirectoryFlatRow, DirectoryProps, NavbarItem } from './types'
 
@@ -143,6 +145,7 @@ const ItemButton = styled(Block)<{
         addPxToValue($tokens.section.itemList.item.fontSize)};
     font-weight: ${({ $tokens }) => $tokens.section.itemList.item.fontWeight};
     overflow: hidden;
+    text-align: left;
     text-decoration: none;
     transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
 
@@ -242,6 +245,8 @@ const VirtualizedDirectory = ({
     defaultExpandedItems,
     onExpandedItemsChange,
     onItemExpand,
+    onEndReached,
+    endReachedThreshold = DEFAULT_END_REACHED_THRESHOLD,
     virtualization,
 }: DirectoryProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
@@ -311,6 +316,13 @@ const VirtualizedDirectory = ({
             width: 0,
             height: viewportHeight,
         },
+    })
+    useDirectoryEndReached({
+        scrollRef,
+        externalRef: virtualization?.viewportRef,
+        onEndReached,
+        threshold: endReachedThreshold,
+        contentKey: rows.length,
     })
     const virtualRows = virtualizer.getVirtualItems()
     const fallbackRows =
@@ -468,6 +480,7 @@ const VirtualizedDirectory = ({
         const activateItem = () => {
             if (hasChildren) {
                 setExpanded(row.item, row.itemPath, !isExpanded)
+                row.item.onClick?.()
             } else {
                 setActiveItem(row.itemPath)
                 row.item.onClick?.()

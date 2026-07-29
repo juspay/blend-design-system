@@ -1,9 +1,61 @@
+import { useEffect, useRef } from 'react'
+import type { RefObject } from 'react'
 import type {
     DirectoryData,
     DirectoryExpandedItems,
     DirectoryFlatRow,
     NavbarItem,
 } from './types'
+
+export const DEFAULT_END_REACHED_THRESHOLD = 200
+
+export const useDirectoryEndReached = ({
+    scrollRef,
+    externalRef,
+    onEndReached,
+    threshold,
+    contentKey,
+}: {
+    scrollRef: RefObject<HTMLElement | null>
+    externalRef?: RefObject<HTMLElement | null>
+    onEndReached?: () => void | Promise<void>
+    threshold: number
+    contentKey: unknown
+}) => {
+    // Latest-ref so an inline callback prop doesn't rebind (and re-arm) the
+    // effect on every render.
+    const onEndReachedRef = useRef(onEndReached)
+    useEffect(() => {
+        onEndReachedRef.current = onEndReached
+    })
+    const hasOnEndReached = !!onEndReached
+
+    useEffect(() => {
+        if (!hasOnEndReached) return
+        const element = externalRef?.current ?? scrollRef.current
+        if (!element) return
+
+        // Re-armed when the effect rebinds so content growth (contentKey) can
+        // trigger another fire while still within the threshold.
+        let armed = true
+        const check = () => {
+            const remaining =
+                element.scrollHeight - element.scrollTop - element.clientHeight
+            if (remaining <= threshold) {
+                if (armed) {
+                    armed = false
+                    void onEndReachedRef.current?.()
+                }
+            } else {
+                armed = true
+            }
+        }
+
+        check()
+        element.addEventListener('scroll', check, { passive: true })
+        return () => element.removeEventListener('scroll', check)
+    }, [hasOnEndReached, threshold, contentKey, externalRef, scrollRef])
+}
 
 export const normalizeDirectoryData = (
     directoryData: DirectoryData[] | null
@@ -14,8 +66,13 @@ export const normalizeExpandedItems = (
 ): Set<string> =>
     expandedItems ? new Set(Array.from(expandedItems)) : new Set<string>()
 
-const getItemPath = (parentPath: string, item: NavbarItem): string =>
-    parentPath ? `${parentPath}/${item.label}` : item.label
+export const getItemPathSegment = (item: NavbarItem): string =>
+    item.id ?? item.label
+
+const getItemPath = (parentPath: string, item: NavbarItem): string => {
+    const segment = getItemPathSegment(item)
+    return parentPath ? `${parentPath}/${segment}` : segment
+}
 
 const flattenDirectoryItems = (
     items: NavbarItem[],

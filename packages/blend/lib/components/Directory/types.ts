@@ -25,6 +25,17 @@ export type DirectoryProps = {
     defaultExpandedItems?: DirectoryExpandedItems
     onExpandedItemsChange?: (items: string[]) => void
     onItemExpand?: (item: NavbarItem, itemPath: string) => void | Promise<void>
+    /**
+     * Called when the viewport is scrolled within endReachedThreshold pixels
+     * of the bottom (and re-checked when the content grows), for paged /
+     * infinite loading.
+     */
+    onEndReached?: () => void | Promise<void>
+    /**
+     * Distance in pixels from the bottom at which onEndReached fires.
+     * @default 200
+     */
+    endReachedThreshold?: number
     enableVirtualization?: boolean
     virtualization?: DirectoryVirtualizationConfig
 }
@@ -38,6 +49,12 @@ export type DirectoryData = {
 
 export type NavbarItem = {
     label: string
+    /**
+     * Stable identifier used as this item's path segment (itemPath, expansion
+     * state, virtualizer keys). Falls back to label when omitted — provide it
+     * when sibling labels can collide.
+     */
+    id?: string
     items?: NavbarItem[]
     leftSlot?: ReactNode
     rightSlot?: ReactNode

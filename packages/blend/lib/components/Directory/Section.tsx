@@ -14,6 +14,7 @@ import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import { useSectionScroll } from '../../hooks/useSectionScroll'
+import { getItemPathSegment } from './utils'
 
 type SectionStateContextValue = {
     sectionStates: Map<number, boolean>
@@ -259,7 +260,7 @@ const Section = ({
                             key={itemIdx}
                             item={item}
                             index={itemIdx}
-                            itemPath={item.label}
+                            itemPath={getItemPathSegment(item)}
                             iconOnlyMode={iconOnlyMode}
                             showHierarchyLines={showHierarchyLines}
                             hierarchyLineBorderRadius={
