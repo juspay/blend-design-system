@@ -373,7 +373,9 @@ const DirectoryDemo = () => {
     const [showHierarchyLines, setShowHierarchyLines] = useState(true)
     const [hierarchyLineBorderRadius, setHierarchyLineBorderRadius] =
         useState(0)
-    const [activeItem, setActiveItem] = useState<string | null>(null)
+    const [activeItem, setActiveItem] = useState<string | null>(
+        'Acme Commerce Group/Helix Network/Orbit Pharma'
+    )
     const virtualizedExpandedItems = useMemo(
         () => [
             'Merchant Directory',
