@@ -172,6 +172,29 @@ export type BaseColumnDefinition<T> = {
     canHide?: boolean
     frozen?: boolean
     className?: string
+    /**
+     * Explicitly selects the filter UI for this column, overriding what `type` would infer.
+     * - SELECT and MULTISELECT work on any column whose cell values are strings or numbers.
+     * - DATE requires cell values that can be parsed as dates; rows whose value can't be
+     *   parsed are filtered out rather than shown.
+     * - SLIDER additionally requires `sliderConfig`, which the `ColumnDefinition` union only
+     *   provides when `type` is `ColumnType.SLIDER` — so SLIDER is effectively limited to
+     *   slider columns today.
+     * - TEXT, NUMBER, and BOOLEAN have no filter component, so the column falls back to
+     *   the `type`-derived filter behaviour instead of disabling filtering.
+     * @example
+     * // A TEXT column filtered as a multiselect against a fixed set of options
+     * {
+     *   field: 'status',
+     *   header: 'Status',
+     *   type: ColumnType.TEXT,
+     *   filterType: FilterType.MULTISELECT,
+     *   filterOptions: [
+     *     { id: 'active', label: 'Active', value: 'active' },
+     *     { id: 'inactive', label: 'Inactive', value: 'inactive' },
+     *   ],
+     * }
+     */
     filterType?: FilterType
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant

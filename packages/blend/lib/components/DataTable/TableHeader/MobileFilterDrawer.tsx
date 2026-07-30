@@ -6,6 +6,7 @@ import {
     ChevronRight,
     Search,
 } from 'lucide-react'
+import { TrashSimpleIcon } from '@phosphor-icons/react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { TextInput } from '../../Inputs/TextInput'
@@ -13,13 +14,7 @@ import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
 import Slider from '../../Slider/Slider'
 import { SliderSize, SliderValueType } from '../../Slider/types'
-import {
-    ColumnDefinition,
-    ColumnType,
-    FilterType,
-    SortDirection,
-} from '../types'
-import { getColumnTypeConfig } from '../columnTypes'
+import { ColumnDefinition, FilterType, SortDirection } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
 import {
     SortHandlers,
@@ -32,6 +27,7 @@ import {
     getSelectMenuItems,
     getMultiSelectMenuItems,
     filterItemsBySearch,
+    getColumnTypeConfigForColumn,
 } from './utils'
 import { FOUNDATION_THEME } from '../../../tokens'
 import {
@@ -53,6 +49,8 @@ type MobileFilterDrawerProps = {
     filterHandlers: FilterHandlers
     filterState: FilterState
     sortState: SortState
+    /** When false, no filter UI is offered — a filter here could not affect rows. */
+    enableFiltering?: boolean
     onColumnFilter?: ColumnFilterHandler
     onPopoverClose?: () => void
 }
@@ -64,13 +62,24 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     filterHandlers,
     filterState,
     sortState,
+    enableFiltering = true,
     onColumnFilter,
     onPopoverClose,
 }) => {
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false)
 
-    const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
+    const columnConfig = getColumnTypeConfigForColumn(column)
     const fieldKey = String(column.field)
+    const hasFiltering = columnConfig.supportsFiltering && enableFiltering
+
+    // Mirrors the desktop clear affordance: an applied value can be absent from
+    // the current option list, so this is driven by filter state rather than by
+    // what the option list happens to render. The date filter has its own clear
+    // inside the nested drawer.
+    const selectedFilterValue = filterState.columnSelectedValues[fieldKey]
+    const hasActiveSelection = Array.isArray(selectedFilterValue)
+        ? selectedFilterValue.length > 0
+        : selectedFilterValue !== undefined && selectedFilterValue !== ''
 
     const isSortingEnabled =
         columnConfig.supportsSorting && column.isSortable !== false
@@ -404,14 +413,14 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                     </>
                 )}
 
-                {isSortingEnabled && columnConfig.supportsFiltering && (
+                {isSortingEnabled && hasFiltering && (
                     <Block
                         height="1px"
                         backgroundColor={FOUNDATION_THEME.colors.gray[200]}
                     />
                 )}
 
-                {columnConfig.supportsFiltering && (
+                {hasFiltering && (
                     <Block
                         display="flex"
                         alignItems="center"
@@ -449,6 +458,47 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         />
                     </Block>
                 )}
+
+                {hasFiltering &&
+                    columnConfig.filterComponent !== 'dateRange' &&
+                    hasActiveSelection && (
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            gap={FOUNDATION_THEME.unit[8]}
+                            padding="14px 20px"
+                            cursor="pointer"
+                            backgroundColor="transparent"
+                            _hover={{
+                                backgroundColor:
+                                    FOUNDATION_THEME.colors.gray[50],
+                            }}
+                            onClick={() => {
+                                onColumnFilter?.(
+                                    fieldKey,
+                                    columnConfig.filterType,
+                                    [],
+                                    'equals'
+                                )
+                                onPopoverClose?.()
+                            }}
+                        >
+                            <TrashSimpleIcon
+                                size={16}
+                                color={FOUNDATION_THEME.colors.red[600]}
+                                weight="bold"
+                            />
+                            <PrimitiveText
+                                style={{
+                                    fontSize: 14,
+                                    color: FOUNDATION_THEME.colors.red[600],
+                                    fontWeight: 500,
+                                }}
+                            >
+                                Clear Filter
+                            </PrimitiveText>
+                        </Block>
+                    )}
             </Block>
 
             <Drawer

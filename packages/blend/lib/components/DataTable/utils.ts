@@ -6,6 +6,7 @@ import {
     FilterType,
     ColumnDefinition,
     ColumnType,
+    FilterOption,
     PivotAggregationType,
     DateFormat,
 } from './types'
@@ -18,6 +19,54 @@ import {
     DateData,
     DateRangeData,
 } from './columnTypes'
+
+/**
+ * Compares filter option lists by content. Consumers commonly build `columns`
+ * inline, so a new-but-equal array must not count as a change: that would sync
+ * column state on every parent render and re-run the whole data pipeline.
+ *
+ * Array-checked rather than truthy-checked, and indexed rather than using
+ * `every`: this runs inside a render effect and JS consumers are not bound by
+ * the type, so a malformed value must compare unequal instead of throwing and
+ * taking the table down with it. Indexing also makes array holes compare
+ * unequal, which `every` skips.
+ *
+ * Absent, empty and malformed values all compare equal to each other, because
+ * they all render the same option list.
+ */
+const hasUsableFilterOptions = (
+    value?: FilterOption[]
+): value is FilterOption[] => Array.isArray(value) && value.length > 0
+
+export const haveSameFilterOptions = (
+    a?: FilterOption[],
+    b?: FilterOption[]
+): boolean => {
+    if (a === b) return true
+
+    // getFilterOptions only uses the prop when it is a non-empty array, and
+    // otherwise derives options from the rows. So calling absent-vs-empty a
+    // change would resync column state on every render, which is what this
+    // comparator exists to prevent.
+    if (!hasUsableFilterOptions(a) && !hasUsableFilterOptions(b)) return true
+    if (!hasUsableFilterOptions(a) || !hasUsableFilterOptions(b)) return false
+
+    if (a.length !== b.length) return false
+
+    for (let index = 0; index < a.length; index++) {
+        const option = a[index]
+        const other = b[index]
+        if (
+            option?.id !== other?.id ||
+            option?.label !== other?.label ||
+            option?.value !== other?.value
+        ) {
+            return false
+        }
+    }
+
+    return true
+}
 
 export const isDateOnlyString = (value: string): boolean =>
     /^\d{4}-\d{2}-\d{2}$/.test(value)
