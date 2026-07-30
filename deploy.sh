@@ -130,6 +130,9 @@ if ! git diff --staged --quiet; then
         || echo "⚠️ PR creation failed, check manually"
 
     git checkout $CURRENT_BRANCH
+    # Restore the changelog files for this build; PR keeps them for repo history.
+    git checkout $PR_BRANCH -- apps/ascent/app/changelog/content/
+    git reset HEAD -- apps/ascent/app/changelog/content/ 2>/dev/null || true
     git branch -D $PR_BRANCH
 fi
 
