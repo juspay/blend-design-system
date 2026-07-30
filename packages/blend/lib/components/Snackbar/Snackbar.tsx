@@ -22,6 +22,7 @@ import {
     SnackbarIconProps,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { dismissNonPersistentToasts } from '../../utils/snackbar-dismiss'
 import { SnackbarTokens } from './snackbar.tokens'
 
 const SnackbarIcon: React.FC<SnackbarIconProps> = ({ variant }) => {
@@ -288,9 +289,12 @@ const Snackbar: React.FC<SnackbarProps> = ({
                 '[data-snackbar]'
             )
 
-            // If click is not on a snackbar, dismiss all snackbars
+            // If click is not on a snackbar, dismiss all snackbars except
+            // persistent ones. v1 and v2 share a single sonner toast store, so
+            // dismissing everything here would also close SnackbarV2 toasts
+            // created with duration: Infinity.
             if (!clickedSnackbar) {
-                sonnerToast.dismiss()
+                dismissNonPersistentToasts()
             }
         }
 

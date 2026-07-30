@@ -210,6 +210,75 @@ export const WithAction: Story = {
     },
 }
 
+export const PersistentWithAction: Story = {
+    render: () => (
+        <Button
+            text="Show persistent error"
+            onClick={() =>
+                addSnackbarV2({
+                    header: 'Upload failed',
+                    description: 'invoice-2026-Q1.pdf could not be uploaded.',
+                    variant: SnackbarV2Variant.ERROR,
+                    duration: Infinity,
+                    actionButton: {
+                        label: 'Retry',
+                        autoDismiss: false,
+                        onClick: () => console.log('Retrying upload'),
+                    },
+                })
+            }
+        />
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: `
+Set \`duration: Infinity\` for a toast that never auto-dismisses. Keep
+\`actionButton.autoDismiss\` false when clicking the action should leave it open.
+
+\`\`\`tsx
+addSnackbarV2({
+  header: 'Upload failed',
+  variant: SnackbarV2Variant.ERROR,
+  duration: Infinity,
+  actionButton: {
+    label: 'Retry',
+    autoDismiss: false,
+    onClick: retryUpload,
+  },
+})
+\`\`\`
+
+\`duration: 0\` is not a persistence switch. It falls through to Sonner's 4000ms default.
+                `,
+            },
+        },
+    },
+}
+
+export const ZeroDurationDoesNotPersist: Story = {
+    render: () => (
+        <Button
+            text="Show duration: 0 example"
+            onClick={() =>
+                addSnackbarV2({
+                    header: 'This still auto-dismisses',
+                    description:
+                        'duration: 0 falls through to the 4000ms default.',
+                    duration: 0,
+                })
+            }
+        />
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: '`duration: 0` is falsy in Sonner and does not persist. Use `duration: Infinity` instead.',
+            },
+        },
+    },
+}
+
 export const CustomSlot: Story = {
     render: () => (
         <div className="flex flex-col gap-4">

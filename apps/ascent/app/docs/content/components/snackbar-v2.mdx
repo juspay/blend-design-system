@@ -62,6 +62,57 @@ toast({
 })
 ```
 
+## Persistent Toasts
+
+Set `duration: Infinity` for a toast that never auto-dismisses.
+
+```tsx
+import { addSnackbarV2, SnackbarV2Variant } from '@juspay/blend-design-system'
+
+addSnackbarV2({
+    header: 'Upload failed',
+    description: 'invoice-2026-Q1.pdf could not be uploaded.',
+    variant: SnackbarV2Variant.ERROR,
+    duration: Infinity,
+    actionButton: {
+        label: 'Retry',
+        autoDismiss: false, // clicking Retry keeps the toast open
+        onClick: retryUpload,
+    },
+})
+```
+
+`actionButton.autoDismiss` is separate from the toast duration. Set it to `false` when
+clicking the action should keep the persistent toast open. The close button remains
+available.
+
+A persistent toast is exempt from `dismissOnClickAway`, so clicking elsewhere on the page
+closes ordinary toasts but leaves it open. It also does not count against the visible-toast
+limit, so newer toasts cannot push it out of view.
+
+It is still a toast: it overlays the page, supports a single action, and is announced once
+by screen readers. For a message the user must not miss, use `AlertV2` (inline, in reading
+order, supports a primary and secondary action) or `ModalV2` (blocking).
+
+### Do not use `duration: 0`
+
+`duration: 0` does **not** create a persistent toast. `0` is falsy, so it falls through to
+the 4000ms default and you get an ordinary 4-second toast.
+
+### Choosing the right component
+
+| Message                                                                               | Component                              |
+| ------------------------------------------------------------------------------------- | -------------------------------------- |
+| Transient and passive — "Saved", "Copied"                                             | `SnackbarV2`                           |
+| Optional action, no deadline — "Upload failed / Retry", "Undo"                        | `SnackbarV2` with `duration: Infinity` |
+| The user must act, or ignoring it has a consequence — session expiry, unsaved changes | `AlertV2` (inline)                     |
+| The user must act before continuing                                                   | `ModalV2` (blocking)                   |
+| Must survive navigation or be re-findable later                                       | Neither — needs a notification centre  |
+
+Snackbars support a single action and live in a stack, which makes them a poor host for
+anything with a deadline or a consequence. Reach for `AlertV2` there: it is inline, always
+visible, and supports a primary and a secondary action.
+
 ## API Reference
 
 ### SnackbarV2 Container Props
@@ -85,13 +136,26 @@ toast({
         [
             {
                 content: 'dismissOnClickAway',
-                hintText: 'When true, clicking outside dismisses the toast.',
+                hintText:
+                    'When true, clicking outside dismisses toasts. Toasts created with duration: Infinity are exempt and survive the click.',
             },
             {
                 content: 'boolean',
                 hintText: 'true enables click-away dismissal',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'visibleToasts',
+                hintText:
+                    'How many toasts are visible at once. Newer toasts push older ones out of view. Persistent (duration: Infinity) toasts do not count against this limit, so they cannot be pushed out.',
+            },
+            {
+                content: 'number',
+                hintText: 'Number of simultaneously visible toasts',
+            },
+            { content: '3' },
         ],
         [
             {
@@ -162,13 +226,13 @@ toast({
             {
                 content: 'duration',
                 hintText:
-                    'Time in milliseconds before auto-dismiss. Set to Infinity to disable.',
+                    'Time in milliseconds before auto-dismiss. Defaults to 4000. Set to Infinity for a persistent toast, which is also exempt from dismissOnClickAway and from the visible-toast limit. duration: 0 does NOT persist because 0 is falsy and falls through to the default.',
             },
             {
                 content: 'number',
                 hintText: 'Duration in ms',
             },
-            { content: '' },
+            { content: '4000' },
         ],
         [
             {
