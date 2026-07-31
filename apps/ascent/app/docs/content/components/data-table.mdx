@@ -1471,7 +1471,7 @@ Each column in the `columns` array should have the following structure:
             {
                 content: 'filterOptions',
                 hintText:
-                    'Optional array of FilterOption objects that provide predefined filter choices for this column. Used when filterType is SELECT or MULTISELECT. Each option should have a label and value. Users can select from these options instead of typing custom values.',
+                    'Optional array of FilterOption objects that provide predefined filter choices for this column. Used when the resolved filter UI is select or multiselect, whether that comes from filterType (SELECT or MULTISELECT) or from the column type itself (e.g. SELECT, MULTISELECT, TAG, DROPDOWN). Each option should have a label and value. Users can select from these options instead of typing custom values.',
             },
             {
                 content: 'FilterOption[]',
@@ -1548,7 +1548,7 @@ Each column in the `columns` array should have the following structure:
             {
                 content: 'filterType',
                 hintText:
-                    'Optional FilterType enum value that overrides the default filter type for this column. If not provided, the filter type is inferred from the column type. Specifying this allows custom filter behavior even when using a different column type for rendering.',
+                    'Optional FilterType enum value that explicitly selects the filter UI for this column, overriding what the column type would infer. SELECT and MULTISELECT work on any column whose cell values are strings or numbers. DATE requires cell values that can be parsed as dates; rows whose value cannot be parsed are filtered out rather than shown. SLIDER additionally requires a sliderConfig, which the column type union only provides when type is ColumnType.SLIDER, so SLIDER is effectively limited to slider columns today. TEXT, NUMBER, and BOOLEAN have no filter component, so the column falls back to its type-derived filter behavior instead of disabling filtering.',
             },
             {
                 content: 'FilterType',

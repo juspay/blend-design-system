@@ -35,10 +35,9 @@ import {
     getPopoverAlignment,
     getFrozenColumnStyles,
     getFrozenRightColumnStyles,
+    getColumnTypeConfigForColumn,
 } from './utils'
 import { ColumnFilter } from './FilterComponents'
-import { ColumnType } from '../types'
-import { getColumnTypeConfig } from '../columnTypes'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import {
@@ -206,6 +205,7 @@ const TableHeader = forwardRef<
             sortConfig,
             enableInlineEdit = false,
             showActionsColumn = true,
+            enableFiltering = true,
             enableColumnManager = true,
             enableColumnReordering = false,
             showSkeleton = false,
@@ -750,9 +750,8 @@ const TableHeader = forwardRef<
                     {visibleColumns.map((column, index) => {
                         const columnStyles = getColumnWidth(column, index)
                         const isEditing = editingField === String(column.field)
-                        const columnConfig = getColumnTypeConfig(
-                            column.type || ColumnType.TEXT
-                        )
+                        const columnConfig =
+                            getColumnTypeConfigForColumn(column)
                         const fieldKey = String(column.field)
 
                         const hasActiveFilter = () => {
@@ -1113,7 +1112,8 @@ const TableHeader = forwardRef<
 
                                 {((columnConfig.supportsSorting &&
                                     column.isSortable !== false) ||
-                                    columnConfig.supportsFiltering) &&
+                                    (columnConfig.supportsFiltering &&
+                                        enableFiltering)) &&
                                     !isDisabled && (
                                         <Block
                                             data-element="sorting-icon"
@@ -1323,6 +1323,9 @@ const TableHeader = forwardRef<
                                                                 <ColumnFilter
                                                                     column={
                                                                         column
+                                                                    }
+                                                                    enableFiltering={
+                                                                        enableFiltering
                                                                     }
                                                                     data={data}
                                                                     tableToken={
@@ -1637,6 +1640,9 @@ const TableHeader = forwardRef<
                                                 >
                                                     <ColumnFilter
                                                         column={column}
+                                                        enableFiltering={
+                                                            enableFiltering
+                                                        }
                                                         data={data}
                                                         tableToken={tableToken}
                                                         sortHandlers={
