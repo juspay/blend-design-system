@@ -42,6 +42,8 @@ export type MenuV2SearchSortFn = (
     items: MenuV2ItemType[],
     searchText: string
 ) => MenuV2ItemType[]
+export type MenuV2SelectionStyle = 'checkmark' | 'highlight'
+
 export type MenuV2ItemType = {
     id?: string
     label: MenuV2ItemLabel
@@ -49,6 +51,13 @@ export type MenuV2ItemType = {
     variant?: MenuV2ItemVariant
     actionType?: MenuV2ItemActionType
     disabled?: boolean
+    /**
+     * Controlled selection state. When set, the item participates in
+     * selection UI (checkmark / highlight) and exposes `aria-checked`.
+     * Selection is fully controlled by the consumer — MenuV2 never
+     * manages selection internally.
+     */
+    selected?: boolean
     onClick?: () => void
     subMenu?: MenuV2ItemType[]
     enableSubMenuSearch?: boolean
@@ -67,6 +76,10 @@ export type MenuV2GroupType = {
     label?: string
     items: MenuV2ItemType[]
     showSeparator?: boolean
+    /**
+     * Overrides the Menu-level `selectionStyle` for items in this group.
+     */
+    selectionStyle?: MenuV2SelectionStyle
 }
 
 export type MenuV2VirtualScrollingConfig = {
@@ -98,6 +111,19 @@ export type MenuV2Props = {
     open?: boolean
     onOpenChange?: (open: boolean) => void
     asModal?: boolean
+    /**
+     * How selected items are indicated.
+     * - `checkmark`: trailing tick icon on selected items
+     * - `highlight`: selected background from design tokens
+     * Defaults to `checkmark` when any item has `selected` set.
+     * Can be overridden per group via `MenuV2GroupType.selectionStyle`.
+     */
+    selectionStyle?: MenuV2SelectionStyle
+    /**
+     * When `false`, selecting an item keeps the menu open (multi-select).
+     * Defaults to `true` (current fire-and-forget close behavior).
+     */
+    closeOnSelect?: boolean
     alignment?: MenuV2Alignment
     side?: MenuV2Side
     sideOffset?: number

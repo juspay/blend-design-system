@@ -1,9 +1,10 @@
 import { forwardRef, isValidElement } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
+import { Check } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Tooltip } from '../Tooltip'
-import type { MenuV2ItemType } from './menuV2.types'
+import type { MenuV2ItemType, MenuV2SelectionStyle } from './menuV2.types'
 import {
     getMenuItemBackgroundColor,
     getMenuItemOptionColor,
@@ -12,11 +13,17 @@ import {
 } from './menuV2.utils'
 import type { MenuV2TokensType } from './menuV2.tokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
+import {
+    resolveSelectionStyle,
+    useMenuV2Selection,
+} from './MenuV2SelectionContext'
 
 type MenuV2ItemProps = {
     item: MenuV2ItemType
     index: number
     itemTokens: MenuV2TokensType['group']['item']
+    /** Group-level override for selection style. */
+    selectionStyle?: MenuV2SelectionStyle
 }
 
 const SlotWrapper = ({
@@ -51,8 +58,75 @@ const SlotWrapper = ({
     )
 }
 
+const CheckmarkIndicator = ({
+    itemTokens,
+    disabled,
+}: {
+    itemTokens: MenuV2TokensType['group']['item']
+    disabled?: boolean
+}) => {
+    const size =
+        typeof itemTokens.text.leftSlot.maxWidth === 'number'
+            ? itemTokens.text.leftSlot.maxWidth
+            : 16
+    const checkmark = itemTokens.text.checkmark
+    const position = checkmark?.position ?? 'trailing'
+    const color = checkmark?.color
+    const width = checkmark?.width ?? size
+
+    return (
+        <Block
+            data-element="menu-item-checkmark"
+            data-position={position}
+            flexShrink={0}
+            display="flex"
+            alignItems="center"
+            contentCentered
+            maxWidth={width}
+            maxHeight={width}
+            aria-hidden="true"
+        >
+            <Check
+                size={typeof width === 'number' ? width : 16}
+                color={color}
+                data-state="selected"
+                data-status={disabled ? 'disabled' : 'enabled'}
+            />
+        </Block>
+    )
+}
+
 const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
-    ({ item, index, itemTokens }, ref) => {
+    ({ item, index, itemTokens, selectionStyle: groupSelectionStyle }, ref) => {
+        const { selectionStyle: menuSelectionStyle, closeOnSelect } =
+            useMenuV2Selection()
+        const selectionStyle = resolveSelectionStyle(
+            groupSelectionStyle,
+            menuSelectionStyle
+        )
+
+        const isSelectable = typeof item.selected === 'boolean'
+        const isSelected = item.selected === true
+        const effectiveSelectionStyle: MenuV2SelectionStyle | undefined =
+            isSelectable ? (selectionStyle ?? 'checkmark') : undefined
+        const useHighlight =
+            effectiveSelectionStyle === 'highlight' && isSelected
+        const showCheckmark =
+            effectiveSelectionStyle === 'checkmark' && isSelected
+        const checkmarkPosition =
+            itemTokens.text.checkmark?.position ?? 'trailing'
+        const showLeadingCheck =
+            showCheckmark && checkmarkPosition === 'leading'
+        const showTrailingCheck =
+            showCheckmark && checkmarkPosition === 'trailing'
+
+        const selectionRole =
+            effectiveSelectionStyle === 'checkmark'
+                ? 'menuitemradio'
+                : effectiveSelectionStyle === 'highlight'
+                  ? 'menuitemcheckbox'
+                  : undefined
+
         const [slot] = getItemSlots(item)
         const itemStyle = {
             paddingTop: itemTokens.paddingTop,
@@ -67,7 +141,7 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
             outline: 'none',
         }
         const bgDefault = getMenuItemBackgroundColor(
-            'default',
+            useHighlight ? 'selected' : 'default',
             itemTokens,
             item
         )
@@ -79,25 +153,43 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
             itemTokens,
             item
         )
-        const colorDefault = getMenuItemOptionColor('default', itemTokens, item)
-        const descColor = getMenuItemDescriptionColor(
-            'default',
+        const colorDefault = getMenuItemOptionColor(
+            useHighlight ? 'selected' : 'default',
             itemTokens,
             item
         )
+        const descColor = getMenuItemDescriptionColor(
+            useHighlight ? 'selected' : 'default',
+            itemTokens,
+            item
+        )
+
+        const handleSelect = (event: Event) => {
+            if (item.disabled) return
+            if (!closeOnSelect) {
+                event.preventDefault()
+            }
+            item.onClick?.()
+        }
 
         const content = (
             <RadixMenu.Item
                 asChild
                 disabled={item.disabled}
-                onSelect={item.disabled ? undefined : item.onClick}
+                onSelect={item.disabled ? undefined : handleSelect}
             >
                 <Block
                     ref={ref}
                     as="div"
+                    {...(selectionRole ? { role: selectionRole } : {})}
+                    {...(isSelectable ? { 'aria-checked': isSelected } : {})}
                     data-element="menu-item"
                     data-id={item.id ?? `menu-item-${index}`}
                     data-status={item.disabled ? 'disabled' : 'enabled'}
+                    {...(isSelected ? { 'data-state': 'selected' } : {})}
+                    {...(effectiveSelectionStyle
+                        ? { 'data-selection-style': effectiveSelectionStyle }
+                        : {})}
                     data-numeric={index + 1}
                     display="flex"
                     flexDirection="column"
@@ -113,7 +205,6 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                     _focus={{ backgroundColor: bgFocus }}
                     _active={{ backgroundColor: bgActive }}
                     _focusVisible={{ backgroundColor: bgFocusVisible }}
-                    onClick={item.disabled ? undefined : item.onClick}
                 >
                     <Block
                         display="flex"
@@ -122,6 +213,12 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                         width="100%"
                         overflow="hidden"
                     >
+                        {showLeadingCheck && (
+                            <CheckmarkIndicator
+                                itemTokens={itemTokens}
+                                disabled={item.disabled}
+                            />
+                        )}
                         {slot != null && (
                             <SlotWrapper slot={slot} itemTokens={itemTokens} />
                         )}
@@ -153,6 +250,12 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                                 {item.label.text}
                             </PrimitiveText>
                         </Block>
+                        {showTrailingCheck && (
+                            <CheckmarkIndicator
+                                itemTokens={itemTokens}
+                                disabled={item.disabled}
+                            />
+                        )}
                     </Block>
                     {item.subLabel && (
                         <Block

@@ -6,7 +6,7 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import SearchInput from '../Inputs/SearchInput/SearchInput'
 import MenuV2Item from './MenuV2Item'
-import type { MenuV2ItemType } from './menuV2.types'
+import type { MenuV2ItemType, MenuV2SelectionStyle } from './menuV2.types'
 import type { MenuV2TokensType } from './menuV2.tokens'
 import {
     getMenuItemBackgroundColor,
@@ -35,6 +35,7 @@ type MenuV2SubMenuProps = {
     item: MenuV2ItemType
     index: number
     maxHeight?: CSSObject['maxHeight']
+    selectionStyle?: MenuV2SelectionStyle
 }
 
 const SlotWrapper = ({ slot }: { slot: React.ReactNode }) => (
@@ -52,7 +53,12 @@ const SlotWrapper = ({ slot }: { slot: React.ReactNode }) => (
     </Block>
 )
 
-const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
+const MenuV2SubMenu = ({
+    item,
+    index,
+    maxHeight,
+    selectionStyle,
+}: MenuV2SubMenuProps) => {
     const menuTokens = useResponsiveTokens<MenuV2TokensType>('MENU_V2')
     const itemTokens = menuTokens.group.item
     const [slot1] = getItemSlots(item)
@@ -289,6 +295,7 @@ const MenuV2SubMenu = ({ item, index, maxHeight }: MenuV2SubMenuProps) => {
                             item={subItem}
                             index={subIdx}
                             itemTokens={itemTokens}
+                            selectionStyle={selectionStyle}
                         />
                     ))}
                 </SubContent>

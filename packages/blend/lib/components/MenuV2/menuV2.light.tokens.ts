@@ -65,7 +65,7 @@ export const getMenuV2LightTokens = (
                             focus: foundationToken.colors.gray[50],
                             focusVisible: foundationToken.colors.gray[50],
                             disabled: foundationToken.colors.gray[0],
-                            selected: foundationToken.colors.gray[0],
+                            selected: foundationToken.colors.gray[50],
                         },
                         [MenuV2ItemVariant.ACTION]: {
                             [MenuV2ItemActionType.PRIMARY]: {
@@ -183,6 +183,12 @@ export const getMenuV2LightTokens = (
                         leftSlot: {
                             maxWidth: foundationToken.unit[16],
                             maxHeight: foundationToken.unit[16],
+                        },
+
+                        checkmark: {
+                            position: 'trailing',
+                            width: foundationToken.unit[16],
+                            color: foundationToken.colors.gray[600],
                         },
 
                         rightChevron: {
@@ -261,7 +267,7 @@ export const getMenuV2LightTokens = (
                             focus: foundationToken.colors.gray[50],
                             focusVisible: foundationToken.colors.gray[50],
                             disabled: foundationToken.colors.gray[0],
-                            selected: foundationToken.colors.gray[0],
+                            selected: foundationToken.colors.gray[50],
                         },
                         [MenuV2ItemVariant.ACTION]: {
                             [MenuV2ItemActionType.PRIMARY]: {
@@ -379,6 +385,12 @@ export const getMenuV2LightTokens = (
                         leftSlot: {
                             maxWidth: foundationToken.unit[16],
                             maxHeight: foundationToken.unit[16],
+                        },
+
+                        checkmark: {
+                            position: 'trailing',
+                            width: foundationToken.unit[16],
+                            color: foundationToken.colors.gray[600],
                         },
 
                         rightChevron: {

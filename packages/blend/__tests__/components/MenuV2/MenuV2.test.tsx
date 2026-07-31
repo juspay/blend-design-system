@@ -73,6 +73,196 @@ const createSubmenuSearchItems = (): MenuV2GroupType[] => [
     },
 ]
 
+describe('MenuV2 selection', () => {
+    beforeEach(() => {
+        global.ResizeObserver = class ResizeObserver {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+        } as unknown as typeof ResizeObserver
+    })
+
+    it('renders trailing checkmark and menuitemradio for selected items', async () => {
+        const user = userEvent.setup()
+        const onSelectName = vi.fn()
+
+        render(
+            <MenuV2
+                trigger={<button type="button">Sort menu</button>}
+                selectionStyle="checkmark"
+                items={[
+                    {
+                        label: 'Sort',
+                        items: [
+                            {
+                                label: { text: 'Name' },
+                                selected: true,
+                                onClick: onSelectName,
+                            },
+                            {
+                                label: { text: 'Date' },
+                                selected: false,
+                                onClick: vi.fn(),
+                            },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /sort menu/i }))
+
+        const nameItem = await screen.findByRole('menuitemradio', {
+            name: /^name$/i,
+        })
+        const dateItem = screen.getByRole('menuitemradio', { name: /^date$/i })
+
+        expect(nameItem).toHaveAttribute('aria-checked', 'true')
+        expect(nameItem).toHaveAttribute('data-state', 'selected')
+        expect(dateItem).toHaveAttribute('aria-checked', 'false')
+        expect(
+            nameItem.querySelector('[data-element="menu-item-checkmark"]')
+        ).toBeInTheDocument()
+        expect(
+            dateItem.querySelector('[data-element="menu-item-checkmark"]')
+        ).not.toBeInTheDocument()
+    })
+
+    it('applies highlight selection without checkmark', async () => {
+        const user = userEvent.setup()
+
+        render(
+            <MenuV2
+                trigger={<button type="button">View menu</button>}
+                selectionStyle="highlight"
+                closeOnSelect={false}
+                items={[
+                    {
+                        label: 'Views',
+                        items: [
+                            { label: { text: 'Grid' }, selected: true },
+                            { label: { text: 'List' }, selected: false },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /view menu/i }))
+
+        const grid = await screen.findByRole('menuitemcheckbox', {
+            name: /^grid$/i,
+        })
+        expect(grid).toHaveAttribute('aria-checked', 'true')
+        expect(grid).toHaveAttribute('data-selection-style', 'highlight')
+        expect(
+            grid.querySelector('[data-element="menu-item-checkmark"]')
+        ).not.toBeInTheDocument()
+    })
+
+    it('keeps the menu open when closeOnSelect is false', async () => {
+        const user = userEvent.setup()
+        const onToggle = vi.fn()
+
+        render(
+            <MenuV2
+                trigger={<button type="button">Multi menu</button>}
+                selectionStyle="highlight"
+                closeOnSelect={false}
+                items={[
+                    {
+                        items: [
+                            {
+                                label: { text: 'Alpha' },
+                                selected: false,
+                                onClick: onToggle,
+                            },
+                            {
+                                label: { text: 'Beta' },
+                                selected: true,
+                                onClick: vi.fn(),
+                            },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /multi menu/i }))
+        const alpha = await screen.findByRole('menuitemcheckbox', {
+            name: /^alpha$/i,
+        })
+        await user.click(alpha)
+
+        expect(onToggle).toHaveBeenCalledTimes(1)
+        expect(
+            screen.getByRole('menuitemcheckbox', { name: /^alpha$/i })
+        ).toBeInTheDocument()
+        expect(
+            screen.getByRole('menuitemcheckbox', { name: /^beta$/i })
+        ).toBeInTheDocument()
+    })
+
+    it('closes the menu on select by default', async () => {
+        const user = userEvent.setup()
+
+        render(
+            <MenuV2
+                trigger={<button type="button">Single menu</button>}
+                selectionStyle="checkmark"
+                items={[
+                    {
+                        items: [
+                            {
+                                label: { text: 'One' },
+                                selected: false,
+                                onClick: vi.fn(),
+                            },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /single menu/i }))
+        const one = await screen.findByRole('menuitemradio', { name: /^one$/i })
+        await user.click(one)
+
+        await waitFor(() => {
+            expect(
+                screen.queryByRole('menuitemradio', { name: /^one$/i })
+            ).not.toBeInTheDocument()
+        })
+    })
+
+    it('does not change rendering when selected is omitted', async () => {
+        const user = userEvent.setup()
+
+        render(
+            <MenuV2
+                trigger={<button type="button">Plain menu</button>}
+                items={[
+                    {
+                        items: [
+                            { label: { text: 'Action' }, onClick: vi.fn() },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /plain menu/i }))
+        const action = await screen.findByRole('menuitem', {
+            name: /^action$/i,
+        })
+        expect(action).not.toHaveAttribute('aria-checked')
+        expect(action).not.toHaveAttribute('data-selection-style')
+        expect(
+            action.querySelector('[data-element="menu-item-checkmark"]')
+        ).not.toBeInTheDocument()
+    })
+})
+
 describe('MenuV2', () => {
     beforeEach(() => {
         // Radix portals and popper use ResizeObserver internally

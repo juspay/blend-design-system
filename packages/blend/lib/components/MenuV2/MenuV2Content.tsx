@@ -79,13 +79,14 @@ function renderFlatRow(
             </RadixMenu.Separator>
         )
     }
-    const { item, itemIndex } = row
+    const { item, itemIndex, selectionStyle } = row
     return item.subMenu && item.subMenu.length > 0 ? (
         <MenuV2SubMenu
             key={row.id}
             item={item}
             index={itemIndex}
             maxHeight={maxHeight}
+            selectionStyle={selectionStyle}
         />
     ) : (
         <MenuV2Item
@@ -93,6 +94,7 @@ function renderFlatRow(
             item={item}
             index={itemIndex}
             itemTokens={tokens.group.item}
+            selectionStyle={selectionStyle}
         />
     )
 }
@@ -392,6 +394,9 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                                 item={item}
                                                 index={itemIndex}
                                                 maxHeight={maxHeight}
+                                                selectionStyle={
+                                                    group.selectionStyle
+                                                }
                                             />
                                         ) : (
                                             <MenuV2Item
@@ -402,6 +407,9 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                                 item={item}
                                                 index={itemIndex}
                                                 itemTokens={content.group.item}
+                                                selectionStyle={
+                                                    group.selectionStyle
+                                                }
                                             />
                                         )
                                 )}

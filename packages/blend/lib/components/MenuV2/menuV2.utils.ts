@@ -146,6 +146,7 @@ export type MenuV2FlatRow =
           item: MenuV2ItemType
           groupId: number
           itemIndex: number
+          selectionStyle?: MenuV2GroupType['selectionStyle']
       }
 
 export const flattenMenuV2Groups = (
@@ -167,6 +168,7 @@ export const flattenMenuV2Groups = (
                 item,
                 groupId,
                 itemIndex,
+                selectionStyle: group.selectionStyle,
             })
         })
         if (groupId < groups.length - 1 && group.showSeparator) {
