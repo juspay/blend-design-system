@@ -41,9 +41,7 @@ function MyComponent() {
             label="Select Fruits"
             placeholder="Choose fruits..."
             selectedValues={selected}
-            onChange={(value) =>
-                setSelected(Array.isArray(value) ? value : [value])
-            }
+            onSelectionChange={setSelected}
             items={items}
             selectionTagType={MultiSelectV2SelectionTagType.TEXT}
             enableSelectAll={true}
@@ -51,6 +49,17 @@ function MyComponent() {
     )
 }
 ```
+
+`MultiSelectV2` is controlled: pass the array from `onSelectionChange` back to
+`selectedValues`. The callback is the recommended API because it fires once per
+user gesture with the complete resulting selection. Existing selection order is
+retained, and newly selected filtered values are appended in item order.
+
+### Migrating from `onChange`
+
+Replace toggle reducers or debounce logic attached to `onChange` with direct
+array assignment through `onSelectionChange`. The legacy `onChange` callback
+remains supported with its existing per-item payloads and callback counts.
 
 ## API Reference
 
@@ -70,13 +79,25 @@ function MyComponent() {
         ],
         [
             {
+                content: 'onSelectionChange',
+                hintText:
+                    'Recommended optional callback fired once per accepted user gesture with the complete resulting selection.',
+            },
+            {
+                content: '(selectedValues: string[]) => void',
+                hintText: 'Complete selection callback',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'onChange',
                 hintText:
-                    'Required. Callback fired when selection changes. Receives selected values array.',
+                    'Legacy optional per-item toggle callback. Select All may invoke it multiple times. Prefer onSelectionChange.',
             },
             {
                 content: '(value: string | string[]) => void',
-                hintText: 'Selection change handler',
+                hintText: 'Legacy toggle callback',
             },
             { content: '' },
         ],
@@ -229,7 +250,8 @@ function MyComponent() {
         [
             {
                 content: 'maxSelections',
-                hintText: 'Maximum number of items that can be selected.',
+                hintText:
+                    'Maximum number of items that can be selected. Select All stops at the limit, so the emitted selection never exceeds it.',
             },
             {
                 content: 'number',
@@ -545,11 +567,13 @@ function MyComponent() {
         [
             {
                 content: 'onClearAllClick',
-                hintText: 'Custom callback for the clear button click.',
+                hintText:
+                    'Custom callback for the clear button click. When provided it fully replaces the default clear, so neither onChange nor onSelectionChange fires and you decide the resulting selection.',
             },
             {
                 content: '() => void',
-                hintText: 'Clear handler, defaults to onChange([])',
+                hintText:
+                    'Clear handler, defaults to onChange([]) plus onSelectionChange([])',
             },
             { content: '' },
         ],

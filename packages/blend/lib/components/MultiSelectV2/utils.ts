@@ -1,4 +1,8 @@
 import { toPixels } from '../../global-utils/GlobalUtils'
+import {
+    clampScopeToMaxSelections,
+    emitLegacyScopeChanges,
+} from '../shared/multiSelectSelection'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 import {
     MultiSelectV2Size,
@@ -165,18 +169,19 @@ export const handleSelectAll = (
     selectAll: boolean,
     items: MultiSelectV2GroupType[],
     selectedValues: string[],
-    onChange: (value: string) => void
+    onChange: (value: string) => void,
+    maxSelections?: number
 ) => {
-    const scopedValues = getAllAvailableValues(items)
-    if (selectAll) {
-        scopedValues.forEach((value) => {
-            if (!selectedValues.includes(value)) onChange(value)
-        })
-    } else {
-        selectedValues.forEach((value) => {
-            if (scopedValues.includes(value)) onChange(value)
-        })
-    }
+    const availableValues = getAllAvailableValues(items)
+    const scopedValues = selectAll
+        ? clampScopeToMaxSelections(
+              selectedValues,
+              availableValues,
+              maxSelections
+          )
+        : availableValues
+
+    emitLegacyScopeChanges(selectAll, scopedValues, selectedValues, onChange)
 }
 
 export const flattenMenuGroups = (
