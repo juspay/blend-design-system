@@ -133,28 +133,6 @@ export const getAllValues = (groups: MultiSelectMenuGroupType[]): string[] => {
     return values
 }
 
-export const handleSelectAll = (
-    selectAll: boolean,
-    items: MultiSelectMenuGroupType[],
-    selectedValues: string[],
-    onChange: (value: string) => void
-) => {
-    const scopedValues = getAllValues(items)
-    if (selectAll) {
-        scopedValues.forEach((value) => {
-            if (!selectedValues.includes(value)) {
-                onChange(value)
-            }
-        })
-    } else {
-        selectedValues.forEach((value) => {
-            if (scopedValues.includes(value)) {
-                onChange(value)
-            }
-        })
-    }
-}
-
 export const filterMenuItem = (
     item: MultiSelectMenuItemType,
     lower: string

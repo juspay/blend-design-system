@@ -43,7 +43,6 @@ import {
     getAllAvailableValues,
     getSelectAllState,
     getMultiSelectV2ValueLabelMap,
-    handleSelectAll,
 } from '../utils'
 import {
     flattenMobileMultiSelectV2Groups,
@@ -51,10 +50,17 @@ import {
     toVirtualListItems,
     type FlattenedMobileMultiSelectV2Item,
 } from './mobileMultiSelectV2.utils'
+import {
+    clampScopeToMaxSelections,
+    emitLegacyScopeChanges,
+    getNextSelectionAfterToggle,
+    getNextSelectionForScope,
+} from '../../shared/multiSelectSelection'
 
 const MobileMultiSelectV2 = ({
     selectedValues,
     onChange,
+    onSelectionChange,
     items,
     label,
     subLabel,
@@ -185,7 +191,42 @@ const MobileMultiSelectV2 = ({
         if (maxReached || !isSelectableItem(value, filteredItems)) {
             return
         }
-        onChange(value)
+        const nextSelection = getNextSelectionAfterToggle(selectedValues, value)
+        onChange?.(value)
+        onSelectionChange?.(nextSelection)
+    }
+
+    const getSelectAllScope = (selectAll: boolean) =>
+        selectAll
+            ? clampScopeToMaxSelections(
+                  selectedValues,
+                  selectableValues,
+                  maxSelections
+              )
+            : selectableValues
+
+    const handleLegacySelectAll = (
+        selectAll: boolean,
+        scopedValues: string[]
+    ) => {
+        emitLegacyScopeChanges(
+            selectAll,
+            scopedValues,
+            selectedValues,
+            onChange ? (newValue) => onChange(newValue) : undefined
+        )
+    }
+
+    const handleSelectAllGesture = () => {
+        const selectAll = !allSelected
+        const scopedValues = getSelectAllScope(selectAll)
+        const nextSelection = getNextSelectionForScope(
+            selectedValues,
+            scopedValues,
+            selectAll
+        )
+        handleLegacySelectAll(selectAll, scopedValues)
+        onSelectionChange?.(nextSelection)
     }
 
     const triggerAriaAttributes = {
@@ -231,14 +272,7 @@ const MobileMultiSelectV2 = ({
                                 .selectAllRowPaddingRight
                         }
                         cursor="pointer"
-                        onClick={() =>
-                            handleSelectAll(
-                                !allSelected,
-                                filteredItems,
-                                selectedValues,
-                                (newValue) => onChange(newValue)
-                            )
-                        }
+                        onClick={handleSelectAllGesture}
                     >
                         <Text
                             variant="body.md"
@@ -263,15 +297,15 @@ const MobileMultiSelectV2 = ({
                                       ? 'indeterminate'
                                       : false
                             }
-                            onCheckedChange={(checked) =>
-                                handleSelectAll(
+                            onCheckedChange={(checked) => {
+                                const selectAll =
                                     checked === true ||
-                                        checked === 'indeterminate',
-                                    filteredItems,
-                                    selectedValues,
-                                    (newValue) => onChange(newValue)
+                                    checked === 'indeterminate'
+                                handleLegacySelectAll(
+                                    selectAll,
+                                    getSelectAllScope(selectAll)
                                 )
-                            }
+                            }}
                         />
                     </Block>
                 </Block>
@@ -335,6 +369,7 @@ const MobileMultiSelectV2 = ({
                     selectedValues={selectedValues}
                     onSelect={handleSelect}
                     itemTokens={multiSelectTokens.menu.item}
+                    asMenuItem={false}
                 />
             )
         }

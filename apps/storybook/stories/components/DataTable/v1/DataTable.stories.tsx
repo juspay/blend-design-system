@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { expect, userEvent, within } from '@storybook/test'
 import {
     DataTable,
     ColumnDefinition,
@@ -721,6 +722,98 @@ export const WithSearchAndFiltering: Story = {
         docs: {
             description: {
                 story: 'DataTable with search and column filtering enabled for finding specific records.',
+            },
+        },
+    },
+}
+
+type AsyncFilterRow = {
+    id: number
+    team: string
+}
+
+const asyncFilterRows: AsyncFilterRow[] = [
+    { id: 1, team: 'eng' },
+    { id: 2, team: 'ops' },
+]
+
+const AsyncFilterOptionsDataTable: React.FC = () => {
+    const [filterOptions, setFilterOptions] = useState<
+        NonNullable<ColumnDefinition<AsyncFilterRow>['filterOptions']>
+    >([])
+
+    React.useEffect(() => {
+        const timer = window.setTimeout(() => {
+            setFilterOptions([
+                { id: 'engineering', label: 'Engineering', value: 'eng' },
+                { id: 'operations', label: 'Operations', value: 'ops' },
+            ])
+        }, 600)
+
+        return () => window.clearTimeout(timer)
+    }, [])
+
+    const columns = React.useMemo<ColumnDefinition<AsyncFilterRow>[]>(
+        () => [
+            {
+                field: 'team',
+                header: 'Team',
+                type: ColumnType.TEXT,
+                filterType: FilterType.MULTISELECT,
+                filterOptions,
+                isSortable: false,
+            },
+        ],
+        [filterOptions]
+    )
+
+    return (
+        <DataTable
+            data={asyncFilterRows}
+            columns={columns as any[]}
+            idField="id"
+            title="Async Filter Options"
+            description="Filter options replace row-derived values without remounting the table."
+            enableFiltering
+        />
+    )
+}
+
+export const WithAsyncFilterOptions: Story = {
+    render: () => <AsyncFilterOptionsDataTable />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const filterTrigger = canvas.getByRole('button', {
+            name: /filter team/i,
+        })
+        await userEvent.click(filterTrigger)
+
+        // The popover content renders in a portal outside canvasElement,
+        // so query document.body rather than the canvas.
+        const body = within(document.body)
+        const filterMenuItem = await body.findByRole('menuitem', {
+            name: /^filter$/i,
+        })
+        await userEvent.click(filterMenuItem)
+
+        // Options load 600ms after mount; wait for them rather than
+        // assuming they're already there.
+        const engineeringOption = await body.findByRole('menuitemcheckbox', {
+            name: /engineering/i,
+        })
+        await expect(engineeringOption).toBeInTheDocument()
+        await expect(
+            body.getByRole('menuitemcheckbox', { name: /operations/i })
+        ).toBeInTheDocument()
+    },
+    parameters: {
+        chromatic: {
+            ...CHROMATIC_CONFIG,
+            delay: 1000,
+        },
+        docs: {
+            description: {
+                story: 'A text column explicitly uses the multiselect filter UI. While options load, an empty `filterOptions` array preserves the existing row-derived fallback (`eng`, `ops`). The loaded array is replaced immutably, updating the labels to “Engineering” and “Operations” without remounting DataTable.',
             },
         },
     },
