@@ -87,8 +87,8 @@ clicking the action should keep the persistent toast open. The close button rema
 available.
 
 A persistent toast is exempt from `dismissOnClickAway`, so clicking elsewhere on the page
-closes ordinary toasts but leaves it open. It also does not count against the visible-toast
-limit, so newer toasts cannot push it out of view.
+closes ordinary toasts but leaves it open. It is also kept inside the visible-toast
+stack, so newer toasts cannot push it out of view.
 
 It is still a toast: it overlays the page, supports a single action, and is announced once
 by screen readers. For a message the user must not miss, use `AlertV2` (inline, in reading
@@ -150,7 +150,7 @@ visible, and supports a primary and a secondary action.
             {
                 content: 'visibleToasts',
                 hintText:
-                    'How many toasts are visible at once. Newer toasts push older ones out of view. Persistent (duration: Infinity) toasts do not count against this limit, so they cannot be pushed out.',
+                    'How many toasts are visible at once. Newer toasts push older ones out of view. The ceiling is raised automatically so persistent (duration: Infinity) toasts are never pushed out of view. Values below 1 fall back to the default.',
             },
             {
                 content: 'number',
@@ -251,7 +251,7 @@ visible, and supports a primary and a secondary action.
             {
                 content: 'duration',
                 hintText:
-                    'Time in milliseconds before auto-dismiss. Defaults to 4000. Set to Infinity for a persistent toast, which is also exempt from dismissOnClickAway and from the visible-toast limit. duration: 0 does NOT persist because 0 is falsy and falls through to the default.',
+                    'Time in milliseconds before auto-dismiss. Defaults to 4000. Set to Infinity for a persistent toast, which is also exempt from dismissOnClickAway and is kept inside the visible-toast stack. duration: 0 does NOT persist because 0 is falsy and falls through to the default.',
             },
             {
                 content: 'number',

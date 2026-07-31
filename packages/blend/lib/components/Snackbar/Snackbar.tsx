@@ -22,7 +22,11 @@ import {
     SnackbarIconProps,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { dismissNonPersistentToasts } from '../../utils/snackbar-dismiss'
+import {
+    dismissNonPersistentToasts,
+    SnackbarHiddenToastStyles,
+    useVisibleToastCount,
+} from '../../utils/snackbar-shared'
 import { SnackbarTokens } from './snackbar.tokens'
 
 const SnackbarIcon: React.FC<SnackbarIconProps> = ({ variant }) => {
@@ -274,6 +278,11 @@ const Snackbar: React.FC<SnackbarProps> = ({
     dismissOnClickAway = false,
 }) => {
     const isCenter = position?.includes('center')
+    // Persistent toasts must stay reachable here too: sonner shares one toast
+    // store across v1 and v2, so an app mounting only this container would
+    // otherwise let a persistent toast be evicted into an unclickable state
+    // that neither the timer nor click-away can clear.
+    const visibleToasts = useVisibleToastCount()
 
     // Handle click away to dismiss all snackbars
     useEffect(() => {
@@ -306,23 +315,27 @@ const Snackbar: React.FC<SnackbarProps> = ({
     }, [dismissOnClickAway])
 
     return (
-        <Toaster
-            position={position}
-            toastOptions={{
-                unstyled: true,
-                style: {
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: isCenter ? '100%' : 'fit-content',
-                    maxWidth: 'calc(100vw - 32px)',
-                    margin: 0,
-                    padding: 0,
-                    background: 'transparent',
-                    border: 'none',
-                    boxShadow: 'none',
-                },
-            }}
-        />
+        <>
+            <SnackbarHiddenToastStyles />
+            <Toaster
+                position={position}
+                visibleToasts={visibleToasts}
+                toastOptions={{
+                    unstyled: true,
+                    style: {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        width: isCenter ? '100%' : 'fit-content',
+                        maxWidth: 'calc(100vw - 32px)',
+                        margin: 0,
+                        padding: 0,
+                        background: 'transparent',
+                        border: 'none',
+                        boxShadow: 'none',
+                    },
+                }}
+            />
+        </>
     )
 }
 

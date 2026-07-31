@@ -46,8 +46,8 @@ export type SnackbarV2ToastOptions = {
      * dismissing the toast, also set `actionButton.autoDismiss` to `false`.
      *
      * A persistent toast is exempt from `dismissOnClickAway`, so clicking
-     * elsewhere on the page will not close it, and it does not count against
-     * the visible-toast limit, so newer toasts cannot push it out of view.
+     * elsewhere on the page will not close it, and it is kept inside the
+     * visible-toast stack, so newer toasts cannot push it out of view.
      *
      * It is still a toast: it overlays the page, supports a single action, and
      * is announced once. For a message the user must not miss, prefer `AlertV2`
@@ -72,10 +72,11 @@ export type SnackbarV2Props = {
     /**
      * How many toasts are visible at once. Defaults to 3.
      *
-     * Newer toasts push older ones out of view. Persistent
-     * (`duration: Infinity`) toasts do not count against this limit — the
-     * ceiling is raised by the number of live persistent toasts so they cannot
-     * be pushed out.
+     * Newer toasts push older ones out of view. The ceiling is raised
+     * automatically so a persistent (`duration: Infinity`) toast is never
+     * pushed out — otherwise it would become impossible to dismiss, having
+     * neither a timer nor click-away nor pointer events. Values below 1 fall
+     * back to the default.
      */
     visibleToasts?: number
     /**

@@ -249,8 +249,17 @@ describe('SnackbarV2 persistence', () => {
             useTimers()
             render(<SnackbarV2 dismissOnClickAway />)
 
-            await expect(clickOutside()).resolves.not.toThrow()
+            const onError = vi.fn()
+            window.addEventListener('error', onError)
+
+            await clickOutside()
             await tick(500)
+
+            // jsdom swallows listener exceptions and reports them via an
+            // 'error' event, so asserting "did not throw" around dispatchEvent
+            // would pass even if the handler blew up.
+            expect(onError).not.toHaveBeenCalled()
+            window.removeEventListener('error', onError)
         })
 
         it('still dismisses ordinary toasts when no persistent toast exists', async () => {
@@ -302,7 +311,11 @@ describe('SnackbarV2 persistence', () => {
             })
             await tick(50)
 
-            for (const n of [1, 2, 3]) {
+            // Deliberately past the base ceiling of 3. An earlier version of
+            // this test used exactly 3 and passed with a slot to spare, hiding
+            // the fact that the ceiling was computed from the persistent
+            // *count* rather than the persistent toast's stack *index*.
+            for (const n of [1, 2, 3, 4, 5]) {
                 act(() => {
                     addSnackbarV2({ header: `Noise ${n}` })
                 })
@@ -446,5 +459,73 @@ describe('SnackbarV2 persistence', () => {
                 'Notifications alt+N'
             )
         })
+    })
+    // v1 and v2 share one sonner store, so an app mounting only the v1
+    // container must give persistent toasts the same protections. Without
+    // them an evicted persistent toast has no timer, pointer-events: none and
+    // click-away exemption at once, leaving it impossible to dismiss.
+    describe('v1 container parity', () => {
+        it('keeps a v1 persistent toast visible behind newer toasts', async () => {
+            useTimers()
+            render(<Snackbar />)
+            act(() => {
+                addSnackbar({ header: 'Persistent v1', duration: Infinity })
+            })
+            await tick(60)
+
+            for (const n of [1, 2, 3]) {
+                act(() => {
+                    addSnackbar({ header: `Noise v1 ${n}` })
+                })
+                await tick(60)
+            }
+            await tick(200)
+
+            expect(isVisible('Persistent v1')).toBe(true)
+        })
+
+        it('hides an evicted toast from the tab order under the v1 container', async () => {
+            useTimers()
+            render(<Snackbar />)
+            act(() => {
+                addSnackbar({ header: 'Evicted v1' })
+            })
+            await tick(60)
+            for (const n of [1, 2, 3]) {
+                act(() => {
+                    addSnackbar({ header: `Filler v1 ${n}` })
+                })
+                await tick(60)
+            }
+            await tick(200)
+
+            const evicted = toastEl('Evicted v1')
+            expect(evicted?.getAttribute('data-visible')).toBe('false')
+            expect(getComputedStyle(evicted as Element).visibility).toBe(
+                'hidden'
+            )
+        })
+    })
+    // The visible ceiling is a public prop, so it has to survive values a
+    // consumer can plausibly pass. Any of these previously produced a
+    // permanently invisible, unclickable, timer-less, click-away-exempt toast.
+    describe('visibleToasts input guards', () => {
+        it.each([
+            ['negative', -1],
+            ['zero', 0],
+            ['NaN', Number.NaN],
+        ])(
+            'keeps a persistent toast visible with a %s ceiling',
+            async (_label, value) => {
+                useTimers()
+                render(<SnackbarV2 visibleToasts={value} />)
+                act(() => {
+                    addSnackbarV2({ header: 'Guarded', duration: Infinity })
+                })
+                await tick(200)
+
+                expect(isVisible('Guarded')).toBe(true)
+            }
+        )
     })
 })

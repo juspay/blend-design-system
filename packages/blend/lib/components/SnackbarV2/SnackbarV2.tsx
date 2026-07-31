@@ -1,6 +1,6 @@
 import type React from 'react'
 import { useId, useEffect, forwardRef, ReactElement } from 'react'
-import { toast as sonnerToast, Toaster, useSonner } from 'sonner'
+import { toast as sonnerToast, Toaster } from 'sonner'
 import {
     X,
     Info,
@@ -23,26 +23,12 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import {
     DEFAULT_VISIBLE_TOASTS,
     dismissNonPersistentToasts,
-    isPersistentToast,
-} from '../../utils/snackbar-dismiss'
+    SnackbarHiddenToastStyles,
+    useVisibleToastCount,
+} from '../../utils/snackbar-shared'
 import { SnackbarV2TokensType } from './snackbarV2.tokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { filterBlockedProps } from '../../utils/prop-helpers'
-
-/**
- * A toast pushed out of the visible stack gets `opacity: 0; pointer-events: none`
- * from sonner, but no `visibility: hidden` and no `aria-hidden`. That leaves it
- * invisible to sighted users while still focusable and still in the
- * accessibility tree, so a keyboard user can tab onto a button they cannot see
- * (WCAG 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured).
- *
- * `visibility: hidden` removes it from the tab order and the accessibility tree
- * while leaving sonner's opacity transition intact.
- *
- * Rendered as a plain style element rather than `createGlobalStyle` so the rule
- * is present in the DOM and can be asserted in tests.
- */
-const HIDDEN_TOAST_CSS = `[data-sonner-toast][data-visible='false']{visibility:hidden;}`
 
 /**
  * `duration: 0` looks like it should disable auto-dismiss, and the v1 docs used
@@ -64,10 +50,6 @@ const warnAboutZeroDuration = () => {
             'Use duration: Infinity instead.'
     )
 }
-
-const SnackbarV2HiddenToastStyles = () => (
-    <style data-blend-snackbar-a11y="">{HIDDEN_TOAST_CSS}</style>
-)
 
 const SnackbarV2Icon: React.FC<SnackbarV2IconProps> = ({ variant }) => {
     const snackbarTokens =
@@ -473,14 +455,7 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
         ref
     ) => {
         const isCenter = position?.includes('center')
-        const { toasts } = useSonner()
-
-        // Persistent toasts must not be pushed out of the visible stack by
-        // newer toasts: once hidden they cannot be clicked, so "stays until
-        // dismissed" would be unachievable. Raising the ceiling by the number
-        // of live persistent toasts keeps them on screen without changing how
-        // many ordinary toasts are shown.
-        const persistentToastCount = toasts.filter(isPersistentToast).length
+        const resolvedVisibleToasts = useVisibleToastCount(visibleToasts)
 
         useEffect(() => {
             if (!dismissOnClickAway) {
@@ -508,14 +483,14 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
 
         return (
             <Block ref={ref}>
-                <SnackbarV2HiddenToastStyles />
+                <SnackbarHiddenToastStyles />
                 <Toaster
                     position={position}
-                    visibleToasts={visibleToasts + persistentToastCount}
+                    visibleToasts={resolvedVisibleToasts}
                     {...(containerAriaLabel !== undefined && {
                         containerAriaLabel,
                     })}
-                    {...(hotkey !== undefined && { hotkey })}
+                    {...(hotkey?.length ? { hotkey } : {})}
                     toastOptions={{
                         unstyled: true,
                         style: {
