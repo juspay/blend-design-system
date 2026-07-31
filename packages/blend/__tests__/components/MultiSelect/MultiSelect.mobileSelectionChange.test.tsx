@@ -222,6 +222,72 @@ describe('mobile MultiSelect onSelectionChange', () => {
         }
     )
 
+    it('ignores an unrelated keypress on a V2 mobile item', async () => {
+        const onChange = vi.fn()
+        const onSelectionChange = vi.fn()
+        render(
+            <MultiSelectV2
+                label="Mobile V2 keyboard ignored"
+                placeholder="Choose options"
+                items={items}
+                selectedValues={['item-1']}
+                onChange={onChange}
+                onSelectionChange={onSelectionChange}
+            />
+        )
+
+        fireEvent.click(
+            screen.getByRole('combobox', {
+                name: /mobile v2 keyboard ignored/i,
+            })
+        )
+        fireEvent.keyDown(
+            await screen.findByRole('option', { name: 'Item 2' }),
+            {
+                key: 'a',
+            }
+        )
+
+        expect(onChange).not.toHaveBeenCalled()
+        expect(onSelectionChange).not.toHaveBeenCalled()
+    })
+
+    it('does not toggle a disabled V2 mobile item via click or keyboard', async () => {
+        const onChange = vi.fn()
+        const onSelectionChange = vi.fn()
+        const itemsWithDisabled = [
+            {
+                groupLabel: 'Options',
+                items: [
+                    { label: 'Item 1', value: 'item-1' },
+                    { label: 'Item 2', value: 'item-2', disabled: true },
+                ],
+            },
+        ]
+        render(
+            <MultiSelectV2
+                label="Mobile V2 disabled item"
+                placeholder="Choose options"
+                items={itemsWithDisabled}
+                selectedValues={['item-1']}
+                onChange={onChange}
+                onSelectionChange={onSelectionChange}
+            />
+        )
+
+        fireEvent.click(
+            screen.getByRole('combobox', { name: /mobile v2 disabled item/i })
+        )
+        const disabledItem = await screen.findByRole('option', {
+            name: 'Item 2',
+        })
+        fireEvent.click(disabledItem)
+        fireEvent.keyDown(disabledItem, { key: 'Enter' })
+
+        expect(onChange).not.toHaveBeenCalled()
+        expect(onSelectionChange).not.toHaveBeenCalled()
+    })
+
     it('does not emit for a V2 mobile item toggle once maxSelections is reached', async () => {
         const onChange = vi.fn()
         const onSelectionChange = vi.fn()
