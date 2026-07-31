@@ -71,7 +71,16 @@ export type MultiSelectMenuGroupType = {
 export type MultiSelectProps = {
     height?: number
     selectedValues: string[]
-    onChange: (selectedValue: string) => void
+    /**
+     * Legacy per-item toggle callback. Prefer `onSelectionChange` for the
+     * complete resulting selection.
+     */
+    onChange?: (selectedValue: string) => void
+    /**
+     * Recommended callback. Fires once per accepted user gesture with the
+     * complete resulting selection.
+     */
+    onSelectionChange?: (selectedValues: string[]) => void
     items: MultiSelectMenuGroupType[]
 
     // labels
