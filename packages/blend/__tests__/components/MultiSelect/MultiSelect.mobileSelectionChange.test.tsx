@@ -186,6 +186,42 @@ describe('mobile MultiSelect onSelectionChange', () => {
         expect(onSelectionChange).toHaveBeenCalledWith(['item-1', 'item-2'])
     })
 
+    // MobileMultiSelectV2 renders SelectItemV2 with asMenuItem={false} since
+    // it lives inside a Drawer rather than a Radix Menu.Root, so the item
+    // relies on its own onKeyDown handler rather than RadixMenu.Item.
+    it.each([['Enter'], [' ']])(
+        'toggles a V2 mobile item via keyboard "%s"',
+        async (key) => {
+            const onChange = vi.fn()
+            const onSelectionChange = vi.fn()
+            render(
+                <MultiSelectV2
+                    label="Mobile V2 keyboard"
+                    placeholder="Choose options"
+                    items={items}
+                    selectedValues={['item-1']}
+                    onChange={onChange}
+                    onSelectionChange={onSelectionChange}
+                />
+            )
+
+            fireEvent.click(
+                screen.getByRole('combobox', { name: /mobile v2 keyboard/i })
+            )
+            fireEvent.keyDown(
+                await screen.findByRole('option', { name: 'Item 2' }),
+                {
+                    key,
+                }
+            )
+
+            expect(onChange).toHaveBeenCalledOnce()
+            expect(onChange).toHaveBeenCalledWith('item-2')
+            expect(onSelectionChange).toHaveBeenCalledOnce()
+            expect(onSelectionChange).toHaveBeenCalledWith(['item-1', 'item-2'])
+        }
+    )
+
     it('does not emit for a V2 mobile item toggle once maxSelections is reached', async () => {
         const onChange = vi.fn()
         const onSelectionChange = vi.fn()
