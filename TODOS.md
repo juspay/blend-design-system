@@ -6,3 +6,8 @@
     Error: Test timed out in 5000ms.
     ❯ __tests__/components/SingleSelectV2/SingleSelectV2.test.tsx:121:5
     ```
+- [ ] **Priority:** P0 — `Button.performance.test.tsx > hover transitions are smooth` fails under the full parallel `pnpm test:blend:run` suite (24.06ms > 14ms threshold) but passes cleanly in isolation. Neither the test nor `Button` source were touched by `multiselect-selection-callback`; last touched by dkrai04. Same shape as the `SingleSelectV2` flake above — likely worker-contention flakiness in the performance-threshold suite under parallel load.
+    ```
+    Error: Performance test failed: 24.06ms > 14ms
+    ❯ __tests__/components/Button/Button.performance.test.tsx:338:13
+    ```
