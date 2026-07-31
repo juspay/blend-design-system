@@ -44,6 +44,27 @@ import { filterBlockedProps } from '../../utils/prop-helpers'
  */
 const HIDDEN_TOAST_CSS = `[data-sonner-toast][data-visible='false']{visibility:hidden;}`
 
+/**
+ * `duration: 0` looks like it should disable auto-dismiss, and the v1 docs used
+ * to recommend it. It does the opposite: `0` is falsy, so sonner falls through
+ * to its 4000ms default and the toast silently disappears. Types cannot catch
+ * this because `0` is a valid `number`, so warn at runtime in development.
+ *
+ * Warned once per session, matching `useResponsiveTokens`' deprecation notice,
+ * so a toast fired in a render loop cannot flood the console.
+ */
+let warnedAboutZeroDuration = false
+
+const warnAboutZeroDuration = () => {
+    if (warnedAboutZeroDuration) return
+    warnedAboutZeroDuration = true
+    console.warn(
+        '[Blend] addSnackbarV2: duration: 0 does not make a toast persistent. ' +
+            '0 is falsy, so it falls through to the 4000ms default. ' +
+            'Use duration: Infinity instead.'
+    )
+}
+
 const SnackbarV2HiddenToastStyles = () => (
     <style data-blend-snackbar-a11y="">{HIDDEN_TOAST_CSS}</style>
 )
@@ -400,6 +421,10 @@ export const addSnackbarV2 = ({
 }: SnackbarV2ToastOptions) => {
     const isCenter = position?.includes('center')
 
+    if (process.env.NODE_ENV !== 'production' && duration === 0) {
+        warnAboutZeroDuration()
+    }
+
     return sonnerToast.custom(
         (t) => (
             <StyledToast
@@ -442,6 +467,8 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
             position = SnackbarV2Position.BOTTOM_RIGHT,
             dismissOnClickAway = false,
             visibleToasts = DEFAULT_VISIBLE_TOASTS,
+            containerAriaLabel,
+            hotkey,
         },
         ref
     ) => {
@@ -485,6 +512,10 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
                 <Toaster
                     position={position}
                     visibleToasts={visibleToasts + persistentToastCount}
+                    {...(containerAriaLabel !== undefined && {
+                        containerAriaLabel,
+                    })}
+                    {...(hotkey !== undefined && { hotkey })}
                     toastOptions={{
                         unstyled: true,
                         style: {

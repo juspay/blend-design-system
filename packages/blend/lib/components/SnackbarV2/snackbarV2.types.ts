@@ -78,6 +78,23 @@ export type SnackbarV2Props = {
      * be pushed out.
      */
     visibleToasts?: number
+    /**
+     * Accessible label for the toast region. Defaults to `'Notifications'`.
+     *
+     * Screen readers announce this together with the keyboard shortcut, as
+     * `"<containerAriaLabel> <hotkey>"`. Override it to localise the region
+     * name — the default is English only.
+     */
+    containerAriaLabel?: string
+    /**
+     * Keyboard shortcut that moves focus to the toast region, as an array of
+     * `KeyboardEvent` properties. Defaults to `['altKey', 'KeyT']` (Alt+T).
+     *
+     * This is how a keyboard or screen reader user gets back to a toast after
+     * the announcement has passed, which matters most for persistent
+     * (`duration: Infinity`) toasts carrying an action.
+     */
+    hotkey?: string[]
     maxWidth?: string | number
 }
 

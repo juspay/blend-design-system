@@ -97,7 +97,8 @@ order, supports a primary and secondary action) or `ModalV2` (blocking).
 ### Do not use `duration: 0`
 
 `duration: 0` does **not** create a persistent toast. `0` is falsy, so it falls through to
-the 4000ms default and you get an ordinary 4-second toast.
+the 4000ms default and you get an ordinary 4-second toast. Because `0` is a valid `number`,
+TypeScript cannot catch this, so a console warning is logged in development builds.
 
 ### Choosing the right component
 
@@ -156,6 +157,30 @@ visible, and supports a primary and a secondary action.
                 hintText: 'Number of simultaneously visible toasts',
             },
             { content: '3' },
+        ],
+        [
+            {
+                content: 'containerAriaLabel',
+                hintText:
+                    'Accessible label for the toast region, announced together with the keyboard shortcut. Override to localise it — the default is English only.',
+            },
+            {
+                content: 'string',
+                hintText: 'Region label',
+            },
+            { content: "'Notifications'" },
+        ],
+        [
+            {
+                content: 'hotkey',
+                hintText:
+                    'Keyboard shortcut that moves focus to the toast region, as KeyboardEvent properties. This is how a keyboard or screen reader user returns to a persistent toast after the announcement has passed.',
+            },
+            {
+                content: 'string[]',
+                hintText: 'e.g. [altKey, KeyT]',
+            },
+            { content: "['altKey', 'KeyT']" },
         ],
         [
             {
