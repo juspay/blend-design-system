@@ -371,6 +371,27 @@ describe('SnackbarV2 Component', () => {
 
             expect(vi.mocked(toast.custom)).toHaveBeenCalled()
         })
+
+        const durationOf = () =>
+            vi.mocked(toast.custom).mock.calls[0]?.[1]?.duration
+
+        it('passes duration: Infinity through to Sonner', () => {
+            addSnackbarV2({ header: 'Persistent', duration: Infinity })
+
+            expect(durationOf()).toBe(Infinity)
+        })
+
+        it('passes a finite duration through to Sonner', () => {
+            addSnackbarV2({ header: 'Timed', duration: 8000 })
+
+            expect(durationOf()).toBe(8000)
+        })
+
+        it('does not inject a duration by default', () => {
+            addSnackbarV2({ header: 'Default' })
+
+            expect(durationOf()).toBeUndefined()
+        })
     })
 
     describe('SnackbarV2 Component', () => {
@@ -464,6 +485,32 @@ describe('SnackbarV2 Component', () => {
             expect(handleAction).toHaveBeenCalledTimes(1)
             // Should not dismiss when autoDismiss is false
             expect(vi.mocked(toast.dismiss)).not.toHaveBeenCalled()
+        })
+
+        it('dismisses when the action button uses autoDismiss true', async () => {
+            const handleAction = vi.fn()
+            vi.clearAllMocks()
+            render(
+                <StyledToast
+                    header="Test"
+                    description="Test"
+                    variant={SnackbarV2Variant.INFO}
+                    onClose={() => {}}
+                    actionButton={{
+                        label: 'Action',
+                        onClick: handleAction,
+                        autoDismiss: true,
+                    }}
+                    toastId="test-auto-dismiss"
+                />
+            )
+            const actionButton = screen.getByText('Action')
+            await actionButton.click()
+
+            expect(handleAction).toHaveBeenCalledTimes(1)
+            expect(vi.mocked(toast.dismiss)).toHaveBeenCalledWith(
+                'test-auto-dismiss'
+            )
         })
     })
 })

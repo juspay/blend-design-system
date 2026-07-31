@@ -9,6 +9,7 @@ storybook-static
 .cache
 .temp
 .tmp
+.context
 
 .env*
 
