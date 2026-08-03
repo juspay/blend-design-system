@@ -4,7 +4,11 @@ import { Check } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Tooltip } from '../Tooltip'
-import type { MenuV2ItemType, MenuV2SelectionStyle } from './menuV2.types'
+import type {
+    MenuV2ItemType,
+    MenuV2SelectionMode,
+    MenuV2SelectionStyle,
+} from './menuV2.types'
 import {
     getMenuItemBackgroundColor,
     getMenuItemOptionColor,
@@ -13,10 +17,7 @@ import {
 } from './menuV2.utils'
 import type { MenuV2TokensType } from './menuV2.tokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
-import {
-    resolveSelectionStyle,
-    useMenuV2Selection,
-} from './MenuV2SelectionContext'
+import { useMenuV2Selection } from './MenuV2SelectionContext'
 
 type MenuV2ItemProps = {
     item: MenuV2ItemType
@@ -24,6 +25,8 @@ type MenuV2ItemProps = {
     itemTokens: MenuV2TokensType['group']['item']
     /** Group-level override for selection style. */
     selectionStyle?: MenuV2SelectionStyle
+    /** Group-level override for selection cardinality. */
+    selectionMode?: MenuV2SelectionMode
 }
 
 const SlotWrapper = ({
@@ -97,18 +100,32 @@ const CheckmarkIndicator = ({
 }
 
 const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
-    ({ item, index, itemTokens, selectionStyle: groupSelectionStyle }, ref) => {
-        const { selectionStyle: menuSelectionStyle, closeOnSelect } =
-            useMenuV2Selection()
-        const selectionStyle = resolveSelectionStyle(
-            groupSelectionStyle,
-            menuSelectionStyle
-        )
+    (
+        {
+            item,
+            index,
+            itemTokens,
+            selectionStyle: groupSelectionStyle,
+            selectionMode: groupSelectionMode,
+        },
+        ref
+    ) => {
+        const {
+            selectionStyle: menuSelectionStyle,
+            selectionMode: menuSelectionMode,
+            closeOnSelect,
+        } = useMenuV2Selection()
 
         const isSelectable = typeof item.selected === 'boolean'
         const isSelected = item.selected === true
         const effectiveSelectionStyle: MenuV2SelectionStyle | undefined =
-            isSelectable ? (selectionStyle ?? 'checkmark') : undefined
+            isSelectable
+                ? (groupSelectionStyle ?? menuSelectionStyle ?? 'checkmark')
+                : undefined
+        const effectiveSelectionMode: MenuV2SelectionMode | undefined =
+            isSelectable
+                ? (groupSelectionMode ?? menuSelectionMode ?? 'single')
+                : undefined
         const useHighlight =
             effectiveSelectionStyle === 'highlight' && isSelected
         const showCheckmark =
@@ -121,9 +138,9 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
             showCheckmark && checkmarkPosition === 'trailing'
 
         const selectionRole =
-            effectiveSelectionStyle === 'checkmark'
+            effectiveSelectionMode === 'single'
                 ? 'menuitemradio'
-                : effectiveSelectionStyle === 'highlight'
+                : effectiveSelectionMode === 'multiple'
                   ? 'menuitemcheckbox'
                   : undefined
 
@@ -189,6 +206,9 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                     {...(isSelected ? { 'data-state': 'selected' } : {})}
                     {...(effectiveSelectionStyle
                         ? { 'data-selection-style': effectiveSelectionStyle }
+                        : {})}
+                    {...(effectiveSelectionMode
+                        ? { 'data-selection-mode': effectiveSelectionMode }
                         : {})}
                     data-numeric={index + 1}
                     display="flex"

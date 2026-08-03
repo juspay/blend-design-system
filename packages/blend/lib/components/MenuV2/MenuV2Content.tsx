@@ -79,7 +79,7 @@ function renderFlatRow(
             </RadixMenu.Separator>
         )
     }
-    const { item, itemIndex, selectionStyle } = row
+    const { item, itemIndex, selectionStyle, selectionMode } = row
     return item.subMenu && item.subMenu.length > 0 ? (
         <MenuV2SubMenu
             key={row.id}
@@ -87,6 +87,7 @@ function renderFlatRow(
             index={itemIndex}
             maxHeight={maxHeight}
             selectionStyle={selectionStyle}
+            selectionMode={selectionMode}
         />
     ) : (
         <MenuV2Item
@@ -95,6 +96,7 @@ function renderFlatRow(
             index={itemIndex}
             itemTokens={tokens.group.item}
             selectionStyle={selectionStyle}
+            selectionMode={selectionMode}
         />
     )
 }
@@ -397,6 +399,9 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                                 selectionStyle={
                                                     group.selectionStyle
                                                 }
+                                                selectionMode={
+                                                    group.selectionMode
+                                                }
                                             />
                                         ) : (
                                             <MenuV2Item
@@ -409,6 +414,9 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                                 itemTokens={content.group.item}
                                                 selectionStyle={
                                                     group.selectionStyle
+                                                }
+                                                selectionMode={
+                                                    group.selectionMode
                                                 }
                                             />
                                         )

@@ -97,6 +97,7 @@ import { MenuV2 } from '@juspay/blend-design-system';
 - \`onEnter\` callback for command-palette-style "confirm search" behavior
 - Controlled or uncontrolled open state
 - Controlled item selection via \`selected\` + \`selectionStyle\` (\`checkmark\` | \`highlight\`)
+- Accessible selection semantics via \`selectionMode\` (\`single\` | \`multiple\`)
 - \`closeOnSelect\` (default \`true\`) for multi-select menus that stay open
 
                 `,
@@ -166,6 +167,12 @@ import { MenuV2 } from '@juspay/blend-design-system';
             options: ['checkmark', 'highlight'],
             description:
                 'How selected items are indicated. Group-level `selectionStyle` overrides this.',
+        },
+        selectionMode: {
+            control: 'inline-radio',
+            options: ['single', 'multiple'],
+            description:
+                'Selection cardinality for accessible radio/checkbox semantics. Group-level `selectionMode` overrides this.',
         },
         closeOnSelect: {
             control: 'boolean',
@@ -558,6 +565,7 @@ export const SingleSelectCheckmark: Story = {
                     }
                     items={items}
                     selectionStyle="checkmark"
+                    selectionMode="single"
                 />
                 <p className="text-xs text-gray-600">
                     Single-select sort picker. Selected item shows a trailing
@@ -594,7 +602,7 @@ export const SingleSelectCheckmark: Story = {
     parameters: {
         docs: {
             description: {
-                story: `Controlled single-select menu with \`selectionStyle="checkmark"\`. Pass \`selected\` on each item; the consumer owns selection state. Keyboard ↑/↓ navigates; Enter/Space activates.`,
+                story: `Controlled single-select menu with \`selectionStyle="checkmark"\` and \`selectionMode="single"\`. Pass \`selected\` on each item; the consumer owns selection state. Keyboard ↑/↓ navigates; Enter/Space activates.`,
             },
         },
     },
@@ -641,6 +649,7 @@ export const MultiSelectHighlight: Story = {
                     }
                     items={items}
                     selectionStyle="highlight"
+                    selectionMode="multiple"
                     closeOnSelect={false}
                 />
                 <p className="text-xs text-gray-600">
@@ -693,7 +702,7 @@ export const MultiSelectHighlight: Story = {
     parameters: {
         docs: {
             description: {
-                story: `Controlled multi-select menu with \`selectionStyle="highlight"\` and \`closeOnSelect={false}\`. Selection state is fully owned by the consumer.`,
+                story: `Controlled multi-select menu with \`selectionStyle="highlight"\`, \`selectionMode="multiple"\`, and \`closeOnSelect={false}\`. Selection state is fully owned by the consumer.`,
             },
         },
     },

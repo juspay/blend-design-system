@@ -90,6 +90,7 @@ describe('MenuV2 selection', () => {
             <MenuV2
                 trigger={<button type="button">Sort menu</button>}
                 selectionStyle="checkmark"
+                selectionMode="single"
                 items={[
                     {
                         label: 'Sort',
@@ -135,6 +136,7 @@ describe('MenuV2 selection', () => {
             <MenuV2
                 trigger={<button type="button">View menu</button>}
                 selectionStyle="highlight"
+                selectionMode="multiple"
                 closeOnSelect={false}
                 items={[
                     {
@@ -160,6 +162,50 @@ describe('MenuV2 selection', () => {
         ).not.toBeInTheDocument()
     })
 
+    it('keeps visual style independent from single and multiple selection semantics', async () => {
+        const user = userEvent.setup()
+
+        render(
+            <MenuV2
+                trigger={<button type="button">Mixed menu</button>}
+                selectionStyle="highlight"
+                selectionMode="single"
+                items={[
+                    {
+                        label: 'Multiple',
+                        selectionStyle: 'checkmark',
+                        selectionMode: 'multiple',
+                        items: [{ label: { text: 'Pinned' }, selected: true }],
+                    },
+                    {
+                        label: 'Single',
+                        items: [{ label: { text: 'Compact' }, selected: true }],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: /mixed menu/i }))
+
+        const pinned = await screen.findByRole('menuitemcheckbox', {
+            name: /^pinned$/i,
+        })
+        expect(pinned).toHaveAttribute('data-selection-style', 'checkmark')
+        expect(pinned).toHaveAttribute('data-selection-mode', 'multiple')
+        expect(
+            pinned.querySelector('[data-element="menu-item-checkmark"]')
+        ).toBeInTheDocument()
+
+        const compact = screen.getByRole('menuitemradio', {
+            name: /^compact$/i,
+        })
+        expect(compact).toHaveAttribute('data-selection-style', 'highlight')
+        expect(compact).toHaveAttribute('data-selection-mode', 'single')
+        expect(
+            compact.querySelector('[data-element="menu-item-checkmark"]')
+        ).not.toBeInTheDocument()
+    })
+
     it('keeps the menu open when closeOnSelect is false', async () => {
         const user = userEvent.setup()
         const onToggle = vi.fn()
@@ -168,6 +214,7 @@ describe('MenuV2 selection', () => {
             <MenuV2
                 trigger={<button type="button">Multi menu</button>}
                 selectionStyle="highlight"
+                selectionMode="multiple"
                 closeOnSelect={false}
                 items={[
                     {
@@ -201,6 +248,55 @@ describe('MenuV2 selection', () => {
         expect(
             screen.getByRole('menuitemcheckbox', { name: /^beta$/i })
         ).toBeInTheDocument()
+    })
+
+    it('keeps the menu open for Enter and Space when closeOnSelect is false', async () => {
+        const user = userEvent.setup()
+        const onAlpha = vi.fn()
+        const onBeta = vi.fn()
+
+        render(
+            <MenuV2
+                trigger={<button type="button">Keyboard multi menu</button>}
+                selectionMode="multiple"
+                closeOnSelect={false}
+                items={[
+                    {
+                        items: [
+                            {
+                                label: { text: 'Alpha' },
+                                selected: false,
+                                onClick: onAlpha,
+                            },
+                            {
+                                label: { text: 'Beta' },
+                                selected: true,
+                                onClick: onBeta,
+                            },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', { name: /keyboard multi menu/i })
+        )
+
+        const alpha = await screen.findByRole('menuitemcheckbox', {
+            name: /^alpha$/i,
+        })
+        alpha.focus()
+        await user.keyboard('{Enter}')
+        expect(onAlpha).toHaveBeenCalledTimes(1)
+        expect(alpha).toBeInTheDocument()
+
+        await user.keyboard('{ArrowDown}')
+        const beta = screen.getByRole('menuitemcheckbox', { name: /^beta$/i })
+        expect(beta).toHaveFocus()
+        await user.keyboard(' ')
+        expect(onBeta).toHaveBeenCalledTimes(1)
+        expect(beta).toBeInTheDocument()
     })
 
     it('closes the menu on select by default', async () => {

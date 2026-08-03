@@ -101,6 +101,7 @@ describe('MenuV2 Accessibility', () => {
             <MenuV2
                 trigger={<button type="button">Selection menu</button>}
                 selectionStyle="checkmark"
+                selectionMode="single"
                 items={[
                     {
                         label: 'Sort',
@@ -152,6 +153,7 @@ describe('MenuV2 Accessibility', () => {
             <MenuV2
                 trigger={<button type="button">Multi select menu</button>}
                 selectionStyle="highlight"
+                selectionMode="multiple"
                 closeOnSelect={false}
                 items={[
                     {

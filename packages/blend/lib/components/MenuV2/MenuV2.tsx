@@ -32,6 +32,7 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
             onOpenChange,
             asModal = false,
             selectionStyle,
+            selectionMode,
             closeOnSelect = true,
             alignment = MenuV2Alignment.CENTER,
             side = MenuV2Side.BOTTOM,
@@ -96,9 +97,10 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
         const selectionContextValue = useMemo(
             () => ({
                 selectionStyle,
+                selectionMode,
                 closeOnSelect,
             }),
-            [selectionStyle, closeOnSelect]
+            [selectionStyle, selectionMode, closeOnSelect]
         )
 
         return (

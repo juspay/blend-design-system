@@ -43,6 +43,7 @@ export type MenuV2SearchSortFn = (
     searchText: string
 ) => MenuV2ItemType[]
 export type MenuV2SelectionStyle = 'checkmark' | 'highlight'
+export type MenuV2SelectionMode = 'single' | 'multiple'
 
 export type MenuV2ItemType = {
     id?: string
@@ -80,6 +81,10 @@ export type MenuV2GroupType = {
      * Overrides the Menu-level `selectionStyle` for items in this group.
      */
     selectionStyle?: MenuV2SelectionStyle
+    /**
+     * Overrides the Menu-level `selectionMode` for items in this group.
+     */
+    selectionMode?: MenuV2SelectionMode
 }
 
 export type MenuV2VirtualScrollingConfig = {
@@ -119,6 +124,14 @@ export type MenuV2Props = {
      * Can be overridden per group via `MenuV2GroupType.selectionStyle`.
      */
     selectionStyle?: MenuV2SelectionStyle
+    /**
+     * Selection cardinality used for accessibility semantics.
+     * - `single`: items use `menuitemradio`
+     * - `multiple`: items use `menuitemcheckbox`
+     * Defaults to `single` when an item has `selected` set.
+     * Can be overridden per group via `MenuV2GroupType.selectionMode`.
+     */
+    selectionMode?: MenuV2SelectionMode
     /**
      * When `false`, selecting an item keeps the menu open (multi-select).
      * Defaults to `true` (current fire-and-forget close behavior).
