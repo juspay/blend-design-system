@@ -105,6 +105,31 @@ Replace toggle reducers or debounce logic attached to `onChange` with direct
 array assignment through `onSelectionChange`. The legacy `onChange` callback
 remains supported with its existing per-item string payloads and callback counts.
 
+## Server-side search
+
+Pass `searchText` to make search controlled. In this mode, `MultiSelect` renders
+that value, calls `onSearchChange` for every input change, and does not filter
+`items`; supply the already-filtered API results yourself. Debouncing, request
+cancellation, caching, and error handling remain consumer responsibilities.
+
+```tsx
+<MultiSelect
+    items={apiResults}
+    selectedValues={selected}
+    onSelectionChange={setSelected}
+    searchText={query}
+    onSearchChange={setQuery}
+    isSearchLoading={isSearching}
+    emptyStateText={query ? 'No people found' : 'Start typing to search'}
+/>
+```
+
+Controlled mode is selected by the presence of `searchText`, including an empty
+string. Omitting `onSearchChange` creates a read-only search input. Setting
+`enableSearch={false}` hides the input but still disables internal filtering.
+`isSearchLoading` describes search requests only; pagination continues to use
+`hasMore` and `loadingComponent`.
+
 ## API Reference
 
 <DocsTypeTable
@@ -308,6 +333,40 @@ remains supported with its existing per-item string payloads and callback counts
                 content: 'string',
                 hintText: 'Placeholder text shown when search input is empty',
             },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.searchText',
+                hintText:
+                    'Controlled search value. When present, the component does not filter items internally.',
+            },
+            { content: 'string', hintText: 'Controlled search query' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.onSearchChange',
+                hintText: 'Called for every user change to the search input.',
+            },
+            { content: '(text: string) => void', hintText: 'Change callback' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.isSearchLoading',
+                hintText: 'Shows the search loading state inside the menu.',
+            },
+            { content: 'boolean', hintText: 'Search request state' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.emptyStateText',
+                hintText:
+                    'Overrides the message shown when no items are available.',
+            },
+            { content: 'string', hintText: 'Empty-state message' },
             { content: '' },
         ],
         [

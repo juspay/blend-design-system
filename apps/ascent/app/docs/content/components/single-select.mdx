@@ -86,6 +86,31 @@ function MyComponent() {
 }
 ```
 
+## Server-side search
+
+Pass `searchText` to make search controlled. In this mode, `SingleSelect` renders
+that value, calls `onSearchChange` for every input change, and does not filter
+`items`; supply the already-filtered API results yourself. Debouncing, request
+cancellation, caching, and error handling remain consumer responsibilities.
+
+```tsx
+<SingleSelect
+    items={apiResults}
+    selected={selected}
+    onSelect={setSelected}
+    searchText={query}
+    onSearchChange={setQuery}
+    isSearchLoading={isSearching}
+    emptyStateText={query ? 'No people found' : 'Start typing to search'}
+/>
+```
+
+Controlled mode is selected by the presence of `searchText`, including an empty
+string. Omitting `onSearchChange` creates a read-only search input. Setting
+`enableSearch={false}` hides the input but still disables internal filtering.
+`isSearchLoading` describes search requests only; pagination continues to use
+`hasMore` and `loadingComponent`.
+
 ## API Reference
 
 <DocsTypeTable
@@ -206,6 +231,40 @@ function MyComponent() {
                 hintText: 'Placeholder text for the search input field',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SingleSelect.searchText',
+                hintText:
+                    'Controlled search value. When present, the component does not filter items internally.',
+            },
+            { content: 'string', hintText: 'Controlled search query' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SingleSelect.onSearchChange',
+                hintText: 'Called for every user change to the search input.',
+            },
+            { content: '(text: string) => void', hintText: 'Change callback' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SingleSelect.isSearchLoading',
+                hintText: 'Shows the search loading state inside the menu.',
+            },
+            { content: 'boolean', hintText: 'Search request state' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SingleSelect.emptyStateText',
+                hintText:
+                    'Overrides the message shown when no items are available.',
+            },
+            { content: 'string', hintText: 'Empty-state message' },
             { content: '' },
         ],
         [

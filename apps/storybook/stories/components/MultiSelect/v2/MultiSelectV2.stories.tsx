@@ -8,12 +8,13 @@ import {
     MultiSelectV2Size,
     MultiSelectV2Variant,
     MultiSelectV2SelectionTagType,
-} from '../../../../../../packages/blend/lib/components/MultiSelectV2'
-import type { MultiSelectV2GroupType } from '../../../../../../packages/blend/lib/components/MultiSelectV2/multiSelectV2.types'
+    type MultiSelectV2GroupType,
+} from '@juspay/blend-design-system'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
+import { useMockAsyncSearch } from '../../selectAsyncSearchStory'
 
 const defaultItems: MultiSelectV2GroupType[] = [
     {
@@ -544,6 +545,56 @@ export const WithMenuFooter: Story = {
             description: {
                 story: 'Renders custom content (e.g. a "Create new" button) pinned at the bottom of the menu via the `menuFooter` prop. The footer is not selectable and stays visible even when the list is empty.',
             },
+        },
+    },
+}
+
+const ControlledAsyncSearchExample = () => {
+    const [selectedValues, setSelectedValues] = useState<string[]>([])
+    const search = useMockAsyncSearch()
+
+    return (
+        <MultiSelectV2
+            label="Find people"
+            placeholder="Select people"
+            items={search.items}
+            selectedValues={selectedValues}
+            onSelectionChange={setSelectedValues}
+            search={search}
+        />
+    )
+}
+
+export const ControlledAsyncSearch: Story = {
+    render: () => <ControlledAsyncSearchExample />,
+    parameters: {
+        docs: {
+            description: {
+                story: 'Controlled search debounces a mock API request. The consumer owns the query and supplies already-filtered items.',
+            },
+        },
+    },
+}
+
+export const ControlledSearchLoading: Story = {
+    args: {
+        label: 'Find people',
+        placeholder: 'Select people',
+        items: [],
+        selectedValues: [],
+        search: { searchText: 'ada', isSearchLoading: true },
+    },
+}
+
+export const ControlledSearchEmpty: Story = {
+    args: {
+        label: 'Find people',
+        placeholder: 'Select people',
+        items: [],
+        selectedValues: [],
+        search: {
+            searchText: '',
+            emptyStateText: 'Start typing to search',
         },
     },
 }

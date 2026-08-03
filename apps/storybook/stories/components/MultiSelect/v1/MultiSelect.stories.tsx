@@ -10,6 +10,7 @@ import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
+import { useMockAsyncSearch } from '../../selectAsyncSearchStory'
 import {
     Palette,
     Briefcase,
@@ -1439,5 +1440,53 @@ export const WithMenuFooter: Story = {
                 story: 'Renders custom content (e.g. a "Create new" button) pinned at the bottom of the menu via the `menuFooter` prop. The footer is not selectable and stays visible even when the list is empty.',
             },
         },
+    },
+}
+
+const ControlledAsyncSearchExample = () => {
+    const [selectedValues, setSelectedValues] = useState<string[]>([])
+    const search = useMockAsyncSearch()
+
+    return (
+        <MultiSelect
+            label="Find people"
+            placeholder="Select people"
+            selectedValues={selectedValues}
+            onSelectionChange={setSelectedValues}
+            {...search}
+        />
+    )
+}
+
+export const ControlledAsyncSearch: Story = {
+    render: () => <ControlledAsyncSearchExample />,
+    parameters: {
+        docs: {
+            description: {
+                story: 'Controlled search debounces a mock API request. The consumer owns the query and supplies already-filtered items.',
+            },
+        },
+    },
+}
+
+export const ControlledSearchLoading: Story = {
+    args: {
+        label: 'Find people',
+        placeholder: 'Select people',
+        items: [],
+        selectedValues: [],
+        searchText: 'ada',
+        isSearchLoading: true,
+    },
+}
+
+export const ControlledSearchEmpty: Story = {
+    args: {
+        label: 'Find people',
+        placeholder: 'Select people',
+        items: [],
+        selectedValues: [],
+        searchText: '',
+        emptyStateText: 'Start typing to search',
     },
 }

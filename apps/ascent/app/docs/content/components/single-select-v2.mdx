@@ -53,6 +53,32 @@ function MyComponent() {
 }
 ```
 
+## Server-side search
+
+Put `searchText` in the `search` config to make search controlled. The component
+renders that value, calls `onSearchChange` for every input change, and does not
+filter `items`; the consumer supplies already-filtered API results.
+
+```tsx
+<SingleSelectV2
+    items={apiResults}
+    selected={selected}
+    onSelect={setSelected}
+    search={{
+        searchText: query,
+        onSearchChange: setQuery,
+        isSearchLoading: isSearching,
+        emptyStateText: query ? 'No people found' : 'Start typing to search',
+    }}
+/>
+```
+
+Controlled mode is selected by the presence of `search.searchText`, including an
+empty string. Omitting `onSearchChange` creates a read-only search input.
+`show: false` hides the input but still disables internal filtering. Debouncing,
+request cancellation, caching, and errors remain consumer responsibilities;
+search loading is independent from pagination via `hasMore`/`loadingComponent`.
+
 ## API Reference
 
 <DocsTypeTable
@@ -188,7 +214,8 @@ function MyComponent() {
             },
             {
                 content: 'SingleSelectV2SearchConfig',
-                hintText: 'Object with show and placeholder',
+                hintText:
+                    'Object with show, placeholder, searchText, onSearchChange, isSearchLoading, and emptyStateText.',
             },
             { content: '' },
         ],
