@@ -338,7 +338,7 @@ describe('DataTable whole-table export', () => {
         expect(renderToStaticMarkupSpy).toHaveBeenCalledTimes(2)
     })
 
-    it('caps renderer fallback attempts when every cell renderer throws', async () => {
+    it('shares a bounded renderer recovery budget across export batches', async () => {
         const AlwaysThrows = (): React.ReactNode => {
             throw new Error('Cannot render this cell')
         }
@@ -349,13 +349,13 @@ describe('DataTable whole-table export', () => {
             isSortable: false,
             renderCell: () => <AlwaysThrows />,
         }
-        const manyRows = Array.from({ length: 250 }, (_, index) => ({
+        const manyRows = Array.from({ length: 501 }, (_, index) => ({
             value: `Raw ${index}`,
         }))
 
         const csv = await generateDataTableCSV(manyRows, [fallibleColumn])
 
-        expect(renderToStaticMarkupSpy).toHaveBeenCalledTimes(32)
+        expect(renderToStaticMarkupSpy).toHaveBeenCalledTimes(35)
         expect(csv.split('\r\n')).toEqual([
             'Value',
             ...manyRows.map((row) => row.value),

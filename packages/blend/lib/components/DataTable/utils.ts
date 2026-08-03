@@ -1351,7 +1351,7 @@ const getDataTableExportCell = <T extends Record<string, unknown>>(
 }
 
 const EXPORT_ROW_BATCH_SIZE = 250
-const EXPORT_RENDER_ATTEMPT_LIMIT = 32
+const EXPORT_RENDER_RECOVERY_ATTEMPT_LIMIT = 32
 
 const createExportBatchToken = (): string => {
     if (
@@ -1432,12 +1432,16 @@ const applyRenderedCellTextSafely = (
         node: React.ReactNode,
         options?: { identifierPrefix?: string }
     ) => string,
-    attemptBudget = { remaining: EXPORT_RENDER_ATTEMPT_LIMIT }
+    recoveryBudget: { remaining: number },
+    isRecoveryAttempt = false
 ): void => {
     const pendingCells = cells.filter((cell) => cell.rendered !== undefined)
-    if (pendingCells.length === 0 || attemptBudget.remaining === 0) return
+    if (pendingCells.length === 0) return
 
-    attemptBudget.remaining -= 1
+    if (isRecoveryAttempt) {
+        if (recoveryBudget.remaining === 0) return
+        recoveryBudget.remaining -= 1
+    }
 
     try {
         applyRenderedCellText(pendingCells, renderToStaticMarkup)
@@ -1448,12 +1452,14 @@ const applyRenderedCellTextSafely = (
         applyRenderedCellTextSafely(
             pendingCells.slice(0, midpoint),
             renderToStaticMarkup,
-            attemptBudget
+            recoveryBudget,
+            true
         )
         applyRenderedCellTextSafely(
             pendingCells.slice(midpoint),
             renderToStaticMarkup,
-            attemptBudget
+            recoveryBudget,
+            true
         )
     }
 }
@@ -1465,6 +1471,9 @@ const serializeDataTableRows = async <T extends Record<string, unknown>>(
     rowIndexOffset = 0
 ): Promise<string[][]> => {
     const rows: string[][] = []
+    const renderRecoveryBudget = {
+        remaining: EXPORT_RENDER_RECOVERY_ATTEMPT_LIMIT,
+    }
     let staticRenderer:
         | (typeof import('react-dom/server'))['renderToStaticMarkup']
         | undefined
@@ -1490,7 +1499,11 @@ const serializeDataTableRows = async <T extends Record<string, unknown>>(
         if (flattenedCells.some((cell) => cell.rendered !== undefined)) {
             staticRenderer ??= (await import('react-dom/server'))
                 .renderToStaticMarkup
-            applyRenderedCellTextSafely(flattenedCells, staticRenderer)
+            applyRenderedCellTextSafely(
+                flattenedCells,
+                staticRenderer,
+                renderRecoveryBudget
+            )
         }
 
         rows.push(...cells.map((row) => row.map((cell) => cell.text)))
