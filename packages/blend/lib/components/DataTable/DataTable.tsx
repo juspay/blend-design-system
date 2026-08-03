@@ -1732,7 +1732,11 @@ const DataTable = forwardRef(
                     headerSlot1={
                         showSettings ||
                         (!mobileConfig.isMobile && exportButton) ? (
-                            <>
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                gap={FOUNDATION_THEME.unit[8]}
+                            >
                                 {showSettings && (
                                     <Menu
                                         items={formatOptions}
@@ -1754,7 +1758,7 @@ const DataTable = forwardRef(
                                     />
                                 )}
                                 {!mobileConfig.isMobile && exportButton}
-                            </>
+                            </Block>
                         ) : null
                     }
                     headerSlot2={effectiveHeaderSlot1}

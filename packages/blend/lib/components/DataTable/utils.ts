@@ -1351,6 +1351,7 @@ const getDataTableExportCell = <T extends Record<string, unknown>>(
 }
 
 const EXPORT_ROW_BATCH_SIZE = 250
+const EXPORT_RENDER_ATTEMPT_LIMIT = 32
 
 const createExportBatchToken = (): string => {
     if (
@@ -1430,10 +1431,13 @@ const applyRenderedCellTextSafely = (
     renderToStaticMarkup: (
         node: React.ReactNode,
         options?: { identifierPrefix?: string }
-    ) => string
+    ) => string,
+    attemptBudget = { remaining: EXPORT_RENDER_ATTEMPT_LIMIT }
 ): void => {
     const pendingCells = cells.filter((cell) => cell.rendered !== undefined)
-    if (pendingCells.length === 0) return
+    if (pendingCells.length === 0 || attemptBudget.remaining === 0) return
+
+    attemptBudget.remaining -= 1
 
     try {
         applyRenderedCellText(pendingCells, renderToStaticMarkup)
@@ -1443,11 +1447,13 @@ const applyRenderedCellTextSafely = (
         const midpoint = Math.ceil(pendingCells.length / 2)
         applyRenderedCellTextSafely(
             pendingCells.slice(0, midpoint),
-            renderToStaticMarkup
+            renderToStaticMarkup,
+            attemptBudget
         )
         applyRenderedCellTextSafely(
             pendingCells.slice(midpoint),
-            renderToStaticMarkup
+            renderToStaticMarkup,
+            attemptBudget
         )
     }
 }

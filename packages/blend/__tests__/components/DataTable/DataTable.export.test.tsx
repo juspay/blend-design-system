@@ -142,9 +142,12 @@ describe('DataTable whole-table export', () => {
             configurable: true,
             value: revokeObjectURL,
         })
+        const recordClickedAnchor = (anchor: HTMLAnchorElement) => {
+            clickedAnchor = anchor
+        }
         vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(
             function (this: HTMLAnchorElement) {
-                clickedAnchor = this
+                recordClickedAnchor(this)
             }
         )
     })
@@ -333,6 +336,30 @@ describe('DataTable whole-table export', () => {
 
         await generateDataTableCSV(manyRows, [componentColumn])
         expect(renderToStaticMarkupSpy).toHaveBeenCalledTimes(2)
+    })
+
+    it('caps renderer fallback attempts when every cell renderer throws', async () => {
+        const AlwaysThrows = (): React.ReactNode => {
+            throw new Error('Cannot render this cell')
+        }
+        const fallibleColumn: ColumnDefinition<{ value: string }> = {
+            field: 'value',
+            header: 'Value',
+            type: ColumnType.TEXT,
+            isSortable: false,
+            renderCell: () => <AlwaysThrows />,
+        }
+        const manyRows = Array.from({ length: 250 }, (_, index) => ({
+            value: `Raw ${index}`,
+        }))
+
+        const csv = await generateDataTableCSV(manyRows, [fallibleColumn])
+
+        expect(renderToStaticMarkupSpy).toHaveBeenCalledTimes(32)
+        expect(csv.split('\r\n')).toEqual([
+            'Value',
+            ...manyRows.map((row) => row.value),
+        ])
     })
 
     it('keeps rendered cells isolated from correlation attributes in cell content', async () => {
