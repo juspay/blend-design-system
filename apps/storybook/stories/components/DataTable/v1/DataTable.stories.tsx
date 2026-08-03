@@ -84,7 +84,7 @@ const columns: ColumnDefinition<User>[] = [
 - Column management (show/hide columns)
 - Bulk actions support
 - Custom cell rendering
-- Loading states and empty states
+- Loading, empty, and error states
 - Multiple column types (Text, Number, Date, Avatar, Tag, Select, etc.)
 
 ## Accessibility
@@ -384,6 +384,50 @@ const columns: ColumnDefinition<User>[] = [
             table: {
                 type: { summary: 'boolean' },
                 defaultValue: { summary: 'false' },
+                category: 'UI State',
+            },
+        },
+        error: {
+            control: { type: 'boolean' },
+            description: 'Show an error state instead of table rows',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'UI State',
+            },
+        },
+        renderErrorState: {
+            control: false,
+            description: 'Custom renderer for the table error state',
+            table: {
+                type: {
+                    summary: '(retry?: () => void) => React.ReactNode',
+                },
+                category: 'UI State',
+            },
+        },
+        onRetry: {
+            action: 'retry',
+            description: 'Callback invoked by the default error Retry button',
+            table: {
+                type: { summary: '() => void' },
+                category: 'UI State',
+            },
+        },
+        showEmptyState: {
+            control: { type: 'boolean' },
+            description: 'Show the default empty state when there are no rows',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'UI State',
+            },
+        },
+        renderEmptyState: {
+            control: false,
+            description: 'Custom renderer used when there are no rows',
+            table: {
+                type: { summary: '() => React.ReactNode' },
                 category: 'UI State',
             },
         },
@@ -1123,11 +1167,64 @@ export const EmptyState: Story = {
         description: 'No users found',
         enableSearch: true,
         searchPlaceholder: 'Search users...',
+        showEmptyState: true,
     },
     parameters: {
         docs: {
             description: {
                 story: 'DataTable with no data showing empty state.',
+            },
+        },
+    },
+}
+
+export const CustomEmptyState: Story = {
+    args: {
+        data: [],
+        columns: userColumns as any[],
+        idField: 'id',
+        title: 'User Management',
+        enableSearch: true,
+        renderEmptyState: () => (
+            <div style={{ textAlign: 'center' }}>
+                <strong>No users match your filters</strong>
+                <p style={{ margin: '8px 0 0' }}>
+                    Try changing or clearing your search criteria.
+                </p>
+            </div>
+        ),
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DataTable with custom content rendered in the empty body area.',
+            },
+        },
+    },
+}
+
+const ErrorStateDataTable: React.FC = () => {
+    const [hasError, setHasError] = useState(true)
+
+    return (
+        <DataTable
+            data={hasError ? [] : (sampleUsers.slice(0, 5) as any[])}
+            columns={userColumns as any[]}
+            idField="id"
+            title="User Management"
+            enableSearch
+            error={hasError}
+            onRetry={() => setHasError(false)}
+        />
+    )
+}
+
+export const ErrorState: Story = {
+    render: () => <ErrorStateDataTable />,
+    parameters: {
+        docs: {
+            description: {
+                story: 'DataTable with the default error state and a working Retry action.',
             },
         },
     },

@@ -795,6 +795,68 @@ function CompactTable() {
         ],
         [
             {
+                content: 'error',
+                hintText:
+                    'When true, replaces table rows with an error state while preserving the table header, toolbar, filters, and footer. Loading takes precedence when isLoading is also true. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows the error state, false shows normal content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'renderErrorState',
+                hintText:
+                    'Optional renderer for custom error content in the table body area. Receives onRetry when one is provided.',
+            },
+            {
+                content: '(retry?: () => void) => ReactNode',
+                hintText: 'Function that returns custom error-state content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onRetry',
+                hintText:
+                    'Optional callback passed to renderErrorState and wired to the Retry button in the default error state.',
+            },
+            {
+                content: '() => void',
+                hintText:
+                    'Function called when the user retries the failed load',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showEmptyState',
+                hintText:
+                    'When true, displays the default empty state when data has no rows and loading is complete. Defaults to false to preserve the legacy empty-body presentation.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables the default empty state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'renderEmptyState',
+                hintText:
+                    'Optional renderer for custom empty content in the table body area. A custom renderer is used whenever data is empty and loading is complete, independently of showEmptyState.',
+            },
+            {
+                content: '() => ReactNode',
+                hintText: 'Function that returns custom empty-state content',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'showSkeleton',
                 hintText:
                     'When true, displays skeleton loading placeholders in all table cells (including checkboxes and expansion buttons). Provides granular control over skeleton display separate from isLoading. Can be overridden at the column level via column.showSkeleton or at the row level via isRowLoading. Defaults to false.',
