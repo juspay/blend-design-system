@@ -21,9 +21,12 @@ import { filterMenuGroups, getAllAvailableValues } from './utils'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
 import { useSelectSearchController } from '../Select/useSelectSearchController'
-import SelectSearchStatus from '../Select/SelectSearchStatus'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../Select/SelectSearchStatus'
 import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
 import SelectAllItem from './SelectAllItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -253,6 +256,19 @@ const MultiSelectMenu = ({
         shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
+    const searchStatusHeight =
+        isActiveSearchLoading && hasRenderableItems
+            ? SELECT_SEARCH_STATUS_HEIGHT
+            : 0
     const selectAllItems = isSearchControlled ? items : filteredItems
     const availableValues = React.useMemo(
         () => getAllAvailableValues(selectAllItems),
@@ -514,9 +530,6 @@ const MultiSelectMenu = ({
                                     )}
                             </StickyHeader>
                             <ScrollableContent
-                                {...(isActiveSearchLoading && {
-                                    'aria-busy': true,
-                                })}
                                 style={{
                                     maxHeight: `${maxScrollHeight}px`,
                                     ...(scrollAreaHeight !== null && {
@@ -525,18 +538,20 @@ const MultiSelectMenu = ({
                                 }}
                             >
                                 <SelectSearchStatus
-                                    isControlled={isSearchControlled}
+                                    isControlled={
+                                        isSearchControlled && isSearchEnabled
+                                    }
                                     isLoading={isActiveSearchLoading}
-                                    isEmpty={filteredItems.length === 0}
+                                    isEmpty={!hasRenderableItems}
                                     emptyStateText={
-                                        emptyStateText || 'No results found'
+                                        emptyStateText ||
+                                        (!hasSourceItems
+                                            ? 'No items available'
+                                            : 'No results found')
                                     }
                                 />
                                 {isActiveSearchLoading &&
-                                filteredItems.length ===
-                                    0 ? null : items.length === 0 ||
-                                  (filteredItems.length === 0 &&
-                                      searchText.length > 0) ? (
+                                !hasRenderableItems ? null : showEmptyState ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -554,7 +569,7 @@ const MultiSelectMenu = ({
                                             textAlign="center"
                                         >
                                             {emptyStateText ||
-                                                (items.length === 0
+                                                (!hasSourceItems
                                                     ? 'No items available'
                                                     : 'No results found')}
                                         </Text>
@@ -572,8 +587,18 @@ const MultiSelectMenu = ({
                                         <VirtualList
                                             items={flattenedItems}
                                             height={
-                                                scrollAreaHeight ??
-                                                maxScrollHeight
+                                                searchStatusHeight > 0
+                                                    ? Math.max(
+                                                          (scrollAreaHeight ??
+                                                              maxScrollHeight) -
+                                                              searchStatusHeight,
+                                                          0
+                                                      )
+                                                    : Math.max(
+                                                          scrollAreaHeight ??
+                                                              maxScrollHeight,
+                                                          virtualListItemHeight
+                                                      )
                                             }
                                             itemHeight={virtualListItemHeight}
                                             overscan={virtualListOverscan}
@@ -738,6 +763,9 @@ const MultiSelectMenu = ({
                                                                     index={
                                                                         itemIndex
                                                                     }
+                                                                    focusIdentityEnabled={
+                                                                        isSearchControlled
+                                                                    }
                                                                 />
                                                             </Block>
                                                         </VirtualItemWrapper>
@@ -833,6 +861,9 @@ const MultiSelectMenu = ({
                                                                     groupStartIndex +
                                                                     itemIndex
                                                                 }
+                                                                focusIdentityEnabled={
+                                                                    isSearchControlled
+                                                                }
                                                             />
                                                         )
                                                     )}
@@ -876,10 +907,9 @@ const MultiSelectMenu = ({
                             </ScrollableContent>
                             {showActionButtons &&
                                 (primaryAction || secondaryAction) &&
-                                items.length > 0 &&
+                                hasSourceItems &&
                                 !(
-                                    filteredItems.length === 0 &&
-                                    searchText.length > 0
+                                    !hasRenderableItems && searchText.length > 0
                                 ) && (
                                     <FixedActionButtons>
                                         {secondaryAction && (

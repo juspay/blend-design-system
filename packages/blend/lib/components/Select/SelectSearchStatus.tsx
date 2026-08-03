@@ -11,6 +11,8 @@ type SelectSearchStatusProps = {
     emptyStateText: string
 }
 
+export const SELECT_SEARCH_STATUS_HEIGHT = 36
+
 const visuallyHiddenStyle: CSSProperties = {
     position: 'absolute',
     width: 1,
@@ -46,7 +48,9 @@ const SelectSearchStatus = ({
                     alignItems="center"
                     justifyContent="center"
                     gap={FOUNDATION_THEME.unit[4]}
-                    padding={FOUNDATION_THEME.unit[8]}
+                    paddingX={FOUNDATION_THEME.unit[8]}
+                    height={SELECT_SEARCH_STATUS_HEIGHT}
+                    flexShrink={0}
                     aria-hidden="true"
                     data-element="search-loading"
                 >
@@ -56,6 +60,7 @@ const SelectSearchStatus = ({
                         style={{ animation: 'spin 1s linear infinite' }}
                     />
                     <Text
+                        as="span"
                         variant="body.md"
                         color={FOUNDATION_THEME.colors.gray[600]}
                     >

@@ -30,7 +30,11 @@ export const useSelectSearchFocusRecovery = ({
             if (target.matches('[role="menuitem"], [role="option"]')) {
                 focusedResultRef.current = {
                     element: target,
-                    identity: target.dataset.id ?? target.textContent ?? '',
+                    identity:
+                        target.dataset.value ??
+                        target.dataset.id ??
+                        target.textContent ??
+                        '',
                 }
             }
         },
@@ -44,6 +48,7 @@ export const useSelectSearchFocusRecovery = ({
         }
 
         const currentIdentity =
+            focusedResult.element.dataset.value ??
             focusedResult.element.dataset.id ??
             focusedResult.element.textContent ??
             ''

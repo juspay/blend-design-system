@@ -22,11 +22,13 @@ const MultiSelectSubMenu = ({
     onSelect,
     selected,
     maxSelections,
+    focusIdentityEnabled,
 }: {
     item: MultiSelectMenuItemType
     onSelect: (value: string) => void
     selected: string[]
     maxSelections?: number
+    focusIdentityEnabled?: boolean
 }) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -130,6 +132,7 @@ const MultiSelectSubMenu = ({
                             onSelect={onSelect}
                             selected={selected}
                             maxSelections={maxSelections}
+                            focusIdentityEnabled={focusIdentityEnabled}
                         />
                     ))}
                 </Block>

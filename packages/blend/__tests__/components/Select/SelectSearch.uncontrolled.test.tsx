@@ -1,11 +1,12 @@
 import React from 'react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { fireEvent } from '@testing-library/react'
 import { render, screen, waitFor } from '../../test-utils'
 import SingleSelect from '../../../lib/components/SingleSelect/SingleSelect'
 import MultiSelect from '../../../lib/components/MultiSelect/MultiSelect'
 import SingleSelectV2 from '../../../lib/components/SingleSelectV2/SingleSelectV2'
 import { MultiSelectV2 } from '../../../lib/components/MultiSelectV2'
+import * as useBreakpointsModule from '../../../lib/hooks/useBreakPoints'
 
 const items = [
     {
@@ -15,6 +16,12 @@ const items = [
         ],
     },
 ]
+
+const expectNoControlledFocusIdentity = () => {
+    expect(
+        screen.getByText('Apple').closest('[role="menuitem"], [role="option"]')
+    ).not.toHaveAttribute('data-value')
+}
 
 describe('Select search uncontrolled behavior', () => {
     beforeEach(() => {
@@ -37,6 +44,7 @@ describe('Select search uncontrolled behavior', () => {
 
         const trigger = screen.getByRole('button', { name: /legacy single/i })
         await user.click(trigger)
+        expectNoControlledFocusIdentity()
         const search = screen.getByPlaceholderText('Search options...')
         fireEvent.change(search, { target: { value: 'app' } })
         expect(screen.getByText('Apple')).toBeInTheDocument()
@@ -63,6 +71,7 @@ describe('Select search uncontrolled behavior', () => {
         )
 
         await user.click(screen.getByRole('button', { name: /legacy multi/i }))
+        expectNoControlledFocusIdentity()
         const search = screen.getByPlaceholderText('Search options...')
         fireEvent.change(search, { target: { value: 'ban' } })
         expect(screen.queryByText('Apple')).not.toBeInTheDocument()
@@ -81,6 +90,7 @@ describe('Select search uncontrolled behavior', () => {
         )
 
         await user.click(screen.getByRole('button', { name: /v2 single/i }))
+        expectNoControlledFocusIdentity()
         const search = screen.getByPlaceholderText('Search options...')
         fireEvent.change(search, { target: { value: 'app' } })
         expect(screen.getByText('Apple')).toBeInTheDocument()
@@ -99,9 +109,93 @@ describe('Select search uncontrolled behavior', () => {
         )
 
         await user.click(screen.getByRole('combobox', { name: /v2 multi/i }))
+        expectNoControlledFocusIdentity()
         const search = screen.getByPlaceholderText('Search options...')
         fireEvent.change(search, { target: { value: 'ban' } })
         expect(screen.queryByText('Apple')).not.toBeInTheDocument()
         expect(screen.getByText('Banana')).toBeInTheDocument()
+    })
+
+    describe('mobile parity', () => {
+        beforeEach(() => {
+            vi.spyOn(useBreakpointsModule, 'useBreakpoints').mockReturnValue({
+                breakPointLabel: 'sm',
+                innerWidth: 480,
+            } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
+        })
+
+        const mobileCases = [
+            {
+                name: 'SingleSelect',
+                triggerRole: 'button' as const,
+                renderSelect: () => (
+                    <SingleSelect
+                        placeholder="Uncontrolled mobile"
+                        items={items}
+                        selected=""
+                        onSelect={() => {}}
+                        enableSearch
+                    />
+                ),
+            },
+            {
+                name: 'MultiSelect',
+                triggerRole: 'button' as const,
+                renderSelect: () => (
+                    <MultiSelect
+                        label="Uncontrolled mobile"
+                        placeholder="Uncontrolled mobile"
+                        items={items}
+                        selectedValues={[]}
+                        onChange={() => {}}
+                    />
+                ),
+            },
+            {
+                name: 'SingleSelectV2',
+                triggerRole: 'button' as const,
+                renderSelect: () => (
+                    <SingleSelectV2
+                        placeholder="Uncontrolled mobile"
+                        items={items}
+                        selected=""
+                        onSelect={() => {}}
+                        search={{ show: true }}
+                    />
+                ),
+            },
+            {
+                name: 'MultiSelectV2',
+                triggerRole: 'combobox' as const,
+                renderSelect: () => (
+                    <MultiSelectV2
+                        label="Uncontrolled mobile"
+                        placeholder="Uncontrolled mobile"
+                        items={items}
+                        selectedValues={[]}
+                        onChange={() => {}}
+                    />
+                ),
+            },
+        ]
+
+        it.each(mobileCases)(
+            '$name preserves client-side filtering on mobile',
+            async ({ triggerRole, renderSelect }) => {
+                render(renderSelect())
+                fireEvent.click(
+                    screen.getByRole(triggerRole, {
+                        name: /uncontrolled mobile/i,
+                    })
+                )
+                fireEvent.change(
+                    await screen.findByPlaceholderText('Search options...'),
+                    { target: { value: 'ban' } }
+                )
+
+                expect(screen.queryByText('Apple')).not.toBeInTheDocument()
+                expect(screen.getByText('Banana')).toBeInTheDocument()
+            }
+        )
     })
 })

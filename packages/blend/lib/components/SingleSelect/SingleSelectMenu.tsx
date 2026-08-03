@@ -34,9 +34,12 @@ import SingleSelectSkeleton from './SingleSelectSkeleton'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
 import { useSelectSearchController } from '../Select/useSelectSearchController'
-import SelectSearchStatus from '../Select/SelectSearchStatus'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../Select/SelectSearchStatus'
 import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
 
 type SingleSelectMenuProps = {
@@ -213,11 +216,13 @@ const SubMenu = ({
     onSelect,
     selected,
     singleSelectTokens,
+    focusIdentityEnabled,
 }: {
     item: SelectMenuItemType
     onSelect: (value: string) => void
     selected: string
     singleSelectTokens: SingleSelectTokensType
+    focusIdentityEnabled?: boolean
 }) => {
     return (
         <StyledSubMenu>
@@ -285,6 +290,7 @@ const SubMenu = ({
                         onSelect={onSelect}
                         selected={selected}
                         singleSelectTokens={singleSelectTokens}
+                        focusIdentityEnabled={focusIdentityEnabled}
                     />
                 ))}
             </SubContent>
@@ -298,12 +304,14 @@ const Item = ({
     selected,
     singleSelectTokens,
     index,
+    focusIdentityEnabled,
 }: {
     item: SelectMenuItemType
     onSelect: (value: string) => void
     selected: string
     singleSelectTokens?: SingleSelectTokensType
     index?: number
+    focusIdentityEnabled?: boolean
 }) => {
     if (item.subMenu) {
         return (
@@ -312,6 +320,7 @@ const Item = ({
                 onSelect={onSelect}
                 selected={selected}
                 singleSelectTokens={singleSelectTokens!}
+                focusIdentityEnabled={focusIdentityEnabled}
             />
         )
     }
@@ -324,6 +333,7 @@ const Item = ({
             type={SelectItemType.SINGLE}
             showCheckmark={true}
             index={index}
+            focusIdentityValue={focusIdentityEnabled ? item.value : undefined}
         />
     )
 }
@@ -482,6 +492,19 @@ const SingleSelectMenu = ({
         shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
+    const searchStatusHeight =
+        isActiveSearchLoading && hasRenderableItems
+            ? SELECT_SEARCH_STATUS_HEIGHT
+            : 0
 
     const flattenedItems = useMemo(
         () =>
@@ -577,6 +600,7 @@ const SingleSelectMenu = ({
                             onSelect={onSelect}
                             singleSelectTokens={singleSelectTokens}
                             index={currentIndex}
+                            focusIdentityEnabled={isSearchControlled}
                         />
                     </Block>
                 </VirtualItemWrapper>
@@ -726,24 +750,22 @@ const SingleSelectMenu = ({
                                     />
                                 </Block>
                             )}
-                            <ScrollableContent
-                                {...(isActiveSearchLoading && {
-                                    'aria-busy': true,
-                                })}
-                            >
+                            <ScrollableContent>
                                 <SelectSearchStatus
-                                    isControlled={isSearchControlled}
+                                    isControlled={
+                                        isSearchControlled && isSearchEnabled
+                                    }
                                     isLoading={isActiveSearchLoading}
-                                    isEmpty={filteredItems.length === 0}
+                                    isEmpty={!hasRenderableItems}
                                     emptyStateText={
-                                        emptyStateText || 'No results found'
+                                        emptyStateText ||
+                                        (!hasSourceItems
+                                            ? 'No items available'
+                                            : 'No results found')
                                     }
                                 />
                                 {isActiveSearchLoading &&
-                                filteredItems.length ===
-                                    0 ? null : items.length === 0 ||
-                                  (filteredItems.length === 0 &&
-                                      searchText.length > 0) ? (
+                                !hasRenderableItems ? null : showEmptyState ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -761,13 +783,13 @@ const SingleSelectMenu = ({
                                             textAlign="center"
                                         >
                                             {emptyStateText ||
-                                                (items.length === 0
+                                                (!hasSourceItems
                                                     ? 'No items available'
                                                     : 'No results found')}
                                         </Text>
                                     </Block>
                                 ) : enableVirtualization &&
-                                  filteredItems.length > 0 ? (
+                                  hasRenderableItems ? (
                                     <Block
                                         data-element="virtual-list"
                                         padding={FOUNDATION_THEME.unit[6]}
@@ -775,7 +797,19 @@ const SingleSelectMenu = ({
                                         <VirtualList
                                             items={flattenedItems}
                                             renderItem={renderVirtualItem}
-                                            height={maxMenuHeight - 60}
+                                            height={
+                                                searchStatusHeight > 0
+                                                    ? Math.max(
+                                                          maxMenuHeight -
+                                                              60 -
+                                                              searchStatusHeight,
+                                                          0
+                                                      )
+                                                    : Math.max(
+                                                          maxMenuHeight - 60,
+                                                          virtualListItemHeight
+                                                      )
+                                            }
                                             itemHeight={virtualListItemHeight}
                                             overscan={virtualListOverscan}
                                             onEndReached={onEndReached}
@@ -862,6 +896,9 @@ const SingleSelectMenu = ({
                                                                     singleSelectTokens
                                                                 }
                                                                 index={itemIdx}
+                                                                focusIdentityEnabled={
+                                                                    isSearchControlled
+                                                                }
                                                             />
                                                         )
                                                     }

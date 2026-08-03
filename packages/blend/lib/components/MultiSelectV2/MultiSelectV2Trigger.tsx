@@ -29,6 +29,7 @@ export type MultiSelectV2TriggerProps = {
     required: boolean
     selectionTagType: MultiSelectV2SelectionTagType
     valueLabelMap: Record<string, string>
+    fallbackToValue?: boolean
     open: boolean
     multiSelectTokens: MultiSelectV2TokensType
     inline?: boolean
@@ -52,6 +53,7 @@ const MultiSelectV2Trigger = ({
     required,
     selectionTagType,
     valueLabelMap,
+    fallbackToValue = false,
     open,
     multiSelectTokens,
     inline = false,
@@ -324,7 +326,11 @@ const MultiSelectV2Trigger = ({
                             MultiSelectV2SelectionTagType.COUNT
                                 ? selectedValues.length
                                 : selectedValues
-                                      .map((v) => valueLabelMap[v] ?? v)
+                                      .map(
+                                          (v) =>
+                                              valueLabelMap[v] ??
+                                              (fallbackToValue ? v : undefined)
+                                      )
                                       .join(', ')
                         }
                     >
@@ -332,7 +338,11 @@ const MultiSelectV2Trigger = ({
                         MultiSelectV2SelectionTagType.COUNT
                             ? selectedValues.length
                             : selectedValues
-                                  .map((v) => valueLabelMap[v] ?? v)
+                                  .map(
+                                      (v) =>
+                                          valueLabelMap[v] ??
+                                          (fallbackToValue ? v : undefined)
+                                  )
                                   .join(', ')}
                     </Text>
                 )}

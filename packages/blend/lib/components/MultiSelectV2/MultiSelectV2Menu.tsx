@@ -9,6 +9,7 @@ import { dropdownContentAnimations } from '../MultiSelect/multiSelect.animations
 import {
     getFilteredItemsWithCustomValue,
     hasExactMatch as checkExactMatch,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
 import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 import {
@@ -32,7 +33,9 @@ import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
 import { useSelectV2MenuBehavior } from '../SelectV2/useSelectV2MenuBehavior'
 import { VIRTUAL_MIN_VIEWPORT } from '../common/virtualViewport'
 import { useSelectSearchController } from '../Select/useSelectSearchController'
-import SelectSearchStatus from '../Select/SelectSearchStatus'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../Select/SelectSearchStatus'
 import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
 
 const JUST_OPENED_DEBOUNCE_MS = 150
@@ -217,6 +220,12 @@ const MultiSelectV2Menu = ({
         shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
 
     const selectAllItems = isSearchControlled ? items : filteredItems
     const availableValues = useMemo(
@@ -328,7 +337,7 @@ const MultiSelectV2Menu = ({
             'none'
     )
 
-    const isEmpty = filteredItems.length === 0
+    const isEmpty = !hasRenderableItems
     const isActiveSearchLoading =
         isSearchEnabled && Boolean(search?.isSearchLoading)
     const headerFooterHeight = Number(
@@ -340,7 +349,7 @@ const MultiSelectV2Menu = ({
     const showActions =
         showActionButtons &&
         (primaryAction || secondaryAction) &&
-        items.length > 0 &&
+        hasSourceItems &&
         !(isEmpty && searchText.length > 0)
 
     return (
@@ -420,9 +429,6 @@ const MultiSelectV2Menu = ({
                                 disabled={disabled}
                             />
                             <ScrollableContent
-                                {...(isActiveSearchLoading && {
-                                    'aria-busy': true,
-                                })}
                                 style={{
                                     maxHeight: maxMenuHeight
                                         ? `${Number(maxMenuHeight) - headerFooterHeight}px`
@@ -430,12 +436,16 @@ const MultiSelectV2Menu = ({
                                 }}
                             >
                                 <SelectSearchStatus
-                                    isControlled={isSearchControlled}
+                                    isControlled={
+                                        isSearchControlled && isSearchEnabled
+                                    }
                                     isLoading={isActiveSearchLoading}
                                     isEmpty={isEmpty}
                                     emptyStateText={
                                         search?.emptyStateText ||
-                                        'No results found'
+                                        (!hasSourceItems
+                                            ? 'No items available'
+                                            : 'No results found')
                                     }
                                 />
                                 {isActiveSearchLoading &&
@@ -468,7 +478,7 @@ const MultiSelectV2Menu = ({
                                             textAlign="center"
                                         >
                                             {search?.emptyStateText ||
-                                                (items.length === 0
+                                                (!hasSourceItems
                                                     ? 'No items available'
                                                     : 'No results found')}
                                         </Text>
@@ -483,12 +493,23 @@ const MultiSelectV2Menu = ({
                                         onSelect={onSelect}
                                         maxSelections={maxSelections}
                                         tokens={multiSelectTokens}
-                                        height={Math.max(
-                                            (maxMenuHeight ??
-                                                DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK) -
-                                                headerFooterHeight,
-                                            VIRTUAL_MIN_VIEWPORT
-                                        )}
+                                        height={
+                                            isActiveSearchLoading &&
+                                            hasRenderableItems
+                                                ? Math.max(
+                                                      (maxMenuHeight ??
+                                                          DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK) -
+                                                          headerFooterHeight -
+                                                          SELECT_SEARCH_STATUS_HEIGHT,
+                                                      0
+                                                  )
+                                                : Math.max(
+                                                      (maxMenuHeight ??
+                                                          DEFAULT_VIRTUAL_LIST_HEIGHT_FALLBACK) -
+                                                          headerFooterHeight,
+                                                      VIRTUAL_MIN_VIEWPORT
+                                                  )
+                                        }
                                         itemHeight={virtualListItemHeight}
                                         overscan={virtualListOverscan}
                                         onEndReached={onEndReached}
@@ -496,6 +517,9 @@ const MultiSelectV2Menu = ({
                                             endReachedThreshold
                                         }
                                         hasMore={hasMore}
+                                        focusIdentityEnabled={
+                                            isSearchControlled
+                                        }
                                     />
                                 ) : (
                                     <MultiSelectV2MenuItems
@@ -507,6 +531,9 @@ const MultiSelectV2Menu = ({
                                         tokens={multiSelectTokens}
                                         size={size}
                                         variant={variant}
+                                        focusIdentityEnabled={
+                                            isSearchControlled
+                                        }
                                     />
                                 )}
                             </ScrollableContent>

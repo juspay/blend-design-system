@@ -22,9 +22,12 @@ import { map, filterMenuGroups } from './utils'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
 import { useSelectSearchController } from '../Select/useSelectSearchController'
-import SelectSearchStatus from '../Select/SelectSearchStatus'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../Select/SelectSearchStatus'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectTokensType } from './multiSelect.tokens'
 import type {
@@ -426,6 +429,19 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
         shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
+    const searchStatusHeight =
+        isActiveSearchLoading && hasRenderableItems
+            ? SELECT_SEARCH_STATUS_HEIGHT
+            : 0
     const selectAllItems = isSearchControlled ? items : filteredItems
 
     const flattenedItems = useMemo(
@@ -593,9 +609,6 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                         flexGrow={1}
                                         role="listbox"
                                         aria-multiselectable="true"
-                                        {...(isActiveSearchLoading && {
-                                            'aria-busy': true,
-                                        })}
                                     >
                                         {isSearchEnabled && (
                                             <Block
@@ -637,18 +650,22 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                         )}
 
                                         <SelectSearchStatus
-                                            isControlled={isSearchControlled}
+                                            isControlled={
+                                                isSearchControlled &&
+                                                isSearchEnabled
+                                            }
                                             isLoading={isActiveSearchLoading}
-                                            isEmpty={filteredItems.length === 0}
+                                            isEmpty={!hasRenderableItems}
                                             emptyStateText={
                                                 emptyStateText ||
-                                                'No results found'
+                                                (!hasSourceItems
+                                                    ? 'No items available'
+                                                    : 'No results found')
                                             }
                                         />
 
                                         {isActiveSearchLoading &&
-                                        filteredItems.length ===
-                                            0 ? null : items.length === 0 ? (
+                                        !hasRenderableItems ? null : showEmptyState ? (
                                             <Block
                                                 display="flex"
                                                 justifyContent="center"
@@ -668,38 +685,18 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     textAlign="center"
                                                 >
                                                     {emptyStateText ||
-                                                        'No items available'}
-                                                </Text>
-                                            </Block>
-                                        ) : filteredItems.length === 0 &&
-                                          searchText.length > 0 ? (
-                                            <Block
-                                                display="flex"
-                                                justifyContent="center"
-                                                alignItems="center"
-                                                padding={
-                                                    multiSelectTokens.menu.item
-                                                        .padding
-                                                }
-                                            >
-                                                <Text
-                                                    variant="body.md"
-                                                    color={
-                                                        multiSelectTokens.menu
-                                                            .item.optionsLabel
-                                                            .color.default
-                                                    }
-                                                    textAlign="center"
-                                                >
-                                                    {emptyStateText ||
-                                                        'No results found'}
+                                                        (!hasSourceItems
+                                                            ? 'No items available'
+                                                            : 'No results found')}
                                                 </Text>
                                             </Block>
                                         ) : enableVirtualization &&
                                           flattenedItems.length > 0 ? (
                                             <VirtualList
                                                 items={flattenedItems}
-                                                height={600}
+                                                height={
+                                                    600 - searchStatusHeight
+                                                }
                                                 itemHeight={
                                                     virtualListItemHeight
                                                 }
@@ -862,7 +859,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             >
                                                 {enableSelectAll && (
                                                     <SelectAllItem
-                                                        items={filteredItems}
+                                                        items={selectAllItems}
                                                         selectedValues={
                                                             selectedValues
                                                         }

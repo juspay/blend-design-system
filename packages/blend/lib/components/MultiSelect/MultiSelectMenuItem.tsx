@@ -10,6 +10,7 @@ const MultiSelectMenuItem = ({
     maxSelections,
     allItems,
     index,
+    focusIdentityEnabled,
 }: {
     item: MultiSelectMenuItemType
     onSelect: (value: string) => void
@@ -17,6 +18,7 @@ const MultiSelectMenuItem = ({
     maxSelections?: number
     allItems?: MultiSelectMenuItemType[]
     index?: number
+    focusIdentityEnabled?: boolean
 }) => {
     const isSelected = selected.includes(item.value)
     const isMaxReached =
@@ -55,6 +57,7 @@ const MultiSelectMenuItem = ({
                 onSelect={onSelect}
                 selected={selected}
                 maxSelections={maxSelections}
+                focusIdentityEnabled={focusIdentityEnabled}
             />
         )
     }
@@ -71,6 +74,7 @@ const MultiSelectMenuItem = ({
             showCheckmark={true}
             selectedPosition={getSelectedPosition()}
             index={index}
+            focusIdentityValue={focusIdentityEnabled ? item.value : undefined}
         />
     )
 }

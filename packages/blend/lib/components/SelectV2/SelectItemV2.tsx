@@ -24,6 +24,7 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
             selectedPosition = 'none',
             className,
             asMenuItem = true,
+            focusIdentityValue,
         } = props
 
         const textRef = useRef<HTMLDivElement>(null)
@@ -141,6 +142,7 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                     item.label ||
                     (isMulti ? 'select-item-v2-multi' : 'select-item')
                 }
+                data-value={focusIdentityValue}
                 ref={ref}
                 role={isMulti ? 'option' : 'menuitem'}
                 aria-selected={isMulti ? isSelected : undefined}

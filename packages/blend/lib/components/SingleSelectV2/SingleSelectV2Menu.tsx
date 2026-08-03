@@ -18,6 +18,7 @@ import SingleSelectV2Skeleton from './SingleSelectV2Skeleton'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
 import {
     flattenGroups,
@@ -36,9 +37,12 @@ import { useSelectV2MenuBehavior } from '../SelectV2/useSelectV2MenuBehavior'
 import {
     getBaseVirtualViewportHeight,
     getAdjustedVirtualViewportHeight,
+    VIRTUAL_DEFAULT_VIEWPORT,
 } from '../common/virtualViewport'
 import { useSelectSearchController } from '../Select/useSelectSearchController'
-import SelectSearchStatus from '../Select/SelectSearchStatus'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../Select/SelectSearchStatus'
 import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
 
 const Content = styled(RadixMenu.Content)`
@@ -166,6 +170,12 @@ const SingleSelectV2Menu = ({
         shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
 
     const flattenedItems = useMemo(
         () => flattenGroups(filteredItems),
@@ -215,10 +225,23 @@ const SingleSelectV2Menu = ({
         endReachedThreshold,
     })
 
-    const adjustedVirtualViewportHeight = getAdjustedVirtualViewportHeight(
-        maxMenuHeight,
-        isSearchEnabled ? searchHeight : 0
-    )
+    const searchStatusHeight =
+        isSearchEnabled && search?.isSearchLoading && hasRenderableItems
+            ? SELECT_SEARCH_STATUS_HEIGHT
+            : 0
+    const reservedVirtualViewportHeight =
+        (isSearchEnabled ? searchHeight : 0) + searchStatusHeight
+    const adjustedVirtualViewportHeight =
+        searchStatusHeight > 0
+            ? Math.max(
+                  (maxMenuHeight ?? VIRTUAL_DEFAULT_VIEWPORT) -
+                      reservedVirtualViewportHeight,
+                  0
+              )
+            : getAdjustedVirtualViewportHeight(
+                  maxMenuHeight,
+                  reservedVirtualViewportHeight
+              )
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled && newOpen) return
@@ -229,13 +252,14 @@ const SingleSelectV2Menu = ({
     const menuContent = singleSelectTokens.menu.content
     const menuItem = singleSelectTokens.menu.item
 
-    const showEmptyState =
-        items.length === 0 ||
-        (filteredItems.length === 0 && searchText.length > 0)
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
     const isActiveSearchLoading =
         isSearchEnabled && Boolean(search?.isSearchLoading)
-    const emptyMessage =
-        items.length === 0 ? 'No items available' : 'No results found'
+    const emptyMessage = !hasSourceItems
+        ? 'No items available'
+        : 'No results found'
 
     const showVirtualList =
         enableVirtualization &&
@@ -332,22 +356,19 @@ const SingleSelectV2Menu = ({
                                 containerRef={searchContainerRef}
                             />
 
-                            <ScrollableContent
-                                {...(isActiveSearchLoading && {
-                                    'aria-busy': true,
-                                })}
-                            >
+                            <ScrollableContent>
                                 <SelectSearchStatus
-                                    isControlled={isSearchControlled}
+                                    isControlled={
+                                        isSearchControlled && isSearchEnabled
+                                    }
                                     isLoading={isActiveSearchLoading}
-                                    isEmpty={filteredItems.length === 0}
+                                    isEmpty={!hasRenderableItems}
                                     emptyStateText={
                                         search?.emptyStateText || emptyMessage
                                     }
                                 />
                                 {isActiveSearchLoading &&
-                                filteredItems.length ===
-                                    0 ? null : showEmptyState ? (
+                                !hasRenderableItems ? null : showEmptyState ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -398,6 +419,9 @@ const SingleSelectV2Menu = ({
                                         loadingComponent={loadingComponent}
                                         hasMore={hasMore}
                                         virtualScrollRef={virtualScrollRef}
+                                        focusIdentityEnabled={
+                                            isSearchControlled
+                                        }
                                     />
                                 ) : (
                                     <SingleSelectV2List
@@ -408,6 +432,9 @@ const SingleSelectV2Menu = ({
                                         size={size}
                                         variant={variant}
                                         enableSearch={isSearchEnabled}
+                                        focusIdentityEnabled={
+                                            isSearchControlled
+                                        }
                                     />
                                 )}
                             </ScrollableContent>

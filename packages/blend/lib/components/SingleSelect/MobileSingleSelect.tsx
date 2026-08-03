@@ -32,6 +32,7 @@ import { setupAccessibility } from './utils'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
 import { useSelectSearchController } from '../Select/useSelectSearchController'
 import SelectSearchStatus from '../Select/SelectSearchStatus'
@@ -289,6 +290,15 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
         shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
 
     const isItemSelected = selected.length > 0
 
@@ -439,9 +449,6 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                         gap={4}
                                         overflow="auto"
                                         flexGrow={1}
-                                        {...(isActiveSearchLoading && {
-                                            'aria-busy': true,
-                                        })}
                                     >
                                         {isSearchEnabled && (
                                             <Block
@@ -472,18 +479,22 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                         )}
 
                                         <SelectSearchStatus
-                                            isControlled={isSearchControlled}
+                                            isControlled={
+                                                isSearchControlled &&
+                                                isSearchEnabled
+                                            }
                                             isLoading={isActiveSearchLoading}
-                                            isEmpty={filteredItems.length === 0}
+                                            isEmpty={!hasRenderableItems}
                                             emptyStateText={
                                                 emptyStateText ||
-                                                'No results found'
+                                                (!hasSourceItems
+                                                    ? 'No items available'
+                                                    : 'No results found')
                                             }
                                         />
 
                                         {isActiveSearchLoading &&
-                                        filteredItems.length ===
-                                            0 ? null : items.length === 0 ? (
+                                        !hasRenderableItems ? null : showEmptyState ? (
                                             <Block
                                                 display="flex"
                                                 justifyContent="center"
@@ -503,31 +514,9 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                     textAlign="center"
                                                 >
                                                     {emptyStateText ||
-                                                        'No items available'}
-                                                </Text>
-                                            </Block>
-                                        ) : filteredItems.length === 0 &&
-                                          searchText.length > 0 ? (
-                                            <Block
-                                                display="flex"
-                                                justifyContent="center"
-                                                alignItems="center"
-                                                padding={
-                                                    singleSelectTokens.menu.item
-                                                        .padding
-                                                }
-                                            >
-                                                <Text
-                                                    variant="body.md"
-                                                    color={
-                                                        singleSelectTokens.menu
-                                                            .item.optionsLabel
-                                                            .color.default
-                                                    }
-                                                    textAlign="center"
-                                                >
-                                                    {emptyStateText ||
-                                                        'No results found'}
+                                                        (!hasSourceItems
+                                                            ? 'No items available'
+                                                            : 'No results found')}
                                                 </Text>
                                             </Block>
                                         ) : (

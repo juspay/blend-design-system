@@ -742,7 +742,11 @@ const MultiSelect = ({
                                                                       (v) =>
                                                                           valueLabelMap[
                                                                               v
-                                                                          ]
+                                                                          ] ??
+                                                                          (searchText !==
+                                                                          undefined
+                                                                              ? v
+                                                                              : undefined)
                                                                   )
                                                                   .join(', ')
                                                     }
@@ -755,7 +759,11 @@ const MultiSelect = ({
                                                                   (v) =>
                                                                       valueLabelMap[
                                                                           v
-                                                                      ]
+                                                                      ] ??
+                                                                      (searchText !==
+                                                                      undefined
+                                                                          ? v
+                                                                          : undefined)
                                                               )
                                                               .join(', ')}
                                                 </Text>

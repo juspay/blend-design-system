@@ -25,6 +25,7 @@ import SelectItemV2 from '../../SelectV2/SelectItemV2'
 import {
     hasExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../../Select/selectUtils'
 import { setupAccessibility } from '../../SingleSelect/utils'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
@@ -57,7 +58,9 @@ import {
     getNextSelectionForScope,
 } from '../../shared/multiSelectSelection'
 import { useSelectSearchController } from '../../Select/useSelectSearchController'
-import SelectSearchStatus from '../../Select/SelectSearchStatus'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../../Select/SelectSearchStatus'
 
 const MobileMultiSelectV2 = ({
     selectedValues,
@@ -175,6 +178,19 @@ const MobileMultiSelectV2 = ({
         shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(safeItems)
+        : safeItems.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
+    const searchStatusHeight =
+        isActiveSearchLoading && hasRenderableItems
+            ? SELECT_SEARCH_STATUS_HEIGHT
+            : 0
 
     const flattenedItems = useMemo(
         () => flattenMobileMultiSelectV2Groups(filteredItems, enableSelectAll),
@@ -388,6 +404,9 @@ const MobileMultiSelectV2 = ({
                     onSelect={handleSelect}
                     itemTokens={multiSelectTokens.menu.item}
                     asMenuItem={false}
+                    focusIdentityValue={
+                        isSearchControlled ? flatItem.item.value : undefined
+                    }
                 />
             )
         }
@@ -434,6 +453,7 @@ const MobileMultiSelectV2 = ({
                             required={required}
                             selectionTagType={selectionTagType}
                             valueLabelMap={valueLabelMap}
+                            fallbackToValue={search?.searchText !== undefined}
                             open={open}
                             multiSelectTokens={multiSelectTokens}
                             inline={inline}
@@ -572,9 +592,6 @@ const MobileMultiSelectV2 = ({
                                     <Block
                                         role="listbox"
                                         aria-multiselectable="true"
-                                        {...(isActiveSearchLoading && {
-                                            'aria-busy': true,
-                                        })}
                                         flexGrow={1}
                                         flexShrink={1}
                                         minHeight={0}
@@ -595,19 +612,22 @@ const MobileMultiSelectV2 = ({
                                         }}
                                     >
                                         <SelectSearchStatus
-                                            isControlled={isSearchControlled}
+                                            isControlled={
+                                                isSearchControlled &&
+                                                isSearchEnabled
+                                            }
                                             isLoading={isActiveSearchLoading}
-                                            isEmpty={filteredItems.length === 0}
+                                            isEmpty={!hasRenderableItems}
                                             emptyStateText={
                                                 search?.emptyStateText ||
-                                                'No results found'
+                                                (!hasSourceItems
+                                                    ? 'No items available'
+                                                    : 'No results found')
                                             }
                                         />
 
                                         {isActiveSearchLoading &&
-                                        filteredItems.length ===
-                                            0 ? null : safeItems.length ===
-                                          0 ? (
+                                        !hasRenderableItems ? null : showEmptyState ? (
                                             <Text
                                                 variant="body.md"
                                                 textAlign="center"
@@ -618,28 +638,18 @@ const MobileMultiSelectV2 = ({
                                                 }
                                             >
                                                 {search?.emptyStateText ||
-                                                    'No items available'}
-                                            </Text>
-                                        ) : filteredItems.length === 0 &&
-                                          searchText.length > 0 ? (
-                                            <Text
-                                                variant="body.md"
-                                                textAlign="center"
-                                                color={
-                                                    multiSelectTokens.menu.item
-                                                        .optionsLabel.color
-                                                        .default
-                                                }
-                                            >
-                                                {search?.emptyStateText ||
-                                                    'No results found'}
+                                                    (!hasSourceItems
+                                                        ? 'No items available'
+                                                        : 'No results found')}
                                             </Text>
                                         ) : enableVirtualization ? (
                                             <VirtualList
                                                 items={toVirtualListItems(
                                                     flattenedItems
                                                 )}
-                                                height={600}
+                                                height={
+                                                    600 - searchStatusHeight
+                                                }
                                                 itemHeight={
                                                     virtualListItemHeight
                                                 }

@@ -75,6 +75,7 @@ export type MenuListSharedProps = {
     singleSelectTokens: SingleSelectV2TokensType
     size: SelectV2Size
     variant: SelectV2Variant
+    focusIdentityEnabled?: boolean
 }
 
 export type MenuListProps = MenuListSharedProps & {
