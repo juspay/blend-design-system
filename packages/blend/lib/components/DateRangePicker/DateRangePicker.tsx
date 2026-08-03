@@ -1,5 +1,4 @@
 import React, { forwardRef, useState, useEffect, useCallback } from 'react'
-import { Calendar, ChevronDown, ChevronUp } from 'lucide-react'
 import {
     DateRangePickerProps,
     DateRangePreset,
@@ -33,16 +32,15 @@ import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
 import MobileDrawerPresets from './MobileDrawerPresets'
 import { CalendarTokenType } from './dateRangePicker.tokens'
-import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
 import { Popover } from '../Popover'
 import { TextInput, TextInputSize } from '../Inputs/TextInput'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { ButtonType, ButtonSize, Button } from '../Button'
 import { Tooltip } from '../Tooltip'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { renderPickerTrigger } from '../shared/datetime/PickerTrigger'
 
 type DateInputsSectionProps = {
     startDate?: string
@@ -897,49 +895,30 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             // Use the committed value (value prop) for trigger display, not the selectedRange
             const displayRange = value
 
-            if (triggerConfig?.renderTrigger) {
-                const formattedValue = formatConfig
-                    ? formatTriggerDisplay(
-                          displayRange,
-                          formatConfig,
-                          isSingleDatePicker,
-                          triggerConfig.placeholder,
-                          timezone
-                      )
-                    : formatDateDisplay(
-                          displayRange,
-                          allowSingleDateSelection,
-                          timezone,
-                          isSingleDatePicker
-                      )
+            // The caller-supplied-element branch returns before any formatting
+            // ran in the original inline implementation. Keep it that way: a
+            // consumer's `formatConfig.customFormat` must not be invoked (and
+            // must not be able to throw) when it owns the trigger markup.
+            const usesCustomElement =
+                !triggerConfig?.renderTrigger &&
+                Boolean(triggerConfig?.element || triggerElement)
 
-                return (
-                    <Block width="100%" display="flex">
-                        {triggerConfig.renderTrigger({
-                            selectedRange: displayRange,
-                            isOpen,
-                            isDisabled,
-                            formattedValue,
-                            onClick: () => setIsOpen(!isOpen),
-                        })}
-                    </Block>
-                )
-            }
-
-            if (triggerConfig?.element || triggerElement) {
-                return (
-                    <Block
-                        style={{
-                            opacity: isDisabled ? 0.5 : 1,
-                            cursor: isDisabled ? 'not-allowed' : 'pointer',
-                            width: '100%',
-                            ...triggerConfig?.style,
-                        }}
-                    >
-                        {triggerConfig?.element || triggerElement}
-                    </Block>
-                )
-            }
+            const displayText = usesCustomElement
+                ? ''
+                : formatConfig
+                  ? formatTriggerDisplay(
+                        displayRange,
+                        formatConfig,
+                        isSingleDatePicker,
+                        triggerConfig?.placeholder,
+                        timezone
+                    )
+                  : formatDateDisplay(
+                        displayRange,
+                        allowSingleDateSelection,
+                        timezone,
+                        isSingleDatePicker
+                    )
 
             const formatMobileDateRange = (
                 range: DateRange | undefined
@@ -981,149 +960,26 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 return `${startStr} - ${endStr}`
             }
 
-            if (isMobile && useDrawerOnMobile) {
-                return (
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        size={ButtonSize.MEDIUM}
-                        text={formatMobileDateRange(displayRange)}
-                        disabled={isDisabled}
-                        onClick={() => setDrawerOpen(true)}
-                    />
-                )
-            }
-
-            const displayText = formatConfig
-                ? formatTriggerDisplay(
-                      displayRange,
-                      formatConfig,
-                      isSingleDatePicker,
-                      triggerConfig?.placeholder,
-                      timezone
-                  )
-                : formatDateDisplay(
-                      displayRange,
-                      allowSingleDateSelection,
-                      timezone,
-                      isSingleDatePicker
-                  )
-
-            const iconElement =
-                triggerConfig?.showIcon === false
-                    ? null
-                    : triggerConfig?.icon || (
-                          <Calendar
-                              size={calendarToken?.trigger?.dateInput?.iconSize}
-                          />
-                      )
-
-            return (
-                <PrimitiveButton
-                    display="flex"
-                    width="100%"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    backgroundColor={
-                        calendarToken?.trigger?.dateInput?.backgroundColor
-                    }
-                    color={calendarToken?.trigger?.dateInput?.text?.color}
-                    cursor={isDisabled ? 'not-allowed' : 'pointer'}
-                    paddingX={
-                        calendarToken?.trigger?.dateInput?.padding?.[
-                            size as keyof CalendarTokenType['trigger']['dateInput']['padding']
-                        ]?.x
-                    }
-                    paddingY={
-                        calendarToken?.trigger?.dateInput?.padding?.[
-                            size as keyof CalendarTokenType['trigger']['dateInput']['padding']
-                        ]?.y
-                    }
-                    borderRadius={
-                        showPresets
-                            ? calendarToken?.trigger?.dateInput?.borderRadius
-                                  ?.withQuickSelector
-                            : calendarToken?.trigger?.dateInput?.borderRadius
-                                  ?.withoutQuickSelector
-                    }
-                    border={
-                        isDisabled
-                            ? calendarToken?.trigger?.dateInput?.border
-                                  ?.disabled
-                            : calendarToken?.trigger?.dateInput?.border?.default
-                    }
-                    boxShadow={FOUNDATION_THEME.shadows.xs}
-                    aria-expanded={isOpen}
-                    aria-disabled={isDisabled}
-                    aria-label={`Date range picker, ${displayText || 'Select date range'}`}
-                    aria-haspopup="dialog"
-                    disabled={isDisabled}
-                    data-component-field-wrapper=""
-                    data-date-picker="dateRangePicker-Filter"
-                    data-id={displayText.replace(/\s/g, '').replace(/-/g, '➟')}
-                    data-status={isDisabled ? 'disabled' : 'enabled'}
-                    type="button"
-                    data-element="datepicker-selector"
-                >
-                    <Block
-                        flexGrow={1}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        style={{
-                            color: calendarToken?.trigger?.dateInput?.text
-                                ?.color,
-                            fontWeight:
-                                calendarToken?.trigger?.dateInput?.text
-                                    ?.fontWeight,
-                            fontSize:
-                                calendarToken?.trigger?.dateInput?.text
-                                    ?.fontSize?.[
-                                    size as keyof CalendarTokenType['trigger']['dateInput']['text']['fontSize']
-                                ],
-                        }}
-                    >
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            gap={calendarToken?.trigger?.dateInput?.gap}
-                        >
-                            {iconElement && (
-                                <span aria-hidden="true">{iconElement}</span>
-                            )}
-                            <span
-                                data-element="placeholder"
-                                data-id={displayText}
-                                style={{ whiteSpace: 'nowrap' }}
-                            >
-                                {displayText}
-                            </span>
-                        </Block>
-                        {isOpen ? (
-                            <ChevronUp
-                                size={
-                                    calendarToken?.trigger?.dateInput?.iconSize
-                                }
-                                aria-hidden="true"
-                                style={{
-                                    marginLeft:
-                                        calendarToken?.trigger?.dateInput?.gap,
-                                }}
-                            />
-                        ) : (
-                            <ChevronDown
-                                size={
-                                    calendarToken?.trigger?.dateInput?.iconSize
-                                }
-                                aria-hidden="true"
-                                style={{
-                                    marginLeft:
-                                        calendarToken?.trigger?.dateInput?.gap,
-                                }}
-                            />
-                        )}
-                    </Block>
-                </PrimitiveButton>
-            )
+            return renderPickerTrigger({
+                displayText,
+                mobileText:
+                    isMobile && useDrawerOnMobile
+                        ? formatMobileDateRange(displayRange)
+                        : undefined,
+                displayRange,
+                isOpen,
+                isDisabled,
+                size,
+                calendarToken,
+                hasQuickSelector: showPresets,
+                triggerConfig,
+                triggerElement,
+                isMobileDrawer: isMobile && useDrawerOnMobile,
+                onToggle: () => setIsOpen(!isOpen),
+                onMobileOpen: () => setDrawerOpen(true),
+                ariaLabel: `Date range picker, ${displayText || 'Select date range'}`,
+                dataDatePicker: 'dateRangePicker-Filter',
+            })
         }
 
         if (isMobile && useDrawerOnMobile) {
