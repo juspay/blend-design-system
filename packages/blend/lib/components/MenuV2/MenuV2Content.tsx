@@ -191,6 +191,24 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
             enabled: useVirtual,
             initialRect: { width: 0, height: viewportHeight },
         })
+        const virtualItems = virtualizer.getVirtualItems()
+        const virtualGroups = new Map<
+            number,
+            Array<{
+                virtualRow: (typeof virtualItems)[number]
+                row: MenuV2FlatRow
+            }>
+        >()
+
+        virtualItems.forEach((virtualRow) => {
+            const row = flatRows[virtualRow.index]
+            if (!row) return
+
+            const groupId = row.groupId ?? virtualRow.index
+            const groupRows = virtualGroups.get(groupId) ?? []
+            groupRows.push({ virtualRow, row })
+            virtualGroups.set(groupId, groupRows)
+        })
 
         return (
             <Content
@@ -288,15 +306,12 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                 position: 'relative',
                             }}
                         >
-                            <RadixMenu.Group>
-                                {virtualizer
-                                    .getVirtualItems()
-                                    .map((virtualRow) => {
-                                        const row = flatRows[
-                                            virtualRow.index
-                                        ] as MenuV2FlatRow | undefined
-                                        if (!row) return null
-                                        return (
+                            {Array.from(virtualGroups).map(
+                                ([groupId, rows]) => (
+                                    <RadixMenu.Group
+                                        key={`virtual-group-${groupId}`}
+                                    >
+                                        {rows.map(({ virtualRow, row }) => (
                                             <Block
                                                 key={virtualRow.key}
                                                 style={{
@@ -313,9 +328,10 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                                     maxHeight
                                                 )}
                                             </Block>
-                                        )
-                                    })}
-                            </RadixMenu.Group>
+                                        ))}
+                                    </RadixMenu.Group>
+                                )
+                            )}
                         </Block>
                     </Block>
                 ) : (

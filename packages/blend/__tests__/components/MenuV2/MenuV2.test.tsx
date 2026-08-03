@@ -357,6 +357,146 @@ describe('MenuV2 selection', () => {
             action.querySelector('[data-element="menu-item-checkmark"]')
         ).not.toBeInTheDocument()
     })
+
+    it('preserves controlled selection while search filters items', async () => {
+        const user = userEvent.setup()
+
+        const SearchableSelection = () => {
+            const [selected, setSelected] = React.useState('Moscow')
+
+            return (
+                <MenuV2
+                    trigger={<button type="button">Search selection</button>}
+                    enableSearch
+                    searchPlaceholder="Search destinations..."
+                    selectionStyle="checkmark"
+                    selectionMode="single"
+                    items={[
+                        {
+                            items: ['Moscow', 'Mostar', 'Mumbai'].map(
+                                (label) => ({
+                                    label: { text: label },
+                                    selected: selected === label,
+                                    onClick: () => setSelected(label),
+                                })
+                            ),
+                        },
+                    ]}
+                />
+            )
+        }
+
+        render(<SearchableSelection />)
+
+        const trigger = screen.getByRole('button', {
+            name: /search selection/i,
+        })
+        await user.click(trigger)
+        await user.type(
+            await screen.findByPlaceholderText('Search destinations...'),
+            'mos'
+        )
+
+        expect(
+            await screen.findByRole('menuitemradio', { name: /^moscow$/i })
+        ).toHaveAttribute('aria-checked', 'true')
+
+        await user.click(
+            screen.getByRole('menuitemradio', { name: /^mostar$/i })
+        )
+        await user.click(trigger)
+
+        expect(
+            await screen.findByRole('menuitemradio', { name: /^mostar$/i })
+        ).toHaveAttribute('aria-checked', 'true')
+    })
+
+    it('supports selected submenu leaves without closing the menu', async () => {
+        const user = userEvent.setup()
+        const onSelect = vi.fn()
+
+        render(
+            <MenuV2
+                trigger={<button type="button">Location selection</button>}
+                selectionStyle="checkmark"
+                selectionMode="single"
+                closeOnSelect={false}
+                items={[
+                    {
+                        items: [
+                            {
+                                label: { text: 'United States' },
+                                subMenu: [
+                                    {
+                                        label: { text: 'California' },
+                                        selected: true,
+                                        onClick: onSelect,
+                                    },
+                                    {
+                                        label: { text: 'Texas' },
+                                        selected: false,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', { name: /location selection/i })
+        )
+        await user.click(
+            await screen.findByRole('menuitem', { name: /united states/i })
+        )
+
+        const california = await screen.findByRole('menuitemradio', {
+            name: /^california$/i,
+        })
+        expect(california).toHaveAttribute('aria-checked', 'true')
+        expect(
+            california.querySelector('[data-element="menu-item-checkmark"]')
+        ).toBeInTheDocument()
+
+        california.focus()
+        await user.keyboard('{Enter}')
+        expect(onSelect).toHaveBeenCalledTimes(1)
+        expect(
+            screen.getByRole('menuitemradio', { name: /^california$/i })
+        ).toBeInTheDocument()
+    })
+
+    it('keeps selection semantics on tooltip-wrapped items', async () => {
+        const user = userEvent.setup()
+
+        render(
+            <MenuV2
+                trigger={<button type="button">Tooltip selection</button>}
+                selectionMode="single"
+                items={[
+                    {
+                        items: [
+                            {
+                                label: { text: 'Detailed option' },
+                                selected: false,
+                                tooltip: 'More information',
+                            },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', { name: /tooltip selection/i })
+        )
+
+        const item = await screen.findByRole('menuitemradio', {
+            name: /^detailed option$/i,
+        })
+        expect(item).toHaveAttribute('aria-checked', 'false')
+    })
 })
 
 describe('MenuV2', () => {

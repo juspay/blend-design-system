@@ -138,8 +138,8 @@ export const getMenuItemDescriptionColor = (
 }
 
 export type MenuV2FlatRow =
-    | { type: 'label'; id: string; label: string }
-    | { type: 'separator'; id: string }
+    | { type: 'label'; id: string; label: string; groupId?: number }
+    | { type: 'separator'; id: string; groupId?: number }
     | {
           type: 'item'
           id: string
@@ -160,6 +160,7 @@ export const flattenMenuV2Groups = (
                 type: 'label',
                 id: group.id ?? `group-label-${groupId}`,
                 label: group.label,
+                groupId,
             })
         }
         group.items.forEach((item, itemIndex) => {
@@ -177,6 +178,7 @@ export const flattenMenuV2Groups = (
             rows.push({
                 type: 'separator',
                 id: `separator-${groupId}`,
+                groupId,
             })
         }
     })

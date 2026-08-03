@@ -707,3 +707,76 @@ export const MultiSelectHighlight: Story = {
         },
     },
 }
+
+export const SearchableSingleSelect: Story = {
+    render: function SearchableSingleSelectRender() {
+        const [timezone, setTimezone] = React.useState('Asia/Kolkata')
+
+        const options = [
+            { id: 'Asia/Kolkata', label: 'India Standard Time' },
+            { id: 'America/New_York', label: 'Eastern Time' },
+            { id: 'Europe/London', label: 'Greenwich Mean Time' },
+            { id: 'Asia/Singapore', label: 'Singapore Standard Time' },
+        ]
+
+        const items: MenuV2GroupType[] = [
+            {
+                label: 'Timezone',
+                items: options.map((option) => ({
+                    id: option.id,
+                    label: { text: option.label },
+                    selected: timezone === option.id,
+                    onClick: () => setTimezone(option.id),
+                })),
+            },
+        ]
+
+        return (
+            <div className="flex flex-col gap-3">
+                <MenuV2
+                    trigger={
+                        <Button buttonType={ButtonType.SECONDARY}>
+                            Timezone:{' '}
+                            {
+                                options.find((option) => option.id === timezone)
+                                    ?.label
+                            }
+                        </Button>
+                    }
+                    items={items}
+                    enableSearch
+                    searchPlaceholder="Search timezones..."
+                    selectionStyle="checkmark"
+                    selectionMode="single"
+                />
+                <p className="text-xs text-gray-600">
+                    Filtering changes only the visible rows; the selected value
+                    remains controlled by the consumer.
+                </p>
+            </div>
+        )
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const trigger = canvas.getByRole('button', { name: /timezone:/i })
+
+        await userEvent.click(trigger)
+        await userEvent.type(
+            await canvas.findByPlaceholderText('Search timezones...'),
+            'india'
+        )
+
+        await expect(
+            canvas.getByRole('menuitemradio', {
+                name: /india standard time/i,
+            })
+        ).toHaveAttribute('aria-checked', 'true')
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Searchable controlled selection. Filtering preserves each item's consumer-owned \`selected\` state and accessible radio semantics.`,
+            },
+        },
+    },
+}
