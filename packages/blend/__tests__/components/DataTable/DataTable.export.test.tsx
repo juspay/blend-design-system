@@ -126,21 +126,64 @@ const readBlob = (blob: Blob): Promise<string> =>
 
 describe('DataTable whole-table export', () => {
     const createObjectURL = vi.fn(() => 'blob:data-table-export')
+    const revokeObjectURL = vi.fn()
+    let clickedAnchor: HTMLAnchorElement | undefined
 
     beforeEach(() => {
         createObjectURL.mockClear()
+        revokeObjectURL.mockClear()
         renderToStaticMarkupSpy.mockClear()
+        clickedAnchor = undefined
         Object.defineProperty(URL, 'createObjectURL', {
             configurable: true,
             value: createObjectURL,
         })
         Object.defineProperty(URL, 'revokeObjectURL', {
             configurable: true,
-            value: vi.fn(),
+            value: revokeObjectURL,
         })
         vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(
-            () => undefined
+            function (this: HTMLAnchorElement) {
+                clickedAnchor = this
+            }
         )
+    })
+
+    it('hides export when disabled and normalizes the multi-format menu', async () => {
+        const { rerender, user } = render(
+            <DataTable
+                data={rows}
+                columns={columns}
+                idField="id"
+                exportConfig={{ enabled: false }}
+            />
+        )
+
+        expect(
+            screen.queryByRole('button', { name: /Export/ })
+        ).not.toBeInTheDocument()
+
+        rerender(
+            <DataTable
+                data={rows}
+                columns={columns}
+                idField="id"
+                exportConfig={{
+                    enabled: true,
+                    formats: ['csv', 'csv', 'xlsx', 'pdf'] as (
+                        | 'csv'
+                        | 'xlsx'
+                    )[],
+                }}
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: 'Export table' }))
+        expect(screen.getAllByRole('menuitem', { name: 'CSV' })).toHaveLength(1)
+        expect(screen.getAllByRole('menuitem', { name: 'XLSX' })).toHaveLength(
+            1
+        )
+        expect(screen.queryByRole('menuitem', { name: 'PDF' })).toBeNull()
     })
 
     it('exports only visible columns and respects the current filter and sort', async () => {
@@ -487,6 +530,90 @@ describe('DataTable whole-table export', () => {
         expect(exportedContent).toContain('ALPHA,keep,plain')
     })
 
+    it('passes active search, filters, advanced filters, and sort to onExport', async () => {
+        const advancedFilters = [
+            { field: 'name', operator: 'contains', value: 'alp' },
+        ]
+        const onExport = vi.fn(async () => undefined)
+        const { user } = render(
+            <DataTable
+                data={rows}
+                columns={columns}
+                idField="id"
+                enableSearch
+                enableFiltering
+                advancedFilters={advancedFilters}
+                defaultSort={{
+                    field: 'name',
+                    direction: SortDirection.ASCENDING,
+                }}
+                exportConfig={{ enabled: true, onExport }}
+            />
+        )
+
+        await user.type(screen.getByPlaceholderText('Search...'), 'alp')
+        await user.click(screen.getByRole('button', { name: 'Filter Group' }))
+        await user.click(screen.getByRole('menuitem', { name: 'Filter' }))
+        await user.click(
+            await screen.findByRole('menuitemcheckbox', { name: /Keep/ })
+        )
+        await user.click(screen.getByRole('button', { name: 'Export CSV' }))
+
+        await waitFor(() => expect(onExport).toHaveBeenCalledOnce())
+        expect(onExport).toHaveBeenCalledWith({
+            visibleColumns: columns.slice(0, 3),
+            filters: [
+                expect.objectContaining({ field: 'group', value: ['keep'] }),
+            ],
+            advancedFilters,
+            search: expect.objectContaining({ query: 'alp' }),
+            sort: {
+                field: 'name',
+                direction: SortDirection.ASCENDING,
+            },
+            scope: 'currentPage',
+        })
+        expect(createObjectURL).not.toHaveBeenCalled()
+    })
+
+    it('blocks repeat exports while pending and recovers after rejection', async () => {
+        let rejectFirstExport: (reason: Error) => void = () => undefined
+        const firstExport = new Promise<ExportRow[]>((_resolve, reject) => {
+            rejectFirstExport = reject
+        })
+        const onExport = vi
+            .fn()
+            .mockReturnValueOnce(firstExport)
+            .mockResolvedValueOnce([rows[0]])
+        const alertSpy = vi
+            .spyOn(window, 'alert')
+            .mockImplementation(() => undefined)
+        const { user } = render(
+            <DataTable
+                data={rows}
+                columns={columns}
+                idField="id"
+                exportConfig={{ enabled: true, onExport }}
+            />
+        )
+        const exportButton = screen.getByRole('button', { name: 'Export CSV' })
+
+        await user.click(exportButton)
+        await waitFor(() => expect(exportButton).toBeDisabled())
+        await user.click(exportButton)
+        expect(onExport).toHaveBeenCalledOnce()
+
+        rejectFirstExport(new Error('Server export failed'))
+        await waitFor(() => {
+            expect(alertSpy).toHaveBeenCalledWith('Server export failed')
+            expect(exportButton).toBeEnabled()
+        })
+
+        await user.click(exportButton)
+        await waitFor(() => expect(createObjectURL).toHaveBeenCalledOnce())
+        expect(onExport).toHaveBeenCalledTimes(2)
+    })
+
     it.each([
         ['currentPage', false],
         ['allLoaded', true],
@@ -534,5 +661,21 @@ describe('DataTable whole-table export', () => {
         await expect(
             generateDataTableCSV([rows[0]], [reactElementColumn])
         ).resolves.toBe('Name\r\nZulu')
+    })
+
+    it('rejects empty exports and normalizes filenames while cleaning up URLs', async () => {
+        await expect(generateDataTableCSV([], columns)).rejects.toThrow(
+            'No data available for export'
+        )
+
+        await downloadDataTableExport(
+            [rows[0]],
+            columns.slice(0, 3),
+            'csv',
+            'users.xlsx'
+        )
+
+        expect(clickedAnchor?.download).toBe('users.csv')
+        expect(revokeObjectURL).toHaveBeenCalledWith('blob:data-table-export')
     })
 })
