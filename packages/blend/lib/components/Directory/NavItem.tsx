@@ -7,13 +7,17 @@ import React, {
     useRef,
     useLayoutEffect,
 } from 'react'
-import type { NavItemProps } from './types'
+import type { DirectoryExpandedItems, NavItemProps, NavbarItem } from './types'
 import { ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
-import { handleKeyDown } from './utils'
+import {
+    getItemPathSegment,
+    handleKeyDown,
+    normalizeExpandedItems,
+} from './utils'
 import { TooltipV2 } from '../TooltipV2/TooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
@@ -67,6 +71,7 @@ const StyledElement = styled(Block)<{
     border-radius: ${({ $tokens }) =>
         $tokens.section.itemList.item.borderRadius};
     transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
+    text-align: left;
     user-select: none;
     cursor: pointer;
     overflow: hidden;
@@ -257,11 +262,11 @@ export const ActiveItemProvider: React.FC<ActiveItemProviderProps> = ({
 
     const setActiveItem = useCallback(
         (item: string | null) => {
-            if (isControlled) {
-                onActiveItemChange?.(item)
-            } else {
+            if (!isControlled) {
                 setInternalActiveItem(item)
             }
+            // fired in both modes, matching the virtualized renderer
+            onActiveItemChange?.(item)
         },
         [isControlled, onActiveItemChange]
     )
@@ -282,26 +287,124 @@ export const ActiveItemProvider: React.FC<ActiveItemProviderProps> = ({
     )
 }
 
+type ExpandedItemsContextValue = {
+    isItemExpanded: (itemPath: string) => boolean
+    setItemExpanded: (item: NavbarItem, itemPath: string, next: boolean) => void
+}
+
+const ExpandedItemsContext = createContext<ExpandedItemsContextValue | null>(
+    null
+)
+
+const useExpandedItemsContext = () => {
+    const context = useContext(ExpandedItemsContext)
+    if (!context) {
+        throw new Error(
+            'useExpandedItemsContext must be used within ExpandedItemsProvider'
+        )
+    }
+    return context
+}
+
+type ExpandedItemsProviderProps = {
+    children: React.ReactNode
+    /**
+     * Controlled mode: parent owns the expanded item paths.
+     * If provided, internal state is ignored.
+     */
+    expandedItems?: DirectoryExpandedItems
+    defaultExpandedItems?: DirectoryExpandedItems
+    onExpandedItemsChange?: (items: string[]) => void
+    onItemExpand?: (item: NavbarItem, itemPath: string) => void | Promise<void>
+}
+
+export const ExpandedItemsProvider: React.FC<ExpandedItemsProviderProps> = ({
+    children,
+    expandedItems,
+    defaultExpandedItems,
+    onExpandedItemsChange,
+    onItemExpand,
+}) => {
+    const isControlled = expandedItems !== undefined
+    const [internalExpandedItems, setInternalExpandedItems] = useState<
+        Set<string>
+    >(() => normalizeExpandedItems(defaultExpandedItems))
+    const currentExpandedItems = useMemo(
+        () =>
+            isControlled
+                ? normalizeExpandedItems(expandedItems)
+                : internalExpandedItems,
+        [expandedItems, internalExpandedItems, isControlled]
+    )
+
+    const setItemExpanded = useCallback(
+        (item: NavbarItem, itemPath: string, next: boolean) => {
+            const nextExpandedItems = new Set(currentExpandedItems)
+            if (next) {
+                nextExpandedItems.add(itemPath)
+                void onItemExpand?.(item, itemPath)
+            } else {
+                nextExpandedItems.delete(itemPath)
+            }
+
+            if (!isControlled) {
+                setInternalExpandedItems(nextExpandedItems)
+            }
+            onExpandedItemsChange?.(Array.from(nextExpandedItems))
+        },
+        [
+            currentExpandedItems,
+            isControlled,
+            onExpandedItemsChange,
+            onItemExpand,
+        ]
+    )
+
+    const isItemExpanded = useCallback(
+        (itemPath: string) => currentExpandedItems.has(itemPath),
+        [currentExpandedItems]
+    )
+
+    const contextValue = useMemo<ExpandedItemsContextValue>(
+        () => ({ isItemExpanded, setItemExpanded }),
+        [isItemExpanded, setItemExpanded]
+    )
+
+    return (
+        <ExpandedItemsContext.Provider value={contextValue}>
+            {children}
+        </ExpandedItemsContext.Provider>
+    )
+}
+
 const NavItem = ({
     item,
     index,
     onNavigate,
-    itemPath = item.label,
+    itemPath = getItemPathSegment(item),
     iconOnlyMode = false,
     showHierarchyLines = false,
     hierarchyLineBorderRadius = 0,
     isLast = false,
     isNested = false,
+    enableParentSelection = false,
 }: NavItemProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
-    const [isExpanded, setIsExpanded] = React.useState(false)
+    const { isItemExpanded, setItemExpanded } = useExpandedItemsContext()
+    const isExpanded = isItemExpanded(itemPath)
+    const setIsExpanded = (value: boolean) =>
+        setItemExpanded(item, itemPath, value)
     const { activeItem, setActiveItem } = useActiveItemContext()
     const hasChildren = item.items && item.items.length > 0
+    const isSelectable = enableParentSelection || !hasChildren
+    // bare-label matching is a backward-compat fallback for id-less items
+    // only, so a label-valued activeItem can't co-select id'd duplicates
     const isActive =
         item.isSelected !== undefined
-            ? item.isSelected && !hasChildren
-            : !hasChildren &&
-              (activeItem === itemPath || activeItem === item.label)
+            ? item.isSelected && isSelectable
+            : isSelectable &&
+              (activeItem === itemPath ||
+                  (!item.id && activeItem === item.label))
 
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
     const nestedListRef = useRef<HTMLUListElement>(null)
@@ -330,6 +433,10 @@ const NavItem = ({
     const activateItem = () => {
         if (hasChildren && !iconOnlyMode) {
             setIsExpanded(!isExpanded)
+            if (enableParentSelection) {
+                setActiveItem(itemPath)
+            }
+            item.onClick?.()
         } else {
             setActiveItem(itemPath)
             item.onClick?.()
@@ -498,7 +605,7 @@ const NavItem = ({
                 hasChildren && !iconOnlyMode ? isExpanded : undefined
             }
             data-element="sidebar-sub-section"
-            data-id={item.label}
+            data-id={getItemPathSegment(item)}
             data-status={isActive ? 'selected' : 'not selected'}
         >
             {renderContent()}
@@ -544,7 +651,7 @@ const NavItem = ({
                                     key={childIdx}
                                     item={childItem}
                                     index={childIdx}
-                                    itemPath={`${itemPath}/${childItem.label}`}
+                                    itemPath={`${itemPath}/${getItemPathSegment(childItem)}`}
                                     iconOnlyMode={iconOnlyMode}
                                     showHierarchyLines={showHierarchyLines}
                                     hierarchyLineBorderRadius={
@@ -555,6 +662,9 @@ const NavItem = ({
                                         (item.items?.length || 0) - 1
                                     }
                                     isNested
+                                    enableParentSelection={
+                                        enableParentSelection
+                                    }
                                     onNavigate={(direction, currentIndex) => {
                                         if (
                                             direction === 'up' &&

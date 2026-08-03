@@ -10,10 +10,13 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { DirectoryTokenType } from './directory.tokens'
 import {
+    DEFAULT_END_REACHED_THRESHOLD,
     flattenDirectoryData,
+    getItemPathSegment,
     handleKeyDown,
     normalizeExpandedItems,
     normalizeDirectoryData,
+    useDirectoryEndReached,
 } from './utils'
 import type { DirectoryFlatRow, DirectoryProps, NavbarItem } from './types'
 
@@ -76,7 +79,7 @@ const ConnectorVerticalLine = styled.span<{
     top: 0;
     height: ${({ $tokens, $isCurrent, $isLast }) =>
         $isCurrent && $isLast
-            ? `calc(${$tokens.section.itemList.nested.connector.elbowTop} + ${$tokens.section.itemList.nested.connector.elbowHeight})`
+            ? $tokens.section.itemList.nested.connector.elbowTop
             : '100%'};
     border-left: ${({ $tokens }) =>
         `${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color}`};
@@ -143,6 +146,7 @@ const ItemButton = styled(Block)<{
         addPxToValue($tokens.section.itemList.item.fontSize)};
     font-weight: ${({ $tokens }) => $tokens.section.itemList.item.fontWeight};
     overflow: hidden;
+    text-align: left;
     text-decoration: none;
     transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
 
@@ -242,6 +246,9 @@ const VirtualizedDirectory = ({
     defaultExpandedItems,
     onExpandedItemsChange,
     onItemExpand,
+    onEndReached,
+    endReachedThreshold = DEFAULT_END_REACHED_THRESHOLD,
+    enableParentSelection = false,
     virtualization,
 }: DirectoryProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
@@ -311,6 +318,13 @@ const VirtualizedDirectory = ({
             width: 0,
             height: viewportHeight,
         },
+    })
+    useDirectoryEndReached({
+        scrollRef,
+        externalRef: virtualization?.viewportRef,
+        onEndReached,
+        threshold: endReachedThreshold,
+        contentKey: rows.length,
     })
     const virtualRows = virtualizer.getVirtualItems()
     const fallbackRows =
@@ -445,11 +459,15 @@ const VirtualizedDirectory = ({
     ) => {
         const hasChildren = !!row.item.items?.length
         const isExpanded = currentExpandedItems.has(row.itemPath)
+        const isSelectable = enableParentSelection || !hasChildren
+        // bare-label matching is a backward-compat fallback for id-less items
+        // only, so a label-valued activeItem can't co-select id'd duplicates
         const isActive =
             row.item.isSelected !== undefined
-                ? row.item.isSelected && !hasChildren
-                : !hasChildren &&
-                  (activeItem === row.itemPath || activeItem === row.item.label)
+                ? row.item.isSelected && isSelectable
+                : isSelectable &&
+                  (activeItem === row.itemPath ||
+                      (!row.item.id && activeItem === row.item.label))
 
         const Element = row.item.href ? 'a' : 'button'
         const elementProps = row.item.href
@@ -468,6 +486,10 @@ const VirtualizedDirectory = ({
         const activateItem = () => {
             if (hasChildren) {
                 setExpanded(row.item, row.itemPath, !isExpanded)
+                if (enableParentSelection) {
+                    setActiveItem(row.itemPath)
+                }
+                row.item.onClick?.()
             } else {
                 setActiveItem(row.itemPath)
                 row.item.onClick?.()
@@ -516,7 +538,7 @@ const VirtualizedDirectory = ({
                     aria-expanded={hasChildren ? isExpanded : undefined}
                     aria-label={row.item.label}
                     data-element="sidebar-sub-section"
-                    data-id={row.item.label}
+                    data-id={getItemPathSegment(row.item)}
                     data-status={isActive ? 'selected' : 'not selected'}
                     data-directory-row-index={rowIndex}
                     onClick={(event: React.MouseEvent<HTMLElement>) => {
