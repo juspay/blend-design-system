@@ -6,6 +6,7 @@ import type {
 } from 'react'
 import type { CSSObject } from 'styled-components'
 import type { SingleSelectV2TokensType } from './singleSelectV2.tokens.types'
+import type { SelectSearchControlProps } from '../Select/search.types'
 
 import {
     SelectV2Alignment,
@@ -51,7 +52,7 @@ export type SelectV2ErrorState = {
     message?: string
 }
 
-export type SelectV2SearchConfig = {
+export type SelectV2SearchConfig = SelectSearchControlProps & {
     show?: boolean
     placeholder?: string
 }
