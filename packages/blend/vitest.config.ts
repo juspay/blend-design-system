@@ -1,5 +1,7 @@
-import { defineConfig } from 'vitest/config'
+import { defaultExclude, defineConfig } from 'vitest/config'
 import { resolve } from 'path'
+
+const PERFORMANCE_TESTS = '**/*.performance.test.tsx'
 
 export default defineConfig({
     test: {
@@ -7,8 +9,34 @@ export default defineConfig({
         environment: 'jsdom',
         setupFiles: './vitest.setup.ts',
         css: true,
-        testTimeout: process.env.CI ? 15000 : 5000,
-        hookTimeout: process.env.CI ? 10000 : 5000,
+        // Local machines are just as starved as CI once the full suite is
+        // running; a single budget avoids "passes alone, times out in suite".
+        testTimeout: 15000,
+        hookTimeout: 10000,
+        // Default is (cores - 1) forks. That many concurrent jsdom child
+        // processes starve each other and turn waitFor polls into timeouts.
+        // CI keeps its own default (undefined falls through).
+        maxWorkers: process.env.CI ? undefined : 4,
+        projects: [
+            {
+                extends: true,
+                test: {
+                    name: 'unit',
+                    exclude: [...defaultExclude, PERFORMANCE_TESTS],
+                },
+            },
+            {
+                extends: true,
+                test: {
+                    name: 'performance',
+                    include: [PERFORMANCE_TESTS],
+                    // Wall-clock assertions: run after every other project,
+                    // one file at a time, in a single worker.
+                    sequence: { groupOrder: 1 },
+                    poolOptions: { forks: { singleFork: true } },
+                },
+            },
+        ],
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],
