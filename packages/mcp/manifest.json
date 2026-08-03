@@ -1,7 +1,7 @@
 {
     "version": "2.0.0",
     "packageName": "@juspay/blend-design-system",
-    "blendPackageVersion": "0.0.37",
+    "blendPackageVersion": "0.0.37-beta.3",
     "components": {
         "Accordion": {
             "componentName": "Accordion",
@@ -717,28 +717,7 @@
                 "types": ["BreadcrumbProps"]
             },
             "enums": {},
-            "props": [
-                {
-                    "propName": "items",
-                    "propType": "BreadcrumbItemType[] | null",
-                    "typeDefinition": "BreadcrumbItemType[] | null",
-                    "propDescription": "Required. Ordered array of breadcrumb path items",
-                    "propDefault": "-",
-                    "category": "General",
-                    "required": true,
-                    "llmContext": "Required. Array of breadcrumb items from root to current page. Each item: { label: string, href?: string, onClick?: () => void }. The last item represents the current page and should have no href or onClick — it renders as plain text. All preceding items should have either href or onClick for navigation."
-                },
-                {
-                    "propName": "skeleton",
-                    "propType": "BreadcrumbSkeletonProps",
-                    "typeDefinition": "BreadcrumbSkeletonProps",
-                    "propDescription": "Sets the skeleton of the component",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Sets the skeleton of the component"
-                }
-            ],
+            "props": [],
             "usageExamples": [
                 {
                     "title": "Standard page breadcrumb",
@@ -1137,8 +1116,7 @@
                 "Header slot for chart title and controls",
                 "X and Y axis labels",
                 "Configurable dimensions",
-                "Responsive width support",
-                "Optional showAllLegends mode to render every legend item instead of using the + more overflow menu"
+                "Responsive width support"
             ],
             "isCompound": false,
             "subComponents": [],
@@ -1160,11 +1138,6 @@
                     "title": "Category distribution pie chart",
                     "description": "Pie chart showing distribution of support tickets by category.",
                     "code": "<Charts\n  chartType=\"PIE\"\n  data={[\n    { category: 'Billing', count: 42 },\n    { category: 'Technical', count: 58 },\n    { category: 'Account', count: 23 },\n    { category: 'Other', count: 15 },\n  ]}\n  width=\"100%\"\n  height={280}\n  chartHeaderSlot={<h3>Tickets by Category</h3>}\n/>"
-                },
-                {
-                    "title": "Line bar chart with all legends visible",
-                    "description": "Forces every legend item to render inline instead of collapsing overflow into + more.",
-                    "code": "<Charts\n  chartType=\"LINE_BAR\"\n  data={data}\n  legends={[\n    { title: 'Paid out' },\n    { title: 'Payout in progress' },\n    { title: 'Failed' },\n    { title: 'Refunded' },\n  ]}\n  showAllLegends\n  chartHeaderSlot={<h3>Payout timeline</h3>}\n/>"
                 }
             ]
         },
@@ -1948,8 +1921,8 @@
                 },
                 {
                     "propName": "language",
-                    "propType": "CodeEditorLanguage",
-                    "typeDefinition": "CodeEditorLanguage",
+                    "propType": "SupportedLanguage",
+                    "typeDefinition": "SupportedLanguage",
                     "propDescription": "Programming language for syntax highlighting",
                     "propDefault": "undefined",
                     "category": "General",
@@ -2814,26 +2787,6 @@
                     "llmContext": "Callback function for getRowStyle"
                 },
                 {
-                    "propName": "enableRowAnimation",
-                    "propType": "boolean",
-                    "typeDefinition": "boolean",
-                    "propDescription": "Set to true to enable enableRowAnimation",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Set to true to enable enableRowAnimation"
-                },
-                {
-                    "propName": "rowAnimationConfig",
-                    "propType": "RowAnimationConfig",
-                    "typeDefinition": "RowAnimationConfig",
-                    "propDescription": "Sets the rowAnimationConfig of the component",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Sets the rowAnimationConfig of the component"
-                },
-                {
                     "propName": "tableBodyHeight",
                     "propType": "string | number",
                     "typeDefinition": "string | number",
@@ -2852,16 +2805,6 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Numeric value for mobileColumnsToShow"
-                },
-                {
-                    "propName": "dateLabel",
-                    "propType": "string",
-                    "typeDefinition": "string",
-                    "propDescription": "Optional label appended after formatted dates in DATE columns,\ne.g. \"(IST)\". Can be overridden per-column or per-cell.",
-                    "propDefault": "undefined",
-                    "category": "Content",
-                    "required": false,
-                    "llmContext": "Text value for dateLabel"
                 },
                 {
                     "propName": "enablePivotTable",
@@ -3108,16 +3051,6 @@
                     "llmContext": "The latest selectable date. Dates after this are disabled. Use new Date() to prevent selecting future dates for reporting date ranges where data doesn't exist yet."
                 },
                 {
-                    "propName": "maxRangeDays",
-                    "propType": "number",
-                    "typeDefinition": "number",
-                    "propDescription": "Numeric value for maxRangeDays",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Numeric value for maxRangeDays"
-                },
-                {
                     "propName": "dateFormat",
                     "propType": "string",
                     "typeDefinition": "string",
@@ -3359,8 +3292,8 @@
             "props": [
                 {
                     "propName": "directoryData",
-                    "propType": "DirectoryData[] | null",
-                    "typeDefinition": "DirectoryData[] | null",
+                    "propType": "DirectoryData[]",
+                    "typeDefinition": "DirectoryData[]",
                     "propDescription": "Sets the directoryData of the component",
                     "propDefault": "-",
                     "category": "General",
@@ -3416,86 +3349,6 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Set to true to enable iconOnlyMode"
-                },
-                {
-                    "propName": "showHierarchyLines",
-                    "propType": "boolean",
-                    "typeDefinition": "boolean",
-                    "propDescription": "Set to true to enable showHierarchyLines",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Set to true to enable showHierarchyLines"
-                },
-                {
-                    "propName": "hierarchyLineBorderRadius",
-                    "propType": "CSSObject['borderRadius']",
-                    "typeDefinition": "CSSObject['borderRadius']",
-                    "propDescription": "Sets the hierarchyLineBorderRadius of the component",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Sets the hierarchyLineBorderRadius of the component"
-                },
-                {
-                    "propName": "expandedItems",
-                    "propType": "DirectoryExpandedItems",
-                    "typeDefinition": "DirectoryExpandedItems",
-                    "propDescription": "Sets the expandedItems of the component",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Sets the expandedItems of the component"
-                },
-                {
-                    "propName": "defaultExpandedItems",
-                    "propType": "DirectoryExpandedItems",
-                    "typeDefinition": "DirectoryExpandedItems",
-                    "propDescription": "Sets the defaultExpandedItems of the component",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Sets the defaultExpandedItems of the component"
-                },
-                {
-                    "propName": "onExpandedItemsChange",
-                    "propType": "(items: string[]) => void",
-                    "typeDefinition": "(items: string[]) => void",
-                    "propDescription": "Callback function for onExpandedItemsChange",
-                    "propDefault": "undefined",
-                    "category": "Events",
-                    "required": false,
-                    "llmContext": "Callback function for onExpandedItemsChange"
-                },
-                {
-                    "propName": "onItemExpand",
-                    "propType": "(item: NavbarItem, itemPath: string) => void | Promise<void>",
-                    "typeDefinition": "(item: NavbarItem, itemPath: string) => void | Promise<void>",
-                    "propDescription": "Callback function for onItemExpand",
-                    "propDefault": "undefined",
-                    "category": "Events",
-                    "required": false,
-                    "llmContext": "Callback function for onItemExpand"
-                },
-                {
-                    "propName": "enableVirtualization",
-                    "propType": "boolean",
-                    "typeDefinition": "boolean",
-                    "propDescription": "Set to true to enable enableVirtualization",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Set to true to enable enableVirtualization"
-                },
-                {
-                    "propName": "virtualization",
-                    "propType": "DirectoryVirtualizationConfig",
-                    "typeDefinition": "DirectoryVirtualizationConfig",
-                    "propDescription": "Sets the virtualization of the component",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "Sets the virtualization of the component"
                 }
             ],
             "usageExamples": [
@@ -4064,7 +3917,7 @@
                 "Two selection tag display types: COUNT (shows number of selected) and TEXT (shows selected labels)",
                 "Select All option with customizable label",
                 "Max selections limit",
-                "Built-in client-side search or controlled server-side search",
+                "Built-in search",
                 "Action buttons in footer (primaryAction/secondaryAction) for apply/cancel patterns",
                 "Clear All button",
                 "Virtualization for large lists",
@@ -4074,7 +3927,7 @@
             ],
             "isCompound": false,
             "subComponents": [],
-            "compositionPattern": "Items follow the same SelectMenuGroupType[] shape as SingleSelect. selectedValues is a string[] of currently selected item values. Pass onSelectionChange to receive the complete updated string[] once per user gesture, and feed that array straight back through selectedValues. The legacy onChange callback is per-item and receives a single toggled value string, so it fires once per item during Select All.",
+            "compositionPattern": "Items follow the same SelectMenuGroupType[] shape as SingleSelect. selectedValues is a string[] of currently selected item values. Pass onChange to receive the updated string[] on every selection change.",
             "imports": {
                 "components": ["MultiSelect"],
                 "enums": [
@@ -4114,46 +3967,6 @@
             },
             "props": [
                 {
-                    "propName": "searchText",
-                    "propType": "string",
-                    "typeDefinition": "string",
-                    "propDescription": "Controlled search query; disables internal filtering when present",
-                    "propDefault": "undefined",
-                    "category": "Content",
-                    "required": false,
-                    "llmContext": "Providing this prop, including an empty string, enables controlled server-side search and disables internal filtering. Always pass already-filtered items. Debounce API calls in the consumer."
-                },
-                {
-                    "propName": "onSearchChange",
-                    "propType": "(text: string) => void",
-                    "typeDefinition": "(text: string) => void",
-                    "propDescription": "Called with the next controlled search query",
-                    "propDefault": "undefined",
-                    "category": "Events",
-                    "required": false,
-                    "llmContext": "Called for every user input change. Update searchText immediately and debounce only the API request. Optional: omitting it creates a read-only controlled query."
-                },
-                {
-                    "propName": "isSearchLoading",
-                    "propType": "boolean",
-                    "typeDefinition": "boolean",
-                    "propDescription": "Shows search-specific loading feedback in the menu",
-                    "propDefault": "undefined",
-                    "category": "State",
-                    "required": false,
-                    "llmContext": "Use only for the controlled search request. This renders a loading state in the results region and is separate from hasMore/loadingComponent pagination."
-                },
-                {
-                    "propName": "emptyStateText",
-                    "propType": "string",
-                    "typeDefinition": "string",
-                    "propDescription": "Custom empty search-results message",
-                    "propDefault": "undefined",
-                    "category": "Content",
-                    "required": false,
-                    "llmContext": "Custom menu message when no result items are supplied, such as 'Start typing to search' or 'No people found'."
-                },
-                {
                     "propName": "height",
                     "propType": "number",
                     "typeDefinition": "number",
@@ -4177,21 +3990,11 @@
                     "propName": "onChange",
                     "propType": "(selectedValue: string) => void",
                     "typeDefinition": "(selectedValue: string) => void",
-                    "propDescription": "Legacy optional per-item toggle callback",
-                    "propDefault": "undefined",
+                    "propDescription": "Required. Called with full updated selected values array",
+                    "propDefault": "-",
                     "category": "Events",
-                    "required": false,
-                    "llmContext": "Legacy and optional. Fired once per toggled item with that item's value string, not an array. Select All invokes it once per value. Prefer onSelectionChange for form state."
-                },
-                {
-                    "propName": "onSelectionChange",
-                    "propType": "(selectedValues: string[]) => void",
-                    "typeDefinition": "(selectedValues: string[]) => void",
-                    "propDescription": "Recommended. Called once per gesture with the full resulting selection",
-                    "propDefault": "undefined",
-                    "category": "Events",
-                    "required": false,
-                    "llmContext": "Recommended. Callback fired once per user gesture with the complete resulting string[]. Replace your selectedValues state with the received array. Select All emits a single call containing every newly selected value."
+                    "required": true,
+                    "llmContext": "Required. Callback fired with the complete updated string[] when any selection changes. Replace your selectedValues state with the received array."
                 },
                 {
                     "propName": "items",
@@ -4722,38 +4525,23 @@
                     "category": "Layout",
                     "required": false,
                     "llmContext": "Sets the multiSelectGroupPosition of the component"
-                },
-                {
-                    "propName": "menuFooter",
-                    "propType": "React.ReactNode",
-                    "typeDefinition": "React.ReactNode",
-                    "propDescription": "React element to render as menuFooter",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "React element to render as menuFooter"
                 }
             ],
             "usageExamples": [
                 {
                     "title": "Tag/category multi-select",
                     "description": "Multi-select for assigning categories to a post.",
-                    "code": "<MultiSelect\n  label=\"Categories\"\n  placeholder=\"Select categories\"\n  selectedValues={selectedCategories}\n  onSelectionChange={setSelectedCategories}\n  enableSearch\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      items: categories.map(c => ({ label: c.name, value: c.id }))\n    }\n  ]}\n/>"
+                    "code": "<MultiSelect\n  label=\"Categories\"\n  placeholder=\"Select categories\"\n  selectedValues={selectedCategories}\n  onChange={setSelectedCategories}\n  enableSearch\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      items: categories.map(c => ({ label: c.name, value: c.id }))\n    }\n  ]}\n/>"
                 },
                 {
                     "title": "Permission selector with select all",
                     "description": "Multi-select for assigning permissions with a select all option and max limit.",
-                    "code": "<MultiSelect\n  label=\"Permissions\"\n  placeholder=\"Select permissions\"\n  selectedValues={permissions}\n  onSelectionChange={setPermissions}\n  enableSelectAll\n  selectAllText=\"All permissions\"\n  maxSelections={10}\n  selectionTagType={MultiSelectSelectionTagType.COUNT}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      groupLabel: 'Read',\n      items: readPermissions.map(p => ({ label: p.label, value: p.value }))\n    },\n    {\n      groupLabel: 'Write',\n      items: writePermissions.map(p => ({ label: p.label, value: p.value }))\n    }\n  ]}\n/>"
+                    "code": "<MultiSelect\n  label=\"Permissions\"\n  placeholder=\"Select permissions\"\n  selectedValues={permissions}\n  onChange={setPermissions}\n  enableSelectAll\n  selectAllText=\"All permissions\"\n  maxSelections={10}\n  selectionTagType={MultiSelectSelectionTagType.COUNT}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      groupLabel: 'Read',\n      items: readPermissions.map(p => ({ label: p.label, value: p.value }))\n    },\n    {\n      groupLabel: 'Write',\n      items: writePermissions.map(p => ({ label: p.label, value: p.value }))\n    }\n  ]}\n/>"
                 },
                 {
                     "title": "Filter panel multi-select with action buttons",
                     "description": "Multi-select where changes are applied via an explicit 'Apply' button instead of immediately.",
-                    "code": "<MultiSelect\n  label=\"Filter by status\"\n  placeholder=\"All statuses\"\n  selectedValues={pendingFilters}\n  onSelectionChange={setPendingFilters}\n  showActionButtons\n  primaryAction={{ label: 'Apply', onClick: handleApplyFilters }}\n  secondaryAction={{ label: 'Clear', onClick: handleClearFilters }}\n  showClearButton\n  onClearAllClick={handleClearAll}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[{ items: statuses.map(s => ({ label: s.label, value: s.value })) }]}\n/>"
-                },
-                {
-                    "title": "Controlled server-side search",
-                    "description": "The consumer debounces requests and supplies already-filtered results. Providing searchText disables internal filtering.",
-                    "code": "<MultiSelect\n  label=\"Assignees\"\n  placeholder=\"Select people\"\n  selectedValues={assignees}\n  onSelectionChange={setAssignees}\n  items={searchResults}\n  searchText={query}\n  onSearchChange={setQuery}\n  isSearchLoading={isSearching}\n  emptyStateText={query ? 'No people found' : 'Start typing to search'}\n/>"
+                    "code": "<MultiSelect\n  label=\"Filter by status\"\n  placeholder=\"All statuses\"\n  selectedValues={pendingFilters}\n  onChange={setPendingFilters}\n  showActionButtons\n  primaryAction={{ label: 'Apply', onClick: handleApplyFilters }}\n  secondaryAction={{ label: 'Clear', onClick: handleClearFilters }}\n  showClearButton\n  onClearAllClick={handleClearAll}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[{ items: statuses.map(s => ({ label: s.label, value: s.value })) }]}\n/>"
                 }
             ]
         },
@@ -5710,7 +5498,7 @@
             "features": [
                 "Three sizes: SMALL, MEDIUM, LARGE",
                 "Two variants: CONTAINER (bordered trigger) and NO_CONTAINER (minimal trigger)",
-                "Built-in client-side search or controlled server-side search",
+                "Built-in search with customizable placeholder",
                 "Grouped items with optional group labels and separators",
                 "Virtualized rendering for large item lists",
                 "Infinite scroll with onEndReached and hasMore",
@@ -5758,46 +5546,6 @@
                 }
             },
             "props": [
-                {
-                    "propName": "searchText",
-                    "propType": "string",
-                    "typeDefinition": "string",
-                    "propDescription": "Controlled search query; disables internal filtering when present",
-                    "propDefault": "undefined",
-                    "category": "Content",
-                    "required": false,
-                    "llmContext": "Providing this prop, including an empty string, enables controlled server-side search and disables internal filtering. Always pass already-filtered items. Debounce API calls in the consumer."
-                },
-                {
-                    "propName": "onSearchChange",
-                    "propType": "(text: string) => void",
-                    "typeDefinition": "(text: string) => void",
-                    "propDescription": "Called with the next controlled search query",
-                    "propDefault": "undefined",
-                    "category": "Events",
-                    "required": false,
-                    "llmContext": "Called for every user input change. Update searchText immediately and debounce only the API request. Optional: omitting it creates a read-only controlled query."
-                },
-                {
-                    "propName": "isSearchLoading",
-                    "propType": "boolean",
-                    "typeDefinition": "boolean",
-                    "propDescription": "Shows search-specific loading feedback in the menu",
-                    "propDefault": "undefined",
-                    "category": "State",
-                    "required": false,
-                    "llmContext": "Use only for the controlled search request. This renders a loading state in the results region and is separate from hasMore/loadingComponent pagination."
-                },
-                {
-                    "propName": "emptyStateText",
-                    "propType": "string",
-                    "typeDefinition": "string",
-                    "propDescription": "Custom empty search-results message",
-                    "propDefault": "undefined",
-                    "category": "Content",
-                    "required": false,
-                    "llmContext": "Custom menu message when no result items are supplied, such as 'Start typing to search' or 'No people found'."
-                },
                 {
                     "propName": "label",
                     "propType": "string",
@@ -6227,16 +5975,6 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Set to true to allow the user to click a selected item again to deselect it (clearing the value). Use for optional fields where 'no selection' is a valid state."
-                },
-                {
-                    "propName": "menuFooter",
-                    "propType": "React.ReactNode",
-                    "typeDefinition": "React.ReactNode",
-                    "propDescription": "React element to render as menuFooter",
-                    "propDefault": "undefined",
-                    "category": "General",
-                    "required": false,
-                    "llmContext": "React element to render as menuFooter"
                 }
             ],
             "usageExamples": [
@@ -6254,11 +5992,6 @@
                     "title": "Large list with virtualization and infinite scroll",
                     "description": "Virtualized select for a large user list with infinite scroll.",
                     "code": "<SingleSelect\n  label=\"Assign to\"\n  placeholder=\"Select team member\"\n  selected={assignee}\n  onSelect={setAssignee}\n  enableSearch\n  enableVirtualization\n  hasMore={hasMoreUsers}\n  onEndReached={loadMoreUsers}\n  loadingComponent={<Spinner />}\n  size={SelectMenuSize.MEDIUM}\n  items={[{ items: users.map(u => ({ label: u.name, value: u.id, slot1: <Avatar name={u.name} /> })) }]}\n/>"
-                },
-                {
-                    "title": "Controlled server-side search",
-                    "description": "The consumer debounces requests and supplies already-filtered results. Providing searchText disables internal filtering.",
-                    "code": "<SingleSelect\n  label=\"Assign to\"\n  placeholder=\"Select team member\"\n  selected={assignee}\n  onSelect={setAssignee}\n  items={searchResults}\n  searchText={query}\n  onSearchChange={setQuery}\n  isSearchLoading={isSearching}\n  emptyStateText={query ? 'No people found' : 'Start typing to search'}\n/>"
                 }
             ]
         },
