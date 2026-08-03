@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { fn } from '@storybook/test'
 import { expect, userEvent, within } from '@storybook/test'
 import {
@@ -68,14 +69,21 @@ const meta: Meta<typeof MultiSelectV2> = {
 \`\`\`tsx
 import { MultiSelectV2, MultiSelectV2Size, MultiSelectV2SelectionTagType } from '@juspay/blend-design-system';
 
+const [selected, setSelected] = useState<string[]>([]);
+
 <MultiSelectV2
   label="Choose items"
   placeholder="Select options"
   items={[{ items: [{ label: 'A', value: 'a' }] }]}
-  selectedValues={[]}
-  onChange={(v) => setSelected(Array.isArray(v) ? v : [...selected, v])}
+  selectedValues={selected}
+  onSelectionChange={setSelected}
 />
 \`\`\`
+
+\`MultiSelectV2\` is controlled: pass the returned array back through
+\`selectedValues\`. Prefer \`onSelectionChange\`, which fires once per user
+gesture with the complete resulting selection. \`onChange\` is the legacy
+per-item toggle callback and remains supported for compatibility.
 
 ## Features
 - Multiple selection with count or text display
@@ -97,6 +105,7 @@ import { MultiSelectV2, MultiSelectV2Size, MultiSelectV2SelectionTagType } from 
         items: defaultItems,
         selectedValues: [],
         onChange: fn(),
+        onSelectionChange: fn(),
         size: MultiSelectV2Size.MD,
         variant: MultiSelectV2Variant.CONTAINER,
         selectionTagType: MultiSelectV2SelectionTagType.COUNT,
@@ -153,7 +162,13 @@ import { MultiSelectV2, MultiSelectV2Size, MultiSelectV2SelectionTagType } from 
         },
         onChange: {
             action: 'change',
-            description: 'Called when selection changes (value or value[])',
+            description:
+                'Legacy: per-item toggle callback. Prefer onSelectionChange.',
+        },
+        onSelectionChange: {
+            action: 'selectionChange',
+            description:
+                'Recommended: full post-gesture selection, fired once per user gesture.',
         },
         onOpenChange: {
             action: 'openChange',
@@ -301,15 +316,9 @@ export const Interactive: Story = {
             <MultiSelectV2
                 {...args}
                 selectedValues={selected}
-                onChange={(v) => {
-                    args.onChange?.(v)
-                    setSelected(
-                        Array.isArray(v)
-                            ? v
-                            : selected.includes(v)
-                              ? selected.filter((x) => x !== v)
-                              : [...selected, v]
-                    )
+                onSelectionChange={(values) => {
+                    args.onSelectionChange?.(values)
+                    setSelected(values)
                 }}
             />
         )
@@ -331,7 +340,7 @@ export const Interactive: Story = {
 
         const option = canvas.getByRole('option', { name: /apple/i })
         await userEvent.click(option)
-        await expect(args.onChange).toHaveBeenCalled()
+        await expect(args.onSelectionChange).toHaveBeenCalled()
 
         await userEvent.click(trigger)
         await expect(trigger).toHaveAttribute('aria-expanded', 'false')
@@ -339,7 +348,7 @@ export const Interactive: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Open the dropdown, select an option, and close. Check the Actions panel for onChange and onOpenChange.',
+                story: 'Open the dropdown, select an option, and close. Check the Actions panel for the recommended onSelectionChange callback.',
             },
         },
     },
@@ -354,15 +363,7 @@ export const WithSelectAllAndActions: Story = {
                 placeholder="Select then Apply"
                 items={defaultItems}
                 selectedValues={selected}
-                onChange={(v) =>
-                    setSelected(
-                        Array.isArray(v)
-                            ? v
-                            : selected.includes(v)
-                              ? selected.filter((x) => x !== v)
-                              : [...selected, v]
-                    )
-                }
+                onSelectionChange={setSelected}
                 enableSelectAll
                 selectAllText="Select All"
                 primaryAction={{
@@ -382,6 +383,50 @@ export const WithSelectAllAndActions: Story = {
         docs: {
             description: {
                 story: 'Select All row and primary/secondary action buttons in the menu footer.',
+            },
+        },
+    },
+}
+
+export const ReactHookFormIntegration: Story = {
+    render: function ReactHookFormIntegrationRender() {
+        const { control, handleSubmit, watch } = useForm<{
+            selections: string[]
+        }>({
+            defaultValues: { selections: [] },
+        })
+        const selections = watch('selections')
+
+        return (
+            <form
+                onSubmit={handleSubmit((values) => console.log(values))}
+                className="flex w-96 flex-col gap-4"
+            >
+                <Controller
+                    name="selections"
+                    control={control}
+                    render={({ field }) => (
+                        <MultiSelectV2
+                            label="Favorite produce"
+                            placeholder="Choose options"
+                            items={defaultItems}
+                            selectedValues={field.value ?? []}
+                            onSelectionChange={field.onChange}
+                            enableSelectAll
+                        />
+                    )}
+                />
+                <div aria-live="polite">
+                    Selected: {selections.join(', ') || 'None'}
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'React Hook Form integration using only the recommended onSelectionChange callback—no reducer, adapter, debounce, or legacy onChange.',
             },
         },
     },
@@ -447,6 +492,57 @@ export const Accessibility: Story = {
         docs: {
             description: {
                 story: 'Keyboard navigation and ARIA (combobox, listbox, aria-multiselectable). Use the a11y addon to verify.',
+            },
+        },
+    },
+}
+
+export const WithMenuFooter: Story = {
+    render: () => {
+        const [selectedValues, setSelectedValues] = useState<string[]>([])
+
+        return (
+            <MultiSelectV2
+                label="Choose items"
+                placeholder="Select options"
+                items={defaultItems}
+                selectedValues={selectedValues}
+                onSelectionChange={setSelectedValues}
+                search={{ show: true }}
+                menuFooter={
+                    <div
+                        style={{
+                            padding: '12px 16px',
+                            borderTop: '1px solid #e5e7eb',
+                        }}
+                    >
+                        <button
+                            type="button"
+                            onClick={() =>
+                                alert('Open the "Create new" modal here')
+                            }
+                            style={{
+                                width: '100%',
+                                padding: '8px 12px',
+                                background: 'transparent',
+                                border: '1px dashed #d1d5db',
+                                borderRadius: 8,
+                                cursor: 'pointer',
+                                color: '#374151',
+                                fontWeight: 500,
+                            }}
+                        >
+                            + Create new item
+                        </button>
+                    </div>
+                }
+            />
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Renders custom content (e.g. a "Create new" button) pinned at the bottom of the menu via the `menuFooter` prop. The footer is not selectable and stays visible even when the list is empty.',
             },
         },
     },

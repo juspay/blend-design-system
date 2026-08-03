@@ -1,4 +1,4 @@
-import { SharedLayout } from '@/components'
+import SharedLayout from '@/components/layout/SharedLayout'
 import { showcaseData } from '@/lib/showcase-data'
 import CardDetailContent from '../../../components/showcase/CardDetailContent'
 

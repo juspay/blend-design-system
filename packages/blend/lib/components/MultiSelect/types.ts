@@ -71,7 +71,16 @@ export type MultiSelectMenuGroupType = {
 export type MultiSelectProps = {
     height?: number
     selectedValues: string[]
-    onChange: (selectedValue: string) => void
+    /**
+     * Legacy per-item toggle callback. Prefer `onSelectionChange` for the
+     * complete resulting selection.
+     */
+    onChange?: (selectedValue: string) => void
+    /**
+     * Recommended callback. Fires once per accepted user gesture with the
+     * complete resulting selection.
+     */
+    onSelectionChange?: (selectedValues: string[]) => void
     items: MultiSelectMenuGroupType[]
 
     // labels
@@ -157,6 +166,7 @@ export type MultiSelectProps = {
     showClearButton?: boolean
     onClearAllClick?: () => void
     multiSelectGroupPosition?: 'center' | 'left' | 'right'
+    menuFooter?: React.ReactNode
 } & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'slot' | 'onChange'>
 
 // Multi Select Menu Dropdpown
@@ -225,4 +235,5 @@ export type MultiSelectMenuProps = {
     customValueLabel?: string
     menuId?: string
     collisionBoundary?: Element | null | Array<Element | null>
+    menuFooter?: React.ReactNode
 }

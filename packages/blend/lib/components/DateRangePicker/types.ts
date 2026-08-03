@@ -207,9 +207,13 @@ export type PresetsConfig = (
 /**
  * Function type for custom date disabling logic
  * @param date The date to check
+ * @param currentRange The current in-progress selected range (if any)
  * @returns true if the date should be disabled, false otherwise
  */
-export type CustomDateDisableFunction = (date: Date) => boolean
+export type CustomDateDisableFunction = (
+    date: Date,
+    currentRange?: DateRange
+) => boolean
 
 /**
  * Function type for custom range calculation
@@ -317,6 +321,7 @@ export type DateRangePickerProps = {
     icon?: ReactNode
     minDate?: Date
     maxDate?: Date
+    maxRangeDays?: number
     dateFormat?: string
     allowSingleDateSelection?: boolean
     isSingleDatePicker?: boolean

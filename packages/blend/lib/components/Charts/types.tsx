@@ -184,6 +184,7 @@ export type ChartsProps = {
     chartHeaderSlot: ReactNode
     stackedLegends?: boolean
     stackedLegendsData?: StackedLegendsDataPoint[]
+    showAllLegends?: boolean
     barsize?: number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
@@ -236,6 +237,7 @@ export type ChartLegendsProps = {
     isSmallScreen?: boolean
     stackedLegendsData?: StackedLegendsDataPoint[]
     legends?: { title: string; total?: string }[]
+    showAllLegends?: boolean
 }
 
 export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {

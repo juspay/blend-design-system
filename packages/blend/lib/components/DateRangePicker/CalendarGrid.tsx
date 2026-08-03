@@ -9,7 +9,11 @@ import {
 } from 'react'
 import styled, { CSSObject } from 'styled-components'
 import { motion } from 'framer-motion'
-import { DateRange, CustomRangeConfig } from './types'
+import {
+    DateRange,
+    CustomRangeConfig,
+    CustomDateDisableFunction,
+} from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
 import Skeleton from '../Skeleton/Skeleton'
@@ -36,13 +40,16 @@ type CalendarGridProps = {
     disablePastDates?: boolean
     hideFutureDates?: boolean
     hidePastDates?: boolean
-    customDisableDates?: (date: Date) => boolean
+    customDisableDates?: CustomDateDisableFunction
     customRangeConfig?: CustomRangeConfig
     showDateTimePicker?: boolean
     resetScrollPosition?: number // Used to trigger scroll reset when popover reopens
     timezone?: string
     isSingleDatePicker?: boolean
     maxYearOffset?: number
+    minDate?: Date
+    maxDate?: Date
+    maxRangeDays?: number
 }
 
 const CONTAINER_HEIGHT = 340
@@ -129,6 +136,7 @@ const CalendarSkeleton = ({
         <Block
             style={{
                 maxHeight: CONTAINER_HEIGHT,
+                height: '100%',
                 padding: FOUNDATION_THEME.unit[16],
             }}
         >
@@ -238,6 +246,9 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             timezone,
             isSingleDatePicker,
             maxYearOffset,
+            minDate,
+            maxDate,
+            maxRangeDays,
         },
         ref
     ) => {
@@ -378,7 +389,11 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                     isDoubleClick,
                     timezone,
                     selectedRange,
-                    isSingleDatePicker
+                    isSingleDatePicker,
+                    minDate,
+                    maxDate,
+                    customDisableDates,
+                    maxRangeDays
                 )
 
                 if (newRange) {
@@ -394,6 +409,10 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 customRangeConfig,
                 onDateSelect,
                 timezone,
+                minDate,
+                maxDate,
+                customDisableDates,
+                maxRangeDays,
             ]
         )
 
@@ -473,8 +492,14 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 e: React.KeyboardEvent<HTMLElement>,
                 year: number,
                 month: number,
-                day: number
+                day: number,
+                isDisabled: boolean = false
             ) => {
+                if (isDisabled && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault()
+                    return
+                }
+
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault()
                     handleDateClick(year, month, day, false)
@@ -656,7 +681,10 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                         calendarToken,
                                                         customDisableDates,
                                                         timezone,
-                                                        isSingleDatePicker
+                                                        isSingleDatePicker,
+                                                        minDate,
+                                                        maxDate,
+                                                        maxRangeDays
                                                     )
 
                                                 const isSelected =
@@ -799,6 +827,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                             isDisabled
                                                         }
                                                         onClick={() =>
+                                                            !isDisabled &&
                                                             handleDateClick(
                                                                 year,
                                                                 month,
@@ -807,6 +836,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                             )
                                                         }
                                                         onDoubleClick={() =>
+                                                            !isDisabled &&
                                                             handleDateClick(
                                                                 year,
                                                                 month,
@@ -819,7 +849,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                                 e,
                                                                 year,
                                                                 month,
-                                                                day
+                                                                day,
+                                                                isDisabled
                                                             )
                                                         }
                                                         data-element="days"
@@ -918,6 +949,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             <MotionBlock
                 style={{
                     maxHeight: CONTAINER_HEIGHT,
+                    height: '100%',
                     overflowY: 'auto',
                     overflow: 'auto',
                     position: 'relative',
@@ -985,6 +1017,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                     }}
                     style={{
                         maxHeight: CONTAINER_HEIGHT,
+                        height: '100%',
                         overflowY: 'auto',
                         overflow: 'auto',
                         position: 'relative',

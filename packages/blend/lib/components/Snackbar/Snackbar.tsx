@@ -22,6 +22,11 @@ import {
     SnackbarIconProps,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import {
+    dismissNonPersistentToasts,
+    SnackbarHiddenToastStyles,
+    useVisibleToastCount,
+} from '../../utils/snackbar-shared'
 import { SnackbarTokens } from './snackbar.tokens'
 
 const SnackbarIcon: React.FC<SnackbarIconProps> = ({ variant }) => {
@@ -45,6 +50,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
     onClose,
     actionButton,
     toastId,
+    wrap = false,
     ...props
 }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
@@ -75,14 +81,17 @@ export const StyledToast: React.FC<CustomToastProps> = ({
         >
             <Block
                 display="flex"
-                alignItems="center"
+                alignItems={wrap ? 'flex-start' : 'center'}
                 justifyContent="space-between"
                 gap={snackbarTokens.gap}
             >
                 <Block
                     display="flex"
-                    alignItems="flex-start"
+                    alignItems="center"
                     flexShrink={0}
+                    height={
+                        snackbarTokens.content.textContainer.header.lineHeight
+                    }
                     data-element="icon"
                     aria-hidden="true"
                 >
@@ -107,12 +116,16 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         }
                         data-element="header"
                         data-id={header}
-                        style={{
-                            minWidth: 0,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                        }}
+                        style={
+                            wrap
+                                ? { minWidth: 0 }
+                                : {
+                                      minWidth: 0,
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                  }
+                        }
                     >
                         {header}
                     </Text>
@@ -221,6 +234,7 @@ export const addSnackbar = ({
     actionButton,
     duration,
     position,
+    wrap = false,
 }: AddToastOptions) => {
     // Determine if position includes "center" for proper alignment
     const isCenter = position?.includes('center')
@@ -237,6 +251,7 @@ export const addSnackbar = ({
                 }}
                 actionButton={actionButton}
                 toastId={t}
+                wrap={wrap}
             />
         ),
         {
@@ -263,6 +278,11 @@ const Snackbar: React.FC<SnackbarProps> = ({
     dismissOnClickAway = false,
 }) => {
     const isCenter = position?.includes('center')
+    // Persistent toasts must stay reachable here too: sonner shares one toast
+    // store across v1 and v2, so an app mounting only this container would
+    // otherwise let a persistent toast be evicted into an unclickable state
+    // that neither the timer nor click-away can clear.
+    const visibleToasts = useVisibleToastCount()
 
     // Handle click away to dismiss all snackbars
     useEffect(() => {
@@ -278,9 +298,12 @@ const Snackbar: React.FC<SnackbarProps> = ({
                 '[data-snackbar]'
             )
 
-            // If click is not on a snackbar, dismiss all snackbars
+            // If click is not on a snackbar, dismiss all snackbars except
+            // persistent ones. v1 and v2 share a single sonner toast store, so
+            // dismissing everything here would also close SnackbarV2 toasts
+            // created with duration: Infinity.
             if (!clickedSnackbar) {
-                sonnerToast.dismiss()
+                dismissNonPersistentToasts()
             }
         }
 
@@ -292,23 +315,27 @@ const Snackbar: React.FC<SnackbarProps> = ({
     }, [dismissOnClickAway])
 
     return (
-        <Toaster
-            position={position}
-            toastOptions={{
-                unstyled: true,
-                style: {
-                    display: 'flex',
-                    justifyContent: 'center',
-                    width: isCenter ? '100%' : 'fit-content',
-                    maxWidth: 'calc(100vw - 32px)',
-                    margin: 0,
-                    padding: 0,
-                    background: 'transparent',
-                    border: 'none',
-                    boxShadow: 'none',
-                },
-            }}
-        />
+        <>
+            <SnackbarHiddenToastStyles />
+            <Toaster
+                position={position}
+                visibleToasts={visibleToasts}
+                toastOptions={{
+                    unstyled: true,
+                    style: {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        width: isCenter ? '100%' : 'fit-content',
+                        maxWidth: 'calc(100vw - 32px)',
+                        margin: 0,
+                        padding: 0,
+                        background: 'transparent',
+                        border: 'none',
+                        boxShadow: 'none',
+                    },
+                }}
+            />
+        </>
     )
 }
 

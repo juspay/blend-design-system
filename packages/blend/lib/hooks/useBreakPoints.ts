@@ -12,7 +12,10 @@ export function useBreakpoints(breakpoints = BREAKPOINTS) {
         if (typeof window === 'undefined') return null
 
         try {
-            return window.top && window.top !== window ? window.top : window
+            const root =
+                window.top && window.top !== window ? window.top : window
+            void root.innerWidth
+            return root
         } catch {
             return window
         }

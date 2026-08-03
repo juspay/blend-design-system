@@ -164,7 +164,6 @@ export default function Navbar() {
                                 aria-expanded={moreOpen}
                                 aria-haspopup="true"
                                 onFocus={() => setMoreOpen(true)}
-                                onBlur={() => setMoreOpen(false)}
                             >
                                 More
                                 <motion.span
@@ -187,22 +186,19 @@ export default function Navbar() {
                                             opacity: 0,
                                             y: -10,
                                             scale: 0.95,
-                                            filter: 'blur(10px)',
                                         }}
                                         animate={{
                                             opacity: 1,
                                             y: 0,
                                             scale: 1,
-                                            filter: 'blur(0px)',
                                         }}
                                         exit={{
                                             opacity: 0,
                                             y: -6,
                                             scale: 0.97,
-                                            filter: 'blur(20px)',
                                         }}
                                         transition={{
-                                            duration: 0.4,
+                                            duration: 0.25,
                                             ease: [0.16, 1, 0.3, 1],
                                         }}
                                         className="absolute top-full left-1/2 -translate-x-1/2 mt-3.5 w-64 origin-top"

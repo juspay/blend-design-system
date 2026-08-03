@@ -1,8 +1,45 @@
-import { ColumnDefinition } from '../types'
+import { ColumnDefinition, ColumnType, FilterType } from '../types'
+import { ColumnTypeConfig, getColumnTypeConfig } from '../columnTypes'
 import { SelectMenuGroupType } from '../../Select/types'
 import { MultiSelectMenuGroupType } from '../../MultiSelect/types'
 import { getUniqueColumnValues } from '../utils'
 import { FOUNDATION_THEME } from '../../../tokens'
+
+const filterComponentByType: Partial<
+    Record<FilterType, ColumnTypeConfig['filterComponent']>
+> = {
+    [FilterType.SELECT]: 'select',
+    [FilterType.MULTISELECT]: 'multiselect',
+    [FilterType.DATE]: 'dateRange',
+    [FilterType.SLIDER]: 'slider',
+}
+
+export const getColumnTypeConfigForColumn = (
+    column: ColumnDefinition<Record<string, unknown>>
+): ColumnTypeConfig => {
+    const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
+    const explicitFilterType = column.filterType
+    const mapped = explicitFilterType
+        ? filterComponentByType[explicitFilterType]
+        : undefined
+    // Guard against inherited Object properties: JS consumers are not bound by
+    // the FilterType enum, so a value like 'constructor' would otherwise
+    // resolve to a function and advertise a filter that cannot render.
+    const filterComponent = typeof mapped === 'string' ? mapped : undefined
+
+    // FilterType values without a filter component (TEXT, NUMBER, BOOLEAN) fall
+    // back to the type-derived config rather than removing the filter entirely.
+    if (!explicitFilterType || !filterComponent) {
+        return columnConfig
+    }
+
+    return {
+        ...columnConfig,
+        filterType: explicitFilterType,
+        supportsFiltering: true,
+        filterComponent,
+    }
+}
 
 export const getFilterOptions = (
     column: ColumnDefinition<Record<string, unknown>>,

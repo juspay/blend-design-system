@@ -188,7 +188,10 @@ const MultiSelectV2Trigger = ({
                 as="span"
                 textAlign="left"
                 paddingTop={
-                    isContainer && isSmallScreenWithLargeSize && isItemSelected
+                    isContainer &&
+                    isSmallScreenWithLargeSize &&
+                    isItemSelected &&
+                    label
                         ? floatingLabelPaddingTop
                         : 0
                 }

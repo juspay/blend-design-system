@@ -37,6 +37,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
             variant = StatCardV2Variant.NUMBER,
             actionIcon,
             value,
+            valueTooltip,
             progressValue,
             change,
             subtitle,
@@ -47,6 +48,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
             height,
             options,
             skeleton,
+            showBorder = true,
             ...props
         },
         ref
@@ -130,6 +132,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                     tokens={tokens}
                     isSmallScreen={isSmallScreen}
                     filteredProps={filteredProps}
+                    showBorder={showBorder}
                 />
             )
         }
@@ -140,14 +143,14 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                 display="flex"
                 flexDirection="column"
                 justifyContent="space-between"
-                paddingTop={tokens.paddingTop}
-                paddingBottom={tokens.paddingBottom}
-                paddingLeft={tokens.paddingLeft}
-                paddingRight={tokens.paddingRight}
-                border={tokens.border}
+                paddingTop={showBorder ? tokens.paddingTop : undefined}
+                paddingBottom={showBorder ? tokens.paddingBottom : undefined}
+                paddingLeft={showBorder ? tokens.paddingLeft : undefined}
+                paddingRight={showBorder ? tokens.paddingRight : undefined}
+                border={showBorder ? tokens.border : undefined}
                 borderRadius={tokens.borderRadius}
                 backgroundColor={tokens.backgroundColor}
-                boxShadow={tokens.boxShadow}
+                boxShadow={showBorder ? tokens.boxShadow : undefined}
                 maxWidth={maxWidth ?? tokens.maxWidth}
                 minWidth={minWidth ?? tokens.minWidth}
                 width={width ?? tokens.width}
@@ -198,6 +201,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                                     title={title}
                                     helpIconText={helpIconText}
                                     tokens={tokens}
+                                    isSmallScreen={isSmallScreen}
                                 />
                                 <Block
                                     display="flex"
@@ -215,8 +219,10 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                                         <StatCardV2Value
                                             id={valueId}
                                             value={value}
+                                            valueTooltip={valueTooltip}
                                             tokens={tokens}
                                             variant={variant}
+                                            isSmallScreen={isSmallScreen}
                                         />
                                         <StatCardV2Change
                                             id={changeId}
@@ -227,6 +233,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                                                 effectiveArrowDirection
                                             }
                                             changeType={effectiveChangeType}
+                                            tooltip={change?.tooltip}
                                             tokens={tokens}
                                         />
                                     </Block>

@@ -9,7 +9,7 @@ import {
 } from '../../../../packages/blend/lib/components/SingleSelectV2/singleSelectV2.types'
 import { TextInput } from '../../../../packages/blend/lib/components/Inputs/TextInput'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
-import { User, Star, Shield, Briefcase, MapPin } from 'lucide-react'
+import { User, Star, Shield, Briefcase, MapPin, Plus } from 'lucide-react'
 
 const LARGE_LIST_SIZE = 500
 
@@ -63,6 +63,8 @@ const SingleSelectDemoV2 = () => {
     const largeListItems = useMemo(() => buildLargeList(), [])
     const [largeListSelected, setLargeListSelected] = useState('')
     const [submenuSelected, setSubmenuSelected] = useState('')
+    const [menuFooterSelected, setMenuFooterSelected] = useState('')
+    const [menuFooterEmptySelected, setMenuFooterEmptySelected] = useState('')
 
     const submenuItems: SingleSelectV2GroupType[] = [
         {
@@ -408,6 +410,91 @@ const SingleSelectDemoV2 = () => {
                                     : undefined
                             }
                             allowCustomValue={playgroundAllowCustomValue}
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <section className="space-y-4">
+                <h2 className="text-2xl font-bold">Menu Footer</h2>
+                <p className="text-gray-600">
+                    A{' '}
+                    <code className="rounded bg-gray-200 px-1">menuFooter</code>{' '}
+                    slot renders arbitrary content pinned at the bottom of the
+                    open menu. It stays visible even when the list is empty and
+                    is not treated as a selectable item.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="max-w-md rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-6">
+                        <SingleSelectV2
+                            label="With items"
+                            placeholder="Select an option..."
+                            items={groupedItems}
+                            selected={menuFooterSelected}
+                            onSelect={setMenuFooterSelected}
+                            search={{ show: true }}
+                            menuDimensions={{ maxHeight: 320 }}
+                            menuFooter={
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        alert('Create new option clicked')
+                                    }
+                                    style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 8,
+                                        padding: '8px 12px',
+                                        borderRadius: 0,
+                                        border: 'none',
+                                        background: 'transparent',
+                                        cursor: 'pointer',
+                                        fontSize: 14,
+                                        fontWeight: 500,
+                                        color: '#4b5563',
+                                    }}
+                                >
+                                    <Plus size={16} />
+                                    Create new option
+                                </button>
+                            }
+                        />
+                    </div>
+                    <div className="max-w-md rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-6">
+                        <SingleSelectV2
+                            label="Empty list"
+                            placeholder="No items available..."
+                            items={[]}
+                            selected={menuFooterEmptySelected}
+                            onSelect={setMenuFooterEmptySelected}
+                            search={{ show: true }}
+                            menuDimensions={{ maxHeight: 320 }}
+                            menuFooter={
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        alert('Create new option clicked')
+                                    }
+                                    style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 8,
+                                        padding: '8px 12px',
+                                        borderRadius: 0,
+                                        border: 'none',
+                                        background: 'transparent',
+                                        cursor: 'pointer',
+                                        fontSize: 14,
+                                        fontWeight: 500,
+                                        color: '#4b5563',
+                                    }}
+                                >
+                                    <Plus size={16} />
+                                    Create new option
+                                </button>
+                            }
                         />
                     </div>
                 </div>

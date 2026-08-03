@@ -61,8 +61,13 @@ const createExcerpt = (content, maxLength = 150) => {
 }
 
 // Function to scan and index all MDX files
-const buildSearchIndex = (contentDir) => {
+const buildSearchIndex = (
+    contentDir,
+    initialBasePath = '',
+    excludeSlugs = []
+) => {
     const index = {}
+    const excludedSlugs = new Set(excludeSlugs)
 
     const scanDirectory = (dirPath, basePath = '') => {
         try {
@@ -84,6 +89,10 @@ const buildSearchIndex = (contentDir) => {
                         const { data, content } = matter(fileContent)
 
                         const slug = entry.name.replace(/\.mdx$/, '')
+                        if (excludedSlugs.has(slug)) {
+                            continue
+                        }
+
                         const docPath = relativePath.replace(/\.mdx$/, '')
 
                         const searchResult = {
@@ -109,13 +118,19 @@ const buildSearchIndex = (contentDir) => {
         }
     }
 
-    scanDirectory(contentDir)
+    scanDirectory(contentDir, initialBasePath)
     return index
 }
 
 // Generate search index
-const contentDir = path.join(__dirname, '../app/docs/content')
-const searchIndex = buildSearchIndex(contentDir)
+const docsContentDir = path.join(__dirname, '../app/docs/content')
+const blogContentDir = path.join(__dirname, '../app/blog/content')
+const changelogContentDir = path.join(__dirname, '../app/changelog/content')
+const searchIndex = {
+    ...buildSearchIndex(docsContentDir),
+    ...buildSearchIndex(blogContentDir, 'blog'),
+    ...buildSearchIndex(changelogContentDir, 'changelog', ['home']),
+}
 
 // Create public directory if it doesn't exist
 const publicDir = path.join(__dirname, '../public')

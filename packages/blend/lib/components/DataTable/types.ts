@@ -88,10 +88,30 @@ export type DropdownColumnProps = {
     onSelect?: (value: unknown) => void
 }
 
+/**
+ * Format string for date display in DataTable DATE columns.
+ * @example 'DD MMM YYYY'           → "24 Jun 2026"
+ * @example 'DD/MM/YYYY'            → "24/06/2026"
+ * @example 'DD MMM YYYY, hh:mm A'  → "24 Jun 2026, 10:30 AM"
+ */
+
+export type DateFormat =
+    | 'DD MMM YYYY'
+    | 'DD/MM/YYYY'
+    | 'MM/DD/YYYY'
+    | 'YYYY-MM-DD'
+    | 'DD MMM YYYY, hh:mm A'
+    | 'DD MMM YYYY, HH:mm'
+    | 'MMM DD, YYYY'
+    | 'YYYY/MM/DD HH:mm'
+    | 'HH:mm:ss'
+    | (string & {})
+
 export type DateColumnProps = {
     date: Date | string
-    format?: string
+    format?: DateFormat
     showTime?: boolean
+    dateLabel?: string
 }
 
 export type SliderColumnProps = {
@@ -152,6 +172,29 @@ export type BaseColumnDefinition<T> = {
     canHide?: boolean
     frozen?: boolean
     className?: string
+    /**
+     * Explicitly selects the filter UI for this column, overriding what `type` would infer.
+     * - SELECT and MULTISELECT work on any column whose cell values are strings or numbers.
+     * - DATE requires cell values that can be parsed as dates; rows whose value can't be
+     *   parsed are filtered out rather than shown.
+     * - SLIDER additionally requires `sliderConfig`, which the `ColumnDefinition` union only
+     *   provides when `type` is `ColumnType.SLIDER` — so SLIDER is effectively limited to
+     *   slider columns today.
+     * - TEXT, NUMBER, and BOOLEAN have no filter component, so the column falls back to
+     *   the `type`-derived filter behaviour instead of disabling filtering.
+     * @example
+     * // A TEXT column filtered as a multiselect against a fixed set of options
+     * {
+     *   field: 'status',
+     *   header: 'Status',
+     *   type: ColumnType.TEXT,
+     *   filterType: FilterType.MULTISELECT,
+     *   filterOptions: [
+     *     { id: 'active', label: 'Active', value: 'active' },
+     *     { id: 'inactive', label: 'Inactive', value: 'inactive' },
+     *   ],
+     * }
+     */
     filterType?: FilterType
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
@@ -253,8 +296,13 @@ export type ColumnDefinition<T> =
               row: T,
               index: number
           ) => ReactNode
-          dateFormat?: string
+          dateFormat?: DateFormat
           showTime?: boolean
+          /**
+           * Optional label appended after the formatted date, e.g. "(IST)".
+           * Column-level value can be overridden per-cell via DateColumnProps.dateLabel.
+           */
+          dateLabel?: string
       })
     | (BaseColumnDefinition<T> & {
           type: ColumnType.SLIDER
@@ -342,6 +390,35 @@ export type RowSelectionConfig<T extends Record<string, unknown>> = {
     isDisabled?: (row: T, index: number) => boolean
     disabledText?: (row: T, index: number) => string
 }
+
+type BaseRowAnimationConfig = {
+    /** Enter animation duration in seconds. */
+    enterDuration: number
+    /** Enter animation Y offset in pixels. */
+    enterOffset: number
+}
+
+export type RowAnimationConfig = BaseRowAnimationConfig &
+    (
+        | {
+              /** Transition type for layout animations. */
+              transitionType: 'bezier'
+              /** Bezier duration in seconds. */
+              duration: number
+              /** Bezier easing curve as [x1, y1, x2, y2] cubic-bezier control points. */
+              bezier: [number, number, number, number]
+          }
+        | {
+              /** Transition type for layout animations. */
+              transitionType: 'spring'
+              /** Spring stiffness. */
+              stiffness: number
+              /** Spring damping. */
+              damping: number
+              /** Spring mass. */
+              mass: number
+          }
+    )
 
 export type DataTableProps<T extends Record<string, unknown>> = {
     data: T[]
@@ -452,10 +529,19 @@ export type DataTableProps<T extends Record<string, unknown>> = {
 
     getRowStyle?: (row: T, index: number) => React.CSSProperties
 
+    enableRowAnimation?: boolean
+    rowAnimationConfig?: RowAnimationConfig
+
     tableBodyHeight?: string | number
 
     // Mobile configuration
     mobileColumnsToShow?: number
+
+    /**
+     * Optional label appended after formatted dates in DATE columns,
+     * e.g. "(IST)". Can be overridden per-column or per-cell.
+     */
+    dateLabel?: string
 
     // Internal pivot modal configuration
     enablePivotTable?: boolean

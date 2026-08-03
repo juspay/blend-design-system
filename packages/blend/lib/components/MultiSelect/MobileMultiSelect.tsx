@@ -45,6 +45,12 @@ import VirtualList from '../VirtualList/VirtualList'
 import type { VirtualListItem } from '../VirtualList/types'
 import Skeleton from '../Skeleton/Skeleton'
 import { setupAccessibility } from '../SingleSelect/utils'
+import {
+    clampScopeToMaxSelections,
+    emitLegacyScopeChanges,
+    getNextSelectionAfterToggle,
+    getNextSelectionForScope,
+} from '../shared/multiSelectSelection'
 
 type MobileMultiSelectProps = MultiSelectProps
 
@@ -104,12 +110,16 @@ const SelectAllItem = ({
     items,
     selectedValues,
     onChange,
+    onSelectionChange,
     selectAllText,
+    maxSelections,
 }: {
     items: MultiSelectMenuGroupType[]
     selectedValues: string[]
-    onChange: (value: string) => void
+    onChange?: (value: string) => void
+    onSelectionChange?: (selectedValues: string[]) => void
     selectAllText: string
+    maxSelections?: number
 }) => {
     const allValues = items.flatMap((group) =>
         group.items
@@ -126,19 +136,27 @@ const SelectAllItem = ({
     )
 
     const handleSelectAll = (checked: boolean | 'indeterminate') => {
-        if (checked === true || checked === 'indeterminate') {
-            allValues.forEach((value) => {
-                if (!selectedValues.includes(value)) {
-                    onChange(value)
-                }
-            })
-        } else {
-            selectedValues.forEach((value) => {
-                if (allValues.includes(value)) {
-                    onChange(value)
-                }
-            })
-        }
+        const selectAll = checked === true || checked === 'indeterminate'
+        const scopedValues = selectAll
+            ? clampScopeToMaxSelections(
+                  selectedValues,
+                  allValues,
+                  maxSelections
+              )
+            : allValues
+        const nextSelection = getNextSelectionForScope(
+            selectedValues,
+            scopedValues,
+            selectAll
+        )
+
+        emitLegacyScopeChanges(
+            selectAll,
+            scopedValues,
+            selectedValues,
+            onChange
+        )
+        onSelectionChange?.(nextSelection)
     }
 
     const getCheckboxState = (): boolean | 'indeterminate' => {
@@ -288,6 +306,7 @@ const MultiSelectItem = ({
 const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     selectedValues,
     onChange,
+    onSelectionChange,
     items = [],
     label,
     sublabel,
@@ -389,6 +408,22 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
         [filteredItems, enableSelectAll]
     )
 
+    const handleItemSelect = (value: string) => {
+        const nextSelection = getNextSelectionAfterToggle(selectedValues, value)
+        onChange?.(value)
+        onSelectionChange?.(nextSelection)
+    }
+
+    const handleTriggerChange = (value: string) => {
+        if (value === '') {
+            onChange?.('')
+            onSelectionChange?.([])
+            return
+        }
+
+        handleItemSelect(value)
+    }
+
     return (
         <Block
             data-multi-select={label || 'multi-select'}
@@ -438,7 +473,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                         <MultiSelectTrigger
                             maxTriggerWidth={maxTriggerWidth}
                             minTriggerWidth={minTriggerWidth}
-                            onChange={onChange}
+                            onChange={handleTriggerChange}
                             name={uniqueName}
                             label={label}
                             placeholder={placeholder}
@@ -660,8 +695,14 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                                     onChange={
                                                                         onChange
                                                                     }
+                                                                    onSelectionChange={
+                                                                        onSelectionChange
+                                                                    }
                                                                     selectAllText={
                                                                         selectAllText
+                                                                    }
+                                                                    maxSelections={
+                                                                        maxSelections
                                                                     }
                                                                 />
                                                             </Block>
@@ -749,7 +790,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                                     isSelected
                                                                 }
                                                                 onChange={
-                                                                    onChange
+                                                                    handleItemSelect
                                                                 }
                                                                 maxSelections={
                                                                     maxSelections
@@ -784,8 +825,14 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                             selectedValues
                                                         }
                                                         onChange={onChange}
+                                                        onSelectionChange={
+                                                            onSelectionChange
+                                                        }
                                                         selectAllText={
                                                             selectAllText
+                                                        }
+                                                        maxSelections={
+                                                            maxSelections
                                                         }
                                                     />
                                                 )}
@@ -858,7 +905,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                                                         isSelected
                                                                                     }
                                                                                     onChange={
-                                                                                        onChange
+                                                                                        handleItemSelect
                                                                                     }
                                                                                     maxSelections={
                                                                                         maxSelections

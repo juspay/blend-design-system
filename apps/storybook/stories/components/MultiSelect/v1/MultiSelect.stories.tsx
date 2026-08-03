@@ -93,22 +93,17 @@ const [selectedValues, setSelectedValues] = useState<string[]>([]);
   placeholder="Choose your skills"
   items={skillItems}
   selectedValues={selectedValues}
-  onChange={(value) => {
-    if (value === '') {
-      setSelectedValues([]);
-    } else {
-      setSelectedValues(prev => 
-        prev.includes(value) 
-          ? prev.filter(v => v !== value)
-          : [...prev, value]
-      );
-    }
-  }}
+  onSelectionChange={setSelectedValues}
   selectionTagType={MultiSelectSelectionTagType.COUNT}
   enableSearch
   enableSelectAll
 />
 \`\`\`
+
+\`MultiSelect\` is controlled: pass the returned array back through
+\`selectedValues\`. Prefer \`onSelectionChange\`, which fires once per user
+gesture with the complete resulting selection. \`onChange\` is the legacy
+per-item toggle callback and remains supported for compatibility.
 
 ## Features
 - **Multiple Selection**: Select multiple items from grouped lists
@@ -215,9 +210,19 @@ Example: ['react', 'nodejs', 'postgresql']`,
         },
         onChange: {
             action: 'selection-changed',
-            description: 'Callback fired when selection changes',
+            description:
+                'Legacy: per-item toggle callback. Prefer onSelectionChange.',
             table: {
                 type: { summary: '(selectedValue: string) => void' },
+                category: 'Core',
+            },
+        },
+        onSelectionChange: {
+            action: 'selection-snapshot-changed',
+            description:
+                'Recommended: full post-gesture selection, fired once per user gesture.',
+            table: {
+                type: { summary: '(selectedValues: string[]) => void' },
                 category: 'Core',
             },
         },
@@ -1135,17 +1140,7 @@ export const FormIntegration: Story = {
                     placeholder="Choose your technical expertise"
                     items={skillItems}
                     selectedValues={skills}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setSkills([])
-                        } else if (typeof value === 'string') {
-                            setSkills((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
+                    onSelectionChange={setSkills}
                     required
                     enableSearch
                     enableSelectAll
@@ -1164,17 +1159,7 @@ export const FormIntegration: Story = {
                     placeholder="Assign user permissions"
                     items={permissionItems}
                     selectedValues={permissions}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setPermissions([])
-                        } else if (typeof value === 'string') {
-                            setPermissions((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
+                    onSelectionChange={setPermissions}
                     selectionTagType={MultiSelectSelectionTagType.COUNT}
                     hintText="Grant appropriate access levels for this user"
                 />
@@ -1184,17 +1169,7 @@ export const FormIntegration: Story = {
                     placeholder="Select areas of interest"
                     items={categoryItems}
                     selectedValues={categories}
-                    onChange={(value) => {
-                        if (value === '') {
-                            setCategories([])
-                        } else if (typeof value === 'string') {
-                            setCategories((prev) =>
-                                prev.includes(value)
-                                    ? prev.filter((v) => v !== value)
-                                    : [...prev, value]
-                            )
-                        }
-                    }}
+                    onSelectionChange={setCategories}
                     selectionTagType={MultiSelectSelectionTagType.TEXT}
                     helpIconHintText="This helps us personalize your experience"
                 />
@@ -1399,6 +1374,69 @@ export const ClearButtonControl: Story = {
         docs: {
             description: {
                 story: 'Control the visibility and behavior of the X icon (clear button). Use showClearButton to hide/show the button, and onClearAllClick for a separate callback when the X icon is clicked. Perfect for analytics filters where API calls should only happen on explicit actions.',
+            },
+        },
+    },
+}
+
+export const WithMenuFooter: Story = {
+    render: () => {
+        const [selectedValues, setSelectedValues] = useState<string[]>([])
+
+        return (
+            <div className="w-100">
+                <MultiSelect
+                    label="Skills"
+                    placeholder="Select skills"
+                    items={skillItems}
+                    selectedValues={selectedValues}
+                    onChange={(value) => {
+                        if (Array.isArray(value)) {
+                            setSelectedValues(value)
+                        } else {
+                            setSelectedValues((prev) =>
+                                prev.includes(value)
+                                    ? prev.filter((v) => v !== value)
+                                    : [...prev, value]
+                            )
+                        }
+                    }}
+                    enableSearch
+                    menuFooter={
+                        <div
+                            style={{
+                                padding: '12px 16px',
+                                borderTop: '1px solid #e5e7eb',
+                            }}
+                        >
+                            <button
+                                type="button"
+                                onClick={() =>
+                                    alert('Open the "Create new" modal here')
+                                }
+                                style={{
+                                    width: '100%',
+                                    padding: '8px 12px',
+                                    background: 'transparent',
+                                    border: '1px dashed #d1d5db',
+                                    borderRadius: 8,
+                                    cursor: 'pointer',
+                                    color: '#374151',
+                                    fontWeight: 500,
+                                }}
+                            >
+                                + Create new skill
+                            </button>
+                        </div>
+                    }
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Renders custom content (e.g. a "Create new" button) pinned at the bottom of the menu via the `menuFooter` prop. The footer is not selectable and stays visible even when the list is empty.',
             },
         },
     },

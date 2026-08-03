@@ -55,6 +55,7 @@ const previewComponents = {
     ),
     CodeBlockPreview: dyn(() => import('./Previews/CodeBlockPreview')),
     CardPreview: dyn(() => import('./Previews/CardPreview')),
+    TopbarPreview: dyn(() => import('./Previews/TopbarPreview')),
     UploadPreview: dyn(() => import('./Previews/UploadPreview')),
     KeyValuePairPreview: dyn(() => import('./Previews/KeyValuePairPreview')),
     StepperPreview: dyn(() => import('./Previews/StepperPreview')),
@@ -72,6 +73,7 @@ const previewComponents = {
         () => import('./Previews/KeyValuePairV2Preview')
     ),
     MenuV2Preview: dyn(() => import('./Previews/MenuV2Preview')),
+    ModalV2Preview: dyn(() => import('./Previews/ModalV2Preview')),
     MultiSelectV2Preview: dyn(() => import('./Previews/MultiSelectV2Preview')),
     PopoverV2Preview: dyn(() => import('./Previews/PopoverV2Preview')),
     ProgressBarV2Preview: dyn(() => import('./Previews/ProgressBarV2Preview')),
@@ -97,9 +99,13 @@ const previewComponents = {
     ),
     ButtonV2Preview: dyn(() => import('./Previews/ButtonV2Preview')),
     ButtonGroupV2Preview: dyn(() => import('./Previews/ButtonGroupV2Preview')),
+    CardV2Preview: dyn(() => import('./Previews/CardV2Preview')),
     CheckboxV2Preview: dyn(() => import('./Previews/CheckboxV2Preview')),
     RadioV2Preview: dyn(() => import('./Previews/RadioV2Preview')),
     SwitchV2Preview: dyn(() => import('./Previews/SwitchV2Preview')),
+    TimelinePreview: dyn(() => import('./Previews/TimelinePreview')),
+    TopbarV2Preview: dyn(() => import('./Previews/TopbarV2Preview')),
+    UploadV2Preview: dyn(() => import('./Previews/UploadV2Preview')),
 }
 
 interface PreviewWrapperProps {

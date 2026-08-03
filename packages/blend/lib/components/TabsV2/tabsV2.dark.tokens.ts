@@ -123,6 +123,12 @@ export const getTabsV2DarkTokens = (
                         },
                     },
                 },
+                borderBottom: {
+                    [TabsV2Variant.UNDERLINE]: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[700]}`,
+                    [TabsV2Variant.BOXED]: 'none',
+                    [TabsV2Variant.FLOATING]: 'none',
+                    [TabsV2Variant.PILLS]: 'none',
+                },
                 activeIndicator: {
                     height: foundationToken.border.width[2],
                     color: foundationToken.colors.gray[200],
@@ -457,6 +463,12 @@ export const getTabsV2DarkTokens = (
                             left: foundationToken.unit[4],
                         },
                     },
+                },
+                borderBottom: {
+                    [TabsV2Variant.UNDERLINE]: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[700]}`,
+                    [TabsV2Variant.BOXED]: 'none',
+                    [TabsV2Variant.FLOATING]: 'none',
+                    [TabsV2Variant.PILLS]: 'none',
                 },
                 activeIndicator: {
                     height: foundationToken.border.width[2],

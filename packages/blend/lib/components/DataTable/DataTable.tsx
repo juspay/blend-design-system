@@ -46,6 +46,7 @@ import {
     createSearchConfig,
     clearAllFiltersAndSearch,
     getColumnStyles,
+    haveSameFilterOptions,
 } from './utils'
 import DataTableHeader from './DataTableHeader'
 import TableHeader from './TableHeader'
@@ -155,10 +156,13 @@ const DataTable = forwardRef(
             onInsertRight,
             onDeleteColumn,
             getRowStyle,
+            enableRowAnimation,
+            rowAnimationConfig,
             tableBodyHeight,
             mobileColumnsToShow,
             enablePivotTable = false,
             pivotTableConfig,
+            dateLabel,
             ...rest
         }: DataTableProps<T>,
         ref: React.Ref<HTMLDivElement>
@@ -223,11 +227,10 @@ const DataTable = forwardRef(
 
                 if (matchingColumn) {
                     if (matchingColumn.isVisible !== false) {
-                        const updatedColumn = {
-                            ...col,
-                            ...matchingColumn,
-                        } as ColumnDefinition<T>
-                        updatedVisibleColumns.push(updatedColumn)
+                        // Take the incoming column as-is so props the consumer
+                        // removed (filterType, filterOptions) revert instead of
+                        // surviving from the previous state.
+                        updatedVisibleColumns.push(matchingColumn)
                     }
                 }
             })
@@ -260,6 +263,12 @@ const DataTable = forwardRef(
                         updatedCol.headerSubtext !==
                             originalCol.headerSubtext ||
                         updatedCol.header !== originalCol.header ||
+                        updatedCol.type !== originalCol.type ||
+                        updatedCol.filterType !== originalCol.filterType ||
+                        !haveSameFilterOptions(
+                            updatedCol.filterOptions,
+                            originalCol.filterOptions
+                        ) ||
                         (updatedCol.type === ColumnType.CUSTOM &&
                             updatedCol.renderCell !== originalCol.renderCell)
                     )
@@ -1708,6 +1717,14 @@ const DataTable = forwardRef(
                                             }
                                             selectAll={selectAll}
                                             sortConfig={sortConfig}
+                                            // serverSideFiltering filters via
+                                            // onFilterChange without needing
+                                            // enableFiltering, so it also
+                                            // counts as filtering being on.
+                                            enableFiltering={
+                                                enableFiltering ||
+                                                serverSideFiltering
+                                            }
                                             enableInlineEdit={enableInlineEdit}
                                             showActionsColumn={
                                                 showActionsColumn
@@ -1975,6 +1992,7 @@ const DataTable = forwardRef(
                                                           >
                                                         | undefined
                                                 }
+                                                dateLabel={dateLabel}
                                                 isLoading={
                                                     isLoading ||
                                                     (serverSidePagination &&
@@ -1994,6 +2012,12 @@ const DataTable = forwardRef(
                                                               index: number
                                                           ) => boolean)
                                                         | undefined
+                                                }
+                                                enableRowAnimation={
+                                                    enableRowAnimation
+                                                }
+                                                rowAnimationConfig={
+                                                    rowAnimationConfig
                                                 }
                                             />
                                         )}

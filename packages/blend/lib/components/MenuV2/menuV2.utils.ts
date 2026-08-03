@@ -1,5 +1,9 @@
 import type { ReactNode } from 'react'
-import type { MenuV2GroupType, MenuV2ItemType } from './menuV2.types'
+import type {
+    MenuV2GroupType,
+    MenuV2ItemType,
+    MenuV2SearchSortFn,
+} from './menuV2.types'
 import type { MenuV2TokensType } from './menuV2.tokens'
 
 import { MenuV2ItemActionType, MenuV2ItemVariant } from './menuV2.types'
@@ -9,6 +13,43 @@ type MenuV2ItemTokens = MenuV2TokensType['group']['item']
 
 export const getItemSlots = (item: MenuV2ItemType): [ReactNode?] => {
     return [item.label.leftSlot]
+}
+
+export enum MenuV2MatchRank {
+    EXACT = 0,
+    PREFIX = 1,
+    SUBSTRING = 2,
+    NONE = 3,
+}
+
+const getFieldMatchRank = (
+    fieldValue: string | undefined,
+    lower: string
+): MenuV2MatchRank => {
+    if (!fieldValue) return MenuV2MatchRank.NONE
+    const value = fieldValue.toLowerCase()
+    if (value === lower) return MenuV2MatchRank.EXACT
+    if (value.startsWith(lower)) return MenuV2MatchRank.PREFIX
+    if (value.includes(lower)) return MenuV2MatchRank.SUBSTRING
+    return MenuV2MatchRank.NONE
+}
+
+export const getItemMatchRank = (
+    item: MenuV2ItemType,
+    lower: string
+): MenuV2MatchRank => {
+    return Math.min(
+        getFieldMatchRank(item.label.text, lower),
+        getFieldMatchRank(item.subLabel, lower)
+    ) as MenuV2MatchRank
+}
+
+export const defaultSearchSortFn: MenuV2SearchSortFn = (items, searchText) => {
+    if (!searchText.trim()) return items
+    const lower = searchText.toLowerCase()
+    return [...items].sort(
+        (a, b) => getItemMatchRank(a, lower) - getItemMatchRank(b, lower)
+    )
 }
 
 export const filterMenuV2Item = (
@@ -140,7 +181,8 @@ export const flattenMenuV2Groups = (
 
 export const filterMenuV2Groups = (
     groups: MenuV2GroupType[],
-    searchText: string
+    searchText: string,
+    searchSortFn: MenuV2SearchSortFn = defaultSearchSortFn
 ): MenuV2GroupType[] => {
     if (!searchText) return groups
     const lower = searchText.toLowerCase()
@@ -150,7 +192,7 @@ export const filterMenuV2Groups = (
                 .map((item) => filterMenuV2Item(item, lower))
                 .filter(Boolean) as MenuV2ItemType[]
             if (filteredItems.length === 0) return null
-            return { ...group, items: filteredItems }
+            return { ...group, items: searchSortFn(filteredItems, searchText) }
         })
         .filter(Boolean) as MenuV2GroupType[]
 }

@@ -2,7 +2,12 @@ import React from 'react'
 import path from 'path'
 import { SharedLayout } from '@/components/layout'
 import { Sidebar } from '@/components/docs'
-import { scanDirectory, buildVersionPeerMap, DocItem } from './utils'
+import {
+    scanDirectory,
+    buildVersionPeerMap,
+    buildDocVersionMap,
+    DocItem,
+} from './utils'
 import { DocsVersionProvider } from './utils/DocsVersionContext'
 
 function buildSidebarItemsWithCategories(fileBasedItems: DocItem[]): DocItem[] {
@@ -55,6 +60,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
 
     // Build the peer map from the raw scan (before category grouping).
     const versionPeerMap = buildVersionPeerMap(fileBasedItems)
+    const docVersionMap = buildDocVersionMap(fileBasedItems)
 
     const asideStyle: React.CSSProperties = {
         position: 'sticky',
@@ -65,7 +71,10 @@ const layout = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <DocsVersionProvider value={versionPeerMap}>
+        <DocsVersionProvider
+            peerMap={versionPeerMap}
+            versionMap={docVersionMap}
+        >
             <SharedLayout
                 baseRoute="/docs"
                 contentPath="app/docs/content"
@@ -73,7 +82,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
             >
                 <div className="flex w-full">
                     <aside
-                        className="hidden lg:block w-56 max-w-56 shrink-0 transition-none"
+                        className="hidden lg:block w-56 max-w-56 shrink-0 transition-none border-r border-border"
                         style={asideStyle}
                     >
                         <Sidebar items={sidebarItems} baseRoute="/docs" />

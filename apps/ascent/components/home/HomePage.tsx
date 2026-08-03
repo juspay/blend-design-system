@@ -5,7 +5,7 @@ import DeveloperDesignerSections from './sections/DeveloperDesignerSections'
 import LaunchVideoSection from './sections/LaunchVideoSection'
 import ShowcaseSection from './sections/ShowcaseSection'
 import PageFooter from './PageFooter'
-import { SharedLayout } from '@/components'
+import SharedLayout from '@/components/layout/SharedLayout'
 
 export default function HomePage() {
     return (

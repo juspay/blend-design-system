@@ -5,7 +5,7 @@ import Directory from '../Directory/Directory'
 import { normalizeDirectoryData } from '../Directory/utils'
 import SidebarHeader from './SidebarHeader'
 import SidebarFooter from './SidebarFooter'
-import type { DirectoryData } from '../Directory/types'
+import type { DirectoryData, DirectoryProps } from '../Directory/types'
 import type { SidebarMerchantInfo, SidebarStateChangeType } from './types'
 
 const DirectoryContainer = styled(Block)<{
@@ -45,6 +45,14 @@ export type SidebarContentProps = {
     footer?: React.ReactNode
     setIsHovering?: (isHovering: boolean) => void
     sidebarState?: SidebarStateChangeType
+    showHierarchyLines?: DirectoryProps['showHierarchyLines']
+    hierarchyLineBorderRadius?: DirectoryProps['hierarchyLineBorderRadius']
+    expandedItems?: DirectoryProps['expandedItems']
+    defaultExpandedItems?: DirectoryProps['defaultExpandedItems']
+    onExpandedItemsChange?: DirectoryProps['onExpandedItemsChange']
+    onItemExpand?: DirectoryProps['onItemExpand']
+    enableVirtualization?: DirectoryProps['enableVirtualization']
+    virtualization?: DirectoryProps['virtualization']
 }
 
 const SidebarContent: React.FC<SidebarContentProps> = ({
@@ -66,6 +74,14 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
     footer,
     setIsHovering,
     sidebarState = 'expanded',
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
+    expandedItems,
+    defaultExpandedItems,
+    onExpandedItemsChange,
+    onItemExpand,
+    enableVirtualization = false,
+    virtualization,
 }) => {
     const directoryData = normalizeDirectoryData(data)
 
@@ -84,6 +100,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
             style={{
                 willChange: 'width',
                 transform: 'translateZ(0)',
+                contain: 'layout paint',
             }}
         >
             <SidebarHeader
@@ -113,6 +130,14 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                     onActiveItemChange={onActiveItemChange}
                     defaultActiveItem={defaultActiveItem}
                     iconOnlyMode={iconOnlyMode}
+                    showHierarchyLines={showHierarchyLines}
+                    hierarchyLineBorderRadius={hierarchyLineBorderRadius}
+                    expandedItems={expandedItems}
+                    defaultExpandedItems={defaultExpandedItems}
+                    onExpandedItemsChange={onExpandedItemsChange}
+                    onItemExpand={onItemExpand}
+                    enableVirtualization={enableVirtualization}
+                    virtualization={virtualization}
                 />
             </DirectoryContainer>
 

@@ -1,0 +1,160 @@
+---
+version: 2
+title: Modal
+description: The ModalV2 component creates focused dialogs with configurable header, footer actions, close behavior, mobile drawer support, dimensions, and skeleton states.
+category: Feedback
+tags:
+    - modal
+    - modal-v2
+    - component
+    - dialog
+    - overlay
+RepoFolderName: ModalV2
+StorybookLink: components-modal-v2--docs
+---
+
+<ModalV2Preview />
+
+## Usage
+
+```tsx
+import {
+    ButtonV2,
+    ButtonV2Size,
+    ButtonV2SubType,
+    ButtonV2Type,
+    ModalV2,
+} from '@juspay/blend-design-system'
+import { useState } from 'react'
+
+function MyComponent() {
+    const [isOpen, setIsOpen] = useState(false)
+
+    return (
+        <>
+            <ButtonV2
+                text="Open Modal"
+                buttonType={ButtonV2Type.PRIMARY}
+                size={ButtonV2Size.MEDIUM}
+                subType={ButtonV2SubType.DEFAULT}
+                onClick={() => setIsOpen(true)}
+            />
+
+            <ModalV2
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Approve payout"
+                subtitle="Review the payout details before approving."
+                primaryAction={{
+                    text: 'Approve',
+                    buttonType: ButtonV2Type.PRIMARY,
+                    onClick: () => setIsOpen(false),
+                }}
+                secondaryAction={{
+                    text: 'Cancel',
+                    buttonType: ButtonV2Type.SECONDARY,
+                    onClick: () => setIsOpen(false),
+                }}
+            >
+                <p>This action will approve the selected payout request.</p>
+            </ModalV2>
+        </>
+    )
+}
+```
+
+## API Reference
+
+<DocsTypeTable
+    data={[
+        [
+            { content: 'isOpen', hintText: 'Controls modal visibility.' },
+            { content: 'boolean', hintText: 'Visible state' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onClose',
+                hintText: 'Called when the modal should close.',
+            },
+            { content: '() => void', hintText: 'Close handler' },
+            { content: '' },
+        ],
+        [
+            { content: 'title', hintText: 'Header title text.' },
+            { content: 'string', hintText: 'Title' },
+            { content: '' },
+        ],
+        [
+            { content: 'subtitle', hintText: 'Secondary header description.' },
+            { content: 'string', hintText: 'Subtitle' },
+            { content: '' },
+        ],
+        [
+            { content: 'children', hintText: 'Modal body content.' },
+            { content: 'ReactNode', hintText: 'Body content' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'primaryAction',
+                hintText: 'Primary ButtonV2 action configuration.',
+            },
+            {
+                content: 'ModalV2ButtonAction',
+                hintText: 'ButtonV2 props without buttonGroupPosition',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'secondaryAction',
+                hintText: 'Secondary ButtonV2 action configuration.',
+            },
+            {
+                content: 'ModalV2ButtonAction',
+                hintText: 'ButtonV2 props without buttonGroupPosition',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showCloseButton',
+                hintText: 'Shows or hides the close button.',
+            },
+            { content: 'boolean', hintText: 'Close affordance' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'closeOnBackdropClick',
+                hintText: 'Allows backdrop click to close the modal.',
+            },
+            { content: 'boolean', hintText: 'Backdrop behavior' },
+            { content: 'true' },
+        ],
+        [
+            {
+                content: 'dimensions',
+                hintText: 'Custom width, height, min/max dimensions.',
+            },
+            { content: 'ModalV2Dimensions', hintText: 'CSS size values' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'skeleton',
+                hintText: 'Shows body skeleton loading state.',
+            },
+            {
+                content: 'ModalV2BodySkeletonProps',
+                hintText: 'Skeleton config',
+            },
+            { content: '' },
+        ],
+    ]}
+/>
+
+## Component Tokens
+
+You can style the ModalV2 component using the `MODALV2` component token.

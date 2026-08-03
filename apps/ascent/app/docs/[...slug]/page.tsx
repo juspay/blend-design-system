@@ -11,11 +11,32 @@ import { Metadata } from 'next'
 import TableOfContents from '@/components/Navigation/TableOfContents'
 import { DocsPage } from '@/components/docs'
 import { MobileSidebarTrigger } from './PageClient'
-import { scanDirectory, buildSidebarItemsWithCategories } from '../utils'
+import {
+    scanDirectory,
+    buildSidebarItemsWithCategories,
+    buildVersionPeerMap,
+    type DocItem,
+} from '../utils'
 
-const sidebarItems = buildSidebarItemsWithCategories(
-    scanDirectory(path.join(process.cwd(), 'app', 'docs', 'content'))
+const fileBasedItems = scanDirectory(
+    path.join(process.cwd(), 'app', 'docs', 'content')
 )
+const sidebarItems = buildSidebarItemsWithCategories(fileBasedItems)
+const versionPeerMap = buildVersionPeerMap(fileBasedItems)
+
+const findDocItemBySlug = (
+    items: DocItem[],
+    slug: string
+): DocItem | undefined => {
+    for (const item of items) {
+        if (item.slug === slug) return item
+
+        if (item.children) {
+            const childMatch = findDocItemBySlug(item.children, slug)
+            if (childMatch) return childMatch
+        }
+    }
+}
 
 const getCompiledMDX = cache(async (filePath: string) => {
     const fileContent = fs.readFileSync(filePath, 'utf8')
@@ -121,6 +142,22 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
         slugArray,
         metadata.title || 'Untitled'
     )
+    const currentSlug = slugArray.at(-1)
+    const v2PeerSlug = currentSlug ? versionPeerMap.get(currentSlug) : null
+    const v2Peer = v2PeerSlug
+        ? findDocItemBySlug(fileBasedItems, v2PeerSlug)
+        : null
+    const v1Warning =
+        slugArray[0] === 'components' && metadata.version === 1
+            ? {
+                  replacementHref: v2PeerSlug
+                      ? `/docs/components/${v2PeerSlug}`
+                      : undefined,
+                  replacementLabel: v2Peer?.name
+                      ? `${v2Peer.name} V2`
+                      : undefined,
+              }
+            : undefined
 
     const asideStyle: React.CSSProperties = {
         position: 'sticky',
@@ -138,13 +175,14 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
                     content={content}
                     breadcrumbItems={breadcrumbItems}
                     rawMarkdown={fileContent}
+                    v1Warning={v1Warning}
                     mobileTrigger={
                         <MobileSidebarTrigger sidebarItems={sidebarItems} />
                     }
                 />
             </div>
             <aside
-                className="w-56 max-w-56 shrink-0 hidden xl:block transition-none"
+                className="w-56 max-w-56 shrink-0 hidden xl:block transition-none border-l border-border"
                 style={asideStyle}
             >
                 <div className="px-5 py-3">

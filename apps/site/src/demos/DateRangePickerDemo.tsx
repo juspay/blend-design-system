@@ -140,6 +140,16 @@ const DateRangePickerDemo = () => {
         endDate: new Date(),
     })
 
+    // Bounded & disabled dates demos
+    const [minMaxRange, setMinMaxRange] = useState<DateRange | undefined>({
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+    })
+    const [disabledDaysRange, setDisabledDaysRange] = useState<
+        DateRange | undefined
+    >()
+    const [maxRangeRange, setMaxRangeRange] = useState<DateRange | undefined>()
+
     // Simple yesterday range - component handles timezone internally
     const [yesterdayRange, setYesterdayRange] = useState<DateRange>(() => {
         const yesterday = new Date()
@@ -202,6 +212,33 @@ const DateRangePickerDemo = () => {
         startDate: new Date(),
         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     })
+
+    // State for the popover clipping reproduction
+    const [popoverClipTopRange, setPopoverClipTopRange] = useState<DateRange>({
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    })
+
+    // State for custom preset trigger label reproduction (bug #DateRangePicker)
+    // "Last 2 Hours" is a non-built-in duration (2h is not 30m/1h/6h/24h),
+    // so the trigger should show "Last 2 Hours" but currently shows "Custom".
+    const [customPresetLabelRange, setCustomPresetLabelRange] =
+        useState<DateRange>(() => {
+            const now = new Date()
+            return {
+                startDate: new Date(now.getTime() - 2 * 60 * 60 * 1000),
+                endDate: now,
+            }
+        })
+
+    const handleCustomPresetLabelChange = (range: DateRange) => {
+        setCustomPresetLabelRange(range)
+    }
+    const [popoverClipControlRange, setPopoverClipControlRange] =
+        useState<DateRange>({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        })
 
     // Console logging functions for date changes
     const handlePlaygroundRangeChange = (range: DateRange) => {
@@ -1726,6 +1763,70 @@ const DateRangePickerDemo = () => {
                             <div className="text-gray-600">
                                 Check console logs when you select presets to
                                 see the callback data
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Custom Preset Trigger Label Reproduction */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            🐛 Custom Preset Trigger Label
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            The trigger should show{' '}
+                            <strong>&quot;Last 2 Hours&quot;</strong> (the
+                            custom preset&apos;s label), but it shows{' '}
+                            <strong>&quot;Custom&quot;</strong> because the
+                            active-preset detector does not consult
+                            customPresets. 2h is not a built-in duration
+                            (30m/1h/6h/24h), so it falls back to CUSTOM. Click
+                            the preset in the dropdown — the range applies, but
+                            the trigger label reverts to &quot;Custom&quot; on
+                            the next render.
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={customPresetLabelRange}
+                                onChange={handleCustomPresetLabelChange}
+                                showPresets={true}
+                                showDateTimePicker={true}
+                                formatConfig={{
+                                    preset: DateFormatPreset.MEDIUM_RANGE,
+                                    includeTime: true,
+                                    timeFormat: '12h',
+                                }}
+                                customPresets={[
+                                    {
+                                        id: 'last2Hours',
+                                        label: 'Last 2 Hours',
+                                        getDateRange: () => {
+                                            const now = new Date()
+                                            return {
+                                                startDate: new Date(
+                                                    now.getTime() -
+                                                        2 * 60 * 60 * 1000
+                                                ),
+                                                endDate: now,
+                                            }
+                                        },
+                                    },
+                                    DateRangePreset.LAST_30_MINUTES,
+                                    DateRangePreset.LAST_1_HOUR,
+                                    DateRangePreset.LAST_6_HOURS,
+                                    DateRangePreset.LAST_24_HOURS,
+                                ]}
+                            />
+                        </div>
+                        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded text-xs font-mono">
+                            <div className="text-red-600 mb-1">
+                                🐛 Reproduction: trigger shows
+                                &quot;Custom&quot; instead of &quot;Last 2
+                                Hours&quot;
+                            </div>
+                            <div className="text-gray-600">
+                                Expected: &quot;Last 2 Hours&quot; (custom
+                                label). Actual: &quot;Custom&quot; (built-in
+                                fallback).
                             </div>
                         </div>
                     </div>
@@ -4167,6 +4268,220 @@ const DateRangePickerDemo = () => {
                         handles UI, formatting, preset detection, and timezone
                         conversion. Timezone support uses native Intl API.
                     </p>
+                </div>
+            </div>
+
+            {/* Bounded & Disabled Dates */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Bounded &amp; Disabled Dates
+                </h2>
+                <p className="text-gray-600">
+                    <code className="bg-gray-100 px-1 rounded">minDate</code>,{' '}
+                    <code className="bg-gray-100 px-1 rounded">maxDate</code>,{' '}
+                    <code className="bg-gray-100 px-1 rounded">
+                        customDisableDates
+                    </code>{' '}
+                    and{' '}
+                    <code className="bg-gray-100 px-1 rounded">
+                        maxRangeDays
+                    </code>{' '}
+                    are enforced in both the cell styling <em>and</em> the
+                    click/keyboard handlers — disabled dates cannot be selected
+                    via mouse or Enter/Space.
+                </p>
+
+                {/* minDate / maxDate */}
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                        minDate / maxDate — hard window
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        Only dates within{' '}
+                        <code className="bg-white px-1 rounded">minDate</code>{' '}
+                        and{' '}
+                        <code className="bg-white px-1 rounded">maxDate</code>{' '}
+                        are selectable. Days outside the window render disabled
+                        and ignore clicks and keyboard activation.
+                    </p>
+                    <DateRangePicker
+                        value={minMaxRange}
+                        onChange={setMinMaxRange}
+                        minDate={
+                            new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth(),
+                                1
+                            )
+                        }
+                        maxDate={
+                            new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth() + 1,
+                                0
+                            )
+                        }
+                        showDateTimePicker={false}
+                        showPresets={false}
+                    />
+                </div>
+
+                {/* customDisableDates — Sundays disabled */}
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                        customDisableDates — block Sundays
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        The callback receives{' '}
+                        <code className="bg-white px-1 rounded">
+                            (date, currentRange)
+                        </code>
+                        . Here Sundays are disabled. Try focusing a Sunday cell
+                        and pressing Enter — it stays blocked.
+                    </p>
+                    <DateRangePicker
+                        value={disabledDaysRange}
+                        onChange={setDisabledDaysRange}
+                        customDisableDates={(date) => date.getDay() === 0}
+                        showDateTimePicker={false}
+                        showPresets={false}
+                    />
+                </div>
+
+                {/* maxRangeDays */}
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-gray-700">
+                        maxRangeDays — cap in-progress range (7 days)
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        Pick a start date — days more than 7 away from the start
+                        become disabled until an end date is chosen. The cap is
+                        lifted once both start and end are set (a new click
+                        starts a fresh range).
+                    </p>
+                    <DateRangePicker
+                        value={maxRangeRange}
+                        onChange={setMaxRangeRange}
+                        maxRangeDays={7}
+                        showDateTimePicker={false}
+                        showPresets={false}
+                    />
+                </div>
+
+                {/* Combined */}
+                <div className="p-4 border border-indigo-200 rounded-lg bg-indigo-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-indigo-700">
+                        Combined — window + disabled days + range cap
+                    </h3>
+                    <p className="text-sm text-indigo-600">
+                        All three constraints active at once: bounded to this
+                        month, Sundays disabled, max 7-day range.
+                    </p>
+                    <DateRangePicker
+                        value={maxRangeRange}
+                        onChange={setMaxRangeRange}
+                        minDate={
+                            new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth(),
+                                1
+                            )
+                        }
+                        maxDate={
+                            new Date(
+                                new Date().getFullYear(),
+                                new Date().getMonth() + 1,
+                                0
+                            )
+                        }
+                        customDisableDates={(date) => date.getDay() === 0}
+                        maxRangeDays={7}
+                        showDateTimePicker={false}
+                        showPresets={false}
+                    />
+                </div>
+            </div>
+
+            {/* Calendar Popover Clipping Reproduction */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-bold">
+                    Calendar Popover Clipping (Bug Reproduction)
+                </h2>
+                <p className="text-gray-600">
+                    When the trigger sits low in the viewport, the tall calendar
+                    + time popover (~500-600px) flips to{' '}
+                    <code className="bg-gray-100 px-1 rounded">side="top"</code>{' '}
+                    via Radix's <code>avoidCollisions</code>, but the{' '}
+                    <code>[data-popover]</code> content never reads{' '}
+                    <code>--radix-popper-available-height</code>. The top of the
+                    calendar (weekday headers / first rows) overflows above the
+                    viewport and gets clipped.
+                </p>
+
+                {/* Control: top of page — room below, renders fine */}
+                <div className="p-4 border border-gray-200 rounded-lg bg-gray-50 space-y-3">
+                    <h3 className="text-lg font-semibold">
+                        Control — Top of page (room below)
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                        Opens downward without flipping. Renders correctly.
+                    </p>
+                    <DateRangePicker
+                        value={popoverClipControlRange}
+                        onChange={setPopoverClipControlRange}
+                        showDateTimePicker
+                        showDateInput
+                        showPresets={false}
+                        popoverConfig={{ side: 'bottom', sideOffset: 4 }}
+                    />
+                </div>
+
+                {/* Spacer to push the next picker low in the viewport */}
+                <div
+                    aria-hidden
+                    className="w-full bg-gradient-to-b from-gray-100 to-gray-200 rounded-lg flex items-center justify-center text-gray-400"
+                    style={{ height: '60vh' }}
+                >
+                    <span className="text-sm">
+                        ↓ Scroll down — the buggy picker is at the bottom ↓
+                    </span>
+                </div>
+
+                {/* Buggy case: near the bottom of a tall page */}
+                <div className="p-4 border border-red-200 rounded-lg bg-red-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-red-800">
+                        Reproduction — Near bottom of viewport
+                    </h3>
+                    <p className="text-sm text-red-700">
+                        Open this picker. There isn't ~600px of room below, so
+                        the popover flips up. The top of the calendar overflows
+                        above the viewport and is clipped — no internal scroll,
+                        no cap to available height.
+                    </p>
+                    <div style={{ paddingBottom: 16 }}>
+                        <DateRangePicker
+                            value={popoverClipTopRange}
+                            onChange={setPopoverClipTopRange}
+                            showDateTimePicker
+                            showDateInput
+                            showPresets={false}
+                            popoverConfig={{ side: 'bottom', sideOffset: 4 }}
+                        />
+                    </div>
+                </div>
+
+                {/* No workaround applied */}
+                <div className="p-4 border border-blue-200 rounded-lg bg-blue-50 space-y-3">
+                    <h3 className="text-lg font-semibold text-blue-800">
+                        No workaround applied
+                    </h3>
+                    <p className="text-sm text-blue-700">
+                        The consumer-side CSS workaround has been removed from
+                        this page so the broken state above is visible.
+                    </p>
+                    <pre className="text-xs bg-white border border-blue-100 rounded p-3 overflow-auto">
+                        {`/* no workaround active */`}
+                    </pre>
                 </div>
             </div>
         </div>

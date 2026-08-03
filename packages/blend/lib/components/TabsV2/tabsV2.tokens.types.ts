@@ -25,6 +25,9 @@ export type TabsV2TokensType = {
                 }
             }
         }
+        borderBottom: {
+            [key in TabsV2Variant]: CSSObject['borderBottom']
+        }
         activeIndicator: {
             height: CSSObject['height']
             color: CSSObject['color']

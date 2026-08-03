@@ -14,6 +14,7 @@ import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import { useSectionScroll } from '../../hooks/useSectionScroll'
+import { getItemPathSegment } from './utils'
 
 type SectionStateContextValue = {
     sectionStates: Map<number, boolean>
@@ -55,6 +56,9 @@ const Section = ({
     onNavigateBetweenSections,
     idPrefix,
     iconOnlyMode = false,
+    showHierarchyLines = false,
+    hierarchyLineBorderRadius = 0,
+    enableParentSelection = false,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const sectionStateContext = useSectionState()
@@ -204,6 +208,7 @@ const Section = ({
                         color={tokens.section.header.label.color}
                         fontWeight={tokens.section.header.label.fontWeight}
                         fontSize={tokens.section.header.label.fontSize}
+                        style={{ whiteSpace: 'nowrap' }}
                     >
                         {section.label.toUpperCase()}
                     </Text>
@@ -256,8 +261,16 @@ const Section = ({
                             key={itemIdx}
                             item={item}
                             index={itemIdx}
-                            itemPath={item.label}
+                            itemPath={getItemPathSegment(item)}
                             iconOnlyMode={iconOnlyMode}
+                            showHierarchyLines={showHierarchyLines}
+                            hierarchyLineBorderRadius={
+                                hierarchyLineBorderRadius
+                            }
+                            isLast={
+                                itemIdx === (section.items?.length || 0) - 1
+                            }
+                            enableParentSelection={enableParentSelection}
                             onNavigate={handleItemNavigation}
                         />
                     ))}

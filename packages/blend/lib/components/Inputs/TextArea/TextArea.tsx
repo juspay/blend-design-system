@@ -153,12 +153,14 @@ const TextArea = ({
                     resize={resize}
                     paddingX={paddingX}
                     paddingTop={
-                        isSmallScreen && inputFocusedOrWithValue
+                        label && isSmallScreen && inputFocusedOrWithValue
                             ? paddingY + 14
                             : paddingY
                     }
                     paddingBottom={
-                        isSmallScreen && inputFocusedOrWithValue ? 0 : paddingY
+                        label && isSmallScreen && inputFocusedOrWithValue
+                            ? 0
+                            : paddingY
                     }
                     border={
                         textAreaTokens.inputContainer.border[

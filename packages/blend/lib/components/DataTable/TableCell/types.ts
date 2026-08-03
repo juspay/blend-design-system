@@ -15,6 +15,7 @@ export type TableCellProps<T extends Record<string, unknown>> = {
     hasCustomBackground?: boolean
     onFieldChange: (value: unknown) => void
     getDisplayValue?: (value: unknown, column: ColumnDefinition<T>) => unknown
+    dateLabel?: string
     'data-row-index'?: number
     'data-col-index'?: number
     tabIndex?: number

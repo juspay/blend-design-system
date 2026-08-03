@@ -97,6 +97,7 @@ export type MultiSelectV2MenuProps = {
     allowCustomValue?: boolean
     customValueLabel?: string
     menuId?: string
+    menuFooter?: ReactNode
 }
 
 export type MultiSelectV2MenuRootProps = SelectV2MenuRootPropsBase & {
@@ -109,7 +110,16 @@ export type MultiSelectV2Props = Omit<
     'style' | 'className' | 'onChange' | 'slot'
 > & {
     selectedValues: string[]
-    onChange: (value: string | string[]) => void
+    /**
+     * Legacy per-item toggle callback. Prefer `onSelectionChange` for the
+     * complete resulting selection.
+     */
+    onChange?: (value: string | string[]) => void
+    /**
+     * Recommended callback. Fires once per accepted user gesture with the
+     * complete resulting selection.
+     */
+    onSelectionChange?: (selectedValues: string[]) => void
     items?: MultiSelectV2GroupType[]
 
     label: string
@@ -170,4 +180,5 @@ export type MultiSelectV2Props = Omit<
     showClearButton?: boolean
     onClearAllClick?: () => void
     multiSelectGroupPosition?: 'center' | 'left' | 'right'
+    menuFooter?: ReactNode
 }

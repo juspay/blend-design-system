@@ -9,7 +9,9 @@ import {
     TagColumnProps,
     DropdownColumnProps,
     DateColumnProps,
+    DateFormat,
     PivotAggregationType,
+    RowAnimationConfig,
 } from '../../../../packages/blend/lib/components/DataTable/types'
 import DataTable from '../../../../packages/blend/lib/components/DataTable/DataTable'
 import type { PivotTableConfig } from '../../../../packages/blend/lib/components/DataTable/PivotTableModal/types'
@@ -131,7 +133,7 @@ const SimpleDataTableExample = () => {
             price: 2499.99,
             launchDate: {
                 date: '2023-10-30',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -187,7 +189,7 @@ const SimpleDataTableExample = () => {
             price: 1199.99,
             launchDate: {
                 date: '2023-09-22',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -243,7 +245,7 @@ const SimpleDataTableExample = () => {
             price: 0, // Zero price to show hyphen (will be handled as empty)
             launchDate: {
                 date: '', // Empty date to show hyphen
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Discontinued',
@@ -299,7 +301,7 @@ const SimpleDataTableExample = () => {
             price: 3999.99,
             launchDate: {
                 date: '2023-06-05',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -361,7 +363,7 @@ const SimpleDataTableExample = () => {
             price: 599.99,
             launchDate: {
                 date: '2023-09-22',
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -417,7 +419,7 @@ const SimpleDataTableExample = () => {
             price: 1299.99,
             launchDate: {
                 date: 'invalid-date', // Invalid date to show hyphen
-                format: 'MMM dd, yyyy',
+                format: 'MMM DD, YYYY',
             },
             status: {
                 text: 'Active',
@@ -1392,6 +1394,383 @@ const SimpleDataTableExample = () => {
                         />
                     </div>
                 </Modal>
+            </div>
+        </div>
+    )
+}
+
+// Date column: custom format demo
+const DateColumnFormatDemo = () => {
+    type OrderRow = {
+        id: number
+        orderId: string
+        placedAt: DateColumnProps
+        nextBatch: DateColumnProps
+    }
+
+    const orderData: OrderRow[] = [
+        {
+            id: 1,
+            orderId: 'ORD-1001',
+            placedAt: { date: '2026-06-24T23:30:00Z' },
+            nextBatch: { date: '2026-06-28T00:15:00Z', format: 'DD/MM/YYYY' },
+        },
+        {
+            id: 2,
+            orderId: 'ORD-1002',
+            placedAt: { date: '2026-06-10T01:15:00Z' },
+            nextBatch: { date: '2026-06-30T23:45:00Z', format: 'DD/MM/YYYY' },
+        },
+        {
+            id: 3,
+            orderId: 'ORD-1003',
+            placedAt: { date: '2026-05-25T22:45:00Z' },
+            nextBatch: { date: '2026-06-29T22:30:00Z', format: 'DD/MM/YYYY' },
+        },
+    ]
+
+    const buildColumns = (
+        field: keyof OrderRow,
+        dateFormat: DateFormat,
+        header: string
+    ): ColumnDefinition<OrderRow>[] => [
+        {
+            field: 'orderId',
+            header: 'Order ID',
+            type: ColumnType.TEXT,
+            minWidth: '100px',
+            maxWidth: '120px',
+        },
+        {
+            field,
+            header,
+            type: ColumnType.DATE,
+            dateFormat,
+            minWidth: '180px',
+            maxWidth: '240px',
+        },
+    ]
+
+    const demoTables: {
+        title: string
+        field: keyof OrderRow
+        format: DateFormat
+        header: string
+        note: string
+    }[] = [
+        {
+            title: 'DD MMM YYYY',
+            field: 'placedAt',
+            format: 'DD MMM YYYY',
+            header: 'Placed',
+            note: 'Short month name, no time. The default when no format is set.',
+        },
+        {
+            title: 'DD/MM/YYYY',
+            field: 'placedAt',
+            format: 'DD/MM/YYYY',
+            header: 'Placed',
+            note: 'Numeric day/month/year, no time.',
+        },
+        {
+            title: 'MM/DD/YYYY',
+            field: 'placedAt',
+            format: 'MM/DD/YYYY',
+            header: 'Placed',
+            note: 'US-style numeric month/day/year.',
+        },
+        {
+            title: 'YYYY-MM-DD',
+            field: 'placedAt',
+            format: 'YYYY-MM-DD',
+            header: 'Placed',
+            note: 'ISO 8601 date only.',
+        },
+        {
+            title: 'DD MMM YYYY, hh:mm A',
+            field: 'placedAt',
+            format: 'DD MMM YYYY, hh:mm A',
+            header: 'Placed',
+            note: 'Short month + 12-hour clock with AM/PM. Default when showTime is true.',
+        },
+        {
+            title: 'DD MMM YYYY, HH:mm',
+            field: 'placedAt',
+            format: 'DD MMM YYYY, HH:mm',
+            header: 'Placed',
+            note: 'Short month + 24-hour clock.',
+        },
+        {
+            title: 'MMM DD, YYYY',
+            field: 'placedAt',
+            format: 'MMM DD, YYYY',
+            header: 'Placed',
+            note: 'Short month name first, US-style ordering.',
+        },
+        {
+            title: 'YYYY/MM/DD HH:mm',
+            field: 'placedAt',
+            format: 'YYYY/MM/DD HH:mm',
+            header: 'Placed',
+            note: 'Sortable year-first numeric date with 24-hour time.',
+        },
+        {
+            title: 'HH:mm:ss',
+            field: 'placedAt',
+            format: 'HH:mm:ss',
+            header: 'Time',
+            note: 'Time-only, 24-hour with seconds.',
+        },
+        {
+            title: 'Cell overrides column',
+            field: 'nextBatch',
+            format: 'YYYY-MM-DD',
+            header: 'Next Batch',
+            note: 'Column says YYYY-MM-DD, but each cell provides format: "DD/MM/YYYY" which wins.',
+        },
+    ]
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0f4ff',
+                    borderRadius: '8px',
+                    border: '1px solid #c7d2fe',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#3730a3',
+                    }}
+                >
+                    📅 Date Column: Custom Format
+                </h3>
+                <p
+                    style={{
+                        margin: '0 0 12px 0',
+                        fontSize: '14px',
+                        color: '#312e81',
+                        maxWidth: '760px',
+                    }}
+                >
+                    Demonstrates the date fixes: (1) date cells inherit the
+                    standard 14px body font size; (2) a custom format string can
+                    be passed per-column via <code>dateFormat</code> or per-cell
+                    via <code>DateColumnProps.format</code>; (3) a small muted
+                    date label such as <code>(IST)</code> can be appended via{' '}
+                    <code>dateLabel</code> at the table, column, or cell level.
+                </p>
+            </div>
+
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                    gap: '24px',
+                }}
+            >
+                {demoTables.map((demo) => (
+                    <div key={demo.title}>
+                        <h4
+                            style={{
+                                margin: '0 0 8px 0',
+                                fontSize: '14px',
+                                fontWeight: 600,
+                                color: '#3730a3',
+                            }}
+                        >
+                            {demo.title}
+                        </h4>
+                        <p
+                            style={{
+                                margin: '0 0 12px 0',
+                                fontSize: '13px',
+                                color: '#6b7280',
+                            }}
+                        >
+                            {demo.note}{' '}
+                            <code style={{ color: '#3730a3' }}>
+                                {demo.format}
+                            </code>
+                        </p>
+                        <DataTable
+                            data={
+                                orderData as unknown as Record<
+                                    string,
+                                    unknown
+                                >[]
+                            }
+                            columns={
+                                buildColumns(
+                                    demo.field,
+                                    demo.format,
+                                    demo.header
+                                ) as unknown as ColumnDefinition<
+                                    Record<string, unknown>
+                                >[]
+                            }
+                            idField="id"
+                            enableSearch={false}
+                            showFooter={false}
+                            showHeader={true}
+                        />
+                    </div>
+                ))}
+
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        Table-level dateLabel
+                    </h4>
+                    <p
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '13px',
+                            color: '#6b7280',
+                        }}
+                    >
+                        Applies <code>dateLabel=&quot;(IST)&quot;</code> to the
+                        whole table. Every date cell gets the muted suffix.
+                    </p>
+                    <DataTable
+                        data={orderData as unknown as Record<string, unknown>[]}
+                        columns={
+                            buildColumns(
+                                'placedAt',
+                                'MMM DD, YYYY hh:mm A',
+                                'Gateway Updated'
+                            ) as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        dateLabel="(IST)"
+                        enableSearch={false}
+                        showFooter={false}
+                        showHeader={true}
+                    />
+                </div>
+
+                <div>
+                    <h4
+                        style={{
+                            margin: '0 0 8px 0',
+                            fontSize: '14px',
+                            fontWeight: 600,
+                            color: '#3730a3',
+                        }}
+                    >
+                        Column + cell dateLabel override
+                    </h4>
+                    <p
+                        style={{
+                            margin: '0 0 12px 0',
+                            fontSize: '13px',
+                            color: '#6b7280',
+                        }}
+                    >
+                        Column says <code>dateLabel=&quot;(PST)&quot;</code>,
+                        but the first cell overrides it with{' '}
+                        <code>dateLabel: &quot;(UTC)&quot;</code>.
+                    </p>
+                    <DataTable
+                        data={
+                            [
+                                {
+                                    ...orderData[0],
+                                    placedAt: {
+                                        ...orderData[0].placedAt,
+                                        dateLabel: '(UTC)',
+                                    },
+                                },
+                                orderData[1],
+                                orderData[2],
+                            ] as unknown as Record<string, unknown>[]
+                        }
+                        columns={
+                            [
+                                {
+                                    field: 'orderId',
+                                    header: 'Order ID',
+                                    type: ColumnType.TEXT,
+                                    minWidth: '100px',
+                                    maxWidth: '120px',
+                                },
+                                {
+                                    field: 'placedAt',
+                                    header: 'Placed',
+                                    type: ColumnType.DATE,
+                                    dateFormat: 'MMM DD, YYYY hh:mm A',
+                                    dateLabel: '(PST)',
+                                    minWidth: '200px',
+                                    maxWidth: '260px',
+                                },
+                            ] as unknown as ColumnDefinition<
+                                Record<string, unknown>
+                            >[]
+                        }
+                        idField="id"
+                        enableSearch={false}
+                        showFooter={false}
+                        showHeader={true}
+                    />
+                </div>
+            </div>
+
+            <div
+                style={{
+                    marginTop: '16px',
+                    padding: '16px',
+                    background: '#f9fafb',
+                    borderRadius: '8px',
+                    border: '1px solid #e5e7eb',
+                    fontSize: '13px',
+                    color: '#374151',
+                    lineHeight: 1.6,
+                }}
+            >
+                <strong>How it works</strong>
+                <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                    <li>
+                        The first nine tables show the same{' '}
+                        <code>placedAt</code> data rendered with each of the
+                        preset <code>DateFormat</code> values, one per table.
+                    </li>
+                    <li>
+                        The last table uses <code>nextBatch</code> where the
+                        column-level <code>dateFormat</code> is{' '}
+                        <code>YYYY-MM-DD</code>, but each cell provides{' '}
+                        <code>format: &quot;DD/MM/YYYY&quot;</code> —
+                        demonstrating that the cell-level format takes
+                        precedence.
+                    </li>
+                    <li>
+                        Supported tokens: <code>YYYY</code>, <code>YY</code>,{' '}
+                        <code>MMM</code> (Jan), <code>MM</code> (01),{' '}
+                        <code>DD</code>/<code>dd</code>, <code>HH</code> (24h),{' '}
+                        <code>hh</code> (12h), <code>mm</code>, <code>ss</code>,{' '}
+                        <code>A</code>/<code>a</code> (AM/PM).
+                    </li>
+                    <li>
+                        Use <code>dateLabel</code> to append a timezone or any
+                        short marker after the date. It is rendered in a
+                        smaller, muted style and can be set at the table,
+                        column, or cell level — with cell winning over column,
+                        and column over table.
+                    </li>
+                </ul>
             </div>
         </div>
     )
@@ -3743,6 +4122,8 @@ const DataTableDemo = () => {
 
             <SimpleDataTableExample />
 
+            <DateColumnFormatDemo />
+
             {/* Table Body Height Control Demo */}
             <div style={{ marginTop: '40px' }}>
                 <div
@@ -3900,6 +4281,8 @@ const DataTableDemo = () => {
 
             <EmptyDataTableExamples />
 
+            <RowAnimationDemo />
+
             <SkeletonLoadingDemo />
 
             <Modal
@@ -4001,6 +4384,758 @@ const DataTableDemo = () => {
                     </div>
                 </div>
             </Modal>
+        </div>
+    )
+}
+
+// Row Animation Demo Component
+const RowAnimationDemo = () => {
+    type AnimRow = {
+        id: number
+        name: string
+        category: string
+        price: number
+        status: TagColumnProps
+    }
+
+    const baseData: AnimRow[] = [
+        {
+            id: 1,
+            name: 'Wireless Headphones',
+            category: 'Audio',
+            price: 89,
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 2,
+            name: 'Mechanical Keyboard',
+            category: 'Peripherals',
+            price: 149,
+            status: {
+                text: 'Low Stock',
+                variant: 'subtle' as const,
+                color: 'warning' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 3,
+            name: 'USB-C Hub',
+            category: 'Accessories',
+            price: 45,
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 4,
+            name: '4K Monitor',
+            category: 'Displays',
+            price: 599,
+            status: {
+                text: 'Inactive',
+                variant: 'subtle' as const,
+                color: 'error' as const,
+                size: 'sm' as const,
+            },
+        },
+        {
+            id: 5,
+            name: 'Webcam HD',
+            category: 'Peripherals',
+            price: 79,
+            status: {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+        },
+    ]
+
+    const [data, setData] = useState(baseData)
+    const [currentPage, setCurrentPage] = useState(1)
+    const [nextId, setNextId] = useState(6)
+    const [transitionType, setTransitionType] = useState<'spring' | 'bezier'>(
+        'bezier'
+    )
+    // Spring config
+    const [springStiffness, setSpringStiffness] = useState(320)
+    const [springDamping, setSpringDamping] = useState(32)
+    const [springMass, setSpringMass] = useState(1)
+    const [bezierDuration, setBezierDuration] = useState(0.3)
+    const [bezierControl, setBezierControl] = useState<
+        [number, number, number, number]
+    >([0, 0.2, 0, 1])
+    const [enterDuration, setEnterDuration] = useState(0.65)
+    const [enterOffset, setEnterOffset] = useState(34)
+    const [animationEnabled, setAnimationEnabled] = useState(true)
+    const [showActiveOnly, setShowActiveOnly] = useState(false)
+
+    const bezierPresets: Record<string, [number, number, number, number]> = {
+        Apple: [0, 0.2, 0, 1],
+        Smooth: [0.22, 1, 0.36, 1],
+        'ease-out': [0, 0, 0.58, 1],
+        'ease-in': [0.42, 0, 1, 1],
+        'ease-in-out': [0.42, 0, 0.58, 1],
+        linear: [0, 0, 1, 1],
+    }
+
+    const animColumns: ColumnDefinition<AnimRow>[] = [
+        {
+            field: 'name',
+            header: 'Product',
+            type: ColumnType.TEXT,
+            isSortable: true,
+        },
+        {
+            field: 'category',
+            header: 'Category',
+            type: ColumnType.TEXT,
+            isSortable: true,
+        },
+        {
+            field: 'price',
+            header: 'Price',
+            type: ColumnType.NUMBER,
+            isSortable: true,
+        },
+        {
+            field: 'status',
+            header: 'Status',
+            type: ColumnType.TAG,
+            isSortable: true,
+            renderCell: (value: TagColumnProps) => (
+                <Tag
+                    text={value.text}
+                    variant={TagVariant.SUBTLE}
+                    color={
+                        value.color === 'success'
+                            ? TagColor.SUCCESS
+                            : value.color === 'error'
+                              ? TagColor.ERROR
+                              : value.color === 'warning'
+                                ? TagColor.WARNING
+                                : TagColor.NEUTRAL
+                    }
+                    size={TagSize.SM}
+                />
+            ),
+        },
+    ]
+
+    const handleSortByName = () => {
+        setData((prev) =>
+            [...prev].sort((a, b) => a.name.localeCompare(b.name))
+        )
+    }
+
+    const handleSortByPrice = () => {
+        setData((prev) => [...prev].sort((a, b) => a.price - b.price))
+    }
+
+    const handleShuffle = () => {
+        setData((prev) => {
+            const shuffled = [...prev]
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1))
+                ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+            }
+            return shuffled
+        })
+    }
+
+    const handleFilterActive = () => {
+        setShowActiveOnly((prev) => {
+            if (!prev) {
+                setData(baseData.filter((r) => r.status.text === 'Active'))
+            } else {
+                setData(baseData)
+            }
+            return !prev
+        })
+    }
+
+    const handleReset = () => {
+        setData(baseData)
+        setShowActiveOnly(false)
+    }
+
+    const handleAddRow = () => {
+        const categories = ['Audio', 'Peripherals', 'Accessories', 'Displays']
+        const statusOptions: TagColumnProps[] = [
+            {
+                text: 'Active',
+                variant: 'subtle' as const,
+                color: 'success' as const,
+                size: 'sm' as const,
+            },
+            {
+                text: 'Low Stock',
+                variant: 'subtle' as const,
+                color: 'warning' as const,
+                size: 'sm' as const,
+            },
+            {
+                text: 'Inactive',
+                variant: 'subtle' as const,
+                color: 'error' as const,
+                size: 'sm' as const,
+            },
+        ]
+        const newRow: AnimRow = {
+            id: nextId,
+            name: `Product ${nextId}`,
+            category: categories[Math.floor(Math.random() * categories.length)],
+            price: Math.floor(Math.random() * 500) + 20,
+            status: statusOptions[
+                Math.floor(Math.random() * statusOptions.length)
+            ],
+        }
+        setData((prev) => [newRow, ...prev])
+        setNextId((prev) => prev + 1)
+    }
+
+    const handleDeleteRow = (row: Record<string, unknown>) => {
+        const rowId = row.id as number
+        setData((prev) => prev.filter((r) => r.id !== rowId))
+    }
+
+    const animationConfig: RowAnimationConfig = useMemo(() => {
+        if (transitionType === 'spring') {
+            return {
+                transitionType,
+                stiffness: springStiffness,
+                damping: springDamping,
+                mass: springMass,
+                enterDuration,
+                enterOffset,
+            }
+        }
+
+        return {
+            transitionType,
+            duration: bezierDuration,
+            bezier: bezierControl,
+            enterDuration,
+            enterOffset,
+        }
+    }, [
+        transitionType,
+        springStiffness,
+        springDamping,
+        springMass,
+        bezierDuration,
+        bezierControl,
+        enterDuration,
+        enterOffset,
+    ])
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0fdf4',
+                    borderRadius: '8px',
+                    border: '1px solid #bbf7d0',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#15803d',
+                    }}
+                >
+                    Row FLIP Animation Demo
+                </h3>
+                <p style={{ margin: 0, fontSize: '14px', color: '#166534' }}>
+                    Rows animate to their new positions when sorted, filtered,
+                    or shuffled. Uses framer-motion&apos;s <code>layout</code>{' '}
+                    prop for automatic FLIP animations.
+                    <br />
+                    <strong>enableRowAnimation</strong> is opt-in (default:
+                    false). Toggle between spring and tween transitions below.
+                </p>
+            </div>
+
+            <div
+                style={{
+                    marginBottom: '16px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                    alignItems: 'center',
+                }}
+            >
+                <span style={{ fontSize: '14px', color: '#666' }}>
+                    Transition:
+                </span>
+                <Button
+                    buttonType={
+                        transitionType === 'spring'
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() => setTransitionType('spring')}
+                    text="Spring"
+                />
+                <Button
+                    buttonType={
+                        transitionType === 'bezier'
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() => setTransitionType('bezier')}
+                    text="Bezier"
+                />
+                <Button
+                    buttonType={
+                        animationEnabled
+                            ? ButtonType.PRIMARY
+                            : ButtonType.SECONDARY
+                    }
+                    size={ButtonSize.SMALL}
+                    onClick={() => setAnimationEnabled((prev) => !prev)}
+                    text={animationEnabled ? 'Anim: On' : 'Anim: Off'}
+                />
+            </div>
+
+            {transitionType === 'spring' ? (
+                <div
+                    style={{
+                        marginBottom: '16px',
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(160px, 1fr))',
+                        gap: '12px',
+                        alignItems: 'center',
+                        padding: '12px',
+                        borderRadius: '6px',
+                        backgroundColor: '#fafafa',
+                        border: '1px solid #e5e5e5',
+                    }}
+                >
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Controls how tightly the spring pulls toward rest. Higher = faster movement."
+                        >
+                            Stiffness: {springStiffness}
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={10}
+                            max={500}
+                            step={10}
+                            value={springStiffness}
+                            onChange={(e) =>
+                                setSpringStiffness(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Controls how quickly oscillations die out. Higher = less bounce."
+                        >
+                            Damping: {springDamping}
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={1}
+                            max={100}
+                            step={1}
+                            value={springDamping}
+                            onChange={(e) =>
+                                setSpringDamping(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Virtual weight of the object. Higher = slower acceleration."
+                        >
+                            Mass: {springMass.toFixed(1)}
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0.1}
+                            max={5}
+                            step={0.1}
+                            value={springMass}
+                            onChange={(e) =>
+                                setSpringMass(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                </div>
+            ) : (
+                <div
+                    style={{
+                        marginBottom: '16px',
+                        display: 'grid',
+                        gridTemplateColumns:
+                            'repeat(auto-fit, minmax(160px, 1fr))',
+                        gap: '12px',
+                        alignItems: 'center',
+                        padding: '12px',
+                        borderRadius: '6px',
+                        backgroundColor: '#fafafa',
+                        border: '1px solid #e5e5e5',
+                    }}
+                >
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="How long each row takes to move to its new position."
+                        >
+                            Duration: {(bezierDuration * 1000).toFixed(0)}ms
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0.05}
+                            max={2.0}
+                            step={0.01}
+                            value={bezierDuration}
+                            onChange={(e) =>
+                                setBezierDuration(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Pre-defined cubic-bezier curves for common easing styles."
+                        >
+                            Presets
+                            <Info size={12} color="#999" />
+                        </label>
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '8px',
+                                flexWrap: 'wrap',
+                                marginBottom: '8px',
+                            }}
+                        >
+                            {Object.entries(bezierPresets).map(
+                                ([label, curve]) => {
+                                    const isActive =
+                                        bezierControl[0] === curve[0] &&
+                                        bezierControl[1] === curve[1] &&
+                                        bezierControl[2] === curve[2] &&
+                                        bezierControl[3] === curve[3]
+                                    return (
+                                        <button
+                                            key={label}
+                                            type="button"
+                                            onClick={() =>
+                                                setBezierControl(curve)
+                                            }
+                                            style={{
+                                                fontSize: '13px',
+                                                padding: '4px 10px',
+                                                borderRadius: '4px',
+                                                border: '1px solid #ccc',
+                                                backgroundColor: isActive
+                                                    ? '#333'
+                                                    : '#fff',
+                                                color: isActive
+                                                    ? '#fff'
+                                                    : '#333',
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            {label}
+                                        </button>
+                                    )
+                                }
+                            )}
+                        </div>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Custom cubic-bezier control points (p1.x, p1.y, p2.x, p2.y). Defines the acceleration curve."
+                        >
+                            Curve: cubic-bezier({bezierControl[0]},{' '}
+                            {bezierControl[1]}, {bezierControl[2]},{' '}
+                            {bezierControl[3]})
+                            <Info size={12} color="#999" />
+                        </label>
+                        <div
+                            style={{
+                                display: 'grid',
+                                gridTemplateColumns: '1fr 1fr',
+                                gap: '12px',
+                                maxWidth: '400px',
+                            }}
+                        >
+                            {[0, 1, 2, 3].map((i) => (
+                                <div key={i}>
+                                    <input
+                                        type="number"
+                                        step={0.01}
+                                        min={-0.5}
+                                        max={1.5}
+                                        value={bezierControl[i]}
+                                        onChange={(e) => {
+                                            const val = Number(e.target.value)
+                                            setBezierControl((prev) => {
+                                                const next = [...prev] as [
+                                                    number,
+                                                    number,
+                                                    number,
+                                                    number,
+                                                ]
+                                                next[i] = val
+                                                return next
+                                            })
+                                        }}
+                                        style={{
+                                            width: '100%',
+                                            padding: '4px 8px',
+                                            fontSize: '13px',
+                                            border: '1px solid #ccc',
+                                            borderRadius: '4px',
+                                            textAlign: 'center',
+                                        }}
+                                    />
+                                    <span
+                                        style={{
+                                            display: 'block',
+                                            textAlign: 'center',
+                                            fontSize: '11px',
+                                            color: '#999',
+                                            marginTop: '2px',
+                                        }}
+                                    >
+                                        {i < 2 ? 'p1' : 'p2'}.
+                                        {i % 2 === 0 ? 'x' : 'y'}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="Time for newly added rows to fade in and slide into place."
+                        >
+                            Enter Duration: {(enterDuration * 1000).toFixed(0)}
+                            ms
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0.05}
+                            max={1.0}
+                            step={0.01}
+                            value={enterDuration}
+                            onChange={(e) =>
+                                setEnterDuration(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                    <div>
+                        <label
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                fontSize: '12px',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.05em',
+                                color: '#666',
+                                marginBottom: '4px',
+                            }}
+                            title="How far new rows slide down before settling into place."
+                        >
+                            Enter Offset: {enterOffset}px
+                            <Info size={12} color="#999" />
+                        </label>
+                        <input
+                            type="range"
+                            min={0}
+                            max={50}
+                            step={1}
+                            value={enterOffset}
+                            onChange={(e) =>
+                                setEnterOffset(Number(e.target.value))
+                            }
+                            style={{ width: '100%' }}
+                        />
+                    </div>
+                </div>
+            )}
+
+            <div
+                style={{
+                    marginBottom: '16px',
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    gap: '8px',
+                    alignItems: 'center',
+                }}
+            >
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    leadingIcon={<Filter size={14} />}
+                    onClick={handleSortByName}
+                    text="Sort by Name"
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    leadingIcon={<Filter size={14} />}
+                    onClick={handleSortByPrice}
+                    text="Sort by Price"
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleShuffle}
+                    text="Shuffle"
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleFilterActive}
+                    text={showActiveOnly ? 'Show All' : 'Active Only'}
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleReset}
+                    text="Reset"
+                />
+                <Button
+                    buttonType={ButtonType.PRIMARY}
+                    size={ButtonSize.SMALL}
+                    onClick={handleAddRow}
+                    text="Add Row"
+                />
+            </div>
+
+            <DataTable
+                data={data as Record<string, unknown>[]}
+                columns={
+                    animColumns as ColumnDefinition<Record<string, unknown>>[]
+                }
+                idField="id"
+                enableRowAnimation={animationEnabled}
+                rowAnimationConfig={
+                    animationEnabled ? animationConfig : undefined
+                }
+                enableSearch
+                pagination={{
+                    currentPage,
+                    pageSize: 10,
+                    totalRows: data.length,
+                    pageSizeOptions: [5, 10, 20],
+                }}
+                onPageChange={(page) => setCurrentPage(page)}
+                onPageSizeChange={() => setCurrentPage(1)}
+                rowActions={{
+                    showEditAction: false,
+                    slot1: {
+                        id: 'delete-row',
+                        text: 'Delete',
+                        buttonType: ButtonType.SECONDARY,
+                        size: ButtonSize.SMALL,
+                        leadingIcon: <Trash2 size={16} />,
+                        onClick: (row) => handleDeleteRow(row),
+                    },
+                }}
+            />
         </div>
     )
 }

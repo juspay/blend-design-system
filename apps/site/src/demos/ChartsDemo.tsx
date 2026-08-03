@@ -41,6 +41,7 @@ import {
     last7daysDailyData,
     last7daysHourlyData,
 } from './ChartsData'
+import { Button } from '@juspay/blend-design-system'
 
 const LineBarDemo = () => {
     const lineBarData: NewNestedDataPoint[] = [
@@ -280,8 +281,304 @@ const LineBarDemo = () => {
         },
     ]
 
+    const transactionTimelineData: NewNestedDataPoint[] = [
+        {
+            name: 'Jan 01',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 700 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 02',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 630 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 03',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 570 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 04',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 520 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 05',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 830 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 06',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 630 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 07',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 460 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 08',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 420 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 230 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 09',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 480 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 350 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 10',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 380 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 140 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 11',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 240 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 350 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 12',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 420 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 280 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 13',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 690 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 14',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 620 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 15',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 610 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 16',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 600 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 17',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 800 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 18',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 640 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 19',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 500 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 20',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 730 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 21',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 470 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 320 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 0 },
+                },
+            },
+        },
+        {
+            name: 'Jan 22',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 320 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 200 },
+                },
+            },
+        },
+        {
+            name: 'Jan 23',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 0 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 620 },
+                },
+            },
+        },
+        {
+            name: 'Jan 24',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 0 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 860 },
+                },
+            },
+        },
+        {
+            name: 'Jan 25',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 0 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 580 },
+                },
+            },
+        },
+        {
+            name: 'Jan 26',
+            data: {
+                Reconciled: { primary: { label: 'Reconciled', val: 0 } },
+                Discrepancy: { primary: { label: 'Discrepancy', val: 0 } },
+                Pending: { primary: { label: 'Pending', val: 0 } },
+                'To be received': {
+                    primary: { label: 'To be received', val: 820 },
+                },
+            },
+        },
+    ]
+
+    const transactionTimelineColors = [
+        { key: 'Reconciled', color: '#00C951' },
+        { key: 'Discrepancy', color: '#FF8904' },
+        { key: 'Pending', color: '#FB2C36' },
+        { key: 'To be received', color: '#E9EDF3' },
+    ]
+
     return (
-        <div className="space-y-8">
+        <div style={{ display: 'grid', gap: 32 }}>
             <Charts
                 data={lineBarData}
                 chartType={ChartType.LINE_BAR}
@@ -313,6 +610,96 @@ const LineBarDemo = () => {
                     </div>
                 }
             />
+            <div style={{ minHeight: 540 }}>
+                <Charts
+                    data={transactionTimelineData}
+                    chartType={ChartType.LINE_BAR}
+                    lineSeriesKeys={[]}
+                    colors={transactionTimelineColors}
+                    barsize={52}
+                    height={360}
+                    showAllLegends
+                    xAxis={{
+                        type: AxisType.NUMBER,
+                        interval: 0,
+                    }}
+                    yAxis={{
+                        type: AxisType.NUMBER,
+                        tickFormatter: (value) =>
+                            `${Number(value).toLocaleString()}`,
+                    }}
+                    chartHeaderSlot={
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                gap: 16,
+                                width: '100%',
+                            }}
+                        >
+                            <div>
+                                <h4 style={{ margin: 0, fontSize: '14px' }}>
+                                    Transaction timeline
+                                </h4>
+                                <p
+                                    style={{
+                                        margin: '8px 0 0',
+                                        color: FOUNDATION_THEME.colors
+                                            .gray[500],
+                                        fontSize: '12px',
+                                    }}
+                                >
+                                    Each bar is one day's incoming funds,
+                                    stacked by settlement state.
+                                </p>
+                            </div>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    background:
+                                        FOUNDATION_THEME.colors.gray[100],
+                                    borderRadius: 8,
+                                    padding: 2,
+                                    height: 32,
+                                    flexShrink: 0,
+                                }}
+                            >
+                                {['Day', 'Week', 'Month'].map((label) => (
+                                    <span
+                                        key={label}
+                                        style={{
+                                            minWidth: 72,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            borderRadius: 6,
+                                            background:
+                                                label === 'Day'
+                                                    ? FOUNDATION_THEME.colors
+                                                          .gray[0]
+                                                    : 'transparent',
+                                            color:
+                                                label === 'Day'
+                                                    ? FOUNDATION_THEME.colors
+                                                          .gray[900]
+                                                    : FOUNDATION_THEME.colors
+                                                          .gray[500],
+                                            boxShadow:
+                                                label === 'Day'
+                                                    ? '0 1px 2px rgba(15, 23, 42, 0.12)'
+                                                    : undefined,
+                                            fontSize: 12,
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        {label}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    }
+                />
+            </div>
         </div>
     )
 }
@@ -6088,6 +6475,7 @@ const ChartDemo = () => {
     const [selectedDateRange, setSelectedDateRange] = useState('last_6_months')
     const [selectedFilters, setSelectedFilters] = useState('all_metrics')
     const [showLimitedMetrics, setShowLimitedMetrics] = useState(false)
+    const [showAllLegends, setShowAllLegends] = useState(false)
 
     // Helper functions
     const getCurrentData = () => {
@@ -6284,9 +6672,9 @@ const ChartDemo = () => {
                 colors={customColors}
                 data={last1hour5minsData}
                 chartType={ChartType.LINE}
-                slot1={<div>Hello</div>}
-                slot2={<div>World</div>}
-                slot3={<div>World</div>}
+                // slot1={<div>Hello</div>}
+                // slot2={<div>World</div>}
+                // slot3={<div>World</div>}
                 xAxis={{
                     label: 'Date & Time Together',
                     show: true,
@@ -6303,11 +6691,12 @@ const ChartDemo = () => {
                     showLabel: true,
                 }}
                 chartHeaderSlot={
-                    <div className="chart-header">
-                        <Activity size={16} className="text-green-600" />
-                        <h4 style={{ margin: 0, fontSize: '14px' }}>
-                            Smart Date/Time Ticks (Like Highcharts!)
-                        </h4>
+                    <div className="chart-header overflow-hidden">
+                        <div className="flex gap-4 overflow-scroll">
+                            <Button text="Button 1" title="btn" />
+                            <Button text="Button 2" title="btn2" />
+                            <Button text="Button 3" title="btn3" />
+                        </div>
                     </div>
                 }
             />
@@ -6409,6 +6798,7 @@ const ChartDemo = () => {
                 ]}
                 CustomizedDot={CustomizedDot}
                 chartType={ChartType.LINE}
+                showAllLegends
                 xAxis={{
                     label: 'Date (Timestamp)',
                     show: true,
@@ -6693,6 +7083,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     data={getCurrentData()}
                     chartType={selectedChartType}
                     legendPosition={selectedLegendPosition}
+                    showAllLegends={showAllLegends}
                     colors={getColors()}
                     xAxis={{
                         label:
@@ -6903,6 +7294,23 @@ const [selectedKeys, setSelectedKeys] = useState([])
                             }}
                         />
                     </div>
+
+                    <div>
+                        <label
+                            style={{
+                                display: 'block',
+                                marginBottom: '8px',
+                                fontWeight: '600',
+                            }}
+                        >
+                            Legend Display
+                        </label>
+                        <Switch
+                            label="Show All Legends"
+                            checked={showAllLegends}
+                            onChange={() => setShowAllLegends(!showAllLegends)}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -6916,6 +7324,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                     <Charts
                         data={financialData}
                         chartType={ChartType.LINE}
+                        showAllLegends={showAllLegends}
                         colors={[
                             { key: '0', color: '#3b82f6' },
                             { key: '1', color: '#10b981' },
@@ -6952,6 +7361,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                         height={200}
                         data={performanceData}
                         chartType={ChartType.BAR}
+                        showAllLegends={showAllLegends}
                         // colors={['#8b5cf6', '#06b6d4', '#f59e0b']}
                         chartHeaderSlot={
                             <div className="chart-header">
@@ -6973,6 +7383,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                         data={analyticsData}
                         chartType={ChartType.PIE}
                         legendPosition={ChartLegendPosition.RIGHT}
+                        showAllLegends={showAllLegends}
                         colors={[
                             { key: '0', color: '#3b82f6' },
                             { key: '1', color: '#10b981' },
@@ -7073,6 +7484,7 @@ const [selectedKeys, setSelectedKeys] = useState([])
                             ]}
                             chartType={ChartType.PIE}
                             legendPosition={ChartLegendPosition.TOP}
+                            showAllLegends={showAllLegends}
                             colors={[
                                 { key: '0', color: '#3b82f6' },
                                 { key: '1', color: '#10b981' },

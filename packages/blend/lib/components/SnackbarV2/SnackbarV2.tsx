@@ -20,9 +20,36 @@ import {
     SnackbarV2IconProps,
 } from './snackbarV2.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import {
+    DEFAULT_VISIBLE_TOASTS,
+    dismissNonPersistentToasts,
+    SnackbarHiddenToastStyles,
+    useVisibleToastCount,
+} from '../../utils/snackbar-shared'
 import { SnackbarV2TokensType } from './snackbarV2.tokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { filterBlockedProps } from '../../utils/prop-helpers'
+
+/**
+ * `duration: 0` looks like it should disable auto-dismiss, and the v1 docs used
+ * to recommend it. It does the opposite: `0` is falsy, so sonner falls through
+ * to its 4000ms default and the toast silently disappears. Types cannot catch
+ * this because `0` is a valid `number`, so warn at runtime in development.
+ *
+ * Warned once per session, matching `useResponsiveTokens`' deprecation notice,
+ * so a toast fired in a render loop cannot flood the console.
+ */
+let warnedAboutZeroDuration = false
+
+const warnAboutZeroDuration = () => {
+    if (warnedAboutZeroDuration) return
+    warnedAboutZeroDuration = true
+    console.warn(
+        '[Blend] addSnackbarV2: duration: 0 does not make a toast persistent. ' +
+            '0 is falsy, so it falls through to the 4000ms default. ' +
+            'Use duration: Infinity instead.'
+    )
+}
 
 const SnackbarV2Icon: React.FC<SnackbarV2IconProps> = ({ variant }) => {
     const snackbarTokens =
@@ -376,6 +403,10 @@ export const addSnackbarV2 = ({
 }: SnackbarV2ToastOptions) => {
     const isCenter = position?.includes('center')
 
+    if (process.env.NODE_ENV !== 'production' && duration === 0) {
+        warnAboutZeroDuration()
+    }
+
     return sonnerToast.custom(
         (t) => (
             <StyledToast
@@ -417,10 +448,14 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
         {
             position = SnackbarV2Position.BOTTOM_RIGHT,
             dismissOnClickAway = false,
+            visibleToasts = DEFAULT_VISIBLE_TOASTS,
+            containerAriaLabel,
+            hotkey,
         },
         ref
     ) => {
         const isCenter = position?.includes('center')
+        const resolvedVisibleToasts = useVisibleToastCount(visibleToasts)
 
         useEffect(() => {
             if (!dismissOnClickAway) {
@@ -435,7 +470,7 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
                 )
 
                 if (!clickedSnackbar) {
-                    sonnerToast.dismiss()
+                    dismissNonPersistentToasts()
                 }
             }
 
@@ -448,8 +483,14 @@ const SnackbarV2 = forwardRef<HTMLDivElement, SnackbarV2Props>(
 
         return (
             <Block ref={ref}>
+                <SnackbarHiddenToastStyles />
                 <Toaster
                     position={position}
+                    visibleToasts={resolvedVisibleToasts}
+                    {...(containerAriaLabel !== undefined && {
+                        containerAriaLabel,
+                    })}
+                    {...(hotkey?.length ? { hotkey } : {})}
                     toastOptions={{
                         unstyled: true,
                         style: {

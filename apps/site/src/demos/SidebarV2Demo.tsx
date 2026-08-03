@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import ButtonDemo from './ButtonDemo'
 import ButtonV2Demo from './ButtonV2Demo'
 import {
@@ -97,6 +97,7 @@ import MultiValueInputDemo from './MultiValueInputDemo'
 import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
+import CardV2Demo from './CardV2Demo'
 import {
     TextInput,
     Button,
@@ -113,6 +114,7 @@ import AllComponentsDemo from './AllComponentsDemo'
 import SearchInputDemo from './SearchInputDemo'
 import VirtualListDemo from './VirtualListDemo'
 import UploadDemo from './UploadDemo'
+import UploadV2Demo from './UploadV2Demo'
 import CodeBlockDemo from './CodeBlockDemo'
 import CodeEditorDemo from './CodeEditorDemo'
 import ChatInputDemo from './ChatInputDemo'
@@ -138,13 +140,14 @@ import ChartV2Demo from './ChartV2Demo'
 import TimelineDemo from './TimelineDemo'
 import CheckboxV2Demo from './CheckboxV2Demo'
 import RadioV2Demo from './RadioV2Demo'
+import DirectoryDemo from './DirectoryDemo'
 import {
     SingleSelectV2,
     SingleSelectV2Variant,
 } from '../../../../packages/blend/lib/components/SingleSelectV2'
 
 const SidebarV2Demo = () => {
-    const [activeComponent, setActiveComponent] = useState<
+    const [activeComponent, setActiveComponentState] = useState<
         | 'buttons'
         | 'buttonV2'
         | 'accessibility'
@@ -205,11 +208,13 @@ const SidebarV2Demo = () => {
         | 'stepper'
         | 'keyValuePair'
         | 'card'
+        | 'cardV2'
         | 'dataRangePicker'
         | 'allComponents'
         | 'virtualList'
         | 'skeleton'
         | 'upload'
+        | 'uploadV2'
         | 'codeBlock'
         | 'codeEditor'
         | 'formElements'
@@ -229,7 +234,26 @@ const SidebarV2Demo = () => {
         | 'timeline'
         | 'tooltipV2'
         | 'popoverV2'
-    >('popoverV2')
+        | 'directory'
+    >(() => {
+        return (window.location.hash.slice(1) || 'popoverV2') as any
+    })
+
+    const setActiveComponent = (id: string) => {
+        setActiveComponentState(id as any)
+        window.location.hash = id
+    }
+
+    useEffect(() => {
+        const handler = (e: CustomEvent) => {
+            const { demoId } = e.detail
+            setActiveComponentState(demoId as any)
+            window.location.hash = demoId
+        }
+        window.addEventListener('select-demo', handler as EventListener)
+        return () =>
+            window.removeEventListener('select-demo', handler as EventListener)
+    }, [])
 
     const [activeTenant, setActiveTenant] = useState<string>('Juspay')
     const [activeMerchant, setActiveMerchant] =
@@ -458,14 +482,20 @@ const SidebarV2Demo = () => {
                 return <KeyValuePairDemo />
             case 'card':
                 return <CardDemo />
+            case 'cardV2':
+                return <CardV2Demo />
             case 'skeleton':
                 return <SkeletonDemo />
             case 'allComponents':
                 return <AllComponentsDemo />
             case 'virtualList':
                 return <VirtualListDemo />
+            case 'directory':
+                return <DirectoryDemo />
             case 'upload':
                 return <UploadDemo />
+            case 'uploadV2':
+                return <UploadV2Demo />
             case 'codeBlock':
                 return <CodeBlockDemo />
             case 'codeEditor':
@@ -682,7 +712,7 @@ const SidebarV2Demo = () => {
                         showOnMobile: true,
                     },
                     {
-                        label: 'Tag ejdojdojodjoejdoejdoejdojdojedojeodjeodjedd ejodjoejdoehdohedoh',
+                        label: 'Tag',
                         leftSlot: (
                             <TagIcon
                                 style={{ width: '16px', height: '16px' }}
@@ -770,11 +800,29 @@ const SidebarV2Demo = () => {
                         showOnMobile: true,
                     },
                     {
+                        label: 'Directory',
+                        leftSlot: (
+                            <List style={{ width: '16px', height: '16px' }} />
+                        ),
+                        isSelected: activeComponent === 'directory',
+                        onClick: () => setActiveComponent('directory'),
+                        showOnMobile: true,
+                    },
+                    {
                         label: 'File Upload',
                         leftSlot: (
                             <Upload style={{ width: '16px', height: '16px' }} />
                         ),
+                        isSelected: activeComponent === 'upload',
                         onClick: () => setActiveComponent('upload'),
+                    },
+                    {
+                        label: 'File Upload V2',
+                        leftSlot: (
+                            <Upload style={{ width: '16px', height: '16px' }} />
+                        ),
+                        isSelected: activeComponent === 'uploadV2',
+                        onClick: () => setActiveComponent('uploadV2'),
                     },
                 ],
             },
@@ -1281,6 +1329,14 @@ const SidebarV2Demo = () => {
                         onClick: () => setActiveComponent('card'),
                     },
                     {
+                        label: 'Card V2',
+                        leftSlot: (
+                            <Square style={{ width: '16px', height: '16px' }} />
+                        ),
+                        isSelected: activeComponent === 'cardV2',
+                        onClick: () => setActiveComponent('cardV2'),
+                    },
+                    {
                         label: 'Progress Bar',
                         leftSlot: (
                             <BarChart2
@@ -1659,13 +1715,20 @@ const SidebarV2Demo = () => {
                     data={sampleData}
                     topbar={
                         <div className="flex items-center justify-between gap-2">
-                            <div className=" flex items-center gap-3 ">
+                            <div
+                                className=" flex items-center gap-3 cursor-pointer border py-1 px-2 rounded-lg border-gray-300"
+                                onClick={() =>
+                                    window.dispatchEvent(
+                                        new CustomEvent('open-command-search')
+                                    )
+                                }
+                            >
                                 {' '}
                                 <div className="text-sm text-gray-400 flex items-center gap-1">
                                     <SearchIcon
                                         size={16}
                                         color={
-                                            FOUNDATION_THEME.colors.gray[600]
+                                            FOUNDATION_THEME.colors.gray[400]
                                         }
                                     />{' '}
                                     Search
@@ -1677,7 +1740,7 @@ const SidebarV2Demo = () => {
                                             .gray[400],
                                     }}
                                 >
-                                    {`(⌘K)`}
+                                    {`⌘ + K`}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2">

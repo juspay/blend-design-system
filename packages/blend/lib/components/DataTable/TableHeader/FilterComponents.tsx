@@ -15,13 +15,7 @@ import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { SearchInput } from '../../Inputs/SearchInput'
 import Slider from '../../Slider/Slider'
 import { SliderSize, SliderValueType } from '../../Slider/types'
-import {
-    ColumnDefinition,
-    ColumnType,
-    FilterType,
-    SortDirection,
-} from '../types'
-import { getColumnTypeConfig } from '../columnTypes'
+import { ColumnDefinition, FilterType, SortDirection } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
 import {
     SortHandlers,
@@ -34,6 +28,7 @@ import {
     getSelectMenuItems,
     getMultiSelectMenuItems,
     filterItemsBySearch,
+    getColumnTypeConfigForColumn,
 } from './utils'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
@@ -57,6 +52,8 @@ type FilterComponentsProps = {
     filterHandlers: FilterHandlers
     filterState: FilterState
     sortState: SortState
+    /** When false, no filter UI is offered — a filter here could not affect rows. */
+    enableFiltering?: boolean
     onColumnFilter?: ColumnFilterHandler
     onRenameHeader?: () => void
     onOperations?: () => void
@@ -1216,6 +1213,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     filterHandlers,
     filterState,
     sortState,
+    enableFiltering = true,
     onColumnFilter,
     onRenameHeader,
     onOperations,
@@ -1227,10 +1225,17 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
 }) => {
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isMobile = breakPointLabel === 'sm'
-    const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
+    const columnConfig = getColumnTypeConfigForColumn(column)
     const fieldKey = String(column.field)
     const [nestedFilterOpen, setNestedFilterOpen] = useState(false)
-    const hasFiltering = columnConfig.supportsFiltering
+    const hasFiltering = columnConfig.supportsFiltering && enableFiltering
+    const selectedFilterValue = filterState.columnSelectedValues[fieldKey]
+    // An applied value can be absent from the current option list (async or
+    // server-driven options), so the clear affordance is driven by the filter
+    // state rather than by what the dropdown happens to render.
+    const hasActiveSelection = Array.isArray(selectedFilterValue)
+        ? selectedFilterValue.length > 0
+        : selectedFilterValue !== undefined && selectedFilterValue !== ''
     const menuRef = useRef<HTMLDivElement>(null)
     const [focusedIndex, setFocusedIndex] = useState<number>(-1)
 
@@ -1311,6 +1316,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                 filterHandlers={filterHandlers}
                 filterState={filterState}
                 sortState={sortState}
+                enableFiltering={enableFiltering}
                 onColumnFilter={onColumnFilter}
                 onPopoverClose={onPopoverClose}
             />
@@ -1445,6 +1451,33 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     </Block>
                 </Popover>
             )}
+
+            {hasFiltering &&
+                columnConfig.filterComponent !== 'dateRange' &&
+                hasActiveSelection && (
+                    <MenuItem
+                        icon={
+                            <TrashSimpleIcon
+                                size={iconSize}
+                                color={FOUNDATION_THEME.colors.red[600]}
+                                weight="bold"
+                            />
+                        }
+                        label="Clear Filter"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setNestedFilterOpen(false)
+                            onColumnFilter?.(
+                                String(column.field),
+                                columnConfig.filterType,
+                                [],
+                                'equals'
+                            )
+                        }}
+                        isDestructive
+                        tableToken={tableToken}
+                    />
+                )}
 
             {onOperations && (
                 <MenuItem

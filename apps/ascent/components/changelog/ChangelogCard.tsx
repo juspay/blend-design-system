@@ -35,14 +35,14 @@ export const ChangelogCard = ({
                 )}
             >
                 <div className="flex flex-wrap sm:items-center justify-between gap-2 sm:gap-0">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
                         <CaretDownIcon
                             className={cn(
                                 'w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0',
                                 isExpanded ? 'rotate-0' : '-rotate-90'
                             )}
                         />
-                        <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-2 sm:line-clamp-1">
+                        <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1 min-w-0">
                             {summary}
                         </h3>
                     </div>

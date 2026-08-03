@@ -537,12 +537,16 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                         paddingLeft={inputPaddingLeft}
                         paddingRight={inputPaddingRight}
                         paddingTop={
-                            smallScreenLarge && inputFocusedOrWithValue
+                            Boolean(label.text?.trim()) &&
+                            smallScreenLarge &&
+                            inputFocusedOrWithValue
                                 ? paddingY * 1.5
                                 : inputContainerTokens.paddingTop[size]
                         }
                         paddingBottom={
-                            smallScreenLarge && inputFocusedOrWithValue
+                            Boolean(label.text?.trim()) &&
+                            smallScreenLarge &&
+                            inputFocusedOrWithValue
                                 ? paddingY / 2
                                 : inputContainerTokens.paddingBottom[size]
                         }

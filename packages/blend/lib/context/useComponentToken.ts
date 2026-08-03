@@ -33,6 +33,7 @@ import { ResponsiveSnackbarTokens } from '../components/Snackbar/snackbar.tokens
 import { ResponsiveStepperTokens } from '../components/Stepper/stepper.tokens'
 import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.tokens'
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
+import type { ResponsiveCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
@@ -76,6 +77,8 @@ import { ResponsiveSearchInputV2Tokens } from '../components/InputsV2/SearchInpu
 import { ResponsiveChatInputV2TokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { ChatInputV2MobileTokensType } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 import type { ResponsiveStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
+import { ResponsiveUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
+import type { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens.types'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -113,6 +116,7 @@ export const useComponentToken = (
     | ResponsiveStepperTokens
     | ResponsiveKeyValuePairTokens
     | ResponsiveCardTokens
+    | ResponsiveCardV2Tokens
     | ResponsiveSkeletonTokens
     | ResponsiveTopbarTokens
     | ResponsiveAvatarTokens
@@ -157,7 +161,11 @@ export const useComponentToken = (
     | ResponsiveBadgeTokens
     | ResponsiveChatInputV2TokensType
     | ChatInputV2MobileTokensType
-    | ResponsiveStepperV2Tokens => {
+    | ResponsiveStepperV2Tokens
+    | ResponsiveStepperV2Tokens
+    | ResponsiveModalV2Tokens
+    | ResponsiveUploadV2Tokens
+    | ChatInputV2MobileTokensType => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -230,6 +238,8 @@ export const useComponentToken = (
             return componentTokens.KEYVALUEPAIR
         case 'CARD':
             return componentTokens.CARD
+        case 'CARDV2':
+            return componentTokens.CARDV2
         case 'SKELETON':
             return componentTokens.SKELETON
         case 'TOPBAR':
@@ -316,6 +326,10 @@ export const useComponentToken = (
             return componentTokens.SEARCH_INPUT_V2
         case 'STEPPERV2':
             return componentTokens.STEPPERV2
+        case 'UPLOADV2':
+            return componentTokens.UPLOADV2
+        case 'MODALV2':
+            return componentTokens.MODALV2
         default:
             throw new Error(`Unknown component token: ${component}`)
     }

@@ -7,6 +7,8 @@
         "breadcrumb",
         "button",
         "button-group",
+        "card",
+        "card-v2",
         "charts",
         "checkbox",
         "data-table",
@@ -16,6 +18,7 @@
         "inputs",
         "menu",
         "modal",
+        "modal-v2",
         "multi-select",
         "multivalueinput",
         "numberinput",
@@ -35,7 +38,12 @@
         "tag",
         "textarea",
         "textinput",
+        "timeline-v2",
         "tooltip",
-        "unitinput"
+        "topbar",
+        "topbar-v2",
+        "unitinput",
+        "upload",
+        "upload-v2"
     ]
 }

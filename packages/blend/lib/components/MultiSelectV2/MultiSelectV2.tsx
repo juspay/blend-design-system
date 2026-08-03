@@ -29,11 +29,17 @@ import MultiSelectV2Menu from './MultiSelectV2Menu'
 import MultiSelectV2Trigger from './MultiSelectV2Trigger'
 import MobileMultiSelectV2 from './MobileMultiSelectV2'
 import {
+    getAllAvailableValues,
     getMultiSelectBorderRadius,
     getMultiSelectCrossBorderRadius,
     getMultiSelectV2ValueLabelMap,
-    handleSelectAll,
 } from './utils'
+import {
+    clampScopeToMaxSelections,
+    emitLegacyScopeChanges,
+    getNextSelectionAfterToggle,
+    getNextSelectionForScope,
+} from '../shared/multiSelectSelection'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -42,6 +48,7 @@ const Wrapper = styled(Block)`
 const MultiSelectV2 = ({
     selectedValues,
     onChange,
+    onSelectionChange,
     items = [],
     label,
     subLabel,
@@ -91,6 +98,7 @@ const MultiSelectV2 = ({
     onClearAllClick,
     onOpenChange,
     multiSelectGroupPosition,
+    menuFooter,
     ...rest
 }: MultiSelectV2Props) => {
     const { disabled, name, ...buttonRest } = rest as {
@@ -163,9 +171,13 @@ const MultiSelectV2 = ({
     )
 
     const handleClearClick = useCallback(() => {
-        if (onClearAllClick) onClearAllClick()
-        else onChange([])
-    }, [onClearAllClick, onChange])
+        if (onClearAllClick) {
+            onClearAllClick()
+            return
+        }
+        onChange?.([])
+        onSelectionChange?.([])
+    }, [onClearAllClick, onChange, onSelectionChange])
 
     const handleClearKeyDown = useCallback(
         (e: React.KeyboardEvent) => {
@@ -179,9 +191,42 @@ const MultiSelectV2 = ({
 
     useDropdownInteractionLock(!isSmallScreen && open)
 
+    const handleItemSelect = (value: string) => {
+        const nextSelection = getNextSelectionAfterToggle(selectedValues, value)
+        onChange?.(value)
+        onSelectionChange?.(nextSelection)
+    }
+
+    const handleBulkSelection = (
+        selectAll: boolean,
+        filteredItems: MultiSelectV2GroupType[]
+    ) => {
+        const availableValues = getAllAvailableValues(filteredItems)
+        const scopedValues = selectAll
+            ? clampScopeToMaxSelections(
+                  selectedValues,
+                  availableValues,
+                  maxSelections
+              )
+            : availableValues
+        const nextSelection = getNextSelectionForScope(
+            selectedValues,
+            scopedValues,
+            selectAll
+        )
+        emitLegacyScopeChanges(
+            selectAll,
+            scopedValues,
+            selectedValues,
+            onChange ? (value) => onChange(value) : undefined
+        )
+        onSelectionChange?.(nextSelection)
+    }
+
     const mobileSharedProps = {
         selectedValues,
         onChange,
+        onSelectionChange,
         items: safeItems,
         label,
         subLabel,
@@ -293,25 +338,14 @@ const MultiSelectV2 = ({
                         skeleton={skeleton}
                         items={safeItems}
                         selected={selectedValues}
-                        onSelect={onChange}
+                        onSelect={handleItemSelect}
                         disabled={disabled}
                         search={search}
                         enableSelectAll={enableSelectAll}
                         selectAllText={selectAllText}
                         maxSelections={maxSelections}
                         onSelectAll={
-                            enableSelectAll
-                                ? (
-                                      selectAll: boolean,
-                                      filteredItems: MultiSelectV2GroupType[]
-                                  ) =>
-                                      handleSelectAll(
-                                          selectAll,
-                                          filteredItems,
-                                          selectedValues,
-                                          onChange
-                                      )
-                                : undefined
+                            enableSelectAll ? handleBulkSelection : undefined
                         }
                         menuDimensions={menuDimensions}
                         menuPosition={menuPosition}
@@ -366,6 +400,7 @@ const MultiSelectV2 = ({
                         }
                         allowCustomValue={allowCustomValue}
                         customValueLabel={customValueLabel}
+                        menuFooter={menuFooter}
                     />
 
                     {shouldShowClearButton && (

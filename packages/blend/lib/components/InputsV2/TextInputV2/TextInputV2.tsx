@@ -171,6 +171,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         } = getVerticalInputPadding({
             isSmallScreenWithLargeSize,
             inputFocusedOrWithValue,
+            hasLabel: Boolean(label),
             paddingTop: inputContainerPaddingTop,
             paddingBottom: inputContainerPaddingBottom,
         })
