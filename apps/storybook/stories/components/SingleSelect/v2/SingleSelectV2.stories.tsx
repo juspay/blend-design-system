@@ -10,7 +10,11 @@ import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
-import { useMockAsyncSearch } from '../../selectAsyncSearchStory'
+import {
+    createControlledAsyncSearchPlay,
+    mockAsyncSearchItems,
+    useMockAsyncSearch,
+} from '../../selectAsyncSearchStory'
 
 const defaultItems: SingleSelectV2GroupType[] = [
     {
@@ -223,6 +227,11 @@ const ControlledAsyncSearchExample = () => {
 
 export const ControlledAsyncSearch: Story = {
     render: () => <ControlledAsyncSearchExample />,
+    play: createControlledAsyncSearchPlay(
+        'button',
+        /select a person/i,
+        /alan turing/i
+    ),
     parameters: {
         docs: {
             description: {
@@ -236,7 +245,7 @@ export const ControlledSearchLoading: Story = {
     args: {
         label: 'Find a person',
         placeholder: 'Select a person',
-        items: [],
+        items: mockAsyncSearchItems,
         selected: '',
         onSelect: () => {},
         search: { searchText: 'ada', isSearchLoading: true },

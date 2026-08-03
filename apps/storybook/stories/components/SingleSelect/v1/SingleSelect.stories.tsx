@@ -33,7 +33,11 @@ import {
     Archive,
     Users,
 } from 'lucide-react'
-import { useMockAsyncSearch } from '../../selectAsyncSearchStory'
+import {
+    createControlledAsyncSearchPlay,
+    mockAsyncSearchItems,
+    useMockAsyncSearch,
+} from '../../selectAsyncSearchStory'
 
 // Local types for reference
 type SelectMenuItemType = {
@@ -1409,6 +1413,11 @@ const ControlledAsyncSearchExample = () => {
 
 export const ControlledAsyncSearch: Story = {
     render: () => <ControlledAsyncSearchExample />,
+    play: createControlledAsyncSearchPlay(
+        'button',
+        /select a person/i,
+        /alan turing/i
+    ),
     parameters: {
         docs: {
             description: {
@@ -1422,7 +1431,7 @@ export const ControlledSearchLoading: Story = {
     args: {
         label: 'Find a person',
         placeholder: 'Select a person',
-        items: [],
+        items: mockAsyncSearchItems,
         selected: '',
         onSelect: () => {},
         searchText: 'ada',

@@ -14,7 +14,11 @@ import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
-import { useMockAsyncSearch } from '../../selectAsyncSearchStory'
+import {
+    createControlledAsyncSearchPlay,
+    mockAsyncSearchItems,
+    useMockAsyncSearch,
+} from '../../selectAsyncSearchStory'
 
 const defaultItems: MultiSelectV2GroupType[] = [
     {
@@ -567,6 +571,11 @@ const ControlledAsyncSearchExample = () => {
 
 export const ControlledAsyncSearch: Story = {
     render: () => <ControlledAsyncSearchExample />,
+    play: createControlledAsyncSearchPlay(
+        'combobox',
+        /find people/i,
+        /find people/i
+    ),
     parameters: {
         docs: {
             description: {
@@ -580,7 +589,7 @@ export const ControlledSearchLoading: Story = {
     args: {
         label: 'Find people',
         placeholder: 'Select people',
-        items: [],
+        items: mockAsyncSearchItems,
         selectedValues: [],
         search: { searchText: 'ada', isSearchLoading: true },
     },

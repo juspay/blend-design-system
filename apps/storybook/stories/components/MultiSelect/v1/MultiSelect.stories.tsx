@@ -10,7 +10,11 @@ import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
-import { useMockAsyncSearch } from '../../selectAsyncSearchStory'
+import {
+    createControlledAsyncSearchPlay,
+    mockAsyncSearchItems,
+    useMockAsyncSearch,
+} from '../../selectAsyncSearchStory'
 import {
     Palette,
     Briefcase,
@@ -1460,6 +1464,11 @@ const ControlledAsyncSearchExample = () => {
 
 export const ControlledAsyncSearch: Story = {
     render: () => <ControlledAsyncSearchExample />,
+    play: createControlledAsyncSearchPlay(
+        'button',
+        /find people/i,
+        /find people/i
+    ),
     parameters: {
         docs: {
             description: {
@@ -1473,7 +1482,7 @@ export const ControlledSearchLoading: Story = {
     args: {
         label: 'Find people',
         placeholder: 'Select people',
-        items: [],
+        items: mockAsyncSearchItems,
         selectedValues: [],
         searchText: 'ada',
         isSearchLoading: true,

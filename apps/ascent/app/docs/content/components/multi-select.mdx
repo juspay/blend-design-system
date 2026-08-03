@@ -114,6 +114,8 @@ cancellation, caching, and error handling remain consumer responsibilities.
 
 ```tsx
 <MultiSelect
+    label="Find people"
+    placeholder="Select people"
     items={apiResults}
     selectedValues={selected}
     onSelectionChange={setSelected}
@@ -129,6 +131,19 @@ string. Omitting `onSearchChange` creates a read-only search input. Setting
 `enableSearch={false}` hides the input but still disables internal filtering.
 `isSearchLoading` describes search requests only; pagination continues to use
 `hasMore` and `loadingComponent`.
+
+The controlled query persists when the menu closes and reopens. Clear it in
+your own lifecycle handler only when that is the experience you want, for
+example with `onOpenChange={(open) => !open && setQuery('')}`. With remote
+results, Select All applies only to the items currently supplied to the
+component; it does not select every match on the server.
+
+| Legacy `MultiSelect` prop | `MultiSelectV2` equivalent |
+| ------------------------- | -------------------------- |
+| `searchText`              | `search.searchText`        |
+| `onSearchChange`          | `search.onSearchChange`    |
+| `isSearchLoading`         | `search.isSearchLoading`   |
+| `emptyStateText`          | `search.emptyStateText`    |
 
 ## API Reference
 
