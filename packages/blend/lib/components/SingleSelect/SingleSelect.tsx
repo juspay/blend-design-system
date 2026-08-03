@@ -74,6 +74,10 @@ const SingleSelect = ({
     onSelect,
     enableSearch,
     searchPlaceholder,
+    searchText,
+    onSearchChange,
+    isSearchLoading,
+    emptyStateText,
     slot,
     customTrigger,
     useDrawerOnMobile = true,
@@ -202,6 +206,10 @@ const SingleSelect = ({
                 onSelect={handleOnSelect}
                 enableSearch={enableSearch}
                 searchPlaceholder={searchPlaceholder}
+                searchText={searchText}
+                onSearchChange={onSearchChange}
+                isSearchLoading={isSearchLoading}
+                emptyStateText={emptyStateText}
                 slot={slot}
                 customTrigger={customTrigger}
                 inline={inline}
@@ -289,6 +297,10 @@ const SingleSelect = ({
                         alignOffset={alignOffset}
                         enableSearch={enableSearch}
                         searchPlaceholder={searchPlaceholder}
+                        searchText={searchText}
+                        onSearchChange={onSearchChange}
+                        isSearchLoading={isSearchLoading}
+                        emptyStateText={emptyStateText}
                         enableVirtualization={enableVirtualization}
                         virtualListItemHeight={virtualListItemHeight}
                         virtualListOverscan={virtualListOverscan}

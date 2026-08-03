@@ -31,6 +31,9 @@ import MultiSelectV2MenuActions from './MultiSelectV2MenuActions'
 import { SELECT_V2_MENU_Z_INDEX } from '../SelectV2/selectV2.constants'
 import { useSelectV2MenuBehavior } from '../SelectV2/useSelectV2MenuBehavior'
 import { VIRTUAL_MIN_VIEWPORT } from '../common/virtualViewport'
+import { useSelectSearchController } from '../Select/useSelectSearchController'
+import SelectSearchStatus from '../Select/SelectSearchStatus'
+import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
 
 const JUST_OPENED_DEBOUNCE_MS = 150
 const DEFAULT_MIN_MENU_WIDTH = 250
@@ -113,7 +116,6 @@ const MultiSelectV2Menu = ({
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
 
-    const enableSearch = search?.show ?? true
     const searchPlaceholder = search?.placeholder ?? 'Search options...'
     const minMenuWidth = menuDimensions?.minWidth as number | undefined
     const maxMenuWidth = menuDimensions?.maxWidth as string | number | undefined
@@ -123,7 +125,20 @@ const MultiSelectV2Menu = ({
     const sideOffset = menuPosition?.sideOffset ?? 8
     const alignOffset = menuPosition?.alignOffset ?? 0
 
-    const [searchText, setSearchText] = useState('')
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: search?.searchText,
+        onValueChange: search?.onSearchChange,
+        explicitShow: search?.show,
+        existingSurfaceDefault: true,
+    })
     const searchInputRef = useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
     const justOpenedRef = useRef(false)
@@ -132,12 +147,18 @@ const MultiSelectV2Menu = ({
     const [internalOpen, setInternalOpen] = useState(false)
     const isControlled = open !== undefined
     const isOpen = (isControlled ? open : internalOpen) && !disabled
+    const handleSearchFocusRecovery = useSelectSearchFocusRecovery({
+        enabled: isSearchControlled && isSearchEnabled,
+        open: Boolean(isOpen),
+        items,
+        searchInputRef,
+    })
     const handleOpenChange = useCallback(
         (nextOpen: boolean) => {
             if (disabled) return
             if (!isControlled) setInternalOpen(nextOpen)
             if (nextOpen) {
-                if (enableSearch) setSearchText('')
+                if (isSearchEnabled) resetUncontrolled()
                 justOpenedRef.current = true
                 if (timeoutRef.current) clearTimeout(timeoutRef.current)
                 timeoutRef.current = setTimeout(() => {
@@ -151,11 +172,17 @@ const MultiSelectV2Menu = ({
             }
             onOpenChange?.(nextOpen)
         },
-        [disabled, isControlled, enableSearch, onOpenChange]
+        [
+            disabled,
+            isControlled,
+            isSearchEnabled,
+            onOpenChange,
+            resetUncontrolled,
+        ]
     )
     const hasMatch = useMemo(
-        () => checkExactMatch(searchText, items),
-        [searchText, items]
+        () => checkExactMatch(valueForSearchBehavior, items),
+        [valueForSearchBehavior, items]
     )
 
     const selectors = [
@@ -169,16 +196,15 @@ const MultiSelectV2Menu = ({
     useScrollLock(isOpen)
 
     const filteredItems = useMemo(() => {
-        const baseFilteredItems = filterMultiSelectV2MenuGroups(
-            items,
-            searchText
-        )
+        const baseFilteredItems = shouldFilterInternally
+            ? filterMultiSelectV2MenuGroups(items, searchText)
+            : items
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
             allowCustomValue,
-            enableSearch || false,
+            isSearchEnabled && !search?.isSearchLoading,
             customValueLabel
         )
     }, [
@@ -186,13 +212,16 @@ const MultiSelectV2Menu = ({
         searchText,
         allowCustomValue,
         hasMatch,
-        enableSearch,
+        isSearchEnabled,
+        search?.isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
 
+    const selectAllItems = isSearchControlled ? items : filteredItems
     const availableValues = useMemo(
-        () => getAllAvailableValues(filteredItems),
-        [filteredItems]
+        () => getAllAvailableValues(selectAllItems),
+        [selectAllItems]
     )
     const flattenedItems = useMemo(
         () => flattenMenuGroups(filteredItems),
@@ -216,7 +245,7 @@ const MultiSelectV2Menu = ({
 
     useSelectV2MenuBehavior({
         open: isOpen,
-        enableSearch,
+        enableSearch: isSearchEnabled,
         searchText,
         searchInputRef,
         focusSearchOnOpen: true,
@@ -226,7 +255,7 @@ const MultiSelectV2Menu = ({
     const handleKeyDown = useCallback(
         (e: React.KeyboardEvent) => {
             if (
-                enableSearch &&
+                isSearchEnabled &&
                 searchInputRef.current &&
                 e.target !== searchInputRef.current
             ) {
@@ -239,7 +268,7 @@ const MultiSelectV2Menu = ({
                     e.preventDefault()
                     searchInputRef.current.focus()
                     const nextValue = searchText + e.key
-                    setSearchText(nextValue)
+                    dispatchUserValue(nextValue)
                     setTimeout(() => {
                         searchInputRef.current?.setSelectionRange(
                             nextValue.length,
@@ -253,7 +282,7 @@ const MultiSelectV2Menu = ({
                     e.preventDefault()
                     searchInputRef.current.focus()
                     const nextValue = searchText.slice(0, -1)
-                    setSearchText(nextValue)
+                    dispatchUserValue(nextValue)
                     setTimeout(() => {
                         searchInputRef.current?.setSelectionRange(
                             nextValue.length,
@@ -263,7 +292,7 @@ const MultiSelectV2Menu = ({
                 }
             }
         },
-        [enableSearch, searchText]
+        [dispatchUserValue, isSearchEnabled, searchText]
     )
 
     const handleOutsideInteraction = useCallback((e: Event) => {
@@ -300,6 +329,8 @@ const MultiSelectV2Menu = ({
     )
 
     const isEmpty = filteredItems.length === 0
+    const isActiveSearchLoading =
+        isSearchEnabled && Boolean(search?.isSearchLoading)
     const headerFooterHeight = Number(
         multiSelectTokens.menu.scroll?.height ?? 80
     )
@@ -337,6 +368,7 @@ const MultiSelectV2Menu = ({
                     onKeyDown={handleKeyDown}
                     onInteractOutside={handleOutsideInteraction}
                     onPointerDownOutside={handleOutsideInteraction}
+                    onFocusCapture={handleSearchFocusRecovery}
                     $backgroundColor={menuBackgroundColor}
                     $borderRadius={menuBorderRadius}
                     $boxShadow={menuBoxShadow}
@@ -364,19 +396,20 @@ const MultiSelectV2Menu = ({
                         <>
                             <MultiSelectV2MenuHeader
                                 tokens={multiSelectTokens}
-                                showSearch={enableSearch}
+                                showSearch={isSearchEnabled}
+                                showSearchWhenEmpty={isSearchControlled}
                                 itemsCount={items.length}
                                 searchValue={searchText}
                                 searchPlaceholder={searchPlaceholder}
                                 searchInputRef={searchInputRef}
                                 onSearchChange={(e) =>
-                                    setSearchText(e.target.value)
+                                    dispatchUserValue(e.target.value)
                                 }
                                 onSearchArrowKeyToFirst={focusFirstMenuItem}
                                 showSelectAll={enableSelectAll}
                                 selected={selected}
                                 availableValues={availableValues}
-                                filteredItems={filteredItems}
+                                filteredItems={selectAllItems}
                                 onSelectAll={
                                     onSelectAll
                                         ? (selectAll, filtered) =>
@@ -387,13 +420,26 @@ const MultiSelectV2Menu = ({
                                 disabled={disabled}
                             />
                             <ScrollableContent
+                                {...(isActiveSearchLoading && {
+                                    'aria-busy': true,
+                                })}
                                 style={{
                                     maxHeight: maxMenuHeight
                                         ? `${Number(maxMenuHeight) - headerFooterHeight}px`
                                         : `${defaultContentMaxHeight}px`,
                                 }}
                             >
-                                {isEmpty ? (
+                                <SelectSearchStatus
+                                    isControlled={isSearchControlled}
+                                    isLoading={isActiveSearchLoading}
+                                    isEmpty={isEmpty}
+                                    emptyStateText={
+                                        search?.emptyStateText ||
+                                        'No results found'
+                                    }
+                                />
+                                {isActiveSearchLoading &&
+                                isEmpty ? null : isEmpty ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -421,9 +467,10 @@ const MultiSelectV2Menu = ({
                                             }
                                             textAlign="center"
                                         >
-                                            {items.length === 0
-                                                ? 'No items available'
-                                                : 'No results found'}
+                                            {search?.emptyStateText ||
+                                                (items.length === 0
+                                                    ? 'No items available'
+                                                    : 'No results found')}
                                         </Text>
                                     </Block>
                                 ) : enableVirtualization &&

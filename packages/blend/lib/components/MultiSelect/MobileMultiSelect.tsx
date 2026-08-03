@@ -23,6 +23,8 @@ import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
 } from '../Select/selectUtils'
+import { useSelectSearchController } from '../Select/useSelectSearchController'
+import SelectSearchStatus from '../Select/SelectSearchStatus'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectTokensType } from './multiSelect.tokens'
 import type {
@@ -322,6 +324,10 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     size = MultiSelectMenuSize.MEDIUM,
     enableSearch = true,
     searchPlaceholder = 'Search options...',
+    searchText: controlledSearchText,
+    onSearchChange,
+    isSearchLoading,
+    emptyStateText,
     enableSelectAll = false,
     selectAllText = 'Select All',
     maxSelections,
@@ -362,7 +368,21 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
     const [drawerOpen, setDrawerOpen] = useState(false)
-    const [searchText, setSearchText] = useState('')
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: controlledSearchText,
+        onValueChange: onSearchChange,
+        explicitShow: enableSearch,
+        existingSurfaceDefault: true,
+    })
+    const isActiveSearchLoading = isSearchEnabled && Boolean(isSearchLoading)
     const valueLabelMap = map(items)
 
     const generatedId = useId()
@@ -379,19 +399,21 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
         })
 
     const hasMatch = React.useMemo(
-        () => checkExactMatch(searchText, items),
-        [searchText, items]
+        () => checkExactMatch(valueForSearchBehavior, items),
+        [valueForSearchBehavior, items]
     )
 
     const filteredItems = React.useMemo(() => {
-        const baseFilteredItems = filterMenuGroups(items, searchText)
+        const baseFilteredItems = shouldFilterInternally
+            ? filterMenuGroups(items, searchText)
+            : items
 
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
             allowCustomValue,
-            enableSearch,
+            isSearchEnabled && !isSearchLoading,
             customValueLabel
         )
     }, [
@@ -399,9 +421,12 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
         searchText,
         allowCustomValue,
         hasMatch,
-        enableSearch,
+        isSearchEnabled,
+        isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
+    const selectAllItems = isSearchControlled ? items : filteredItems
 
     const flattenedItems = useMemo(
         () => flattenMobileMultiSelectGroups(filteredItems, enableSelectAll),
@@ -461,8 +486,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                 undefined as unknown as React.FocusEvent<HTMLButtonElement>
                             )
                         }
-                        if (enableSearch) {
-                            setSearchText('')
+                        if (isSearchEnabled) {
+                            resetUncontrolled()
                         }
                     }
                     onOpenChange?.(isOpen)
@@ -568,8 +593,11 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                         flexGrow={1}
                                         role="listbox"
                                         aria-multiselectable="true"
+                                        {...(isActiveSearchLoading && {
+                                            'aria-busy': true,
+                                        })}
                                     >
-                                        {enableSearch && (
+                                        {isSearchEnabled && (
                                             <Block
                                                 paddingX={
                                                     multiSelectTokens.drawer
@@ -596,7 +624,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     }
                                                     value={searchText}
                                                     onChange={(e) =>
-                                                        setSearchText(
+                                                        dispatchUserValue(
                                                             e.target.value
                                                         )
                                                     }
@@ -608,7 +636,19 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             </Block>
                                         )}
 
-                                        {items.length === 0 ? (
+                                        <SelectSearchStatus
+                                            isControlled={isSearchControlled}
+                                            isLoading={isActiveSearchLoading}
+                                            isEmpty={filteredItems.length === 0}
+                                            emptyStateText={
+                                                emptyStateText ||
+                                                'No results found'
+                                            }
+                                        />
+
+                                        {isActiveSearchLoading &&
+                                        filteredItems.length ===
+                                            0 ? null : items.length === 0 ? (
                                             <Block
                                                 display="flex"
                                                 justifyContent="center"
@@ -627,7 +667,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     }
                                                     textAlign="center"
                                                 >
-                                                    No items available
+                                                    {emptyStateText ||
+                                                        'No items available'}
                                                 </Text>
                                             </Block>
                                         ) : filteredItems.length === 0 &&
@@ -650,7 +691,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     }
                                                     textAlign="center"
                                                 >
-                                                    No results found
+                                                    {emptyStateText ||
+                                                        'No results found'}
                                                 </Text>
                                             </Block>
                                         ) : enableVirtualization &&
@@ -687,7 +729,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                             >
                                                                 <SelectAllItem
                                                                     items={
-                                                                        filteredItems
+                                                                        selectAllItems
                                                                     }
                                                                     selectedValues={
                                                                         selectedValues

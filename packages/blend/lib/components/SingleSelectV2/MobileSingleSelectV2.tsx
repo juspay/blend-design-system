@@ -31,6 +31,8 @@ import {
 } from '../Select/selectUtils'
 import SingleSelectV2MobileItem from './mobile/SingleSelectV2MobileItem'
 import { filterMobileMenuGroups } from './mobile/singleSelectV2.mobile.utils'
+import { useSelectSearchController } from '../Select/useSelectSearchController'
+import SelectSearchStatus from '../Select/SelectSearchStatus'
 
 type MobileSingleSelectV2Props = SingleSelectV2Props
 
@@ -75,7 +77,6 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
 
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
-    const enableSearch = search?.show
     const searchPlaceholder = search?.placeholder ?? 'Search options...'
 
     const singleSelectTokens =
@@ -149,23 +150,40 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
         },
     }
     const [panelOpen, setPanelOpen] = useState(false)
-    const [searchText, setSearchText] = useState('')
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: search?.searchText,
+        onValueChange: search?.onSearchChange,
+        explicitShow: search?.show,
+        existingSurfaceDefault: false,
+    })
+    const isActiveSearchLoading =
+        isSearchEnabled && Boolean(search?.isSearchLoading)
     const valueLabelMap = getSingleSelectV2ValueLabelMap(items)
 
     const hasMatch = React.useMemo(
-        () => checkExactMatch(searchText, items),
-        [searchText, items]
+        () => checkExactMatch(valueForSearchBehavior, items),
+        [valueForSearchBehavior, items]
     )
 
     const filteredItems = React.useMemo(() => {
-        const baseFilteredItems = filterMobileMenuGroups(items, searchText)
+        const baseFilteredItems = shouldFilterInternally
+            ? filterMobileMenuGroups(items, searchText)
+            : items
 
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
             allowCustomValue,
-            enableSearch || false,
+            isSearchEnabled && !search?.isSearchLoading,
             customValueLabel
         )
     }, [
@@ -173,7 +191,9 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
         searchText,
         allowCustomValue,
         hasMatch,
-        enableSearch,
+        isSearchEnabled,
+        search?.isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
 
@@ -230,8 +250,8 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                 open={panelOpen}
                 onOpenChange={(isOpen) => {
                     setPanelOpen(isOpen)
-                    if (!isOpen && enableSearch) {
-                        setSearchText('')
+                    if (!isOpen && isSearchEnabled) {
+                        resetUncontrolled()
                     }
                 }}
             >
@@ -321,8 +341,11 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                         gap={4}
                                         overflow="auto"
                                         flexGrow={1}
+                                        {...(isActiveSearchLoading && {
+                                            'aria-busy': true,
+                                        })}
                                     >
-                                        {enableSearch && (
+                                        {isSearchEnabled && (
                                             <Block
                                                 position="sticky"
                                                 top={0}
@@ -359,7 +382,7 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                     }
                                                     value={searchText}
                                                     onChange={(e) =>
-                                                        setSearchText(
+                                                        dispatchUserValue(
                                                             e.target.value
                                                         )
                                                     }
@@ -371,7 +394,19 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                             </Block>
                                         )}
 
-                                        {items.length === 0 ? (
+                                        <SelectSearchStatus
+                                            isControlled={isSearchControlled}
+                                            isLoading={isActiveSearchLoading}
+                                            isEmpty={filteredItems.length === 0}
+                                            emptyStateText={
+                                                search?.emptyStateText ||
+                                                'No results found'
+                                            }
+                                        />
+
+                                        {isActiveSearchLoading &&
+                                        filteredItems.length ===
+                                            0 ? null : items.length === 0 ? (
                                             <Block
                                                 display="flex"
                                                 justifyContent="center"
@@ -410,7 +445,8 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                     }
                                                     textAlign="center"
                                                 >
-                                                    No items available
+                                                    {search?.emptyStateText ||
+                                                        'No items available'}
                                                 </Text>
                                             </Block>
                                         ) : filteredItems.length === 0 &&
@@ -453,7 +489,8 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                     }
                                                     textAlign="center"
                                                 >
-                                                    No results found
+                                                    {search?.emptyStateText ||
+                                                        'No results found'}
                                                 </Text>
                                             </Block>
                                         ) : (

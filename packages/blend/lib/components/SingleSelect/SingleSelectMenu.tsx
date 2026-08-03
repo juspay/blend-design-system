@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 
 import type { SelectMenuGroupType } from '../Select'
@@ -35,6 +35,9 @@ import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
 } from '../Select/selectUtils'
+import { useSelectSearchController } from '../Select/useSelectSearchController'
+import SelectSearchStatus from '../Select/SelectSearchStatus'
+import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -46,6 +49,10 @@ type SingleSelectMenuProps = {
     maxMenuHeight?: number
     enableSearch?: boolean
     searchPlaceholder?: string
+    searchText?: string
+    onSearchChange?: (text: string) => void
+    isSearchLoading?: boolean
+    emptyStateText?: string
     disabled?: boolean
 
     // alignment
@@ -376,6 +383,10 @@ const SingleSelectMenu = ({
     maxMenuHeight = 400,
     enableSearch,
     searchPlaceholder = 'Search options...',
+    searchText: controlledSearchText,
+    onSearchChange,
+    isSearchLoading,
+    emptyStateText,
     disabled,
     alignment = SelectMenuAlignment.START,
     side = SelectMenuSide.BOTTOM,
@@ -405,9 +416,31 @@ const SingleSelectMenu = ({
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
     const { target: portalContainer } = useShadowRoot()
 
-    const [searchText, setSearchText] = useState('')
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: controlledSearchText,
+        onValueChange: onSearchChange,
+        explicitShow: enableSearch,
+        existingSurfaceDefault: false,
+    })
+    const shouldRenderSearch =
+        isSearchEnabled && (isSearchControlled || items.length > 0)
+    const isActiveSearchLoading = isSearchEnabled && Boolean(isSearchLoading)
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
+    const handleSearchFocusRecovery = useSelectSearchFocusRecovery({
+        enabled: isSearchControlled && isSearchEnabled,
+        open,
+        items,
+        searchInputRef,
+    })
 
     let itemCounter = 0
     const selectors = [
@@ -421,21 +454,22 @@ const SingleSelectMenu = ({
     useScrollLock(open)
 
     const hasMatch = useMemo(
-        () => checkExactMatch(searchText, items),
-        [searchText, items]
+        () => checkExactMatch(valueForSearchBehavior, items),
+        [valueForSearchBehavior, items]
     )
 
     const filteredItems = useMemo(() => {
-        const baseFilteredItems = searchText
-            ? filterMenuGroups(items, searchText)
-            : items
+        const baseFilteredItems =
+            shouldFilterInternally && searchText
+                ? filterMenuGroups(items, searchText)
+                : items
 
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
             allowCustomValue || false,
-            enableSearch || false,
+            isSearchEnabled && !isSearchLoading,
             customValueLabel
         )
     }, [
@@ -443,7 +477,9 @@ const SingleSelectMenu = ({
         searchText,
         allowCustomValue,
         hasMatch,
-        enableSearch,
+        isSearchEnabled,
+        isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
 
@@ -457,7 +493,7 @@ const SingleSelectMenu = ({
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled) return
-        if (newOpen && enableSearch) setSearchText('')
+        if (newOpen && isSearchEnabled) resetUncontrolled()
         onOpenChange(newOpen)
     }
 
@@ -610,7 +646,7 @@ const SingleSelectMenu = ({
                         border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
                     }}
                     onKeyDown={(e) => {
-                        if (enableSearch && searchInputRef.current) {
+                        if (isSearchEnabled && searchInputRef.current) {
                             if (
                                 e.target !== searchInputRef.current &&
                                 !searchInputRef.current.contains(
@@ -625,6 +661,7 @@ const SingleSelectMenu = ({
                             }
                         }
                     }}
+                    onFocusCapture={handleSearchFocusRecovery}
                 >
                     {skeleton.show ? (
                         <SingleSelectSkeleton
@@ -633,7 +670,7 @@ const SingleSelectMenu = ({
                         />
                     ) : (
                         <>
-                            {enableSearch && items.length > 0 && (
+                            {shouldRenderSearch && (
                                 <Block
                                     position="sticky"
                                     top={0}
@@ -654,7 +691,7 @@ const SingleSelectMenu = ({
                                         ) => {
                                             e.preventDefault()
                                             e.stopPropagation()
-                                            setSearchText(e.target.value)
+                                            dispatchUserValue(e.target.value)
                                         }}
                                         onKeyDown={(e) => {
                                             if (
@@ -689,10 +726,24 @@ const SingleSelectMenu = ({
                                     />
                                 </Block>
                             )}
-                            <ScrollableContent>
-                                {items.length === 0 ||
-                                (filteredItems.length === 0 &&
-                                    searchText.length > 0) ? (
+                            <ScrollableContent
+                                {...(isActiveSearchLoading && {
+                                    'aria-busy': true,
+                                })}
+                            >
+                                <SelectSearchStatus
+                                    isControlled={isSearchControlled}
+                                    isLoading={isActiveSearchLoading}
+                                    isEmpty={filteredItems.length === 0}
+                                    emptyStateText={
+                                        emptyStateText || 'No results found'
+                                    }
+                                />
+                                {isActiveSearchLoading &&
+                                filteredItems.length ===
+                                    0 ? null : items.length === 0 ||
+                                  (filteredItems.length === 0 &&
+                                      searchText.length > 0) ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -709,9 +760,10 @@ const SingleSelectMenu = ({
                                             }
                                             textAlign="center"
                                         >
-                                            {items.length === 0
-                                                ? 'No items available'
-                                                : 'No results found'}
+                                            {emptyStateText ||
+                                                (items.length === 0
+                                                    ? 'No items available'
+                                                    : 'No results found')}
                                         </Text>
                                     </Block>
                                 ) : enableVirtualization &&
@@ -748,7 +800,7 @@ const SingleSelectMenu = ({
                                             ][variant].y
                                         }
                                         style={{
-                                            paddingTop: enableSearch
+                                            paddingTop: isSearchEnabled
                                                 ? 0
                                                 : FOUNDATION_THEME.unit[6],
                                         }}

@@ -324,7 +324,7 @@ const MultiSelectV2Trigger = ({
                             MultiSelectV2SelectionTagType.COUNT
                                 ? selectedValues.length
                                 : selectedValues
-                                      .map((v) => valueLabelMap[v])
+                                      .map((v) => valueLabelMap[v] ?? v)
                                       .join(', ')
                         }
                     >
@@ -332,7 +332,7 @@ const MultiSelectV2Trigger = ({
                         MultiSelectV2SelectionTagType.COUNT
                             ? selectedValues.length
                             : selectedValues
-                                  .map((v) => valueLabelMap[v])
+                                  .map((v) => valueLabelMap[v] ?? v)
                                   .join(', ')}
                     </Text>
                 )}

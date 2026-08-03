@@ -56,6 +56,8 @@ import {
     getNextSelectionAfterToggle,
     getNextSelectionForScope,
 } from '../../shared/multiSelectSelection'
+import { useSelectSearchController } from '../../Select/useSelectSearchController'
+import SelectSearchStatus from '../../Select/SelectSearchStatus'
 
 const MobileMultiSelectV2 = ({
     selectedValues,
@@ -105,7 +107,6 @@ const MobileMultiSelectV2 = ({
 }: MultiSelectV2Props) => {
     const safeItems = items ?? []
     const [open, setOpen] = useState(false)
-    const [searchText, setSearchText] = useState('')
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
     const valueLabelMap = useMemo(
@@ -117,8 +118,23 @@ const MobileMultiSelectV2 = ({
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const isContainer = variant === MultiSelectV2Variant.CONTAINER
-    const enableSearch = search?.show ?? false
     const searchPlaceholder = search?.placeholder ?? 'Search options...'
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: search?.searchText,
+        onValueChange: search?.onSearchChange,
+        explicitShow: search?.show,
+        existingSurfaceDefault: false,
+    })
+    const isActiveSearchLoading =
+        isSearchEnabled && Boolean(search?.isSearchLoading)
 
     const { uniqueName, labelId, hintTextId, errorMessageId, ariaAttributes } =
         setupAccessibility({
@@ -133,21 +149,20 @@ const MobileMultiSelectV2 = ({
         })
 
     const hasMatch = useMemo(
-        () => hasExactMatch(searchText, safeItems),
-        [searchText, safeItems]
+        () => hasExactMatch(valueForSearchBehavior, safeItems),
+        [valueForSearchBehavior, safeItems]
     )
 
     const filteredItems = useMemo(() => {
-        const baseFilteredItems = filterMultiSelectV2MenuGroups(
-            safeItems,
-            searchText
-        )
+        const baseFilteredItems = shouldFilterInternally
+            ? filterMultiSelectV2MenuGroups(safeItems, searchText)
+            : safeItems
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
             allowCustomValue,
-            enableSearch,
+            isSearchEnabled && !search?.isSearchLoading,
             customValueLabel
         )
     }, [
@@ -155,7 +170,9 @@ const MobileMultiSelectV2 = ({
         searchText,
         hasMatch,
         allowCustomValue,
-        enableSearch,
+        isSearchEnabled,
+        search?.isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
 
@@ -164,9 +181,10 @@ const MobileMultiSelectV2 = ({
         [filteredItems, enableSelectAll]
     )
 
+    const selectAllItems = isSearchControlled ? safeItems : filteredItems
     const selectableValues = useMemo(
-        () => getAllAvailableValues(filteredItems),
-        [filteredItems]
+        () => getAllAvailableValues(selectAllItems),
+        [selectAllItems]
     )
     const { allSelected, someSelected } = getSelectAllState(
         selectedValues,
@@ -175,8 +193,8 @@ const MobileMultiSelectV2 = ({
 
     const handleOpenChange = (nextOpen: boolean) => {
         setOpen(nextOpen)
-        if (!nextOpen && enableSearch) {
-            setSearchText('')
+        if (!nextOpen && isSearchEnabled) {
+            resetUncontrolled()
         }
         onOpenChange?.(nextOpen)
     }
@@ -514,7 +532,7 @@ const MobileMultiSelectV2 = ({
                                     overflow="hidden"
                                     gap={multiSelectTokens.drawer.content.gap}
                                 >
-                                    {enableSearch && (
+                                    {isSearchEnabled && (
                                         <Block
                                             style={{
                                                 paddingTop:
@@ -542,7 +560,7 @@ const MobileMultiSelectV2 = ({
                                                 placeholder={searchPlaceholder}
                                                 value={searchText}
                                                 onChange={(e) =>
-                                                    setSearchText(
+                                                    dispatchUserValue(
                                                         e.target.value
                                                     )
                                                 }
@@ -554,6 +572,9 @@ const MobileMultiSelectV2 = ({
                                     <Block
                                         role="listbox"
                                         aria-multiselectable="true"
+                                        {...(isActiveSearchLoading && {
+                                            'aria-busy': true,
+                                        })}
                                         flexGrow={1}
                                         flexShrink={1}
                                         minHeight={0}
@@ -573,7 +594,20 @@ const MobileMultiSelectV2 = ({
                                                     .paddingLeft,
                                         }}
                                     >
-                                        {safeItems.length === 0 ? (
+                                        <SelectSearchStatus
+                                            isControlled={isSearchControlled}
+                                            isLoading={isActiveSearchLoading}
+                                            isEmpty={filteredItems.length === 0}
+                                            emptyStateText={
+                                                search?.emptyStateText ||
+                                                'No results found'
+                                            }
+                                        />
+
+                                        {isActiveSearchLoading &&
+                                        filteredItems.length ===
+                                            0 ? null : safeItems.length ===
+                                          0 ? (
                                             <Text
                                                 variant="body.md"
                                                 textAlign="center"
@@ -583,7 +617,8 @@ const MobileMultiSelectV2 = ({
                                                         .default
                                                 }
                                             >
-                                                No items available
+                                                {search?.emptyStateText ||
+                                                    'No items available'}
                                             </Text>
                                         ) : filteredItems.length === 0 &&
                                           searchText.length > 0 ? (
@@ -596,7 +631,8 @@ const MobileMultiSelectV2 = ({
                                                         .default
                                                 }
                                             >
-                                                No results found
+                                                {search?.emptyStateText ||
+                                                    'No results found'}
                                             </Text>
                                         ) : enableVirtualization ? (
                                             <VirtualList
