@@ -34,6 +34,7 @@ import {
     FilterType,
     ColumnType,
     RowActionsConfig,
+    DataTableExportFormat,
 } from './types'
 import { TableTokenType } from './dataTable.tokens'
 import {
@@ -48,6 +49,7 @@ import {
     getColumnStyles,
     haveSameFilterOptions,
     getDataTableBodyState,
+    downloadDataTableExport,
 } from './utils'
 import DataTableHeader from './DataTableHeader'
 import TableHeader from './TableHeader'
@@ -57,7 +59,14 @@ import BulkActionBar from './TableBody/BulkActionBar'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
 import { ButtonSize, ButtonType } from '../Button/types'
-import { Settings, Check, Loader2, Inbox, CircleAlert } from 'lucide-react'
+import {
+    Settings,
+    Check,
+    Loader2,
+    Inbox,
+    CircleAlert,
+    Download,
+} from 'lucide-react'
 import Menu from '../Menu/Menu'
 import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
@@ -216,6 +225,7 @@ const DataTable = forwardRef(
             headerSlot1,
             headerSlot2,
             bulkActions,
+            exportConfig,
             rowActions,
             onOperations,
             onInsertLeft,
@@ -404,6 +414,7 @@ const DataTable = forwardRef(
             useState<number>(-1)
 
         const [internalLoading, setInternalLoading] = useState<boolean>(false)
+        const [isExporting, setIsExporting] = useState<boolean>(false)
 
         useEffect(() => {
             if (serverSidePagination && !isLoading && internalLoading) {
@@ -737,6 +748,97 @@ const DataTable = forwardRef(
         })
         const isErrorState = bodyState === 'error'
         const shouldRenderRows = bodyState === 'rows'
+
+        const exportFormats = useMemo<DataTableExportFormat[]>(() => {
+            const configuredFormats = exportConfig?.formats?.filter(
+                (format): format is DataTableExportFormat =>
+                    format === 'csv' || format === 'xlsx'
+            )
+
+            return configuredFormats && configuredFormats.length > 0
+                ? [...new Set(configuredFormats)]
+                : ['csv']
+        }, [exportConfig?.formats])
+
+        const handleTableExport = async (format: DataTableExportFormat) => {
+            if (!exportConfig?.enabled || isExporting) return
+
+            setIsExporting(true)
+            try {
+                const scope = exportConfig.scope || 'currentPage'
+                let rows = scope === 'allLoaded' ? processedData : currentData
+
+                if (exportConfig.onExport) {
+                    const suppliedRows = await exportConfig.onExport({
+                        visibleColumns,
+                        filters: columnFilters,
+                        advancedFilters,
+                        search: searchConfig,
+                        sort: sortConfig,
+                        scope,
+                    })
+
+                    if (suppliedRows === undefined) return
+                    rows = suppliedRows
+                }
+
+                const defaultFileName = `${title || 'data'}-export-${new Date().toISOString().split('T')[0]}`
+                await downloadDataTableExport(
+                    rows,
+                    visibleColumns,
+                    format,
+                    exportConfig.fileName || defaultFileName,
+                    { getDisplayValue, dateLabel }
+                )
+            } catch (error) {
+                alert(error instanceof Error ? error.message : 'Export failed')
+            } finally {
+                setIsExporting(false)
+            }
+        }
+
+        const exportButton = exportConfig?.enabled ? (
+            exportFormats.length === 1 ? (
+                <Button
+                    data-element="table-export-button"
+                    buttonType={ButtonType.SECONDARY}
+                    leadingIcon={<Download aria-hidden="true" />}
+                    size={ButtonSize.SMALL}
+                    loading={isExporting}
+                    disabled={isExporting}
+                    aria-label={`Export ${exportFormats[0].toUpperCase()}`}
+                    onClick={() => void handleTableExport(exportFormats[0])}
+                >
+                    Export
+                </Button>
+            ) : (
+                <Menu
+                    items={[
+                        {
+                            items: exportFormats.map((format) => ({
+                                label: format.toUpperCase(),
+                                onClick: () => void handleTableExport(format),
+                            })),
+                            showSeparator: false,
+                        },
+                    ]}
+                    alignment={MenuAlignment.END}
+                    trigger={
+                        <Button
+                            data-element="table-export-button"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Download aria-hidden="true" />}
+                            size={ButtonSize.SMALL}
+                            loading={isExporting}
+                            disabled={isExporting}
+                            aria-label="Export table"
+                        >
+                            Export
+                        </Button>
+                    }
+                />
+            )
+        ) : null
 
         // Stable row ID list for the current page. Used for selection state and
         // as a cheap signal to remount the tbody when results change (e.g. server-side search).
@@ -1626,25 +1728,32 @@ const DataTable = forwardRef(
                     onSearch={handleSearch}
                     onAdvancedFiltersChange={onAdvancedFiltersChange}
                     onClearAllFilters={clearAllFilters}
+                    mobileToolbarSlot={exportButton}
                     headerSlot1={
-                        showSettings ? (
+                        showSettings ||
+                        (!mobileConfig.isMobile && exportButton) ? (
                             <>
-                                <Menu
-                                    items={formatOptions}
-                                    alignment={MenuAlignment.END}
-                                    sideOffset={8}
-                                    alignOffset={-20}
-                                    trigger={
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            leadingIcon={<Settings />}
-                                            size={ButtonSize.SMALL}
-                                            aria-label="Table settings"
-                                        >
-                                            Settings
-                                        </Button>
-                                    }
-                                />
+                                {showSettings && (
+                                    <Menu
+                                        items={formatOptions}
+                                        alignment={MenuAlignment.END}
+                                        sideOffset={8}
+                                        alignOffset={-20}
+                                        trigger={
+                                            <Button
+                                                buttonType={
+                                                    ButtonType.SECONDARY
+                                                }
+                                                leadingIcon={<Settings />}
+                                                size={ButtonSize.SMALL}
+                                                aria-label="Table settings"
+                                            >
+                                                Settings
+                                            </Button>
+                                        }
+                                    />
+                                )}
+                                {!mobileConfig.isMobile && exportButton}
                             </>
                         ) : null
                     }
