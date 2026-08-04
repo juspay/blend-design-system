@@ -134,10 +134,6 @@ const ExpandedCell = styled.td`
 
 const ExpandedRow = styled(TableRow)`
     background-color: ${FOUNDATION_THEME.colors.gray[50]};
-
-    td {
-        background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
-    }
 `
 
 const ExpandButton = styled.button`
