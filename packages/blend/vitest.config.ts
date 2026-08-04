@@ -16,7 +16,7 @@ export default defineConfig({
         // Default is (cores - 1) forks. That many concurrent jsdom child
         // processes starve each other and turn waitFor polls into timeouts.
         // CI keeps its own default (undefined falls through).
-        maxWorkers: process.env.CI ? undefined : 4,
+        maxWorkers: process.env.CI ? undefined : 6,
         pool: 'threads',
         projects: [
             {
