@@ -100,9 +100,18 @@ export type AxisConfig = {
 export type XAxisConfig = AxisConfig
 export type YAxisConfig = AxisConfig
 
+export type TooltipContentProps = TooltipProps<ValueType, NameType> & {
+    originalData: NewNestedDataPoint[]
+    chartType: ChartType
+    selectedKeys: string[]
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
+}
+
 export type TooltipConfig = {
     position?: { x?: number; y?: number }
     allowEscapeViewBox?: { x?: boolean; y?: boolean }
+    content?: (props: TooltipContentProps) => ReactNode
 }
 
 export type DotItemDotProps = {
