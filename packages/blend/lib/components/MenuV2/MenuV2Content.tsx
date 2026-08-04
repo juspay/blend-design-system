@@ -79,13 +79,15 @@ function renderFlatRow(
             </RadixMenu.Separator>
         )
     }
-    const { item, itemIndex } = row
+    const { item, itemIndex, selectionStyle, selectionMode } = row
     return item.subMenu && item.subMenu.length > 0 ? (
         <MenuV2SubMenu
             key={row.id}
             item={item}
             index={itemIndex}
             maxHeight={maxHeight}
+            selectionStyle={selectionStyle}
+            selectionMode={selectionMode}
         />
     ) : (
         <MenuV2Item
@@ -93,6 +95,8 @@ function renderFlatRow(
             item={item}
             index={itemIndex}
             itemTokens={tokens.group.item}
+            selectionStyle={selectionStyle}
+            selectionMode={selectionMode}
         />
     )
 }
@@ -186,6 +190,24 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
             overscan,
             enabled: useVirtual,
             initialRect: { width: 0, height: viewportHeight },
+        })
+        const virtualItems = virtualizer.getVirtualItems()
+        const virtualGroups = new Map<
+            number,
+            Array<{
+                virtualRow: (typeof virtualItems)[number]
+                row: MenuV2FlatRow
+            }>
+        >()
+
+        virtualItems.forEach((virtualRow) => {
+            const row = flatRows[virtualRow.index]
+            if (!row) return
+
+            const groupId = row.groupId ?? virtualRow.index
+            const groupRows = virtualGroups.get(groupId) ?? []
+            groupRows.push({ virtualRow, row })
+            virtualGroups.set(groupId, groupRows)
         })
 
         return (
@@ -284,15 +306,12 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                 position: 'relative',
                             }}
                         >
-                            <RadixMenu.Group>
-                                {virtualizer
-                                    .getVirtualItems()
-                                    .map((virtualRow) => {
-                                        const row = flatRows[
-                                            virtualRow.index
-                                        ] as MenuV2FlatRow | undefined
-                                        if (!row) return null
-                                        return (
+                            {Array.from(virtualGroups).map(
+                                ([groupId, rows]) => (
+                                    <RadixMenu.Group
+                                        key={`virtual-group-${groupId}`}
+                                    >
+                                        {rows.map(({ virtualRow, row }) => (
                                             <Block
                                                 key={virtualRow.key}
                                                 style={{
@@ -309,9 +328,10 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                                     maxHeight
                                                 )}
                                             </Block>
-                                        )
-                                    })}
-                            </RadixMenu.Group>
+                                        ))}
+                                    </RadixMenu.Group>
+                                )
+                            )}
                         </Block>
                     </Block>
                 ) : (
@@ -392,6 +412,12 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                                 item={item}
                                                 index={itemIndex}
                                                 maxHeight={maxHeight}
+                                                selectionStyle={
+                                                    group.selectionStyle
+                                                }
+                                                selectionMode={
+                                                    group.selectionMode
+                                                }
                                             />
                                         ) : (
                                             <MenuV2Item
@@ -402,6 +428,12 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                                                 item={item}
                                                 index={itemIndex}
                                                 itemTokens={content.group.item}
+                                                selectionStyle={
+                                                    group.selectionStyle
+                                                }
+                                                selectionMode={
+                                                    group.selectionMode
+                                                }
                                             />
                                         )
                                 )}

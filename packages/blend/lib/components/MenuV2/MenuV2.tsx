@@ -12,6 +12,7 @@ import {
 import type { MenuV2TokensType } from './menuV2.tokens'
 import { filterMenuV2Groups } from './menuV2.utils'
 import MenuV2Content from './MenuV2Content'
+import { MenuV2SelectionProvider } from './MenuV2SelectionContext'
 import { CSSObject } from 'styled-components'
 
 const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
@@ -30,6 +31,9 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
             open: controlledOpen,
             onOpenChange,
             asModal = false,
+            selectionStyle,
+            selectionMode,
+            closeOnSelect = true,
             alignment = MenuV2Alignment.CENTER,
             side = MenuV2Side.BOTTOM,
             sideOffset = 8,
@@ -90,6 +94,15 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
             })
         }, [trigger, triggerProps])
 
+        const selectionContextValue = useMemo(
+            () => ({
+                selectionStyle,
+                selectionMode,
+                closeOnSelect,
+            }),
+            [selectionStyle, selectionMode, closeOnSelect]
+        )
+
         return (
             <RadixMenu.Root
                 data-menu-v2="menu-v2"
@@ -102,33 +115,39 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
                 </RadixMenu.Trigger>
 
                 <RadixMenu.Portal>
-                    <MenuV2Content
-                        ref={ref}
-                        filteredItems={filteredItems}
-                        menuTokens={menuTokens}
-                        enableSearch={enableSearch}
-                        searchPlaceholder={searchPlaceholder}
-                        searchText={searchText}
-                        onSearchTextChange={setSearchText}
-                        onEnter={handleSearchEnter}
-                        maxHeight={
-                            dimensions.maxHeight as CSSObject['maxHeight']
-                        }
-                        minHeight={
-                            dimensions.minHeight as CSSObject['minHeight']
-                        }
-                        minWidth={dimensions.minWidth as CSSObject['minWidth']}
-                        maxWidth={dimensions.maxWidth as CSSObject['maxWidth']}
-                        enableVirtualScrolling={enableVirtualScrolling}
-                        virtualScrolling={virtualScrolling}
-                        alignment={alignment}
-                        side={side}
-                        sideOffset={sideOffset}
-                        alignOffset={alignOffset}
-                        collisionBoundaryRef={collisionBoundaryRef}
-                        onInteractOutside={handleInteractOutside}
-                        onPointerDownOutside={handleInteractOutside}
-                    />
+                    <MenuV2SelectionProvider value={selectionContextValue}>
+                        <MenuV2Content
+                            ref={ref}
+                            filteredItems={filteredItems}
+                            menuTokens={menuTokens}
+                            enableSearch={enableSearch}
+                            searchPlaceholder={searchPlaceholder}
+                            searchText={searchText}
+                            onSearchTextChange={setSearchText}
+                            onEnter={handleSearchEnter}
+                            maxHeight={
+                                dimensions.maxHeight as CSSObject['maxHeight']
+                            }
+                            minHeight={
+                                dimensions.minHeight as CSSObject['minHeight']
+                            }
+                            minWidth={
+                                dimensions.minWidth as CSSObject['minWidth']
+                            }
+                            maxWidth={
+                                dimensions.maxWidth as CSSObject['maxWidth']
+                            }
+                            enableVirtualScrolling={enableVirtualScrolling}
+                            virtualScrolling={virtualScrolling}
+                            alignment={alignment}
+                            side={side}
+                            sideOffset={sideOffset}
+                            alignOffset={alignOffset}
+                            collisionBoundaryRef={collisionBoundaryRef}
+                            onInteractOutside={handleInteractOutside}
+                            onPointerDownOutside={handleInteractOutside}
+                        />
+                    </MenuV2SelectionProvider>
                 </RadixMenu.Portal>
             </RadixMenu.Root>
         )
