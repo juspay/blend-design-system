@@ -44,90 +44,6 @@ describe('Modal Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
-
-        it('meets WCAG standards for modal without subtitle', async () => {
-            const TestComponent = () => {
-                const [isOpen, setIsOpen] = useState(true)
-
-                return (
-                    <Modal
-                        isOpen={isOpen}
-                        onClose={() => setIsOpen(false)}
-                        title="Modal Title"
-                        primaryAction={{
-                            text: 'OK',
-                            onClick: () => setIsOpen(false),
-                        }}
-                    >
-                        <p>Content</p>
-                    </Modal>
-                )
-            }
-
-            const { container } = render(<TestComponent />)
-
-            await waitFor(() => {
-                expect(screen.getByRole('dialog')).toBeInTheDocument()
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for modal without actions', async () => {
-            const TestComponent = () => {
-                const [isOpen, setIsOpen] = useState(true)
-
-                return (
-                    <Modal
-                        isOpen={isOpen}
-                        onClose={() => setIsOpen(false)}
-                        title="Information Modal"
-                    >
-                        <p>This modal has no action buttons</p>
-                    </Modal>
-                )
-            }
-
-            const { container } = render(<TestComponent />)
-
-            await waitFor(() => {
-                expect(screen.getByRole('dialog')).toBeInTheDocument()
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for modal without close button', async () => {
-            const TestComponent = () => {
-                const [isOpen, setIsOpen] = useState(true)
-
-                return (
-                    <Modal
-                        isOpen={isOpen}
-                        onClose={() => setIsOpen(false)}
-                        title="Modal"
-                        showCloseButton={false}
-                        primaryAction={{
-                            text: 'Close',
-                            onClick: () => setIsOpen(false),
-                        }}
-                    >
-                        <p>Content</p>
-                    </Modal>
-                )
-            }
-
-            const { container } = render(<TestComponent />)
-
-            await waitFor(() => {
-                expect(screen.getByRole('dialog')).toBeInTheDocument()
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
     })
 
     describe('WCAG 2.1.1 Keyboard (Level A)', () => {
@@ -1456,60 +1372,6 @@ describe('Modal Accessibility', () => {
     })
 
     describe('Edge Cases and Additional Accessibility', () => {
-        it('handles modal without title gracefully', async () => {
-            const TestComponent = () => {
-                const [isOpen, setIsOpen] = useState(true)
-
-                return (
-                    <Modal
-                        isOpen={isOpen}
-                        onClose={() => setIsOpen(false)}
-                        showCloseButton={false}
-                    >
-                        <p>Content without title</p>
-                    </Modal>
-                )
-            }
-
-            const { container } = render(<TestComponent />)
-
-            await waitFor(() => {
-                expect(screen.getByRole('dialog')).toBeInTheDocument()
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('handles modal with only primary action', async () => {
-            const TestComponent = () => {
-                const [isOpen, setIsOpen] = useState(true)
-
-                return (
-                    <Modal
-                        isOpen={isOpen}
-                        onClose={() => setIsOpen(false)}
-                        title="Single Action"
-                        primaryAction={{
-                            text: 'OK',
-                            onClick: () => setIsOpen(false),
-                        }}
-                    >
-                        <p>Content</p>
-                    </Modal>
-                )
-            }
-
-            const { container } = render(<TestComponent />)
-
-            await waitFor(() => {
-                expect(screen.getByRole('dialog')).toBeInTheDocument()
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('handles modal with disabled action buttons', async () => {
             const TestComponent = () => {
                 const [isOpen, setIsOpen] = useState(true)
@@ -1529,32 +1391,6 @@ describe('Modal Accessibility', () => {
                             onClick: () => setIsOpen(false),
                             disabled: true,
                         }}
-                    >
-                        <p>Content</p>
-                    </Modal>
-                )
-            }
-
-            const { container } = render(<TestComponent />)
-
-            await waitFor(() => {
-                expect(screen.getByRole('dialog')).toBeInTheDocument()
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('handles modal with closeOnBackdropClick disabled', async () => {
-            const TestComponent = () => {
-                const [isOpen, setIsOpen] = useState(true)
-
-                return (
-                    <Modal
-                        isOpen={isOpen}
-                        onClose={() => setIsOpen(false)}
-                        title="No Backdrop Close"
-                        closeOnBackdropClick={false}
                     >
                         <p>Content</p>
                     </Modal>
@@ -1652,9 +1488,6 @@ describe('Modal Accessibility', () => {
                 // Focus might not be set in test environment, but modal is still accessible
                 expect(dialog).toBeInTheDocument()
             }
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
     })
 })

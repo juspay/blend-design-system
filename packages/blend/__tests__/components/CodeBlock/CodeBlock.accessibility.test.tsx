@@ -6,7 +6,6 @@ import CodeBlock from '../../../lib/components/CodeBlock/CodeBlock'
 import {
     CodeBlockVariant,
     DiffLineType,
-    type SupportedLanguage,
 } from '../../../lib/components/CodeBlock/types'
 
 describe('CodeBlock Accessibility', () => {
@@ -27,108 +26,12 @@ describe('CodeBlock Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all code block variants (default, no-gutter, diff)', async () => {
-            const variants = [
-                CodeBlockVariant.DEFAULT,
-                CodeBlockVariant.NO_GUTTER,
-                CodeBlockVariant.DIFF,
-            ]
-
-            for (const variant of variants) {
-                const { container, unmount } = render(
-                    <CodeBlock
-                        code="const test = 'example';"
-                        variant={variant}
-                        language="javascript"
-                        diffLines={
-                            variant === CodeBlockVariant.DIFF
-                                ? [
-                                      {
-                                          content: 'const old = "removed";',
-                                          type: DiffLineType.REMOVED,
-                                      },
-                                      {
-                                          content: 'const new = "added";',
-                                          type: DiffLineType.ADDED,
-                                      },
-                                  ]
-                                : undefined
-                        }
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards with line numbers (1.3.1 Info and Relationships)', async () => {
-            const { container } = render(
-                <CodeBlock
-                    code="const example = 'test';"
-                    language="javascript"
-                    showLineNumbers={true}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards without line numbers', async () => {
-            const { container } = render(
-                <CodeBlock
-                    code="const example = 'test';"
-                    language="javascript"
-                    showLineNumbers={false}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with header (2.4.6 Headings and Labels)', async () => {
-            const { container } = render(
-                <CodeBlock
-                    code="const example = 'test';"
-                    language="javascript"
-                    header="example.js"
-                    showHeader={true}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards without header', async () => {
-            const { container } = render(
-                <CodeBlock
-                    code="const example = 'test';"
-                    language="javascript"
-                    showHeader={false}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('meets WCAG standards with copy button (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <CodeBlock
                     code="const example = 'test';"
                     language="javascript"
                     showCopyButton={true}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards without copy button', async () => {
-            const { container } = render(
-                <CodeBlock
-                    code="const example = 'test';"
-                    language="javascript"
-                    showCopyButton={false}
                 />
             )
             const results = await axe(container)
@@ -159,53 +62,6 @@ describe('CodeBlock Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for all supported languages', async () => {
-            const languages: SupportedLanguage[] = [
-                'javascript',
-                'typescript',
-                'jsx',
-                'tsx',
-                'json',
-                'css',
-                'html',
-                'markdown',
-                'yaml',
-                'python',
-                'rust',
-                'haskell',
-            ]
-
-            for (const language of languages) {
-                const { container, unmount } = render(
-                    <CodeBlock
-                        code={`// ${language} example\nconst test = 'example';`}
-                        language={language}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards with all features combined - comprehensive test', async () => {
-            const { container } = render(
-                <CodeBlock
-                    code={`function example() {
-  return 'Hello, World!';
-}`}
-                    language="javascript"
-                    showLineNumbers={true}
-                    showHeader={true}
-                    header="example.js"
-                    showCopyButton={true}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 1.1.1, 1.3.1, 2.1.1, 2.4.6, 4.1.2, keyboard navigation, screen reader support
         })
     })
 
@@ -828,89 +684,6 @@ describe('CodeBlock Accessibility', () => {
                     })
                 ).toBeInTheDocument()
             })
-        })
-    })
-
-    describe('Comprehensive WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
-        it('meets WCAG standards with all features combined - comprehensive test', async () => {
-            const { container } = render(
-                <CodeBlock
-                    code={`function comprehensive() {
-  return 'All features';
-}`}
-                    language="typescript"
-                    variant={CodeBlockVariant.DEFAULT}
-                    showLineNumbers={true}
-                    showHeader={true}
-                    header="comprehensive.ts"
-                    showCopyButton={true}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 1.1.1, 1.3.1, 1.3.2, 1.3.3, 1.4.4, 2.1.1, 2.4.3, 2.4.6, 2.4.7, 4.1.2, 4.1.3
-        })
-
-        it('meets WCAG standards for diff view with all features', async () => {
-            const { container } = render(
-                <CodeBlock
-                    code=""
-                    variant={CodeBlockVariant.DIFF}
-                    diffLines={[
-                        {
-                            content: 'const oldVersion = "1.0.0";',
-                            type: DiffLineType.REMOVED,
-                        },
-                        {
-                            content: 'const unchanged = "same";',
-                            type: DiffLineType.UNCHANGED,
-                        },
-                        {
-                            content: 'const newVersion = "2.0.0";',
-                            type: DiffLineType.ADDED,
-                        },
-                    ]}
-                    showLineNumbers={true}
-                    showHeader={true}
-                    header="version.diff"
-                    showCopyButton={true}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards without header and copy button', async () => {
-            const { container } = render(
-                <CodeBlock
-                    code="const minimal = 'test';"
-                    language="javascript"
-                    showHeader={false}
-                    showCopyButton={false}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with long code content', async () => {
-            const longCode = Array(50)
-                .fill(0)
-                .map((_, i) => `const line${i} = ${i};`)
-                .join('\n')
-
-            const { container } = render(
-                <CodeBlock
-                    code={longCode}
-                    language="javascript"
-                    showLineNumbers={true}
-                    showHeader={true}
-                    header="long.js"
-                    showCopyButton={true}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
     })
 })

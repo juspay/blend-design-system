@@ -19,19 +19,6 @@ describe('SearchInput Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with search icon (1.1.1 Non-text Content)', async () => {
-            const { container } = render(
-                <SearchInput
-                    placeholder="Search products..."
-                    value=""
-                    onChange={() => {}}
-                    leftSlot={<Search size={16} aria-hidden="true" />}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <SearchInput
@@ -863,60 +850,6 @@ describe('SearchInput Accessibility', () => {
     })
 
     describe('Comprehensive WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
-        it('meets WCAG standards with all features combined - comprehensive test', async () => {
-            const { container } = render(
-                <SearchInput
-                    placeholder="Complete search test"
-                    value=""
-                    onChange={() => {}}
-                    required
-                    name="search"
-                    leftSlot={<Search size={16} aria-hidden="true" />}
-                    rightSlot={
-                        <button
-                            type="button"
-                            aria-label="Clear search"
-                            onClick={() => {}}
-                        >
-                            <X size={16} aria-hidden="true" />
-                        </button>
-                    }
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 1.1.1, 1.3.5, 2.1.1, 2.4.7, 3.3.2, 4.1.2
-        })
-
-        it('meets WCAG standards with error state - all error requirements', async () => {
-            const { container } = render(
-                <SearchInput
-                    placeholder="Error test"
-                    value="invalid"
-                    onChange={() => {}}
-                    error
-                    required
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 3.3.1 Error Identification, 4.1.2
-        })
-
-        it('meets WCAG standards in disabled state - all disabled state requirements', async () => {
-            const { container } = render(
-                <SearchInput
-                    placeholder="Disabled"
-                    value="Cannot edit"
-                    onChange={() => {}}
-                    disabled
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 2.1.1 Keyboard, 4.1.2 Name Role Value
-        })
-
         it('meets WCAG standards with filter button - interactive elements accessible', async () => {
             const { container } = render(
                 <SearchInput

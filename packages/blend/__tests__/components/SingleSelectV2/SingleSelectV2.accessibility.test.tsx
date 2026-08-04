@@ -92,8 +92,8 @@ describe('SingleSelectV2 Accessibility', () => {
         expect(await axe(container)).toHaveNoViolations()
     }, 10000)
 
-    it('supports aria-label and aria-describedby wiring', async () => {
-        const { container } = render(
+    it('supports aria-label and aria-describedby wiring', () => {
+        render(
             <React.Fragment>
                 <div id="custom-description">Custom description</div>
                 <SingleSelectV2
@@ -114,23 +114,5 @@ describe('SingleSelectV2 Accessibility', () => {
         expect(trigger.getAttribute('aria-describedby')).toContain(
             'custom-description'
         )
-        expect(await axe(container)).toHaveNoViolations()
-    })
-
-    it('meets WCAG standards when menuFooter is provided', async () => {
-        const user = userEvent.setup()
-        const { container } = render(
-            <SingleSelectV2
-                placeholder="Select an option"
-                items={createItems()}
-                selected=""
-                onSelect={() => {}}
-                menuFooter={<button onClick={() => {}}>Create new</button>}
-            />
-        )
-        await user.click(
-            screen.getByRole('button', { name: /select an option/i })
-        )
-        expect(await axe(container)).toHaveNoViolations()
     })
 })

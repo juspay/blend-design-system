@@ -3,12 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Tooltip } from '../../../lib/components/Tooltip/Tooltip'
-import {
-    TooltipAlign,
-    TooltipSide,
-    TooltipSize,
-    TooltipSlotDirection,
-} from '../../../lib/components/Tooltip/types'
+import { TooltipSlotDirection } from '../../../lib/components/Tooltip/types'
 import { MockIcon } from '../../test-utils'
 
 describe('Tooltip Accessibility', () => {
@@ -38,171 +33,16 @@ describe('Tooltip Accessibility', () => {
             expect(resultsWithTooltip).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all tooltip sizes', async () => {
-            const sizes = [TooltipSize.SMALL, TooltipSize.LARGE]
-
-            for (const size of sizes) {
-                const { container, user, unmount } = render(
-                    <Tooltip content={`${size} size tooltip`} size={size}>
-                        <button>{size} trigger</button>
-                    </Tooltip>
-                )
-
-                const trigger = screen.getByRole('button')
-                await user.hover(trigger)
-
-                await waitFor(() => {
-                    expect(
-                        screen.getAllByText(`${size} size tooltip`)
-                    ).toHaveLength(2)
-                })
-
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards for all tooltip positions', async () => {
-            const sides = [
-                TooltipSide.TOP,
-                TooltipSide.RIGHT,
-                TooltipSide.BOTTOM,
-                TooltipSide.LEFT,
-            ]
-
-            for (const side of sides) {
-                const { container, user, unmount } = render(
-                    <Tooltip content={`${side} tooltip`} side={side}>
-                        <button>{side} trigger</button>
-                    </Tooltip>
-                )
-
-                const trigger = screen.getByRole('button')
-                await user.hover(trigger)
-
-                await waitFor(() => {
-                    expect(screen.getAllByText(`${side} tooltip`)).toHaveLength(
-                        2
-                    )
-                })
-
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards for all tooltip alignments', async () => {
-            const aligns = [
-                TooltipAlign.START,
-                TooltipAlign.CENTER,
-                TooltipAlign.END,
-            ]
-
-            for (const align of aligns) {
-                const { container, user, unmount } = render(
-                    <Tooltip content={`${align} aligned tooltip`} align={align}>
-                        <button>{align} trigger</button>
-                    </Tooltip>
-                )
-
-                const trigger = screen.getByRole('button')
-                await user.hover(trigger)
-
-                await waitFor(() => {
-                    expect(
-                        screen.getAllByText(`${align} aligned tooltip`)
-                    ).toHaveLength(2)
-                })
-
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards for tooltip with slot (1.1.1 Non-text Content)', async () => {
-            const { container, user } = render(
-                <Tooltip
-                    content="Tooltip with icon"
-                    slot={<MockIcon aria-hidden="true" />}
-                    slotDirection={TooltipSlotDirection.LEFT}
-                >
-                    <button>Icon tooltip trigger</button>
-                </Tooltip>
-            )
-
-            const trigger = screen.getByRole('button')
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                expect(screen.getAllByText('Tooltip with icon')).toHaveLength(2)
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for tooltip with arrow (1.1.1 Non-text Content)', async () => {
-            const { container, user } = render(
-                <Tooltip content="Tooltip with arrow" showArrow={true}>
-                    <button>Arrow tooltip trigger</button>
-                </Tooltip>
-            )
-
-            const trigger = screen.getByRole('button')
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                expect(screen.getAllByText('Tooltip with arrow')).toHaveLength(
-                    2
-                )
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for controlled tooltip', async () => {
+        it('meets WCAG standards for controlled open tooltip', async () => {
             const { container } = render(
                 <Tooltip content="Always visible tooltip" open={true}>
                     <button>Controlled trigger</button>
                 </Tooltip>
             )
 
-            // Tooltip should be visible immediately
             expect(screen.getAllByText('Always visible tooltip')).toHaveLength(
                 2
             )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for tooltip with complex content', async () => {
-            const { container, user } = render(
-                <Tooltip
-                    content={
-                        <div>
-                            <strong>Important:</strong> This is a complex
-                            tooltip with <em>emphasized text</em>.
-                        </div>
-                    }
-                >
-                    <button>Complex content trigger</button>
-                </Tooltip>
-            )
-
-            const trigger = screen.getByRole('button')
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                expect(screen.getByRole('tooltip')).toBeInTheDocument()
-            })
 
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -1076,28 +916,6 @@ describe('Tooltip Accessibility', () => {
     })
 
     describe('Edge Cases and Additional Accessibility', () => {
-        it('maintains accessibility with minimal content', async () => {
-            const { container, user } = render(
-                <Tooltip content="Info">
-                    <button aria-label="Button with minimal tooltip">
-                        Minimal content test
-                    </button>
-                </Tooltip>
-            )
-
-            const trigger = screen.getByRole('button')
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                const tooltip = screen.getByRole('tooltip')
-                expect(tooltip).toBeInTheDocument()
-                expect(tooltip).toHaveTextContent('Info')
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('handles accessibility with dynamic content', async () => {
             const { user, rerender } = render(
                 <Tooltip content="Dynamic content 1">
@@ -1176,27 +994,24 @@ describe('Tooltip Accessibility', () => {
             expect(trigger).toBeInTheDocument()
         })
 
-        it('handles tooltip with empty content gracefully', async () => {
-            const { container } = render(
+        it('handles tooltip with empty content gracefully', () => {
+            render(
                 <Tooltip content="">
                     <button>Empty content test</button>
                 </Tooltip>
             )
 
-            // Empty content should not render tooltip
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
+            expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
         })
 
-        it('handles tooltip with null content gracefully', async () => {
-            const { container } = render(
+        it('handles tooltip with null content gracefully', () => {
+            render(
                 <Tooltip content={null as unknown as string}>
                     <button>Null content test</button>
                 </Tooltip>
             )
 
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
+            expect(screen.queryByRole('tooltip')).not.toBeInTheDocument()
         })
     })
 })

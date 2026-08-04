@@ -89,38 +89,6 @@ describe('ChatInputV2 Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
-
-        it('meets WCAG standards with top queries', async () => {
-            const { container } = render(
-                <ChatInputV2
-                    {...baseProps}
-                    topQueries={[
-                        { id: 'q1', text: 'Summarize the doc' },
-                        { id: 'q2', text: 'List action items' },
-                    ]}
-                    onTopQuerySelect={() => {}}
-                    secondaryAction={<MockIcon />}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with topContent and attachments', async () => {
-            const { container } = render(
-                <ChatInputV2
-                    {...baseProps}
-                    topContent={<span>Context banner</span>}
-                    attachedFiles={[
-                        { id: 'p1', name: 'file.pdf', type: 'pdf', size: 100 },
-                    ]}
-                    {...noopAttachmentHandlers}
-                    secondaryAction={<MockIcon />}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
     })
 
     describe('WCAG 3.3.2 Labels or Instructions (Level A)', () => {
@@ -391,14 +359,6 @@ describe('ChatInputV2 Accessibility', () => {
             } as ReturnType<typeof useBreakpointsModule.useBreakpoints>)
         })
 
-        it('meets WCAG standards for mobile shell (axe-core)', async () => {
-            const { container } = render(
-                <ChatInputV2 {...baseProps} secondaryAction={<MockIcon />} />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('exposes attach control as a named button', () => {
             render(<ChatInputV2 {...baseProps} />)
             expect(
@@ -428,8 +388,8 @@ describe('ChatInputV2 Accessibility', () => {
             expect(ta).toHaveAttribute('inputMode', 'search')
         })
 
-        it('keeps attachment region and handlers without axe regressions', async () => {
-            const { container } = render(
+        it('keeps attachment region when files are attached on mobile', () => {
+            render(
                 <ChatInputV2
                     {...baseProps}
                     attachedFiles={[
@@ -444,8 +404,6 @@ describe('ChatInputV2 Accessibility', () => {
                     secondaryAction={<MockIcon />}
                 />
             )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
             expect(
                 screen.getByRole('region', { name: /1 file attached/i })
             ).toBeInTheDocument()

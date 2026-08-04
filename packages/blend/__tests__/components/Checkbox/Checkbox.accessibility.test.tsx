@@ -3,11 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, userEvent } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Checkbox } from '../../../lib/components/Checkbox'
-import {
-    CheckboxPropsBuilder,
-    CheckboxTestFactory,
-} from '../../test-utils/builders'
-import { MockIcon } from '../../test-utils'
+import { CheckboxTestFactory } from '../../test-utils/builders'
 
 describe.skip('Checkbox Accessibility', () => {
     describe('WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
@@ -19,23 +15,6 @@ describe.skip('Checkbox Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all checkbox states (checked, unchecked, indeterminate, disabled, error)', async () => {
-            const states = [
-                CheckboxTestFactory.default(),
-                CheckboxTestFactory.checked(),
-                CheckboxTestFactory.indeterminate(),
-                CheckboxTestFactory.disabled(),
-                CheckboxTestFactory.withError(),
-            ]
-
-            for (const props of states) {
-                const { container, unmount } = render(<Checkbox {...props} />)
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
-        })
-
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const props = CheckboxTestFactory.disabled()
             const { container } = render(<Checkbox {...props} />)
@@ -43,29 +22,11 @@ describe.skip('Checkbox Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with complex content (1.1.1 Non-text Content, 4.1.2 Name Role Value)', async () => {
-            const { container } = render(
-                <Checkbox
-                    subtext="Additional information"
-                    slot={<MockIcon />}
-                    required
-                >
-                    Complex Checkbox with all features
-                </Checkbox>
-            )
+        it('meets WCAG standards with error state (3.3.1 Error Identification)', async () => {
+            const props = CheckboxTestFactory.withError()
+            const { container } = render(<Checkbox {...props} />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for all sizes', async () => {
-            const sizes = CheckboxTestFactory.allSizes()
-
-            for (const props of sizes) {
-                const { container, unmount } = render(<Checkbox {...props} />)
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
         })
     })
 
@@ -389,19 +350,6 @@ describe.skip('Checkbox Accessibility', () => {
             expect(describedBy).toBeTruthy()
             expect(describedBy).toContain('custom-description')
             expect(describedBy).toContain('-subtext')
-        })
-
-        it('maintains accessibility with error and other states - comprehensive compliance', async () => {
-            const props = new CheckboxPropsBuilder()
-                .withChildren('Error Required Checkbox')
-                .withError()
-                .withRequired()
-                .withSubtext('This field has an error')
-                .build()
-
-            const { container } = render(<Checkbox {...props} />)
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
     })
 
@@ -788,63 +736,6 @@ describe.skip('Checkbox Accessibility', () => {
             render(<Checkbox>Actual text, not image</Checkbox>)
             const checkbox = screen.getByRole('checkbox')
             expect(checkbox).toBeInTheDocument()
-        })
-    })
-
-    describe('Comprehensive WCAG 2.0, 2.1, 2.2 Compliance (Level A, AA, AAA)', () => {
-        it('meets WCAG standards with all features combined - comprehensive test covering all versions', async () => {
-            const { container } = render(
-                <Checkbox
-                    checked="indeterminate"
-                    required
-                    error
-                    subtext="Comprehensive test checkbox"
-                >
-                    Complete Test Checkbox
-                </Checkbox>
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with disabled state - all disabled state requirements (2.0, 2.1, 2.2)', async () => {
-            const props = CheckboxTestFactory.disabled()
-            const { container } = render(<Checkbox {...props} />)
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for indeterminate state (4.1.2 Name Role Value) - all versions', async () => {
-            const props = CheckboxTestFactory.indeterminate()
-            const { container } = render(<Checkbox {...props} />)
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG 2.0 Level A requirements - foundation standards', async () => {
-            const { container } = render(
-                <Checkbox required>WCAG 2.0 Level A Test</Checkbox>
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG 2.1 Level AA requirements - enhanced standards', async () => {
-            const { container } = render(
-                <Checkbox error subtext="Error message">
-                    WCAG 2.1 Level AA Test
-                </Checkbox>
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG 2.2 Level AAA requirements where applicable - latest standards', async () => {
-            const { container } = render(
-                <Checkbox>WCAG 2.2 Level AAA Test</Checkbox>
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
     })
 })

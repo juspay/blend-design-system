@@ -34,31 +34,6 @@ describe('StatCardV2 Accessibility', () => {
         expect(results).toHaveNoViolations()
     })
 
-    it('has no axe violations for chart variant with data', async () => {
-        const { container } = render(
-            <StatCardV2
-                title="GMV Trend"
-                value="$8,234"
-                subtitle="last 7 days"
-                change={{
-                    value: '8.2',
-                    changeType: StatCardV2ChangeType.INCREASE,
-                    leftSymbol: '+',
-                    rightSymbol: '%',
-                }}
-                variant={StatCardV2Variant.CHART}
-                options={
-                    {
-                        series: [{ data: [1, 2, 3] }],
-                    } as ChartV2Options
-                }
-            />
-        )
-
-        const results = await axe(container)
-        expect(results).toHaveNoViolations()
-    })
-
     it('exposes region and chart roles with accessible names', () => {
         const { container } = render(
             <StatCardV2

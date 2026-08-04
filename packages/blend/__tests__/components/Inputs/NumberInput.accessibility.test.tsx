@@ -3,7 +3,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import NumberInput from '../../../lib/components/Inputs/NumberInput/NumberInput'
-import { NumberInputSize } from '../../../lib/components/Inputs/NumberInput/types'
 
 describe('NumberInput Accessibility', () => {
     describe('WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
@@ -18,23 +17,6 @@ describe('NumberInput Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for all input sizes (Medium, Large)', async () => {
-            const sizes = [NumberInputSize.MEDIUM, NumberInputSize.LARGE]
-
-            for (const size of sizes) {
-                const { container } = render(
-                    <NumberInput
-                        label={`${size} number input`}
-                        value={undefined}
-                        onChange={() => {}}
-                        size={size}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
         })
 
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {

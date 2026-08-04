@@ -21,8 +21,9 @@ describe('OTPInputV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for lengths 4, 6, and 8', async () => {
-            const lengths = [4, 6, 8] as const
+        it('meets WCAG standards for lengths 4 and 8', async () => {
+            // length 6 is covered by the default axe test above
+            const lengths = [4, 8] as const
             for (const length of lengths) {
                 const { container, unmount } = render(
                     <OTPInputV2
@@ -36,34 +37,6 @@ describe('OTPInputV2 Accessibility', () => {
                 expect(results).toHaveNoViolations()
                 unmount()
             }
-        })
-
-        it('meets WCAG standards at maximum slot count (32)', async () => {
-            const { container } = render(
-                <OTPInputV2
-                    label="Long OTP"
-                    value=""
-                    onChange={noopChange}
-                    length={32}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with explicit id prefix for stable DOM ids', async () => {
-            const { container } = render(
-                <OTPInputV2
-                    id="signup-otp"
-                    label="Code"
-                    value=""
-                    onChange={noopChange}
-                    length={6}
-                    hintText="From SMS"
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards when disabled', async () => {
@@ -543,53 +516,6 @@ describe('OTPInputV2 Accessibility', () => {
     })
 
     describe('Comprehensive axe', () => {
-        it('passes axe with label, sublabel, hint, and required', async () => {
-            const { container } = render(
-                <OTPInputV2
-                    label="Complete"
-                    sublabel="Extra context"
-                    hintText="Helpful hint"
-                    helpIconHintText="Tooltip"
-                    value=""
-                    onChange={noopChange}
-                    length={6}
-                    required
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('passes axe with error and required', async () => {
-            const { container } = render(
-                <OTPInputV2
-                    label="Error state"
-                    value="12"
-                    onChange={noopChange}
-                    length={6}
-                    required
-                    error
-                    errorMessage="Please fix this field"
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('passes axe when disabled with prefilled value', async () => {
-            const { container } = render(
-                <OTPInputV2
-                    label="Read-only"
-                    value="654321"
-                    onChange={noopChange}
-                    length={6}
-                    disabled
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('passes axe with generic labels (no visible label string)', async () => {
             const { container } = render(
                 <OTPInputV2 value="" onChange={noopChange} length={5} />

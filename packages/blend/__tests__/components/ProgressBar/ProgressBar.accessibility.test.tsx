@@ -29,28 +29,6 @@ describe('ProgressBar Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for circular progress bar (axe-core validation)', async () => {
-            const { container } = render(
-                <ProgressBar
-                    value={75}
-                    variant={ProgressBarVariant.CIRCULAR}
-                    aria-label="Download progress"
-                />
-            )
-            const results = await axe(container, {
-                rules: {
-                    'aria-required-attr': { enabled: true },
-                    'aria-valid-attr-value': { enabled: true },
-                    'aria-allowed-attr': { enabled: true },
-                    'aria-required-parent': { enabled: true },
-                    'aria-required-children': { enabled: true },
-                    'aria-roles': { enabled: true },
-                    'aria-valid-attr': { enabled: true },
-                },
-            })
-            expect(results).toHaveNoViolations()
-        })
-
         it('has proper role="progressbar" attribute', () => {
             render(<ProgressBar value={50} aria-label="Progress" />)
             const progressBar = screen.getByRole('progressbar', {

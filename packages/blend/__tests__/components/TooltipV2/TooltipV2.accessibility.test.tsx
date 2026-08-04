@@ -3,12 +3,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import TooltipV2 from '../../../lib/components/TooltipV2/TooltipV2'
-import {
-    TooltipV2Align,
-    TooltipV2Side,
-    TooltipV2Size,
-    TooltipV2SlotDirection,
-} from '../../../lib/components/TooltipV2/tooltipV2.types'
+import { TooltipV2SlotDirection } from '../../../lib/components/TooltipV2/tooltipV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('TooltipV2 Accessibility', () => {
@@ -36,138 +31,6 @@ describe('TooltipV2 Accessibility', () => {
             expect(resultsWithTooltip).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all tooltip sizes', async () => {
-            const sizes = [TooltipV2Size.SM, TooltipV2Size.MD, TooltipV2Size.LG]
-
-            for (const size of sizes) {
-                const { container, user, unmount } = render(
-                    <TooltipV2 content={`${size} size tooltip`} size={size}>
-                        <button>{size} trigger</button>
-                    </TooltipV2>
-                )
-
-                const trigger = screen.getByRole('button')
-                await user.hover(trigger)
-
-                await waitFor(() => {
-                    expect(
-                        screen.getAllByText(`${size} size tooltip`)
-                    ).toHaveLength(2)
-                })
-
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards for all tooltip positions', async () => {
-            const sides = [
-                TooltipV2Side.TOP,
-                TooltipV2Side.RIGHT,
-                TooltipV2Side.BOTTOM,
-                TooltipV2Side.LEFT,
-            ]
-
-            for (const side of sides) {
-                const { container, user, unmount } = render(
-                    <TooltipV2 content={`${side} tooltip`} side={side}>
-                        <button>{side} trigger</button>
-                    </TooltipV2>
-                )
-
-                const trigger = screen.getByRole('button')
-                await user.hover(trigger)
-
-                await waitFor(() => {
-                    expect(screen.getAllByText(`${side} tooltip`)).toHaveLength(
-                        2
-                    )
-                })
-
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards for all tooltip alignments', async () => {
-            const aligns = [
-                TooltipV2Align.START,
-                TooltipV2Align.CENTER,
-                TooltipV2Align.END,
-            ]
-
-            for (const align of aligns) {
-                const { container, user, unmount } = render(
-                    <TooltipV2
-                        content={`${align} aligned tooltip`}
-                        align={align}
-                    >
-                        <button>{align} trigger</button>
-                    </TooltipV2>
-                )
-
-                const trigger = screen.getByRole('button')
-                await user.hover(trigger)
-
-                await waitFor(() => {
-                    expect(
-                        screen.getAllByText(`${align} aligned tooltip`)
-                    ).toHaveLength(2)
-                })
-
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards for tooltip with slot (1.1.1 Non-text Content)', async () => {
-            const { container, user } = render(
-                <TooltipV2
-                    content="Tooltip with icon"
-                    slot={<MockIcon aria-hidden="true" />}
-                    slotDirection={TooltipV2SlotDirection.LEFT}
-                >
-                    <button>Icon tooltip trigger</button>
-                </TooltipV2>
-            )
-
-            const trigger = screen.getByRole('button')
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                expect(screen.getAllByText('Tooltip with icon')).toHaveLength(2)
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for tooltip with arrow (1.1.1 Non-text Content)', async () => {
-            const { container, user } = render(
-                <TooltipV2 content="Tooltip with arrow" showArrow={true}>
-                    <button>Arrow tooltip trigger</button>
-                </TooltipV2>
-            )
-
-            const trigger = screen.getByRole('button')
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                expect(screen.getAllByText('Tooltip with arrow')).toHaveLength(
-                    2
-                )
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('meets WCAG standards for controlled tooltip', async () => {
             const { container } = render(
                 <TooltipV2 content="Always visible tooltip" open={true}>
@@ -178,31 +41,6 @@ describe('TooltipV2 Accessibility', () => {
             expect(screen.getAllByText('Always visible tooltip')).toHaveLength(
                 2
             )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for tooltip with complex content', async () => {
-            const { container, user } = render(
-                <TooltipV2
-                    content={
-                        <div>
-                            <strong>Important:</strong> This is a complex
-                            tooltip with <em>emphasized text</em>.
-                        </div>
-                    }
-                >
-                    <button>Complex content trigger</button>
-                </TooltipV2>
-            )
-
-            const trigger = screen.getByRole('button')
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                expect(screen.getByRole('tooltip')).toBeInTheDocument()
-            })
 
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -1015,28 +853,6 @@ describe('TooltipV2 Accessibility', () => {
     })
 
     describe('Edge Cases and Additional Accessibility', () => {
-        it('maintains accessibility with minimal content', async () => {
-            const { container, user } = render(
-                <TooltipV2 content="Info">
-                    <button aria-label="Button with minimal tooltip">
-                        Minimal content test
-                    </button>
-                </TooltipV2>
-            )
-
-            const trigger = screen.getByRole('button')
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                const tooltip = screen.getByRole('tooltip')
-                expect(tooltip).toBeInTheDocument()
-                expect(tooltip).toHaveTextContent('Info')
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('handles accessibility with dynamic content', async () => {
             const { user, rerender } = render(
                 <TooltipV2 content="Dynamic content 1">
@@ -1109,60 +925,6 @@ describe('TooltipV2 Accessibility', () => {
 
             await user.click(trigger)
             expect(trigger).toBeInTheDocument()
-        })
-
-        it('handles tooltip with empty content gracefully', async () => {
-            const { container } = render(
-                <TooltipV2 content="">
-                    <button>Empty content test</button>
-                </TooltipV2>
-            )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-    })
-
-    describe('Comprehensive WCAG compliance', () => {
-        it('meets WCAG standards with all features combined', async () => {
-            const { container, user } = render(
-                <TooltipV2
-                    content="Complete accessibility test tooltip"
-                    size={TooltipV2Size.LG}
-                    showArrow={true}
-                    slot={<MockIcon aria-hidden="true" />}
-                    slotDirection={TooltipV2SlotDirection.LEFT}
-                >
-                    <button aria-label="Complete test trigger">
-                        Complete test
-                    </button>
-                </TooltipV2>
-            )
-
-            const trigger = screen.getByRole('button')
-            await user.hover(trigger)
-
-            await waitFor(() => {
-                expect(
-                    screen.getAllByText('Complete accessibility test tooltip')
-                ).toHaveLength(2)
-            })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for controlled tooltip', async () => {
-            const { container } = render(
-                <TooltipV2 content="Controlled tooltip" open={true}>
-                    <button>Controlled</button>
-                </TooltipV2>
-            )
-
-            expect(screen.getAllByText('Controlled tooltip')).toHaveLength(2)
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
     })
 })

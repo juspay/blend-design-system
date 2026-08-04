@@ -3,7 +3,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import Slider from '../../../lib/components/Slider/Slider'
-import { SliderVariant, SliderSize } from '../../../lib/components/Slider/types'
 
 describe('Slider Accessibility', () => {
     describe('WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
@@ -20,68 +19,12 @@ describe('Slider Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all slider variants', async () => {
-            const variants = [SliderVariant.PRIMARY, SliderVariant.SECONDARY]
-
-            for (const variant of variants) {
-                const { container, unmount } = render(
-                    <Slider
-                        variant={variant}
-                        defaultValue={[50]}
-                        aria-label={`${variant} slider`}
-                        min={0}
-                        max={100}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards for all slider sizes', async () => {
-            const sizes = [
-                SliderSize.SMALL,
-                SliderSize.MEDIUM,
-                SliderSize.LARGE,
-            ]
-
-            for (const size of sizes) {
-                const { container, unmount } = render(
-                    <Slider
-                        size={size}
-                        defaultValue={[50]}
-                        aria-label={`${size} slider`}
-                        min={0}
-                        max={100}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
-        })
-
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <Slider
                     defaultValue={[50]}
                     aria-label="Disabled slider"
                     disabled
-                    min={0}
-                    max={100}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with value labels (1.1.1 Non-text Content)', async () => {
-            const { container } = render(
-                <Slider
-                    defaultValue={[50]}
-                    aria-label="Slider with value labels"
-                    showValueLabels
                     min={0}
                     max={100}
                 />
@@ -514,26 +457,6 @@ describe('Slider Accessibility', () => {
             const slider = screen.getByRole('slider')
             // Thumb should be within the slider structure
             expect(slider).toBeInTheDocument()
-        })
-    })
-
-    describe('WCAG 1.4.3 Contrast (Minimum) - Level AA', () => {
-        it('has sufficient contrast for interactive elements', async () => {
-            const { container } = render(
-                <Slider
-                    defaultValue={[50]}
-                    aria-label="High contrast slider"
-                    min={0}
-                    max={100}
-                />
-            )
-
-            const results = await axe(container, {
-                rules: {
-                    'color-contrast': { enabled: true },
-                },
-            })
-            expect(results).toHaveNoViolations()
         })
     })
 

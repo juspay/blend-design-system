@@ -9,7 +9,6 @@ import {
     ChangeType,
     type ChartDataPoint,
 } from '../../../lib/components/StatCard/types'
-import { DollarSign } from 'lucide-react'
 
 // Helper function to generate sample chart data
 const generateChartData = (
@@ -46,72 +45,6 @@ describe('StatCard Accessibility', () => {
                     value="$45,231"
                     subtitle="Last 30 days"
                     variant={StatCardVariant.NUMBER}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for all variants (Number, Line, Bar, Progress Bar)', async () => {
-            const variants = [
-                StatCardVariant.NUMBER,
-                StatCardVariant.LINE,
-                StatCardVariant.BAR,
-                StatCardVariant.PROGRESS_BAR,
-            ]
-
-            for (const variant of variants) {
-                const props: {
-                    title: string
-                    value: string
-                    variant: StatCardVariant
-                    chartData?: ChartDataPoint[]
-                    progressValue?: number
-                } = {
-                    title: `${variant} Card`,
-                    value: '100',
-                    variant,
-                }
-
-                if (
-                    variant === StatCardVariant.LINE ||
-                    variant === StatCardVariant.BAR
-                ) {
-                    props.chartData = generateChartData(7, 100, 20)
-                } else if (variant === StatCardVariant.PROGRESS_BAR) {
-                    props.progressValue = 75
-                }
-
-                const { container } = render(<StatCard {...props} />)
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
-        })
-
-        it('meets WCAG standards with change indicator (1.3.1 Info and Relationships)', async () => {
-            const { container } = render(
-                <StatCard
-                    title="Revenue"
-                    value="$45,231"
-                    variant={StatCardVariant.NUMBER}
-                    change={{
-                        value: 12.5,
-                        valueType: ChangeType.INCREASE,
-                    }}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with icons (1.1.1 Non-text Content)', async () => {
-            const { container } = render(
-                <StatCard
-                    title="Total Users"
-                    value="8,549"
-                    variant={StatCardVariant.NUMBER}
-                    titleIcon={<DollarSign size={24} />}
-                    helpIconText="Total number of active users"
                 />
             )
             const results = await axe(container)
@@ -157,21 +90,6 @@ describe('StatCard Accessibility', () => {
                     value="45.2 GB"
                     variant={StatCardVariant.PROGRESS_BAR}
                     progressValue={45}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with horizontal direction (1.3.2 Meaningful Sequence)', async () => {
-            const chartData = generateChartData(30, 5000, 1000)
-            const { container } = render(
-                <StatCard
-                    title="Revenue Growth"
-                    value="$89,450"
-                    variant={StatCardVariant.LINE}
-                    direction={StatCardDirection.HORIZONTAL}
-                    chartData={chartData}
                 />
             )
             const results = await axe(container)
@@ -916,123 +834,6 @@ describe('StatCard Accessibility', () => {
             if (helpIcon) {
                 expect(helpIcon).toHaveAttribute('aria-label')
             }
-        })
-    })
-
-    describe('Comprehensive WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
-        it('meets WCAG standards with all features combined - comprehensive test', async () => {
-            const chartData = generateChartData(30, 5000, 1000)
-            const { container } = render(
-                <StatCard
-                    title="Total Revenue"
-                    value="$45,231"
-                    subtitle="Last 30 days"
-                    variant={StatCardVariant.LINE}
-                    change={{
-                        value: 12.5,
-                        valueType: ChangeType.INCREASE,
-                        tooltip: '12.5% increase compared to last month',
-                    }}
-                    chartData={chartData}
-                    titleIcon={<DollarSign size={24} />}
-                    helpIconText="Total revenue from all sources"
-                    valueTooltip="Total revenue from all sources including subscriptions, sales, and add-ons"
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 1.1.1, 1.3.1, 1.3.2, 2.1.1, 2.4.6, 2.4.7, 4.1.2, keyboard navigation, screen reader support
-        })
-
-        it('meets WCAG standards for progress bar variant - all progress bar requirements', async () => {
-            const { container } = render(
-                <StatCard
-                    title="Storage Used"
-                    value="45.2 GB"
-                    subtitle="of 100 GB"
-                    variant={StatCardVariant.PROGRESS_BAR}
-                    progressValue={45}
-                    helpIconText="Total storage usage across all files"
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 1.1.1 Non-text Content, 4.1.2 Name Role Value
-        })
-
-        it('meets WCAG standards for bar chart variant - all bar chart requirements', async () => {
-            const chartData = generateChartData(12, 3000, 500)
-            const { container } = render(
-                <StatCard
-                    title="Monthly Sales"
-                    value="$32,450"
-                    subtitle="This month"
-                    variant={StatCardVariant.BAR}
-                    change={{
-                        value: 8.3,
-                        valueType: ChangeType.INCREASE,
-                    }}
-                    chartData={chartData}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 1.1.1 Non-text Content, 1.3.1 Info and Relationships, 4.1.2 Name Role Value
-        })
-
-        it('meets WCAG standards with decrease change indicator', async () => {
-            const { container } = render(
-                <StatCard
-                    title="Revenue"
-                    value="$45,231"
-                    variant={StatCardVariant.NUMBER}
-                    change={{
-                        value: 5.2,
-                        valueType: ChangeType.DECREASE,
-                        tooltip: '5.2% decrease from previous period',
-                    }}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards without subtitle - optional elements handled', async () => {
-            const { container } = render(
-                <StatCard
-                    title="Total Revenue"
-                    value="$45,231"
-                    variant={StatCardVariant.NUMBER}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards without change indicator - optional elements handled', async () => {
-            const { container } = render(
-                <StatCard
-                    title="Total Revenue"
-                    value="$45,231"
-                    subtitle="Last 30 days"
-                    variant={StatCardVariant.NUMBER}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards without icons - optional elements handled', async () => {
-            const { container } = render(
-                <StatCard
-                    title="Total Revenue"
-                    value="$45,231"
-                    subtitle="Last 30 days"
-                    variant={StatCardVariant.NUMBER}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
     })
 })

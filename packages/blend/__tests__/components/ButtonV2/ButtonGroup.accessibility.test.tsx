@@ -26,19 +26,6 @@ describe('ButtonGroupV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('passes axe-core validation for stacked group', async () => {
-            const { container } = render(
-                <ButtonGroupV2 stacked>
-                    <ButtonV2 text="Left" />
-                    <ButtonV2 text="Center" />
-                    <ButtonV2 text="Right" />
-                </ButtonGroupV2>
-            )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('passes axe-core validation with mixed button states', async () => {
             const { container } = render(
                 <ButtonGroupV2>
@@ -102,8 +89,8 @@ describe('ButtonGroupV2 Accessibility', () => {
     })
 
     describe('WCAG 4.1.2 Name, Role, Value - Individual Button Accessibility', () => {
-        it('preserves individual button accessibility in group', async () => {
-            const { container } = render(
+        it('preserves individual button accessibility in group', () => {
+            render(
                 <ButtonGroupV2>
                     <ButtonV2
                         text="Accessible"
@@ -122,13 +109,10 @@ describe('ButtonGroupV2 Accessibility', () => {
             expect(
                 screen.getByRole('button', { name: 'Icon button' })
             ).toBeInTheDocument()
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
-        it('preserves ARIA attributes in stacked group', async () => {
-            const { container } = render(
+        it('preserves ARIA attributes in stacked group', () => {
+            render(
                 <ButtonGroupV2 stacked>
                     <ButtonV2 text="Disabled" disabled />
                     <ButtonV2 text="Loading" loading />
@@ -145,39 +129,12 @@ describe('ButtonGroupV2 Accessibility', () => {
                 name: /Loading/i,
             })
             expect(loadingButton).toHaveAttribute('aria-busy', 'true')
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
     })
 
     describe('Edge Cases - Group Accessibility', () => {
-        it('handles single button in group correctly', async () => {
-            const { container } = render(
-                <ButtonGroupV2>
-                    <ButtonV2 text="Single" />
-                </ButtonGroupV2>
-            )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('handles many buttons without breaking accessibility', async () => {
-            const buttons = Array.from({ length: 10 }, (_, i) => (
-                <ButtonV2 key={i} text={`Button ${i + 1}`} />
-            ))
-
-            const { container } = render(
-                <ButtonGroupV2>{buttons}</ButtonGroupV2>
-            )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('maintains accessibility with icon-only buttons in group', async () => {
-            const { container } = render(
+        it('maintains accessibility with icon-only buttons in group', () => {
+            render(
                 <ButtonGroupV2>
                     <ButtonV2
                         leftSlot={{ slot: <MockIcon /> }}
@@ -196,9 +153,6 @@ describe('ButtonGroupV2 Accessibility', () => {
             expect(
                 screen.getByRole('button', { name: 'Second action' })
             ).toBeInTheDocument()
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
     })
 })

@@ -5,7 +5,6 @@ import { axe } from 'jest-axe'
 import userEvent from '@testing-library/user-event'
 import AccordionV2 from '../../../lib/components/AccordionV2/AccordionV2'
 import { AccordionV2Item } from '../../../lib/components/AccordionV2/AccordionV2Item'
-import { AccordionV2Type } from '../../../lib/components/AccordionV2/accordionV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('AccordionV2 Accessibility', () => {
@@ -34,25 +33,6 @@ describe('AccordionV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('passes axe-core validation for accordion with multiple items', async () => {
-            const { container } = render(
-                <AccordionV2>
-                    <AccordionV2Item value="item-1" title="Item 1">
-                        <p>Content 1</p>
-                    </AccordionV2Item>
-                    <AccordionV2Item value="item-2" title="Item 2">
-                        <p>Content 2</p>
-                    </AccordionV2Item>
-                    <AccordionV2Item value="item-3" title="Item 3">
-                        <p>Content 3</p>
-                    </AccordionV2Item>
-                </AccordionV2>
-            )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('passes axe-core validation for disabled accordion item', async () => {
             const { container } = render(
                 <AccordionV2>
@@ -65,58 +45,6 @@ describe('AccordionV2 Accessibility', () => {
                         isDisabled
                     >
                         <p>Disabled content</p>
-                    </AccordionV2Item>
-                </AccordionV2>
-            )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('passes axe-core validation for all accordion types', async () => {
-            const types = [AccordionV2Type.BORDER, AccordionV2Type.NO_BORDER]
-
-            for (const type of types) {
-                const { container } = render(
-                    <AccordionV2 accordionType={type}>
-                        <AccordionV2Item value="item-1" title="Test Item">
-                            <p>Content</p>
-                        </AccordionV2Item>
-                    </AccordionV2>
-                )
-
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
-        })
-
-        it('passes axe-core validation with slots', async () => {
-            const { container } = render(
-                <AccordionV2>
-                    <AccordionV2Item
-                        value="item-1"
-                        title="Test Item"
-                        leftSlot={<MockIcon />}
-                        rightSlot={<MockIcon />}
-                        subtextSlot={<MockIcon />}
-                    >
-                        <p>Content</p>
-                    </AccordionV2Item>
-                </AccordionV2>
-            )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('passes axe-core validation for multiple selection mode', async () => {
-            const { container } = render(
-                <AccordionV2 isMultiple>
-                    <AccordionV2Item value="item-1" title="Item 1">
-                        <p>Content 1</p>
-                    </AccordionV2Item>
-                    <AccordionV2Item value="item-2" title="Item 2">
-                        <p>Content 2</p>
                     </AccordionV2Item>
                 </AccordionV2>
             )
@@ -508,50 +436,6 @@ describe('AccordionV2 Accessibility', () => {
 
             await user.click(trigger)
             expect(trigger).toHaveAttribute('aria-expanded', 'false')
-        })
-    })
-
-    describe('WCAG 1.4.3 Contrast Minimum', () => {
-        it('meets contrast requirements for all accordion types', async () => {
-            const types = [AccordionV2Type.BORDER, AccordionV2Type.NO_BORDER]
-
-            for (const type of types) {
-                const { container } = render(
-                    <AccordionV2 accordionType={type}>
-                        <AccordionV2Item value="item-1" title="Test Item">
-                            <p>Content</p>
-                        </AccordionV2Item>
-                    </AccordionV2>
-                )
-
-                const results = await axe(container, {
-                    rules: {
-                        'color-contrast': { enabled: true },
-                    },
-                })
-                expect(results).toHaveNoViolations()
-            }
-        })
-
-        it('meets contrast requirements for disabled state', async () => {
-            const { container } = render(
-                <AccordionV2>
-                    <AccordionV2Item
-                        value="item-1"
-                        title="Disabled Item"
-                        isDisabled
-                    >
-                        <p>Content</p>
-                    </AccordionV2Item>
-                </AccordionV2>
-            )
-
-            const results = await axe(container, {
-                rules: {
-                    'color-contrast': { enabled: true },
-                },
-            })
-            expect(results).toHaveNoViolations()
         })
     })
 

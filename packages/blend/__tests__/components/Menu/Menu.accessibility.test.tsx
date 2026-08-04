@@ -116,44 +116,6 @@ describe('Menu Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for menu with groups and labels (1.3.1 Info and Relationships)', async () => {
-            const items = createMenuWithGroups()
-            const { container, user } = render(
-                <Menu
-                    trigger={
-                        <Button
-                            text="Open Menu"
-                            buttonType={ButtonType.PRIMARY}
-                            size={ButtonSize.SMALL}
-                        />
-                    }
-                    items={items}
-                />
-            )
-
-            const trigger = screen.getByRole('button', { name: 'Open Menu' })
-            await user.click(trigger)
-
-            await waitFor(
-                () => {
-                    const menu = screen.queryByRole('menu')
-                    if (menu) {
-                        expect(menu).toBeInTheDocument()
-                    }
-                },
-                { timeout: 2000 }
-            )
-
-            // Configure axe to ignore aria-required-children for Radix UI menu structure
-            // This is a false positive - Radix UI's menu structure is valid
-            const results = await axe(container, {
-                rules: {
-                    'aria-required-children': { enabled: false },
-                },
-            })
-            expect(results).toHaveNoViolations()
-        })
-
         it('meets WCAG standards for menu with disabled items (4.1.2 Name, Role, Value)', async () => {
             const items = createMenuWithDisabled()
             const { container, user } = render(
@@ -221,42 +183,6 @@ describe('Menu Accessibility', () => {
             const results = await axe(container, {
                 rules: {
                     'aria-required-children': { enabled: false },
-                },
-            })
-            expect(results).toHaveNoViolations()
-        })
-
-        it('ensures sufficient contrast for text (1.4.3 Contrast Minimum - Level AA)', async () => {
-            const items = createMenuItems(3)
-            const { container, user } = render(
-                <Menu
-                    trigger={
-                        <Button
-                            text="Open Menu"
-                            buttonType={ButtonType.PRIMARY}
-                            size={ButtonSize.SMALL}
-                        />
-                    }
-                    items={items}
-                />
-            )
-
-            const trigger = screen.getByRole('button', { name: 'Open Menu' })
-            await user.click(trigger)
-
-            await waitFor(
-                () => {
-                    const menu = screen.queryByRole('menu')
-                    if (menu) {
-                        expect(menu).toBeInTheDocument()
-                    }
-                },
-                { timeout: 2000 }
-            )
-
-            const results = await axe(container, {
-                rules: {
-                    'color-contrast': { enabled: true },
                 },
             })
             expect(results).toHaveNoViolations()

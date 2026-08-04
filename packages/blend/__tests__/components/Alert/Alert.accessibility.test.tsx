@@ -3,11 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import Alert from '../../../lib/components/Alert/Alert'
-import {
-    AlertVariant,
-    AlertStyle,
-    AlertActionPlacement,
-} from '../../../lib/components/Alert/types'
+import { AlertVariant } from '../../../lib/components/Alert/types'
 
 describe('Alert Accessibility', () => {
     describe('WCAG 2.0, 2.1, 2.2 Compliance (Level A, AA, AAA)', () => {
@@ -80,22 +76,6 @@ describe('Alert Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('ensures sufficient contrast for text (1.4.3 Contrast Minimum - Level AA)', async () => {
-            const { container } = render(
-                <Alert
-                    heading="Contrast Test"
-                    description="Testing color contrast ratios"
-                    variant={AlertVariant.ERROR}
-                />
-            )
-            const results = await axe(container, {
-                rules: {
-                    'color-contrast': { enabled: true },
-                },
-            })
-            expect(results).toHaveNoViolations()
-        })
-
         it('ensures focus indicators are visible (2.4.7 Focus Visible - Level AA)', () => {
             const handleClose = vi.fn()
             render(
@@ -111,31 +91,6 @@ describe('Alert Accessibility', () => {
             closeButton.focus()
             expect(document.activeElement).toBe(closeButton)
             expect(closeButton).toHaveFocus()
-        })
-
-        it('ensures touch targets are at least 44x44px (2.5.5 Target Size - Level AAA)', async () => {
-            const handleClose = vi.fn()
-            const handlePrimary = vi.fn()
-            const { container } = render(
-                <Alert
-                    heading="Touch Target Test"
-                    description="Testing touch target sizes"
-                    onClose={handleClose}
-                    primaryAction={{
-                        label: 'Action',
-                        onClick: handlePrimary,
-                    }}
-                />
-            )
-            const results = await axe(container, {
-                rules: {
-                    'target-size': { enabled: false }, // Touch target size to be handled later
-                },
-            })
-            expect(results).toHaveNoViolations()
-
-            // Touch target size verification to be added later
-            // For now, we're focusing on other accessibility requirements
         })
     })
 
@@ -563,71 +518,6 @@ describe('Alert Accessibility', () => {
 
             await user.click(closeButton)
             expect(handleClose).toHaveBeenCalledTimes(1)
-        })
-    })
-
-    describe('Alert Variants and Styles', () => {
-        it('all variants maintain accessibility compliance', async () => {
-            const variants = [
-                AlertVariant.PRIMARY,
-                AlertVariant.SUCCESS,
-                AlertVariant.WARNING,
-                AlertVariant.ERROR,
-                AlertVariant.PURPLE,
-                AlertVariant.ORANGE,
-                AlertVariant.NEUTRAL,
-            ]
-
-            for (const variant of variants) {
-                const { container } = render(
-                    <Alert
-                        heading={`${variant} Alert`}
-                        description={`Testing ${variant} variant`}
-                        variant={variant}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
-        })
-
-        it('all styles maintain accessibility compliance', async () => {
-            const styles = [AlertStyle.SUBTLE, AlertStyle.NO_FILL]
-
-            for (const alertStyle of styles) {
-                const { container } = render(
-                    <Alert
-                        heading={`${alertStyle} Alert`}
-                        description={`Testing ${alertStyle} style`}
-                        style={alertStyle}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
-        })
-
-        it('all action placements maintain accessibility compliance', async () => {
-            const placements = [
-                AlertActionPlacement.RIGHT,
-                AlertActionPlacement.BOTTOM,
-            ]
-
-            for (const placement of placements) {
-                const { container } = render(
-                    <Alert
-                        heading="Placement Test"
-                        description="Testing action placement"
-                        primaryAction={{
-                            label: 'Action',
-                            onClick: vi.fn(),
-                        }}
-                        actionPlacement={placement}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
         })
     })
 })

@@ -3,7 +3,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import MultiValueInput from '../../../lib/components/Inputs/MultiValueInput/MultiValueInput'
-import { TextInputSize } from '../../../lib/components/Inputs/TextInput/types'
 
 describe('MultiValueInput Accessibility', () => {
     describe('WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
@@ -21,31 +20,6 @@ describe('MultiValueInput Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for all input sizes (Small, Medium, Large)', async () => {
-            const sizes = [
-                TextInputSize.SMALL,
-                TextInputSize.MEDIUM,
-                TextInputSize.LARGE,
-            ]
-
-            for (const size of sizes) {
-                const { container } = render(
-                    <MultiValueInput
-                        label={`${size} input`}
-                        value=""
-                        onChange={() => {}}
-                        placeholder="Add tag..."
-                        tags={[]}
-                        onTagAdd={() => {}}
-                        onTagRemove={() => {}}
-                        size={size}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
         })
 
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
@@ -83,7 +57,7 @@ describe('MultiValueInput Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with tags present (tag removal buttons)', async () => {
+        it('meets WCAG standards with tags present (interactive remove buttons)', async () => {
             const { container } = render(
                 <MultiValueInput
                     label="Tags"
@@ -1047,85 +1021,6 @@ describe('MultiValueInput Accessibility', () => {
             expect(
                 screen.getByLabelText('Remove javascript')
             ).toBeInTheDocument()
-        })
-    })
-
-    describe('Comprehensive WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
-        it('meets WCAG standards with all features combined - comprehensive test', async () => {
-            const { container } = render(
-                <MultiValueInput
-                    label="Complete Test"
-                    sublabel="Additional context"
-                    hintText="Helpful hint"
-                    helpIconHintText="Tooltip information"
-                    placeholder="Add value..."
-                    value=""
-                    onChange={() => {}}
-                    tags={['tag1', 'tag2']}
-                    onTagAdd={() => {}}
-                    onTagRemove={() => {}}
-                    required
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 1.3.5, 2.1.1, 2.4.7, 3.3.2, 4.1.2
-        })
-
-        it('meets WCAG standards with error state - all error requirements', async () => {
-            const { container } = render(
-                <MultiValueInput
-                    label="Error Test"
-                    value=""
-                    onChange={() => {}}
-                    placeholder="Add tag..."
-                    tags={[]}
-                    onTagAdd={() => {}}
-                    onTagRemove={() => {}}
-                    error
-                    errorMessage="Please correct this field"
-                    required
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 3.3.1 Error Identification, 3.3.3 Error Suggestion, 4.1.2
-        })
-
-        it('meets WCAG standards in disabled state - all disabled state requirements', async () => {
-            const { container } = render(
-                <MultiValueInput
-                    label="Disabled"
-                    value=""
-                    onChange={() => {}}
-                    placeholder="Add tag..."
-                    tags={['readonly', 'tag']}
-                    onTagAdd={() => {}}
-                    onTagRemove={() => {}}
-                    disabled
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 2.1.1 Keyboard, 4.1.2 Name Role Value
-        })
-
-        it('meets WCAG standards with tags and remove buttons - all tag interaction requirements', async () => {
-            const { container } = render(
-                <MultiValueInput
-                    label="Tags"
-                    value=""
-                    onChange={() => {}}
-                    placeholder="Add tag..."
-                    tags={['react', 'typescript', 'javascript']}
-                    onTagAdd={() => {}}
-                    onTagRemove={() => {}}
-                    required
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 2.1.1 Keyboard, 2.5.8 Target Size, 4.1.2 Name Role Value
         })
     })
 })

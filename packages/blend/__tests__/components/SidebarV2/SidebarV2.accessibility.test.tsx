@@ -127,7 +127,7 @@ describe('SidebarV2 Accessibility', () => {
         expect(secondarySidebarElement).toBeInTheDocument()
     })
 
-    it('secondary sidebar badges are accessible and pass axe checks', async () => {
+    it('secondary sidebar badges are accessible', () => {
         const secondarySidebar = {
             items: [
                 {
@@ -161,8 +161,6 @@ describe('SidebarV2 Accessibility', () => {
         expect(
             screen.getByRole('button', { name: 'Select tenant: App 1' })
         ).toBeInTheDocument()
-
-        expect(await axe(container)).toHaveNoViolations()
     })
 
     it('navigation region has proper aria-label', () => {

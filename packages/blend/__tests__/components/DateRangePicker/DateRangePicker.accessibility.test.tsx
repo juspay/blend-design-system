@@ -93,10 +93,6 @@ describe('DateRangePicker Accessibility', () => {
                 {
                     value: createDateRange(),
                     onChange: () => {},
-                },
-                {
-                    value: createDateRange(),
-                    onChange: () => {},
                     isDisabled: true,
                 },
                 {

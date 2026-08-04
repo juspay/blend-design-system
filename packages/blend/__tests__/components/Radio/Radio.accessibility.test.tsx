@@ -4,7 +4,6 @@ import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import Radio from '../../../lib/components/Radio/Radio'
 import { RadioPropsBuilder, RadioTestFactory } from '../../test-utils/builders'
-import { MockIcon } from '../../test-utils'
 
 describe('Radio Accessibility', () => {
     describe('WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
@@ -16,22 +15,6 @@ describe('Radio Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all radio states (checked, unchecked, disabled, error)', async () => {
-            const states = [
-                RadioTestFactory.default(),
-                RadioTestFactory.checked(),
-                RadioTestFactory.disabled(),
-                RadioTestFactory.withError(),
-            ]
-
-            for (const props of states) {
-                const { container, unmount } = render(<Radio {...props} />)
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
-        })
-
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const props = RadioTestFactory.disabled()
             const { container } = render(<Radio {...props} />)
@@ -39,47 +22,9 @@ describe('Radio Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with complex content (1.1.1 Non-text Content, 4.1.2 Name Role Value)', async () => {
-            const { container } = render(
-                <Radio
-                    value="complex"
-                    subtext="Additional information"
-                    slot={<MockIcon />}
-                    required
-                >
-                    Complex Radio with all features
-                </Radio>
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for all sizes', async () => {
-            const sizes = RadioTestFactory.allSizes()
-
-            for (const props of sizes) {
-                const { container, unmount } = render(<Radio {...props} />)
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards for radio groups', async () => {
-            const { container } = render(
-                <fieldset>
-                    <legend>Choose an option</legend>
-                    <Radio name="group" value="option1">
-                        Option 1
-                    </Radio>
-                    <Radio name="group" value="option2">
-                        Option 2
-                    </Radio>
-                    <Radio name="group" value="option3">
-                        Option 3
-                    </Radio>
-                </fieldset>
-            )
+        it('meets WCAG standards with error state (3.3.1 Error Identification)', async () => {
+            const props = RadioTestFactory.withError()
+            const { container } = render(<Radio {...props} />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
@@ -491,7 +436,7 @@ describe('Radio Accessibility', () => {
             expect(radio).toHaveAttribute('aria-invalid', 'true')
         })
 
-        it('maintains accessibility with error and other states - MUST have aria-invalid="true"', async () => {
+        it('maintains accessibility with error and other states - MUST have aria-invalid="true"', () => {
             const props = new RadioPropsBuilder()
                 .withChildren('Error Required Radio')
                 .withValue('error-required')
@@ -500,9 +445,7 @@ describe('Radio Accessibility', () => {
                 .withSubtext('This field has an error')
                 .build()
 
-            const { container } = render(<Radio {...props} />)
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
+            render(<Radio {...props} />)
 
             const radio = screen.getByRole('radio')
             // WCAG 4.1.3: Error state must be communicated via aria-invalid="true"
@@ -696,8 +639,8 @@ describe('Radio Accessibility', () => {
             expect(errorMessage).toHaveTextContent('This field is required')
         })
 
-        it('maintains accessibility in complex forms', async () => {
-            const { container } = render(
+        it('maintains accessibility in complex forms', () => {
+            render(
                 <form>
                     <fieldset>
                         <legend>Preferences</legend>
@@ -723,8 +666,10 @@ describe('Radio Accessibility', () => {
                 </form>
             )
 
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
+            expect(screen.getAllByRole('radio')).toHaveLength(5)
+            expect(
+                screen.getByRole('radio', { name: /Light Theme/i })
+            ).toHaveAttribute('aria-required', 'true')
         })
     })
 

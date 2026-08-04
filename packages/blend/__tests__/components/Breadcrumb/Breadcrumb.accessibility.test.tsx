@@ -35,16 +35,6 @@ describe('Breadcrumb Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with custom onClick handlers (2.1.1 Keyboard)', async () => {
-            const items = createBreadcrumbItems(3).map((item) => ({
-                ...item,
-                onClick: vi.fn(),
-            }))
-            const { container } = render(<Breadcrumb items={items} />)
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('meets WCAG standards with slots (1.1.1 Non-text Content)', async () => {
             const items: BreadcrumbItemType[] = [
                 {

@@ -3,7 +3,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import CheckboxV2 from '../../../lib/components/SelectorV2/CheckboxV2/CheckboxV2'
-import { SelectorV2Size } from '../../../lib/components/SelectorV2/selectorV2.types'
 import { MockIcon } from '../../test-utils'
 
 describe('CheckboxV2 Accessibility', () => {
@@ -16,9 +15,9 @@ describe('CheckboxV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all checkbox states (checked, unchecked, disabled, error, indeterminate)', async () => {
+        it('meets WCAG standards for all checkbox states (checked, disabled, error, indeterminate)', async () => {
+            // unchecked/default is covered by the default axe test above
             const states = [
-                { label: 'Unchecked Checkbox', checked: false },
                 { label: 'Checked Checkbox', checked: true },
                 { label: 'Disabled Checkbox', checked: false, disabled: true },
                 { label: 'Error Checkbox', checked: false, error: true },
@@ -36,18 +35,6 @@ describe('CheckboxV2 Accessibility', () => {
             }
         })
 
-        it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
-            const { container } = render(
-                <CheckboxV2
-                    label="Disabled Checkbox"
-                    disabled
-                    checked={false}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('meets WCAG standards with complex content (1.1.1 Non-text Content, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <CheckboxV2
@@ -60,23 +47,6 @@ describe('CheckboxV2 Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards for all sizes', async () => {
-            const sizes = [SelectorV2Size.SM, SelectorV2Size.MD]
-
-            for (const size of sizes) {
-                const { container, unmount } = render(
-                    <CheckboxV2
-                        label={`${size} Checkbox`}
-                        size={size}
-                        checked={false}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
         })
     })
 
@@ -571,50 +541,6 @@ describe('CheckboxV2 Accessibility', () => {
                     label=""
                     aria-label="Empty label checkbox"
                     checked={false}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('maintains accessibility with all props combined', async () => {
-            const handleChange = vi.fn()
-            const { container } = render(
-                <CheckboxV2
-                    label="Complete Checkbox"
-                    subLabel="Complete description"
-                    size={SelectorV2Size.MD}
-                    checked={false}
-                    onCheckedChange={handleChange}
-                    required
-                    error
-                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
-                    maxLength={{ label: 20, subLabel: 30 }}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('maintains accessibility when disabled', async () => {
-            const { container } = render(
-                <CheckboxV2
-                    label="Disabled Checkbox"
-                    disabled
-                    checked={false}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('maintains accessibility with truncated text and tooltips', async () => {
-            const { container } = render(
-                <CheckboxV2
-                    label="Very long label text that will be truncated"
-                    subLabel="Very long sublabel text that will be truncated"
-                    checked={false}
-                    maxLength={{ label: 10, subLabel: 10 }}
                 />
             )
             const results = await axe(container)

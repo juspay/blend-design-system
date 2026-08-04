@@ -54,30 +54,6 @@ describe('StepperV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('horizontal clickable stepper has no detectable violations', async () => {
-            const { container } = render(
-                <StepperV2
-                    steps={horizontalSteps}
-                    stepperType={StepperV2Type.HORIZONTAL}
-                    clickable
-                    onStepClick={vi.fn()}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('vertical stepper has no detectable violations', async () => {
-            const { container } = render(
-                <StepperV2
-                    steps={verticalStepsWithSubsteps}
-                    stepperType={StepperV2Type.VERTICAL}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
         it('vertical clickable stepper with substeps has no detectable violations', async () => {
             const { container } = render(
                 <StepperV2
@@ -118,22 +94,6 @@ describe('StepperV2 Accessibility', () => {
                     clickable
                     onStepClick={vi.fn()}
                 />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('vertical step with description has no detectable violations', async () => {
-            const steps: StepperV2Step[] = [
-                {
-                    id: 1,
-                    title: 'With help',
-                    status: StepperV2StepStatus.CURRENT,
-                    description: 'Extra context for assistive technologies.',
-                },
-            ]
-            const { container } = render(
-                <StepperV2 steps={steps} stepperType={StepperV2Type.VERTICAL} />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()

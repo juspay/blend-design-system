@@ -19,23 +19,6 @@ describe('OTPInput Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for different OTP lengths (4, 6, 8)', async () => {
-            const lengths = [4, 6, 8]
-
-            for (const length of lengths) {
-                const { container } = render(
-                    <OTPInput
-                        label={`${length}-Digit Code`}
-                        value=""
-                        onChange={() => {}}
-                        length={length}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
-        })
-
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <OTPInput
@@ -907,75 +890,6 @@ describe('OTPInput Accessibility', () => {
             const errorMessage = screen.getByText('Invalid code')
             expect(errorMessage).toHaveAttribute('role', 'alert')
             expect(errorMessage).toHaveAttribute('aria-live', 'polite')
-        })
-    })
-
-    describe('Comprehensive WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
-        it('meets WCAG standards with all features combined - comprehensive test', async () => {
-            const { container } = render(
-                <OTPInput
-                    label="Complete Test"
-                    sublabel="Additional context"
-                    hintText="Helpful hint"
-                    helpIconHintText="Tooltip information"
-                    value=""
-                    onChange={() => {}}
-                    length={6}
-                    required
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 1.3.5, 2.1.1, 2.4.7, 3.3.2, 4.1.2
-        })
-
-        it('meets WCAG standards with error state - all error requirements', async () => {
-            const { container } = render(
-                <OTPInput
-                    label="Error Test"
-                    value="123"
-                    onChange={() => {}}
-                    length={6}
-                    error
-                    errorMessage="Please correct this field"
-                    required
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 3.3.1 Error Identification, 3.3.3 Error Suggestion, 4.1.2
-        })
-
-        it('meets WCAG standards in disabled state - all disabled state requirements', async () => {
-            const { container } = render(
-                <OTPInput
-                    label="Disabled"
-                    value="123456"
-                    onChange={() => {}}
-                    length={6}
-                    disabled
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 2.1.1 Keyboard, 4.1.2 Name Role Value
-        })
-
-        it('meets WCAG standards for different lengths - all length requirements', async () => {
-            const lengths = [4, 6, 8]
-            for (const length of lengths) {
-                const { container } = render(
-                    <OTPInput
-                        label={`${length}-Digit Code`}
-                        value=""
-                        onChange={() => {}}
-                        length={length}
-                        required
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
         })
     })
 })

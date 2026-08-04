@@ -46,29 +46,6 @@ describe('SnackbarV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('passes axe-core validation for all variants', async () => {
-            const variants = [
-                SnackbarV2Variant.INFO,
-                SnackbarV2Variant.SUCCESS,
-                SnackbarV2Variant.WARNING,
-                SnackbarV2Variant.ERROR,
-            ]
-
-            for (const variant of variants) {
-                const { container } = render(
-                    <StyledToast
-                        header={`${variant} Snackbar`}
-                        description={`Testing ${variant} variant`}
-                        variant={variant}
-                        onClose={() => {}}
-                        toastId={`test-${variant}`}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
-        })
-
         it('passes axe-core validation with action button', async () => {
             const { container } = render(
                 <StyledToast

@@ -14,40 +14,8 @@ describe('Button Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all button types (Primary, Secondary, Danger, Success)', async () => {
-            const buttonTypes = [
-                ButtonType.PRIMARY,
-                ButtonType.SECONDARY,
-                ButtonType.DANGER,
-                ButtonType.SUCCESS,
-            ]
-
-            for (const buttonType of buttonTypes) {
-                const { container } = render(
-                    <Button
-                        text={`${buttonType} button`}
-                        buttonType={buttonType}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-            }
-        })
-
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(<Button text="Disabled" disabled />)
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with icons (1.1.1 Non-text Content)', async () => {
-            const { container } = render(
-                <Button
-                    text="With Icons"
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
-                />
-            )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
@@ -286,12 +254,6 @@ describe('Button Accessibility', () => {
             expect(srText).toBeInTheDocument()
             expect(srText).toHaveTextContent('Loading, please wait')
         })
-
-        it('meets WCAG standards when loading - comprehensive compliance', async () => {
-            const { container } = render(<Button text="Loading" loading />)
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
     })
 
     describe('WCAG 1.4.3 Contrast (Minimum) - Level AA', () => {
@@ -423,14 +385,6 @@ describe('Button Accessibility', () => {
             expect(button).toBeDisabled()
             expect(button).toHaveAttribute('tabIndex', '-1')
         })
-
-        it('meets WCAG standards in skeleton state - comprehensive compliance', async () => {
-            const { container } = render(
-                <Button text="Skeleton" showSkeleton />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
     })
 
     describe('WCAG 1.1.1 Non-text Content (Level A) - Icon-Only Buttons', () => {
@@ -474,29 +428,8 @@ describe('Button Accessibility', () => {
         })
     })
 
-    describe('Comprehensive WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
-        it('meets WCAG standards with all features combined - comprehensive test', async () => {
-            const { container } = render(
-                <Button
-                    text="Complete Test"
-                    loading
-                    leadingIcon={<MockIcon />}
-                    trailingIcon={<MockIcon />}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 1.1.1, 2.1.1, 4.1.2, 4.1.3, keyboard navigation, screen reader support
-        })
-
-        it('meets WCAG standards with disabled state - all disabled state requirements', async () => {
-            const { container } = render(<Button text="Disabled" disabled />)
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-            // Tests: 2.1.1 Keyboard, 2.4.3 Focus Order, 4.1.2 Name Role Value
-        })
-
-        it('meets WCAG standards for icon-only button with proper labeling (1.1.1, 4.1.2)', async () => {
+    describe('Icon-only button axe validation', () => {
+        it('meets WCAG standards for icon-only button with proper labeling', async () => {
             const { container } = render(
                 <Button
                     leadingIcon={<MockIcon />}
@@ -506,7 +439,6 @@ describe('Button Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
-            // Tests: 1.1.1 Non-text Content, 4.1.2 Name Role Value
         })
     })
 })

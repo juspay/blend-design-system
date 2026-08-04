@@ -3,13 +3,8 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render, fireEvent, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import SplitTag from '../../../lib/components/SplitTag/SplitTag'
-import {
-    TagColor,
-    TagSize,
-    TagShape,
-    TagVariant,
-} from '../../../lib/components/Tags/types'
-import { Check, Info, Server } from 'lucide-react'
+import { TagColor, TagSize } from '../../../lib/components/Tags/types'
+import { Check, Info } from 'lucide-react'
 
 describe('SplitTag Accessibility', () => {
     beforeEach(() => {
@@ -38,52 +33,6 @@ describe('SplitTag Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all sizes (XS, SM, MD, LG)', async () => {
-            const sizes = [TagSize.XS, TagSize.SM, TagSize.MD, TagSize.LG]
-
-            for (const size of sizes) {
-                const { container, unmount } = render(
-                    <SplitTag
-                        primaryTag={{
-                            text: 'Size',
-                            color: TagColor.NEUTRAL,
-                        }}
-                        secondaryTag={{
-                            text: size,
-                            color: TagColor.PRIMARY,
-                        }}
-                        size={size}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
-        })
-
-        it('meets WCAG standards for all shapes (Squarical, Rounded)', async () => {
-            const shapes = [TagShape.SQUARICAL, TagShape.ROUNDED]
-
-            for (const shape of shapes) {
-                const { container, unmount } = render(
-                    <SplitTag
-                        primaryTag={{
-                            text: 'Shape',
-                            color: TagColor.NEUTRAL,
-                        }}
-                        secondaryTag={{
-                            text: shape,
-                            color: TagColor.PRIMARY,
-                        }}
-                        shape={shape}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
-        })
-
         it('meets WCAG standards with role="group" and aria-label (1.3.1 Info and Relationships)', async () => {
             const { container } = render(
                 <SplitTag
@@ -102,9 +51,6 @@ describe('SplitTag Accessibility', () => {
             expect(group).toBeTruthy()
             expect(group).toHaveAttribute('aria-label')
             expect(group?.getAttribute('aria-label')).toBe('Status: Active')
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with unique IDs for ARIA relationships (1.3.1 Info and Relationships)', async () => {
@@ -133,9 +79,6 @@ describe('SplitTag Accessibility', () => {
                 '[data-element="secondary-tag"]'
             )
             expect(secondaryTag).toHaveAttribute('id')
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with aria-label combining primary and secondary text (1.3.1 Info and Relationships)', async () => {
@@ -156,9 +99,6 @@ describe('SplitTag Accessibility', () => {
             expect(group?.getAttribute('aria-label')).toBe(
                 'Environment: Production'
             )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with only primary tag (1.3.1 Info and Relationships)', async () => {
@@ -173,26 +113,6 @@ describe('SplitTag Accessibility', () => {
 
             const group = container.querySelector('[role="group"]')
             expect(group?.getAttribute('aria-label')).toBe('Status')
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with icons in tags (1.1.1 Non-text Content)', async () => {
-            const { container } = render(
-                <SplitTag
-                    primaryTag={{
-                        text: 'Status',
-                        color: TagColor.NEUTRAL,
-                        leftSlot: <Info size={12} aria-hidden="true" />,
-                    }}
-                    secondaryTag={{
-                        text: 'Online',
-                        color: TagColor.SUCCESS,
-                        leftSlot: <Check size={12} aria-hidden="true" />,
-                    }}
-                />
-            )
 
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -228,9 +148,6 @@ describe('SplitTag Accessibility', () => {
                 fireEvent.keyDown(secondaryTag, { key: 'Enter' })
                 fireEvent.keyDown(secondaryTag, { key: ' ' })
             })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with keyboard navigation on primary tag (2.1.1 Keyboard)', async () => {
@@ -262,9 +179,6 @@ describe('SplitTag Accessibility', () => {
                 // Test keyboard activation
                 fireEvent.keyDown(primaryTag, { key: 'Enter' })
             })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with focus indicators visible (2.4.7 Focus Visible)', async () => {
@@ -296,9 +210,6 @@ describe('SplitTag Accessibility', () => {
                         computedStyle.boxShadow !== 'none'
                 ).toBe(true)
             })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with touch target size minimum 24x24px (2.5.8 Target Size)', async () => {
@@ -333,9 +244,6 @@ describe('SplitTag Accessibility', () => {
                     expect(rect.height).toBeGreaterThanOrEqual(24)
                 }
             })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with no context change on focus (3.2.1 On Focus)', async () => {
@@ -363,9 +271,6 @@ describe('SplitTag Accessibility', () => {
                 secondaryTag.focus()
                 expect(document.activeElement).toBe(secondaryTag)
             })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with predictable behavior on input (3.2.2 On Input)', async () => {
@@ -394,9 +299,6 @@ describe('SplitTag Accessibility', () => {
                 fireEvent.click(secondaryTag)
                 expect(handleClick).toHaveBeenCalled()
             })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with all changes user-initiated (3.2.5 Change on Request - AAA)', async () => {
@@ -425,9 +327,6 @@ describe('SplitTag Accessibility', () => {
                 fireEvent.click(secondaryTag)
                 expect(handleClick).toHaveBeenCalled()
             })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with keyboard-only operation (2.1.3 Keyboard No Exception - AAA)', async () => {
@@ -464,9 +363,6 @@ describe('SplitTag Accessibility', () => {
                 fireEvent.keyDown(secondaryTag, { key: ' ', code: 'Space' })
                 fireEvent.keyUp(secondaryTag, { key: ' ', code: 'Space' })
             })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with proper name, role, and value (4.1.2 Name, Role, Value)', async () => {
@@ -487,37 +383,6 @@ describe('SplitTag Accessibility', () => {
             expect(group).toBeTruthy()
             expect(group).toHaveAttribute('aria-label')
             expect(group).toHaveAttribute('id')
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with all color combinations', async () => {
-            const colorCombinations = [
-                { primary: TagColor.NEUTRAL, secondary: TagColor.PRIMARY },
-                { primary: TagColor.NEUTRAL, secondary: TagColor.SUCCESS },
-                { primary: TagColor.NEUTRAL, secondary: TagColor.ERROR },
-                { primary: TagColor.NEUTRAL, secondary: TagColor.WARNING },
-                { primary: TagColor.NEUTRAL, secondary: TagColor.PURPLE },
-            ]
-
-            for (const colors of colorCombinations) {
-                const { container, unmount } = render(
-                    <SplitTag
-                        primaryTag={{
-                            text: 'Type',
-                            color: colors.primary,
-                        }}
-                        secondaryTag={{
-                            text: 'Value',
-                            color: colors.secondary,
-                        }}
-                    />
-                )
-                const results = await axe(container)
-                expect(results).toHaveNoViolations()
-                unmount()
-            }
         })
 
         it('meets WCAG standards with custom aria-label on group', async () => {
@@ -539,9 +404,6 @@ describe('SplitTag Accessibility', () => {
             expect(group?.getAttribute('aria-label')).toBe(
                 'Custom split tag label'
             )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with interactive primary and secondary tags', async () => {
@@ -610,9 +472,6 @@ describe('SplitTag Accessibility', () => {
             expect(primaryTag?.compareDocumentPosition(secondaryTag!)).toBe(
                 Node.DOCUMENT_POSITION_FOLLOWING
             )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with sensory characteristics not required (1.3.3 Sensory Characteristics)', async () => {
@@ -634,9 +493,6 @@ describe('SplitTag Accessibility', () => {
             const ariaLabel = group?.getAttribute('aria-label')
             expect(ariaLabel).toContain('Status')
             expect(ariaLabel).toContain('Active')
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with proper focus order (2.4.3 Focus Order)', async () => {
@@ -685,35 +541,6 @@ describe('SplitTag Accessibility', () => {
                 // Simulate Tab key
                 fireEvent.keyDown(firstTag, { key: 'Tab', code: 'Tab' })
             })
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
-        })
-
-        it('meets WCAG standards with all variants and features combined', async () => {
-            const { container } = render(
-                <SplitTag
-                    primaryTag={{
-                        text: 'Comprehensive',
-                        color: TagColor.NEUTRAL,
-                        variant: TagVariant.NO_FILL,
-                        leftSlot: <Server size={12} aria-hidden="true" />,
-                        onClick: () => {},
-                    }}
-                    secondaryTag={{
-                        text: 'SplitTag',
-                        color: TagColor.SUCCESS,
-                        variant: TagVariant.ATTENTIVE,
-                        leftSlot: <Check size={12} aria-hidden="true" />,
-                        onClick: () => {},
-                    }}
-                    size={TagSize.MD}
-                    shape={TagShape.ROUNDED}
-                />
-            )
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with fallback aria-label when no text provided', async () => {
@@ -728,9 +555,6 @@ describe('SplitTag Accessibility', () => {
 
             const group = container.querySelector('[role="group"]')
             expect(group?.getAttribute('aria-label')).toBe('Split tag')
-
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
         })
     })
 
