@@ -1,5 +1,5 @@
 import React from 'react'
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import userEvent from '@testing-library/user-event'
@@ -91,5 +91,90 @@ describe('MenuV2 Accessibility', () => {
         await waitFor(() => {
             expect(settings).toHaveFocus()
         })
+    })
+
+    it('exposes aria-checked on selectable items and supports keyboard nav', async () => {
+        const user = userEvent.setup()
+        const onSelect = vi.fn()
+
+        const { container } = render(
+            <MenuV2
+                trigger={<button type="button">Selection menu</button>}
+                selectionStyle="checkmark"
+                selectionMode="single"
+                items={[
+                    {
+                        label: 'Sort',
+                        items: [
+                            {
+                                label: { text: 'Name' },
+                                selected: true,
+                                onClick: vi.fn(),
+                            },
+                            {
+                                label: { text: 'Date' },
+                                selected: false,
+                                onClick: onSelect,
+                            },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', { name: /selection menu/i })
+        )
+
+        const name = await screen.findByRole('menuitemradio', {
+            name: /^name$/i,
+        })
+        const date = screen.getByRole('menuitemradio', { name: /^date$/i })
+
+        expect(name).toHaveAttribute('aria-checked', 'true')
+        expect(date).toHaveAttribute('aria-checked', 'false')
+
+        name.focus()
+        await user.keyboard('{ArrowDown}')
+        await waitFor(() => {
+            expect(date).toHaveFocus()
+        })
+
+        await user.keyboard('{Enter}')
+        expect(onSelect).toHaveBeenCalledTimes(1)
+
+        expect(await axe(container)).toHaveNoViolations()
+    })
+
+    it('uses menuitemcheckbox with aria-checked for highlight multi-select', async () => {
+        const user = userEvent.setup()
+
+        const { container } = render(
+            <MenuV2
+                trigger={<button type="button">Multi select menu</button>}
+                selectionStyle="highlight"
+                selectionMode="multiple"
+                closeOnSelect={false}
+                items={[
+                    {
+                        items: [
+                            { label: { text: 'Grid' }, selected: true },
+                            { label: { text: 'List' }, selected: false },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', { name: /multi select menu/i })
+        )
+
+        const grid = await screen.findByRole('menuitemcheckbox', {
+            name: /^grid$/i,
+        })
+        expect(grid).toHaveAttribute('aria-checked', 'true')
+
+        expect(await axe(container)).toHaveNoViolations()
     })
 })

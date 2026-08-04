@@ -100,6 +100,22 @@ describe('MenuV2 utils', () => {
             const separators = rows.filter((r) => r.type === 'separator')
             expect(separators).toHaveLength(1)
         })
+
+        it('preserves group selection configuration for virtual rows', () => {
+            const rows = flattenMenuV2Groups([
+                {
+                    selectionStyle: 'highlight',
+                    selectionMode: 'multiple',
+                    items: [createItem({ selected: true })],
+                },
+            ])
+
+            expect(rows[0]).toMatchObject({
+                type: 'item',
+                selectionStyle: 'highlight',
+                selectionMode: 'multiple',
+            })
+        })
     })
 
     it('filterMenuV2Item returns item when label matches search', () => {
