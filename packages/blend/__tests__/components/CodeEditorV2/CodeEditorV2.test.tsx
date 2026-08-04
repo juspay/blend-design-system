@@ -1,9 +1,56 @@
 import React from 'react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import CodeEditorV2 from '../../../lib/components/CodeEditorV2/CodeEditorV2'
 import { CodeEditorV2Variant } from '../../../lib/components/CodeEditorV2/codeEditorV2.types'
 import { isDiffEditorMode } from '../../../lib/components/CodeEditorV2/utils'
+
+// @monaco-editor/react is a heavy dependency that is slow to transform/mount
+// in jsdom. These tests only assert on wrapper chrome (header, layout), not
+// Monaco internals, so a lightweight textarea stands in for the real editor.
+vi.mock('@monaco-editor/react', () => {
+    const MockEditor = ({
+        value,
+        onChange,
+    }: {
+        value?: string
+        onChange?: (value: string | undefined) => void
+    }) => (
+        <textarea
+            data-testid="monaco-editor"
+            aria-label="code editor"
+            value={value ?? ''}
+            onChange={(e) => onChange?.(e.target.value)}
+        />
+    )
+
+    const MockDiffEditor = ({
+        original,
+        modified,
+    }: {
+        original?: string
+        modified?: string
+    }) => (
+        <div data-testid="monaco-diff-editor">
+            <textarea
+                aria-label="original code"
+                defaultValue={original}
+                readOnly
+            />
+            <textarea
+                aria-label="modified code"
+                defaultValue={modified}
+                readOnly
+            />
+        </div>
+    )
+
+    return {
+        __esModule: true,
+        default: MockEditor,
+        DiffEditor: MockDiffEditor,
+    }
+})
 
 describe('CodeEditorV2', () => {
     it('renders with basic props', () => {
