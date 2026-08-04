@@ -13,10 +13,10 @@ export default defineConfig({
         // running; a single budget avoids "passes alone, times out in suite".
         testTimeout: 15000,
         hookTimeout: 10000,
-        // Default is (cores - 1) forks. That many concurrent jsdom child
-        // processes starve each other and turn waitFor polls into timeouts.
-        // CI keeps its own default (undefined falls through).
-        maxWorkers: process.env.CI ? undefined : 6,
+        // Default is (cores - 1) workers. That many concurrent jsdom
+        // environments starve each other and turn waitFor polls into timeouts.
+        // Cap locally; CI (typically 2-core runners) keeps vitest's default.
+        ...(process.env.CI ? {} : { maxWorkers: 6 }),
         pool: 'threads',
         projects: [
             {
