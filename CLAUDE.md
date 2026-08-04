@@ -50,7 +50,7 @@ Prettier config is unusual and non-negotiable: **4-space indent, no semicolons, 
 ## The library: `packages/blend/lib`
 
 ```
-components/     84 dirs — V1 and V2 generations coexist
+components/     83 dirs — V1 and V2 generations coexist
   Primitives/   Block, PrimitiveButton, PrimitiveText, ... — the styling layer
   common/ shared/ animations/
 tokens/         foundation tokens only (color, font, unit, border, shadows, ...)
@@ -59,6 +59,8 @@ hooks/          useResponsiveTokens, useBreakPoints, useScrollLock, ...
 breakpoints/    only two: { sm: 320, lg: 1024 }
 main.ts node.ts token-engine.ts token-engine-server.ts   ← the four build entries
 ```
+
+`components/shared/` holds cross-component internals, not components. `shared/datetime/` is the date+time layer: `timeCore.ts` (pure time math — parsing, clamping, `minuteStep` snapping, 12h/24h formatting) and `PickerTrigger.tsx` (the shared trigger button) back `DateRangePicker`, `SingleDatePicker` and `TimePicker`. A change there hits all three, so test all three.
 
 Tests live **outside** `lib/`, in `packages/blend/__tests__/`, mirroring the component tree. `packages/blend/rfcs/` holds the authoritative standards docs (0002 testing, 0003 accessibility, 0005 token naming, 0007 refactoring).
 
@@ -76,13 +78,14 @@ Three layers, and the middle one is where mistakes happen.
 2. **Component tokens** — every component ships a `getXTokens(foundation, theme?)` factory returning a **responsive** object keyed by breakpoint: `{ sm: {...}, lg: {...} }`. That's what every `ResponsiveXTokens` type means.
     - V1: `getTagTokens(foundation)` — no theme argument.
     - V2: `getButtonV2Tokens(foundation, theme = Theme.LIGHT)`, dispatching to separate `buttonV2.light.tokens.ts` / `buttonV2.dark.tokens.ts` files.
+    - A component that reuses another component's slot ships no factory of its own — `SingleDatePicker` styles itself from `CALENDAR` and `TIME_PICKER`.
 3. **Consumption** — components call `useResponsiveTokens<XTokensType>('BUTTONV2')`, which resolves the slot and returns the values already flattened for the current breakpoint. It **throws** on an unknown slot.
 
 `ThemeProvider` accepts `{ foundationTokens?, componentTokens?, breakpoints?, theme?, target? }`. Token overrides are **whole-slot replacement, not a deep merge** — passing a partial `BUTTONV2` object replaces the entire responsive tree. Passing `target` enables Shadow DOM support via `ShadowAware`.
 
 Components also work without a `ThemeProvider`; `ThemeContext.tsx` builds a full default token set at module scope.
 
-**Adding a new component token slot means editing three files in lockstep:** `context/ThemeContext.tsx` (type + default), `context/initComponentTokens.ts` (`??` fallback), `context/useComponentToken.ts` (union return type + `switch` case). Miss one and it throws at runtime.
+**Adding a new component token slot means editing three files in lockstep:** `context/ThemeContext.tsx` (type + default), `context/initComponentTokens.ts` (`??` fallback), `context/useComponentToken.ts` (union return type + `switch` case). Miss one and it throws at runtime. If Token Studio should be able to re-resolve the slot for a brand, also export the factory from `lib/node.ts` and register it in `V2_RESOLVERS` (`packages/token-engine/src/resolve-all-tokens.ts`) — that map is what `resolveBrandTokens` iterates.
 
 `useBreakPoints` maps only 320–1023px to `'sm'`; everything else (including below 320) returns `'lg'`.
 
