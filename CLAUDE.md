@@ -136,7 +136,11 @@ Both run automatically; both fail builds for non-obvious reasons.
 - **Import `render` from `__tests__/test-utils`, never from `@testing-library/react` directly.** The custom render wraps in `ThemeProvider` and returns a pre-configured `user` (`userEvent`). That module also exports `MockIcon`, builders, assertions, and perf helpers.
 - Accessibility tests are separate `<Component>.accessibility.test.tsx` files using `jest-axe`. `pnpm test:a11y` selects them with `--testNamePattern 'accessibility|Accessibility'`, so **the describe/test name must contain "Accessibility"** — the filename alone is not enough.
 - `vitest.setup.ts` mocks `ResizeObserver`, `IntersectionObserver`, `matchMedia` (always `matches: false`), `window.scrollTo`, and `CSS.supports`.
+- **Vitest concurrency** (`packages/blend/vitest.config.ts`): `pool: 'threads'`; local runs cap `maxWorkers: 6` (CI keeps vitest's default). Timeouts are 15s/10s (test/hook) everywhere — not CI-only. Too many concurrent jsdom workers cause suite-only flakes (`passes alone, times out in suite`).
+- **Performance tests are a separate vitest project.** `*.performance.test.tsx` files are excluded from the `unit` project and run in the `performance` project after it (`sequence.groupOrder: 1`), single-threaded. Wall-clock assertions must not race other files.
 - Performance assertions use environment-aware thresholds from `test-utils/performance.ts` (CI multiplies budgets). Don't hardcode millisecond values.
+- **CodeEditorV2 tests** mock `@monaco-editor/react` via `__tests__/mocks/monaco-editor-react.tsx` — they assert wrapper chrome, not Monaco internals. Reuse that mock if you add more CodeEditor tests.
+- `initTokens` (`lib/context/initComponentTokens.ts`) memoizes by foundation/componentTokens reference + theme value so identical `ThemeProvider` mounts reuse the resolved token object.
 - Fuller detail: `packages/blend/__tests__/TESTING_GUIDE.md`.
 
 ## Branches, commits, releases
