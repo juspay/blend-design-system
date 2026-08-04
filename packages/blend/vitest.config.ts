@@ -32,6 +32,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': resolve(__dirname, './lib'),
+            '@juspay/blend-design-system': resolve(__dirname, './lib/main.ts'),
         },
     },
 })
