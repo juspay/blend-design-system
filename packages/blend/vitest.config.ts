@@ -17,6 +17,7 @@ export default defineConfig({
         // processes starve each other and turn waitFor polls into timeouts.
         // CI keeps its own default (undefined falls through).
         maxWorkers: process.env.CI ? undefined : 4,
+        pool: 'threads',
         projects: [
             {
                 extends: true,
@@ -33,7 +34,7 @@ export default defineConfig({
                     // Wall-clock assertions: run after every other project,
                     // one file at a time, in a single worker.
                     sequence: { groupOrder: 1 },
-                    poolOptions: { forks: { singleFork: true } },
+                    poolOptions: { threads: { singleThread: true } },
                 },
             },
         ],
