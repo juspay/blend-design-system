@@ -144,6 +144,87 @@ describe('ChartV3 Component', () => {
         expect(onSpy).toHaveBeenCalledWith('click', expect.any(Function))
     })
 
+    it('removes only the wrapped event handler during cleanup', () => {
+        const clickHandler = vi.fn()
+        const { unmount } = render(
+            <ChartV3
+                options={{ series: [{ type: 'bar', data: [1] }] }}
+                onEvents={{ click: clickHandler }}
+            />
+        )
+        const wrappedHandler = onSpy.mock.calls[0][1]
+
+        unmount()
+
+        expect(offSpy).toHaveBeenCalledWith('click', wrappedHandler)
+    })
+
+    it('does not recreate the chart when only onChartReady changes', () => {
+        const firstReady = vi.fn()
+        const secondReady = vi.fn()
+        const { rerender } = render(
+            <ChartV3
+                options={{ series: [{ type: 'bar', data: [1] }] }}
+                onChartReady={firstReady}
+            />
+        )
+
+        rerender(
+            <ChartV3
+                options={{ series: [{ type: 'bar', data: [1] }] }}
+                onChartReady={secondReady}
+            />
+        )
+
+        expect(initSpy).toHaveBeenCalledTimes(1)
+        expect(disposeSpy).not.toHaveBeenCalled()
+        expect(firstReady).toHaveBeenCalledTimes(1)
+        expect(secondReady).not.toHaveBeenCalled()
+    })
+
+    it('resizes the latest chart instance after a chart reinitialization', () => {
+        const firstChart = {
+            setOption: vi.fn(),
+            resize: vi.fn(),
+            dispose: vi.fn(),
+            on: vi.fn(),
+            off: vi.fn(),
+            dispatchAction: vi.fn(),
+            getOption: vi.fn(),
+        }
+        const secondChart = {
+            setOption: vi.fn(),
+            resize: vi.fn(),
+            dispose: vi.fn(),
+            on: vi.fn(),
+            off: vi.fn(),
+            dispatchAction: vi.fn(),
+            getOption: vi.fn(),
+        }
+        initSpy.mockReturnValueOnce(firstChart).mockReturnValueOnce(secondChart)
+
+        const { rerender } = render(
+            <ChartV3
+                theme="light"
+                options={{ series: [{ type: 'line', data: [1] }] }}
+            />
+        )
+
+        rerender(
+            <ChartV3
+                theme="dark"
+                options={{ series: [{ type: 'line', data: [1] }] }}
+            />
+        )
+
+        act(() => {
+            window.dispatchEvent(new Event('resize'))
+        })
+
+        expect(firstChart.resize).not.toHaveBeenCalled()
+        expect(secondChart.resize).toHaveBeenCalled()
+    })
+
     it('does not call setOption again when rerendered with deeply equal options', () => {
         const { rerender } = render(
             <ChartV3

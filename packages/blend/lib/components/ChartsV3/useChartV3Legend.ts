@@ -31,24 +31,37 @@ export function useChartV3Legend(
     const [hoveredItem, setHoveredItem] = useState<ChartV3LegendItem | null>(
         null
     )
-    const allItems = useMemo(
-        () => getChartV3LegendItems(chart),
-        [chart, redrawKey]
-    )
+    const allItems = useMemo(() => {
+        void redrawKey
+        return getChartV3LegendItems(chart)
+    }, [chart, redrawKey])
 
     useEffect(() => {
         if (!charts.length) return
 
         const refresh = () => setRedrawKey((key) => key + 1)
+        const finishedHandlers: Array<{
+            chart: (typeof charts)[number]
+            handler: () => void
+        }> = []
+
         charts.forEach((item) => {
+            const refreshOnce = () => {
+                item.off('finished', refreshOnce)
+                refresh()
+            }
+
             item.on('legendselectchanged', refresh)
-            item.on('finished', refresh)
+            item.on('finished', refreshOnce)
+            finishedHandlers.push({ chart: item, handler: refreshOnce })
         })
 
         return () => {
             charts.forEach((item) => {
                 item.off('legendselectchanged', refresh)
-                item.off('finished', refresh)
+            })
+            finishedHandlers.forEach(({ chart, handler }) => {
+                chart.off('finished', handler)
             })
         }
     }, [charts])

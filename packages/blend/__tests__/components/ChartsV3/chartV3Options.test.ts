@@ -77,6 +77,67 @@ describe('chartV3Options', () => {
         expect(options.legend).toMatchObject({ show: true, top: 24 })
     })
 
+    it('merges grid object options with chart defaults', () => {
+        const options = mergeChartV3Options(
+            {
+                grid: { top: 48 },
+                xAxis: { type: 'category', data: ['Jan'] },
+                yAxis: { type: 'value' },
+                series: [{ type: 'bar', name: 'Revenue', data: [10] }],
+            },
+            tokens
+        )
+
+        expect(options.grid).toMatchObject({
+            containLabel: true,
+            top: 48,
+            right: 16,
+            bottom: 16,
+            left: 8,
+        })
+    })
+
+    it('preserves grid array options while applying chart defaults', () => {
+        const options = mergeChartV3Options(
+            {
+                grid: [{ top: 24 }, { bottom: 48 }],
+                xAxis: [
+                    { type: 'category', data: ['Jan'] },
+                    { type: 'category', data: ['Feb'], gridIndex: 1 },
+                ],
+                yAxis: [{ type: 'value' }, { type: 'value', gridIndex: 1 }],
+                series: [{ type: 'bar', name: 'Revenue', data: [10] }],
+            },
+            tokens
+        )
+
+        expect(options.grid).toEqual([
+            expect.objectContaining({
+                containLabel: true,
+                top: 24,
+                right: 16,
+            }),
+            expect.objectContaining({
+                containLabel: true,
+                bottom: 48,
+                left: 8,
+            }),
+        ])
+    })
+
+    it('treats graph nodes as chart data', () => {
+        expect(
+            hasChartV3SeriesData({
+                series: [
+                    {
+                        type: 'graph',
+                        nodes: [{ name: 'A' }, { name: 'B' }],
+                    },
+                ],
+            })
+        ).toBe(true)
+    })
+
     it('deep merges nested axis label options with token defaults', () => {
         const options = mergeChartV3Options(
             {

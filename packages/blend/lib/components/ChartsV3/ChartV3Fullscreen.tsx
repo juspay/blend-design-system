@@ -3,6 +3,7 @@ import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { ChartV3TokensType } from './chartV3.tokens'
 import useScrollLock from '../../hooks/useScrollLock'
+import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 
 type ChartV3FullscreenControls = {
     isFullscreen: boolean
@@ -30,7 +31,7 @@ const ChartV3Fullscreen = ({ children }: ChartV3FullscreenProps) => {
                 return
             }
 
-            const isLargeScreen = window.innerWidth >= 1024
+            const isLargeScreen = window.innerWidth >= BREAKPOINTS.lg
             if (isLargeScreen) {
                 setIsFullscreen(true)
                 return

@@ -33,7 +33,7 @@ const ChartV3NoData = ({
                 </Text>
             )}
             {subtitle && (
-                <Text variant="body.sm" color="#6b7280">
+                <Text variant="body.sm" color={chartTokens.yAxis.labels.color}>
                     {subtitle}
                 </Text>
             )}

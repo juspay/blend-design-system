@@ -92,6 +92,13 @@ export const mergeChartV3Options = (
             fontWeight: chart.yAxis.title.fontWeight,
         },
     }
+    const gridDefaults = {
+        containLabel: true,
+        top: 32,
+        right: 16,
+        bottom: 16,
+        left: 8,
+    }
 
     return {
         backgroundColor: 'transparent',
@@ -103,15 +110,11 @@ export const mergeChartV3Options = (
         animationDelay: getChartV3AnimationDelay,
         animationDelayUpdate: getChartV3AnimationDelayUpdate,
         animationThreshold: 5000,
-        grid: {
-            containLabel: true,
-            top: 32,
-            right: 16,
-            bottom: 16,
-            left: 8,
-            ...(isObject(options.grid) ? options.grid : {}),
-        },
         ...options,
+        grid:
+            options.grid === undefined
+                ? gridDefaults
+                : mergeArrayOrObject(options.grid, gridDefaults),
         legend:
             options.legend === undefined
                 ? {
@@ -170,10 +173,12 @@ export const hasChartV3SeriesData = (options: EChartsOption): boolean =>
         const data = series.data
         const links = series.links
         const edges = series.edges
+        const nodes = series.nodes
         return (
             (Array.isArray(data) && data.length > 0) ||
             (Array.isArray(links) && links.length > 0) ||
-            (Array.isArray(edges) && edges.length > 0)
+            (Array.isArray(edges) && edges.length > 0) ||
+            (Array.isArray(nodes) && nodes.length > 0)
         )
     })
 

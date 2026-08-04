@@ -4,6 +4,7 @@ import {
     useImperativeHandle,
     useMemo,
     useRef,
+    useState,
 } from 'react'
 import * as echarts from 'echarts'
 import type { EChartsType } from 'echarts'
@@ -80,6 +81,7 @@ const ChartV3 = forwardRef<ChartV3ReactRefObject, ChartV3Props>(
         const tokens = useResponsiveTokens<ChartV3TokensType>('CHARTSV3')
         const elementRef = useRef<HTMLDivElement | null>(null)
         const chartRef = useRef<EChartsType | null>(null)
+        const onChartReadyRef = useRef(onChartReady)
         const setOptionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
             null
         )
@@ -87,10 +89,12 @@ const ChartV3 = forwardRef<ChartV3ReactRefObject, ChartV3Props>(
             options: ChartV3Props['options']
             settings: ChartV3Props['settings']
         } | null>(null)
+        const [chartRevision, setChartRevision] = useState(0)
         const mergedOptions = useMemo(
             () => mergeChartV3Options(options, tokens),
             [options, tokens]
         )
+        onChartReadyRef.current = onChartReady
 
         useImperativeHandle(
             ref,
@@ -110,7 +114,8 @@ const ChartV3 = forwardRef<ChartV3ReactRefObject, ChartV3Props>(
             const chart = echarts.init(element, theme, { renderer })
             chartRef.current = chart
             lastSetOptionRef.current = null
-            onChartReady?.(chart)
+            setChartRevision((revision) => revision + 1)
+            onChartReadyRef.current?.(chart)
 
             return () => {
                 if (setOptionTimerRef.current) {
@@ -121,7 +126,7 @@ const ChartV3 = forwardRef<ChartV3ReactRefObject, ChartV3Props>(
                 chartRef.current = null
                 lastSetOptionRef.current = null
             }
-        }, [onChartReady, renderer, theme])
+        }, [renderer, theme])
 
         useEffect(() => {
             const chart = chartRef.current
@@ -131,8 +136,16 @@ const ChartV3 = forwardRef<ChartV3ReactRefObject, ChartV3Props>(
                 const lastSetOption = lastSetOptionRef.current
                 if (
                     lastSetOption &&
-                    areChartValuesEqual(lastSetOption.options, mergedOptions) &&
-                    areChartValuesEqual(lastSetOption.settings, settings)
+                    ((lastSetOption.options === mergedOptions &&
+                        lastSetOption.settings === settings) ||
+                        (areChartValuesEqual(
+                            lastSetOption.options,
+                            mergedOptions
+                        ) &&
+                            areChartValuesEqual(
+                                lastSetOption.settings,
+                                settings
+                            )))
                 ) {
                     return
                 }
@@ -164,21 +177,26 @@ const ChartV3 = forwardRef<ChartV3ReactRefObject, ChartV3Props>(
             }
 
             applyOptions()
-        }, [initialAnimationDelay, mergedOptions, settings])
+        }, [chartRevision, initialAnimationDelay, mergedOptions, settings])
 
         useEffect(() => {
             const chart = chartRef.current
             if (!chart || !onEvents) return
 
             const entries = Object.entries(onEvents)
-            entries.forEach(([eventName, handler]) => {
-                chart.on(eventName, (params) => handler(params, chart))
+            const wrappedHandlers = entries.map(([eventName, handler]) => {
+                const wrappedHandler = (params: unknown) =>
+                    handler(params, chart)
+                chart.on(eventName, wrappedHandler)
+                return [eventName, wrappedHandler] as const
             })
 
             return () => {
-                entries.forEach(([eventName]) => chart.off(eventName))
+                wrappedHandlers.forEach(([eventName, handler]) =>
+                    chart.off(eventName, handler)
+                )
             }
-        }, [onEvents])
+        }, [chartRevision, onEvents])
 
         useEffect(() => {
             const element = elementRef.current
@@ -198,7 +216,7 @@ const ChartV3 = forwardRef<ChartV3ReactRefObject, ChartV3Props>(
                 observer?.disconnect()
                 window.removeEventListener('resize', resize)
             }
-        }, [])
+        }, [chartRevision])
 
         if (skeleton?.show) {
             return (

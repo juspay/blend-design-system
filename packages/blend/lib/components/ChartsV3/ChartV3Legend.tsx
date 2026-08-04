@@ -36,7 +36,12 @@ const ChartV3Legend = ({
                 const name = custom?.name ?? item.name
                 const value = custom?.value ?? item.value
                 const hasValue = value != null && value !== ''
-                const color = custom?.color ?? item.color ?? '#888'
+                const color =
+                    custom?.color ??
+                    item.color ??
+                    String(
+                        legends.legendItem.text.value.color ?? 'currentColor'
+                    )
                 const visible = item.selected
                 const isDimmed = hoveredItem !== null && hoveredItem !== item
                 const opacity = !visible ? 0.5 : isDimmed ? 0.3 : 1
@@ -96,9 +101,10 @@ const ChartV3Legend = ({
                     >
                         <span
                             style={{
-                                width: 12,
-                                height: 12,
-                                borderRadius: 4,
+                                width: legends.legendItem.shape.width,
+                                height: legends.legendItem.shape.height,
+                                borderRadius:
+                                    legends.legendItem.shape.borderRadius,
                                 flexShrink: 0,
                                 backgroundColor: color,
                                 opacity: isDimmed ? 0.3 : 1,

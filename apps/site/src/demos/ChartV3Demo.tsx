@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { createRef, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import {
     BarChart3,
@@ -19,7 +19,13 @@ import {
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import { useTheme } from '../../../../packages/blend/lib/context/ThemeContext'
 import { Theme } from '../../../../packages/blend/lib/context/theme.enum'
-import { Data as outageTrendData } from './ChartV2Data'
+import {
+    Data as blendChartCompactData,
+    Data as outageTrendData,
+    last7daysHourlyData as blendChartLast7DaysHourlyData,
+    last7daysHourlyData2 as blendChartLast7DaysHourlyData2,
+    pieChartData as blendChartPieData,
+} from './ChartV2Data'
 import {
     areaChartGoIndigoData,
     areaChartOverallData,
@@ -28,10 +34,12 @@ import {
     dashboardSeriesData,
     lineChartGoIndigoData,
     lineChartOverallData,
+    lineWithOutageBaseData,
     lineColumnGoIndigoData,
     lineColumnOrangeData,
     lineColumnOverallData,
     pieChartSeriesData,
+    noDataSeries,
     sankeySeriesData,
     scatterChartGoIndigoData,
     scatterChartOverallData,
@@ -84,25 +92,22 @@ const formatUTCTime = (timestamp: number) => {
     return `${month} ${day}, ${year} | ${hours}:${minutes}`
 }
 
-const formatShortUTCTime = (value: number | string) => {
+const formatShortLocalTime = (value: number | string) => {
     const timestamp = typeof value === 'number' ? value : Number(value)
     if (!Number.isFinite(timestamp)) return String(value)
 
     const date = new Date(timestamp)
-    const month = date.toLocaleString('en-US', {
-        month: 'short',
-        timeZone: 'UTC',
-    })
-    const day = String(date.getUTCDate()).padStart(2, '0')
-    const hours = String(date.getUTCHours()).padStart(2, '0')
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0')
+    const month = date.toLocaleString('en-US', { month: 'short' })
+    const day = String(date.getDate()).padStart(2, '0')
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
     return `${month} ${day}, ${hours}:${minutes}`
 }
 
 const compactTimeXAxis = {
     type: 'time' as const,
     axisLabel: {
-        formatter: formatShortUTCTime,
+        formatter: formatShortLocalTime,
         hideOverlap: true,
         margin: 14,
     },
@@ -116,6 +121,20 @@ const denseTimeGrid = {
 }
 
 const denseTimeDataZoom = [{ type: 'inside' as const, start: 55, end: 100 }]
+
+const getTimestampValue = (point: TimestampPoint | [number, number]) =>
+    Array.isArray(point) ? point[0] : point.x
+
+const getFullTimeXAxis = (
+    ...series: Array<Array<TimestampPoint | [number, number]>>
+) => {
+    const timestamps = series.flat().map(getTimestampValue)
+    return {
+        ...compactTimeXAxis,
+        min: Math.min(...timestamps),
+        max: Math.max(...timestamps),
+    }
+}
 
 const lineChartOptions: ChartV3Options = {
     title: { text: 'Revenue trend', show: false },
@@ -322,7 +341,7 @@ const bubbleChartOptions: ChartV3Options = {
             type: 'scatter',
             name: 'Payment routes',
             color: chartColors[2],
-            symbolSize: (value) =>
+            symbolSize: (value: unknown) =>
                 Array.isArray(value) ? Number(value[2]) / 6 : 12,
             data: [
                 [110, 97, 70],
@@ -687,10 +706,10 @@ const rangeRenderItem = (
 const rangeChartOptions: ChartV3Options = {
     title: { text: 'Outage windows', show: false },
     tooltip: {
-        formatter: (params) => {
+        formatter: (params: unknown) => {
             const value = Array.isArray(params)
-                ? params[0]?.value
-                : params.value
+                ? (params[0] as { value?: unknown } | undefined)?.value
+                : (params as { value?: unknown }).value
             return Array.isArray(value)
                 ? `Outage window: ${value[1]}:00 - ${value[2]}:00`
                 : 'Outage window'
@@ -859,7 +878,7 @@ const outageRangeChartOptions: ChartV3Options = {
     title: { text: 'Outage timeline', show: false },
     tooltip: {
         trigger: 'item',
-        formatter: (params) => {
+        formatter: (params: unknown) => {
             const data = (params as { data?: Partial<OutageRange> }).data
             if (!data?.x || !data.x2) return ''
 
@@ -911,7 +930,7 @@ const noDataChartOptions: ChartV3Options = {
     title: { text: 'Empty chart', show: false },
     xAxis: { type: 'category', data: [] },
     yAxis: { type: 'value' },
-    series: [{ type: 'line', name: 'Revenue', data: [] }],
+    series: [{ type: 'line', name: 'Revenue', data: noDataSeries }],
 }
 
 const nullGapChartOptions: ChartV3Options = {
@@ -1141,12 +1160,17 @@ const richTooltipOptions: ChartV3Options = {
     title: { text: 'Custom tooltip', show: false },
     tooltip: {
         trigger: 'axis',
-        formatter: (params) => {
+        formatter: (params: unknown) => {
             const items = Array.isArray(params) ? params : [params]
             return items
-                .map(
-                    (item) => `${item.marker}${item.seriesName}: ${item.value}`
-                )
+                .map((item) => {
+                    const tooltipItem = item as {
+                        marker?: string
+                        seriesName?: string
+                        value?: unknown
+                    }
+                    return `${tooltipItem.marker ?? ''}${tooltipItem.seriesName ?? ''}: ${tooltipItem.value ?? ''}`
+                })
                 .join('<br />')
         },
     },
@@ -1240,9 +1264,8 @@ const invertedRangeOptions: ChartV3Options = {
 const v2DataLineOptions: ChartV3Options = {
     title: { text: 'V2 data line parity', show: false },
     tooltip: { trigger: 'axis' },
-    dataZoom: denseTimeDataZoom,
     grid: denseTimeGrid,
-    xAxis: compactTimeXAxis,
+    xAxis: getFullTimeXAxis(lineChartOverallData, lineChartGoIndigoData),
     yAxis: { type: 'value' },
     series: [
         {
@@ -1267,9 +1290,8 @@ const v2DataLineOptions: ChartV3Options = {
 const v2DataColumnOptions: ChartV3Options = {
     title: { text: 'V2 data column parity', show: false },
     tooltip: { trigger: 'axis' },
-    dataZoom: denseTimeDataZoom,
     grid: denseTimeGrid,
-    xAxis: compactTimeXAxis,
+    xAxis: getFullTimeXAxis(columnChartOverallData, columnChartGoIndigoData),
     yAxis: { type: 'value' },
     series: [
         {
@@ -1292,9 +1314,8 @@ const v2DataColumnOptions: ChartV3Options = {
 const v2DataAreaOptions: ChartV3Options = {
     title: { text: 'V2 data area parity', show: false },
     tooltip: { trigger: 'axis' },
-    dataZoom: denseTimeDataZoom,
     grid: denseTimeGrid,
-    xAxis: compactTimeXAxis,
+    xAxis: getFullTimeXAxis(areaChartOverallData, areaChartGoIndigoData),
     yAxis: { type: 'value' },
     series: [
         {
@@ -1319,9 +1340,8 @@ const v2DataAreaOptions: ChartV3Options = {
 const v2DataScatterOptions: ChartV3Options = {
     title: { text: 'V2 data scatter parity', show: false },
     tooltip: { trigger: 'item' },
-    dataZoom: denseTimeDataZoom,
     grid: denseTimeGrid,
-    xAxis: compactTimeXAxis,
+    xAxis: getFullTimeXAxis(scatterChartOverallData, scatterChartGoIndigoData),
     yAxis: { type: 'value' },
     series: [
         {
@@ -1344,9 +1364,12 @@ const v2DataScatterOptions: ChartV3Options = {
 const v2DataMixedOptions: ChartV3Options = {
     title: { text: 'V2 data mixed parity', show: false },
     tooltip: { trigger: 'axis' },
-    dataZoom: denseTimeDataZoom,
     grid: denseTimeGrid,
-    xAxis: compactTimeXAxis,
+    xAxis: getFullTimeXAxis(
+        lineColumnOverallData,
+        lineColumnGoIndigoData,
+        lineColumnOrangeData
+    ),
     yAxis: { type: 'value' },
     series: [
         {
@@ -1424,12 +1447,22 @@ const dashboardSeriesConfig = [
     { name: 'MAESTRO', color: FOUNDATION_THEME.colors.purple[600] },
 ]
 
+const v2DashboardChartTitles = [
+    'MOTO',
+    'THREE_DS',
+    'UNKNOWN',
+    'ORDERS WITH TRANSACTION(S)',
+    'ADDITIONAL METRIC 1',
+    'ADDITIONAL METRIC 2',
+    'ADDITIONAL METRIC 3',
+    'ADDITIONAL METRIC 4',
+] as const
+
 const v2DataDashboardOptions: ChartV3Options = {
     title: { text: 'V2 dashboard parity', show: false },
     tooltip: { trigger: 'axis' },
-    dataZoom: denseTimeDataZoom,
     grid: denseTimeGrid,
-    xAxis: compactTimeXAxis,
+    xAxis: getFullTimeXAxis(...dashboardSeriesData),
     yAxis: {
         type: 'value',
         min: 0,
@@ -1449,14 +1482,18 @@ const v2TimestampBetweenDatesOptions: ChartV3Options = {
     title: { text: 'Timestamp range parity', show: false },
     tooltip: {
         trigger: 'axis',
-        formatter: (params) => {
+        formatter: (params: unknown) => {
             const items = Array.isArray(params) ? params : [params]
             return items
                 .map((item) => {
-                    const value = item.value
+                    const tooltipItem = item as {
+                        marker?: string
+                        value?: unknown
+                    }
+                    const value = tooltipItem.value
                     const timestamp = Array.isArray(value) ? value[0] : value
                     const metric = Array.isArray(value) ? value[1] : value
-                    return `${item.marker}${formatUTCTime(Number(timestamp))}: ${metric}`
+                    return `${tooltipItem.marker ?? ''}${formatUTCTime(Number(timestamp))}: ${metric}`
                 })
                 .join('<br />')
         },
@@ -1479,6 +1516,134 @@ const v2TimestampBetweenDatesOptions: ChartV3Options = {
             color: FOUNDATION_THEME.colors.primary[500],
             data: toTimeSeriesData(lineChartOverallData),
             showSymbol: false,
+        },
+    ],
+}
+
+const v2LineWithOutageMarkerOptions: ChartV3Options = {
+    title: { text: 'Line with outage marker parity', show: false },
+    tooltip: { trigger: 'axis' },
+    grid: denseTimeGrid,
+    xAxis: getFullTimeXAxis(lineWithOutageBaseData),
+    yAxis: { type: 'value' },
+    series: [
+        {
+            type: 'line',
+            name: 'Overall',
+            color: FOUNDATION_THEME.colors.primary[500],
+            showSymbol: true,
+            symbolSize: (_value: unknown, params: { data?: unknown }) =>
+                (params.data as { outage?: boolean })?.outage ? 10 : 0,
+            data: lineWithOutageBaseData.map((point) => ({
+                ...point,
+                value: [point.x, point.y],
+                itemStyle: point.outage
+                    ? {
+                          color: FOUNDATION_THEME.colors.red[500],
+                          borderColor: FOUNDATION_THEME.colors.red[700],
+                          borderWidth: 1,
+                      }
+                    : undefined,
+            })),
+        },
+    ],
+}
+
+type BlendChartType = 'column' | 'line' | 'area' | 'pie'
+
+const blendChartTypes: BlendChartType[] = ['column', 'line', 'area', 'pie']
+
+const getBlendChartSeriesType = (type: BlendChartType) =>
+    type === 'column' ? 'bar' : type === 'area' ? 'line' : type
+
+const getBlendTimeSeriesOptions = (
+    type: BlendChartType,
+    title: string,
+    overallData: TimestampPoint[],
+    goindigoData: TimestampPoint[]
+): ChartV3Options => {
+    const seriesType = getBlendChartSeriesType(type)
+
+    if (type === 'pie') {
+        return {
+            title: { text: title, show: false },
+            tooltip: { trigger: 'item' },
+            legend: { show: false },
+            series: [
+                {
+                    type: 'pie',
+                    name: 'Overall',
+                    radius: ['46%', '68%'],
+                    center: ['32%', '50%'],
+                    label: { show: false },
+                    data: overallData.map((point) => ({
+                        name: formatShortLocalTime(point.x),
+                        value: point.y,
+                    })),
+                },
+                {
+                    type: 'pie',
+                    name: 'goindigo',
+                    radius: ['46%', '68%'],
+                    center: ['72%', '50%'],
+                    label: { show: false },
+                    data: goindigoData.map((point) => ({
+                        name: formatShortLocalTime(point.x),
+                        value: point.y,
+                    })),
+                },
+            ],
+        }
+    }
+
+    return {
+        title: { text: title, show: false },
+        tooltip: { trigger: 'axis' },
+        dataZoom: denseTimeDataZoom,
+        grid: denseTimeGrid,
+        xAxis: compactTimeXAxis,
+        yAxis: { type: 'value' },
+        series: [
+            {
+                type: seriesType,
+                name: 'Overall',
+                color: FOUNDATION_THEME.colors.primary[500],
+                showSymbol: false,
+                areaStyle: type === 'area' ? { opacity: 0.18 } : undefined,
+                barMaxWidth: type === 'column' ? 6 : undefined,
+                data: toTimeSeriesData(overallData),
+            },
+            {
+                type: seriesType,
+                name: 'goindigo',
+                color: FOUNDATION_THEME.colors.red[500],
+                showSymbol: false,
+                areaStyle: type === 'area' ? { opacity: 0.14 } : undefined,
+                barMaxWidth: type === 'column' ? 6 : undefined,
+                data: toTimeSeriesData(goindigoData),
+            },
+        ],
+    }
+}
+
+const blendDistributionPieOptions: ChartV3Options = {
+    title: { text: 'Category Distribution', show: false },
+    tooltip: { trigger: 'item', formatter: '{b}: <b>{d}%</b>' },
+    legend: { show: false },
+    series: [
+        {
+            type: 'pie',
+            name: 'Share',
+            radius: ['60%', '78%'],
+            label: { show: false },
+            itemStyle: {
+                borderWidth: 3,
+                borderColor: FOUNDATION_THEME.colors.gray[0],
+            },
+            data: blendChartPieData.map((point) => ({
+                name: point.name,
+                value: point.y,
+            })),
         },
     ],
 }
@@ -2199,6 +2364,13 @@ const v2DataParityGallery = [
         showLegend: true,
     },
     {
+        title: 'V2 line with outage marker',
+        subtitle: 'Same outage-marked hourly data from ChartV2Demo',
+        icon: <LineChart size={18} />,
+        options: v2LineWithOutageMarkerOptions,
+        showLegend: true,
+    },
+    {
         title: 'V2 data donut',
         subtitle: 'V2 pie data rendered as a donut',
         icon: <PieChart size={18} />,
@@ -2225,6 +2397,55 @@ const v2DataParityGallery = [
             'Millisecond timestamps between dates with formatted axis and zoom',
         icon: <LineChart size={18} />,
         options: v2TimestampBetweenDatesOptions,
+        showLegend: true,
+    },
+]
+
+const blendChartRecreationGallery = [
+    ...blendChartTypes.map((type) => ({
+        title: `BlendChart last 7 days ${type}`,
+        subtitle:
+            'Same last7daysHourlyData and last7daysHourlyData2 from BlendChartDemo',
+        icon:
+            type === 'pie' ? (
+                <PieChart size={18} />
+            ) : type === 'column' ? (
+                <BarChart3 size={18} />
+            ) : (
+                <LineChart size={18} />
+            ),
+        options: getBlendTimeSeriesOptions(
+            type,
+            `Last 7 days hourly ${type}`,
+            blendChartLast7DaysHourlyData,
+            blendChartLast7DaysHourlyData2
+        ),
+        showLegend: true,
+    })),
+    ...blendChartTypes.map((type) => ({
+        title: `BlendChart compact ${type}`,
+        subtitle: 'Same Data array used for both Overall and goindigo',
+        icon:
+            type === 'pie' ? (
+                <PieChart size={18} />
+            ) : type === 'column' ? (
+                <BarChart3 size={18} />
+            ) : (
+                <LineChart size={18} />
+            ),
+        options: getBlendTimeSeriesOptions(
+            type,
+            `Compact transaction ${type}`,
+            blendChartCompactData,
+            blendChartCompactData
+        ),
+        showLegend: true,
+    })),
+    {
+        title: 'BlendChart distribution pie',
+        subtitle: 'Same pieChartData from BlendChartDemo',
+        icon: <PieChart size={18} />,
+        options: blendDistributionPieOptions,
         showLegend: true,
     },
 ]
@@ -2349,6 +2570,69 @@ const getHoveredOutageRange = (
     }
 }
 
+const V2DashboardRecreationSection = () => {
+    const dashboardChartRefs = useRef(
+        v2DashboardChartTitles.map(() =>
+            createRef<ChartV3ReactRefObject | null>()
+        )
+    ).current
+
+    return (
+        <ChartContainerV3>
+            <ChartHeaderV3>
+                <div className="flex w-full items-center justify-between">
+                    <div>
+                        <div className="text-sm font-semibold text-gray-800">
+                            ChartV2 dashboard recreation
+                        </div>
+                        <div className="text-xs text-gray-500">
+                            Eight charts with a shared legend using the exact
+                            dashboardSeriesData
+                        </div>
+                    </div>
+                    <div className="hidden gap-2 text-sm font-medium text-gray-700 md:flex">
+                        <span>Slot 1</span>
+                        <span>Slot 2</span>
+                        <span>Slot 3</span>
+                    </div>
+                </div>
+            </ChartHeaderV3>
+            <div className="p-4">
+                <ChartV3Legend
+                    chartRefs={dashboardChartRefs}
+                    customLegendItems={dashboardSeriesConfig.map((series) => ({
+                        key: series.name,
+                        name: series.name,
+                        color: series.color,
+                    }))}
+                    layout="horizontal"
+                />
+                <div
+                    className="mt-4 grid grid-cols-4 gap-4"
+                    style={{ minHeight: 280 }}
+                >
+                    {v2DashboardChartTitles.map((title, index) => (
+                        <div key={title} className="space-y-2">
+                            <div className="text-sm font-medium text-gray-700">
+                                {title}
+                            </div>
+                            <ChartV3
+                                ref={dashboardChartRefs[index]}
+                                options={v2DataDashboardOptions}
+                                height={220}
+                                initialAnimationDelay={Math.min(
+                                    index * 120,
+                                    840
+                                )}
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </ChartContainerV3>
+    )
+}
+
 const OutageParitySection = () => {
     const [hoveredRange, setHoveredRange] = useState<Pick<
         OutageRange,
@@ -2422,26 +2706,108 @@ const ChartV3Demo = () => {
                 ))}
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-12">
                 <div>
-                    <h3 className="text-xl font-semibold">
-                        ChartV2 data parity
-                    </h3>
+                    <h3 className="text-xl font-bold">Recreating Chart V2</h3>
                     <p className="text-sm text-gray-500">
-                        These use the same source data from ChartV2DemoData.ts
-                        so we can compare V2 and V3 behavior directly.
+                        Same demos and exact source data from ChartV2Demo.tsx,
+                        OutageChartDemoV2.tsx, and BlendChartDemo.tsx recreated
+                        with ChartV3.
                     </p>
                 </div>
-                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                <div>
+                    <h4 className="text-base font-semibold">
+                        ChartV2Demo.tsx recreation
+                    </h4>
+                    <p className="text-sm text-gray-500">
+                        Uses the same arrays from ChartV2DemoData.ts.
+                    </p>
+                </div>
+                <div className="space-y-4">
                     {v2DataParityGallery.map((chart, index) => (
-                        <ChartCard
-                            key={chart.title}
-                            {...chart}
-                            initialAnimationDelay={Math.min(index * 140, 900)}
-                        />
+                        <section key={chart.title} className="space-y-4">
+                            <h3 className="text-lg font-semibold">
+                                {chart.title.replace(/^V2 data /, '')}
+                            </h3>
+                            <ChartCard
+                                {...chart}
+                                initialAnimationDelay={Math.min(
+                                    index * 140,
+                                    900
+                                )}
+                            />
+                        </section>
                     ))}
                 </div>
+                <V2DashboardRecreationSection />
+                <section className="space-y-4">
+                    <h3 className="text-lg font-semibold">Skeleton state</h3>
+                    <ChartContainerV3>
+                        <ChartHeaderV3>
+                            <div className="text-sm font-semibold text-gray-800">
+                                ChartV2 skeleton recreation
+                            </div>
+                        </ChartHeaderV3>
+                        <div className="p-5">
+                            <ChartV3
+                                options={v2DataColumnOptions}
+                                skeleton={{
+                                    show: true,
+                                    variant: 'pulse',
+                                    height: 300,
+                                }}
+                            />
+                        </div>
+                    </ChartContainerV3>
+                </section>
+                <section className="space-y-4">
+                    <h3 className="text-lg font-semibold">No data state</h3>
+                    <ChartContainerV3>
+                        <ChartHeaderV3>
+                            <div className="text-sm font-semibold text-gray-800">
+                                ChartV2 no-data recreation
+                            </div>
+                        </ChartHeaderV3>
+                        <div className="p-5">
+                            <ChartV3 options={noDataChartOptions} />
+                        </div>
+                    </ChartContainerV3>
+                </section>
+                <div>
+                    <h4 className="text-base font-semibold">
+                        OutageChartDemoV2.tsx recreation
+                    </h4>
+                    <p className="text-sm text-gray-500">
+                        Uses the same outage trend points, zones, range windows,
+                        bank names, downtime, and fluctuation values.
+                    </p>
+                </div>
                 <OutageParitySection />
+                <div>
+                    <h4 className="text-base font-semibold">
+                        BlendChartDemo.tsx recreation
+                    </h4>
+                    <p className="text-sm text-gray-500">
+                        Uses the same ChartV2Data.ts arrays across column, line,
+                        area, pie, and distribution pie demos.
+                    </p>
+                </div>
+                <div className="space-y-4">
+                    {blendChartRecreationGallery.map((chart, index) => (
+                        <section key={chart.title} className="space-y-4">
+                            <h3 className="text-lg font-semibold">
+                                {chart.title}
+                            </h3>
+                            <ChartCard
+                                {...chart}
+                                initialAnimationDelay={Math.min(
+                                    index * 120,
+                                    1200
+                                )}
+                            />
+                        </section>
+                    ))}
+                </div>
             </div>
 
             <div className="space-y-4">
