@@ -63,6 +63,23 @@ describe('ChatInput Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards with top queries', async () => {
+            const queries: TopQuery[] = [
+                { id: '1', text: 'What is the status?' },
+            ]
+            const { container } = render(
+                <ChatInput
+                    value=""
+                    onChange={() => {}}
+                    topQueries={queries}
+                    onTopQuerySelect={() => {}}
+                    aria-label="Message input"
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <ChatInput

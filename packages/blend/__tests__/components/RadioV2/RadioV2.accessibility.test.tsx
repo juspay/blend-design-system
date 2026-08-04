@@ -16,8 +16,9 @@ describe('RadioV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for multiple radio states (checked, disabled, error)', async () => {
+        it('meets WCAG standards for multiple radio states (checked, unchecked, disabled, error)', async () => {
             const states = [
+                { label: 'Unchecked Radio', checked: false },
                 { label: 'Checked Radio', checked: true },
                 { label: 'Disabled Radio', checked: false, disabled: true },
                 { label: 'Error Radio', checked: false, error: true },
@@ -29,6 +30,14 @@ describe('RadioV2 Accessibility', () => {
                 expect(results).toHaveNoViolations()
                 unmount()
             }
+        })
+
+        it('meets WCAG standards when disabled', async () => {
+            const { container } = render(
+                <RadioV2 label="Disabled Radio" disabled checked={false} />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with complex content', async () => {
@@ -43,6 +52,23 @@ describe('RadioV2 Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for all sizes', async () => {
+            const sizes = [SelectorV2Size.SM, SelectorV2Size.MD]
+
+            for (const size of sizes) {
+                const { container, unmount } = render(
+                    <RadioV2
+                        label={`${size} Radio`}
+                        size={size}
+                        checked={false}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
         })
     })
 
@@ -276,6 +302,18 @@ describe('RadioV2 Accessibility', () => {
     })
 
     describe('Edge Cases - Accessibility', () => {
+        it('handles empty visual label when an accessible name is provided', async () => {
+            const { container } = render(
+                <RadioV2
+                    label=""
+                    aria-label="Empty label radio"
+                    checked={false}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('maintains accessibility with all props combined', async () => {
             const handleChange = vi.fn()
             const { container } = render(

@@ -52,6 +52,128 @@ describe('ModalV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards for modal without subtitle', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <ModalV2
+                        isOpen={isOpen}
+                        onClose={() => setIsOpen(false)}
+                        title="Modal Title"
+                        primaryAction={{
+                            text: 'OK',
+                            onClick: () => setIsOpen(false),
+                            buttonType: ButtonV2Type.PRIMARY,
+                        }}
+                    >
+                        <p>Content</p>
+                    </ModalV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByRole('dialog')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for modal without actions', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <ModalV2
+                        isOpen={isOpen}
+                        onClose={() => setIsOpen(false)}
+                        title="Information Modal"
+                    >
+                        <p>This modal has no action buttons</p>
+                    </ModalV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByRole('dialog')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for modal without close button', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <ModalV2
+                        isOpen={isOpen}
+                        onClose={() => setIsOpen(false)}
+                        title="Modal"
+                        showCloseButton={false}
+                        primaryAction={{
+                            text: 'Close',
+                            onClick: () => setIsOpen(false),
+                            buttonType: ButtonV2Type.PRIMARY,
+                        }}
+                    >
+                        <p>Content</p>
+                    </ModalV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByRole('dialog')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for danger action modal', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <ModalV2
+                        isOpen={isOpen}
+                        onClose={() => setIsOpen(false)}
+                        title="Delete Item"
+                        subtitle="This action cannot be undone"
+                        primaryAction={{
+                            text: 'Delete',
+                            onClick: () => setIsOpen(false),
+                            buttonType: ButtonV2Type.DANGER,
+                        }}
+                        secondaryAction={{
+                            text: 'Cancel',
+                            onClick: () => setIsOpen(false),
+                            buttonType: ButtonV2Type.SECONDARY,
+                        }}
+                    >
+                        <p>Are you sure you want to delete this item?</p>
+                    </ModalV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByRole('dialog')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards for disabled action modal', async () => {
             const TestComponent = () => {
                 const [isOpen, setIsOpen] = useState(true)
@@ -407,6 +529,39 @@ describe('ModalV2 Accessibility', () => {
                     screen.getByRole('button', { name: 'Close modal' })
                 ).toBeInTheDocument()
             })
+        })
+    })
+
+    describe('WCAG 1.4.3 Contrast (Minimum) (Level AA)', () => {
+        it('meets contrast requirements for all text elements', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <ModalV2
+                        isOpen={isOpen}
+                        onClose={() => setIsOpen(false)}
+                        title="Contrast Test"
+                        subtitle="Testing color contrast"
+                        primaryAction={{
+                            text: 'Save',
+                            onClick: () => setIsOpen(false),
+                            buttonType: ButtonV2Type.PRIMARY,
+                        }}
+                    >
+                        <p>Content with sufficient contrast</p>
+                    </ModalV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByRole('dialog')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 

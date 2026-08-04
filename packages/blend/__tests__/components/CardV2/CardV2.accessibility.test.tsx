@@ -7,6 +7,10 @@ import {
     CardV2ActionPlacement,
     CardV2Orientation,
 } from '../../../lib/components/CardV2/cardV2.types'
+import {
+    ButtonV2Size,
+    ButtonV2Type,
+} from '../../../lib/components/ButtonV2/buttonV2.types'
 
 describe('CardV2 Accessibility', () => {
     describe('WCAG compliance', () => {
@@ -17,6 +21,61 @@ describe('CardV2 Accessibility', () => {
                     subtitle="Last 24 hours"
                     description="Successful authorization attempts increased."
                 />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('has no axe violations with media and actions', async () => {
+            const { container } = render(
+                <CardV2
+                    title="Merchant profile"
+                    description="Primary owner for escalation policies."
+                    media={
+                        <img
+                            alt="Merchant owner"
+                            src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=320&h=240&fit=crop"
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                            }}
+                        />
+                    }
+                    actions={{
+                        text: 'Open profile',
+                        size: ButtonV2Size.SMALL,
+                        buttonType: ButtonV2Type.PRIMARY,
+                        onClick: vi.fn(),
+                    }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('has no axe violations for the compound API', async () => {
+            const { container } = render(
+                <CardV2>
+                    <CardV2.Header
+                        eyebrow="Operations"
+                        title="Manual review"
+                        subtitle="Queue health"
+                    />
+                    <CardV2.Body description="12 reviews need attention.">
+                        <span>Median age: 8 minutes</span>
+                    </CardV2.Body>
+                    <CardV2.Footer
+                        actions={{
+                            text: 'Open',
+                            size: ButtonV2Size.SMALL,
+                        }}
+                    >
+                        <span>Live</span>
+                    </CardV2.Footer>
+                </CardV2>
             )
 
             const results = await axe(container)

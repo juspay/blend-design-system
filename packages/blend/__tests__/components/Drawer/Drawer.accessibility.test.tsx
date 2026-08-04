@@ -78,6 +78,121 @@ describe('Drawer Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('meets WCAG standards for drawer without description', async () => {
+            const TestComponent = () => {
+                const [open, setOpen] = useState(true)
+
+                return (
+                    <Drawer open={open} onOpenChange={setOpen}>
+                        <DrawerTrigger>
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="Open"
+                            />
+                        </DrawerTrigger>
+                        <DrawerPortal>
+                            <DrawerOverlay />
+                            <DrawerContent>
+                                <DrawerHeader>
+                                    <DrawerTitle>Drawer Title</DrawerTitle>
+                                </DrawerHeader>
+                                <DrawerBody>
+                                    <p>Content</p>
+                                </DrawerBody>
+                            </DrawerContent>
+                        </DrawerPortal>
+                    </Drawer>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByRole('dialog')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for drawer with right direction', async () => {
+            const TestComponent = () => {
+                const [open, setOpen] = useState(true)
+
+                return (
+                    <Drawer
+                        open={open}
+                        onOpenChange={setOpen}
+                        direction="right"
+                    >
+                        <DrawerTrigger>
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="Open"
+                            />
+                        </DrawerTrigger>
+                        <DrawerPortal>
+                            <DrawerOverlay />
+                            <DrawerContent direction="right" width={400}>
+                                <DrawerHeader>
+                                    <DrawerTitle>Right Drawer</DrawerTitle>
+                                </DrawerHeader>
+                                <DrawerBody>
+                                    <p>Content</p>
+                                </DrawerBody>
+                            </DrawerContent>
+                        </DrawerPortal>
+                    </Drawer>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByRole('dialog')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for drawer without footer', async () => {
+            const TestComponent = () => {
+                const [open, setOpen] = useState(true)
+
+                return (
+                    <Drawer open={open} onOpenChange={setOpen}>
+                        <DrawerTrigger>
+                            <Button
+                                buttonType={ButtonType.PRIMARY}
+                                text="Open"
+                            />
+                        </DrawerTrigger>
+                        <DrawerPortal>
+                            <DrawerOverlay />
+                            <DrawerContent>
+                                <DrawerHeader>
+                                    <DrawerTitle>Drawer</DrawerTitle>
+                                </DrawerHeader>
+                                <DrawerBody>
+                                    <p>Content only</p>
+                                </DrawerBody>
+                            </DrawerContent>
+                        </DrawerPortal>
+                    </Drawer>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByRole('dialog')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 
     describe('WCAG 2.1.1 Keyboard (Level A)', () => {

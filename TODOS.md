@@ -1,4 +1,13 @@
 # TODOs
 
 - [ ] In the next major release, formally deprecate and remove the legacy `MultiSelect` and `MultiSelectV2` per-item `onChange` callbacks. Provide migration guidance to use `onSelectionChange`, which returns the complete resulting selection once per user gesture.
-- [ ] Try swapping vitest's `environment` from `jsdom` to `happy-dom` for suite speed. `happy-dom` is generally faster than `jsdom` but has looser DOM-spec fidelity — would need a full green run (all 174+ files) plus a check that jest-axe, styled-components, and Radix portal-based components (Popover/Menu/Dropdown) still behave correctly before adopting. Deferred from the vitest concurrency/speed pass on `fix-parallel-test-flakes` (see `.context/test-time-loop.md`).
+- [ ] **Priority:** P0 — `SingleSelectV2.test.tsx > filters virtualized list via search input` times out at 5000ms under the full parallel `pnpm test:blend:run` suite, but passes cleanly in isolation (1.9s). Neither the test nor `SingleSelectV2` source were touched by `multiselect-selection-callback`; last touched by Mihir Jaiswal. Noticed by `/ship` on the `multiselect-selection-callback` branch — investigate whether this is worker-contention flakiness or a real intermittent bug in the virtualized filter.
+    ```
+    Error: Test timed out in 5000ms.
+    ❯ __tests__/components/SingleSelectV2/SingleSelectV2.test.tsx:121:5
+    ```
+- [ ] **Priority:** P0 — `Button.performance.test.tsx > hover transitions are smooth` fails under the full parallel `pnpm test:blend:run` suite (24.06ms > 14ms threshold) but passes cleanly in isolation. Neither the test nor `Button` source were touched by `multiselect-selection-callback`; last touched by dkrai04. Same shape as the `SingleSelectV2` flake above — likely worker-contention flakiness in the performance-threshold suite under parallel load.
+    ```
+    Error: Performance test failed: 24.06ms > 14ms
+    ❯ __tests__/components/Button/Button.performance.test.tsx:338:13
+    ```

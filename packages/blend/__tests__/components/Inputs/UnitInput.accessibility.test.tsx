@@ -3,7 +3,10 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import UnitInput from '../../../lib/components/Inputs/UnitInput/UnitInput'
-import { UnitPosition } from '../../../lib/components/Inputs/UnitInput/types'
+import {
+    UnitInputSize,
+    UnitPosition,
+} from '../../../lib/components/Inputs/UnitInput/types'
 
 describe('UnitInput Accessibility', () => {
     describe('WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
@@ -19,6 +22,24 @@ describe('UnitInput Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for all input sizes (Medium, Large)', async () => {
+            const sizes = [UnitInputSize.MEDIUM, UnitInputSize.LARGE]
+
+            for (const size of sizes) {
+                const { container } = render(
+                    <UnitInput
+                        label={`${size} unit input`}
+                        unit="USD"
+                        size={size}
+                        value={undefined}
+                        onChange={() => {}}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
         })
 
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {

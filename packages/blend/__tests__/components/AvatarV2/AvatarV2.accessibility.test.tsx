@@ -4,7 +4,11 @@ import { render, screen, cleanup } from '../../test-utils'
 import { axe } from 'jest-axe'
 import userEvent from '@testing-library/user-event'
 import { AvatarV2 } from '../../../lib/components/AvatarV2'
-import { AvatarV2Size, AvatarV2Status } from '../../../lib/components/AvatarV2'
+import {
+    AvatarV2Size,
+    AvatarV2Shape,
+    AvatarV2Status,
+} from '../../../lib/components/AvatarV2'
 import { MockIcon } from '../../test-utils'
 
 describe('AvatarV2 Accessibility', () => {
@@ -26,6 +30,38 @@ describe('AvatarV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('passes axe-core validation for avatar with fallback text', async () => {
+            const { container } = render(<AvatarV2 alt="John Doe" />)
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('passes axe-core validation for avatar with status indicator', async () => {
+            const { container } = render(
+                <AvatarV2
+                    alt="John Doe"
+                    status={{ type: AvatarV2Status.ONLINE }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('passes axe-core validation for avatar with slots', async () => {
+            const { container } = render(
+                <AvatarV2
+                    alt="John Doe"
+                    leadingSlot={<MockIcon />}
+                    trailingSlot={<MockIcon />}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('passes axe-core validation for disabled avatar', async () => {
             const { container } = render(<AvatarV2 alt="John Doe" disabled />)
 
@@ -36,6 +72,71 @@ describe('AvatarV2 Accessibility', () => {
         it('passes axe-core validation for interactive avatar', async () => {
             const { container } = render(
                 <AvatarV2 alt="John Doe" onClick={() => {}} />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('passes axe-core validation for all status types', async () => {
+            const statuses = [
+                AvatarV2Status.ONLINE,
+                AvatarV2Status.OFFLINE,
+                AvatarV2Status.AWAY,
+                AvatarV2Status.BUSY,
+                AvatarV2Status.NONE,
+            ]
+
+            for (const status of statuses) {
+                const { container } = render(
+                    <AvatarV2 alt="Test" status={{ type: status }} />
+                )
+
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
+        it('passes axe-core validation for all sizes', async () => {
+            const sizes = [
+                AvatarV2Size.XS,
+                AvatarV2Size.SM,
+                AvatarV2Size.MD,
+                AvatarV2Size.LG,
+                AvatarV2Size.XL,
+                AvatarV2Size.XXL,
+            ]
+
+            for (const size of sizes) {
+                const { container } = render(
+                    <AvatarV2 alt="Test" size={size} />
+                )
+
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
+        it('passes axe-core validation for all shapes', async () => {
+            const shapes = [
+                AvatarV2Shape.CIRCLE,
+                AvatarV2Shape.ROUNDED,
+                AvatarV2Shape.SQUARE,
+            ]
+
+            for (const shape of shapes) {
+                const { container } = render(
+                    <AvatarV2 alt="Test" shape={shape} />
+                )
+
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
+        it('passes axe-core validation with skeleton', async () => {
+            const { container } = render(
+                <AvatarV2 alt="Test" skeleton={{ show: true }} />
             )
 
             const results = await axe(container)

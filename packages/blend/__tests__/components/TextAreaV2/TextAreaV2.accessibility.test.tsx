@@ -60,6 +60,22 @@ describe('TextAreaV2 Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('meets WCAG standards with helpIconText on label (lg layout)', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    label="Details"
+                    sublabel="Optional"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    helpIconText="Opens additional guidance."
+                    hintText="Keep it concise."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 
     describe('WCAG 3.3.2 Labels or Instructions (Level A)', () => {
@@ -479,8 +495,36 @@ describe('TextAreaV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG with axe on sm for optional field using aria-label (no visible label)', () => {
-            render(
+        it('meets WCAG with axe on sm when value is present (floated label)', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    label="Body"
+                    placeholder="…"
+                    value="Long text for scroll"
+                    onChange={noop}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG with axe on sm with error and hint', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    label="Email body"
+                    placeholder="…"
+                    value="x"
+                    onChange={noop}
+                    hintText="Hint"
+                    error={{ show: true, message: 'Invalid' }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG with axe on sm for optional field using aria-label (no visible label)', async () => {
+            const { container } = render(
                 <TextAreaV2
                     aria-label="Optional notes"
                     placeholder="…"
@@ -492,6 +536,45 @@ describe('TextAreaV2 Accessibility', () => {
                 'aria-label',
                 'Optional notes'
             )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Comprehensive axe', () => {
+        it('passes axe with label, sublabel, hint, and required', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    label="Complete"
+                    sublabel="Extra"
+                    placeholder="…"
+                    value=""
+                    onChange={noop}
+                    hintText="Hint"
+                    helpIconText="Help"
+                    required
+                    rows={4}
+                    resize="vertical"
+                />
+            )
+            expect(screen.getByRole('textbox')).toHaveAttribute('rows', '4')
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('passes axe with error and required', async () => {
+            const { container } = render(
+                <TextAreaV2
+                    label="Err"
+                    placeholder="…"
+                    value="x"
+                    onChange={noop}
+                    required
+                    error={{ show: true, message: 'Please correct' }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

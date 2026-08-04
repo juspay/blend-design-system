@@ -8,8 +8,9 @@ import {
     ChartLegendPosition,
     NewNestedDataPoint,
     AxisType,
+    LegendsChangeType,
 } from '../../../lib/components/Charts/types'
-import { TrendingUp, DollarSign } from 'lucide-react'
+import { TrendingUp, DollarSign, Activity } from 'lucide-react'
 
 // Helper function to generate sample chart data
 const generateChartData = (): NewNestedDataPoint[] => [
@@ -75,6 +76,35 @@ describe('Charts Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards for all chart types (Line, Bar, Pie, Scatter)', async () => {
+            const data = generateChartData()
+            const chartTypes = [
+                ChartType.LINE,
+                ChartType.BAR,
+                ChartType.PIE,
+                ChartType.SCATTER,
+            ]
+
+            for (const chartType of chartTypes) {
+                const { container } = render(
+                    <Charts
+                        chartType={chartType}
+                        data={data}
+                        height={400}
+                        chartHeaderSlot={<h3>{chartType} Chart</h3>}
+                        xAxis={{ label: 'Month', showLabel: true, show: true }}
+                        yAxis={{
+                            label: 'Amount',
+                            showLabel: true,
+                            show: true,
+                        }}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
         it('meets WCAG standards with role="region" and aria-label (1.3.1 Info and Relationships)', async () => {
             const data = generateChartData()
             const { container } = render(
@@ -95,6 +125,9 @@ describe('Charts Accessibility', () => {
             const chartRegion = container.querySelector('[role="region"]')
             expect(chartRegion).toBeTruthy()
             expect(chartRegion).toHaveAttribute('aria-label')
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with chart role="img" and aria-label (1.1.1 Non-text Content)', async () => {
@@ -121,6 +154,9 @@ describe('Charts Accessibility', () => {
                 expect(chartImg).toBeTruthy()
                 expect(chartImg).toHaveAttribute('aria-label')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with aria-labelledby linking to header (1.3.1 Info and Relationships)', async () => {
@@ -142,6 +178,9 @@ describe('Charts Accessibility', () => {
 
             const chartRegion = container.querySelector('[role="region"]')
             expect(chartRegion).toHaveAttribute('aria-labelledby')
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with aria-describedby for chart description (1.3.1 Info and Relationships)', async () => {
@@ -165,6 +204,9 @@ describe('Charts Accessibility', () => {
                 const chartImg = container.querySelector('[role="img"]')
                 expect(chartImg).toHaveAttribute('aria-describedby')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with legend items as buttons (2.1.1 Keyboard)', async () => {
@@ -220,6 +262,9 @@ describe('Charts Accessibility', () => {
                 )
                 expect(legendButtons.length).toBeGreaterThan(0)
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with header buttons having aria-label (2.4.6 Headings and Labels)', async () => {
@@ -248,6 +293,9 @@ describe('Charts Accessibility', () => {
                 expect(collapseButton).toBeTruthy()
                 expect(collapseButton).toHaveAttribute('aria-expanded')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with decorative icons having aria-hidden (1.1.1 Non-text Content)', async () => {
@@ -273,6 +321,89 @@ describe('Charts Accessibility', () => {
                 '[aria-hidden="true"]'
             )
             expect(decorativeIcons.length).toBeGreaterThan(0)
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with legend position top (1.3.2 Meaningful Sequence)', async () => {
+            const data = generateChartData()
+            const { container } = render(
+                <Charts
+                    chartType={ChartType.LINE}
+                    data={data}
+                    height={400}
+                    chartHeaderSlot={<h3>Monthly Revenue</h3>}
+                    legendPosition={ChartLegendPosition.TOP}
+                    xAxis={{ label: 'Month', showLabel: true, show: true }}
+                    yAxis={{
+                        label: 'Amount ($)',
+                        showLabel: true,
+                        show: true,
+                    }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with legend position right (1.3.2 Meaningful Sequence)', async () => {
+            const data = generateChartData()
+            const { container } = render(
+                <Charts
+                    chartType={ChartType.PIE}
+                    data={data}
+                    height={400}
+                    chartHeaderSlot={<h3>Sales Distribution</h3>}
+                    legendPosition={ChartLegendPosition.RIGHT}
+                    xAxis={{ show: false }}
+                    yAxis={{ show: false }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with stacked legends (1.3.1 Info and Relationships)', async () => {
+            const data = generateChartData()
+            const { container } = render(
+                <Charts
+                    chartType={ChartType.LINE}
+                    data={data}
+                    height={400}
+                    chartHeaderSlot={<h3>Monthly Revenue</h3>}
+                    legendPosition={ChartLegendPosition.TOP}
+                    stackedLegends={true}
+                    stackedLegendsData={[
+                        {
+                            value: 12000,
+                            delta: 12.5,
+                            changeType: LegendsChangeType.INCREASE,
+                        },
+                        {
+                            value: 8000,
+                            delta: 8.3,
+                            changeType: LegendsChangeType.INCREASE,
+                        },
+                        {
+                            value: 6000,
+                            delta: 5.2,
+                            changeType: LegendsChangeType.INCREASE,
+                        },
+                    ]}
+                    xAxis={{ label: 'Month', showLabel: true, show: true }}
+                    yAxis={{
+                        label: 'Amount ($)',
+                        showLabel: true,
+                        show: true,
+                    }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with keyboard navigation on legend items (2.1.1 Keyboard)', async () => {
@@ -307,6 +438,9 @@ describe('Charts Accessibility', () => {
                 fireEvent.keyDown(legendButton, { key: 'Enter' })
                 fireEvent.keyDown(legendButton, { key: ' ' })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with keyboard navigation on collapse button (2.1.1 Keyboard)', async () => {
@@ -341,6 +475,9 @@ describe('Charts Accessibility', () => {
                 // Test keyboard activation
                 fireEvent.keyDown(collapseButton, { key: 'Enter' })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with focus indicators visible (2.4.7 Focus Visible)', async () => {
@@ -377,6 +514,9 @@ describe('Charts Accessibility', () => {
                         computedStyle.boxShadow !== 'none'
                 ).toBe(true)
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with touch target size minimum 24x24px (2.5.8 Target Size)', async () => {
@@ -415,6 +555,9 @@ describe('Charts Accessibility', () => {
                     expect(rect.height).toBeGreaterThanOrEqual(24)
                 }
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with no context change on focus (3.2.1 On Focus)', async () => {
@@ -447,6 +590,9 @@ describe('Charts Accessibility', () => {
                 legendButton.focus()
                 expect(document.activeElement).toBe(legendButton)
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with predictable behavior on input (3.2.2 On Input)', async () => {
@@ -483,6 +629,9 @@ describe('Charts Accessibility', () => {
                 // State should change predictably
                 expect(initialPressed !== afterClickPressed).toBe(true)
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with all changes user-initiated (3.2.5 Change on Request - AAA)', async () => {
@@ -518,6 +667,9 @@ describe('Charts Accessibility', () => {
                     legendButton.getAttribute('aria-pressed')
                 expect(initialPressed !== afterClickPressed).toBe(true)
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with keyboard-only operation (2.1.3 Keyboard No Exception - AAA)', async () => {
@@ -558,6 +710,9 @@ describe('Charts Accessibility', () => {
                 fireEvent.keyDown(legendButton, { key: ' ', code: 'Space' })
                 fireEvent.keyUp(legendButton, { key: ' ', code: 'Space' })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with proper heading structure (2.4.6 Headings and Labels)', async () => {
@@ -580,6 +735,35 @@ describe('Charts Accessibility', () => {
             const heading = container.querySelector('h3')
             expect(heading).toBeTruthy()
             expect(heading?.textContent).toBe('Monthly Revenue')
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with axis labels (1.3.1 Info and Relationships)', async () => {
+            const data = generateChartData()
+            const { container } = render(
+                <Charts
+                    chartType={ChartType.LINE}
+                    data={data}
+                    height={400}
+                    chartHeaderSlot={<h3>Monthly Revenue</h3>}
+                    xAxis={{
+                        label: 'Month',
+                        showLabel: true,
+                        show: true,
+                    }}
+                    yAxis={{
+                        label: 'Amount ($)',
+                        showLabel: true,
+                        show: true,
+                        type: AxisType.CURRENCY,
+                    }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with collapsed state (1.3.1 Info and Relationships)', async () => {
@@ -639,6 +823,9 @@ describe('Charts Accessibility', () => {
                 )
                 expect(collapseButton).toBeTruthy()
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with reset legend button (4.1.2 Name, Role, Value)', async () => {
@@ -675,6 +862,33 @@ describe('Charts Accessibility', () => {
                 )
                 expect(resetButton).toBeTruthy()
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with no data state (1.1.1 Non-text Content)', async () => {
+            const { container } = render(
+                <Charts
+                    chartType={ChartType.LINE}
+                    data={[]}
+                    height={400}
+                    chartHeaderSlot={<h3>Monthly Revenue</h3>}
+                    noData={{
+                        title: 'No data available',
+                        subtitle: 'Please check back later',
+                    }}
+                    xAxis={{ label: 'Month', showLabel: true, show: true }}
+                    yAxis={{
+                        label: 'Amount ($)',
+                        showLabel: true,
+                        show: true,
+                    }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with header group role (1.3.1 Info and Relationships)', async () => {
@@ -699,6 +913,9 @@ describe('Charts Accessibility', () => {
                 '[role="group"][aria-label="Chart header"]'
             )
             expect(headerGroup).toBeTruthy()
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with chart description for screen readers (1.3.1 Info and Relationships)', async () => {
@@ -726,6 +943,9 @@ describe('Charts Accessibility', () => {
                 expect(description).toBeTruthy()
                 expect(description?.textContent).toContain('chart')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with all interactive elements having accessible names (4.1.2 Name, Role, Value)', async () => {
@@ -754,6 +974,9 @@ describe('Charts Accessibility', () => {
                     expect(button).toHaveAttribute('aria-label')
                 })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with proper focus order (2.4.3 Focus Order)', async () => {
@@ -789,6 +1012,114 @@ describe('Charts Accessibility', () => {
                 // Simulate Tab key
                 fireEvent.keyDown(buttons[0], { key: 'Tab', code: 'Tab' })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with bar chart (1.1.1 Non-text Content)', async () => {
+            const data = generateChartData()
+            const { container } = render(
+                <Charts
+                    chartType={ChartType.BAR}
+                    data={data}
+                    height={400}
+                    chartHeaderSlot={<h3>Sales by Month</h3>}
+                    xAxis={{ label: 'Month', showLabel: true, show: true }}
+                    yAxis={{
+                        label: 'Sales',
+                        showLabel: true,
+                        show: true,
+                    }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with pie chart (1.1.1 Non-text Content)', async () => {
+            const data = generateChartData()
+            const { container } = render(
+                <Charts
+                    chartType={ChartType.PIE}
+                    data={data}
+                    height={400}
+                    chartHeaderSlot={<h3>Sales Distribution</h3>}
+                    legendPosition={ChartLegendPosition.RIGHT}
+                    xAxis={{ show: false }}
+                    yAxis={{ show: false }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with scatter chart (1.1.1 Non-text Content)', async () => {
+            const data = generateChartData()
+            const { container } = render(
+                <Charts
+                    chartType={ChartType.SCATTER}
+                    data={data}
+                    height={400}
+                    chartHeaderSlot={<h3>Data Points</h3>}
+                    xAxis={{ label: 'X Axis', showLabel: true, show: true }}
+                    yAxis={{
+                        label: 'Y Axis',
+                        showLabel: true,
+                        show: true,
+                    }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with all chart types and features combined', async () => {
+            const data = generateChartData()
+            const { container } = render(
+                <Charts
+                    chartType={ChartType.LINE}
+                    data={data}
+                    height={400}
+                    showHeader={true}
+                    showCollapseIcon={true}
+                    chartHeaderSlot={<h3>Comprehensive Chart</h3>}
+                    slot1={<Activity size={20} color="#10b981" />}
+                    slot2={<DollarSign size={16} color="#3b82f6" />}
+                    legendPosition={ChartLegendPosition.TOP}
+                    stackedLegends={true}
+                    stackedLegendsData={[
+                        {
+                            value: 12000,
+                            delta: 12.5,
+                            changeType: LegendsChangeType.INCREASE,
+                        },
+                        {
+                            value: 8000,
+                            delta: 8.3,
+                            changeType: LegendsChangeType.INCREASE,
+                        },
+                    ]}
+                    xAxis={{
+                        label: 'Month',
+                        showLabel: true,
+                        show: true,
+                        type: AxisType.DATE_TIME,
+                    }}
+                    yAxis={{
+                        label: 'Amount ($)',
+                        showLabel: true,
+                        show: true,
+                        type: AxisType.CURRENCY,
+                    }}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

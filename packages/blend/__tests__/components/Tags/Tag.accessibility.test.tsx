@@ -5,6 +5,7 @@ import { axe } from 'jest-axe'
 import Tag from '../../../lib/components/Tags/Tag'
 import {
     TagColor,
+    TagShape,
     TagSize,
     TagVariant,
 } from '../../../lib/components/Tags/types'
@@ -18,10 +19,85 @@ describe('Tag Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards for all tag variants (No Fill, Attentive, Subtle)', async () => {
+            const variants = [
+                TagVariant.NO_FILL,
+                TagVariant.ATTENTIVE,
+                TagVariant.SUBTLE,
+            ]
+
+            for (const variant of variants) {
+                const { container, unmount } = render(
+                    <Tag text={`${variant} Tag`} variant={variant} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
+        it('meets WCAG standards for all tag colors', async () => {
+            const colors = [
+                TagColor.NEUTRAL,
+                TagColor.PRIMARY,
+                TagColor.SUCCESS,
+                TagColor.ERROR,
+                TagColor.WARNING,
+                TagColor.PURPLE,
+            ]
+
+            for (const color of colors) {
+                const { container, unmount } = render(
+                    <Tag text={`${color} Tag`} color={color} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
+        it('meets WCAG standards for all tag sizes', async () => {
+            const sizes = [TagSize.XS, TagSize.SM, TagSize.MD, TagSize.LG]
+
+            for (const size of sizes) {
+                const { container, unmount } = render(
+                    <Tag text={`${size} Tag`} size={size} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
+        it('meets WCAG standards for all tag shapes', async () => {
+            const shapes = [TagShape.SQUARICAL, TagShape.ROUNDED]
+
+            for (const shape of shapes) {
+                const { container, unmount } = render(
+                    <Tag text={`${shape} Tag`} shape={shape} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
         it('meets WCAG standards for interactive tag (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const handleClick = vi.fn()
             const { container } = render(
                 <Tag text="Interactive Tag" onClick={handleClick} />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for tag with icons (1.1.1 Non-text Content)', async () => {
+            const { container } = render(
+                <Tag
+                    text="Tag with Icons"
+                    leftSlot={<MockIcon size={12} aria-hidden="true" />}
+                    rightSlot={<MockIcon size={12} aria-hidden="true" />}
+                />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -41,6 +117,17 @@ describe('Tag Accessibility', () => {
                         color={TagColor.PRIMARY}
                     />
                 </>
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for tag with custom aria-label', async () => {
+            const { container } = render(
+                <Tag
+                    text="Tag Text"
+                    aria-label="Custom accessible name for tag"
+                />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -535,6 +622,47 @@ describe('Tag Accessibility', () => {
             expect(rightTag).toBeInTheDocument()
         })
     })
+
+    describe('WCAG 1.4.3 Contrast (Minimum) (Level AA)', () => {
+        it('tag text has sufficient contrast for all variants', async () => {
+            const variants = [
+                TagVariant.NO_FILL,
+                TagVariant.ATTENTIVE,
+                TagVariant.SUBTLE,
+            ]
+
+            for (const variant of variants) {
+                const { container, unmount } = render(
+                    <Tag text={`${variant} Contrast`} variant={variant} />
+                )
+                const results = await axe(container)
+                // Contrast is verified through axe-core
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
+        it('tag text has sufficient contrast for all colors', async () => {
+            const colors = [
+                TagColor.NEUTRAL,
+                TagColor.PRIMARY,
+                TagColor.SUCCESS,
+                TagColor.ERROR,
+                TagColor.WARNING,
+                TagColor.PURPLE,
+            ]
+
+            for (const color of colors) {
+                const { container, unmount } = render(
+                    <Tag text={`${color} Contrast`} color={color} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+    })
+
     describe('WCAG 2.4.3 Focus Order (Level A)', () => {
         it('interactive tags follow logical focus order', async () => {
             const { user } = render(

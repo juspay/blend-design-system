@@ -6,6 +6,7 @@ import Tabs from '../../../lib/components/Tabs/Tabs'
 import TabsList from '../../../lib/components/Tabs/TabsList'
 import TabsTrigger from '../../../lib/components/Tabs/TabsTrigger'
 import TabsContent from '../../../lib/components/Tabs/TabsContent'
+import { TabsVariant, TabsSize } from '../../../lib/components/Tabs/types'
 import { Info } from 'lucide-react'
 
 describe('Tabs Accessibility', () => {
@@ -40,6 +41,33 @@ describe('Tabs Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards for tabs with multiple items (axe-core validation)', async () => {
+            const { container } = render(
+                <Tabs
+                    items={[
+                        {
+                            value: 'tab1',
+                            label: 'Tab 1',
+                            content: <p>Content 1</p>,
+                        },
+                        {
+                            value: 'tab2',
+                            label: 'Tab 2',
+                            content: <p>Content 2</p>,
+                        },
+                        {
+                            value: 'tab3',
+                            label: 'Tab 3',
+                            content: <p>Content 3</p>,
+                        },
+                    ]}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards for tabs with disabled items (axe-core validation)', async () => {
             const { container } = render(
                 <Tabs
@@ -60,6 +88,32 @@ describe('Tabs Accessibility', () => {
             )
 
             const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('ensures sufficient contrast for text (1.4.3 Contrast Minimum - Level AA)', async () => {
+            const { container } = render(
+                <Tabs
+                    items={[
+                        {
+                            value: 'tab1',
+                            label: 'Tab 1',
+                            content: <p>Content 1</p>,
+                        },
+                        {
+                            value: 'tab2',
+                            label: 'Tab 2',
+                            content: <p>Content 2</p>,
+                        },
+                    ]}
+                />
+            )
+
+            const results = await axe(container, {
+                rules: {
+                    'color-contrast': { enabled: true },
+                },
+            })
             expect(results).toHaveNoViolations()
         })
     })
@@ -881,6 +935,149 @@ describe('Tabs Accessibility', () => {
             expect(inactivePanel).not.toBeInTheDocument()
         })
     })
+
+    describe('Different Variants', () => {
+        it('underline variant is accessible', async () => {
+            const { container } = render(
+                <Tabs
+                    defaultValue="tab1"
+                    items={[
+                        {
+                            value: 'tab1',
+                            label: 'Tab 1',
+                            content: <p>Content</p>,
+                        },
+                    ]}
+                >
+                    <TabsList variant={TabsVariant.UNDERLINE}>
+                        <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="tab1">Content</TabsContent>
+                </Tabs>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('boxed variant is accessible', async () => {
+            const { container } = render(
+                <Tabs
+                    defaultValue="tab1"
+                    items={[
+                        {
+                            value: 'tab1',
+                            label: 'Tab 1',
+                            content: <p>Content</p>,
+                        },
+                    ]}
+                >
+                    <TabsList variant={TabsVariant.BOXED}>
+                        <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="tab1">Content</TabsContent>
+                </Tabs>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('floating variant is accessible', async () => {
+            const { container } = render(
+                <Tabs
+                    defaultValue="tab1"
+                    items={[
+                        {
+                            value: 'tab1',
+                            label: 'Tab 1',
+                            content: <p>Content</p>,
+                        },
+                    ]}
+                >
+                    <TabsList variant={TabsVariant.FLOATING}>
+                        <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="tab1">Content</TabsContent>
+                </Tabs>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('pills variant is accessible', async () => {
+            const { container } = render(
+                <Tabs
+                    defaultValue="tab1"
+                    items={[
+                        {
+                            value: 'tab1',
+                            label: 'Tab 1',
+                            content: <p>Content</p>,
+                        },
+                    ]}
+                >
+                    <TabsList variant={TabsVariant.PILLS}>
+                        <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="tab1">Content</TabsContent>
+                </Tabs>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Different Sizes', () => {
+        it('medium size is accessible', async () => {
+            const { container } = render(
+                <Tabs
+                    defaultValue="tab1"
+                    items={[
+                        {
+                            value: 'tab1',
+                            label: 'Tab 1',
+                            content: <p>Content</p>,
+                        },
+                    ]}
+                >
+                    <TabsList size={TabsSize.MD}>
+                        <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="tab1">Content</TabsContent>
+                </Tabs>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('large size is accessible', async () => {
+            const { container } = render(
+                <Tabs
+                    defaultValue="tab1"
+                    items={[
+                        {
+                            value: 'tab1',
+                            label: 'Tab 1',
+                            content: <p>Content</p>,
+                        },
+                    ]}
+                >
+                    <TabsList size={TabsSize.LG}>
+                        <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="tab1">Content</TabsContent>
+                </Tabs>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
     describe('Edge Cases', () => {
         it('handles tabs with closable property', async () => {
             const { container } = render(
@@ -946,6 +1143,12 @@ describe('Tabs Accessibility', () => {
                 />
             )
 
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('handles empty tabs gracefully', async () => {
+            const { container } = render(<Tabs items={[]} />)
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })

@@ -569,6 +569,68 @@ describe('Snackbar Accessibility', () => {
         })
     })
 
+    describe('Different Variants', () => {
+        it('info variant is accessible', async () => {
+            const { container } = render(
+                <StyledToast
+                    header="Info"
+                    description="Information message"
+                    variant={SnackbarVariant.INFO}
+                    onClose={() => {}}
+                    toastId="test-info"
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('success variant is accessible', async () => {
+            const { container } = render(
+                <StyledToast
+                    header="Success"
+                    description="Operation completed"
+                    variant={SnackbarVariant.SUCCESS}
+                    onClose={() => {}}
+                    toastId="test-success"
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('warning variant is accessible', async () => {
+            const { container } = render(
+                <StyledToast
+                    header="Warning"
+                    description="Please review"
+                    variant={SnackbarVariant.WARNING}
+                    onClose={() => {}}
+                    toastId="test-warning"
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('error variant is accessible', async () => {
+            const { container } = render(
+                <StyledToast
+                    header="Error"
+                    description="Something went wrong"
+                    variant={SnackbarVariant.ERROR}
+                    onClose={() => {}}
+                    toastId="test-error"
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
     describe('Edge Cases', () => {
         it('handles snackbar without description', () => {
             render(

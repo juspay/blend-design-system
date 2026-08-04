@@ -59,31 +59,108 @@ describe('MultiSelect Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards when disabled', async () => {
+        it('meets WCAG standards for all MultiSelect states (default, selected, disabled, error, required)', async () => {
+            const states = [
+                {
+                    label: 'Default',
+                    placeholder: 'Choose options',
+                    items: createTestItems(),
+                    selectedValues: [],
+                    onChange: () => {},
+                },
+                {
+                    label: 'Selected',
+                    placeholder: 'Choose options',
+                    items: createTestItems(),
+                    selectedValues: ['option1'],
+                    onChange: () => {},
+                },
+                {
+                    label: 'Disabled',
+                    placeholder: 'Cannot select',
+                    items: createTestItems(),
+                    selectedValues: [],
+                    onChange: () => {},
+                    disabled: true,
+                },
+                {
+                    label: 'Error',
+                    placeholder: 'Choose options',
+                    items: createTestItems(),
+                    selectedValues: [],
+                    onChange: () => {},
+                    error: true,
+                    errorMessage: 'This field is required',
+                },
+                {
+                    label: 'Required',
+                    placeholder: 'Choose options',
+                    items: createTestItems(),
+                    selectedValues: [],
+                    onChange: () => {},
+                    required: true,
+                },
+            ]
+
+            for (const props of states) {
+                const { container, unmount } = render(
+                    <MultiSelect {...props} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
+        it('meets WCAG standards with complex content (label, sublabel, hintText, errorMessage)', async () => {
             const { container } = render(
                 <MultiSelect
-                    label="Disabled"
-                    placeholder="Cannot select"
+                    label="Select Countries"
+                    sublabel="Choose your countries"
+                    hintText="Select your countries from the list"
+                    placeholder="Choose options"
                     items={createTestItems()}
                     selectedValues={[]}
                     onChange={() => {}}
-                    disabled
+                    required
                 />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with error state', async () => {
+        it('meets WCAG standards for all sizes', async () => {
+            const sizes = [
+                MultiSelectMenuSize.SMALL,
+                MultiSelectMenuSize.MEDIUM,
+                MultiSelectMenuSize.LARGE,
+            ]
+
+            for (const size of sizes) {
+                const { container, unmount } = render(
+                    <MultiSelect
+                        label="Select options"
+                        placeholder="Choose options"
+                        items={createTestItems()}
+                        selectedValues={[]}
+                        onChange={() => {}}
+                        size={size}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
+        it('meets WCAG standards with menu groups', async () => {
             const { container } = render(
                 <MultiSelect
-                    label="Error"
+                    label="Select options"
                     placeholder="Choose options"
-                    items={createTestItems()}
+                    items={createTestItemsWithGroups()}
                     selectedValues={[]}
                     onChange={() => {}}
-                    error
-                    errorMessage="This field is required"
                 />
             )
             const results = await axe(container)
@@ -1909,6 +1986,22 @@ describe('MultiSelect Accessibility', () => {
                     selectAllText="Select All"
                     size={MultiSelectMenuSize.MEDIUM}
                     variant={MultiSelectVariant.CONTAINER}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when menuFooter is provided', async () => {
+            const { container } = render(
+                <MultiSelect
+                    label="Select options"
+                    placeholder="Choose options"
+                    items={createTestItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    menuFooter={<button onClick={() => {}}>Create new</button>}
                 />
             )
 

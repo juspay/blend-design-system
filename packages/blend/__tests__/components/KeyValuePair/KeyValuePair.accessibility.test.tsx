@@ -3,7 +3,10 @@ import { describe, it, expect, afterEach } from 'vitest'
 import { render, screen, cleanup } from '../../test-utils'
 import { axe } from 'jest-axe'
 import KeyValuePair from '../../../lib/components/KeyValuePair/KeyValuePair'
-import { KeyValuePairStateType } from '../../../lib/components/KeyValuePair/types'
+import {
+    KeyValuePairSize,
+    KeyValuePairStateType,
+} from '../../../lib/components/KeyValuePair/types'
 import { Info, Star, ArrowRight } from 'lucide-react'
 
 describe('KeyValuePair Accessibility', () => {
@@ -18,6 +21,50 @@ describe('KeyValuePair Accessibility', () => {
             )
 
             const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for key-value pair with slots (axe-core validation)', async () => {
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Rating"
+                    value="5.0"
+                    keySlot={<Info size={16} />}
+                    valueLeftSlot={<Star size={16} />}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for horizontal layout (axe-core validation)', async () => {
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Status"
+                    value="Active"
+                    keyValuePairState={KeyValuePairStateType.horizontal}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('ensures sufficient contrast for text (1.4.3 Contrast Minimum - Level AA)', async () => {
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Description"
+                    value="This is a long description text"
+                    size={KeyValuePairSize.MEDIUM}
+                />
+            )
+
+            const results = await axe(container, {
+                rules: {
+                    'color-contrast': { enabled: true },
+                },
+            })
             expect(results).toHaveNoViolations()
         })
     })
@@ -152,6 +199,25 @@ describe('KeyValuePair Accessibility', () => {
         })
     })
 
+    describe('WCAG 1.4.3 Contrast (Minimum) (Level AA)', () => {
+        it('text has sufficient contrast ratio', async () => {
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Description"
+                    value="This is a description with sufficient contrast"
+                    size={KeyValuePairSize.LARGE}
+                />
+            )
+
+            const results = await axe(container, {
+                rules: {
+                    'color-contrast': { enabled: true },
+                },
+            })
+            expect(results).toHaveNoViolations()
+        })
+    })
+
     describe('WCAG 1.4.4 Resize Text (Level AA)', () => {
         it('text can be resized up to 200% without loss of content', () => {
             render(
@@ -277,6 +343,100 @@ describe('KeyValuePair Accessibility', () => {
 
             expect(labelIndex).toBeGreaterThanOrEqual(0)
             expect(valueIndex).toBeGreaterThanOrEqual(0)
+        })
+    })
+
+    describe('Text Overflow and Tooltip Accessibility', () => {
+        it('truncated text with tooltip is accessible', async () => {
+            const longValue =
+                'This is a very long value that will be truncated and should show a tooltip on hover'
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Description"
+                    value={longValue}
+                    textOverflow="truncate"
+                    showTooltipOnTruncate={true}
+                    maxWidth="100px"
+                />
+            )
+
+            // Wait for tooltip detection
+            await new Promise((resolve) => setTimeout(resolve, 100))
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('wrapped text without tooltip is accessible', async () => {
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Description"
+                    value="This text will wrap naturally without truncation"
+                    textOverflow="wrap"
+                    showTooltipOnTruncate={false}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('wrap-clamp text is accessible', async () => {
+            const longValue = Array(10)
+                .fill('This is a line of text.')
+                .join(' ')
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Long Description"
+                    value={longValue}
+                    textOverflow="wrap-clamp"
+                    maxLines={3}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Different Sizes', () => {
+        it('small size is accessible', async () => {
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Small"
+                    value="Small value"
+                    size={KeyValuePairSize.SMALL}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('medium size is accessible', async () => {
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Medium"
+                    value="Medium value"
+                    size={KeyValuePairSize.MEDIUM}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('large size is accessible', async () => {
+            const { container } = render(
+                <KeyValuePair
+                    keyString="Large"
+                    value="Large value"
+                    size={KeyValuePairSize.LARGE}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 

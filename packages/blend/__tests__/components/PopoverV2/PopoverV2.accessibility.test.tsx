@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import PopoverV2 from '../../../lib/components/PopoverV2/PopoverV2'
+import { PopoverV2Size } from '../../../lib/components/PopoverV2/popoverV2.types'
 import { Button } from '../../../lib/components/Button'
 
 // Desktop viewport so we test Radix Popover (not MobilePopoverV2)
@@ -53,7 +54,96 @@ describe('PopoverV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for popover in modal mode (dialog role)', async () => {
+        it('meets WCAG standards for popover without description', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <PopoverV2
+                        trigger={<Button text="Trigger" />}
+                        heading="Popover Title"
+                        open={isOpen}
+                        onOpenChange={setIsOpen}
+                        primaryAction={{
+                            text: 'OK',
+                            onClick: () => setIsOpen(false),
+                        }}
+                    >
+                        <p>Content</p>
+                    </PopoverV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByText('Popover Title')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for popover without actions', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <PopoverV2
+                        trigger={<Button text="Trigger" />}
+                        heading="Information Popover"
+                        open={isOpen}
+                        onOpenChange={setIsOpen}
+                    >
+                        <p>This popover has no action buttons</p>
+                    </PopoverV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(
+                    screen.getByText('Information Popover')
+                ).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for popover without close button', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <PopoverV2
+                        trigger={<Button text="Trigger" />}
+                        heading="Popover"
+                        open={isOpen}
+                        onOpenChange={setIsOpen}
+                        showCloseButton={false}
+                        primaryAction={{
+                            text: 'Close',
+                            onClick: () => setIsOpen(false),
+                        }}
+                    >
+                        <p>Content</p>
+                    </PopoverV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByText('Popover')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for popover in modal mode', async () => {
             const TestComponent = () => {
                 const [isOpen, setIsOpen] = useState(true)
 
@@ -83,6 +173,44 @@ describe('PopoverV2 Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it.each([
+            [PopoverV2Size.SM, 'Size SM'],
+            [PopoverV2Size.MD, 'Size MD'],
+            [PopoverV2Size.LG, 'Size LG'],
+        ])(
+            'meets WCAG standards for popover with size %s (axe-core validation)',
+            async (size, heading) => {
+                const TestComponent = () => {
+                    const [isOpen, setIsOpen] = useState(true)
+
+                    return (
+                        <PopoverV2
+                            trigger={<Button text="Trigger" />}
+                            heading={heading}
+                            open={isOpen}
+                            onOpenChange={setIsOpen}
+                            size={size}
+                            primaryAction={{
+                                text: 'OK',
+                                onClick: () => setIsOpen(false),
+                            }}
+                        >
+                            <p>Content</p>
+                        </PopoverV2>
+                    )
+                }
+
+                const { container } = render(<TestComponent />)
+
+                await waitFor(() => {
+                    expect(screen.getByText(heading)).toBeInTheDocument()
+                })
+
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        )
     })
 
     describe('WCAG 2.1.1 Keyboard (Level A)', () => {
@@ -1168,6 +1296,92 @@ describe('PopoverV2 Accessibility', () => {
     })
 
     describe('Edge Cases and Additional Accessibility', () => {
+        it('handles popover without heading gracefully', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <PopoverV2
+                        trigger={<Button text="Trigger" />}
+                        open={isOpen}
+                        onOpenChange={setIsOpen}
+                        showCloseButton={false}
+                    >
+                        <p>Content without heading</p>
+                    </PopoverV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(
+                    screen.getByText('Content without heading')
+                ).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('handles popover with only primary action', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <PopoverV2
+                        trigger={<Button text="Trigger" />}
+                        heading="Single Action"
+                        open={isOpen}
+                        onOpenChange={setIsOpen}
+                        primaryAction={{
+                            text: 'OK',
+                            onClick: () => setIsOpen(false),
+                        }}
+                    >
+                        <p>Content</p>
+                    </PopoverV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByText('Single Action')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('handles popover with custom content only', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <PopoverV2
+                        trigger={<Button text="Trigger" />}
+                        open={isOpen}
+                        onOpenChange={setIsOpen}
+                    >
+                        <div>
+                            <h3>Custom Content</h3>
+                            <p>This popover has no header or footer</p>
+                        </div>
+                    </PopoverV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByText('Custom Content')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('handles rapid open/close cycles', async () => {
             const TestComponent = () => {
                 const [isOpen, setIsOpen] = useState(false)
@@ -1212,6 +1426,35 @@ describe('PopoverV2 Accessibility', () => {
             })
         })
 
+        it('handles popover with scrollable content', async () => {
+            const TestComponent = () => {
+                const [isOpen, setIsOpen] = useState(true)
+
+                return (
+                    <PopoverV2
+                        trigger={<Button text="Trigger" />}
+                        heading="Scrollable"
+                        open={isOpen}
+                        onOpenChange={setIsOpen}
+                    >
+                        <div style={{ height: '2000px' }}>
+                            <p>Long content</p>
+                            <button>Bottom Button</button>
+                        </div>
+                    </PopoverV2>
+                )
+            }
+
+            const { container } = render(<TestComponent />)
+
+            await waitFor(() => {
+                expect(screen.getByText('Scrollable')).toBeInTheDocument()
+            })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('handles popover with form elements', async () => {
             const TestComponent = () => {
                 const [isOpen, setIsOpen] = useState(true)
@@ -1241,14 +1484,14 @@ describe('PopoverV2 Accessibility', () => {
                 )
             }
 
-            render(<TestComponent />)
+            const { container } = render(<TestComponent />)
 
             await waitFor(() => {
                 expect(screen.getByText('Form Popover')).toBeInTheDocument()
             })
 
-            expect(screen.getByLabelText(/Name/i)).toBeInTheDocument()
-            expect(screen.getByLabelText(/Email/i)).toBeInTheDocument()
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

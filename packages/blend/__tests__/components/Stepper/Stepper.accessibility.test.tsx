@@ -63,6 +63,33 @@ describe('Stepper Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards for vertical stepper (axe-core validation)', async () => {
+            const steps = [
+                {
+                    id: 1,
+                    title: 'Step 1',
+                    status: StepState.COMPLETED,
+                },
+                {
+                    id: 2,
+                    title: 'Step 2',
+                    status: StepState.CURRENT,
+                },
+                {
+                    id: 3,
+                    title: 'Step 3',
+                    status: StepState.PENDING,
+                },
+            ]
+
+            const { container } = render(
+                <Stepper steps={steps} stepperType={StepperType.VERTICAL} />
+            )
+
+            const results = await axe(container, axeConfig)
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards for stepper with substeps', async () => {
             const steps = [
                 {
@@ -1243,7 +1270,7 @@ describe('Stepper Accessibility', () => {
     })
 
     describe('Comprehensive WCAG 2.1 Compliance (Level A, AA, AAA)', () => {
-        it('meets WCAG standards with all features combined - comprehensive test', () => {
+        it('meets WCAG standards with all features combined - comprehensive test', async () => {
             const handleStepClick = vi.fn()
             const handleSubstepClick = vi.fn()
             const steps = [
@@ -1270,7 +1297,7 @@ describe('Stepper Accessibility', () => {
                 },
             ]
 
-            render(
+            const { container } = render(
                 <Stepper
                     steps={steps}
                     clickable={true}
@@ -1279,6 +1306,9 @@ describe('Stepper Accessibility', () => {
                     stepperType={StepperType.VERTICAL}
                 />
             )
+
+            const results = await axe(container, axeConfig)
+            expect(results).toHaveNoViolations()
 
             // Verify all accessibility features
             // Step 1 has substeps, so there are multiple buttons with "Step 1" in name

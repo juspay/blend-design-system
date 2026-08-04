@@ -22,6 +22,35 @@ describe('SearchInputV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards with left icon slot', async () => {
+            const { container } = render(
+                <SearchInputV2
+                    aria-label="Search products"
+                    value=""
+                    onChange={noop}
+                    placeholder="Search…"
+                    leftSlot={<Search size={16} aria-hidden />}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with left and right slots', async () => {
+            const { container } = render(
+                <SearchInputV2
+                    aria-label="Search with filter"
+                    value=""
+                    onChange={noop}
+                    placeholder="Search…"
+                    leftSlot={<Search size={16} aria-hidden />}
+                    rightSlot={<Filter size={16} aria-hidden />}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <SearchInputV2
@@ -50,6 +79,19 @@ describe('SearchInputV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards with non-empty value', async () => {
+            const { container } = render(
+                <SearchInputV2
+                    aria-label="Search query"
+                    value="q"
+                    onChange={noop}
+                    leftSlot={<Search size={16} aria-hidden />}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards with built-in clear (filled value, left slot)', async () => {
             const { container } = render(
                 <SearchInputV2
@@ -58,6 +100,34 @@ describe('SearchInputV2 Accessibility', () => {
                     onChange={noop}
                     allowClear
                     leftSlot={<Search size={16} aria-hidden />}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with allowClear false and non-empty value', async () => {
+            const { container } = render(
+                <SearchInputV2
+                    aria-label="No clear affordance"
+                    value="locked"
+                    onChange={noop}
+                    allowClear={false}
+                    leftSlot={<Search size={16} aria-hidden />}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with autocomplete', async () => {
+            const { container } = render(
+                <SearchInputV2
+                    aria-label="Address search"
+                    name="address"
+                    autoComplete="street-address"
+                    value=""
+                    onChange={noop}
                 />
             )
             const results = await axe(container)

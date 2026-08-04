@@ -4,6 +4,7 @@ import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { User } from 'lucide-react'
 import TextInput from '../../../lib/components/Inputs/TextInput/TextInput'
+import { TextInputSize } from '../../../lib/components/Inputs/TextInput/types'
 
 describe('TextInput Accessibility', () => {
     describe('WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
@@ -18,6 +19,27 @@ describe('TextInput Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for all input sizes (Small, Medium, Large)', async () => {
+            const sizes = [
+                TextInputSize.SMALL,
+                TextInputSize.MEDIUM,
+                TextInputSize.LARGE,
+            ]
+
+            for (const size of sizes) {
+                const { container } = render(
+                    <TextInput
+                        label={`${size} input`}
+                        value=""
+                        onChange={() => {}}
+                        size={size}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
         })
 
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
@@ -637,6 +659,36 @@ describe('TextInput Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
             // Tests: 1.3.5, 2.1.1, 2.4.7, 3.3.2, 4.1.2
+        })
+
+        it('meets WCAG standards with error state - all error requirements', async () => {
+            const { container } = render(
+                <TextInput
+                    label="Error Test"
+                    value="invalid"
+                    onChange={() => {}}
+                    error
+                    errorMessage="Please correct this field"
+                    required
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+            // Tests: 3.3.1 Error Identification, 3.3.3 Error Suggestion, 4.1.2
+        })
+
+        it('meets WCAG standards in disabled state - all disabled state requirements', async () => {
+            const { container } = render(
+                <TextInput
+                    label="Disabled"
+                    value="Cannot edit"
+                    onChange={() => {}}
+                    disabled
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+            // Tests: 2.1.1 Keyboard, 4.1.2 Name Role Value
         })
 
         it('meets WCAG standards for password input with toggle - secure input with accessibility', async () => {

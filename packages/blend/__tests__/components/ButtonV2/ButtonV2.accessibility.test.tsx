@@ -11,19 +11,50 @@ import { MockIcon } from '../../test-utils'
 
 describe('ButtonV2 Accessibility', () => {
     describe('WCAG 2.1 AA Compliance - Critical Violations', () => {
-        it('passes axe-core validation for default button', async () => {
-            const { container } = render(
-                <ButtonV2
-                    text="Primary button"
-                    buttonType={ButtonV2Type.PRIMARY}
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
+        it('passes axe-core validation for all button types', async () => {
+            const buttonTypes = [
+                ButtonV2Type.PRIMARY,
+                ButtonV2Type.SECONDARY,
+                ButtonV2Type.DANGER,
+                ButtonV2Type.SUCCESS,
+            ]
+
+            for (const buttonType of buttonTypes) {
+                const { container } = render(
+                    <ButtonV2
+                        text={`${buttonType} button`}
+                        buttonType={buttonType}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
         })
 
-        it('passes axe-core validation when disabled', async () => {
-            const { container } = render(<ButtonV2 text="Test" disabled />)
+        it('passes axe-core validation for all states', async () => {
+            const states = [
+                { disabled: true },
+                { loading: true },
+                { skeleton: { showSkeleton: true } },
+            ]
+
+            for (const state of states) {
+                const { container } = render(
+                    <ButtonV2 text="Test" {...state} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
+        it('passes axe-core validation with icons', async () => {
+            const { container } = render(
+                <ButtonV2
+                    text="With Icons"
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
+                />
+            )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
@@ -68,8 +99,23 @@ describe('ButtonV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('decorative icons are hidden from screen readers when text is present', () => {
-            render(
+        it('passes when icon-only button has aria-labelledby', async () => {
+            const { container } = render(
+                <>
+                    <span id="save-label">Save</span>
+                    <ButtonV2
+                        leftSlot={{ slot: <MockIcon /> }}
+                        subType={ButtonV2SubType.ICON_ONLY}
+                        aria-labelledby="save-label"
+                    />
+                </>
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('decorative icons are hidden from screen readers when text is present', async () => {
+            const { container } = render(
                 <ButtonV2
                     text="Save"
                     leftSlot={{ slot: <MockIcon /> }}
@@ -82,10 +128,13 @@ describe('ButtonV2 Accessibility', () => {
             icons.forEach((icon) => {
                 expect(icon).toHaveAttribute('aria-hidden', 'true')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
-        it('icon-only button does not hide icon from screen readers', () => {
-            render(
+        it('icon-only button does not hide icon from screen readers', async () => {
+            const { container } = render(
                 <ButtonV2
                     leftSlot={{ slot: <MockIcon /> }}
                     subType={ButtonV2SubType.ICON_ONLY}
@@ -99,6 +148,9 @@ describe('ButtonV2 Accessibility', () => {
             const icon = button.querySelector('[data-element="leading-icon"]')
 
             expect(icon).not.toHaveAttribute('aria-hidden')
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -166,8 +218,8 @@ describe('ButtonV2 Accessibility', () => {
             expect(button).toHaveAttribute('tabIndex', '-1')
         })
 
-        it('supports aria-describedby correctly', () => {
-            render(
+        it('supports aria-describedby correctly', async () => {
+            const { container } = render(
                 <>
                     <ButtonV2 text="Submit" aria-describedby="help-text" />
                     <span id="help-text">Press to submit</span>
@@ -175,10 +227,13 @@ describe('ButtonV2 Accessibility', () => {
             )
             const button = screen.getByRole('button', { name: 'Submit' })
             expect(button).toHaveAttribute('aria-describedby', 'help-text')
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
-        it('supports custom ARIA attributes for complex interactions', () => {
-            render(
+        it('supports custom ARIA attributes for complex interactions', async () => {
+            const { container } = render(
                 <ButtonV2
                     text="Menu"
                     aria-expanded="false"
@@ -190,6 +245,9 @@ describe('ButtonV2 Accessibility', () => {
             expect(button).toHaveAttribute('aria-expanded', 'false')
             expect(button).toHaveAttribute('aria-haspopup', 'true')
             expect(button).toHaveAttribute('aria-controls', 'menu-1')
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -223,6 +281,37 @@ describe('ButtonV2 Accessibility', () => {
             expect(results.violations.some((v) => v.id === 'button-name')).toBe(
                 true
             )
+        })
+
+        it('passes when button has text as accessible name', async () => {
+            const { container } = render(<ButtonV2 text="Click me" />)
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('passes when button has aria-label as accessible name', async () => {
+            const { container } = render(
+                <ButtonV2 aria-label="Action button" />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Comprehensive WCAG Compliance', () => {
+        it('meets WCAG standards with all features combined', async () => {
+            const { container } = render(
+                <ButtonV2
+                    text="Complete Test"
+                    buttonType={ButtonV2Type.PRIMARY}
+                    loading
+                    leftSlot={{ slot: <MockIcon /> }}
+                    rightSlot={{ slot: <MockIcon /> }}
+                    aria-describedby="help"
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

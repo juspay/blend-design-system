@@ -56,6 +56,58 @@ describe('Upload Accessibility', () => {
             })
             expect(results).toHaveNoViolations()
         })
+
+        it('meets WCAG standards for all Upload states (default, disabled, error, success)', async () => {
+            const states = [
+                {
+                    label: 'Upload File',
+                    onDrop: () => {},
+                },
+                {
+                    label: 'Upload File',
+                    onDrop: () => {},
+                    disabled: true,
+                },
+                {
+                    label: 'Upload File',
+                    onDrop: () => {},
+                    state: UploadState.ERROR,
+                    failedFiles: [
+                        {
+                            file: createMockFile('test.txt'),
+                            id: '1',
+                            status: 'error' as const,
+                            error: 'Upload failed',
+                        },
+                    ],
+                },
+                {
+                    label: 'Upload File',
+                    onDrop: () => {},
+                    state: UploadState.SUCCESS,
+                    uploadedFiles: [
+                        {
+                            file: createMockFile('test.txt'),
+                            id: '1',
+                            status: 'success' as const,
+                        },
+                    ],
+                },
+            ]
+
+            for (const props of states) {
+                const { container, unmount } = render(<Upload {...props} />)
+                const results = await axe(container, {
+                    rules: {
+                        'aria-allowed-attr': { enabled: false },
+                        'aria-required-children': { enabled: false },
+                        'button-name': { enabled: false }, // Block with role="button" is valid
+                    },
+                })
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
     })
 
     describe('WCAG 1.1.1 Non-text Content (Level A)', () => {

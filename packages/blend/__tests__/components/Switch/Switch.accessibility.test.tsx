@@ -4,7 +4,10 @@ import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Switch } from '../../../lib/components/Switch/Switch'
 import { SwitchSize } from '../../../lib/components/Switch/types'
-import { SwitchTestFactory } from '../../test-utils/builders'
+import {
+    SwitchTestFactory,
+    SwitchPropsBuilder,
+} from '../../test-utils/builders'
 import { MockIcon } from '../../test-utils'
 
 describe('Switch Accessibility', () => {
@@ -17,9 +20,9 @@ describe('Switch Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all switch states (checked, disabled, error)', async () => {
-            // unchecked/default is covered by the default axe test above
+        it('meets WCAG standards for all switch states (checked, unchecked, disabled, error)', async () => {
             const states = [
+                { ...SwitchTestFactory.default(), checked: false },
                 SwitchTestFactory.checked(),
                 { ...SwitchTestFactory.disabled(), checked: false },
                 { ...SwitchTestFactory.withError(), checked: false },
@@ -31,6 +34,13 @@ describe('Switch Accessibility', () => {
                 expect(results).toHaveNoViolations()
                 unmount()
             }
+        })
+
+        it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
+            const props = { ...SwitchTestFactory.disabled(), checked: false }
+            const { container } = render(<Switch {...props} />)
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('meets WCAG standards with complex content (1.1.1 Non-text Content, 4.1.2 Name Role Value)', async () => {
@@ -45,6 +55,20 @@ describe('Switch Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for all sizes', async () => {
+            const sizes = SwitchTestFactory.allSizes().map((props) => ({
+                ...props,
+                checked: false,
+            }))
+
+            for (const props of sizes) {
+                const { container, unmount } = render(<Switch {...props} />)
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
         })
     })
 
@@ -931,6 +955,31 @@ describe('Switch Accessibility', () => {
 
             const switchElement = screen.getByRole('switch')
             expect(switchElement).toBeInTheDocument()
+        })
+
+        it('maintains accessibility with subtext', async () => {
+            const props = { ...SwitchTestFactory.withSubtext(), checked: false }
+            const { container } = render(<Switch {...props} />)
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('handles slot content accessibly', async () => {
+            const props = new SwitchPropsBuilder()
+                .withLabel('Switch with icon')
+                .withChecked(false)
+                .withSlot(
+                    <span role="img" aria-label="notification icon">
+                        🔔
+                    </span>
+                )
+                .build()
+
+            const { container } = render(<Switch {...props} />)
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

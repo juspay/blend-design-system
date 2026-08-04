@@ -2,7 +2,9 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
+import { Mail } from 'lucide-react'
 import MultiValueInputV2 from '../../../lib/components/InputsV2/MultiValueInputV2/MultiValueInputV2'
+import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { TagShape, TagSize, TagVariant } from '../../../lib/components/Tags'
 
 function tagsConfig(value: string[] = []) {
@@ -27,6 +29,24 @@ describe('MultiValueInputV2 Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for all input sizes (sm, md, lg)', async () => {
+            const sizes = [InputSizeV2.SM, InputSizeV2.MD, InputSizeV2.LG]
+
+            for (const size of sizes) {
+                const { container, unmount } = render(
+                    <MultiValueInputV2
+                        label={`${size} input`}
+                        value=""
+                        onChange={() => {}}
+                        size={size}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
         })
 
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
@@ -414,6 +434,21 @@ describe('MultiValueInputV2 Accessibility', () => {
         })
     })
 
+    describe('With Slots (WCAG 1.1.1 Non-text Content)', () => {
+        it('supports left slot with decorative icon', async () => {
+            const { container } = render(
+                <MultiValueInputV2
+                    label="Search tags"
+                    value=""
+                    onChange={() => {}}
+                    leftSlot={<Mail size={16} aria-hidden="true" />}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
     describe('Focus and Blur Events (WCAG 3.2.1 On Focus - Level A)', () => {
         it('calls onFocus when input receives focus', () => {
             const handleFocus = vi.fn()
@@ -481,6 +516,56 @@ describe('MultiValueInputV2 Accessibility', () => {
                 'placeholder',
                 'Add email'
             )
+        })
+    })
+
+    describe('Comprehensive WCAG compliance', () => {
+        it('meets WCAG standards with all features combined', async () => {
+            const { container } = render(
+                <MultiValueInputV2
+                    label="Complete Test"
+                    sublabel="Additional context"
+                    hintText="Helpful hint"
+                    helpIconHintText="Tooltip information"
+                    placeholder="Enter value"
+                    value=""
+                    onChange={() => {}}
+                    required
+                    leftSlot={<Mail size={16} aria-hidden="true" />}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with error state', async () => {
+            const { container } = render(
+                <MultiValueInputV2
+                    label="Error Test"
+                    value=""
+                    tags={tagsConfig(['x'])}
+                    onChange={() => {}}
+                    error
+                    errorMessage="Please correct this field"
+                    required
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards in disabled state', async () => {
+            const { container } = render(
+                <MultiValueInputV2
+                    label="Disabled"
+                    value=""
+                    tags={tagsConfig(['Cannot', 'edit'])}
+                    onChange={() => {}}
+                    disabled
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

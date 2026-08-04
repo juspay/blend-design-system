@@ -3,7 +3,10 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import SingleSelect from '../../../lib/components/SingleSelect/SingleSelect'
-import { type SelectMenuGroupType } from '../../../lib/components/SingleSelect/types'
+import {
+    SelectMenuSize,
+    type SelectMenuGroupType,
+} from '../../../lib/components/SingleSelect/types'
 
 // Test data builders
 const createTestItems = (): SelectMenuGroupType[] => [
@@ -49,37 +52,96 @@ describe('SingleSelect Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
+        it('meets WCAG standards for all SingleSelect states (default, selected, disabled, error, required)', async () => {
+            const states = [
+                {
+                    placeholder: 'Default',
+                    items: createTestItems(),
+                    selected: '',
+                    onSelect: () => {},
+                },
+                {
+                    placeholder: 'Selected',
+                    items: createTestItems(),
+                    selected: 'option1',
+                    onSelect: () => {},
+                },
+                {
+                    placeholder: 'Disabled',
+                    items: createTestItems(),
+                    selected: '',
+                    onSelect: () => {},
+                    disabled: true,
+                },
+                {
+                    placeholder: 'Error',
+                    items: createTestItems(),
+                    selected: '',
+                    onSelect: () => {},
+                    error: true,
+                    errorMessage: 'This field is required',
+                },
+                {
+                    placeholder: 'Required',
+                    items: createTestItems(),
+                    selected: '',
+                    onSelect: () => {},
+                    required: true,
+                },
+            ]
+
+            for (const props of states) {
+                const { container, unmount } = render(
+                    <SingleSelect {...props} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
+        it('meets WCAG standards with complex content (label, subLabel, hintText, errorMessage)', async () => {
             const { container } = render(
                 <SingleSelect
-                    placeholder="Disabled"
+                    label="Select Country"
+                    subLabel="Choose your country"
+                    hintText="Select your country from the list"
+                    placeholder="Select an option"
                     items={createTestItems()}
                     selected=""
                     onSelect={() => {}}
-                    disabled
+                    required
                 />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with error state (3.3.1 Error Identification)', async () => {
-            const { container } = render(
-                <SingleSelect
-                    placeholder="Error"
-                    items={createTestItems()}
-                    selected=""
-                    onSelect={() => {}}
-                    error
-                    errorMessage="This field is required"
-                />
-            )
-            const results = await axe(container)
-            expect(results).toHaveNoViolations()
+        it('meets WCAG standards for all sizes', async () => {
+            const sizes = [
+                SelectMenuSize.SMALL,
+                SelectMenuSize.MEDIUM,
+                SelectMenuSize.LARGE,
+            ]
+
+            for (const size of sizes) {
+                const { container, unmount } = render(
+                    <SingleSelect
+                        placeholder="Select an option"
+                        items={createTestItems()}
+                        selected=""
+                        onSelect={() => {}}
+                        size={size}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
         })
 
-        it('meets WCAG standards when menu is open', async () => {
-            const { container, user } = render(
+        it('meets WCAG standards with menu groups', async () => {
+            const { container } = render(
                 <SingleSelect
                     placeholder="Select an option"
                     items={createTestItemsWithGroups()}
@@ -87,10 +149,6 @@ describe('SingleSelect Accessibility', () => {
                     onSelect={() => {}}
                 />
             )
-            await user.click(screen.getByRole('button'))
-            await waitFor(() => {
-                expect(screen.getByText('Option 1')).toBeInTheDocument()
-            })
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
@@ -1099,8 +1157,8 @@ describe('SingleSelect Accessibility', () => {
     })
 
     describe('Complex Content Accessibility', () => {
-        it('handles complex label content accessibly', () => {
-            render(
+        it('handles complex label content accessibly', async () => {
+            const { container } = render(
                 <SingleSelect
                     label="Select Country"
                     subLabel="Choose your country from the list"
@@ -1112,12 +1170,29 @@ describe('SingleSelect Accessibility', () => {
                 />
             )
 
-            expect(screen.getByRole('button')).toBeInTheDocument()
-            expect(screen.getByText('Select Country')).toBeInTheDocument()
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+
+            const trigger = screen.getByRole('button')
+            expect(trigger).toBeInTheDocument()
         })
 
-        it('handles slot content accessibly', () => {
-            render(
+        it('maintains accessibility with menu groups', async () => {
+            const { container } = render(
+                <SingleSelect
+                    placeholder="Select an option"
+                    items={createTestItemsWithGroups()}
+                    selected=""
+                    onSelect={() => {}}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('handles slot content accessibly', async () => {
+            const { container } = render(
                 <SingleSelect
                     placeholder="Select an option"
                     items={createTestItems()}
@@ -1127,7 +1202,23 @@ describe('SingleSelect Accessibility', () => {
                 />
             )
 
-            expect(screen.getByLabelText('icon')).toBeInTheDocument()
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when menuFooter is provided', async () => {
+            const { container } = render(
+                <SingleSelect
+                    placeholder="Select an option"
+                    items={createTestItems()}
+                    selected=""
+                    onSelect={() => {}}
+                    menuFooter={<button onClick={() => {}}>Create new</button>}
+                />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

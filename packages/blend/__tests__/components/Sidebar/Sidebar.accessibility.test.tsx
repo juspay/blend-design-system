@@ -116,6 +116,22 @@ describe('Sidebar Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards with expanded sidebar', async () => {
+            const { container } = render(
+                <div style={{ height: '100vh', width: '100vw' }}>
+                    <Sidebar
+                        data={createNavigationData()}
+                        topbar={<div>Topbar Content</div>}
+                        isExpanded={true}
+                    >
+                        <div>Main Content</div>
+                    </Sidebar>
+                </div>
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards with collapsed sidebar', async () => {
             const { container } = render(
                 <div style={{ height: '100vh', width: '100vw' }}>
@@ -123,6 +139,109 @@ describe('Sidebar Accessibility', () => {
                         data={createNavigationData()}
                         topbar={<div>Topbar Content</div>}
                         isExpanded={false}
+                    >
+                        <div>Main Content</div>
+                    </Sidebar>
+                </div>
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with left panel', async () => {
+            const { container } = render(
+                <div style={{ height: '100vh', width: '100vw' }}>
+                    <Sidebar
+                        data={createNavigationData()}
+                        topbar={<div>Topbar Content</div>}
+                        leftPanel={createLeftPanelConfig({
+                            includeBadges: true,
+                        })}
+                        isExpanded={true}
+                    >
+                        <div>Main Content</div>
+                    </Sidebar>
+                </div>
+            )
+            await waitFor(
+                () => {
+                    expect(container.querySelector('nav')).toBeInTheDocument()
+                },
+                { timeout: 3000 }
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with footer', async () => {
+            const { container } = render(
+                <div style={{ height: '100vh', width: '100vw' }}>
+                    <Sidebar
+                        data={createNavigationData()}
+                        topbar={<div>Topbar Content</div>}
+                        footer={<div>Footer Content</div>}
+                    >
+                        <div>Main Content</div>
+                    </Sidebar>
+                </div>
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with panel only mode', async () => {
+            const { container } = render(
+                <div style={{ height: '100vh', width: '100vw' }}>
+                    <Sidebar
+                        data={createNavigationData()}
+                        topbar={<div>Topbar Content</div>}
+                        leftPanel={createLeftPanelConfig({
+                            includeBadges: false,
+                            selected: 'Tenant 1',
+                        })}
+                        panelOnlyMode={true}
+                    >
+                        <div>Main Content</div>
+                    </Sidebar>
+                </div>
+            )
+            await waitFor(() => {
+                expect(container.querySelector('main')).toBeInTheDocument()
+            })
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with nested navigation items', async () => {
+            const nestedData: DirectoryData[] = [
+                {
+                    label: 'Main',
+                    items: [
+                        {
+                            label: 'Dashboard',
+                            leftSlot: <Home size={16} aria-hidden="true" />,
+                            onClick: () => {},
+                            items: [
+                                {
+                                    label: 'Overview',
+                                    onClick: () => {},
+                                },
+                                {
+                                    label: 'Details',
+                                    onClick: () => {},
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ]
+
+            const { container } = render(
+                <div style={{ height: '100vh', width: '100vw' }}>
+                    <Sidebar
+                        data={nestedData}
+                        topbar={<div>Topbar Content</div>}
+                        isExpanded={true}
                     >
                         <div>Main Content</div>
                     </Sidebar>
@@ -158,6 +277,9 @@ describe('Sidebar Accessibility', () => {
                     }
                 })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('navigation items have accessible text labels', async () => {
@@ -181,6 +303,9 @@ describe('Sidebar Accessibility', () => {
                     expect(text || ariaLabel).toBeTruthy()
                 })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -203,6 +328,9 @@ describe('Sidebar Accessibility', () => {
                 expect(nav).toBeInTheDocument()
                 expect(nav).toHaveAttribute('aria-label')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('has proper role="main" for main content', async () => {
@@ -222,6 +350,9 @@ describe('Sidebar Accessibility', () => {
                 expect(main).toBeInTheDocument()
                 expect(main).toHaveAttribute('aria-label', 'Main content')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('has proper semantic footer element', async () => {
@@ -244,6 +375,9 @@ describe('Sidebar Accessibility', () => {
                 // Footer should not have aria-label as it's not well supported on semantic footer elements
                 expect(footer).not.toHaveAttribute('aria-label')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('has unique IDs for ARIA relationships', async () => {
@@ -272,6 +406,9 @@ describe('Sidebar Accessibility', () => {
                     expect(navRegion).toHaveAttribute('id')
                 }
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('has aria-label on navigation region', async () => {
@@ -293,6 +430,9 @@ describe('Sidebar Accessibility', () => {
                 const label = nav?.getAttribute('aria-label')
                 expect(label).toContain('Sidebar navigation')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -319,6 +459,9 @@ describe('Sidebar Accessibility', () => {
                     Node.DOCUMENT_POSITION_FOLLOWING
                 )
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -355,6 +498,9 @@ describe('Sidebar Accessibility', () => {
                 },
                 { timeout: 3000 }
             )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('navigation items are keyboard accessible', async () => {
@@ -387,6 +533,9 @@ describe('Sidebar Accessibility', () => {
                 },
                 { timeout: 3000 }
             )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('keyboard shortcut works for toggle (default / key)', async () => {
@@ -469,6 +618,9 @@ describe('Sidebar Accessibility', () => {
                     expect(document.activeElement).toBe(element)
                 })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -504,6 +656,9 @@ describe('Sidebar Accessibility', () => {
                     Node.DOCUMENT_POSITION_FOLLOWING
                 )
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -536,6 +691,9 @@ describe('Sidebar Accessibility', () => {
                 },
                 { timeout: 3000 }
             )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -573,6 +731,9 @@ describe('Sidebar Accessibility', () => {
                     expect(rect.width >= 24 || rect.height >= 24).toBe(true)
                 }
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -602,6 +763,9 @@ describe('Sidebar Accessibility', () => {
                     // No unexpected context changes should occur
                 })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -651,6 +815,9 @@ describe('Sidebar Accessibility', () => {
                 },
                 { timeout: 3000 }
             )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -680,6 +847,9 @@ describe('Sidebar Accessibility', () => {
                 fireEvent.click(toggleButton)
                 expect(handleToggle).toHaveBeenCalled()
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -706,6 +876,9 @@ describe('Sidebar Accessibility', () => {
                 expect(toggleButton).toHaveAttribute('aria-expanded')
                 expect(toggleButton).toHaveAttribute('type', 'button')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('navigation items have accessible names', async () => {
@@ -729,6 +902,9 @@ describe('Sidebar Accessibility', () => {
                     expect(text || ariaLabel).toBeTruthy()
                 })
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 
@@ -1174,6 +1350,9 @@ describe('Sidebar Accessibility', () => {
                     container.querySelector('[data-element="tenant-panel"]')
                 ).toBeInTheDocument()
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('renders tenant badges with accessible status labels', async () => {
@@ -1200,6 +1379,9 @@ describe('Sidebar Accessibility', () => {
                 expect(badges[0]).toHaveAttribute('aria-label', 'IN')
                 expect(badges[1]).toHaveAttribute('aria-label', 'US')
             })
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
 
         it('keeps tenant button names independent of badge labels', async () => {

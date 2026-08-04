@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, act } from '../../test-utils'
 import { axe } from 'jest-axe'
 import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/NumberInputV2'
+import { InputSizeV2 } from '../../../lib/components/InputsV2/inputV2.types'
 import { NumberInputV2Direction } from '../../../lib/components/InputsV2/NumberInputV2/numberInputV2.types'
 
 const noop = () => {}
@@ -20,6 +21,24 @@ describe('NumberInputV2 Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for all input sizes (sm, md, lg)', async () => {
+            const sizes = [InputSizeV2.SM, InputSizeV2.MD, InputSizeV2.LG]
+
+            for (const size of sizes) {
+                const { container, unmount } = render(
+                    <NumberInputV2
+                        label={{ text: `${size} input`, subtext: '' }}
+                        value={null}
+                        onChange={noop}
+                        size={size}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
         })
 
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
@@ -47,6 +66,99 @@ describe('NumberInputV2 Accessibility', () => {
                         show: true,
                         message: 'Value must be between 0 and 100',
                     }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when unit suffix is shown (no stepper buttons)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Weight', subtext: '' }}
+                    value={12}
+                    onChange={noop}
+                    unit="kg"
+                    hintText="Enter mass in kilograms."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when unit is on the leading edge (unitDirection left)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Length', subtext: '' }}
+                    value={10}
+                    onChange={noop}
+                    unit="cm"
+                    unitDirection={NumberInputV2Direction.LEFT}
+                    hintText="Metric length."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with unit and decorative slot icons (aria-hidden)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Mass', subtext: '' }}
+                    value={5}
+                    onChange={noop}
+                    unit="kg"
+                    slot={{
+                        left: (
+                            <span aria-hidden="true" data-testid="a11y-slot-l">
+                                L
+                            </span>
+                        ),
+                        right: (
+                            <span aria-hidden="true" data-testid="a11y-slot-r">
+                                R
+                            </span>
+                        ),
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when value violates min-only bound (range message)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Floor', subtext: '' }}
+                    value={-5}
+                    onChange={noop}
+                    min={0}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards when value violates max-only bound (range message)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Ceiling', subtext: '' }}
+                    value={150}
+                    onChange={noop}
+                    max={100}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with help icon only (supplementary)', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Tax rate', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    helpIconText="Shown on your last return."
                 />
             )
             const results = await axe(container)
@@ -608,6 +720,77 @@ describe('NumberInputV2 Accessibility', () => {
             expect(
                 screen.getByRole('spinbutton', { name: /width/i })
             ).toBeInTheDocument()
+        })
+
+        it('meets WCAG with axe for unit, required, and error', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Portion', subtext: '' }}
+                    value={null}
+                    onChange={noop}
+                    unit="g"
+                    required
+                    error={{
+                        show: true,
+                        message: 'Amount is required.',
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Comprehensive WCAG compliance', () => {
+        it('meets WCAG standards with hint and help text', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Rate', subtext: 'Annual' }}
+                    hintText="Use a decimal between 0 and 1"
+                    helpIconText="Applied to taxable income."
+                    placeholder="0"
+                    value={null}
+                    onChange={noop}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    required
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with error state', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Error Test', subtext: '' }}
+                    value={999}
+                    onChange={noop}
+                    min={0}
+                    max={10}
+                    error={{
+                        show: true,
+                        message: 'Please correct this field',
+                    }}
+                    required
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards in disabled state', async () => {
+            const { container } = render(
+                <NumberInputV2
+                    label={{ text: 'Disabled', subtext: '' }}
+                    value={42}
+                    onChange={noop}
+                    disabled
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

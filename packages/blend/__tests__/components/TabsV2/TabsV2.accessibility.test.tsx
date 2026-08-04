@@ -8,6 +8,10 @@ import {
     TabsV2Trigger,
     TabsV2Content,
 } from '../../../lib/components/TabsV2'
+import {
+    TabsV2Variant,
+    TabsV2Size,
+} from '../../../lib/components/TabsV2/tabsV2.types'
 import { Info } from 'lucide-react'
 
 describe('TabsV2 Accessibility', () => {
@@ -36,6 +40,24 @@ describe('TabsV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards with multiple tabs', async () => {
+            const { container } = render(
+                <TabsV2 defaultValue="tab1">
+                    <TabsV2List>
+                        <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
+                        <TabsV2Trigger value="tab2">Tab 2</TabsV2Trigger>
+                        <TabsV2Trigger value="tab3">Tab 3</TabsV2Trigger>
+                    </TabsV2List>
+                    <TabsV2Content value="tab1">Content 1</TabsV2Content>
+                    <TabsV2Content value="tab2">Content 2</TabsV2Content>
+                    <TabsV2Content value="tab3">Content 3</TabsV2Content>
+                </TabsV2>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards with disabled tabs', async () => {
             const { container } = render(
                 <TabsV2 defaultValue="tab1">
@@ -51,6 +73,26 @@ describe('TabsV2 Accessibility', () => {
             )
 
             const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('ensures sufficient contrast for text', async () => {
+            const { container } = render(
+                <TabsV2 defaultValue="tab1">
+                    <TabsV2List>
+                        <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
+                        <TabsV2Trigger value="tab2">Tab 2</TabsV2Trigger>
+                    </TabsV2List>
+                    <TabsV2Content value="tab1">Content 1</TabsV2Content>
+                    <TabsV2Content value="tab2">Content 2</TabsV2Content>
+                </TabsV2>
+            )
+
+            const results = await axe(container, {
+                rules: {
+                    'color-contrast': { enabled: true },
+                },
+            })
             expect(results).toHaveNoViolations()
         })
     })
@@ -564,6 +606,95 @@ describe('TabsV2 Accessibility', () => {
             expect(inactivePanel).not.toBeInTheDocument()
         })
     })
+
+    describe('Different Variants', () => {
+        it('underline variant is accessible', async () => {
+            const { container } = render(
+                <TabsV2 defaultValue="tab1" variant={TabsV2Variant.UNDERLINE}>
+                    <TabsV2List>
+                        <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
+                    </TabsV2List>
+                    <TabsV2Content value="tab1">Content</TabsV2Content>
+                </TabsV2>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('boxed variant is accessible', async () => {
+            const { container } = render(
+                <TabsV2 defaultValue="tab1" variant={TabsV2Variant.BOXED}>
+                    <TabsV2List>
+                        <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
+                    </TabsV2List>
+                    <TabsV2Content value="tab1">Content</TabsV2Content>
+                </TabsV2>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('floating variant is accessible', async () => {
+            const { container } = render(
+                <TabsV2 defaultValue="tab1" variant={TabsV2Variant.FLOATING}>
+                    <TabsV2List>
+                        <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
+                    </TabsV2List>
+                    <TabsV2Content value="tab1">Content</TabsV2Content>
+                </TabsV2>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('pills variant is accessible', async () => {
+            const { container } = render(
+                <TabsV2 defaultValue="tab1" variant={TabsV2Variant.PILLS}>
+                    <TabsV2List>
+                        <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
+                    </TabsV2List>
+                    <TabsV2Content value="tab1">Content</TabsV2Content>
+                </TabsV2>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Different Sizes', () => {
+        it('medium size is accessible', async () => {
+            const { container } = render(
+                <TabsV2 defaultValue="tab1" size={TabsV2Size.MD}>
+                    <TabsV2List>
+                        <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
+                    </TabsV2List>
+                    <TabsV2Content value="tab1">Content</TabsV2Content>
+                </TabsV2>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('large size is accessible', async () => {
+            const { container } = render(
+                <TabsV2 defaultValue="tab1" size={TabsV2Size.LG}>
+                    <TabsV2List>
+                        <TabsV2Trigger value="tab1">Tab 1</TabsV2Trigger>
+                    </TabsV2List>
+                    <TabsV2Content value="tab1">Content</TabsV2Content>
+                </TabsV2>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
     describe('Edge Cases', () => {
         it('handles tabs with closable property', async () => {
             const { container } = render(
@@ -583,6 +714,17 @@ describe('TabsV2 Accessibility', () => {
                     'aria-valid-attr-value': { enabled: false },
                 },
             })
+            expect(results).toHaveNoViolations()
+        })
+
+        it('handles empty tabs gracefully', async () => {
+            const { container } = render(
+                <TabsV2 defaultValue="">
+                    <TabsV2List></TabsV2List>
+                </TabsV2>
+            )
+
+            const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 

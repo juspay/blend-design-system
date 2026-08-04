@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { render, cleanup } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { Badge } from '../../../lib/components/Badge'
+import { BadgeSize, BadgeColor } from '../../../lib/components/Badge'
 
 describe('Badge Accessibility', () => {
     beforeEach(() => {
@@ -20,6 +21,13 @@ describe('Badge Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('passes axe-core validation for badge with text', async () => {
+            const { container } = render(<Badge text="NEW" />)
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('passes axe-core validation for dot badge', async () => {
             const { container } = render(<Badge />)
 
@@ -33,6 +41,69 @@ describe('Badge Accessibility', () => {
                     <span>Content</span>
                 </Badge>
             )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('passes axe-core validation for all sizes', async () => {
+            const sizes = [BadgeSize.SM, BadgeSize.MD, BadgeSize.LG]
+
+            for (const size of sizes) {
+                const { container } = render(<Badge count={5} size={size} />)
+
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
+        it('passes axe-core validation for all colors', async () => {
+            const colors = [
+                BadgeColor.ALERT,
+                BadgeColor.NEUTRAL,
+                BadgeColor.WARNING,
+                BadgeColor.PRIMARY,
+                BadgeColor.SUCCESS,
+            ]
+
+            for (const color of colors) {
+                const { container } = render(<Badge count={5} color={color} />)
+
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
+        it('passes axe-core validation for all positions', async () => {
+            const positions: Array<
+                'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+            > = ['top-right', 'top-left', 'bottom-right', 'bottom-left']
+
+            for (const position of positions) {
+                const { container } = render(
+                    <Badge count={3} position={position}>
+                        <span>Content</span>
+                    </Badge>
+                )
+
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
+        it('passes axe-core validation for circular positioning', async () => {
+            const { container } = render(
+                <Badge count={3} isCircular={true}>
+                    <span>Content</span>
+                </Badge>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('passes axe-core validation for overflow count', async () => {
+            const { container } = render(<Badge count={150} maxCount={99} />)
 
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -197,6 +268,76 @@ describe('Badge Accessibility', () => {
 
             const button = container.querySelector('button')
             expect(button).toHaveAttribute('aria-label', 'Notifications')
+        })
+    })
+
+    describe('Color Contrast', () => {
+        it('alert color has sufficient contrast', async () => {
+            const { container } = render(
+                <Badge count={5} color={BadgeColor.ALERT} />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('neutral color has sufficient contrast', async () => {
+            const { container } = render(
+                <Badge count={5} color={BadgeColor.NEUTRAL} />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('warning color has sufficient contrast', async () => {
+            const { container } = render(
+                <Badge count={5} color={BadgeColor.WARNING} />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('primary color has sufficient contrast', async () => {
+            const { container } = render(
+                <Badge count={5} color={BadgeColor.PRIMARY} />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('success color has sufficient contrast', async () => {
+            const { container } = render(
+                <Badge count={5} color={BadgeColor.SUCCESS} />
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Text Content Accessibility', () => {
+        it('renders text content accessibly', async () => {
+            const { container } = render(<Badge text="NEW" />)
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('renders long text accessibly', async () => {
+            const { container } = render(<Badge text="Very Long Text" />)
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('renders special characters accessibly', async () => {
+            const { container } = render(<Badge text="99+" />)
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

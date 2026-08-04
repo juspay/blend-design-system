@@ -6,7 +6,13 @@ import Card from '../../../lib/components/Card/Card'
 import Button from '../../../lib/components/Button/Button'
 import { CardVariant, CardAlignment } from '../../../lib/components/Card/types'
 import { ButtonType, ButtonSize } from '../../../lib/components/Button/types'
-import { Settings, Star } from 'lucide-react'
+import {
+    Tag,
+    TagColor,
+    TagVariant,
+    TagSize,
+} from '../../../lib/components/Tags'
+import { Settings, TrendingUp, Star } from 'lucide-react'
 
 describe('Card Accessibility', () => {
     describe('WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
@@ -16,6 +22,131 @@ describe('Card Accessibility', () => {
                     headerTitle="Analytics Dashboard"
                     bodyTitle="Monthly Summary"
                     content="Track your key metrics and performance indicators."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for all variants (Default, Aligned, Custom)', async () => {
+            // Test Default variant
+            const { container: defaultContainer } = render(
+                <Card
+                    headerTitle="Default Card"
+                    bodyTitle="Content"
+                    content="Default card content"
+                />
+            )
+            const defaultResults = await axe(defaultContainer)
+            expect(defaultResults).toHaveNoViolations()
+
+            // Test Aligned variant
+            const { container: alignedContainer } = render(
+                <Card
+                    variant={CardVariant.ALIGNED}
+                    alignment={CardAlignment.VERTICAL}
+                    headerTitle="Aligned Card"
+                    bodyTitle="Content"
+                    content="Aligned card content"
+                />
+            )
+            const alignedResults = await axe(alignedContainer)
+            expect(alignedResults).toHaveNoViolations()
+
+            // Test Custom variant
+            const { container: customContainer } = render(
+                <Card variant={CardVariant.CUSTOM}>
+                    <div>Custom card content</div>
+                </Card>
+            )
+            const customResults = await axe(customContainer)
+            expect(customResults).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with all slots (1.3.1 Info and Relationships)', async () => {
+            const { container } = render(
+                <Card
+                    headerSlot1={<Star size={16} />}
+                    headerTitle="Analytics Dashboard"
+                    headerTag={
+                        <Tag
+                            text="Pro"
+                            variant={TagVariant.ATTENTIVE}
+                            color={TagColor.SUCCESS}
+                            size={TagSize.SM}
+                        />
+                    }
+                    headerSlot2={
+                        <button aria-label="Settings">
+                            <Settings size={16} />
+                        </button>
+                    }
+                    subHeader="Real-time performance metrics"
+                    bodySlot1={<div>Alert content</div>}
+                    bodyTitle="Monthly Summary"
+                    content="Track your key metrics and performance indicators."
+                    bodySlot2={<div>Metrics content</div>}
+                    actionButton={{
+                        text: 'View Report',
+                        buttonType: ButtonType.PRIMARY,
+                        size: ButtonSize.SMALL,
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with aligned card vertical (1.3.2 Meaningful Sequence)', async () => {
+            const { container } = render(
+                <Card
+                    variant={CardVariant.ALIGNED}
+                    alignment={CardAlignment.VERTICAL}
+                    centerAlign={true}
+                    cardSlot={
+                        <div
+                            style={{
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '50%',
+                                background:
+                                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            }}
+                            aria-label="User avatar"
+                        >
+                            JD
+                        </div>
+                    }
+                    headerTitle="John Doe"
+                    bodyTitle="Profile"
+                    content="Senior Developer with expertise in React."
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with aligned card horizontal (1.3.2 Meaningful Sequence)', async () => {
+            const { container } = render(
+                <Card
+                    variant={CardVariant.ALIGNED}
+                    alignment={CardAlignment.HORIZONTAL}
+                    cardSlot={
+                        <div
+                            style={{
+                                width: '28px',
+                                height: '28px',
+                                background: '#f0f9ff',
+                            }}
+                            role="img"
+                            aria-label="Icon"
+                        >
+                            <TrendingUp size={16} aria-hidden="true" />
+                        </div>
+                    }
+                    headerTitle="New Feature"
+                    bodyTitle="Details"
+                    content="Introducing our new dashboard feature."
                 />
             )
             const results = await axe(container)
@@ -891,6 +1022,178 @@ describe('Card Accessibility', () => {
             })
             expect(button).toBeInTheDocument()
             expect(button.textContent).toContain('View Full Report')
+        })
+    })
+
+    describe('Comprehensive WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
+        it('meets WCAG standards with all features combined - comprehensive test', async () => {
+            const { container } = render(
+                <Card
+                    headerSlot1={
+                        <div aria-label="Icon">
+                            <Star size={16} />
+                        </div>
+                    }
+                    headerTitle="Analytics Dashboard"
+                    headerTag={
+                        <Tag
+                            text="Pro"
+                            variant={TagVariant.ATTENTIVE}
+                            color={TagColor.SUCCESS}
+                            size={TagSize.SM}
+                        />
+                    }
+                    headerSlot2={
+                        <button aria-label="Settings">
+                            <Settings size={16} />
+                        </button>
+                    }
+                    subHeader="Real-time performance metrics and insights"
+                    bodySlot1={<div>Alert content</div>}
+                    bodyTitle="Monthly Summary"
+                    content="Track your key metrics and performance indicators with comprehensive analytics and real-time data visualization."
+                    bodySlot2={<div>Metrics content</div>}
+                    actionButton={{
+                        text: 'View Full Report',
+                        buttonType: ButtonType.PRIMARY,
+                        size: ButtonSize.SMALL,
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+            // Tests: 1.1.1, 1.3.1, 1.3.2, 2.1.1, 2.4.6, 2.4.7, 4.1.2, keyboard navigation, screen reader support
+        })
+
+        it('meets WCAG standards for aligned card vertical - all aligned card requirements', async () => {
+            const { container } = render(
+                <Card
+                    variant={CardVariant.ALIGNED}
+                    alignment={CardAlignment.VERTICAL}
+                    centerAlign={true}
+                    cardSlot={
+                        <div
+                            style={{
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '50%',
+                                background:
+                                    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                            }}
+                            aria-label="User avatar"
+                        >
+                            JD
+                        </div>
+                    }
+                    headerTitle="John Doe"
+                    headerTag={
+                        <Tag
+                            text="Premium"
+                            variant={TagVariant.ATTENTIVE}
+                            color={TagColor.SUCCESS}
+                            size={TagSize.SM}
+                        />
+                    }
+                    subHeader="Senior Developer"
+                    bodyTitle="Profile Information"
+                    content="Senior Developer with expertise in React and Node.js."
+                    actionButton={{
+                        text: 'View Profile',
+                        buttonType: ButtonType.SECONDARY,
+                        size: ButtonSize.SMALL,
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for aligned card horizontal - all aligned card requirements', async () => {
+            const { container } = render(
+                <Card
+                    variant={CardVariant.ALIGNED}
+                    alignment={CardAlignment.HORIZONTAL}
+                    cardSlot={
+                        <div
+                            style={{
+                                width: '28px',
+                                height: '28px',
+                                background: '#f0f9ff',
+                            }}
+                            role="img"
+                            aria-label="Icon"
+                        >
+                            <TrendingUp size={16} aria-hidden="true" />
+                        </div>
+                    }
+                    headerTitle="New App Launch"
+                    headerSlot2={
+                        <button aria-label="More options">
+                            <Settings size={16} />
+                        </button>
+                    }
+                    subHeader="Latest feature release"
+                    bodyTitle="Feature Details"
+                    content="Introducing our new dashboard with enhanced analytics."
+                    actionButton={{
+                        text: 'Learn More',
+                        buttonType: ButtonType.PRIMARY,
+                        size: ButtonSize.SMALL,
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for custom card - all custom card requirements', async () => {
+            const { container } = render(
+                <Card variant={CardVariant.CUSTOM}>
+                    <div>
+                        <h3>Custom Dashboard</h3>
+                        <p>Custom content with full control over layout</p>
+                        <button>Action Button</button>
+                    </div>
+                </Card>
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards without optional elements - optional elements handled', async () => {
+            const { container } = render(
+                <Card headerTitle="Simple Card" content="Basic content" />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards without header - optional header handled', async () => {
+            const { container } = render(
+                <Card
+                    bodyTitle="Body Only"
+                    content="Content without header"
+                    actionButton={{
+                        text: 'Action',
+                        buttonType: ButtonType.PRIMARY,
+                        size: ButtonSize.SMALL,
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards without action button - optional action handled', async () => {
+            const { container } = render(
+                <Card
+                    headerTitle="Dashboard"
+                    bodyTitle="Summary"
+                    content="Content without action button"
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

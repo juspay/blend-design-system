@@ -19,6 +19,24 @@ describe('TextArea Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards for different row counts (3, 5, 8)', async () => {
+            const rowCounts = [3, 5, 8]
+
+            for (const rows of rowCounts) {
+                const { container } = render(
+                    <TextArea
+                        label={`${rows} rows textarea`}
+                        value=""
+                        onChange={() => {}}
+                        placeholder="Enter text"
+                        rows={rows}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
             const { container } = render(
                 <TextArea
@@ -46,6 +64,29 @@ describe('TextArea Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with different resize options', async () => {
+            const resizeOptions = [
+                'none',
+                'vertical',
+                'horizontal',
+                'both',
+            ] as const
+
+            for (const resize of resizeOptions) {
+                const { container } = render(
+                    <TextArea
+                        label={`Resize: ${resize}`}
+                        value=""
+                        onChange={() => {}}
+                        placeholder="Enter text"
+                        resize={resize}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
         })
     })
 
@@ -826,6 +867,98 @@ describe('TextArea Accessibility', () => {
             const errorMessage = screen.getByText('Invalid input')
             expect(errorMessage).toHaveAttribute('role', 'alert')
             expect(errorMessage).toHaveAttribute('aria-live', 'polite')
+        })
+    })
+
+    describe('Comprehensive WCAG 2.1/2.2 Compliance (Level A, AA, AAA)', () => {
+        it('meets WCAG standards with all features combined - comprehensive test', async () => {
+            const { container } = render(
+                <TextArea
+                    label="Complete Test"
+                    sublabel="Additional context"
+                    hintText="Helpful hint"
+                    helpIconHintText="Tooltip information"
+                    placeholder="Enter value"
+                    value=""
+                    onChange={() => {}}
+                    required
+                    rows={5}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+            // Tests: 1.3.5, 2.1.1, 2.4.7, 3.3.2, 4.1.2
+        })
+
+        it('meets WCAG standards with error state - all error requirements', async () => {
+            const { container } = render(
+                <TextArea
+                    label="Error Test"
+                    value="Invalid"
+                    onChange={() => {}}
+                    placeholder="Enter text"
+                    error
+                    errorMessage="Please correct this field"
+                    required
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+            // Tests: 3.3.1 Error Identification, 3.3.3 Error Suggestion, 4.1.2
+        })
+
+        it('meets WCAG standards in disabled state - all disabled state requirements', async () => {
+            const { container } = render(
+                <TextArea
+                    label="Disabled"
+                    value="Cannot edit"
+                    onChange={() => {}}
+                    placeholder="Enter text"
+                    disabled
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+            // Tests: 2.1.1 Keyboard, 4.1.2 Name Role Value
+        })
+
+        it('meets WCAG standards with character limits - all length requirements', async () => {
+            const { container } = render(
+                <TextArea
+                    label="Description"
+                    value=""
+                    onChange={() => {}}
+                    placeholder="Enter description"
+                    maxLength={500}
+                    hintText="Maximum 500 characters"
+                    required
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with different resize options - all resize requirements', async () => {
+            const resizeOptions = [
+                'none',
+                'vertical',
+                'horizontal',
+                'both',
+            ] as const
+
+            for (const resize of resizeOptions) {
+                const { container } = render(
+                    <TextArea
+                        label={`Resize: ${resize}`}
+                        value=""
+                        onChange={() => {}}
+                        placeholder="Enter text"
+                        resize={resize}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
         })
     })
 })

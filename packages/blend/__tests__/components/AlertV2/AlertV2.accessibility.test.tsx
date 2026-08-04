@@ -5,6 +5,7 @@ import { axe } from 'jest-axe'
 import AlertV2 from '../../../lib/components/AlertV2/AlertV2'
 import {
     AlertV2Type,
+    AlertV2SubType,
     AlertV2ActionPosition,
 } from '../../../lib/components/AlertV2/alertV2.types'
 import { MockIcon } from '../../test-utils'
@@ -22,19 +23,82 @@ describe('AlertV2 Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for error alert', async () => {
+        it('meets WCAG standards for all alert types', async () => {
+            const types = [
+                AlertV2Type.PRIMARY,
+                AlertV2Type.SUCCESS,
+                AlertV2Type.WARNING,
+                AlertV2Type.ERROR,
+                AlertV2Type.PURPLE,
+                AlertV2Type.ORANGE,
+                AlertV2Type.NEUTRAL,
+            ]
+
+            for (const type of types) {
+                const { container } = render(
+                    <AlertV2
+                        heading={`${type} Alert`}
+                        description={`Testing ${type} type`}
+                        type={type}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
+        it('meets WCAG standards for all alert subtypes', async () => {
+            const subTypes = [AlertV2SubType.SUBTLE, AlertV2SubType.NO_FILL]
+
+            for (const subType of subTypes) {
+                const { container } = render(
+                    <AlertV2
+                        heading={`${subType} Alert`}
+                        description={`Testing ${subType} subtype`}
+                        subType={subType}
+                    />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            }
+        })
+
+        it('meets WCAG standards with icon slot (1.1.1 Non-text Content)', async () => {
             const { container } = render(
                 <AlertV2
-                    heading="Error Alert"
-                    description="An error has occurred"
-                    type={AlertV2Type.ERROR}
+                    heading="Alert with Icon"
+                    description="This alert has an icon"
+                    slot={{ slot: <MockIcon />, maxHeight: 16 }}
                 />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards with close button (interactive control)', async () => {
+        it('meets WCAG standards with actions (2.1.1 Keyboard)', async () => {
+            const handlePrimary = vi.fn()
+            const handleSecondary = vi.fn()
+            const { container } = render(
+                <AlertV2
+                    heading="Alert with Actions"
+                    description="This alert has action buttons"
+                    actions={{
+                        primaryAction: {
+                            text: 'Primary',
+                            onClick: handlePrimary,
+                        },
+                        secondaryAction: {
+                            text: 'Secondary',
+                            onClick: handleSecondary,
+                        },
+                    }}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with close button (2.1.1 Keyboard)', async () => {
             const handleClose = vi.fn()
             const { container } = render(
                 <AlertV2

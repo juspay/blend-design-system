@@ -61,6 +61,22 @@ describe('UploadV2 Accessibility', () => {
             const results = await axe(container)
             expect(results).toHaveNoViolations()
         })
+
+        it('meets WCAG standards for success state', async () => {
+            const files: UploadFileV2[] = [
+                { file: createMockFile('done.csv'), isValid: true },
+            ]
+            const { container } = render(
+                <UploadV2
+                    label="Upload File"
+                    state={UploadState.SUCCESS}
+                    files={files}
+                    onChange={() => {}}
+                />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
     })
 
     describe('WCAG 3.3.2 Labels or Instructions (Level A)', () => {

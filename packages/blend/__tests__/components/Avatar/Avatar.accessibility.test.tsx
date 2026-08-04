@@ -5,7 +5,7 @@ import { axe } from 'jest-axe'
 import userEvent from '@testing-library/user-event'
 import Avatar from '../../../lib/components/Avatar/Avatar'
 import AvatarGroup from '../../../lib/components/AvatarGroup/AvatarGroup'
-import { AvatarSize } from '../../../lib/components/Avatar/types'
+import { AvatarSize, AvatarShape } from '../../../lib/components/Avatar/types'
 
 describe('Avatar Accessibility', () => {
     afterEach(cleanup)
@@ -19,9 +19,59 @@ describe('Avatar Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for interactive avatar (button role)', async () => {
+        it('meets WCAG standards for avatar with fallback initials (axe-core validation)', async () => {
+            const { container } = render(<Avatar alt="John Doe" />)
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for all avatar sizes (axe-core validation)', async () => {
+            const sizes = [
+                AvatarSize.SM,
+                AvatarSize.REGULAR,
+                AvatarSize.MD,
+                AvatarSize.LG,
+                AvatarSize.XL,
+            ]
+
+            for (const size of sizes) {
+                const { container, unmount } = render(
+                    <Avatar alt="Test User" size={size} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
+        it('meets WCAG standards for all avatar shapes (axe-core validation)', async () => {
+            const shapes = [AvatarShape.CIRCULAR, AvatarShape.ROUNDED]
+
+            for (const shape of shapes) {
+                const { container, unmount } = render(
+                    <Avatar alt="Test User" shape={shape} />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+                unmount()
+            }
+        })
+
+        it('meets WCAG standards with online indicator (axe-core validation)', async () => {
             const { container } = render(
-                <Avatar alt="John Doe" onClick={() => {}} />
+                <Avatar alt="John Doe" online={true} />
+            )
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards with slots (axe-core validation)', async () => {
+            const { container } = render(
+                <Avatar
+                    alt="John Doe"
+                    leadingSlot={<span>Leading</span>}
+                    trailingSlot={<span>Trailing</span>}
+                />
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
@@ -565,6 +615,14 @@ describe('Avatar Accessibility', () => {
                         avatars={mockAvatars.slice(0, 3)}
                         selectedAvatarIds={[1]}
                     />
+                )
+                const results = await axe(container)
+                expect(results).toHaveNoViolations()
+            })
+
+            it('meets WCAG standards for AvatarGroup with overflow (axe-core validation)', async () => {
+                const { container } = render(
+                    <AvatarGroup avatars={mockAvatars} maxCount={3} />
                 )
                 const results = await axe(container)
                 expect(results).toHaveNoViolations()

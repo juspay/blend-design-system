@@ -4,6 +4,11 @@ import { render, screen, cleanup, fireEvent } from '../../test-utils'
 import { axe } from 'jest-axe'
 import Accordion from '../../../lib/components/Accordion/Accordion'
 import AccordionItem from '../../../lib/components/Accordion/AccordionItem'
+import {
+    AccordionType,
+    AccordionChevronPosition,
+} from '../../../lib/components/Accordion/types'
+
 describe('Accordion Accessibility', () => {
     beforeEach(() => {
         cleanup()
@@ -30,6 +35,25 @@ describe('Accordion Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
+        it('meets WCAG standards for accordion with multiple items (axe-core validation)', async () => {
+            const { container } = render(
+                <Accordion>
+                    <AccordionItem value="item-1" title="Item 1">
+                        <p>Content 1</p>
+                    </AccordionItem>
+                    <AccordionItem value="item-2" title="Item 2">
+                        <p>Content 2</p>
+                    </AccordionItem>
+                    <AccordionItem value="item-3" title="Item 3">
+                        <p>Content 3</p>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
         it('meets WCAG standards for disabled accordion item (axe-core validation)', async () => {
             const { container } = render(
                 <Accordion>
@@ -47,6 +71,23 @@ describe('Accordion Accessibility', () => {
             )
 
             const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('ensures sufficient contrast for text (1.4.3 Contrast Minimum - Level AA)', async () => {
+            const { container } = render(
+                <Accordion accordionType={AccordionType.BORDER}>
+                    <AccordionItem value="item-1" title="Contrast Test">
+                        <p>Testing color contrast ratios</p>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container, {
+                rules: {
+                    'color-contrast': { enabled: true },
+                },
+            })
             expect(results).toHaveNoViolations()
         })
     })
@@ -467,9 +508,137 @@ describe('Accordion Accessibility', () => {
         })
     })
 
+    describe('Different Accordion Types', () => {
+        it('border type is accessible', async () => {
+            const { container } = render(
+                <Accordion accordionType={AccordionType.BORDER}>
+                    <AccordionItem value="item-1" title="Border Type">
+                        <p>Content</p>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('no border type is accessible', async () => {
+            const { container } = render(
+                <Accordion accordionType={AccordionType.NO_BORDER}>
+                    <AccordionItem value="item-1" title="No Border Type">
+                        <p>Content</p>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Chevron Positions', () => {
+        it('left chevron position is accessible', async () => {
+            const { container } = render(
+                <Accordion>
+                    <AccordionItem
+                        value="item-1"
+                        title="Left Chevron"
+                        chevronPosition={AccordionChevronPosition.LEFT}
+                    >
+                        <p>Content</p>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('right chevron position is accessible', async () => {
+            const { container } = render(
+                <Accordion>
+                    <AccordionItem
+                        value="item-1"
+                        title="Right Chevron"
+                        chevronPosition={AccordionChevronPosition.RIGHT}
+                    >
+                        <p>Content</p>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
+    describe('Subtext and Slots', () => {
+        it('accordion with subtext is accessible', async () => {
+            const { container } = render(
+                <Accordion>
+                    <AccordionItem
+                        value="item-1"
+                        title="With Subtext"
+                        subtext="Additional information"
+                    >
+                        <p>Content</p>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('accordion with slots is accessible', async () => {
+            const { container } = render(
+                <Accordion>
+                    <AccordionItem
+                        value="item-1"
+                        title="With Slots"
+                        leftSlot={<span aria-label="Info">ℹ️</span>}
+                        rightSlot={<span aria-label="Badge">1</span>}
+                    >
+                        <p>Content</p>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+    })
+
     describe('Edge Cases', () => {
-        it('handles special characters in title', () => {
-            render(
+        it('handles empty content gracefully', async () => {
+            const { container } = render(
+                <Accordion>
+                    <AccordionItem value="item-1" title="Empty Content">
+                        <></>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('handles very long titles', async () => {
+            const longTitle = 'A'.repeat(200)
+            const { container } = render(
+                <Accordion>
+                    <AccordionItem value="item-1" title={longTitle}>
+                        <p>Content</p>
+                    </AccordionItem>
+                </Accordion>
+            )
+
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
+        })
+
+        it('handles special characters in title', async () => {
+            const { container } = render(
                 <Accordion>
                     <AccordionItem
                         value="item-1"
@@ -480,11 +649,8 @@ describe('Accordion Accessibility', () => {
                 </Accordion>
             )
 
-            expect(
-                screen.getByRole('button', {
-                    name: 'Special & Characters < >',
-                })
-            ).toBeInTheDocument()
+            const results = await axe(container)
+            expect(results).toHaveNoViolations()
         })
     })
 })

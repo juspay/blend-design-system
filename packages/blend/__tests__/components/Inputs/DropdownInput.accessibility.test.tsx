@@ -4,6 +4,7 @@ import { render, screen } from '../../test-utils'
 import { axe } from 'jest-axe'
 import DropdownInput from '../../../lib/components/Inputs/DropdownInput/DropdownInput'
 import { DropdownPosition } from '../../../lib/components/Inputs/DropdownInput/types'
+import { TextInputSize } from '../../../lib/components/Inputs/TextInput/types'
 
 const countryItems = [
     {
@@ -31,6 +32,36 @@ describe('DropdownInput Accessibility', () => {
             )
             const results = await axe(container)
             expect(results).toHaveNoViolations()
+        })
+
+        it('meets WCAG standards for all input sizes (Small, Medium, Large)', async () => {
+            const sizes = [
+                TextInputSize.SMALL,
+                TextInputSize.MEDIUM,
+                TextInputSize.LARGE,
+            ]
+
+            for (const size of sizes) {
+                const { container } = render(
+                    <DropdownInput
+                        label={`${size} dropdown input`}
+                        value=""
+                        onChange={() => {}}
+                        dropDownValue=""
+                        onDropDownChange={() => {}}
+                        dropDownItems={countryItems}
+                        size={size}
+                    />
+                )
+                // Ignore button-name here because the inline dropdown trigger
+                // is handled and tested in SingleSelect accessibility tests.
+                const results = await axe(container, {
+                    rules: {
+                        'button-name': { enabled: false },
+                    },
+                })
+                expect(results).toHaveNoViolations()
+            }
         })
 
         it('meets WCAG standards when disabled (2.1.1 Keyboard, 4.1.2 Name Role Value)', async () => {
