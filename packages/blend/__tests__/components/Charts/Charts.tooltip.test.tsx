@@ -26,7 +26,7 @@ vi.mock('recharts', async (importOriginal) => {
     const MockTooltip = ({
         content,
     }: {
-        content?: React.ReactNode | Function
+        content?: React.ReactNode | ((props: unknown) => React.ReactNode)
     }) => {
         const mockProps = {
             active: false,
@@ -51,7 +51,7 @@ vi.mock('recharts', async (importOriginal) => {
         PieChart: Passthrough,
         ScatterChart: Passthrough,
         AreaChart: Passthrough,
-        Tooltip: MockTooltip as any,
+        Tooltip: MockTooltip as unknown as typeof actual.Tooltip,
         Line: Passthrough,
         Bar: Passthrough,
         Area: Passthrough,
@@ -96,11 +96,14 @@ const baseRenderProps = {
     hoveredKey: null,
 }
 
+const createContentSpy = () =>
+    vi.fn<(props: TooltipContentProps) => React.ReactNode>(() =>
+        React.createElement('div')
+    )
+
 describe('Charts tooltip.content', () => {
     it('calls custom tooltip.content renderer with merged chart context (Line)', () => {
-        const contentSpy = vi.fn((_props: TooltipContentProps) =>
-            React.createElement('div')
-        )
+        const contentSpy = createContentSpy()
 
         render(
             <svg>
@@ -117,7 +120,7 @@ describe('Charts tooltip.content', () => {
         expect(contentSpy).toHaveBeenCalled()
         const lastCallArg = contentSpy.mock.calls.at(
             -1
-        )?.[0] as Partial<TooltipContentProps>
+        )?.[0] as unknown as Partial<TooltipContentProps>
         expect(lastCallArg.chartType).toBe(ChartType.LINE)
         expect(lastCallArg.selectedKeys).toEqual(['revenue', 'profit'])
         expect(lastCallArg.originalData).toBe(chartData)
@@ -133,9 +136,7 @@ describe('Charts tooltip.content', () => {
     })
 
     it('forwards chartType=BAR without xAxis/yAxis (Bar chart)', () => {
-        const contentSpy = vi.fn((_props: TooltipContentProps) =>
-            React.createElement('div')
-        )
+        const contentSpy = createContentSpy()
 
         render(
             <svg>
@@ -150,7 +151,7 @@ describe('Charts tooltip.content', () => {
         expect(contentSpy).toHaveBeenCalled()
         const lastCallArg = contentSpy.mock.calls.at(
             -1
-        )?.[0] as Partial<TooltipContentProps>
+        )?.[0] as unknown as Partial<TooltipContentProps>
         expect(lastCallArg.chartType).toBe(ChartType.BAR)
         expect(lastCallArg.originalData).toBe(chartData)
         // Bar chart does not pass xAxis/yAxis to the tooltip.
@@ -159,9 +160,7 @@ describe('Charts tooltip.content', () => {
     })
 
     it('forwards xAxis/yAxis to custom content for LINE_BAR chart', () => {
-        const contentSpy = vi.fn((_props: TooltipContentProps) =>
-            React.createElement('div')
-        )
+        const contentSpy = createContentSpy()
 
         render(
             <svg>
@@ -179,16 +178,14 @@ describe('Charts tooltip.content', () => {
         expect(contentSpy).toHaveBeenCalled()
         const lastCallArg = contentSpy.mock.calls.at(
             -1
-        )?.[0] as Partial<TooltipContentProps>
+        )?.[0] as unknown as Partial<TooltipContentProps>
         expect(lastCallArg.chartType).toBe(ChartType.LINE_BAR)
         expect(lastCallArg.xAxis).toBeDefined()
         expect(lastCallArg.yAxis).toBeDefined()
     })
 
     it('passes ChartType.PIE to custom content for Pie chart', () => {
-        const contentSpy = vi.fn((_props: TooltipContentProps) =>
-            React.createElement('div')
-        )
+        const contentSpy = createContentSpy()
 
         render(
             <svg>
@@ -203,14 +200,12 @@ describe('Charts tooltip.content', () => {
         expect(contentSpy).toHaveBeenCalled()
         const lastCallArg = contentSpy.mock.calls.at(
             -1
-        )?.[0] as Partial<TooltipContentProps>
+        )?.[0] as unknown as Partial<TooltipContentProps>
         expect(lastCallArg.chartType).toBe(ChartType.PIE)
     })
 
     it('passes ChartType.SCATTER with xAxis/yAxis for Scatter chart', () => {
-        const contentSpy = vi.fn((_props: TooltipContentProps) =>
-            React.createElement('div')
-        )
+        const contentSpy = createContentSpy()
 
         render(
             <svg>
@@ -227,16 +222,14 @@ describe('Charts tooltip.content', () => {
         expect(contentSpy).toHaveBeenCalled()
         const lastCallArg = contentSpy.mock.calls.at(
             -1
-        )?.[0] as Partial<TooltipContentProps>
+        )?.[0] as unknown as Partial<TooltipContentProps>
         expect(lastCallArg.chartType).toBe(ChartType.SCATTER)
         expect(lastCallArg.xAxis).toBeDefined()
         expect(lastCallArg.yAxis).toBeDefined()
     })
 
     it('passes chartType=AREA without xAxis/yAxis (Area chart)', () => {
-        const contentSpy = vi.fn((_props: TooltipContentProps) =>
-            React.createElement('div')
-        )
+        const contentSpy = createContentSpy()
 
         render(
             <svg>
@@ -251,7 +244,7 @@ describe('Charts tooltip.content', () => {
         expect(contentSpy).toHaveBeenCalled()
         const lastCallArg = contentSpy.mock.calls.at(
             -1
-        )?.[0] as Partial<TooltipContentProps>
+        )?.[0] as unknown as Partial<TooltipContentProps>
         expect(lastCallArg.chartType).toBe(ChartType.AREA)
     })
 
@@ -276,9 +269,7 @@ describe('Charts tooltip.content', () => {
     })
 
     it('preserves tooltip.position and allowEscapeViewBox alongside custom content', () => {
-        const contentSpy = vi.fn((_props: TooltipContentProps) =>
-            React.createElement('div')
-        )
+        const contentSpy = createContentSpy()
 
         const { container } = render(
             <svg>
@@ -367,7 +358,9 @@ describe('Charts tooltip.content', () => {
     it('uses FOUNDATION_THEME tokens consistently in custom tooltip', () => {
         // Sanity: confirms the demo pattern of using FOUNDATION_THEME
         // inside a custom content renderer type-checks end-to-end.
-        const renderer = (_props: TooltipContentProps) =>
+        const renderer: (
+            props: TooltipContentProps
+        ) => React.ReactElement = () =>
             React.createElement('div', {
                 style: {
                     background: FOUNDATION_THEME.colors.gray[0],
