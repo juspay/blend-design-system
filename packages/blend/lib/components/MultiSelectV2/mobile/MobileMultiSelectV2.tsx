@@ -25,6 +25,7 @@ import SelectItemV2 from '../../SelectV2/SelectItemV2'
 import {
     hasExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../../Select/selectUtils'
 import { setupAccessibility } from '../../SingleSelect/utils'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
@@ -56,6 +57,10 @@ import {
     getNextSelectionAfterToggle,
     getNextSelectionForScope,
 } from '../../shared/multiSelectSelection'
+import { useSelectSearchController } from '../../Select/useSelectSearchController'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../../Select/SelectSearchStatus'
 
 const MobileMultiSelectV2 = ({
     selectedValues,
@@ -105,7 +110,6 @@ const MobileMultiSelectV2 = ({
 }: MultiSelectV2Props) => {
     const safeItems = items ?? []
     const [open, setOpen] = useState(false)
-    const [searchText, setSearchText] = useState('')
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
     const valueLabelMap = useMemo(
@@ -117,8 +121,23 @@ const MobileMultiSelectV2 = ({
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const isContainer = variant === MultiSelectV2Variant.CONTAINER
-    const enableSearch = search?.show ?? false
     const searchPlaceholder = search?.placeholder ?? 'Search options...'
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: search?.searchText,
+        onValueChange: search?.onSearchChange,
+        explicitShow: search?.show,
+        existingSurfaceDefault: false,
+    })
+    const isActiveSearchLoading =
+        isSearchEnabled && Boolean(search?.isSearchLoading)
 
     const { uniqueName, labelId, hintTextId, errorMessageId, ariaAttributes } =
         setupAccessibility({
@@ -133,21 +152,20 @@ const MobileMultiSelectV2 = ({
         })
 
     const hasMatch = useMemo(
-        () => hasExactMatch(searchText, safeItems),
-        [searchText, safeItems]
+        () => hasExactMatch(valueForSearchBehavior, safeItems),
+        [valueForSearchBehavior, safeItems]
     )
 
     const filteredItems = useMemo(() => {
-        const baseFilteredItems = filterMultiSelectV2MenuGroups(
-            safeItems,
-            searchText
-        )
+        const baseFilteredItems = shouldFilterInternally
+            ? filterMultiSelectV2MenuGroups(safeItems, searchText)
+            : safeItems
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
             allowCustomValue,
-            enableSearch,
+            isSearchEnabled && !search?.isSearchLoading,
             customValueLabel
         )
     }, [
@@ -155,18 +173,34 @@ const MobileMultiSelectV2 = ({
         searchText,
         hasMatch,
         allowCustomValue,
-        enableSearch,
+        isSearchEnabled,
+        search?.isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(safeItems)
+        : safeItems.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
+    const searchStatusHeight =
+        isActiveSearchLoading && hasRenderableItems
+            ? SELECT_SEARCH_STATUS_HEIGHT
+            : 0
 
     const flattenedItems = useMemo(
         () => flattenMobileMultiSelectV2Groups(filteredItems, enableSelectAll),
         [filteredItems, enableSelectAll]
     )
 
+    const selectAllItems = isSearchControlled ? safeItems : filteredItems
     const selectableValues = useMemo(
-        () => getAllAvailableValues(filteredItems),
-        [filteredItems]
+        () => getAllAvailableValues(selectAllItems),
+        [selectAllItems]
     )
     const { allSelected, someSelected } = getSelectAllState(
         selectedValues,
@@ -175,8 +209,8 @@ const MobileMultiSelectV2 = ({
 
     const handleOpenChange = (nextOpen: boolean) => {
         setOpen(nextOpen)
-        if (!nextOpen && enableSearch) {
-            setSearchText('')
+        if (!nextOpen && isSearchEnabled) {
+            resetUncontrolled()
         }
         onOpenChange?.(nextOpen)
     }
@@ -370,6 +404,9 @@ const MobileMultiSelectV2 = ({
                     onSelect={handleSelect}
                     itemTokens={multiSelectTokens.menu.item}
                     asMenuItem={false}
+                    focusIdentityValue={
+                        isSearchControlled ? flatItem.item.value : undefined
+                    }
                 />
             )
         }
@@ -416,6 +453,7 @@ const MobileMultiSelectV2 = ({
                             required={required}
                             selectionTagType={selectionTagType}
                             valueLabelMap={valueLabelMap}
+                            fallbackToValue={search?.searchText !== undefined}
                             open={open}
                             multiSelectTokens={multiSelectTokens}
                             inline={inline}
@@ -514,7 +552,7 @@ const MobileMultiSelectV2 = ({
                                     overflow="hidden"
                                     gap={multiSelectTokens.drawer.content.gap}
                                 >
-                                    {enableSearch && (
+                                    {isSearchEnabled && (
                                         <Block
                                             style={{
                                                 paddingTop:
@@ -542,7 +580,7 @@ const MobileMultiSelectV2 = ({
                                                 placeholder={searchPlaceholder}
                                                 value={searchText}
                                                 onChange={(e) =>
-                                                    setSearchText(
+                                                    dispatchUserValue(
                                                         e.target.value
                                                     )
                                                 }
@@ -573,7 +611,23 @@ const MobileMultiSelectV2 = ({
                                                     .paddingLeft,
                                         }}
                                     >
-                                        {safeItems.length === 0 ? (
+                                        <SelectSearchStatus
+                                            isControlled={
+                                                isSearchControlled &&
+                                                isSearchEnabled
+                                            }
+                                            isLoading={isActiveSearchLoading}
+                                            isEmpty={!hasRenderableItems}
+                                            emptyStateText={
+                                                search?.emptyStateText ||
+                                                (!hasSourceItems
+                                                    ? 'No items available'
+                                                    : 'No results found')
+                                            }
+                                        />
+
+                                        {isActiveSearchLoading &&
+                                        !hasRenderableItems ? null : showEmptyState ? (
                                             <Text
                                                 variant="body.md"
                                                 textAlign="center"
@@ -583,27 +637,19 @@ const MobileMultiSelectV2 = ({
                                                         .default
                                                 }
                                             >
-                                                No items available
-                                            </Text>
-                                        ) : filteredItems.length === 0 &&
-                                          searchText.length > 0 ? (
-                                            <Text
-                                                variant="body.md"
-                                                textAlign="center"
-                                                color={
-                                                    multiSelectTokens.menu.item
-                                                        .optionsLabel.color
-                                                        .default
-                                                }
-                                            >
-                                                No results found
+                                                {search?.emptyStateText ||
+                                                    (!hasSourceItems
+                                                        ? 'No items available'
+                                                        : 'No results found')}
                                             </Text>
                                         ) : enableVirtualization ? (
                                             <VirtualList
                                                 items={toVirtualListItems(
                                                     flattenedItems
                                                 )}
-                                                height={600}
+                                                height={
+                                                    600 - searchStatusHeight
+                                                }
                                                 itemHeight={
                                                     virtualListItemHeight
                                                 }

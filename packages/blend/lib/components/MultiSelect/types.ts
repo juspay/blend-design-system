@@ -1,5 +1,6 @@
 import React from 'react'
 import type { SkeletonVariant } from '../Skeleton/types'
+import type { SelectSearchControlProps } from '../Select/search.types'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum MultiSelectVariant {
@@ -68,7 +69,7 @@ export type MultiSelectMenuGroupType = {
     showSeparator?: boolean
 }
 
-export type MultiSelectProps = {
+export type MultiSelectProps = SelectSearchControlProps & {
     height?: number
     selectedValues: string[]
     /**
@@ -181,6 +182,10 @@ export type MultiSelectMenuProps = {
     disabled?: boolean
     enableSearch?: boolean
     searchPlaceholder?: string
+    searchText?: string
+    onSearchChange?: (text: string) => void
+    isSearchLoading?: boolean
+    emptyStateText?: string
     enableSelectAll?: boolean
     selectAllText?: string
     onSelectAll?: (

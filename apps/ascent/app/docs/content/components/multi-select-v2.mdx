@@ -61,6 +61,47 @@ Replace toggle reducers or debounce logic attached to `onChange` with direct
 array assignment through `onSelectionChange`. The legacy `onChange` callback
 remains supported with its existing per-item payloads and callback counts.
 
+## Server-side search
+
+Put `searchText` in the `search` config to make search controlled. The component
+renders that value, calls `onSearchChange` for every input change, and does not
+filter `items`; the consumer supplies already-filtered API results.
+
+```tsx
+<MultiSelectV2
+    label="Find people"
+    placeholder="Select people"
+    items={apiResults}
+    selectedValues={selected}
+    onSelectionChange={setSelected}
+    search={{
+        searchText: query,
+        onSearchChange: setQuery,
+        isSearchLoading: isSearching,
+        emptyStateText: query ? 'No people found' : 'Start typing to search',
+    }}
+/>
+```
+
+Controlled mode is selected by the presence of `search.searchText`, including an
+empty string. Omitting `onSearchChange` creates a read-only search input.
+`show: false` hides the input but still disables internal filtering. Debouncing,
+request cancellation, caching, and errors remain consumer responsibilities;
+search loading is independent from pagination via `hasMore`/`loadingComponent`.
+
+The controlled query persists when the menu closes and reopens. Clear it in
+your own lifecycle handler only when that is the experience you want, for
+example with `onOpenChange={(open) => !open && setQuery('')}`. With remote
+results, Select All applies only to the items currently supplied to the
+component; it does not select every match on the server.
+
+| `MultiSelectV2` search field | Legacy `MultiSelect` equivalent |
+| ---------------------------- | ------------------------------- |
+| `search.searchText`          | `searchText`                    |
+| `search.onSearchChange`      | `onSearchChange`                |
+| `search.isSearchLoading`     | `isSearchLoading`               |
+| `search.emptyStateText`      | `emptyStateText`                |
+
 ## API Reference
 
 <DocsTypeTable
@@ -220,8 +261,9 @@ remains supported with its existing per-item payloads and callback counts.
                 hintText: 'Configuration for search functionality in dropdown.',
             },
             {
-                content: 'MultiSelectV2SearchConfig',
-                hintText: 'Object with show and placeholder',
+                content: 'SelectV2SearchConfig',
+                hintText:
+                    'Object with show, placeholder, searchText, onSearchChange, isSearchLoading, and emptyStateText.',
             },
             { content: '' },
         ],

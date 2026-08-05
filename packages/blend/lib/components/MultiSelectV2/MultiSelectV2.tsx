@@ -386,6 +386,9 @@ const MultiSelectV2 = ({
                                     required={required ?? false}
                                     selectionTagType={selectionTagType}
                                     valueLabelMap={valueLabelMap}
+                                    fallbackToValue={
+                                        search?.searchText !== undefined
+                                    }
                                     open={open}
                                     multiSelectTokens={multiSelectTokens}
                                     inline={inline}

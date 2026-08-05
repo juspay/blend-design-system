@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 
 import type { SelectMenuGroupType } from '../Select'
@@ -34,7 +34,13 @@ import SingleSelectSkeleton from './SingleSelectSkeleton'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
+import { useSelectSearchController } from '../Select/useSelectSearchController'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../Select/SelectSearchStatus'
+import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -46,6 +52,10 @@ type SingleSelectMenuProps = {
     maxMenuHeight?: number
     enableSearch?: boolean
     searchPlaceholder?: string
+    searchText?: string
+    onSearchChange?: (text: string) => void
+    isSearchLoading?: boolean
+    emptyStateText?: string
     disabled?: boolean
 
     // alignment
@@ -206,11 +216,13 @@ const SubMenu = ({
     onSelect,
     selected,
     singleSelectTokens,
+    focusIdentityEnabled,
 }: {
     item: SelectMenuItemType
     onSelect: (value: string) => void
     selected: string
     singleSelectTokens: SingleSelectTokensType
+    focusIdentityEnabled?: boolean
 }) => {
     return (
         <StyledSubMenu>
@@ -278,6 +290,7 @@ const SubMenu = ({
                         onSelect={onSelect}
                         selected={selected}
                         singleSelectTokens={singleSelectTokens}
+                        focusIdentityEnabled={focusIdentityEnabled}
                     />
                 ))}
             </SubContent>
@@ -291,12 +304,14 @@ const Item = ({
     selected,
     singleSelectTokens,
     index,
+    focusIdentityEnabled,
 }: {
     item: SelectMenuItemType
     onSelect: (value: string) => void
     selected: string
     singleSelectTokens?: SingleSelectTokensType
     index?: number
+    focusIdentityEnabled?: boolean
 }) => {
     if (item.subMenu) {
         return (
@@ -305,6 +320,7 @@ const Item = ({
                 onSelect={onSelect}
                 selected={selected}
                 singleSelectTokens={singleSelectTokens!}
+                focusIdentityEnabled={focusIdentityEnabled}
             />
         )
     }
@@ -317,6 +333,7 @@ const Item = ({
             type={SelectItemType.SINGLE}
             showCheckmark={true}
             index={index}
+            focusIdentityValue={focusIdentityEnabled ? item.value : undefined}
         />
     )
 }
@@ -376,6 +393,10 @@ const SingleSelectMenu = ({
     maxMenuHeight = 400,
     enableSearch,
     searchPlaceholder = 'Search options...',
+    searchText: controlledSearchText,
+    onSearchChange,
+    isSearchLoading,
+    emptyStateText,
     disabled,
     alignment = SelectMenuAlignment.START,
     side = SelectMenuSide.BOTTOM,
@@ -405,9 +426,31 @@ const SingleSelectMenu = ({
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
     const { target: portalContainer } = useShadowRoot()
 
-    const [searchText, setSearchText] = useState('')
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: controlledSearchText,
+        onValueChange: onSearchChange,
+        explicitShow: enableSearch,
+        existingSurfaceDefault: false,
+    })
+    const shouldRenderSearch =
+        isSearchEnabled && (isSearchControlled || items.length > 0)
+    const isActiveSearchLoading = isSearchEnabled && Boolean(isSearchLoading)
     const searchInputRef = React.useRef<HTMLInputElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
+    const handleSearchFocusRecovery = useSelectSearchFocusRecovery({
+        enabled: isSearchControlled && isSearchEnabled,
+        open,
+        items,
+        searchInputRef,
+    })
 
     let itemCounter = 0
     const selectors = [
@@ -421,21 +464,22 @@ const SingleSelectMenu = ({
     useScrollLock(open)
 
     const hasMatch = useMemo(
-        () => checkExactMatch(searchText, items),
-        [searchText, items]
+        () => checkExactMatch(valueForSearchBehavior, items),
+        [valueForSearchBehavior, items]
     )
 
     const filteredItems = useMemo(() => {
-        const baseFilteredItems = searchText
-            ? filterMenuGroups(items, searchText)
-            : items
+        const baseFilteredItems =
+            shouldFilterInternally && searchText
+                ? filterMenuGroups(items, searchText)
+                : items
 
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
             allowCustomValue || false,
-            enableSearch || false,
+            isSearchEnabled && !isSearchLoading,
             customValueLabel
         )
     }, [
@@ -443,9 +487,24 @@ const SingleSelectMenu = ({
         searchText,
         allowCustomValue,
         hasMatch,
-        enableSearch,
+        isSearchEnabled,
+        isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
+    const searchStatusHeight =
+        isActiveSearchLoading && hasRenderableItems
+            ? SELECT_SEARCH_STATUS_HEIGHT
+            : 0
 
     const flattenedItems = useMemo(
         () =>
@@ -457,7 +516,7 @@ const SingleSelectMenu = ({
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled) return
-        if (newOpen && enableSearch) setSearchText('')
+        if (newOpen && isSearchEnabled) resetUncontrolled()
         onOpenChange(newOpen)
     }
 
@@ -541,6 +600,7 @@ const SingleSelectMenu = ({
                             onSelect={onSelect}
                             singleSelectTokens={singleSelectTokens}
                             index={currentIndex}
+                            focusIdentityEnabled={isSearchControlled}
                         />
                     </Block>
                 </VirtualItemWrapper>
@@ -610,7 +670,7 @@ const SingleSelectMenu = ({
                         border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
                     }}
                     onKeyDown={(e) => {
-                        if (enableSearch && searchInputRef.current) {
+                        if (isSearchEnabled && searchInputRef.current) {
                             if (
                                 e.target !== searchInputRef.current &&
                                 !searchInputRef.current.contains(
@@ -625,6 +685,7 @@ const SingleSelectMenu = ({
                             }
                         }
                     }}
+                    onFocusCapture={handleSearchFocusRecovery}
                 >
                     {skeleton.show ? (
                         <SingleSelectSkeleton
@@ -633,7 +694,7 @@ const SingleSelectMenu = ({
                         />
                     ) : (
                         <>
-                            {enableSearch && items.length > 0 && (
+                            {shouldRenderSearch && (
                                 <Block
                                     position="sticky"
                                     top={0}
@@ -654,7 +715,7 @@ const SingleSelectMenu = ({
                                         ) => {
                                             e.preventDefault()
                                             e.stopPropagation()
-                                            setSearchText(e.target.value)
+                                            dispatchUserValue(e.target.value)
                                         }}
                                         onKeyDown={(e) => {
                                             if (
@@ -690,9 +751,21 @@ const SingleSelectMenu = ({
                                 </Block>
                             )}
                             <ScrollableContent>
-                                {items.length === 0 ||
-                                (filteredItems.length === 0 &&
-                                    searchText.length > 0) ? (
+                                <SelectSearchStatus
+                                    isControlled={
+                                        isSearchControlled && isSearchEnabled
+                                    }
+                                    isLoading={isActiveSearchLoading}
+                                    isEmpty={!hasRenderableItems}
+                                    emptyStateText={
+                                        emptyStateText ||
+                                        (!hasSourceItems
+                                            ? 'No items available'
+                                            : 'No results found')
+                                    }
+                                />
+                                {isActiveSearchLoading &&
+                                !hasRenderableItems ? null : showEmptyState ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -709,13 +782,14 @@ const SingleSelectMenu = ({
                                             }
                                             textAlign="center"
                                         >
-                                            {items.length === 0
-                                                ? 'No items available'
-                                                : 'No results found'}
+                                            {emptyStateText ||
+                                                (!hasSourceItems
+                                                    ? 'No items available'
+                                                    : 'No results found')}
                                         </Text>
                                     </Block>
                                 ) : enableVirtualization &&
-                                  filteredItems.length > 0 ? (
+                                  hasRenderableItems ? (
                                     <Block
                                         data-element="virtual-list"
                                         padding={FOUNDATION_THEME.unit[6]}
@@ -723,7 +797,19 @@ const SingleSelectMenu = ({
                                         <VirtualList
                                             items={flattenedItems}
                                             renderItem={renderVirtualItem}
-                                            height={maxMenuHeight - 60}
+                                            height={
+                                                searchStatusHeight > 0
+                                                    ? Math.max(
+                                                          maxMenuHeight -
+                                                              60 -
+                                                              searchStatusHeight,
+                                                          0
+                                                      )
+                                                    : Math.max(
+                                                          maxMenuHeight - 60,
+                                                          virtualListItemHeight
+                                                      )
+                                            }
                                             itemHeight={virtualListItemHeight}
                                             overscan={virtualListOverscan}
                                             onEndReached={onEndReached}
@@ -748,7 +834,7 @@ const SingleSelectMenu = ({
                                             ][variant].y
                                         }
                                         style={{
-                                            paddingTop: enableSearch
+                                            paddingTop: isSearchEnabled
                                                 ? 0
                                                 : FOUNDATION_THEME.unit[6],
                                         }}
@@ -810,6 +896,9 @@ const SingleSelectMenu = ({
                                                                     singleSelectTokens
                                                                 }
                                                                 index={itemIdx}
+                                                                focusIdentityEnabled={
+                                                                    isSearchControlled
+                                                                }
                                                             />
                                                         )
                                                     }

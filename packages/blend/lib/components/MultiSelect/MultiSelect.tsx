@@ -66,6 +66,10 @@ const MultiSelect = ({
     size = MultiSelectMenuSize.MEDIUM,
     enableSearch = true,
     searchPlaceholder = 'Search options...',
+    searchText,
+    onSearchChange,
+    isSearchLoading,
+    emptyStateText,
     enableSelectAll = false,
     selectAllText = 'Select All',
     maxSelections,
@@ -254,6 +258,10 @@ const MultiSelect = ({
                 size={size}
                 enableSearch={enableSearch}
                 searchPlaceholder={searchPlaceholder}
+                searchText={searchText}
+                onSearchChange={onSearchChange}
+                isSearchLoading={isSearchLoading}
+                emptyStateText={emptyStateText}
                 enableSelectAll={enableSelectAll}
                 selectAllText={selectAllText}
                 maxSelections={maxSelections}
@@ -351,6 +359,10 @@ const MultiSelect = ({
                             disabled={disabled}
                             enableSearch={enableSearch}
                             searchPlaceholder={searchPlaceholder}
+                            searchText={searchText}
+                            onSearchChange={onSearchChange}
+                            isSearchLoading={isSearchLoading}
+                            emptyStateText={emptyStateText}
                             enableSelectAll={enableSelectAll}
                             selectAllText={selectAllText}
                             maxSelections={maxSelections}
@@ -730,7 +742,11 @@ const MultiSelect = ({
                                                                       (v) =>
                                                                           valueLabelMap[
                                                                               v
-                                                                          ]
+                                                                          ] ??
+                                                                          (searchText !==
+                                                                          undefined
+                                                                              ? v
+                                                                              : undefined)
                                                                   )
                                                                   .join(', ')
                                                     }
@@ -743,7 +759,11 @@ const MultiSelect = ({
                                                                   (v) =>
                                                                       valueLabelMap[
                                                                           v
-                                                                      ]
+                                                                      ] ??
+                                                                      (searchText !==
+                                                                      undefined
+                                                                          ? v
+                                                                          : undefined)
                                                               )
                                                               .join(', ')}
                                                 </Text>

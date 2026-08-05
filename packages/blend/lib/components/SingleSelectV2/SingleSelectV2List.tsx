@@ -20,6 +20,7 @@ const SingleSelectV2List = ({
     size,
     variant,
     enableSearch,
+    focusIdentityEnabled,
 }: MenuListProps) => {
     const menuGroupLabel = singleSelectTokens.menu.groupLabel
     const menuItem = singleSelectTokens.menu.item
@@ -69,6 +70,7 @@ const SingleSelectV2List = ({
                                 groupId,
                                 itemIndex
                             )}
+                            focusIdentityEnabled={focusIdentityEnabled}
                         />
                     ))}
                     {groupId !== filteredItems.length - 1 &&

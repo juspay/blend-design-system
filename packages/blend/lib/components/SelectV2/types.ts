@@ -82,6 +82,8 @@ type SelectItemV2BaseProps = {
     index?: number
     selectedPosition?: 'first' | 'middle' | 'last' | 'only' | 'none'
     className?: string
+    /** Internal identity used to recover focus while controlled results update. */
+    focusIdentityValue?: string
     /**
      * Set false to render outside a Radix Menu.Root (e.g. inside a Drawer),
      * where RadixMenu.Item has no menu context to attach to. Falls back to a
