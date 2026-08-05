@@ -156,7 +156,7 @@ const computeTokens = (
         SNACKBAR:
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
         STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
-        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens, theme),
         CARDV2:
             componentTokens.CARDV2 ?? getCardV2Tokens(foundationTokens, theme),
         SKELETON:

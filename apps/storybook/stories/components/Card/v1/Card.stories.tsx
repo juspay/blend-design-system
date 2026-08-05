@@ -12,6 +12,8 @@ import {
     ButtonType,
     ButtonSize,
     ButtonSubType,
+    Theme,
+    ThemeProvider,
 } from '@juspay/blend-design-system'
 import {
     Star,
@@ -826,5 +828,52 @@ export const SkeletonState: Story = {
             },
         },
         a11y: getA11yConfig('content'),
+    },
+}
+
+export const DarkTheme: Story = {
+    render: () => (
+        <ThemeProvider theme={Theme.DARK}>
+            <div
+                style={{
+                    padding: 32,
+                    backgroundColor: '#171a1f',
+                    minWidth: 420,
+                }}
+            >
+                <Card
+                    headerSlot1={<Star size={18} color="#cbd5e1" />}
+                    headerTitle="Dark theme card"
+                    headerTag={
+                        <Tag
+                            text="NEW"
+                            color={TagColor.PRIMARY}
+                            variant={TagVariant.SUBTLE}
+                            size={TagSize.SM}
+                        />
+                    }
+                    headerSlot2={
+                        <span style={{ color: '#94a3b8', fontSize: 12 }}>
+                            Updated now
+                        </span>
+                    }
+                    subHeader="Header and content slots use dark surface tokens"
+                    bodyTitle="Monthly summary"
+                    content="The container, borders, header, body title, and content remain readable on the dark surface."
+                    bodySlot2={
+                        <div style={{ color: '#94a3b8', fontSize: 13 }}>
+                            142 active users
+                        </div>
+                    }
+                />
+            </div>
+        </ThemeProvider>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Card surface and content slots rendered with the dark theme token set.',
+            },
+        },
     },
 }
