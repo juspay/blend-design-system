@@ -4,6 +4,14 @@ import type {
     DateRangePickerSize,
     TriggerConfig,
 } from '../DateRangePicker/types'
+import type { PickerGranularity } from '../shared/datetime/granularity'
+
+// Re-exported the way `timePicker.types.ts` re-exports `TimeValue`, so a
+// consumer can name the type of the `granularity` prop they are passing.
+export type {
+    PickerGranularity,
+    RangePickerGranularity,
+} from '../shared/datetime/granularity'
 
 /**
  * Props for `SingleDatePicker`.
@@ -27,9 +35,26 @@ export type SingleDatePickerProps = {
     onChange?: (date: Date | undefined) => void
     minDate?: Date
     maxDate?: Date
+    /**
+     * Selection resolution. `'day'` (the default) is the original behaviour and
+     * is untouched by this prop's existence.
+     *
+     * `'month'` swaps the day calendar for a 12-cell month grid with year
+     * navigation and returns the **first day of the selected month** at local
+     * midnight; `'year'` renders a year grid and returns **1 January** of the
+     * selected year. `minDate` / `maxDate` are compared at the same resolution,
+     * so a `minDate` half-way through September still leaves September (or
+     * 2025) selectable.
+     *
+     * `dateFormat` and `placeholder` pick granularity-appropriate defaults
+     * (`'MM/yyyy'` / "Select month", `'yyyy'` / "Select year") unless you set
+     * them. `disableDates` is called with the period's first day, not with
+     * every day inside it.
+     */
+    granularity?: PickerGranularity
     /** Per-date predicate; disabled days are unclickable in the calendar. */
     disableDates?: (date: Date) => boolean
-    /** Renders a time selector below the calendar. */
+    /** Renders a time selector below the day calendar; ignored for month/year. */
     showTime?: boolean
     /** Display-only; the stored value is always a 24-hour `Date`. */
     timeFormat?: '12h' | '24h'
@@ -39,11 +64,12 @@ export type SingleDatePickerProps = {
      * "today" and the trigger's formatting.
      */
     timezone?: string
+    /** Defaults to `'dd/MM/yyyy'`, or a granularity-appropriate pattern. */
     dateFormat?: string
     /**
      * Richer trigger formatting, replacing `dateFormat`.
      *
-     * Precedence: the component-level time props seed it, and anything set
+     * Precedence: in day mode, the component-level time props seed it, and anything set
      * explicitly on the config wins — `includeTime` defaults to `showTime` and
      * `timeFormat` defaults to the `timeFormat` prop, so a picker with
      * `showTime` shows that time in the trigger without restating it here.

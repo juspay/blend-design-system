@@ -42,6 +42,8 @@ import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useTheme } from '../../context'
 import { renderPickerTrigger } from '../shared/datetime/PickerTrigger'
+import MonthYearGrid from '../shared/datetime/MonthYearGrid'
+import { nextMonthRange } from '../shared/datetime/granularity'
 
 type DateInputsSectionProps = {
     startDate?: string
@@ -269,6 +271,7 @@ type CalendarSectionProps = {
     minDate?: Date
     maxDate?: Date
     maxRangeDays?: number
+    granularity?: 'day' | 'month'
 }
 
 const CalendarSection: React.FC<
@@ -292,30 +295,62 @@ const CalendarSection: React.FC<
     minDate,
     maxDate,
     maxRangeDays,
-}) => (
-    <Block flexGrow={1} minHeight={0} overflow="auto">
-        <CalendarGrid
-            selectedRange={selectedRange}
-            onDateSelect={onDateSelect}
-            today={today}
-            allowSingleDateSelection={allowSingleDateSelection}
-            disableFutureDates={disableFutureDates}
-            disablePastDates={disablePastDates}
-            hideFutureDates={hideFutureDates}
-            hidePastDates={hidePastDates}
-            customDisableDates={customDisableDates}
-            customRangeConfig={customRangeConfig}
-            showDateTimePicker={showDateTimePicker}
-            resetScrollPosition={resetScrollPosition}
-            timezone={timezone}
-            isSingleDatePicker={isSingleDatePicker}
-            maxYearOffset={maxYearOffset}
-            minDate={minDate}
-            maxDate={maxDate}
-            maxRangeDays={maxRangeDays}
-        />
-    </Block>
-)
+    granularity = 'day',
+}) =>
+    granularity === 'month' ? (
+        <Block flexGrow={1} minHeight={0} overflow="auto">
+            <MonthYearGrid
+                granularity="month"
+                selectedRange={selectedRange}
+                // The grid only knows which month was clicked; turning that
+                // into a start-or-end decision is range bookkeeping, and
+                // `nextMonthRange` applies the same rules the day calendar
+                // uses (later click closes the range, earlier click restarts).
+                onSelect={(periodStart) =>
+                    onDateSelect(
+                        isSingleDatePicker
+                            ? { startDate: periodStart }
+                            : nextMonthRange(selectedRange, periodStart)
+                    )
+                }
+                today={today}
+                isRange={!isSingleDatePicker}
+                timezone={timezone}
+                disableFutureDates={disableFutureDates}
+                disablePastDates={disablePastDates}
+                hideFutureDates={hideFutureDates}
+                hidePastDates={hidePastDates}
+                customDisableDates={customDisableDates}
+                resetScrollPosition={resetScrollPosition}
+                maxYearOffset={maxYearOffset}
+                minDate={minDate}
+                maxDate={maxDate}
+            />
+        </Block>
+    ) : (
+        <Block flexGrow={1} minHeight={0} overflow="auto">
+            <CalendarGrid
+                selectedRange={selectedRange}
+                onDateSelect={onDateSelect}
+                today={today}
+                allowSingleDateSelection={allowSingleDateSelection}
+                disableFutureDates={disableFutureDates}
+                disablePastDates={disablePastDates}
+                hideFutureDates={hideFutureDates}
+                hidePastDates={hidePastDates}
+                customDisableDates={customDisableDates}
+                customRangeConfig={customRangeConfig}
+                showDateTimePicker={showDateTimePicker}
+                resetScrollPosition={resetScrollPosition}
+                timezone={timezone}
+                isSingleDatePicker={isSingleDatePicker}
+                maxYearOffset={maxYearOffset}
+                minDate={minDate}
+                maxDate={maxDate}
+                maxRangeDays={maxRangeDays}
+            />
+        </Block>
+    )
 
 type FooterControlsProps = {
     onCancel: () => void
@@ -382,6 +417,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             customPresets,
             isDisabled = false,
             dateFormat = 'dd/MM/yyyy',
+            granularity = 'day',
             allowSingleDateSelection = false,
             isSingleDatePicker = false,
             disableFutureDates = false,
@@ -415,7 +451,18 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const { foundationTokens } = useTheme()
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
-        const showPresets = shouldShowPresets && !isSingleDatePicker
+
+        // Month mode turns off the three surfaces that only make sense for
+        // days: the presets are all day ranges, the DD/MM/YYYY text inputs
+        // would let a keystroke produce a range that starts mid-month, and the
+        // mobile drawer's scroll wheel has no month-range mode at all — so
+        // mobile falls through to the same popover desktop uses. See the
+        // `granularity` docs on `DateRangePickerProps`.
+        const isMonthGranularity = granularity === 'month'
+        const showPresets =
+            shouldShowPresets && !isSingleDatePicker && !isMonthGranularity
+        const showDateInputs = showDateInput && !isMonthGranularity
+        const useDrawer = useDrawerOnMobile && !isMonthGranularity
 
         const [selectedRange, setSelectedRange] = useState<
             DateRange | undefined
@@ -901,6 +948,34 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 !triggerConfig?.renderTrigger &&
                 Boolean(triggerConfig?.element || triggerElement)
 
+            // A month range is two month names, not two timestamps:
+            // `formatDateDisplay` would render "Sep 1, 2025, 12:00 AM - Sep 30,
+            // 2025, 12:00 AM" for what the user picked as "September".
+            const formatMonthRangeDisplay = (
+                range: DateRange | undefined
+            ): string => {
+                if (!range?.startDate) return 'Select month range'
+
+                const options: Intl.DateTimeFormatOptions = {
+                    month: 'short',
+                    year: 'numeric',
+                    ...(timezone && { timeZone: timezone }),
+                }
+                const startStr = range.startDate.toLocaleDateString(
+                    'en-US',
+                    options
+                )
+                if (!range.endDate) return startStr
+
+                const endStr = range.endDate.toLocaleDateString(
+                    'en-US',
+                    options
+                )
+                return startStr === endStr
+                    ? startStr
+                    : `${startStr} - ${endStr}`
+            }
+
             const displayText = usesCustomElement
                 ? ''
                 : formatConfig
@@ -911,12 +986,14 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         triggerConfig?.placeholder,
                         timezone
                     )
-                  : formatDateDisplay(
-                        displayRange,
-                        allowSingleDateSelection,
-                        timezone,
-                        isSingleDatePicker
-                    )
+                  : isMonthGranularity
+                    ? formatMonthRangeDisplay(displayRange)
+                    : formatDateDisplay(
+                          displayRange,
+                          allowSingleDateSelection,
+                          timezone,
+                          isSingleDatePicker
+                      )
 
             const formatMobileDateRange = (
                 range: DateRange | undefined
@@ -961,7 +1038,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             return renderPickerTrigger({
                 displayText,
                 mobileText:
-                    isMobile && useDrawerOnMobile
+                    isMobile && useDrawer
                         ? formatMobileDateRange(displayRange)
                         : undefined,
                 displayRange,
@@ -973,7 +1050,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 hasQuickSelector: showPresets,
                 triggerConfig,
                 triggerElement,
-                isMobileDrawer: isMobile && useDrawerOnMobile,
+                isMobileDrawer: isMobile && useDrawer,
                 onToggle: () => setIsOpen(!isOpen),
                 onMobileOpen: () => setDrawerOpen(true),
                 ariaLabel: `Date range picker, ${displayText || 'Select date range'}`,
@@ -981,7 +1058,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             })
         }
 
-        if (isMobile && useDrawerOnMobile) {
+        if (isMobile && useDrawer) {
             const getMobilePresets = () => {
                 const presetsWithCustom = [...availablePresets]
                 if (!presetsWithCustom.includes(DateRangePreset.CUSTOM)) {
@@ -1101,6 +1178,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     }
                     sideOffset={popoverConfig?.sideOffset ?? 4}
                     shadow="sm"
+                    useDrawerOnMobile={useDrawer}
                 >
                     <Block
                         style={{
@@ -1111,7 +1189,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         flexDirection="column"
                         overflow="hidden"
                     >
-                        {showDateInput && (
+                        {showDateInputs && (
                             <DateInputsSection
                                 startDate={startDate}
                                 endDate={endDate}
@@ -1160,6 +1238,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             minDate={minDate}
                             maxDate={maxDate}
                             maxRangeDays={maxRangeDays}
+                            granularity={granularity}
                         />
 
                         <FooterControls
