@@ -36,7 +36,7 @@
         "google-auth-library": "^9.15.1",
         "helmet": "^8.0.0",
         "jsonwebtoken": "^9.0.2",
-        "multer": "^1.4.5-lts.1",
+        "multer": "^2.2.0",
         "pg": "^8.13.1",
         "pino": "^9.6.0",
         "pino-pretty": "^13.0.0",
