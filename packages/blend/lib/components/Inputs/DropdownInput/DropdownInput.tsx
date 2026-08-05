@@ -100,6 +100,14 @@ const DropdownInput = ({
             .filter(Boolean)
             .join(' ') || undefined
 
+    const handleDropdownOpenChange = (open: boolean) => {
+        if (open) {
+            onDropdownOpen?.()
+        } else {
+            onDropdownClose?.()
+        }
+    }
+
     const paddingInlineStart =
         dropdownPosition === DropdownPosition.LEFT
             ? paddingX + (slotWidth ? slotWidth : 0) + dropdownWidth + GAP
@@ -237,7 +245,7 @@ const DropdownInput = ({
                             size={SingleSelectV2Size.SM}
                             placeholder={placeholder || ''}
                             menuDimensions={{
-                                maxHeight: maxMenuHeight,
+                                maxHeight: maxMenuHeight ?? 400,
                                 minWidth: minMenuWidth,
                                 maxWidth: maxMenuWidth,
                             }}
@@ -251,13 +259,8 @@ const DropdownInput = ({
                             }}
                             selected={dropDownValue || ''}
                             onSelect={(value) => onDropDownChange?.(value)}
+                            onOpenChange={handleDropdownOpenChange}
                             name={dropdownName}
-                            onBlur={() => {
-                                onDropdownClose?.()
-                            }}
-                            onFocus={() => {
-                                onDropdownOpen?.()
-                            }}
                         />
                     </Block>
                 )}
@@ -386,7 +389,7 @@ const DropdownInput = ({
                             size={SingleSelectV2Size.SM}
                             placeholder={placeholder || ''}
                             menuDimensions={{
-                                maxHeight: maxMenuHeight,
+                                maxHeight: maxMenuHeight ?? 400,
                                 minWidth: minMenuWidth,
                                 maxWidth: maxMenuWidth,
                             }}
@@ -402,13 +405,8 @@ const DropdownInput = ({
                             }}
                             selected={dropDownValue || ''}
                             onSelect={(value) => onDropDownChange?.(value)}
+                            onOpenChange={handleDropdownOpenChange}
                             name={dropdownName}
-                            onBlur={() => {
-                                onDropdownClose?.()
-                            }}
-                            onFocus={() => {
-                                onDropdownOpen?.()
-                            }}
                         />
                     </Block>
                 )}
