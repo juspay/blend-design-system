@@ -36,4 +36,34 @@ describe('ButtonGroup separators', () => {
             )
         })
     })
+
+    it.each([Theme.LIGHT, Theme.DARK])(
+        'uses the %s default gap without separators for non-stacked groups',
+        (theme) => {
+            const { container } = render(
+                <ThemeProvider theme={theme}>
+                    <ButtonGroup>
+                        <Button
+                            text="First"
+                            buttonType={ButtonType.SECONDARY}
+                        />
+                        <Button
+                            text="Second"
+                            buttonType={ButtonType.SECONDARY}
+                        />
+                    </ButtonGroup>
+                </ThemeProvider>
+            )
+
+            const group = container.querySelector('[data-button-group="true"]')
+
+            expect(group).toHaveAttribute('data-button-group-stacked', 'false')
+            expect(group).toHaveStyleRule('gap', FOUNDATION_THEME.unit[10])
+            expect(
+                container.querySelectorAll(
+                    '[data-button-group-separator="true"]'
+                )
+            ).toHaveLength(0)
+        }
+    )
 })
