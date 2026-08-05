@@ -21,6 +21,32 @@ describe('initTokens memoisation', () => {
         expect(dark).not.toBe(light)
     })
 
+    it('passes the theme to legacy surface token fallbacks', () => {
+        const light = initTokens(EMPTY, FOUNDATION_THEME, Theme.LIGHT)
+        const dark = initTokens(EMPTY, FOUNDATION_THEME, Theme.DARK)
+
+        expect(light.MODAL.sm.body.backgroundColor).toBe(
+            FOUNDATION_THEME.colors.gray[0]
+        )
+        expect(dark.MODAL.sm.body.backgroundColor).toBe(
+            FOUNDATION_THEME.colors.gray[700]
+        )
+        expect(dark.CARD.sm.backgroundColor).toBe(
+            FOUNDATION_THEME.colors.gray[900]
+        )
+        expect(dark.UPLOAD.sm.container.backgroundColor.idle).toBe(
+            FOUNDATION_THEME.colors.gray[900]
+        )
+
+        const modalOverride = { sm: {}, lg: {} } as ComponentTokenType['MODAL']
+        const overridden = initTokens(
+            { MODAL: modalOverride },
+            FOUNDATION_THEME,
+            Theme.DARK
+        )
+        expect(overridden.MODAL).toBe(modalOverride)
+    })
+
     it('returns a different object for a different componentTokens reference', () => {
         const overrideA: ComponentTokenType = {
             BUTTONV2: { sm: {}, lg: {} } as ComponentTokenType['BUTTONV2'],

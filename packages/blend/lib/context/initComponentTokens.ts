@@ -178,7 +178,8 @@ const computeTokens = (
         MOBILE_NAVIGATION_V2:
             componentTokens.MOBILE_NAVIGATION_V2 ??
             getMobileNavigationV2Tokens(foundationTokens, theme),
-        UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
+        UPLOAD:
+            componentTokens.UPLOAD ?? getUploadTokens(foundationTokens, theme),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
         CHAT_INPUT:
