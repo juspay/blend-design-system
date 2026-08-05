@@ -22,7 +22,7 @@ const getModalDarkToken = (
             x: isLarge ? foundationToken.unit[20] : foundationToken.unit[16],
             y: isLarge ? foundationToken.unit[20] : foundationToken.unit[16],
         },
-        borderBottom: `1px solid ${foundationToken.colors.gray[200]}`,
+        borderBottom: `1px solid ${foundationToken.colors.gray[600]}`,
         backgroundColor: foundationToken.colors.gray[700],
         text: {
             title: {
@@ -47,7 +47,7 @@ const getModalDarkToken = (
     },
     footer: {
         padding: isLarge ? foundationToken.unit[20] : foundationToken.unit[16],
-        borderTop: `1px solid ${foundationToken.colors.gray[200]}`,
+        borderTop: `1px solid ${foundationToken.colors.gray[600]}`,
         backgroundColor: foundationToken.colors.gray[700],
         gap: isLarge ? foundationToken.unit[16] : foundationToken.unit[12],
     },

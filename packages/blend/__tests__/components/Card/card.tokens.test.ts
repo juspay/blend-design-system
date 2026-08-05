@@ -11,6 +11,32 @@ describe('getCardTokens', () => {
         const tokens = getCardTokens(FOUNDATION_THEME)
 
         expect(tokens).toEqual(getCardLightTokens(FOUNDATION_THEME))
+        expect(tokens.sm.backgroundColor).toBe(FOUNDATION_THEME.colors.gray[0])
+        expect(tokens.lg.backgroundColor).toBe(FOUNDATION_THEME.colors.gray[0])
+        expect(tokens.sm.header[CardVariant.DEFAULT]?.backgroundColor).toBe(
+            FOUNDATION_THEME.colors.gray[25]
+        )
+        expect(tokens.lg.header[CardVariant.DEFAULT]?.backgroundColor).toBe(
+            FOUNDATION_THEME.colors.gray[25]
+        )
+        expect(tokens.sm.header[CardVariant.DEFAULT]?.borderBottom).toBe(
+            `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+        )
+        expect(tokens.lg.header[CardVariant.DEFAULT]?.borderBottom).toBe(
+            `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
+        )
+        expect(tokens.sm.header.text.title.color).toBe(
+            FOUNDATION_THEME.colors.gray[800]
+        )
+        expect(tokens.lg.header.text.subTitle.color).toBe(
+            FOUNDATION_THEME.colors.gray[500]
+        )
+        expect(tokens.sm.body.text.title.color).toBe(
+            FOUNDATION_THEME.colors.gray[800]
+        )
+        expect(tokens.lg.body.text.content.color).toBe(
+            FOUNDATION_THEME.colors.gray[500]
+        )
         expect(tokens.sm.border).toBe(
             `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
         )
@@ -26,10 +52,19 @@ describe('getCardTokens', () => {
         expect(darkTokens.sm.backgroundColor).toBe(
             FOUNDATION_THEME.colors.gray[900]
         )
+        expect(darkTokens.lg.backgroundColor).toBe(
+            FOUNDATION_THEME.colors.gray[900]
+        )
         expect(darkTokens.sm.header[CardVariant.DEFAULT]?.backgroundColor).toBe(
             FOUNDATION_THEME.colors.gray[800]
         )
+        expect(darkTokens.lg.header[CardVariant.DEFAULT]?.borderBottom).toBe(
+            `1px solid ${FOUNDATION_THEME.colors.gray[700]}`
+        )
         expect(darkTokens.sm.body.text.content.color).toBe(
+            FOUNDATION_THEME.colors.gray[300]
+        )
+        expect(darkTokens.lg.body.text.content.color).toBe(
             FOUNDATION_THEME.colors.gray[300]
         )
         expect(getCardTokens(FOUNDATION_THEME, 'dark')).toEqual(darkTokens)

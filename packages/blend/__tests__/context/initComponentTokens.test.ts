@@ -28,6 +28,12 @@ describe('initTokens memoisation', () => {
         expect(light.MODAL.sm.body.backgroundColor).toBe(
             FOUNDATION_THEME.colors.gray[0]
         )
+        expect(light.CARD.sm.backgroundColor).toBe(
+            FOUNDATION_THEME.colors.gray[0]
+        )
+        expect(light.UPLOAD.sm.container.backgroundColor.idle).toBe(
+            FOUNDATION_THEME.colors.gray[0]
+        )
         expect(dark.MODAL.sm.body.backgroundColor).toBe(
             FOUNDATION_THEME.colors.gray[700]
         )
@@ -39,12 +45,23 @@ describe('initTokens memoisation', () => {
         )
 
         const modalOverride = { sm: {}, lg: {} } as ComponentTokenType['MODAL']
+        const cardOverride = { sm: {}, lg: {} } as ComponentTokenType['CARD']
+        const uploadOverride = {
+            sm: {},
+            lg: {},
+        } as ComponentTokenType['UPLOAD']
         const overridden = initTokens(
-            { MODAL: modalOverride },
+            {
+                MODAL: modalOverride,
+                CARD: cardOverride,
+                UPLOAD: uploadOverride,
+            },
             FOUNDATION_THEME,
             Theme.DARK
         )
         expect(overridden.MODAL).toBe(modalOverride)
+        expect(overridden.CARD).toBe(cardOverride)
+        expect(overridden.UPLOAD).toBe(uploadOverride)
     })
 
     it('returns a different object for a different componentTokens reference', () => {
