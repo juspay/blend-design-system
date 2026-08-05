@@ -20,6 +20,23 @@ import {
     DateRangeData,
 } from './columnTypes'
 
+export type DataTableBodyState = 'loading' | 'error' | 'empty' | 'rows'
+
+export const getDataTableBodyState = ({
+    isLoading,
+    error,
+    hasRows,
+}: {
+    isLoading: boolean
+    error: boolean
+    hasRows: boolean
+}): DataTableBodyState => {
+    if (isLoading && !hasRows) return 'loading'
+    if (error && !isLoading) return 'error'
+    if (!hasRows) return 'empty'
+    return 'rows'
+}
+
 /**
  * Compares filter option lists by content. Consumers commonly build `columns`
  * inline, so a new-but-equal array must not count as a change: that would sync

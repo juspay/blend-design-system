@@ -476,6 +476,11 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onPageSizeChange?: (pageSize: number) => void
 
     isLoading?: boolean
+    error?: boolean
+    renderErrorState?: (retry?: () => void) => ReactNode
+    onRetry?: () => void
+    showEmptyState?: boolean
+    renderEmptyState?: () => ReactNode
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     isRowLoading?: (row: T, index: number) => boolean

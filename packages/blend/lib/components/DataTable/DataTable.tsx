@@ -47,6 +47,7 @@ import {
     clearAllFiltersAndSearch,
     getColumnStyles,
     haveSameFilterOptions,
+    getDataTableBodyState,
 } from './utils'
 import DataTableHeader from './DataTableHeader'
 import TableHeader from './TableHeader'
@@ -56,7 +57,7 @@ import BulkActionBar from './TableBody/BulkActionBar'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
 import { ButtonSize, ButtonType } from '../Button/types'
-import { Settings, Check, Loader2 } from 'lucide-react'
+import { Settings, Check, Loader2, Inbox, CircleAlert } from 'lucide-react'
 import Menu from '../Menu/Menu'
 import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
@@ -84,6 +85,66 @@ const ScrollableContainer = styled(Block)`
     scrollbar-width: none;
 `
 
+const DefaultTableState = ({
+    state,
+    onRetry,
+}: {
+    state: 'empty' | 'error'
+    onRetry?: () => void
+}) => {
+    const isError = state === 'error'
+    const StateIcon = isError ? CircleAlert : Inbox
+
+    return (
+        <Block
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            gap={FOUNDATION_THEME.unit[12]}
+        >
+            <Block
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                style={{
+                    width: FOUNDATION_THEME.unit[40],
+                    height: FOUNDATION_THEME.unit[40],
+                    borderRadius: '50%',
+                    backgroundColor: isError
+                        ? FOUNDATION_THEME.colors.red[50]
+                        : FOUNDATION_THEME.colors.gray[100],
+                    color: isError
+                        ? FOUNDATION_THEME.colors.red[600]
+                        : FOUNDATION_THEME.colors.gray[500],
+                }}
+            >
+                <StateIcon
+                    size={FOUNDATION_THEME.unit[20]}
+                    aria-hidden="true"
+                />
+            </Block>
+            <PrimitiveText
+                style={{
+                    color: FOUNDATION_THEME.colors.gray[700],
+                    fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+                    fontWeight: FOUNDATION_THEME.font.weight[500],
+                }}
+            >
+                {isError ? 'Unable to load data' : 'No data'}
+            </PrimitiveText>
+            {isError && onRetry && (
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={onRetry}
+                    text="Retry"
+                />
+            )}
+        </Block>
+    )
+}
+
 const DataTable = forwardRef(
     <T extends Record<string, unknown>>(
         {
@@ -106,6 +167,11 @@ const DataTable = forwardRef(
             serverSideFiltering = false,
             serverSidePagination = false,
             isLoading = false,
+            error = false,
+            renderErrorState,
+            onRetry,
+            showEmptyState = false,
+            renderEmptyState,
             enableColumnManager = true,
             enableColumnReordering = false,
             onColumnReorder,
@@ -475,15 +541,11 @@ const DataTable = forwardRef(
             ? mobileVisibleColumns
             : visibleColumns
 
-        // Calculate minimum height for empty state based on page size
-        // This ensures consistent height whether data is present or not
-        const emptyStateMinHeight = useMemo(() => {
-            if (tableBodyHeight) {
-                return '400px'
+        const stateAreaHeight = useMemo(() => {
+            if (tableBodyHeight !== undefined) {
+                return tableBodyHeight
             }
-            // Use fixed heights based on page size ranges
-            // 5 rows/page → 300px
-            // 10+ rows/page → 600px
+
             return pageSize <= 5 ? '300px' : '600px'
         }, [pageSize, tableBodyHeight])
 
@@ -666,6 +728,15 @@ const DataTable = forwardRef(
             pagination?.currentPage,
             pagination?.pageSize,
         ])
+        const isTableLoading =
+            isLoading || (serverSidePagination && internalLoading)
+        const bodyState = getDataTableBodyState({
+            isLoading: isTableLoading,
+            error,
+            hasRows: currentData.length > 0,
+        })
+        const isErrorState = bodyState === 'error'
+        const shouldRenderRows = bodyState === 'rows'
 
         // Stable row ID list for the current page. Used for selection state and
         // as a cheap signal to remount the tbody when results change (e.g. server-side search).
@@ -1592,7 +1663,7 @@ const DataTable = forwardRef(
                         overflow: 'auto',
                     }}
                 >
-                    {showBulkActionBar && (
+                    {showBulkActionBar && !isErrorState && (
                         <BulkActionBar
                             selectedCount={selectedCount}
                             onExport={exportToCSV}
@@ -1618,11 +1689,13 @@ const DataTable = forwardRef(
                             borderWidth: 0,
                         }}
                     >
-                        {isLoading
+                        {isTableLoading
                             ? 'Loading table data'
-                            : currentData.length === 0
-                              ? 'No data available'
-                              : `Showing ${currentData.length} of ${totalRows} rows`}
+                            : error
+                              ? 'Failed to load table data'
+                              : currentData.length === 0
+                                ? 'No data available'
+                                : `Showing ${currentData.length} of ${totalRows} rows`}
                     </Block>
 
                     <Block
@@ -1736,7 +1809,7 @@ const DataTable = forwardRef(
                                                 enableColumnReordering
                                             }
                                             showSkeleton={showSkeleton}
-                                            isLoading={isLoading}
+                                            isLoading={isTableLoading}
                                             onColumnReorder={(columns) => {
                                                 setVisibleColumns(
                                                     columns as ColumnDefinition<T>[]
@@ -1764,7 +1837,8 @@ const DataTable = forwardRef(
                                                 enableRowExpansion
                                             }
                                             enableRowSelection={
-                                                enableRowSelection
+                                                enableRowSelection &&
+                                                !isErrorState
                                             }
                                             rowActions={
                                                 rowActions as
@@ -1826,7 +1900,7 @@ const DataTable = forwardRef(
                                                 setMeasuredFrozenWidths
                                             }
                                         />
-                                        {currentData.length > 0 && (
+                                        {shouldRenderRows && (
                                             <TableBodyComponent
                                                 currentData={currentData}
                                                 dataVersion={tbodyDataVersion}
@@ -1993,11 +2067,7 @@ const DataTable = forwardRef(
                                                         | undefined
                                                 }
                                                 dateLabel={dateLabel}
-                                                isLoading={
-                                                    isLoading ||
-                                                    (serverSidePagination &&
-                                                        internalLoading)
-                                                }
+                                                isLoading={isTableLoading}
                                                 showSkeleton={showSkeleton}
                                                 skeletonVariant={
                                                     skeletonVariant
@@ -2073,13 +2143,18 @@ const DataTable = forwardRef(
                             </DragOverlay>
                         </DndContext>
 
-                        {currentData.length === 0 && (
+                        {bodyState !== 'rows' && (
                             <Block
                                 display="flex"
                                 alignItems="center"
                                 justifyContent="center"
+                                data-table-body-state={bodyState}
                                 style={{
-                                    minHeight: emptyStateMinHeight,
+                                    minHeight: stateAreaHeight,
+                                    height:
+                                        tableBodyHeight !== undefined
+                                            ? stateAreaHeight
+                                            : undefined,
                                     backgroundColor:
                                         FOUNDATION_THEME.colors.gray[0],
                                     color: tableToken.dataTable.table.body.cell
@@ -2087,9 +2162,10 @@ const DataTable = forwardRef(
                                     fontSize:
                                         tableToken.dataTable.table.body.cell
                                             .fontSize,
+                                    overflow: 'auto',
                                 }}
                             >
-                                {isLoading ? (
+                                {bodyState === 'loading' ? (
                                     <Block
                                         display="flex"
                                         alignItems="center"
@@ -2106,6 +2182,19 @@ const DataTable = forwardRef(
                                         />
                                         <span>Loading data...</span>
                                     </Block>
+                                ) : bodyState === 'error' ? (
+                                    renderErrorState ? (
+                                        renderErrorState(onRetry)
+                                    ) : (
+                                        <DefaultTableState
+                                            state="error"
+                                            onRetry={onRetry}
+                                        />
+                                    )
+                                ) : renderEmptyState ? (
+                                    renderEmptyState()
+                                ) : showEmptyState ? (
+                                    <DefaultTableState state="empty" />
                                 ) : (
                                     <span>No data available</span>
                                 )}
@@ -2120,7 +2209,7 @@ const DataTable = forwardRef(
                             pageSize={pageSize}
                             totalRows={totalRows}
                             visibleRows={currentData.length}
-                            isLoading={isLoading}
+                            isLoading={isTableLoading}
                             showSkeleton={showSkeleton}
                             hasData={currentData.length > 0}
                             isNarrowContainer={isNarrowContainer}
