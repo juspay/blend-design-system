@@ -60,7 +60,7 @@ export default defineConfig({
             formats: ['es'],
         },
         rollupOptions: {
-            external: ['react', 'react/jsx-runtime'],
+            external: ['react', 'react/jsx-runtime', 'react-dom/server'],
             output: {
                 assetFileNames: (assetInfo) => {
                     // Publish a stable path for the library stylesheet:

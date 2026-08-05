@@ -214,6 +214,7 @@ const DataTableHeader = forwardRef<
             headerSlot1,
             headerSlot2,
             headerSlot3,
+            mobileToolbarSlot,
             descriptionTooltipProps,
         },
         ref
@@ -235,7 +236,8 @@ const DataTableHeader = forwardRef<
                 enableAdvancedFilter ||
                 headerSlot1 ||
                 headerSlot2 ||
-                headerSlot3)
+                headerSlot3 ||
+                mobileToolbarSlot)
 
         if (!title && !description && !hasToolbarContent) {
             return null
@@ -320,6 +322,8 @@ const DataTableHeader = forwardRef<
                                         onClick={() => setIsSearchOpen(true)}
                                     />
                                 )}
+
+                                {mobileToolbarSlot}
 
                                 {(enableAdvancedFilter ||
                                     headerSlot1 ||

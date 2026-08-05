@@ -561,6 +561,15 @@ const columns: ColumnDefinition<User>[] = [
                 category: 'Selection',
             },
         },
+        exportConfig: {
+            control: false,
+            description:
+                'Configures whole-table CSV/XLSX export for the current page or all loaded rows. The optional onExport callback can asynchronously return server-side rows using the current visible columns, filters, search, and sort context.',
+            table: {
+                type: { summary: 'DataTableExportConfig<T>' },
+                category: 'Export',
+            },
+        },
     },
     tags: ['autodocs'],
 }
@@ -766,6 +775,86 @@ export const WithSearchAndFiltering: Story = {
         docs: {
             description: {
                 story: 'DataTable with search and column filtering enabled for finding specific records.',
+            },
+        },
+    },
+}
+
+export const ClientSideExport: Story = {
+    args: {
+        data: sampleUsers as any[],
+        columns: userColumns as any[],
+        idField: 'id',
+        title: 'Exportable Users',
+        description:
+            'Search, sort, filter, or manage columns before exporting the current view.',
+        enableSearch: true,
+        enableFiltering: true,
+        enableColumnManager: true,
+        exportConfig: {
+            enabled: true,
+            fileName: 'users',
+            formats: ['csv', 'xlsx'],
+            scope: 'allLoaded',
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Client-side export serializes all filtered and sorted rows using only the columns currently visible in the column manager.',
+            },
+        },
+    },
+}
+
+const ServerBackedExportDataTable: React.FC = () => {
+    const currentPageRows = sampleUsers.slice(0, 10)
+
+    return (
+        <DataTable
+            data={currentPageRows as any[]}
+            columns={userColumns as any[]}
+            idField="id"
+            title="Server-Backed User Export"
+            description="The table shows one server page; export requests every matching row."
+            enableSearch
+            serverSideSearch
+            serverSidePagination
+            pagination={{
+                currentPage: 1,
+                pageSize: 10,
+                totalRows: sampleUsers.length,
+                pageSizeOptions: [10, 20, 50],
+            }}
+            exportConfig={{
+                enabled: true,
+                fileName: 'all-users',
+                formats: ['csv', 'xlsx'],
+                scope: 'allLoaded',
+                onExport: async (context) => {
+                    await new Promise((resolve) => setTimeout(resolve, 600))
+                    const query = context.search.query.trim().toLowerCase()
+                    if (!query) return sampleUsers as any[]
+
+                    return sampleUsers.filter((row) =>
+                        context.visibleColumns.some((column) =>
+                            String(row[column.field])
+                                .toLowerCase()
+                                .includes(query)
+                        )
+                    ) as any[]
+                },
+            }}
+        />
+    )
+}
+
+export const ServerBackedExport: Story = {
+    render: () => <ServerBackedExportDataTable />,
+    parameters: {
+        docs: {
+            description: {
+                story: '`onExport` receives the visible columns, filters, search, sort, and scope so a server-paginated consumer can return the complete matching dataset asynchronously.',
             },
         },
     },

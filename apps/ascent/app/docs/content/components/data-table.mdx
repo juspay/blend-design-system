@@ -1173,6 +1173,21 @@ function CompactTable() {
         ],
         [
             {
+                content: 'exportConfig',
+                hintText:
+                    'Optional whole-table export configuration. Set enabled to true to show an Export action for the visible columns. formats accepts csv and xlsx and defaults to csv; scope accepts currentPage or allLoaded and defaults to currentPage. Use onExport to asynchronously return rows for server-backed tables; it receives the current visible columns, column and advanced filters, search, sort, and scope. Returning undefined cancels the download.',
+            },
+            {
+                content: 'DataTableExportConfig<T>',
+                hintText:
+                    "{ enabled: boolean; fileName?: string; formats?: ('csv' | 'xlsx')[]; scope?: 'currentPage' | 'allLoaded'; onExport?: (context: DataTableExportContext<T>) => T[] | void | Promise<T[] | void> }",
+            },
+            {
+                content: 'CSV, current page',
+            },
+        ],
+        [
+            {
                 content: 'bulkActions.showSelectAll',
                 hintText:
                     'Optional boolean that controls whether to show the "Select All" button in the bulk actions bar. When true, displays a button that allows users to select all rows on the current page. When false, the select all functionality is hidden. Defaults to undefined (not shown).',
