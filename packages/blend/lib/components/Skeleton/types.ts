@@ -35,4 +35,4 @@ export type SkeletonCardProps = BaseSkeletonProps &
         padding?: string | number
     }
 
-export { SkeletonVariant, SkeletonShape }
+export type { SkeletonVariant, SkeletonShape } from './skeleton.tokens'

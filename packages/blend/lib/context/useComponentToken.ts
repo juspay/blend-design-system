@@ -43,6 +43,7 @@ import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens
 import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import type { ResponsiveButtonGroupTokens } from '../components/ButtonGroup/buttonGroup.tokens'
 import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { ResponsiveMobileNavigationV2Tokens } from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
@@ -128,6 +129,7 @@ export const useComponentToken = (
     | ResponsiveSidebarTokens
     | ResponsiveUploadTokens
     | ResponsiveCodeBlockTokens
+    | ResponsiveButtonGroupTokens
     | ResponsiveMobileNavigationTokens
     | ResponsiveMobileNavigationV2Tokens
     | ResponsiveDirectoryTokens
@@ -264,6 +266,8 @@ export const useComponentToken = (
             return componentTokens.UPLOAD
         case 'CODE_BLOCK':
             return componentTokens.CODE_BLOCK
+        case 'BUTTON_GROUP':
+            return componentTokens.BUTTON_GROUP
         case 'MOBILE_NAVIGATION':
             return componentTokens.MOBILE_NAVIGATION
         case 'MOBILE_NAVIGATION_V2':
