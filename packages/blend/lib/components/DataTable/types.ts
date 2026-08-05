@@ -335,6 +335,29 @@ export type SearchConfig = {
     searchFields?: string[]
 }
 
+export type DataTableExportFormat = 'csv' | 'xlsx'
+
+export type DataTableExportScope = 'currentPage' | 'allLoaded'
+
+export type DataTableExportContext<T extends Record<string, unknown>> = {
+    visibleColumns: ColumnDefinition<T>[]
+    filters: ColumnFilter[]
+    advancedFilters: unknown[]
+    search: SearchConfig
+    sort: SortConfig | null
+    scope: DataTableExportScope
+}
+
+export type DataTableExportConfig<T extends Record<string, unknown>> = {
+    enabled: boolean
+    fileName?: string
+    formats?: DataTableExportFormat[]
+    scope?: DataTableExportScope
+    onExport?: (
+        context: DataTableExportContext<T>
+    ) => T[] | void | Promise<T[] | void>
+}
+
 export type ColumnFilter = {
     field: keyof Record<string, unknown>
     type: FilterType
@@ -524,6 +547,9 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     ) => void
 
     bulkActions?: BulkActionsConfig
+
+    /** Export the visible table columns and the rows in the configured scope. */
+    exportConfig?: DataTableExportConfig<T>
 
     rowActions?: RowActionsConfig<T>
 

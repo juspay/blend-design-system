@@ -20,6 +20,7 @@ export type DataTableHeaderProps<T extends Record<string, unknown>> = {
     headerSlot1?: React.ReactNode
     headerSlot2?: React.ReactNode
     headerSlot3?: React.ReactNode
+    mobileToolbarSlot?: React.ReactNode
     descriptionTooltipProps?: {
         side?: TooltipSide
         align?: TooltipAlign

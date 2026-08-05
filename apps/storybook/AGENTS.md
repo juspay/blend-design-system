@@ -612,8 +612,8 @@ Before submitting a story, verify:
 - Accordion, Alert, Avatar, Breadcrumb, Button, Card, Charts, Checkbox, CodeBlock
 - DataTable, DateRangePicker, Drawer, DropdownInput, KeyValuePair, Menu, Modal
 - MultiSelect, MultiValueInput, NumberInput, OTPInput, Popover, ProgressBar
-- Radio, SearchInput, Sidebar, SingleSelect, Snackbar, StatCard, Stepper, Switch
-- Tabs, Tags (SplitTag, Tags), TextArea, TextInput, Timeline, Tooltip, UnitInput, Upload
+- Radio, SearchInput, Sidebar, SingleDatePicker, SingleSelect, Snackbar, StatCard, Stepper, Switch
+- Tabs, Tags (SplitTag, Tags), TextArea, TextInput, Timeline, TimePicker, Tooltip, UnitInput, Upload
 
 ### Foundations
 

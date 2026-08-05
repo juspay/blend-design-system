@@ -1,4 +1,31 @@
-# TODOs
+# TODOS
 
-- [ ] In the next major release, formally deprecate and remove the legacy `MultiSelect` and `MultiSelectV2` per-item `onChange` callbacks. Provide migration guidance to use `onSelectionChange`, which returns the complete resulting selection once per user gesture.
-- [ ] Try swapping vitest's `environment` from `jsdom` to `happy-dom` for suite speed. `happy-dom` is generally faster than `jsdom` but has looser DOM-spec fidelity — would need a full green run (all 174+ files) plus a check that jest-axe, styled-components, and Radix portal-based components (Popover/Menu/Dropdown) still behave correctly before adopting. Deferred from the vitest concurrency/speed pass on `fix-parallel-test-flakes`.
+## MultiSelect
+
+### Remove legacy per-item selection callbacks
+
+**What:** In the next major release, formally deprecate and remove the legacy `MultiSelect` and `MultiSelectV2` per-item `onChange` callbacks.
+
+**Why:** Consumers should use `onSelectionChange`, which returns the complete resulting selection once per user gesture.
+
+**Context:** Provide migration guidance when removing the callbacks so existing consumers can move to `onSelectionChange` without ambiguity.
+
+**Effort:** M
+**Priority:** P3
+**Depends on:** Next major release
+
+## Test Infrastructure
+
+### Evaluate happy-dom for faster test runs
+
+**What:** Try replacing Vitest's `jsdom` environment with `happy-dom` to determine whether it materially improves suite speed.
+
+**Why:** `happy-dom` is generally faster than `jsdom`, but its looser DOM-spec fidelity may introduce behavioral differences.
+
+**Context:** Before adopting it, require a green run of all 174+ test files and verify that jest-axe, styled-components, and Radix portal-based components such as Popover, Menu, and Dropdown still behave correctly. Deferred from the Vitest concurrency and speed work on `fix-parallel-test-flakes`.
+
+**Effort:** M
+**Priority:** P3
+**Depends on:** None
+
+## Completed
