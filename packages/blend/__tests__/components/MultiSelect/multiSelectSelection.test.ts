@@ -4,6 +4,7 @@ import {
     emitLegacyScopeChanges,
     getNextSelectionAfterToggle,
     getNextSelectionForScope,
+    isBlockedByMaxSelections,
 } from '../../../lib/components/shared/multiSelectSelection'
 
 describe('multi-select selection helpers', () => {
@@ -83,6 +84,21 @@ describe('clampScopeToMaxSelections', () => {
         expect(clampScopeToMaxSelections(['a'], ['a', 'b', 'c'], 1)).toEqual([
             'a',
         ])
+    })
+})
+
+describe('isBlockedByMaxSelections', () => {
+    it('allows every value when no limit is set', () => {
+        expect(isBlockedByMaxSelections(['a'], 'b')).toBe(false)
+    })
+
+    it('allows deselecting an already-selected value at the limit', () => {
+        expect(isBlockedByMaxSelections(['a'], 'a', 1)).toBe(false)
+    })
+
+    it('blocks new values once the selection limit is reached', () => {
+        expect(isBlockedByMaxSelections(['a'], 'b', 1)).toBe(true)
+        expect(isBlockedByMaxSelections(['a'], 'b', 2)).toBe(false)
     })
 })
 

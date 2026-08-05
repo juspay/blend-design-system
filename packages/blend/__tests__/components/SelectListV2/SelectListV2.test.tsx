@@ -1,10 +1,8 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor, within } from '../../test-utils'
-import {
-    SelectListV2,
-    resetSelectListV2Warnings,
-} from '../../../lib/components/SelectListV2'
+import { render, screen, waitFor, within, fireEvent } from '../../test-utils'
+import { SelectListV2 } from '../../../lib/components/SelectListV2'
+import { resetSelectListV2Warnings } from '../../../lib/components/SelectListV2/utils'
 import {
     SelectV2Size,
     SelectV2Variant,
@@ -320,6 +318,41 @@ describe('SelectListV2', () => {
             await user.click(screen.getByRole('option', { name: 'Cherry' }))
             expect(onSelect).not.toHaveBeenCalled()
         })
+
+        it('an all-disabled list (every row disabled, not just the whole list) has zero tab stops, and keyboard navigation on it is a no-op', () => {
+            render(
+                <SelectListV2
+                    label="Pick"
+                    items={[
+                        {
+                            items: [
+                                { label: 'A', value: 'a', disabled: true },
+                                { label: 'B', value: 'b', disabled: true },
+                            ],
+                        },
+                    ]}
+                    selected=""
+                    onSelect={() => {}}
+                />
+            )
+            const options = screen.getAllByRole('option')
+            options.forEach((option) =>
+                expect(option).toHaveAttribute('tabIndex', '-1')
+            )
+
+            // With zero enabled targets, moveBy/moveToEdge in
+            // useSelectListNavigation must take their `enabled.length === 0`
+            // early return rather than throwing on an empty array.
+            const listbox = screen.getByRole('listbox')
+            expect(() => {
+                fireEvent.keyDown(listbox, { key: 'ArrowDown' })
+                fireEvent.keyDown(listbox, { key: 'End' })
+                fireEvent.keyDown(listbox, { key: 'Home' })
+            }).not.toThrow()
+            options.forEach((option) =>
+                expect(option).toHaveAttribute('tabIndex', '-1')
+            )
+        })
     })
 
     describe('skeleton', () => {
@@ -632,6 +665,40 @@ describe('SelectListV2', () => {
             expect(screen.queryByRole('searchbox')).not.toBeInTheDocument()
             expect(apple).toHaveFocus()
         })
+
+        it('re-anchors the tab stop to the first selectable option when the focused row is filtered out', async () => {
+            const { user } = render(
+                <SelectListV2
+                    label="Pick"
+                    items={twoGroups()}
+                    selected=""
+                    onSelect={() => {}}
+                    search={{ show: true }}
+                />
+            )
+            // Move the roving tab stop onto A2 via keyboard, the only path
+            // that updates `activeItemIndex` (a plain DOM `.focus()` call
+            // does not).
+            const a1 = screen.getByRole('option', { name: 'A1' })
+            a1.focus()
+            await user.keyboard('{ArrowDown}')
+            const a2 = screen.getByRole('option', { name: 'A2' })
+            expect(a2).toHaveFocus()
+            expect(a2).toHaveAttribute('tabIndex', '0')
+
+            await user.type(screen.getByRole('searchbox'), 'A1')
+            await waitFor(() => {
+                expect(
+                    screen.queryByRole('option', { name: 'A2' })
+                ).not.toBeInTheDocument()
+            })
+            // A2 (the previously active row) no longer exists among the
+            // filtered targets, so the roving tab stop re-anchors to A1.
+            expect(screen.getByRole('option', { name: 'A1' })).toHaveAttribute(
+                'tabIndex',
+                '0'
+            )
+        })
     })
 
     describe('Search', () => {
@@ -849,6 +916,52 @@ describe('SelectListV2', () => {
             expect(onSelect).toHaveBeenCalledWith('parent')
             errorSpy.mockRestore()
         })
+
+        it('warns once per distinct item with a subMenu, and does not repeat for the same item on re-render', () => {
+            const errorSpy = vi
+                .spyOn(console, 'error')
+                .mockImplementation(() => {})
+            const items = [
+                {
+                    items: [
+                        {
+                            label: 'Parent A',
+                            value: 'parentA',
+                            subMenu: [{ label: 'Child A', value: 'childA' }],
+                        },
+                        {
+                            label: 'Parent B',
+                            value: 'parentB',
+                            subMenu: [{ label: 'Child B', value: 'childB' }],
+                        },
+                    ],
+                },
+            ]
+            const { rerender } = render(
+                <SelectListV2
+                    label="Pick"
+                    items={items}
+                    selected=""
+                    onSelect={() => {}}
+                />
+            )
+            // Two distinct offending items, so the once-per-key latch (keyed
+            // by item value) lets both through.
+            expect(errorSpy).toHaveBeenCalledTimes(2)
+
+            errorSpy.mockClear()
+            rerender(
+                <SelectListV2
+                    label="Pick"
+                    items={items}
+                    selected=""
+                    onSelect={() => {}}
+                />
+            )
+            // Same items again: both keys are already latched.
+            expect(errorSpy).not.toHaveBeenCalled()
+            errorSpy.mockRestore()
+        })
     })
 
     describe('Infinite scroll (non-virtualized)', () => {
@@ -906,6 +1019,213 @@ describe('SelectListV2', () => {
         // because VirtualList computes distance analytically from
         // itemHeight * count instead of reading DOM geometry.
         it.skip('fires onEndReached once the non-virtualized scroll area nears the bottom (unreliable in jsdom, see comment)', () => {})
+
+        // Overrides scrollHeight/clientHeight at the prototype level (the
+        // same technique the virtualization suite uses for clientHeight) so
+        // the latch's real distance-from-bottom math runs against non-zero
+        // geometry instead of jsdom's always-0 layout — both for the mount
+        // check (a first page shorter than the viewport re-checks on mount,
+        // see SelectListV2Surface) and for the scroll handler itself.
+        // scrollTop is a real, directly-settable jsdom property, so it does
+        // not need a getter override.
+        it('fires onEndReached once inside the threshold band, then re-arms after scrolling back out', () => {
+            const originalScrollHeight = Object.getOwnPropertyDescriptor(
+                HTMLElement.prototype,
+                'scrollHeight'
+            )
+            const originalClientHeight = Object.getOwnPropertyDescriptor(
+                HTMLElement.prototype,
+                'clientHeight'
+            )
+            Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+                configurable: true,
+                get: () => 1000,
+            })
+            Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+                configurable: true,
+                get: () => 300,
+            })
+
+            try {
+                const onEndReached = vi.fn()
+                const { container } = render(
+                    <SelectListV2
+                        label="Pick"
+                        items={basicItems()}
+                        selected=""
+                        onSelect={() => {}}
+                        hasMore
+                        endReachedThreshold={50}
+                        onEndReached={onEndReached}
+                    />
+                )
+                const scrollEl = container.querySelector(
+                    '[data-element="select-list-scroll"]'
+                ) as HTMLElement
+
+                // Mount check: distance = 1000 - (0 + 300) = 700 > 50, so it
+                // does not fire just from mounting far from the bottom.
+                expect(onEndReached).not.toHaveBeenCalled()
+
+                // Far from bottom, explicit scroll event: still > 50.
+                scrollEl.scrollTop = 0
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).not.toHaveBeenCalled()
+
+                // Inside the band: distance = 1000 - (680 + 300) = 20 <= 50.
+                scrollEl.scrollTop = 680
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).toHaveBeenCalledTimes(1)
+
+                // Still inside the band: the latch must not refire.
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).toHaveBeenCalledTimes(1)
+
+                // Back out of the band, the latch resets but does not itself fire.
+                scrollEl.scrollTop = 0
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).toHaveBeenCalledTimes(1)
+
+                // Back inside the band: the re-armed latch fires again.
+                scrollEl.scrollTop = 680
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).toHaveBeenCalledTimes(2)
+            } finally {
+                if (originalScrollHeight) {
+                    Object.defineProperty(
+                        HTMLElement.prototype,
+                        'scrollHeight',
+                        originalScrollHeight
+                    )
+                }
+                if (originalClientHeight) {
+                    Object.defineProperty(
+                        HTMLElement.prototype,
+                        'clientHeight',
+                        originalClientHeight
+                    )
+                }
+            }
+        })
+
+        it('resets non-virtualized scroll before checking a new search query', () => {
+            const originalScrollHeight = Object.getOwnPropertyDescriptor(
+                HTMLElement.prototype,
+                'scrollHeight'
+            )
+            const originalClientHeight = Object.getOwnPropertyDescriptor(
+                HTMLElement.prototype,
+                'clientHeight'
+            )
+            Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+                configurable: true,
+                get: () => 1000,
+            })
+            Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+                configurable: true,
+                get: () => 300,
+            })
+
+            try {
+                const onEndReached = vi.fn()
+                const { container, rerender } = render(
+                    <SelectListV2
+                        label="Pick"
+                        items={basicItems()}
+                        selected=""
+                        onSelect={() => {}}
+                        enableVirtualization={false}
+                        hasMore
+                        endReachedThreshold={50}
+                        onEndReached={onEndReached}
+                        search={{
+                            show: true,
+                            searchText: '',
+                            onSearchChange: () => {},
+                        }}
+                    />
+                )
+                const scrollEl = container.querySelector(
+                    '[data-element="select-list-scroll"]'
+                ) as HTMLElement
+
+                scrollEl.scrollTop = 680
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).toHaveBeenCalledTimes(1)
+
+                rerender(
+                    <SelectListV2
+                        label="Pick"
+                        items={basicItems()}
+                        selected=""
+                        onSelect={() => {}}
+                        enableVirtualization={false}
+                        hasMore
+                        endReachedThreshold={50}
+                        onEndReached={onEndReached}
+                        search={{
+                            show: true,
+                            searchText: 'new query',
+                            onSearchChange: () => {},
+                        }}
+                    />
+                )
+
+                expect(scrollEl.scrollTop).toBe(0)
+                expect(onEndReached).toHaveBeenCalledTimes(1)
+            } finally {
+                if (originalScrollHeight) {
+                    Object.defineProperty(
+                        HTMLElement.prototype,
+                        'scrollHeight',
+                        originalScrollHeight
+                    )
+                }
+                if (originalClientHeight) {
+                    Object.defineProperty(
+                        HTMLElement.prototype,
+                        'clientHeight',
+                        originalClientHeight
+                    )
+                }
+            }
+        })
+
+        it('does not paginate while a page request is loading', async () => {
+            const onEndReached = vi.fn()
+            const { rerender } = render(
+                <SelectListV2
+                    label="Paged"
+                    items={bigItems(20)}
+                    selected=""
+                    onSelect={() => {}}
+                    enableVirtualization
+                    endReachedThreshold={1000}
+                    hasMore
+                    isLoadingMore
+                    onEndReached={onEndReached}
+                />
+            )
+
+            expect(onEndReached).not.toHaveBeenCalled()
+
+            rerender(
+                <SelectListV2
+                    label="Paged"
+                    items={bigItems(20)}
+                    selected=""
+                    onSelect={() => {}}
+                    enableVirtualization
+                    endReachedThreshold={1000}
+                    hasMore
+                    onEndReached={onEndReached}
+                />
+            )
+
+            await waitFor(() => {
+                expect(onEndReached).toHaveBeenCalledTimes(1)
+            })
+        })
     })
 
     describe('Virtualization', () => {
@@ -949,6 +1269,49 @@ describe('SelectListV2', () => {
             expect(document.activeElement).toHaveAttribute(
                 'aria-posinset',
                 '5000'
+            )
+        })
+
+        it('re-arms virtual pagination when a new page changes the row set', async () => {
+            const onEndReached = vi.fn()
+            const { rerender } = render(
+                <SelectListV2
+                    label="Paged"
+                    items={bigItems(20)}
+                    selected=""
+                    onSelect={() => {}}
+                    enableVirtualization
+                    endReachedThreshold={2200}
+                    hasMore
+                    onEndReached={onEndReached}
+                />
+            )
+
+            await waitFor(
+                () => {
+                    expect(onEndReached).toHaveBeenCalledTimes(1)
+                },
+                { timeout: 5000 }
+            )
+
+            rerender(
+                <SelectListV2
+                    label="Paged"
+                    items={bigItems(40)}
+                    selected=""
+                    onSelect={() => {}}
+                    enableVirtualization
+                    endReachedThreshold={2200}
+                    hasMore
+                    onEndReached={onEndReached}
+                />
+            )
+
+            await waitFor(
+                () => {
+                    expect(onEndReached).toHaveBeenCalledTimes(2)
+                },
+                { timeout: 5000 }
             )
         })
 

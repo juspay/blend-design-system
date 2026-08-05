@@ -31,6 +31,7 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
             ariaSelected,
             ariaSetSize,
             ariaPosInSet,
+            ariaDescription,
             decorativeIndicator = false,
         } = props
 
@@ -162,6 +163,7 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                 }
                 aria-setsize={ariaSetSize}
                 aria-posinset={ariaPosInSet}
+                aria-description={ariaDescription}
                 aria-disabled={isListRow && item.disabled ? true : undefined}
                 tabIndex={tabIndex ?? (item.disabled ? -1 : 0)}
                 onClick={asMenuItem ? undefined : handleClick}
@@ -200,6 +202,10 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                 }}
                 _focusVisible={{
                     backgroundColor: itemTokens.backgroundColor.focusVisible,
+                    ...(isListRow && {
+                        outline: `2px solid ${itemTokens.option.color.focusVisible}`,
+                        outlineOffset: -2,
+                    }),
                 }}
                 cursor={item.disabled ? 'not-allowed' : 'pointer'}
                 className={className}

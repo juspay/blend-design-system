@@ -18,6 +18,5 @@ export {
     flattenSelectListV2Groups,
     countSelectListV2Options,
     getSelectListV2FocusTargets,
-    resetSelectListV2Warnings,
 } from './utils'
 export type { SelectListV2FocusTarget } from './utils'

@@ -93,6 +93,20 @@ const MultiSelectV2SelectAllItem = ({
                 'aria-disabled': disabled ? true : undefined,
                 tabIndex: disabled ? -1 : 0,
                 onKeyDown: handleKeyDown,
+                // Outside a Radix menu this row is a real tab stop, and the
+                // `outline="none"` above would otherwise leave keyboard users
+                // with no visible focus at all (WCAG 2.4.7).
+                _hover: {
+                    backgroundColor:
+                        multiSelectTokens.menu.item.backgroundColor.hover,
+                },
+                _focusVisible: {
+                    backgroundColor:
+                        multiSelectTokens.menu.item.backgroundColor
+                            .focusVisible,
+                    outline: `2px solid ${multiSelectTokens.menu.item.optionsLabel.color.focusVisible}`,
+                    outlineOffset: '-2px',
+                },
             })}
         >
             <PrimitiveText

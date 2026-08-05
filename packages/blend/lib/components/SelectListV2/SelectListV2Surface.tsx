@@ -1,9 +1,9 @@
-import { useCallback, useRef } from 'react'
-import type { KeyboardEvent, ReactNode, RefObject, UIEvent } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
+import type { KeyboardEvent, ReactNode, RefObject } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { SearchInput } from '../Inputs'
+import SearchInputV2 from '../InputsV2/SearchInputV2/SearchInputV2'
 import SelectSearchStatus from '../Select/SelectSearchStatus'
 import { DEFAULT_END_REACHED_THRESHOLD } from '../SingleSelectV2/utils'
 import type { SelectListV2ChromeTokens } from './selectListV2.types'
@@ -56,6 +56,9 @@ export type SelectListV2SurfaceProps = {
     onEndReached?: () => void
     endReachedThreshold?: number
     hasMore?: boolean
+    isLoadingMore?: boolean
+    /** Changes when the rendered page/search result set changes. */
+    paginationKey?: string | number
     loadingComponent?: ReactNode
 }
 
@@ -84,16 +87,20 @@ const SelectListV2Surface = ({
     onEndReached,
     endReachedThreshold = DEFAULT_END_REACHED_THRESHOLD,
     hasMore,
+    isLoadingMore = false,
+    paginationKey,
     loadingComponent,
 }: SelectListV2SurfaceProps) => {
     // Latches so one slow page-load cannot fire onEndReached on every scroll
     // event; resets once the user scrolls back out of the threshold band.
     const endReachedFiredRef = useRef(false)
+    const scrollRef = useRef<HTMLDivElement>(null)
+    const previousSearchValueRef = useRef(searchValue)
+    const searchResetPendingRef = useRef(false)
 
-    const handleScroll = useCallback(
-        (e: UIEvent<HTMLDivElement>) => {
-            if (!onEndReached || !hasMore) return
-            const el = e.currentTarget
+    const maybeFireEndReached = useCallback(
+        (el: HTMLElement | null) => {
+            if (!el || !onEndReached || !hasMore || isLoadingMore) return
             const distanceFromBottom =
                 el.scrollHeight - (el.scrollTop + el.clientHeight)
 
@@ -105,8 +112,38 @@ const SelectListV2Surface = ({
             endReachedFiredRef.current = true
             onEndReached()
         },
-        [onEndReached, hasMore, endReachedThreshold]
+        [onEndReached, hasMore, endReachedThreshold, isLoadingMore]
     )
+
+    // A first page shorter than the viewport produces no scroll event at all,
+    // so a scroll-only trigger would stall pagination forever and look
+    // identical to "no more data". Re-arm after a page completes or the
+    // filtered result set changes, then check the new geometry immediately.
+    useEffect(() => {
+        if (previousSearchValueRef.current !== searchValue) {
+            previousSearchValueRef.current = searchValue
+            searchResetPendingRef.current = true
+            endReachedFiredRef.current = false
+        }
+
+        // Search changes can temporarily render the skeleton, which removes
+        // the scroll area. Keep the reset pending until the new viewport is
+        // mounted so pagination cannot use the previous query's scrollTop.
+        if (searchResetPendingRef.current && scrollRef.current) {
+            scrollRef.current.scrollTop = 0
+            searchResetPendingRef.current = false
+            endReachedFiredRef.current = false
+        }
+
+        if (!isLoadingMore) endReachedFiredRef.current = false
+        maybeFireEndReached(scrollRef.current)
+    }, [
+        maybeFireEndReached,
+        paginationKey,
+        isLoadingMore,
+        searchValue,
+        skeleton,
+    ])
 
     if (skeleton) {
         return (
@@ -130,13 +167,15 @@ const SelectListV2Surface = ({
             gap={chrome.gap}
         >
             {showSearch && (
-                <SearchInput
+                <SearchInputV2
                     ref={searchInputRef}
                     value={searchValue}
                     placeholder={searchPlaceholder}
                     disabled={disabled}
                     aria-label={searchPlaceholder}
-                    aria-controls={listId}
+                    // The listbox only exists in the non-empty branch; pointing
+                    // aria-controls at a missing id is worse than omitting it.
+                    aria-controls={isEmpty ? undefined : listId}
                     onChange={(e) => onSearchChange(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key !== 'ArrowDown') return
@@ -149,9 +188,14 @@ const SelectListV2Surface = ({
             {header}
 
             <ScrollArea
+                ref={scrollRef}
                 data-element="select-list-scroll"
                 style={maxHeight !== undefined ? { maxHeight } : undefined}
-                onScroll={onEndReached ? handleScroll : undefined}
+                onScroll={
+                    onEndReached
+                        ? (e) => maybeFireEndReached(e.currentTarget)
+                        : undefined
+                }
             >
                 <SelectSearchStatus
                     isControlled={isSearchControlled && showSearch}

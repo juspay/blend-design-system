@@ -1,4 +1,4 @@
-import { useCallback, useId, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useId, useMemo, useRef } from 'react'
 import Block from '../Primitives/Block/Block'
 import InputLabels from '../Inputs/utils/InputLabels/InputLabels'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -19,10 +19,7 @@ import {
 } from '../Select/selectUtils'
 import { useSelectSearchController } from '../Select/useSelectSearchController'
 import type { VirtualListRef } from '../VirtualList/types'
-import {
-    getBaseVirtualViewportHeight,
-    VIRTUAL_DEFAULT_VIEWPORT,
-} from '../common/virtualViewport'
+import { getBaseVirtualViewportHeight } from '../common/virtualViewport'
 import type {
     SelectListV2ChromeTokens,
     SelectListV2ItemType,
@@ -34,6 +31,7 @@ import { useSelectListNavigation } from './useSelectListNavigation'
 import {
     countSelectListV2Options,
     flattenSelectListV2Groups,
+    SELECT_LIST_V2_VIRTUALIZE_HINT,
     getSelectListV2FocusTargets,
     warnOnce,
 } from './utils'
@@ -62,12 +60,13 @@ const SelectListV2 = ({
     variant = SelectV2Variant.CONTAINER,
     search,
     maxHeight,
-    enableVirtualization = false,
-    virtualListItemHeight = 48,
+    enableVirtualization,
+    virtualListItemHeight = 58,
     virtualListOverscan = 5,
     onEndReached,
     endReachedThreshold,
     hasMore,
+    isLoadingMore = false,
     loadingComponent,
     skeleton,
     allowCustomValue = false,
@@ -108,6 +107,7 @@ const SelectListV2 = ({
     })
     const searchInputRef = useRef<HTMLInputElement>(null)
     const virtualListRef = useRef<VirtualListRef>(null)
+    const previousSearchTextRef = useRef(searchText)
 
     const hasMatch = useMemo(
         () => hasExactMatch(valueForSearchBehavior, items),
@@ -143,6 +143,28 @@ const SelectListV2 = ({
         [filteredItems]
     )
     const optionCount = useMemo(() => countSelectListV2Options(rows), [rows])
+    const shouldVirtualize =
+        enableVirtualization ?? optionCount > SELECT_LIST_V2_VIRTUALIZE_HINT
+    const effectiveMaxHeight = maxHeight ?? 320
+
+    useEffect(() => {
+        if (shouldVirtualize && previousSearchTextRef.current !== searchText) {
+            virtualListRef.current?.scrollTo(0)
+        }
+        previousSearchTextRef.current = searchText
+    }, [shouldVirtualize, searchText])
+
+    if (
+        enableVirtualization === false &&
+        optionCount > SELECT_LIST_V2_VIRTUALIZE_HINT
+    ) {
+        warnOnce(
+            'selectlistv2-unvirtualized',
+            `[Blend] SelectListV2 is rendering ${optionCount} options without enableVirtualization. ` +
+                'Every row mounts its own ResizeObserver, so lists this long will stutter. ' +
+                'Set enableVirtualization and a maxHeight.'
+        )
+    }
 
     const isItemDisabled = useCallback(
         (item: SelectListV2ItemType) => Boolean(disabled || item.disabled),
@@ -171,15 +193,15 @@ const SelectListV2 = ({
     const handleTypeahead = useCallback(
         (key: string) => {
             searchInputRef.current?.focus()
-            dispatchUserValue(searchText + key)
+            dispatchUserValue((previous) => previous + key)
         },
-        [dispatchUserValue, searchText]
+        [dispatchUserValue]
     )
 
     const { activeItemIndex, getItemRef, handleKeyDown, focusFirstItem } =
         useSelectListNavigation({
             targets: focusTargets,
-            virtualListRef: enableVirtualization ? virtualListRef : undefined,
+            virtualListRef: shouldVirtualize ? virtualListRef : undefined,
             onTypeahead: isSearchEnabled ? handleTypeahead : undefined,
         })
 
@@ -213,17 +235,17 @@ const SelectListV2 = ({
         search?.emptyStateText ||
         (!hasSourceItems ? 'No items available' : 'No results found')
 
-    const virtualization = enableVirtualization
+    const virtualization = shouldVirtualize
         ? {
-              height: maxHeight
-                  ? getBaseVirtualViewportHeight(maxHeight)
-                  : VIRTUAL_DEFAULT_VIEWPORT,
+              height: getBaseVirtualViewportHeight(effectiveMaxHeight),
               itemHeight: virtualListItemHeight,
               overscan: virtualListOverscan,
               listRef: virtualListRef,
               onEndReached,
               endReachedThreshold,
               hasMore,
+              isLoadingMore,
+              paginationKey: `${searchText}:${rows.length}`,
           }
         : undefined
 
@@ -238,12 +260,7 @@ const SelectListV2 = ({
             gap={tokens.gap}
         >
             {label && (
-                <InputLabels
-                    label={label}
-                    name={uniqueName}
-                    labelId={labelId}
-                    tokens={tokens}
-                />
+                <InputLabels label={label} labelId={labelId} tokens={tokens} />
             )}
 
             <SelectListV2Surface
@@ -272,14 +289,17 @@ const SelectListV2 = ({
                         />
                     ) : undefined
                 }
-                maxHeight={virtualization ? undefined : maxHeight}
+                maxHeight={virtualization ? undefined : effectiveMaxHeight}
                 onListKeyDown={handleKeyDown}
+                paginationKey={`${searchText}:${rows.length}`}
+                isLoadingMore={isLoadingMore}
                 {...(virtualization
                     ? {}
                     : {
                           onEndReached,
                           endReachedThreshold,
                           hasMore,
+                          isLoadingMore,
                           loadingComponent,
                       })}
             >

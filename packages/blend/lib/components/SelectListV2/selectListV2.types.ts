@@ -94,6 +94,7 @@ export type SelectListV2BaseProps = {
     search?: SelectV2SearchConfig
     /** Caps the scroll viewport. Also sets the virtualized viewport height. */
     maxHeight?: number
+    /** Auto-enables virtualization above 20 options; pass false to opt out. */
     enableVirtualization?: boolean
     virtualListItemHeight?: number
     virtualListOverscan?: number
@@ -101,6 +102,8 @@ export type SelectListV2BaseProps = {
     onEndReached?: () => void
     endReachedThreshold?: number
     hasMore?: boolean
+    /** True while the consumer is fetching the next page. */
+    isLoadingMore?: boolean
     loadingComponent?: ReactNode
     /** Replaces the whole body; zero tab stops, `aria-busy="true"`. */
     skeleton?: SelectV2SkeletonProps
@@ -132,7 +135,14 @@ export type MultiSelectListV2Props = SelectListV2BaseProps & {
     /** Adds an explicit clear-all action below the select-all row. */
     showClearAll?: boolean
     clearAllText?: string
-    /** Overrides the default clear-all behaviour of emptying the selection. */
+    /**
+     * Replaces the default clear-all behaviour of emptying the selection.
+     *
+     * This is a full override: neither `onChange` nor `onSelectionChange` fires
+     * when it is supplied, unlike every other gesture. Because `selectedValues`
+     * is controlled, you own clearing it — if you do not, the button appears
+     * inert.
+     */
     onClearAll?: () => void
     maxSelections?: number
 }

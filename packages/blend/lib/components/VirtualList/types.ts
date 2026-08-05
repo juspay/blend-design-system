@@ -21,6 +21,8 @@ export type VirtualListProps<T> = {
     endReachedThreshold?: number // Distance from bottom to trigger onEndReached
     isLoading?: boolean
     hasMore?: boolean
+    /** Re-arms pagination when the caller replaces or appends the data set. */
+    paginationKey?: string | number
     className?: string
     style?: React.CSSProperties
 }

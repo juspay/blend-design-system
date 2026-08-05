@@ -7,6 +7,13 @@ import type {
 const isDev = process.env.NODE_ENV !== 'production'
 const warned = new Set<string>()
 
+/**
+ * Option count past which virtualization is enabled by default. Each row
+ * mounts a ResizeObserver for truncation detection, so larger lists should
+ * use the existing VirtualList path unless the consumer explicitly opts out.
+ */
+export const SELECT_LIST_V2_VIRTUALIZE_HINT = 20
+
 /** Dev-only, once per distinct message, so a long list cannot flood the console. */
 export const warnOnce = (key: string, message: string): void => {
     if (!isDev || warned.has(key)) return
@@ -80,10 +87,32 @@ export const flattenSelectListV2Groups = (
 export const countSelectListV2Options = (rows: SelectListV2Row[]): number =>
     rows.reduce((count, row) => (row.kind === 'item' ? count + 1 : count), 0)
 
+/**
+ * Values a select-all gesture may touch: exactly the options this surface
+ * renders.
+ *
+ * `MultiSelectV2`'s `getAllAvailableValues` recurses into `subMenu`, which is
+ * correct for the dropdown because it renders nested items in a popover. This
+ * surface drops `subMenu` children, so reusing that helper would let Select All
+ * push values for rows the user never saw into `onSelectionChange` — invisible
+ * selections they cannot untick, an inflated `maxSelections` count, and a
+ * select-all checkbox stuck short of "all".
+ */
+export const getSelectListV2AvailableValues = (
+    groups: SelectListV2GroupType[]
+): string[] =>
+    groups.flatMap((group) =>
+        group.items
+            .filter((item) => !item.disabled && !item.alwaysSelected)
+            .map((item) => item.value)
+    )
+
 export type SelectListV2FocusTarget = {
     itemIndex: number
     /** Index into the flattened rows, used to scroll a virtualized row in. */
     rowIndex: number
+    /** Stable item identity, used to cancel stale virtual focus handoffs. */
+    value: string
     disabled: boolean
 }
 
@@ -96,6 +125,7 @@ export const getSelectListV2FocusTargets = (
             targets.push({
                 itemIndex: row.itemIndex,
                 rowIndex,
+                value: row.item.value,
                 disabled: isRowDisabled(row),
             })
         }

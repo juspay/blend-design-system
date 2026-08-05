@@ -23,6 +23,12 @@ import type { SelectDrawerProps } from '../types'
  * `tooltip` or `alwaysSelected`, has no keyboard support, and drops every
  * `groupLabel` as soon as the user searches. `MultiSelectListV2` takes the
  * standard `MultiSelectV2GroupType` item model and is APG listbox-conformant.
+ *
+ * Not a drop-in: `MultiSelectListV2` is an inline list only. It has no `open`
+ * state, no overlay, and no staged Confirm/Cancel — selection is applied
+ * immediately. To keep this component's modal, staged-selection UX, render
+ * `MultiSelectListV2` inside your own `DrawerV2` with your own footer buttons
+ * and hold the pending selection in local state until Confirm.
  */
 export const MultiSelectDrawer = ({
     open,
@@ -374,6 +380,11 @@ export const MultiSelectDrawer = ({
  * `tooltip` or `alwaysSelected`, has no keyboard support, and drops every
  * `groupLabel` as soon as the user searches. `SelectListV2` takes the
  * standard `SingleSelectV2GroupType` item model and is APG listbox-conformant.
+ *
+ * Not a drop-in: `SelectListV2` is an inline list only. It has no `open` state,
+ * no overlay, and no staged Confirm/Cancel — selection is applied immediately.
+ * To keep this component's modal UX, render `SelectListV2` inside your own
+ * `DrawerV2` with your own footer buttons.
  */
 export const SingleSelectDrawer = ({
     open,

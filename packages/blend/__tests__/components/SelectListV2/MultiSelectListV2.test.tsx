@@ -1,10 +1,8 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor, within } from '../../test-utils'
-import {
-    MultiSelectListV2,
-    resetSelectListV2Warnings,
-} from '../../../lib/components/SelectListV2'
+import { render, screen, waitFor, within, fireEvent } from '../../test-utils'
+import { MultiSelectListV2 } from '../../../lib/components/SelectListV2'
+import { resetSelectListV2Warnings } from '../../../lib/components/SelectListV2/utils'
 import {
     SelectV2Size,
     SelectV2Variant,
@@ -822,6 +820,175 @@ describe('MultiSelectListV2', () => {
             const pinned = screen.getByRole('option', { name: 'Pinned' })
             expect(pinned).toHaveAttribute('aria-disabled', 'true')
         })
+
+        it('hides the select-all row entirely when every item is disabled or alwaysSelected (no available values)', () => {
+            render(
+                <MultiSelectListV2
+                    label="Pick"
+                    items={[
+                        {
+                            items: [
+                                {
+                                    label: 'Pinned',
+                                    value: 'pinned',
+                                    alwaysSelected: true,
+                                },
+                                {
+                                    label: 'Off limits',
+                                    value: 'off',
+                                    disabled: true,
+                                },
+                            ],
+                        },
+                    ]}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    enableSelectAll
+                    selectAllText="Select All"
+                />
+            )
+            expect(
+                screen.queryByRole('checkbox', { name: 'Select All' })
+            ).not.toBeInTheDocument()
+        })
+
+        it('does not emit legacy per-item onChange for bulk select-all gestures', async () => {
+            const onChange = vi.fn()
+            const onSelectionChange = vi.fn()
+            const { user, rerender } = render(
+                <MultiSelectListV2
+                    label="Pick"
+                    items={basicItems()}
+                    selectedValues={[]}
+                    onChange={onChange}
+                    onSelectionChange={onSelectionChange}
+                    enableSelectAll
+                    selectAllText="Select All"
+                />
+            )
+            await user.click(
+                screen.getByRole('checkbox', { name: 'Select All' })
+            )
+            // Cherry is disabled, so only Apple/Banana are in scope.
+            expect(onChange).not.toHaveBeenCalled()
+            expect(onSelectionChange).toHaveBeenCalledWith(['apple', 'banana'])
+
+            onChange.mockClear()
+            onSelectionChange.mockClear()
+            rerender(
+                <MultiSelectListV2
+                    label="Pick"
+                    items={basicItems()}
+                    selectedValues={['apple', 'banana']}
+                    onChange={onChange}
+                    onSelectionChange={onSelectionChange}
+                    enableSelectAll
+                    selectAllText="Select All"
+                />
+            )
+            await user.click(
+                screen.getByRole('checkbox', { name: 'Select All' })
+            )
+            expect(onChange).not.toHaveBeenCalled()
+            expect(onSelectionChange).toHaveBeenCalledWith([])
+        })
+
+        it('with controlled search, select-all scope covers the full items prop and excludes the synthetic custom-value row', async () => {
+            const onSelectionChange = vi.fn()
+            const { user } = render(
+                <MultiSelectListV2
+                    label="Pick"
+                    items={basicItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    onSelectionChange={onSelectionChange}
+                    enableSelectAll
+                    selectAllText="Select All"
+                    allowCustomValue
+                    search={{
+                        show: true,
+                        searchText: 'mango',
+                        onSearchChange: () => {},
+                    }}
+                />
+            )
+            expect(screen.getByText('Specify: "mango"')).toBeInTheDocument()
+
+            await user.click(
+                screen.getByRole('checkbox', { name: 'Select All' })
+            )
+            // The synthetic custom-value row is not part of the caller's
+            // `items`, so it must not be swept up by select-all.
+            expect(onSelectionChange).toHaveBeenCalledWith(['apple', 'banana'])
+        })
+
+        it('the select-all row (as a checkbox widget, not a menu item) toggles on Enter and Space', async () => {
+            const onSelectionChange = vi.fn()
+            const { user, rerender } = render(
+                <MultiSelectListV2
+                    label="Pick"
+                    items={basicItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    onSelectionChange={onSelectionChange}
+                    enableSelectAll
+                    selectAllText="Select All"
+                />
+            )
+            const selectAll = screen.getByRole('checkbox', {
+                name: 'Select All',
+            })
+            selectAll.focus()
+            await user.keyboard('{Enter}')
+            expect(onSelectionChange).toHaveBeenLastCalledWith([
+                'apple',
+                'banana',
+            ])
+
+            onSelectionChange.mockClear()
+            rerender(
+                <MultiSelectListV2
+                    label="Pick"
+                    items={basicItems()}
+                    selectedValues={['apple', 'banana']}
+                    onChange={() => {}}
+                    onSelectionChange={onSelectionChange}
+                    enableSelectAll
+                    selectAllText="Select All"
+                />
+            )
+            screen.getByRole('checkbox', { name: 'Select All' }).focus()
+            await user.keyboard(' ')
+            expect(onSelectionChange).toHaveBeenLastCalledWith([])
+        })
+
+        it('the select-all row respects the list-wide `disabled` prop: aria-disabled, no tab stop, and clicks/keys are no-ops', async () => {
+            const onSelectionChange = vi.fn()
+            const { user } = render(
+                <MultiSelectListV2
+                    label="Pick"
+                    items={basicItems()}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    onSelectionChange={onSelectionChange}
+                    enableSelectAll
+                    selectAllText="Select All"
+                    disabled
+                />
+            )
+            const selectAll = screen.getByRole('checkbox', {
+                name: 'Select All',
+            })
+            expect(selectAll).toHaveAttribute('aria-disabled', 'true')
+            expect(selectAll).toHaveAttribute('tabIndex', '-1')
+
+            await user.click(selectAll)
+            expect(onSelectionChange).not.toHaveBeenCalled()
+
+            selectAll.focus()
+            await user.keyboard('{Enter}')
+            expect(onSelectionChange).not.toHaveBeenCalled()
+        })
     })
 
     describe('showClearAll', () => {
@@ -856,18 +1023,20 @@ describe('MultiSelectListV2', () => {
         })
 
         it('clears the selection by default, and onClearAll overrides that behaviour', async () => {
+            const onChange = vi.fn()
             const onSelectionChange = vi.fn()
             const { user } = render(
                 <MultiSelectListV2
                     label="Pick"
                     items={basicItems()}
                     selectedValues={['apple', 'banana']}
-                    onChange={() => {}}
+                    onChange={onChange}
                     onSelectionChange={onSelectionChange}
                     showClearAll
                 />
             )
             await user.click(screen.getByRole('button', { name: /clear/i }))
+            expect(onChange).not.toHaveBeenCalled()
             expect(onSelectionChange).toHaveBeenCalledWith([])
         })
 
@@ -950,6 +1119,29 @@ describe('MultiSelectListV2', () => {
             )
             expect(onSelectionChange).toHaveBeenCalledWith(['apple'])
         })
+
+        it('disables select-all when maxSelections leaves no capacity', async () => {
+            const onSelectionChange = vi.fn()
+            const { user } = render(
+                <MultiSelectListV2
+                    label="Pick"
+                    items={basicItems()}
+                    selectedValues={[]}
+                    onSelectionChange={onSelectionChange}
+                    enableSelectAll
+                    selectAllText="Select All"
+                    maxSelections={0}
+                />
+            )
+            const selectAll = screen.getByRole('checkbox', {
+                name: 'Select All',
+            })
+            expect(selectAll).toHaveAttribute('aria-disabled', 'true')
+            expect(selectAll).toHaveAttribute('tabIndex', '-1')
+
+            await user.click(selectAll)
+            expect(onSelectionChange).not.toHaveBeenCalled()
+        })
     })
 
     describe('Virtualization', () => {
@@ -993,6 +1185,49 @@ describe('MultiSelectListV2', () => {
             expect(document.activeElement).toHaveAttribute(
                 'aria-posinset',
                 '5000'
+            )
+        })
+
+        it('re-arms virtual pagination when a new page changes the row set', async () => {
+            const onEndReached = vi.fn()
+            const { rerender } = render(
+                <MultiSelectListV2
+                    label="Paged"
+                    items={bigItems(20)}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    enableVirtualization
+                    endReachedThreshold={2200}
+                    hasMore
+                    onEndReached={onEndReached}
+                />
+            )
+
+            await waitFor(
+                () => {
+                    expect(onEndReached).toHaveBeenCalledTimes(1)
+                },
+                { timeout: 5000 }
+            )
+
+            rerender(
+                <MultiSelectListV2
+                    label="Paged"
+                    items={bigItems(40)}
+                    selectedValues={[]}
+                    onChange={() => {}}
+                    enableVirtualization
+                    endReachedThreshold={2200}
+                    hasMore
+                    onEndReached={onEndReached}
+                />
+            )
+
+            await waitFor(
+                () => {
+                    expect(onEndReached).toHaveBeenCalledTimes(2)
+                },
+                { timeout: 5000 }
             )
         })
 
@@ -1083,5 +1318,92 @@ describe('MultiSelectListV2', () => {
         // math unassertable. The virtualized onEndReached test above covers
         // the same wiring via VirtualList's analytically-computed distance.
         it.skip('fires onEndReached once the non-virtualized scroll area nears the bottom (unreliable in jsdom, see comment)', () => {})
+
+        // Same technique as SelectListV2: override scrollHeight/clientHeight
+        // at the prototype level (both for the mount-time re-check and the
+        // scroll handler) so the latch's real distance-from-bottom math runs
+        // against non-zero geometry instead of jsdom's always-0 layout.
+        // scrollTop is a real, directly-settable jsdom property. Exercised
+        // here too since MultiSelectListV2 renders its own instance of the
+        // shared SelectListV2Surface.
+        it('fires onEndReached once inside the threshold band, then re-arms after scrolling back out', () => {
+            const originalScrollHeight = Object.getOwnPropertyDescriptor(
+                HTMLElement.prototype,
+                'scrollHeight'
+            )
+            const originalClientHeight = Object.getOwnPropertyDescriptor(
+                HTMLElement.prototype,
+                'clientHeight'
+            )
+            Object.defineProperty(HTMLElement.prototype, 'scrollHeight', {
+                configurable: true,
+                get: () => 1000,
+            })
+            Object.defineProperty(HTMLElement.prototype, 'clientHeight', {
+                configurable: true,
+                get: () => 300,
+            })
+
+            try {
+                const onEndReached = vi.fn()
+                const { container } = render(
+                    <MultiSelectListV2
+                        label="Pick"
+                        items={basicItems()}
+                        selectedValues={[]}
+                        onChange={() => {}}
+                        hasMore
+                        endReachedThreshold={50}
+                        onEndReached={onEndReached}
+                    />
+                )
+                const scrollEl = container.querySelector(
+                    '[data-element="select-list-scroll"]'
+                ) as HTMLElement
+
+                // Mount check: distance = 1000 - (0 + 300) = 700 > 50, so it
+                // does not fire just from mounting far from the bottom.
+                expect(onEndReached).not.toHaveBeenCalled()
+
+                // Far from bottom, explicit scroll event: still > 50.
+                scrollEl.scrollTop = 0
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).not.toHaveBeenCalled()
+
+                // Inside the band: distance = 1000 - (680 + 300) = 20 <= 50.
+                scrollEl.scrollTop = 680
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).toHaveBeenCalledTimes(1)
+
+                // Still inside the band: the latch must not refire.
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).toHaveBeenCalledTimes(1)
+
+                // Back out of the band, the latch resets but does not itself fire.
+                scrollEl.scrollTop = 0
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).toHaveBeenCalledTimes(1)
+
+                // Back inside the band: the re-armed latch fires again.
+                scrollEl.scrollTop = 680
+                fireEvent.scroll(scrollEl)
+                expect(onEndReached).toHaveBeenCalledTimes(2)
+            } finally {
+                if (originalScrollHeight) {
+                    Object.defineProperty(
+                        HTMLElement.prototype,
+                        'scrollHeight',
+                        originalScrollHeight
+                    )
+                }
+                if (originalClientHeight) {
+                    Object.defineProperty(
+                        HTMLElement.prototype,
+                        'clientHeight',
+                        originalClientHeight
+                    )
+                }
+            }
+        })
     })
 })

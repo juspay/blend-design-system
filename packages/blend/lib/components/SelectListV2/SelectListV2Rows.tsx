@@ -18,6 +18,8 @@ export type SelectListV2VirtualizationConfig = {
     onEndReached?: () => void
     endReachedThreshold?: number
     hasMore?: boolean
+    isLoadingMore?: boolean
+    paginationKey?: string | number
 }
 
 export type SelectListV2RowsProps = {
@@ -29,7 +31,10 @@ export type SelectListV2RowsProps = {
     onToggle: (value: string) => void
     isItemDisabled: (item: SelectListV2ItemType) => boolean
     activeItemIndex: number
-    getItemRef: (itemIndex: number) => (node: HTMLElement | null) => void
+    getItemRef: (
+        itemIndex: number,
+        value: string
+    ) => (node: HTMLElement | null) => void
     /** Total option count, for `aria-setsize` on every rendered option. */
     optionCount: number
     virtualization?: SelectListV2VirtualizationConfig
@@ -88,6 +93,11 @@ const SelectListV2Rows = ({
         />
     )
 
+    const groupLabels = new Map<number, string>()
+    rows.forEach((row) => {
+        if (row.kind === 'label') groupLabels.set(row.groupIndex, row.label)
+    })
+
     const renderOption = (row: Extract<SelectListV2Row, { kind: 'item' }>) => {
         const disabled = isItemDisabled(row.item)
         return (
@@ -103,7 +113,7 @@ const SelectListV2Rows = ({
                           selected: selectedValues[0] ?? '',
                           showCheckmark: true,
                       })}
-                ref={getItemRef(row.itemIndex)}
+                ref={getItemRef(row.itemIndex, row.item.value)}
                 item={{ ...row.item, disabled }}
                 onSelect={onToggle}
                 itemTokens={chrome.itemTokens}
@@ -112,6 +122,9 @@ const SelectListV2Rows = ({
                 role="option"
                 ariaSetSize={optionCount}
                 ariaPosInSet={row.itemIndex + 1}
+                ariaDescription={
+                    virtualization ? groupLabels.get(row.groupIndex) : undefined
+                }
                 tabIndex={
                     row.itemIndex === activeItemIndex && !disabled ? 0 : -1
                 }
@@ -144,16 +157,27 @@ const SelectListV2Rows = ({
                     onEndReached={virtualization.onEndReached}
                     endReachedThreshold={virtualization.endReachedThreshold}
                     hasMore={virtualization.hasMore}
+                    isLoading={virtualization.isLoadingMore}
+                    paginationKey={virtualization.paginationKey}
                     renderItem={({ item }) => {
                         const row = item as SelectListV2Row
-                        if (row.kind === 'label')
-                            return renderGroupLabel(row.label)
-                        if (row.kind === 'separator') return renderSeparator()
-                        return (
-                            <Block width="100%" style={{ minWidth: 0 }}>
-                                {renderOption(row)}
+                        const renderFixedRow = (content: ReactNode) => (
+                            <Block
+                                width="100%"
+                                style={{
+                                    minWidth: 0,
+                                    height: virtualization.itemHeight,
+                                    overflow: 'hidden',
+                                }}
+                            >
+                                {content}
                             </Block>
                         )
+                        if (row.kind === 'label')
+                            return renderFixedRow(renderGroupLabel(row.label))
+                        if (row.kind === 'separator')
+                            return renderFixedRow(renderSeparator())
+                        return renderFixedRow(renderOption(row))
                     }}
                 />
                 {virtualization.hasMore && loadingComponent}
@@ -170,9 +194,10 @@ const SelectListV2Rows = ({
         separator: boolean
     }
     const groups: RenderGroup[] = []
+    const groupsByIndex = new Map<number, RenderGroup>()
 
     rows.forEach((row) => {
-        let group = groups.find((g) => g.groupIndex === row.groupIndex)
+        let group = groupsByIndex.get(row.groupIndex)
         if (!group) {
             group = {
                 groupIndex: row.groupIndex,
@@ -180,6 +205,7 @@ const SelectListV2Rows = ({
                 separator: false,
             }
             groups.push(group)
+            groupsByIndex.set(row.groupIndex, group)
         }
         if (row.kind === 'label') group.label = row.label
         else if (row.kind === 'separator') group.separator = true

@@ -110,6 +110,8 @@ type SelectItemV2BaseProps = {
     ariaSetSize?: number
     /** 1-based position of this option within `ariaSetSize`. */
     ariaPosInSet?: number
+    /** Optional accessible description, used for virtualized group context. */
+    ariaDescription?: string
     /**
      * Renders the multi-select checkbox as a read-only visual instead of a
      * live `Checkbox`. Required when the row itself carries a widget role: a

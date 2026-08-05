@@ -149,8 +149,8 @@ per-item toggle callback and remains supported for compatibility.
 - **Select All / Clear All**: optional header controls, both scoped to what
   search currently shows
 - **Max Selections**: cap the number of selectable items
-- **Virtualization**: for large datasets
-- **Infinite Scroll**: \`hasMore\` + \`onEndReached\` (requires \`enableVirtualization\`)
+- **Virtualization**: auto-enabled above 20 options; use \`enableVirtualization\` to override
+- **Infinite Scroll**: \`hasMore\` + \`onEndReached\`; pass \`isLoadingMore\` while fetching so pages and search results re-arm safely
 - **Accessibility**: full keyboard navigation and screen reader support
 `,
             },
@@ -448,7 +448,7 @@ export const InfiniteScroll: Story = {
     parameters: {
         docs: {
             description: {
-                story: 'Pages in more items as the virtualized viewport nears the end (`hasMore` + `onEndReached`), rendering `loadingComponent` while more remain. Infinite scroll only takes effect when `enableVirtualization` is set — the non-virtualized render path has no scroll-tracking to drive it.',
+                story: 'Pages in more items as the viewport nears the end (`hasMore` + `onEndReached`), rendering `loadingComponent` while more remain. Both virtualized and non-virtualized lists re-arm pagination as new items arrive; pass `isLoadingMore` while an async page is in flight.',
             },
         },
     },

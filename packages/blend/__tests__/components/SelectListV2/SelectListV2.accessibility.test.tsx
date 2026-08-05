@@ -2,10 +2,8 @@ import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, within } from '../../test-utils'
 import { axe } from 'jest-axe'
-import {
-    SelectListV2,
-    resetSelectListV2Warnings,
-} from '../../../lib/components/SelectListV2'
+import { SelectListV2 } from '../../../lib/components/SelectListV2'
+import { resetSelectListV2Warnings } from '../../../lib/components/SelectListV2/utils'
 
 const basicItems = () => [
     {

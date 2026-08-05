@@ -32,7 +32,20 @@ export const useSelectListNavigation = ({
 }: UseSelectListNavigationOptions) => {
     const [activeItemIndex, setActiveItemIndex] = useState(0)
     const itemRefs = useRef(new Map<number, HTMLElement>())
-    const pendingFocusRef = useRef<number | null>(null)
+    const pendingFocusRef = useRef<{
+        itemIndex: number
+        value: string
+    } | null>(null)
+    // Stable per-row ref callbacks, so rows are not detached on every render.
+    const refCallbacks = useRef(
+        new Map<
+            number,
+            {
+                value: string
+                callback: (node: HTMLElement | null) => void
+            }
+        >()
+    )
 
     const firstEnabled = getFirstEnabled(targets)
 
@@ -46,17 +59,48 @@ export const useSelectListNavigation = ({
                 ? current
                 : firstEnabled
         )
+
+        const liveIndices = new Set(targets.map((target) => target.itemIndex))
+
+        // `itemIndex` is positional, not a stable id. If the list reshapes
+        // before a pending virtualized row mounts (typing into search is the
+        // common case), a different item can land on that ordinal and would be
+        // force-focused later, yanking focus out from under the user.
+        if (pendingFocusRef.current !== null) {
+            const pendingTarget = targets.find(
+                (target) =>
+                    target.itemIndex === pendingFocusRef.current?.itemIndex
+            )
+            if (
+                !pendingTarget ||
+                pendingTarget.value !== pendingFocusRef.current.value
+            ) {
+                pendingFocusRef.current = null
+            }
+        }
+
+        // Infinite scroll keeps minting new ordinals; without pruning, one
+        // closure per row ever seen is retained for the life of the component.
+        refCallbacks.current.forEach((_, itemIndex) => {
+            if (!liveIndices.has(itemIndex)) {
+                refCallbacks.current.delete(itemIndex)
+                itemRefs.current.delete(itemIndex)
+            }
+        })
     }, [targets, firstEnabled])
 
     const registerItemRef = useCallback(
-        (itemIndex: number, node: HTMLElement | null) => {
+        (itemIndex: number, value: string, node: HTMLElement | null) => {
             if (!node) {
                 itemRefs.current.delete(itemIndex)
                 return
             }
             itemRefs.current.set(itemIndex, node)
             // A virtualized row requested below may only mount now.
-            if (pendingFocusRef.current === itemIndex) {
+            if (
+                pendingFocusRef.current?.itemIndex === itemIndex &&
+                pendingFocusRef.current.value === value
+            ) {
                 pendingFocusRef.current = null
                 node.focus()
             }
@@ -64,17 +108,13 @@ export const useSelectListNavigation = ({
         []
     )
 
-    // Stable per-row ref callbacks, so rows are not detached on every render.
-    const refCallbacks = useRef(
-        new Map<number, (node: HTMLElement | null) => void>()
-    )
     const getItemRef = useCallback(
-        (itemIndex: number) => {
+        (itemIndex: number, value: string) => {
             const cached = refCallbacks.current.get(itemIndex)
-            if (cached) return cached
+            if (cached?.value === value) return cached.callback
             const callback = (node: HTMLElement | null) =>
-                registerItemRef(itemIndex, node)
-            refCallbacks.current.set(itemIndex, callback)
+                registerItemRef(itemIndex, value, node)
+            refCallbacks.current.set(itemIndex, { value, callback })
             return callback
         },
         [registerItemRef]
@@ -95,7 +135,7 @@ export const useSelectListNavigation = ({
                 return
             }
 
-            pendingFocusRef.current = itemIndex
+            pendingFocusRef.current = { itemIndex, value: target.value }
             virtualListRef?.current?.scrollToIndex(target.rowIndex)
         },
         [targets, virtualListRef]

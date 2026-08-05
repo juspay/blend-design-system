@@ -1,9 +1,10 @@
 import { Check, Minus } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import type { CheckboxTokensType } from '../Checkbox/checkbox.token'
-import { getCheckboxIconColor } from '../Checkbox/checkboxUtils'
-import { CheckboxSize } from '../Checkbox/types'
+import type { CheckboxV2TokensType } from '../SelectorV2/CheckboxV2/checkboxV2.tokens.types'
+import { CheckboxV2CheckedState } from '../SelectorV2/CheckboxV2/checkboxV2.tokens.types'
+import { getCheckboxIconColor } from '../SelectorV2/CheckboxV2/utils'
+import { SelectorV2Size } from '../SelectorV2/selectorV2.types'
 
 export type SelectItemIndicatorProps = {
     checked: boolean | 'indeterminate'
@@ -26,15 +27,15 @@ const SelectItemIndicator = ({
     checked,
     disabled = false,
 }: SelectItemIndicatorProps) => {
-    const tokens = useResponsiveTokens<CheckboxTokensType>('CHECKBOX')
-    const size = CheckboxSize.MEDIUM
+    const tokens = useResponsiveTokens<CheckboxV2TokensType>('CHECKBOXV2')
+    const size = SelectorV2Size.MD
 
     const checkedState =
         checked === 'indeterminate'
-            ? 'indeterminate'
+            ? CheckboxV2CheckedState.INDETERMINATE
             : checked
-              ? 'checked'
-              : 'unchecked'
+              ? CheckboxV2CheckedState.CHECKED
+              : CheckboxV2CheckedState.UNCHECKED
     const interactionState = disabled ? 'disabled' : 'default'
 
     return (
@@ -47,14 +48,14 @@ const SelectItemIndicator = ({
             flexShrink={0}
             style={{
                 boxSizing: 'border-box',
-                width: tokens.indicator.width[size],
-                height: tokens.indicator.height[size],
-                borderRadius: tokens.indicator.borderRadius[size],
+                width: tokens.checkbox.width[size],
+                height: tokens.checkbox.height[size],
+                borderRadius: tokens.checkbox.borderRadius[size],
                 backgroundColor:
-                    tokens.indicator.backgroundColor[checkedState]?.[
+                    tokens.checkbox.backgroundColor[checkedState]?.[
                         interactionState
                     ],
-                border: tokens.indicator.border[checkedState]?.[
+                border: tokens.checkbox.border[checkedState]?.[
                     interactionState
                 ] as string | undefined,
                 opacity: disabled ? 0.7 : 1,
@@ -62,17 +63,19 @@ const SelectItemIndicator = ({
         >
             {checked === 'indeterminate' ? (
                 <Minus
-                    size={tokens.indicator.icon.width[size]}
+                    width={tokens.checkbox.icon.width[size]}
+                    height={tokens.checkbox.icon.height[size]}
                     color={getCheckboxIconColor(tokens, checked, disabled)}
-                    strokeWidth={tokens.indicator.icon.strokeWidth[size]}
+                    strokeWidth={tokens.checkbox.icon.strokeWidth[size]}
                     aria-hidden="true"
                     focusable={false}
                 />
             ) : checked ? (
                 <Check
-                    size={tokens.indicator.icon.width[size]}
+                    width={tokens.checkbox.icon.width[size]}
+                    height={tokens.checkbox.icon.height[size]}
                     color={getCheckboxIconColor(tokens, checked, disabled)}
-                    strokeWidth={tokens.indicator.icon.strokeWidth[size]}
+                    strokeWidth={tokens.checkbox.icon.strokeWidth[size]}
                     aria-hidden="true"
                     focusable={false}
                 />
