@@ -84,6 +84,8 @@ import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 import { getUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
+import { getSliderTokens } from '../components/Slider/slider.tokens'
+import { getSelectTokens } from '../components/Select/select.tokens'
 const computeTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
@@ -108,13 +110,14 @@ const computeTokens = (
             componentTokens.OTP_INPUT ?? getOTPInputTokens(foundationTokens),
         TOOLTIP: componentTokens.TOOLTIP ?? getTooltipTokens(foundationTokens),
         UNIT_INPUT:
-            componentTokens.UNIT_INPUT ?? getUnitInputTokens(foundationTokens),
+            componentTokens.UNIT_INPUT ??
+            getUnitInputTokens(foundationTokens, theme),
         MULTI_VALUE_INPUT:
             componentTokens.MULTI_VALUE_INPUT ??
             getMultiValueInputTokens(foundationTokens),
         DROPDOWN_INPUT:
             componentTokens.DROPDOWN_INPUT ??
-            getDropdownInputTokens(foundationTokens),
+            getDropdownInputTokens(foundationTokens, theme),
         CHECKBOX:
             componentTokens.CHECKBOX ?? getCheckboxTokens(foundationTokens),
         TABS: componentTokens.TABS ?? getTabsTokens(foundationTokens),
@@ -283,6 +286,10 @@ const computeTokens = (
         UPLOADV2:
             componentTokens.UPLOADV2 ??
             getUploadV2Tokens(foundationTokens, theme),
+        SLIDER:
+            componentTokens.SLIDER ?? getSliderTokens(foundationTokens, theme),
+        SELECT:
+            componentTokens.SELECT ?? getSelectTokens(foundationTokens, theme),
     }
 }
 

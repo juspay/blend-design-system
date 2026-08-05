@@ -5,7 +5,6 @@ import InputFooter from '../utils/InputFooter/InputFooter'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import { TextInputSize } from '../TextInput/types'
 
-import { SelectMenuAlignment } from '../../Select/types'
 import { DropdownPosition, type DropdownInputProps } from './types'
 import type { DropdownInputTokensType } from './dropdownInput.tokens'
 import { toPixels } from '../../../global-utils/GlobalUtils'
@@ -14,11 +13,12 @@ import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import {
-    SelectMenuSize,
-    SelectMenuVariant,
-    SingleSelect,
-} from '../../SingleSelect'
-import { FOUNDATION_THEME } from '../../../tokens'
+    SingleSelectV2,
+    SingleSelectV2Size,
+    SingleSelectV2Variant,
+    SingleSelectV2Alignment,
+} from '../../SingleSelectV2'
+import { useTheme } from '../../../context/ThemeContext'
 import { useErrorShake } from '../../common/useErrorShake'
 import {
     getErrorShakeStyle,
@@ -59,6 +59,7 @@ const DropdownInput = ({
     maxMenuWidth,
     ...rest
 }: DropdownInputProps) => {
+    const { foundationTokens } = useTheme()
     const dropdownInputTokens =
         useResponsiveTokens<DropdownInputTokensType>('DROPDOWN_INPUT')
 
@@ -226,31 +227,30 @@ const DropdownInput = ({
                         width={'fit-content'}
                         contentCentered
                     >
-                        <SingleSelect
+                        <SingleSelectV2
                             inline={true}
                             disabled={disabled}
                             aria-label={
                                 dropdownName || label || 'Select option'
                             }
-                            variant={SelectMenuVariant.NO_CONTAINER}
-                            size={SelectMenuSize.SMALL}
+                            variant={SingleSelectV2Variant.NO_CONTAINER}
+                            size={SingleSelectV2Size.SM}
                             placeholder={placeholder || ''}
-                            maxMenuHeight={maxMenuHeight}
-                            minMenuWidth={minMenuWidth}
-                            maxMenuWidth={maxMenuWidth}
-                            items={dropDownItems}
-                            enableSearch={true}
-                            alignOffset={-(paddingX + 2)}
-                            sideOffset={paddingX}
-                            selected={dropDownValue || ''}
-                            onSelect={(value) => {
-                                const selectedValue = Array.isArray(value)
-                                    ? value[0]
-                                    : value
-                                if (selectedValue !== undefined) {
-                                    onDropDownChange?.(selectedValue)
-                                }
+                            menuDimensions={{
+                                maxHeight: maxMenuHeight,
+                                minWidth: minMenuWidth,
+                                maxWidth: maxMenuWidth,
                             }}
+                            items={dropDownItems}
+                            search={{
+                                show: true,
+                            }}
+                            menuPosition={{
+                                alignOffset: -(paddingX + 2),
+                                sideOffset: paddingX,
+                            }}
+                            selected={dropDownValue || ''}
+                            onSelect={(value) => onDropDownChange?.(value)}
                             name={dropdownName}
                             onBlur={() => {
                                 onDropdownClose?.()
@@ -264,8 +264,11 @@ const DropdownInput = ({
 
                 <PrimitiveInput
                     id={inputId}
-                    lineHeight={FOUNDATION_THEME.unit[20]}
-                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
+                    lineHeight={foundationTokens.unit[20]}
+                    placeholderColor={
+                        dropdownInputTokens.placeholder?.color ??
+                        foundationTokens.colors.gray[400]
+                    }
                     required={required}
                     value={value}
                     type="text"
@@ -338,8 +341,10 @@ const DropdownInput = ({
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
-                        boxShadow: '0 0 0 3px #EFF6FF',
-                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                        boxShadow: foundationTokens.shadows.focusPrimary,
+                        backgroundColor:
+                            dropdownInputTokens.inputContainer.backgroundColor
+                                .focus,
                     }}
                     disabled={isInputDisabled}
                     _disabled={{
@@ -371,32 +376,32 @@ const DropdownInput = ({
                         width={'fit-content'}
                         contentCentered
                     >
-                        <SingleSelect
+                        <SingleSelectV2
                             inline={true}
                             disabled={disabled}
                             aria-label={
                                 dropdownName || label || 'Select option'
                             }
-                            variant={SelectMenuVariant.NO_CONTAINER}
-                            size={SelectMenuSize.SMALL}
+                            variant={SingleSelectV2Variant.NO_CONTAINER}
+                            size={SingleSelectV2Size.SM}
                             placeholder={placeholder || ''}
-                            maxMenuHeight={maxMenuHeight}
-                            minMenuWidth={minMenuWidth}
-                            maxMenuWidth={maxMenuWidth}
-                            items={dropDownItems}
-                            enableSearch={true}
-                            alignment={SelectMenuAlignment.END}
-                            alignOffset={-(paddingX + 2)}
-                            sideOffset={paddingX}
-                            selected={dropDownValue || ''}
-                            onSelect={(value) => {
-                                const selectedValue = Array.isArray(value)
-                                    ? value[0]
-                                    : value
-                                if (selectedValue !== undefined) {
-                                    onDropDownChange?.(selectedValue)
-                                }
+                            menuDimensions={{
+                                maxHeight: maxMenuHeight,
+                                minWidth: minMenuWidth,
+                                maxWidth: maxMenuWidth,
                             }}
+                            items={dropDownItems}
+                            search={{
+                                show: true,
+                                placeholder: placeholder || '',
+                            }}
+                            menuPosition={{
+                                alignment: SingleSelectV2Alignment.END,
+                                alignOffset: -(paddingX + 2),
+                                sideOffset: paddingX,
+                            }}
+                            selected={dropDownValue || ''}
+                            onSelect={(value) => onDropDownChange?.(value)}
                             name={dropdownName}
                             onBlur={() => {
                                 onDropdownClose?.()

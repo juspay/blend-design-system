@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, useId } from 'react'
 import { UnitInputSize, type UnitInputProps, UnitPosition } from './types'
-import { FOUNDATION_THEME } from '../../../tokens'
 import Text from '../../Text/Text'
 import Block from '../../Primitives/Block/Block'
 import InputLabels from '../utils/InputLabels/InputLabels'
@@ -12,6 +11,7 @@ import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import FloatingLabels from '../utils/FloatingLabels/FloatingLabels'
 import { toPixels } from '../../../global-utils/GlobalUtils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useTheme } from '../../../context/ThemeContext'
 import { useErrorShake } from '../../common/useErrorShake'
 import {
     getErrorShakeStyle,
@@ -48,6 +48,7 @@ const UnitInput = ({
     onBlur,
     ...rest
 }: UnitInputProps) => {
+    const { foundationTokens } = useTheme()
     const unitInputTokens =
         useResponsiveTokens<UnitInputTokensType>('UNIT_INPUT')
 
@@ -199,6 +200,7 @@ const UnitInput = ({
                     name={name}
                     inputId={inputId}
                     required={required}
+                    tokens={unitInputTokens}
                 />
             )}
             <Wrapper
@@ -269,9 +271,12 @@ const UnitInput = ({
                 )}
                 <PrimitiveInput
                     id={inputId}
-                    placeholderColor={FOUNDATION_THEME.colors.gray[400]}
+                    placeholderColor={
+                        unitInputTokens.placeholder?.color ??
+                        foundationTokens.colors.gray[400]
+                    }
                     type="number"
-                    lineHeight={FOUNDATION_THEME.unit[20]}
+                    lineHeight={foundationTokens.unit[20]}
                     placeholder={isSmallScreenWithLargeSize ? '' : placeholder}
                     value={value}
                     onChange={onChange}
@@ -339,16 +344,20 @@ const UnitInput = ({
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
-                        boxShadow: '0 0 0 3px #EFF6FF',
-                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                        boxShadow: foundationTokens.shadows.focusPrimary,
+                        backgroundColor:
+                            unitInputTokens.inputContainer.backgroundColor
+                                .focus,
                     }}
                     _focus={{
                         border: unitInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
                         outline: 'none !important',
-                        boxShadow: '0 0 0 3px #EFF6FF',
-                        backgroundColor: 'rgba(239, 246, 255, 0.15)',
+                        boxShadow: foundationTokens.shadows.focusPrimary,
+                        backgroundColor:
+                            unitInputTokens.inputContainer.backgroundColor
+                                .focus,
                     }}
                     disabled={disabled}
                     _disabled={{
@@ -375,6 +384,7 @@ const UnitInput = ({
                 hintText={hintText}
                 errorId={errorId}
                 hintId={hintId}
+                tokens={unitInputTokens}
             />
         </Block>
     )

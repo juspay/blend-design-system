@@ -1,6 +1,5 @@
 import SelectMenu from './SelectMenu'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
 import { ChevronDownIcon, HelpCircleIcon, X } from 'lucide-react'
 import {
@@ -10,9 +9,11 @@ import {
     SelectMenuVariant,
 } from './types'
 import Text, { type VariantType } from '../Text/Text'
-import selectTokens from './select.token'
+import type { SelectTokensType } from './select.tokens.types'
 import { Tooltip, TooltipSize } from '../Tooltip'
 import React from 'react'
+import { useTheme } from '../../context/ThemeContext'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 export enum SelectionTagType {
     COUNT = 'count',
@@ -75,6 +76,8 @@ const Select = ({
     selectionTagType = SelectionTagType.COUNT,
     slot,
 }: SelectProps) => {
+    const { foundationTokens } = useTheme()
+    const selectTokens = useResponsiveTokens<SelectTokensType>('SELECT')
     const valueLabelMap = map(items)
 
     const getLabelsForSelectedValues = (values: string[]) => {
@@ -103,14 +106,14 @@ const Select = ({
                     {subLabel && (
                         <Text
                             variant="body.sm"
-                            color={FOUNDATION_THEME.colors.gray[400]}
+                            color={selectTokens.labelColors.subLabel}
                         >
                             ({subLabel})
                         </Text>
                     )}
                     {variant === SelectMenuVariant.CONTAINER && required && (
                         <sup
-                            style={{ color: FOUNDATION_THEME.colors.red[500] }}
+                            style={{ color: selectTokens.labelColors.required }}
                         >
                             *
                         </sup>
@@ -124,7 +127,7 @@ const Select = ({
                             >
                                 <HelpCircleIcon
                                     size={14}
-                                    color={FOUNDATION_THEME.colors.gray[400]}
+                                    color={selectTokens.labelColors.helpIcon}
                                 />
                             </Tooltip>
                         )}
@@ -164,7 +167,15 @@ const Select = ({
                                 }px 8px`}
                                 boxShadow={
                                     variant === SelectMenuVariant.CONTAINER
-                                        ? FOUNDATION_THEME.shadows.xs
+                                        ? foundationTokens.shadows.xs
+                                        : undefined
+                                }
+                                backgroundColor={
+                                    selectTokens.triggerColors.backgroundColor
+                                }
+                                outline={
+                                    variant === SelectMenuVariant.CONTAINER
+                                        ? `${selectTokens.triggerColors.outlineBorder} !important`
                                         : undefined
                                 }
                                 justifyContent="space-between"
@@ -178,25 +189,19 @@ const Select = ({
                                         size
                                     ].y
                                 }
-                                backgroundColor={
-                                    FOUNDATION_THEME.colors.gray[0]
-                                }
-                                outline={
-                                    variant === SelectMenuVariant.CONTAINER
-                                        ? `1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`
-                                        : undefined
-                                }
                                 _hover={{
                                     backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[50],
+                                        selectTokens.triggerColors
+                                            .hoverBackgroundColor,
                                 }}
                                 _focus={{
-                                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
+                                    outline: `${selectTokens.triggerColors.outlineBorderFocus} !important`,
                                 }}
                                 _active={{
                                     backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[50],
-                                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
+                                        selectTokens.triggerColors
+                                            .hoverBackgroundColor,
+                                    outline: `${selectTokens.triggerColors.outlineBorderFocus} !important`,
                                 }}
                             >
                                 <Block
@@ -215,8 +220,8 @@ const Select = ({
                                                     variant="body.md"
                                                     fontWeight={500}
                                                     color={
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[700]
+                                                        selectTokens.trigger
+                                                            .selectedValue.color
                                                     }
                                                 >
                                                     {
@@ -230,8 +235,9 @@ const Select = ({
                                                     variant="body.md"
                                                     fontWeight={500}
                                                     color={
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[600]
+                                                        selectTokens
+                                                            .triggerColors
+                                                            .placeholderColor
                                                     }
                                                 >
                                                     {placeholder}
@@ -266,10 +272,14 @@ const Select = ({
                                                         size
                                                     ] as VariantType
                                                 }
-                                                fontWeight={500}
+                                                fontWeight={
+                                                    selectTokens.trigger
+                                                        .selectedValue.font
+                                                        .weight
+                                                }
                                                 color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[700]
+                                                    selectTokens.triggerColors
+                                                        .placeholderColor
                                                 }
                                             >
                                                 {placeholder}
@@ -283,9 +293,9 @@ const Select = ({
                                                                 truncate
                                                                 as="span"
                                                                 color={
-                                                                    FOUNDATION_THEME
-                                                                        .colors
-                                                                        .gray[400]
+                                                                    selectTokens
+                                                                        .selectedLabels
+                                                                        .color
                                                                 }
                                                             >
                                                                 {getLabelsForSelectedValues(
@@ -296,14 +306,14 @@ const Select = ({
                                                             <Block
                                                                 as="span"
                                                                 backgroundColor={
-                                                                    FOUNDATION_THEME
-                                                                        .colors
-                                                                        .primary[600]
+                                                                    selectTokens
+                                                                        .selectionTag
+                                                                        .backgroundColor
                                                                 }
                                                                 color={
-                                                                    FOUNDATION_THEME
-                                                                        .colors
-                                                                        .gray[0]
+                                                                    selectTokens
+                                                                        .selectionTag
+                                                                        .color
                                                                 }
                                                                 borderRadius={4}
                                                                 paddingX={4}
@@ -324,7 +334,8 @@ const Select = ({
                                     <ChevronDownIcon
                                         size={16}
                                         color={
-                                            FOUNDATION_THEME.colors.gray[400]
+                                            selectTokens.triggerColors
+                                                .chevronIconColor
                                         }
                                     />
                                 </Block>
@@ -337,26 +348,28 @@ const Select = ({
                             <PrimitiveButton
                                 borderRadius={`0 8px 8px 0`}
                                 backgroundColor={
-                                    FOUNDATION_THEME.colors.gray[0]
+                                    selectTokens.clearButton.backgroundColor
                                 }
                                 _hover={{
                                     backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[25],
+                                        selectTokens.clearButton
+                                            .hoverBackgroundColor,
                                 }}
                                 _focus={{
                                     backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[25],
-                                    outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
+                                        selectTokens.clearButton
+                                            .focusBackgroundColor,
+                                    outline: `${selectTokens.clearButton.outlineBorderFocus} !important`,
                                 }}
                                 contentCentered
                                 height={'100%'}
                                 style={{ aspectRatio: 1 }}
                                 onClick={() => onSelectChange([])}
-                                outline={`1px solid ${FOUNDATION_THEME.colors.gray[200]} !important`}
+                                outline={`${selectTokens.clearButton.outlineBorder} !important`}
                             >
                                 <X
                                     size={16}
-                                    color={FOUNDATION_THEME.colors.gray[400]}
+                                    color={selectTokens.clearButton.iconColor}
                                 />
                             </PrimitiveButton>
                         )}
@@ -366,7 +379,7 @@ const Select = ({
             {variant === SelectMenuVariant.CONTAINER && hintText && (
                 <Text
                     variant="body.md"
-                    color={FOUNDATION_THEME.colors.gray[400]}
+                    color={selectTokens.labelColors.hintText}
                 >
                     {hintText}
                 </Text>

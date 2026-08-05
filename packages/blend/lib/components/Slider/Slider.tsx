@@ -7,12 +7,14 @@ import {
     getSliderLabelStyles,
     buildThumbAriaAttributes,
 } from './utils'
+import type { SliderTokensType } from './slider.tokens.types'
 import {
     SliderProps as BaseSliderProps,
     SliderSize,
     SliderVariant,
     SliderLabelPosition,
 } from './types'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 
 type SliderProps = BaseSliderProps &
     Omit<
@@ -20,12 +22,15 @@ type SliderProps = BaseSliderProps &
         keyof BaseSliderProps
     >
 
-const StyledRoot = styled(SliderPrimitive.Root)<{
+type StyledSliderProps = {
     $variant: SliderVariant
     $size: SliderSize
-}>`
-    ${({ $variant, $size }) => {
-        const styles = getSliderTokenStyles($variant, $size)
+    $tokens: SliderTokensType
+}
+
+const StyledRoot = styled(SliderPrimitive.Root)<StyledSliderProps>`
+    ${({ $variant, $size, $tokens }) => {
+        const styles = getSliderTokenStyles($variant, $size, $tokens)
         return css`
             position: relative;
             display: flex;
@@ -40,25 +45,26 @@ const StyledRoot = styled(SliderPrimitive.Root)<{
 
     &[data-orientation="vertical"] {
         flex-direction: column;
-        width: ${({ $size }) => {
-            const styles = getSliderTokenStyles(SliderVariant.PRIMARY, $size)
+        width: ${({ $size, $tokens }) => {
+            const styles = getSliderTokenStyles(
+                SliderVariant.PRIMARY,
+                $size,
+                $tokens
+            )
             return styles.root.height
         }};
         height: 100%;
     }
 
     &[data-disabled] {
-        opacity: 0.5;
+        opacity: ${({ $tokens }) => $tokens.disabledOpacity};
         cursor: not-allowed;
     }
 `
 
-const StyledTrack = styled(SliderPrimitive.Track)<{
-    $variant: SliderVariant
-    $size: SliderSize
-}>`
-    ${({ $variant, $size }) => {
-        const styles = getSliderTokenStyles($variant, $size)
+const StyledTrack = styled(SliderPrimitive.Track)<StyledSliderProps>`
+    ${({ $variant, $size, $tokens }) => {
+        const styles = getSliderTokenStyles($variant, $size, $tokens)
         return css`
             position: relative;
             flex-grow: 1;
@@ -69,20 +75,17 @@ const StyledTrack = styled(SliderPrimitive.Track)<{
     }}
 
     &[data-orientation="vertical"] {
-        width: ${({ $variant, $size }) => {
-            const styles = getSliderTokenStyles($variant, $size)
+        width: ${({ $variant, $size, $tokens }) => {
+            const styles = getSliderTokenStyles($variant, $size, $tokens)
             return styles.track.height
         }};
         height: 100%;
     }
 `
 
-const StyledRange = styled(SliderPrimitive.Range)<{
-    $variant: SliderVariant
-    $size: SliderSize
-}>`
-    ${({ $variant, $size }) => {
-        const styles = getSliderTokenStyles($variant, $size)
+const StyledRange = styled(SliderPrimitive.Range)<StyledSliderProps>`
+    ${({ $variant, $size, $tokens }) => {
+        const styles = getSliderTokenStyles($variant, $size, $tokens)
         return css`
             position: absolute;
             background-color: ${styles.range.backgroundColor};
@@ -92,20 +95,17 @@ const StyledRange = styled(SliderPrimitive.Range)<{
     }}
 
     &[data-orientation="vertical"] {
-        width: ${({ $variant, $size }) => {
-            const styles = getSliderTokenStyles($variant, $size)
+        width: ${({ $variant, $size, $tokens }) => {
+            const styles = getSliderTokenStyles($variant, $size, $tokens)
             return styles.range.height
         }};
         height: var(--radix-slider-range-height);
     }
 `
 
-const StyledThumb = styled(SliderPrimitive.Thumb)<{
-    $variant: SliderVariant
-    $size: SliderSize
-}>`
-    ${({ $variant, $size }) => {
-        const styles = getSliderTokenStyles($variant, $size)
+const StyledThumb = styled(SliderPrimitive.Thumb)<StyledSliderProps>`
+    ${({ $variant, $size, $tokens }) => {
+        const styles = getSliderTokenStyles($variant, $size, $tokens)
         return css`
             display: block;
             width: ${styles.thumb.width};
@@ -119,8 +119,8 @@ const StyledThumb = styled(SliderPrimitive.Thumb)<{
     }}
 
     &:hover {
-        ${({ $variant, $size }) => {
-            const styles = getSliderTokenStyles($variant, $size)
+        ${({ $variant, $size, $tokens }) => {
+            const styles = getSliderTokenStyles($variant, $size, $tokens)
             return css`
                 box-shadow: ${styles.thumb['&:hover']?.boxShadow};
             `
@@ -128,8 +128,8 @@ const StyledThumb = styled(SliderPrimitive.Thumb)<{
     }
 
     &:focus {
-        ${({ $variant, $size }) => {
-            const styles = getSliderTokenStyles($variant, $size)
+        ${({ $variant, $size, $tokens }) => {
+            const styles = getSliderTokenStyles($variant, $size, $tokens)
             return css`
                 outline: none;
                 box-shadow: ${styles.thumb['&:focus']?.boxShadow};
@@ -138,8 +138,8 @@ const StyledThumb = styled(SliderPrimitive.Thumb)<{
     }
 
     &:focus-visible {
-        ${({ $variant, $size }) => {
-            const styles = getSliderTokenStyles($variant, $size)
+        ${({ $variant, $size, $tokens }) => {
+            const styles = getSliderTokenStyles($variant, $size, $tokens)
             return css`
                 outline: none;
                 box-shadow: ${styles.thumb['&:focus-visible']?.boxShadow ||
@@ -149,8 +149,8 @@ const StyledThumb = styled(SliderPrimitive.Thumb)<{
     }
 
     &:active {
-        ${({ $variant, $size }) => {
-            const styles = getSliderTokenStyles($variant, $size)
+        ${({ $variant, $size, $tokens }) => {
+            const styles = getSliderTokenStyles($variant, $size, $tokens)
             return css`
                 cursor: ${styles.thumb['&:active']?.cursor};
             `
@@ -158,8 +158,8 @@ const StyledThumb = styled(SliderPrimitive.Thumb)<{
     }
 
     &[data-disabled] {
-        ${({ $variant, $size }) => {
-            const styles = getSliderTokenStyles($variant, $size)
+        ${({ $variant, $size, $tokens }) => {
+            const styles = getSliderTokenStyles($variant, $size, $tokens)
             return css`
                 cursor: ${styles.thumb['&:disabled']?.cursor};
                 opacity: ${styles.thumb['&:disabled']?.opacity};
@@ -171,9 +171,10 @@ const StyledThumb = styled(SliderPrimitive.Thumb)<{
 const StyledValueLabel = styled.div<{
     $size: SliderSize
     $position: SliderLabelPosition
+    $tokens: SliderTokensType
 }>`
-    ${({ $position }) => {
-        const styles = getSliderLabelStyles($position)
+    ${({ $position, $tokens }) => {
+        const styles = getSliderLabelStyles($position, $tokens)
         return css`
             position: ${styles.position};
             font-size: ${styles.fontSize};
@@ -218,6 +219,7 @@ const Slider = forwardRef<
         },
         ref
     ) => {
+        const tokens = useResponsiveTokens<SliderTokensType>('SLIDER')
         const currentValues = value || defaultValue || [min]
         const thumbCount = currentValues.length
 
@@ -235,6 +237,7 @@ const Slider = forwardRef<
                 ref={ref}
                 $variant={variant}
                 $size={size}
+                $tokens={tokens}
                 value={value}
                 defaultValue={defaultValue}
                 min={min}
@@ -244,8 +247,12 @@ const Slider = forwardRef<
                 orientation={orientation}
                 {...props}
             >
-                <StyledTrack $variant={variant} $size={size}>
-                    <StyledRange $variant={variant} $size={size} />
+                <StyledTrack $variant={variant} $size={size} $tokens={tokens}>
+                    <StyledRange
+                        $variant={variant}
+                        $size={size}
+                        $tokens={tokens}
+                    />
                 </StyledTrack>
                 {Array.from({ length: thumbCount }, (_, index) => {
                     const currentValue = currentValues[index]
@@ -272,12 +279,14 @@ const Slider = forwardRef<
                             key={index}
                             $variant={variant}
                             $size={size}
+                            $tokens={tokens}
                             {...thumbAriaProps}
                         >
                             {showValueLabels && (
                                 <StyledValueLabel
                                     $size={size}
                                     $position={labelPosition}
+                                    $tokens={tokens}
                                     aria-hidden="true"
                                 >
                                     {formattedValue}

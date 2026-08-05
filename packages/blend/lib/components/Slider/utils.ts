@@ -6,6 +6,15 @@ import {
     SliderValueType,
     SliderValueFormatConfig,
 } from './types'
+import type { SliderTokensType } from './slider.tokens.types'
+import { getSliderTokens } from './slider.tokens'
+
+const defaultSliderTokens = getSliderTokens(FOUNDATION_THEME).sm
+
+const getFocusRingColor = (color: string | undefined, opacity: number) =>
+    color
+        ? `color-mix(in srgb, ${color} ${opacity}%, transparent)`
+        : 'transparent'
 
 type SliderCSSProperties = React.CSSProperties & {
     '&:hover'?: {
@@ -37,50 +46,11 @@ type SliderTokenStyles = {
 
 export const getSliderTokenStyles = (
     variant: SliderVariant,
-    size: SliderSize
+    size: SliderSize,
+    tokens: SliderTokensType = defaultSliderTokens
 ): SliderTokenStyles => {
-    // Size-based dimensions
-    const sizeTokens = {
-        [SliderSize.SMALL]: {
-            height: FOUNDATION_THEME.unit[20],
-            trackHeight: FOUNDATION_THEME.unit[4],
-            thumbSize: FOUNDATION_THEME.unit[16],
-            thumbBorder: FOUNDATION_THEME.unit[2],
-        },
-        [SliderSize.MEDIUM]: {
-            height: FOUNDATION_THEME.unit[24],
-            trackHeight: FOUNDATION_THEME.unit[6],
-            thumbSize: FOUNDATION_THEME.unit[20],
-            thumbBorder: FOUNDATION_THEME.unit[2],
-        },
-        [SliderSize.LARGE]: {
-            height: FOUNDATION_THEME.unit[28],
-            trackHeight: FOUNDATION_THEME.unit[8],
-            thumbSize: FOUNDATION_THEME.unit[24],
-            thumbBorder: FOUNDATION_THEME.unit[2],
-        },
-    }
-
-    // Variant-based colors
-    const variantTokens = {
-        [SliderVariant.PRIMARY]: {
-            trackBackground: FOUNDATION_THEME.colors.gray[200],
-            rangeBackground: FOUNDATION_THEME.colors.primary[500],
-            thumbBackground: FOUNDATION_THEME.colors.gray[0],
-            thumbBorder: FOUNDATION_THEME.colors.primary[500],
-            thumbFocusRing: FOUNDATION_THEME.colors.primary[500],
-        },
-        [SliderVariant.SECONDARY]: {
-            trackBackground: FOUNDATION_THEME.colors.gray[200],
-            rangeBackground: FOUNDATION_THEME.colors.gray[600],
-            thumbBackground: FOUNDATION_THEME.colors.gray[0],
-            thumbBorder: FOUNDATION_THEME.colors.gray[600],
-            thumbFocusRing: FOUNDATION_THEME.colors.gray[600],
-        },
-    }
-
-    const currentSize = sizeTokens[size]
-    const currentVariant = variantTokens[variant]
+    const currentSize = tokens[size]
+    const currentVariant = tokens[variant]
 
     return {
         root: {
@@ -98,13 +68,13 @@ export const getSliderTokenStyles = (
             flexGrow: 1,
             backgroundColor: currentVariant.trackBackground,
             height: currentSize.trackHeight,
-            borderRadius: FOUNDATION_THEME.border.radius[8],
+            borderRadius: tokens.borderRadius,
         },
         range: {
             position: 'absolute',
             backgroundColor: currentVariant.rangeBackground,
             height: currentSize.trackHeight,
-            borderRadius: FOUNDATION_THEME.border.radius[8],
+            borderRadius: tokens.borderRadius,
         },
         thumb: {
             display: 'block',
@@ -112,26 +82,26 @@ export const getSliderTokenStyles = (
             height: currentSize.thumbSize,
             backgroundColor: currentVariant.thumbBackground,
             border: `${currentSize.thumbBorder} solid ${currentVariant.thumbBorder}`,
-            borderRadius: FOUNDATION_THEME.border.radius.full,
-            boxShadow: FOUNDATION_THEME.shadows.sm,
+            borderRadius: tokens.thumbBorderRadius,
+            boxShadow: tokens.thumbBoxShadow,
             cursor: 'grab',
             '&:hover': {
-                boxShadow: FOUNDATION_THEME.shadows.md,
+                boxShadow: tokens.thumbHoverBoxShadow,
             },
             '&:focus': {
                 outline: 'none',
-                boxShadow: `0 0 0 2px ${currentVariant.thumbFocusRing}20, 0 0 0 4px ${currentVariant.thumbFocusRing}10`,
+                boxShadow: `0 0 0 2px ${getFocusRingColor(currentVariant.thumbFocusRing, 12)}, 0 0 0 4px ${getFocusRingColor(currentVariant.thumbFocusRing, 6)}`,
             },
             '&:focus-visible': {
                 outline: 'none',
-                boxShadow: `0 0 0 2px ${currentVariant.thumbFocusRing}20, 0 0 0 4px ${currentVariant.thumbFocusRing}10`,
+                boxShadow: `0 0 0 2px ${getFocusRingColor(currentVariant.thumbFocusRing, 12)}, 0 0 0 4px ${getFocusRingColor(currentVariant.thumbFocusRing, 6)}`,
             },
             '&:active': {
                 cursor: 'grabbing',
             },
             '&:disabled': {
                 cursor: 'not-allowed',
-                opacity: FOUNDATION_THEME.opacity[50],
+                opacity: tokens.disabledOpacity,
             },
         },
     }
@@ -331,13 +301,14 @@ export const buildThumbAriaAttributes = (options: {
  * Get label styles for value display
  */
 export const getSliderLabelStyles = (
-    position: 'top' | 'bottom' | 'inline' = 'top'
+    position: 'top' | 'bottom' | 'inline' = 'top',
+    tokens: SliderTokensType = defaultSliderTokens
 ): SliderCSSProperties => {
     const baseStyles = {
         position: 'absolute' as const,
-        fontSize: FOUNDATION_THEME.font.size.body.xs.fontSize,
-        color: FOUNDATION_THEME.colors.gray[600],
-        fontWeight: 500,
+        fontSize: tokens.label.fontSize,
+        color: tokens.label.color,
+        fontWeight: tokens.label.fontWeight,
         whiteSpace: 'nowrap' as const,
         pointerEvents: 'none' as const,
         transform: 'translateX(-50%)',
@@ -346,20 +317,20 @@ export const getSliderLabelStyles = (
     const positionStyles = {
         top: {
             bottom: '100%',
-            marginBottom: FOUNDATION_THEME.unit[4],
+            marginBottom: tokens.label.margin,
         },
         bottom: {
             top: '100%',
-            marginTop: FOUNDATION_THEME.unit[4],
+            marginTop: tokens.label.margin,
         },
         inline: {
             top: '50%',
             transform: 'translate(-50%, -50%)',
-            backgroundColor: FOUNDATION_THEME.colors.gray[0],
-            padding: `${FOUNDATION_THEME.unit[2]} ${FOUNDATION_THEME.unit[4]}`,
-            borderRadius: FOUNDATION_THEME.border.radius[4],
-            boxShadow: FOUNDATION_THEME.shadows.sm,
-            border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+            backgroundColor: tokens.label.backgroundColor,
+            padding: tokens.label.padding,
+            borderRadius: tokens.label.borderRadius,
+            boxShadow: tokens.label.boxShadow,
+            border: tokens.label.border,
         },
     }
 
