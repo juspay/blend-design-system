@@ -61,6 +61,8 @@ export default App
 - **Slider** - Range and value sliders
 - **SingleSelect** - Dropdown selection
 - **MultiSelect** - Multiple option selection
+- **SelectListV2** - Always-visible single-selection list with search and virtualization
+- **MultiSelectListV2** - Always-visible multi-selection list with bulk controls and pagination
 
 ### Navigation
 
