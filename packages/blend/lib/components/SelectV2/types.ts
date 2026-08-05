@@ -90,6 +90,35 @@ type SelectItemV2BaseProps = {
      * plain click/keyboard handler instead. Defaults to true.
      */
     asMenuItem?: boolean
+    /**
+     * Overrides the row's ARIA role. Defaults to `option` in multi mode and
+     * `menuitem` in single mode. Always-visible lists pass `option` for both
+     * modes (APG listbox), which also emits `aria-disabled` on disabled rows.
+     */
+    role?: 'menuitem' | 'option'
+    /**
+     * Roving-tabindex control for list surfaces where only the active row is
+     * a tab stop. Defaults to 0, or -1 when the item is disabled.
+     */
+    tabIndex?: number
+    /** Overrides the computed `aria-selected`. */
+    ariaSelected?: boolean
+    /**
+     * Total option count. Required by APG when a listbox is only partially
+     * rendered, which is always true under virtualization.
+     */
+    ariaSetSize?: number
+    /** 1-based position of this option within `ariaSetSize`. */
+    ariaPosInSet?: number
+    /**
+     * Renders the multi-select checkbox as a read-only visual instead of a
+     * live `Checkbox`. Required when the row itself carries a widget role: a
+     * real checkbox nested inside `role="option"` is a second focusable
+     * control, which axe flags as `nested-interactive` and which neither
+     * `tabindex="-1"` nor `aria-hidden` clears. Defaults to false so the
+     * dropdown menus render exactly as before.
+     */
+    decorativeIndicator?: boolean
 }
 
 /** Single-select mode: one value selected at a time; optional checkmark. */

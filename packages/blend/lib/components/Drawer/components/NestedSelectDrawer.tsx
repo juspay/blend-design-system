@@ -185,6 +185,19 @@ const SelectableItem = ({
     )
 }
 
+/**
+ * @deprecated No direct V2 replacement yet. `NestedMultiSelectDrawer` predates
+ * the V2 token system: it hardcodes `FOUNDATION_THEME` (so it cannot render
+ * dark mode), uses the same limited `SelectDrawerItem`/`nestedItems` model
+ * (no `slot2`-`slot4`, `tooltip` or `alwaysSelected`), has no keyboard
+ * support, and drops every `groupLabel` as soon as the user searches.
+ * `MultiSelectListV2` is the intended long-term replacement but does not yet
+ * support drill-down navigation: it hard-rejects `subMenu` in development
+ * (see `flattenSelectListV2Groups` in `SelectListV2/utils.ts`) and renders
+ * the parent as an ordinary selectable row with its nested options dropped,
+ * so it cannot replace this component's `nestedItems` navigation until that
+ * gap is closed.
+ */
 // Multi-select nested drawer
 export const NestedMultiSelectDrawer = ({
     open,
@@ -519,6 +532,19 @@ export const NestedMultiSelectDrawer = ({
     )
 }
 
+/**
+ * @deprecated No direct V2 replacement yet. `NestedSingleSelectDrawer`
+ * predates the V2 token system: it hardcodes `FOUNDATION_THEME` (so it cannot
+ * render dark mode), uses the same limited `SelectDrawerItem`/`nestedItems`
+ * model (no `slot2`-`slot4`, `tooltip` or `alwaysSelected`), has no keyboard
+ * support, and drops every `groupLabel` as soon as the user searches.
+ * `SelectListV2` is the intended long-term replacement but does not yet
+ * support drill-down navigation: it hard-rejects `subMenu` in development
+ * (see `flattenSelectListV2Groups` in `SelectListV2/utils.ts`) and renders
+ * the parent as an ordinary selectable row with its nested options dropped,
+ * so it cannot replace this component's `nestedItems` navigation until that
+ * gap is closed.
+ */
 // Single-select nested drawer
 export const NestedSingleSelectDrawer = ({
     open,

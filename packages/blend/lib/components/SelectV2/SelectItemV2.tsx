@@ -6,6 +6,7 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Checkbox } from '../Checkbox'
 import { Tooltip, TooltipSide } from '../Tooltip'
 import { checkIfTruncated } from '../Select/SelectItem/utils'
+import SelectItemIndicator from './SelectItemIndicator'
 import type { SelectItemV2Props } from './types'
 
 const SlotWrapper = ({ slot }: { slot: React.ReactNode }) => (
@@ -25,6 +26,12 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
             className,
             asMenuItem = true,
             focusIdentityValue,
+            role,
+            tabIndex,
+            ariaSelected,
+            ariaSetSize,
+            ariaPosInSet,
+            decorativeIndicator = false,
         } = props
 
         const textRef = useRef<HTMLDivElement>(null)
@@ -42,6 +49,9 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
         const isMulti = props.mode === 'multi'
         const showCheckmark =
             props.mode === 'single' ? (props.showCheckmark ?? true) : false
+
+        const resolvedRole = role ?? (isMulti ? 'option' : 'menuitem')
+        const isListRow = role !== undefined
 
         const checkTruncation = useCallback(() => {
             if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
@@ -144,9 +154,16 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                 }
                 data-value={focusIdentityValue}
                 ref={ref}
-                role={isMulti ? 'option' : 'menuitem'}
-                aria-selected={isMulti ? isSelected : undefined}
-                tabIndex={item.disabled ? -1 : 0}
+                role={resolvedRole}
+                aria-selected={
+                    resolvedRole === 'option'
+                        ? (ariaSelected ?? isSelected)
+                        : undefined
+                }
+                aria-setsize={ariaSetSize}
+                aria-posinset={ariaPosInSet}
+                aria-disabled={isListRow && item.disabled ? true : undefined}
+                tabIndex={tabIndex ?? (item.disabled ? -1 : 0)}
                 onClick={asMenuItem ? undefined : handleClick}
                 onKeyDown={asMenuItem ? undefined : handleKeyDown}
                 style={{
@@ -265,12 +282,32 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                             </Block>
                         )}
 
-                        {isMulti && (
-                            <Checkbox
-                                checked={isSelected}
-                                disabled={item.disabled}
-                            />
-                        )}
+                        {isMulti &&
+                            (decorativeIndicator ? (
+                                <Block
+                                    data-element="checkbox"
+                                    data-id={item.value || 'checkbox'}
+                                    data-state={
+                                        isSelected ? 'selected' : 'not selected'
+                                    }
+                                    data-status={
+                                        item.disabled ? 'disabled' : 'enabled'
+                                    }
+                                    display="flex"
+                                    alignItems="center"
+                                    flexShrink={0}
+                                >
+                                    <SelectItemIndicator
+                                        checked={isSelected}
+                                        disabled={item.disabled}
+                                    />
+                                </Block>
+                            ) : (
+                                <Checkbox
+                                    checked={isSelected}
+                                    disabled={item.disabled}
+                                />
+                            ))}
                     </Block>
                 </Block>
 

@@ -33,6 +33,25 @@ export const getNextSelectionForScope = (
 }
 
 /**
+ * True when picking `value` would exceed `maxSelections`. Deselecting an
+ * already-selected value is never blocked.
+ *
+ * Both the row-level disable check and the toggle handler must consult this:
+ * disabling alone leaves the cap unenforced for programmatic and synthetic
+ * gestures, which is how the desktop and mobile dropdowns came to disagree
+ * (desktop disables without guarding, mobile guards without sharing the rule).
+ */
+export const isBlockedByMaxSelections = (
+    selectedValues: string[],
+    value: string,
+    maxSelections?: number
+): boolean => {
+    if (maxSelections === undefined) return false
+    if (selectedValues.includes(value)) return false
+    return selectedValues.length >= maxSelections
+}
+
+/**
  * Narrows a Select All scope to what `maxSelections` still allows. Deselecting
  * is never capped, so callers only apply this on the select branch.
  */
