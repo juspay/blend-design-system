@@ -1,9 +1,11 @@
 import React from 'react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '../../test-utils'
 import CodeEditorV2 from '../../../lib/components/CodeEditorV2/CodeEditorV2'
 import { CodeEditorV2Variant } from '../../../lib/components/CodeEditorV2/codeEditorV2.types'
 import { isDiffEditorMode } from '../../../lib/components/CodeEditorV2/utils'
+
+vi.mock('@monaco-editor/react', () => import('../../mocks/monaco-editor-react'))
 
 describe('CodeEditorV2', () => {
     it('renders with basic props', () => {

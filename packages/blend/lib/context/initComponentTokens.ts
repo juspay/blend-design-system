@@ -83,7 +83,7 @@ import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 import { getUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
-const initTokens = (
+const computeTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
     theme: Theme | string = Theme.LIGHT
@@ -277,6 +277,49 @@ const initTokens = (
             componentTokens.UPLOADV2 ??
             getUploadV2Tokens(foundationTokens, theme),
     }
+}
+
+/**
+ * Resolving the full token set runs ~90 token factories, so identical inputs
+ * are memoised. Object inputs are matched by reference (they are module-scope
+ * singletons in practice), the theme by value. Resolved tokens are never
+ * mutated by consumers, so sharing one object across mounts is safe.
+ */
+const NO_COMPONENT_TOKENS: ComponentTokenType = {}
+
+const tokenCache = new WeakMap<
+    ThemeType,
+    WeakMap<
+        ComponentTokenType,
+        Map<Theme | string, Required<ComponentTokenType>>
+    >
+>()
+
+const initTokens = (
+    componentTokens: ComponentTokenType,
+    foundationTokens: ThemeType,
+    theme: Theme | string = Theme.LIGHT
+): Required<ComponentTokenType> => {
+    const componentTokensKey = componentTokens ?? NO_COMPONENT_TOKENS
+
+    let byComponentTokens = tokenCache.get(foundationTokens)
+    if (!byComponentTokens) {
+        byComponentTokens = new WeakMap()
+        tokenCache.set(foundationTokens, byComponentTokens)
+    }
+
+    let byTheme = byComponentTokens.get(componentTokensKey)
+    if (!byTheme) {
+        byTheme = new Map()
+        byComponentTokens.set(componentTokensKey, byTheme)
+    }
+
+    const cached = byTheme.get(theme)
+    if (cached) return cached
+
+    const resolved = computeTokens(componentTokensKey, foundationTokens, theme)
+    byTheme.set(theme, resolved)
+    return resolved
 }
 
 export default initTokens
