@@ -122,7 +122,8 @@ const computeTokens = (
             componentTokens.KEYVALUEPAIR ??
             getKeyValuePairTokens(foundationTokens),
         MODAL:
-            componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
+            componentTokens.MODAL ??
+            getModalComponentTokens(foundationTokens, theme),
         MODALV2:
             componentTokens.MODALV2 ??
             getModalV2Tokens(foundationTokens, theme),
