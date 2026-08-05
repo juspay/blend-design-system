@@ -40,7 +40,7 @@ The responsive architecture operates on a carefully crafted breakpoint system wi
 
 The design system encompasses **over 30 production-ready components** organized into logical categories:
 
-**Form Components** include essential input elements like Button, ButtonGroup, Checkbox, Radio, Switch, and comprehensive input variants including TextInput, NumberInput, OTPInput, SearchInput, TextArea, UnitInput, DropdownInput, and MultiValueInput. Advanced form components include Select, MultiSelect, and DateRangePicker for complex data entry scenarios.
+**Form Components** include essential input elements like Button, ButtonGroup, Checkbox, Radio, Switch, and comprehensive input variants including TextInput, NumberInput, OTPInput, SearchInput, TextArea, UnitInput, DropdownInput, and MultiValueInput. Advanced form components include Select, MultiSelect, DateRangePicker, SingleDatePicker, and TimePicker for complex data entry scenarios.
 
 **Layout Components** provide structural elements such as Accordion, Alert, Avatar, AvatarGroup, Breadcrumb, Modal, Popover, Sidebar, and Tabs. The sophisticated DataTable component offers advanced features for data presentation, while Directory components handle hierarchical navigation.
 

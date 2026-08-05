@@ -25,6 +25,7 @@ import { getMultiSelectTokens } from '../components/MultiSelect/multiSelect.toke
 import { getSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { getTableToken } from '../components/DataTable/dataTable.tokens'
 import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
+import { getTimePickerTokens } from '../components/TimePicker/timePicker.tokens'
 import { getAccordionToken } from '../components/Accordion/accordion.tokens'
 import { getStatCardToken } from '../components/StatCard/statcard.tokens'
 import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
@@ -140,7 +141,11 @@ const computeTokens = (
             getSingleSelectTokens(foundationTokens),
         TABLE: componentTokens.TABLE ?? getTableToken(foundationTokens),
         CALENDAR:
-            componentTokens.CALENDAR ?? getCalendarToken(foundationTokens),
+            componentTokens.CALENDAR ??
+            getCalendarToken(foundationTokens, theme),
+        TIME_PICKER:
+            componentTokens.TIME_PICKER ??
+            getTimePickerTokens(foundationTokens, theme),
         ACCORDION:
             componentTokens.ACCORDION ?? getAccordionToken(foundationTokens),
         STAT_CARD:

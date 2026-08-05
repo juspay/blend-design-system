@@ -26,7 +26,7 @@ import type { ResponsiveMenuV2TokensType } from '../components/MenuV2/menuV2.tok
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
-import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
+import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens.types'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 import {
@@ -249,6 +249,8 @@ import {
 } from '../components/InputsV2/UploadV2/UploadV2.tokens'
 import { getModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
 import type { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens.types'
+import { getTimePickerTokens } from '../components/TimePicker/timePicker.tokens'
+import type { ResponsiveTimePickerTokens } from '../components/TimePicker/timePicker.tokens.types'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -276,6 +278,7 @@ export type ComponentTokenType = {
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: ResponsiveTableTokens
     CALENDAR?: ResponsiveCalendarTokens
+    TIME_PICKER?: ResponsiveTimePickerTokens
     ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: ResponsiveStatCardTokens
     PROGRESS_BAR?: ResponsiveProgressBarTokens
@@ -367,7 +370,8 @@ const ThemeContext = createContext<ThemeContextType>({
         MULTI_SELECT: getMultiSelectTokens(FOUNDATION_THEME),
         SINGLE_SELECT: getSingleSelectTokens(FOUNDATION_THEME),
         TABLE: getTableToken(FOUNDATION_THEME),
-        CALENDAR: getCalendarToken(FOUNDATION_THEME),
+        CALENDAR: getCalendarToken(FOUNDATION_THEME, Theme.LIGHT),
+        TIME_PICKER: getTimePickerTokens(FOUNDATION_THEME),
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
         PROGRESS_BAR: getProgressBarTokens(FOUNDATION_THEME),

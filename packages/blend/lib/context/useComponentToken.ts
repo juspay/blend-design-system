@@ -23,7 +23,8 @@ import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMenuV2TokensType } from '../components/MenuV2/menuV2.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
-import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
+import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens.types'
+import type { ResponsiveTimePickerTokens } from '../components/TimePicker/timePicker.tokens.types'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import type { ResponsiveDrawerTokens } from '../components/Drawer/drawer.tokens'
@@ -107,6 +108,7 @@ export const useComponentToken = (
     | ResponsiveSingleSelectTokens
     | ResponsiveTableTokens
     | ResponsiveCalendarTokens
+    | ResponsiveTimePickerTokens
     | ResponsiveAccordionTokens
     | ResponsiveStatCardTokens
     | ResponsiveProgressBarTokens
@@ -214,6 +216,8 @@ export const useComponentToken = (
             return componentTokens.TABLE
         case 'CALENDAR':
             return componentTokens.CALENDAR
+        case 'TIME_PICKER':
+            return componentTokens.TIME_PICKER
         case 'ACCORDION':
             return componentTokens.ACCORDION
         case 'UNIT_INPUT':

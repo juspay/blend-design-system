@@ -42,6 +42,8 @@ const V2_COMPONENTS = [
     'TOOLTIPV2',
     'TOPBARV2',
     'SIDEBARV2',
+    'CALENDAR',
+    'TIME_PICKER',
 ] as const
 
 const COMPONENT_LABELS: Record<string, string> = {
@@ -68,6 +70,8 @@ const COMPONENT_LABELS: Record<string, string> = {
     TOOLTIPV2: 'Tooltip',
     TOPBARV2: 'Topbar',
     SIDEBARV2: 'Sidebar',
+    CALENDAR: 'Date Picker',
+    TIME_PICKER: 'Time Picker',
 }
 
 type SectionTab = 'colors' | 'tokens'
