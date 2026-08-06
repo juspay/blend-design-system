@@ -266,6 +266,16 @@ const UnitInput = ({
                             required={required || false}
                             name={name || ''}
                             isFocused={inputFocusedOrWithValue}
+                            labelColor={
+                                unitInputTokens.label.color[
+                                    disabled
+                                        ? 'disabled'
+                                        : error
+                                          ? 'error'
+                                          : 'default'
+                                ]
+                            }
+                            requiredColor={unitInputTokens.required.color}
                         />
                     </Block>
                 )}

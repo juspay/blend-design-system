@@ -49,6 +49,8 @@ describe('Slider: custom foundation tokens via ThemeProvider', () => {
         const focusShadow = customStyles.thumb['&:focus']?.boxShadow
         expect(focusShadow).toContain('color-mix')
         expect(focusShadow).not.toContain('rgb(1, 2, 3)20')
+        expect(customStyles.thumb['&:focus']?.outline).toContain('rgb(1, 2, 3)')
+        expect(customStyles.thumb['&:focus']?.outlineOffset).toBe('2px')
 
         // These helpers are part of the public Slider utility API. Their
         // original call signatures must continue to work without tokens.

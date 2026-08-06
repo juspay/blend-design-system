@@ -12,7 +12,11 @@ import {
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll, useScrollLock } from '../../hooks'
+import {
+    usePreventParentScroll,
+    useScrollLock,
+    useShadowRoot,
+} from '../../hooks'
 import { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 import SingleSelectV2Skeleton from './SingleSelectV2Skeleton'
 import {
@@ -105,6 +109,7 @@ const SingleSelectV2Menu = ({
 }: SingleSelectV2MenuProps) => {
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
+    const { target: portalContainer } = useShadowRoot()
 
     const searchPlaceholder = search?.placeholder ?? 'Search options...'
     const maxMenuHeight = menuDimensions?.maxHeight as number | undefined
@@ -277,7 +282,7 @@ const SingleSelectV2Menu = ({
             <RadixMenu.Trigger asChild disabled={disabled}>
                 {trigger}
             </RadixMenu.Trigger>
-            <RadixMenu.Portal>
+            <RadixMenu.Portal container={portalContainer ?? undefined}>
                 <Content
                     id={menuId}
                     ref={contentRef}

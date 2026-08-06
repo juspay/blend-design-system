@@ -1,7 +1,8 @@
 import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '../../test-utils'
+import { render, screen, waitFor, within } from '../../test-utils'
 import DropdownInput from '../../../lib/components/Inputs/DropdownInput/DropdownInput'
+import ThemeProvider from '../../../lib/context/ThemeProvider'
 
 const items = [
     {
@@ -56,5 +57,54 @@ describe('DropdownInput menu behavior', () => {
         expect(await screen.findByRole('menu')).toHaveStyle({
             maxHeight: '400px',
         })
+    })
+
+    it('keeps the menu search field label independent from the input placeholder', async () => {
+        const { user } = render(
+            <DropdownInput
+                value=""
+                onChange={() => {}}
+                dropDownValue=""
+                onDropDownChange={() => {}}
+                dropDownItems={items}
+                placeholder="Enter city"
+            />
+        )
+
+        await user.click(screen.getByRole('button', { name: 'Select option' }))
+
+        expect(
+            await screen.findByRole('searchbox', { name: 'Search options...' })
+        ).toBeInTheDocument()
+    })
+
+    it('keeps the menu portal inside a ThemeProvider target', async () => {
+        const host = document.createElement('div')
+        const shadowRoot = host.attachShadow({ mode: 'open' })
+        const target = document.createElement('div')
+        shadowRoot.appendChild(target)
+
+        const { user, unmount } = render(
+            <ThemeProvider target={target}>
+                <DropdownInput
+                    value=""
+                    onChange={() => {}}
+                    dropDownValue=""
+                    onDropDownChange={() => {}}
+                    dropDownItems={items}
+                />
+            </ThemeProvider>,
+            { container: target }
+        )
+
+        await user.click(
+            within(target).getByRole('button', { name: 'Select option' })
+        )
+
+        const menu = await within(target).findByRole('menu')
+        expect(target.contains(menu)).toBe(true)
+
+        unmount()
+        host.remove()
     })
 })

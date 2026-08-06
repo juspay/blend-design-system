@@ -131,8 +131,15 @@ const StyledThumb = styled(SliderPrimitive.Thumb)<StyledSliderProps>`
         ${({ $variant, $size, $tokens }) => {
             const styles = getSliderTokenStyles($variant, $size, $tokens)
             return css`
-                outline: none;
-                box-shadow: ${styles.thumb['&:focus']?.boxShadow};
+                outline: ${styles.thumb['&:focus']?.outline};
+                outline-offset: ${styles.thumb['&:focus']?.outlineOffset};
+                @supports (
+                    box-shadow: 0 0 0 2px
+                        color-mix(in srgb, black 12%, transparent)
+                ) {
+                    outline: none;
+                    box-shadow: ${styles.thumb['&:focus']?.boxShadow};
+                }
             `
         }}
     }
@@ -141,9 +148,17 @@ const StyledThumb = styled(SliderPrimitive.Thumb)<StyledSliderProps>`
         ${({ $variant, $size, $tokens }) => {
             const styles = getSliderTokenStyles($variant, $size, $tokens)
             return css`
-                outline: none;
-                box-shadow: ${styles.thumb['&:focus-visible']?.boxShadow ||
-                styles.thumb['&:focus']?.boxShadow};
+                outline: ${styles.thumb['&:focus-visible']?.outline};
+                outline-offset: ${styles.thumb['&:focus-visible']
+                    ?.outlineOffset};
+                @supports (
+                    box-shadow: 0 0 0 2px
+                        color-mix(in srgb, black 12%, transparent)
+                ) {
+                    outline: none;
+                    box-shadow: ${styles.thumb['&:focus-visible']?.boxShadow ||
+                    styles.thumb['&:focus']?.boxShadow};
+                }
             `
         }}
     }

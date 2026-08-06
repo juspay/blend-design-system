@@ -22,10 +22,12 @@ type SliderCSSProperties = React.CSSProperties & {
     }
     '&:focus'?: {
         outline?: string
+        outlineOffset?: string
         boxShadow?: string
     }
     '&:focus-visible'?: {
         outline?: string
+        outlineOffset?: string
         boxShadow?: string
     }
     '&:active'?: {
@@ -89,11 +91,17 @@ export const getSliderTokenStyles = (
                 boxShadow: tokens.thumbHoverBoxShadow,
             },
             '&:focus': {
-                outline: 'none',
+                outline: currentVariant.thumbFocusRing
+                    ? `2px solid ${currentVariant.thumbFocusRing}`
+                    : '2px solid currentColor',
+                outlineOffset: '2px',
                 boxShadow: `0 0 0 2px ${getFocusRingColor(currentVariant.thumbFocusRing, 12)}, 0 0 0 4px ${getFocusRingColor(currentVariant.thumbFocusRing, 6)}`,
             },
             '&:focus-visible': {
-                outline: 'none',
+                outline: currentVariant.thumbFocusRing
+                    ? `2px solid ${currentVariant.thumbFocusRing}`
+                    : '2px solid currentColor',
+                outlineOffset: '2px',
                 boxShadow: `0 0 0 2px ${getFocusRingColor(currentVariant.thumbFocusRing, 12)}, 0 0 0 4px ${getFocusRingColor(currentVariant.thumbFocusRing, 6)}`,
             },
             '&:active': {

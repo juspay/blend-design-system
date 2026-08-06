@@ -196,6 +196,9 @@ const Select = ({
                                 }}
                                 _focus={{
                                     outline: `${selectTokens.triggerColors.outlineBorderFocus} !important`,
+                                    backgroundColor:
+                                        selectTokens.triggerColors
+                                            .focusBackgroundColor,
                                 }}
                                 _active={{
                                     backgroundColor:

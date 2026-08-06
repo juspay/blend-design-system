@@ -221,6 +221,16 @@ const DropdownInput = ({
                             required={required || false}
                             name={name || ''}
                             isFocused={inputFocusedOrWithValue}
+                            labelColor={
+                                dropdownInputTokens.label.color[
+                                    disabled
+                                        ? 'disabled'
+                                        : error
+                                          ? 'error'
+                                          : 'default'
+                                ]
+                            }
+                            requiredColor={dropdownInputTokens.required.color}
                         />
                     </Block>
                 )}
@@ -396,7 +406,6 @@ const DropdownInput = ({
                             items={dropDownItems}
                             search={{
                                 show: true,
-                                placeholder: placeholder || '',
                             }}
                             menuPosition={{
                                 alignment: SingleSelectV2Alignment.END,
