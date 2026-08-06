@@ -28,12 +28,7 @@ const rows: Row[] = [
     { id: 2, name: 'Grace' },
 ]
 
-/**
- * A config a JS caller (or a generated binding) can produce but the
- * discriminated union forbids: `transitionType: 'bezier'` with no `bezier`.
- * Issue #1651 — this used to throw out of `useLayoutEffect` and take the
- * whole DataTable down.
- */
+// Issue #1651: a config the union forbids but JS callers can still produce.
 const partialBezierConfig = {
     enterDuration: 0.32,
     enterOffset: 12,
@@ -42,22 +37,15 @@ const partialBezierConfig = {
 
 const DEFAULT_CURVE = 'cubic-bezier(0.32, 0.72, 0, 1)'
 
-/**
- * `requestAnimationFrame` callbacks queued by the hook. The hook commits both
- * the enter and the FLIP styles inside a *double* rAF, so a synchronous stub
- * would erase the pre-commit state (the `translateY(offset)` a row starts
- * from) before a test could observe it. Queue instead, and drain explicitly.
- */
+// Queued, not run synchronously: the hook commits inside a double rAF, and a
+// sync stub would erase the pre-commit state before a test could observe it.
 let frameQueue: FrameRequestCallback[] = []
 
 const MAX_FRAME_GENERATIONS = 10
 
 function flushFrames() {
-    // Nested rAF: draining one generation schedules the next. The hook is
-    // double-rAF, so two generations is the real ceiling. Throw rather than
-    // exit quietly if that ever grows — a silent truncation would leave every
-    // assertion reading stale pre-commit state while still passing, which is
-    // exactly the wrong-but-doesn't-throw failure this suite exists to catch.
+    // Throw rather than truncate: a quiet exit would leave every assertion
+    // reading stale pre-commit state while still passing.
     let generations = 0
     while (frameQueue.length > 0) {
         if (generations++ >= MAX_FRAME_GENERATIONS) {
@@ -74,11 +62,8 @@ function flushFrames() {
     }
 }
 
-/**
- * A `tr` whose `getBoundingClientRect().top` we control, so the FLIP delta is
- * observable under jsdom (which otherwise reports every rect as all-zero and
- * would make the hook's `Math.abs(delta) < 1` guard skip every row).
- */
+// A `tr` with a controllable top, so the FLIP delta clears the hook's
+// `Math.abs(delta) < 1` guard under jsdom's all-zero rects.
 function makeRow(top: number) {
     const el = document.createElement('tr')
     let currentTop = top
@@ -91,12 +76,8 @@ function makeRow(top: number) {
     }
 }
 
-/**
- * Mounts the hook over two registered rows. On mount both rows are new, so
- * this exercises the *enter* path; call `reorder()` to then exercise the FLIP
- * path. Nothing is flushed automatically — a caller that wants the committed
- * styles calls `flushFrames()` itself.
- */
+// Mount exercises the enter path; `reorder()` exercises the FLIP path.
+// Nothing is flushed automatically.
 function mountRows(config: RowAnimationConfig | undefined) {
     const first = makeRow(0)
     const second = makeRow(20)
@@ -115,7 +96,6 @@ function mountRows(config: RowAnimationConfig | undefined) {
         row: first.el,
         reorder() {
             flushFrames()
-            // Swap them: 'a' slides down 20px, 'b' slides up 20px.
             first.moveTo(20)
             second.moveTo(0)
             rerender({ ids: ['b', 'a'] })
@@ -124,7 +104,6 @@ function mountRows(config: RowAnimationConfig | undefined) {
     }
 }
 
-/** Drives a reorder and returns the moved row with its FLIP styles committed. */
 function reorderAndCapture(config: RowAnimationConfig | undefined) {
     const { row, reorder } = mountRows(config)
     reorder()
@@ -191,7 +170,6 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
 
         const el = reorderAndCapture(config)
 
-        // The caller lost the curve they asked for, but not their timing.
         expect(el.style.transition).toContain(DEFAULT_CURVE)
         expect(el.style.transition).toContain('0.8s')
         expect(el.style.transition).not.toContain('0.35s')
@@ -201,9 +179,7 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
     })
 
     describe('a valid curve with a non-finite duration', () => {
-        // The mirror of the case above: the curve survives, the duration does
-        // not. Distinct from the fallback block, where 0.35s appears *because*
-        // the curve fell back too.
+        // Mirror of the case above: curve survives, duration does not.
         it.each([
             ['NaN', NaN],
             ['Infinity', Infinity],
@@ -250,13 +226,9 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
     })
 
     describe('the enter path', () => {
-        // KNOWN LIMITATION, pinned deliberately: the enter animation always
-        // uses DEFAULT_CURVE, ignoring the configured `bezier` — see the
-        // comment on the enter loop in useRowFlip.ts. These `toBe` assertions
-        // therefore expect the default curve even where the config carries a
-        // different one. If you are here because you taught the enter path to
-        // honour `bezier`, you are correcting that limitation, not breaking a
-        // spec: update these expectations.
+        // These pin the known limitation that entering rows ignore `bezier`.
+        // Teaching the enter path to honour it is a fix, not a break — update
+        // these expectations rather than reverting.
         const enterlessConfig = {
             transitionType: 'bezier',
             duration: 0.4,
@@ -266,8 +238,7 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
         it('defaults enterOffset when it is missing', () => {
             const { row } = mountRows(enterlessConfig)
 
-            // Asserted before the double-rAF commit clears it — this is the
-            // offset the row actually starts its enter animation from.
+            // Before the double-rAF commit clears it.
             expect(row.style.transform).toBe('translateY(12px)')
             expect(row.style.opacity).toBe('0')
         })
@@ -277,8 +248,6 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
 
             flushFrames()
 
-            // The enter path always uses the default curve; only the duration
-            // comes from config, so this is where enterDuration is observable.
             expect(row.style.transition).toBe(
                 `transform 0.35s ${DEFAULT_CURVE}, opacity 0.35s ${DEFAULT_CURVE}`
             )
@@ -299,7 +268,6 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
             expect(row.style.transform).toBe('translateY(40px)')
 
             flushFrames()
-            // enterDuration is honoured; `bezier` is not (known limitation).
             expect(row.style.transition).toBe(
                 `transform 0.6s ${DEFAULT_CURVE}, opacity 0.6s ${DEFAULT_CURVE}`
             )
@@ -329,8 +297,6 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
 
         const el = reorderAndCapture(config)
 
-        // Spring physics were never implemented; the config renders as the
-        // default curve. Assert the warning names that specifically.
         expect(el.style.transition).toContain(DEFAULT_CURVE)
         expect(warnSpy).toHaveBeenCalledWith(
             expect.stringContaining(ROW_ANIMATION_WARNINGS.spring)
@@ -338,8 +304,7 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
         expect(warnSpy).not.toHaveBeenCalledWith(
             expect.stringContaining(ROW_ANIMATION_WARNINGS.bezier)
         )
-        // The spring arm does not declare `duration`, so its absence is not a
-        // defect there and must not be reported as one.
+        // The spring arm does not declare `duration`.
         expect(warnSpy).not.toHaveBeenCalledWith(
             expect.stringContaining(ROW_ANIMATION_WARNINGS.duration)
         )
@@ -354,11 +319,10 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
                 String(call[0]).includes(ROW_ANIMATION_WARNINGS.bezier)
             ).length
 
-        // The layout effect ran twice (mount + reorder) but warned once.
+        // Effect ran twice (mount + reorder), warned once.
         expect(bezierWarnings()).toBe(1)
 
-        // A second mount is a new instance — it warns again, so an HMR edit
-        // that re-breaks the config is still visible.
+        // A fresh instance warns again (the HMR case).
         reorderAndCapture(partialBezierConfig)
         expect(bezierWarnings()).toBe(2)
     })
@@ -391,7 +355,7 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
 
         expect(screen.getByText('Ada')).toBeInTheDocument()
         expect(screen.getByText('Grace')).toBeInTheDocument()
-        // Animation is off, so the config is never read and never warned about.
+        // Animation off: the config is never read.
         expect(warnSpy).not.toHaveBeenCalled()
     })
 })

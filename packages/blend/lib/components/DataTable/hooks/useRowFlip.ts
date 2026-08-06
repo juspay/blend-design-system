@@ -46,16 +46,10 @@ function toCssTransition(
     transition: string
     duration: number
 } {
-    // `duration` only narrows on the bezier arm, but it is independently valid
-    // and independently usable: a caller that got the curve wrong may still
-    // have supplied a good duration. Read it before branching so a malformed
-    // `bezier` costs the caller the curve only, not their timing too.
+    // Read before branching so a bad curve doesn't cost the caller their
+    // timing too. Only the bezier arm declares `duration`.
     const rawDuration = (config as { duration?: unknown }).duration
 
-    // A field that is independently valid deserves an independent diagnostic:
-    // a good curve with a broken duration would otherwise animate at the
-    // default with no signal at all. Only the bezier arm declares `duration`,
-    // so its absence is only a defect there.
     if (
         config.transitionType === 'bezier' &&
         !Number.isFinite(rawDuration as number)
@@ -76,10 +70,7 @@ function toCssTransition(
 
         warn(ROW_ANIMATION_WARNINGS.bezier)
     } else if (config.transitionType === 'spring') {
-        // The 'spring' arm has never been implemented — `stiffness`, `damping`
-        // and `mass` are declared in `RowAnimationConfig` but read nowhere. A
-        // fully valid spring config silently renders as the default curve, so
-        // say so rather than letting the caller believe their sliders work.
+        // `stiffness`/`damping`/`mass` are declared but read nowhere.
         warn(ROW_ANIMATION_WARNINGS.spring)
     }
 
@@ -107,10 +98,8 @@ export function useRowFlip(
         [orderedIds]
     )
 
-    // Deduped per hook instance rather than per module: the layout effect runs
-    // on every reorder, so an undeduped warning would spam, but a module-level
-    // Set would stay poisoned across an HMR edit — you fix the config, break it
-    // again, and never hear about it. A remount gives you a fresh Set.
+    // Per instance, not per module: a module-level Set would stay poisoned
+    // across an HMR edit that re-breaks the config.
     const warn = useCallback((message: string) => {
         if (process.env.NODE_ENV === 'production') return
         if (warnedMessagesRef.current.has(message)) return
@@ -220,16 +209,8 @@ export function useRowFlip(
 
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    // KNOWN LIMITATION: the enter animation always uses the
-                    // default curve, so a caller passing `bezier` gets their
-                    // curve on reorder and this one on row entry. The public
-                    // type documents `bezier` as the easing curve without
-                    // scoping it to reorder, so this is very likely an
-                    // oversight rather than a design choice — but changing it
-                    // alters the enter animation for every existing consumer,
-                    // which does not belong in a defensive-guard change. The
-                    // `enter path` tests assert this curve deliberately; they
-                    // pin current behaviour, not a spec.
+                    // KNOWN LIMITATION: entering rows ignore the configured
+                    // `bezier` and always use the default curve.
                     el.style.transition = `transform ${enterDuration}s ${DEFAULT_BEZIER}, opacity ${enterDuration}s ${DEFAULT_BEZIER}`
                     el.style.transform = ''
                     el.style.opacity = '1'
