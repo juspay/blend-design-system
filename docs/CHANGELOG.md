@@ -1,4 +1,4 @@
-# Changelog for v0.0.38
+# Changelog for v0.0.37
 
 > **Stable Release** - This version is production-ready and recommended for general use.
 
@@ -187,16 +187,18 @@
 
 ---
 
-**Release Date**: 2026-08-06
-**Commit Range**: v0.0.37..HEAD
-**Total Changes**: 1 commit
+**Release Date**: 2026-07-28
+**Commit Range**: v0.0.36..HEAD
+**Total Changes**: 158 commits
 
 ## Installation
 
 ```bash
 npm install @juspay/blend-design-system@latest
 # or specific version
-npm install @juspay/blend-design-system@0.0.38
+npm install @juspay/blend-design-system@0.0.37
 ```
 
 ---
+
+**Promoted from:** `0.0.37-beta.8` (beta iteration #8)
