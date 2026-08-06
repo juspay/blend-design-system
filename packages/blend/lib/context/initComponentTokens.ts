@@ -123,7 +123,8 @@ const computeTokens = (
             componentTokens.KEYVALUEPAIR ??
             getKeyValuePairTokens(foundationTokens),
         MODAL:
-            componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
+            componentTokens.MODAL ??
+            getModalComponentTokens(foundationTokens, theme),
         MODALV2:
             componentTokens.MODALV2 ??
             getModalV2Tokens(foundationTokens, theme),
@@ -160,7 +161,7 @@ const computeTokens = (
         SNACKBAR:
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
         STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
-        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens, theme),
         CARDV2:
             componentTokens.CARDV2 ?? getCardV2Tokens(foundationTokens, theme),
         SKELETON:
@@ -182,7 +183,8 @@ const computeTokens = (
         MOBILE_NAVIGATION_V2:
             componentTokens.MOBILE_NAVIGATION_V2 ??
             getMobileNavigationV2Tokens(foundationTokens, theme),
-        UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
+        UPLOAD:
+            componentTokens.UPLOAD ?? getUploadTokens(foundationTokens, theme),
         CODE_BLOCK:
             componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
         CHAT_INPUT:

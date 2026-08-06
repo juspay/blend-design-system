@@ -5,6 +5,8 @@ import {
     Button,
     ButtonType,
     ButtonSize,
+    Theme,
+    ThemeProvider,
 } from '@juspay/blend-design-system'
 import {
     getA11yConfig,
@@ -359,6 +361,43 @@ export const Default: Story = {
         docs: {
             description: {
                 story: 'Basic modal with title, subtitle, content, and action buttons.',
+            },
+        },
+    },
+}
+
+export const DarkTheme: Story = {
+    render: () => (
+        <ThemeProvider theme={Theme.DARK}>
+            <div
+                style={{
+                    minHeight: '100vh',
+                    padding: 32,
+                    backgroundColor: '#171a1f',
+                }}
+            >
+                <Modal
+                    isOpen={true}
+                    onClose={() => {}}
+                    title="Dark theme modal"
+                    subtitle="Existing modal slots resolved through ThemeProvider"
+                    useDrawerOnMobile={false}
+                    primaryAction={{ text: 'Continue', onClick: () => {} }}
+                    secondaryAction={{ text: 'Cancel', onClick: () => {} }}
+                    showDivider
+                >
+                    <div style={{ color: '#e5e7eb', lineHeight: 1.6 }}>
+                        The overlay, container, header, footer, and close
+                        affordance use the dark Modal token set.
+                    </div>
+                </Modal>
+            </div>
+        </ThemeProvider>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Modal surface rendered with the dark theme token set.',
             },
         },
     },
