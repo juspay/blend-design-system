@@ -1,5 +1,19 @@
 # TODOS
 
+## Ship
+
+### Fix Button hover transition performance regression
+
+**What:** Investigate and fix the failing `Button Performance > Animation Performance > hover transitions are smooth` test.
+
+**Why:** The full Blend suite reports an intermittent performance regression, so the repository's performance baseline is not reliable.
+
+**Context:** `/ship` observed this pre-existing failure on branch `funnel-chart-and-tooltips` on 2026-08-06: `Performance test failed: 14.04ms > 14ms` in `packages/blend/__tests__/components/Button/Button.performance.test.tsx`. A later full run passed but still emitted performance-regression warnings for the same test. The branch does not modify the Button test or implementation; reproduce with `pnpm run test:run` from `packages/blend` and check the local performance baseline before changing code.
+
+**Effort:** M
+**Priority:** P0
+**Depends on:** None
+
 ## MultiSelect
 
 ### Remove legacy per-item selection callbacks

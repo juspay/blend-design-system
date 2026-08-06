@@ -13,6 +13,7 @@ export const CoreChart: React.FC<CoreChartProps> = ({
     xAxis,
     yAxis,
     tooltip,
+    funnelConfig,
     height = '100%',
     width = '100%',
     isSmallScreen = false,
@@ -66,6 +67,7 @@ export const CoreChart: React.FC<CoreChartProps> = ({
                 xAxis,
                 yAxis,
                 tooltip,
+                funnelConfig,
                 lineSeriesKeys,
             })}
         </ResponsiveContainer>
