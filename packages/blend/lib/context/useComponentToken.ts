@@ -80,6 +80,8 @@ import { ChatInputV2MobileTokensType } from '../components/InputsV2/ChatInputV2/
 import type { ResponsiveStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 import { ResponsiveUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
 import type { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens.types'
+import type { ResponsiveSliderTokens } from '../components/Slider/slider.tokens.types'
+import type { ResponsiveSelectTokens } from '../components/Select/select.tokens.types'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -167,7 +169,9 @@ export const useComponentToken = (
     | ResponsiveStepperV2Tokens
     | ResponsiveModalV2Tokens
     | ResponsiveUploadV2Tokens
-    | ChatInputV2MobileTokensType => {
+    | ChatInputV2MobileTokensType
+    | ResponsiveSliderTokens
+    | ResponsiveSelectTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -316,6 +320,10 @@ export const useComponentToken = (
             return componentTokens.BREADCRUMBV2
         case 'CODEEDITORV2':
             return componentTokens.CODEEDITORV2
+        case 'SLIDER':
+            return componentTokens.SLIDER
+        case 'SELECT':
+            return componentTokens.SELECT
         case 'PROGRESS_BARV2':
             return componentTokens.PROGRESS_BARV2
         case 'MULTI_VALUE_INPUT_V2':

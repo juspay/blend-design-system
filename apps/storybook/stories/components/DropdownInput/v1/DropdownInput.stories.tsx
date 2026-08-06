@@ -4,6 +4,8 @@ import {
     DropdownInput,
     DropdownPosition,
     TextInputSize,
+    ThemeProvider,
+    Theme,
 } from '@juspay/blend-design-system'
 import { Globe, MapPin, Phone } from 'lucide-react'
 import {
@@ -710,5 +712,120 @@ export const WithLabelsAndHints: Story = {
                 story: 'DropdownInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
         },
+    },
+}
+
+// ---------------------------------------------------------------------------
+// Dark theme snapshot of default / focus / error / disabled states.
+export const DarkThemeStates: Story = {
+    render: () => {
+        const Row = ({
+            title,
+            children,
+        }: {
+            title: string
+            children: React.ReactNode
+        }) => (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 8,
+                    maxWidth: 320,
+                }}
+            >
+                <span style={{ fontSize: 11, color: '#aaa' }}>{title}</span>
+                {children}
+            </div>
+        )
+
+        return (
+            <ThemeProvider theme={Theme.DARK}>
+                <div
+                    style={{
+                        padding: 24,
+                        background: '#0f172a',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+                        gap: 24,
+                    }}
+                >
+                    <Row title="Default">
+                        <DropdownInput
+                            label="Price"
+                            value=""
+                            onChange={() => {}}
+                            dropDownValue="USD"
+                            onDropDownChange={() => {}}
+                            dropDownItems={[
+                                {
+                                    items: [
+                                        { label: 'USD', value: 'USD' },
+                                        { label: 'EUR', value: 'EUR' },
+                                    ],
+                                },
+                            ]}
+                            dropdownPosition={DropdownPosition.LEFT}
+                            placeholder="0.00"
+                        />
+                    </Row>
+                    <Row title="Focus / value">
+                        <DropdownInput
+                            label="Quantity"
+                            value="42"
+                            onChange={() => {}}
+                            dropDownValue="kg"
+                            onDropDownChange={() => {}}
+                            dropDownItems={[
+                                {
+                                    items: [
+                                        { label: 'kg', value: 'kg' },
+                                        { label: 'g', value: 'g' },
+                                    ],
+                                },
+                            ]}
+                            placeholder="0"
+                        />
+                    </Row>
+                    <Row title="Error">
+                        <DropdownInput
+                            label="Required"
+                            value=""
+                            onChange={() => {}}
+                            dropDownValue="USD"
+                            onDropDownChange={() => {}}
+                            dropDownItems={[
+                                { items: [{ label: 'USD', value: 'USD' }] },
+                            ]}
+                            placeholder="0.00"
+                            error
+                            errorMessage="This field is required."
+                        />
+                    </Row>
+                    <Row title="Disabled">
+                        <DropdownInput
+                            label="Region"
+                            value=""
+                            onChange={() => {}}
+                            dropDownValue="us"
+                            onDropDownChange={() => {}}
+                            dropDownItems={[
+                                { items: [{ label: 'US', value: 'us' }] },
+                            ]}
+                            placeholder="Select region..."
+                            disabled
+                        />
+                    </Row>
+                </div>
+            </ThemeProvider>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DropdownInput under `ThemeProvider theme={Theme.DARK}` covering default / focus / error / disabled states.',
+            },
+        },
+        chromatic: CHROMATIC_CONFIG,
     },
 }

@@ -21,8 +21,7 @@ import {
     SingleSelectV2Variant,
 } from './singleSelectV2.types'
 import SingleSelectV2Trigger from './SingleSelectV2Trigger'
-import { TextInput } from '../Inputs/TextInput'
-import { TextInputSize } from '../Inputs/TextInput/types'
+import { SearchInputV2 } from '../InputsV2/SearchInputV2'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
 import { setupAccessibility, getSingleSelectV2ValueLabelMap } from './utils'
 import {
@@ -382,8 +381,7 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                 }
                                                 zIndex={50}
                                             >
-                                                <TextInput
-                                                    size={TextInputSize.MEDIUM}
+                                                <SearchInputV2
                                                     placeholder={
                                                         searchPlaceholder
                                                     }
