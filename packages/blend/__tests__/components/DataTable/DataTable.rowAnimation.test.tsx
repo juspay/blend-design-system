@@ -43,6 +43,24 @@ const partialBezierConfig = {
 const DEFAULT_CURVE = 'cubic-bezier(0.32, 0.72, 0, 1)'
 
 /**
+ * `requestAnimationFrame` callbacks queued by the hook. The hook commits both
+ * the enter and the FLIP styles inside a *double* rAF, so a synchronous stub
+ * would erase the pre-commit state (the `translateY(offset)` a row starts
+ * from) before a test could observe it. Queue instead, and drain explicitly.
+ */
+let frameQueue: FrameRequestCallback[] = []
+
+function flushFrames() {
+    // Nested rAF: draining one generation schedules the next.
+    let generations = 0
+    while (frameQueue.length > 0 && generations++ < 10) {
+        const pending = frameQueue
+        frameQueue = []
+        pending.forEach((cb) => cb(0))
+    }
+}
+
+/**
  * A `tr` whose `getBoundingClientRect().top` we control, so the FLIP delta is
  * observable under jsdom (which otherwise reports every rect as all-zero and
  * would make the hook's `Math.abs(delta) < 1` guard skip every row).
@@ -60,11 +78,12 @@ function makeRow(top: number) {
 }
 
 /**
- * Drives a reorder through the hook and returns the row that moved, with its
- * inline styles already committed. `requestAnimationFrame` is stubbed to run
- * synchronously so the hook's double-rAF commit lands before we assert.
+ * Mounts the hook over two registered rows. On mount both rows are new, so
+ * this exercises the *enter* path; call `reorder()` to then exercise the FLIP
+ * path. Nothing is flushed automatically — a caller that wants the committed
+ * styles calls `flushFrames()` itself.
  */
-function reorderAndCapture(config: RowAnimationConfig | undefined) {
+function mountRows(config: RowAnimationConfig | undefined) {
     const first = makeRow(0)
     const second = makeRow(20)
 
@@ -78,12 +97,24 @@ function reorderAndCapture(config: RowAnimationConfig | undefined) {
         { initialProps: { ids: ['a', 'b'] } }
     )
 
-    // Swap them: 'a' slides down 20px, 'b' slides up 20px.
-    first.moveTo(20)
-    second.moveTo(0)
-    rerender({ ids: ['b', 'a'] })
+    return {
+        row: first.el,
+        reorder() {
+            flushFrames()
+            // Swap them: 'a' slides down 20px, 'b' slides up 20px.
+            first.moveTo(20)
+            second.moveTo(0)
+            rerender({ ids: ['b', 'a'] })
+            flushFrames()
+        },
+    }
+}
 
-    return first.el
+/** Drives a reorder and returns the moved row with its FLIP styles committed. */
+function reorderAndCapture(config: RowAnimationConfig | undefined) {
+    const { row, reorder } = mountRows(config)
+    reorder()
+    return row
 }
 
 describe('useRowFlip malformed rowAnimationConfig', () => {
@@ -91,12 +122,10 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
 
     beforeEach(() => {
         warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-        // Synchronous rAF: the hook commits transitions inside a double
-        // requestAnimationFrame, and jsdom's default would defer past the
-        // assertion.
+        frameQueue = []
         vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
-            cb(0)
-            return 0
+            frameQueue.push(cb)
+            return frameQueue.length
         })
     })
 
@@ -152,6 +181,41 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
         expect(el.style.transition).toContain(DEFAULT_CURVE)
         expect(el.style.transition).toContain('0.8s')
         expect(el.style.transition).not.toContain('0.35s')
+        expect(warnSpy).not.toHaveBeenCalledWith(
+            expect.stringContaining(ROW_ANIMATION_WARNINGS.duration)
+        )
+    })
+
+    describe('a valid curve with a non-finite duration', () => {
+        // The mirror of the case above: the curve survives, the duration does
+        // not. Distinct from the fallback block, where 0.35s appears *because*
+        // the curve fell back too.
+        it.each([
+            ['NaN', NaN],
+            ['Infinity', Infinity],
+            ['a missing duration', undefined],
+            ['a string duration', '0.8'],
+        ])('keeps the curve and warns for %s', (_label, duration) => {
+            const config = {
+                enterDuration: 0.32,
+                enterOffset: 12,
+                transitionType: 'bezier',
+                bezier: [0.1, 0.2, 0.3, 0.4],
+                duration,
+            } as unknown as RowAnimationConfig
+
+            const el = reorderAndCapture(config)
+
+            expect(el.style.transition).toBe(
+                'transform 0.35s cubic-bezier(0.1, 0.2, 0.3, 0.4), opacity 0.35s cubic-bezier(0.1, 0.2, 0.3, 0.4)'
+            )
+            expect(warnSpy).toHaveBeenCalledWith(
+                expect.stringContaining(ROW_ANIMATION_WARNINGS.duration)
+            )
+            expect(warnSpy).not.toHaveBeenCalledWith(
+                expect.stringContaining(ROW_ANIMATION_WARNINGS.bezier)
+            )
+        })
     })
 
     it('applies a well-formed bezier config verbatim, without warning', () => {
@@ -171,18 +235,61 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
         expect(warnSpy).not.toHaveBeenCalled()
     })
 
-    it('falls back to defaults and warns when enterDuration/enterOffset are missing', () => {
-        const config = {
+    describe('the enter path', () => {
+        const enterlessConfig = {
             transitionType: 'bezier',
             duration: 0.4,
             bezier: [0.1, 0.2, 0.3, 0.4],
         } as unknown as RowAnimationConfig
 
-        renderHook(() => useRowFlip(['a'], config))
+        it('defaults enterOffset when it is missing', () => {
+            const { row } = mountRows(enterlessConfig)
 
-        expect(warnSpy).toHaveBeenCalledWith(
-            expect.stringContaining(ROW_ANIMATION_WARNINGS.enter)
-        )
+            // Asserted before the double-rAF commit clears it — this is the
+            // offset the row actually starts its enter animation from.
+            expect(row.style.transform).toBe('translateY(12px)')
+            expect(row.style.opacity).toBe('0')
+        })
+
+        it('defaults enterDuration when it is missing', () => {
+            const { row } = mountRows(enterlessConfig)
+
+            flushFrames()
+
+            // The enter path always uses the default curve; only the duration
+            // comes from config, so this is where enterDuration is observable.
+            expect(row.style.transition).toBe(
+                `transform 0.35s ${DEFAULT_CURVE}, opacity 0.35s ${DEFAULT_CURVE}`
+            )
+            expect(row.style.transform).toBe('')
+            expect(row.style.opacity).toBe('1')
+        })
+
+        it('applies well-formed enter values verbatim', () => {
+            const config: RowAnimationConfig = {
+                enterDuration: 0.6,
+                enterOffset: 40,
+                transitionType: 'bezier',
+                duration: 0.4,
+                bezier: [0.1, 0.2, 0.3, 0.4],
+            }
+
+            const { row } = mountRows(config)
+            expect(row.style.transform).toBe('translateY(40px)')
+
+            flushFrames()
+            expect(row.style.transition).toBe(
+                `transform 0.6s ${DEFAULT_CURVE}, opacity 0.6s ${DEFAULT_CURVE}`
+            )
+        })
+
+        it('warns when enterDuration/enterOffset are missing', () => {
+            mountRows(enterlessConfig)
+
+            expect(warnSpy).toHaveBeenCalledWith(
+                expect.stringContaining(ROW_ANIMATION_WARNINGS.enter)
+            )
+        })
     })
 
     it('warns that a valid spring config is not implemented', () => {
@@ -205,6 +312,11 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
         )
         expect(warnSpy).not.toHaveBeenCalledWith(
             expect.stringContaining(ROW_ANIMATION_WARNINGS.bezier)
+        )
+        // The spring arm does not declare `duration`, so its absence is not a
+        // defect there and must not be reported as one.
+        expect(warnSpy).not.toHaveBeenCalledWith(
+            expect.stringContaining(ROW_ANIMATION_WARNINGS.duration)
         )
     })
 

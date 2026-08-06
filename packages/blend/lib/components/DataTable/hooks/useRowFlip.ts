@@ -9,6 +9,7 @@ const DEFAULT_BEZIER = 'cubic-bezier(0.32, 0.72, 0, 1)'
 
 export const ROW_ANIMATION_WARNINGS = {
     bezier: `transitionType is 'bezier' but 'bezier' is not a tuple of four finite numbers — falling back to the default curve.`,
+    duration: `'duration' must be a finite number — falling back to the default.`,
     spring: `transitionType 'spring' is not implemented — 'stiffness', 'damping' and 'mass' are ignored and rows animate with the default curve.`,
     enter: `'enterDuration' and 'enterOffset' must both be finite numbers — falling back to defaults.`,
 } as const
@@ -49,10 +50,20 @@ function toCssTransition(
     // and independently usable: a caller that got the curve wrong may still
     // have supplied a good duration. Read it before branching so a malformed
     // `bezier` costs the caller the curve only, not their timing too.
-    const duration = toFiniteNumber(
-        (config as { duration?: unknown }).duration,
-        DEFAULT_DURATION
-    )
+    const rawDuration = (config as { duration?: unknown }).duration
+
+    // A field that is independently valid deserves an independent diagnostic:
+    // a good curve with a broken duration would otherwise animate at the
+    // default with no signal at all. Only the bezier arm declares `duration`,
+    // so its absence is only a defect there.
+    if (
+        config.transitionType === 'bezier' &&
+        !Number.isFinite(rawDuration as number)
+    ) {
+        warn(ROW_ANIMATION_WARNINGS.duration)
+    }
+
+    const duration = toFiniteNumber(rawDuration, DEFAULT_DURATION)
 
     if (config.transitionType === 'bezier') {
         if (isBezierTuple(config.bezier)) {
