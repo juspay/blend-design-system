@@ -2,23 +2,59 @@ import { useRef, useLayoutEffect, useCallback, useMemo } from 'react'
 import { useReducedMotion } from './useReducedMotion'
 import type { RowAnimationConfig } from '../types'
 
+const DEFAULT_DURATION = 0.35
+const DEFAULT_ENTER_DURATION = 0.35
+const DEFAULT_ENTER_OFFSET = 12
+
+const warnedMessages = new Set<string>()
+
+function warnInvalidConfig(message: string) {
+    if (process.env.NODE_ENV === 'production') return
+    if (warnedMessages.has(message)) return
+    warnedMessages.add(message)
+    console.warn(`[DataTable] rowAnimationConfig: ${message}`)
+}
+
+function toFiniteNumber(value: unknown, fallback: number): number {
+    return typeof value === 'number' && Number.isFinite(value)
+        ? value
+        : fallback
+}
+
+function isBezierTuple(
+    value: unknown
+): value is [number, number, number, number] {
+    return (
+        Array.isArray(value) &&
+        value.length === 4 &&
+        value.every((n) => typeof n === 'number' && Number.isFinite(n))
+    )
+}
+
 function toCssTransition(config: RowAnimationConfig): {
     transition: string
     duration: number
 } {
     if (config.transitionType === 'bezier') {
-        const [p0, p1, p2, p3] = config.bezier
-        const cssBezier = `cubic-bezier(${p0}, ${p1}, ${p2}, ${p3})`
-        return {
-            duration: config.duration,
-            transition: `transform ${config.duration}s ${cssBezier}, opacity ${config.duration}s ${cssBezier}`,
+        if (isBezierTuple(config.bezier)) {
+            const [p0, p1, p2, p3] = config.bezier
+            const cssBezier = `cubic-bezier(${p0}, ${p1}, ${p2}, ${p3})`
+            const duration = toFiniteNumber(config.duration, DEFAULT_DURATION)
+            return {
+                duration,
+                transition: `transform ${duration}s ${cssBezier}, opacity ${duration}s ${cssBezier}`,
+            }
         }
+
+        warnInvalidConfig(
+            `transitionType is 'bezier' but 'bezier' is not a tuple of four finite numbers — falling back to the default curve.`
+        )
     }
 
     const cssBezier = `cubic-bezier(0.32, 0.72, 0, 1)`
-    const transition = `transform 0.35s ${cssBezier}, opacity 0.35s ${cssBezier}`
+    const transition = `transform ${DEFAULT_DURATION}s ${cssBezier}, opacity ${DEFAULT_DURATION}s ${cssBezier}`
     return {
-        duration: 0.35,
+        duration: DEFAULT_DURATION,
         transition,
     }
 }
@@ -90,8 +126,22 @@ export function useRowFlip(
 
         const { transition: cssTransition, duration } =
             toCssTransition(currentConfig)
-        const enterDuration = currentConfig.enterDuration
-        const enterOffset = currentConfig.enterOffset
+        if (
+            !Number.isFinite(currentConfig.enterDuration) ||
+            !Number.isFinite(currentConfig.enterOffset)
+        ) {
+            warnInvalidConfig(
+                `'enterDuration' and 'enterOffset' must both be finite numbers — falling back to defaults.`
+            )
+        }
+        const enterDuration = toFiniteNumber(
+            currentConfig.enterDuration,
+            DEFAULT_ENTER_DURATION
+        )
+        const enterOffset = toFiniteNumber(
+            currentConfig.enterOffset,
+            DEFAULT_ENTER_OFFSET
+        )
 
         const prevIds = prevIdsRef.current
         const newRowIdSet = new Set(
