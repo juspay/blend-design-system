@@ -663,7 +663,7 @@ const TableBody = forwardRef<
 
         const { register } = useRowFlip(
             enableRowAnimation ? orderedRowIds : [],
-            rowAnimationConfig
+            enableRowAnimation ? rowAnimationConfig : undefined
         )
 
         const getFlipRefCallback = useCallback(
