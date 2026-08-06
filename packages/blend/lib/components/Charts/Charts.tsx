@@ -34,6 +34,7 @@ const Charts: React.FC<ChartsProps> = ({
     xAxis,
     yAxis,
     tooltip,
+    funnelConfig,
     noData,
     height = 400,
     showHeader = true,
@@ -453,6 +454,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   : mergedYAxis.showLabel,
                                                       },
                                                       tooltip,
+                                                      funnelConfig,
                                                       noData,
                                                       onKeyClick:
                                                           handleLegendClick,
@@ -525,6 +527,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   : mergedYAxis.showLabel,
                                                       },
                                                       tooltip,
+                                                      funnelConfig,
                                                       noData,
                                                       onKeyClick:
                                                           handleLegendClick,
@@ -771,6 +774,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   : mergedYAxis.showLabel,
                                                       },
                                                       tooltip,
+                                                      funnelConfig,
                                                       noData,
                                                       onKeyClick:
                                                           handleLegendClick,
@@ -953,6 +957,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                                   : mergedYAxis.showLabel,
                                                       },
                                                       tooltip,
+                                                      funnelConfig,
                                                       noData,
                                                       onKeyClick:
                                                           handleLegendClick,

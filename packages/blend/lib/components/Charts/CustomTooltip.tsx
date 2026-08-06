@@ -3,6 +3,7 @@ import {
     ChartType,
     CustomTooltipProps,
     NewNestedDataPoint,
+    TooltipFormatter,
     XAxisConfig,
     YAxisConfig,
 } from './types'
@@ -14,7 +15,7 @@ import {
 import { parseTimestamp } from './DateTimeFormatter'
 import Block from '../../components/Primitives/Block/Block'
 import Text from '../../components/Text/Text'
-import { useEffect, useRef } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 
 import {
     Payload,
@@ -116,6 +117,52 @@ export const findDataPointByLabel = (
     })
 }
 
+const getDataIndex = (
+    originalData: NewNestedDataPoint[],
+    label: string | number
+): number => {
+    const dataPoint = findDataPointByLabel(originalData, label)
+    return dataPoint ? originalData.indexOf(dataPoint) : -1
+}
+
+const formatTooltipHeader = (
+    label: string | number,
+    xAxis: XAxisConfig | undefined,
+    labelFormatter: CustomTooltipProps['labelFormatter']
+): ReactNode => {
+    return labelFormatter
+        ? labelFormatter(label)
+        : formatTooltipLabel(label, xAxis)
+}
+
+const formatPrimaryTooltipValue = ({
+    value,
+    seriesName,
+    dataIndex,
+    color,
+    payload,
+    yAxis,
+    formatter,
+}: {
+    value: string | number
+    seriesName: string | number
+    dataIndex: number
+    color: string | undefined
+    payload: unknown
+    yAxis?: YAxisConfig
+    formatter?: TooltipFormatter
+}): ReactNode => {
+    if (!formatter) return formatTooltipValue(value, yAxis)
+
+    return formatter({
+        seriesName,
+        value,
+        dataIndex,
+        color: color || '#AD46FF',
+        payload,
+    })
+}
+
 export const getRelevantData = (
     originalData: NewNestedDataPoint[],
     label: string | number,
@@ -145,14 +192,19 @@ export const CustomTooltip = ({
     selectedKeys,
     xAxis,
     yAxis,
+    formatter,
+    labelFormatter,
 }: CustomTooltipProps) => {
     if (!active || !payload || !payload.length) {
         return null
     }
 
     const getColor = (key: string) => {
-        const payloadItem = payload.find((item) => item.dataKey === key)
-        return payloadItem ? payloadItem.color : '#AD46FF'
+        const payloadItem = payload.find(
+            (item) =>
+                String(item.dataKey) === key || item.payload?.seriesKey === key
+        )
+        return payloadItem?.color || payloadItem?.payload?.color || '#AD46FF'
     }
 
     return (
@@ -182,17 +234,23 @@ export const CustomTooltip = ({
                     getColor={getColor}
                     xAxis={xAxis}
                     yAxis={yAxis}
+                    formatter={formatter}
+                    labelFormatter={labelFormatter}
                 />
             )}
             {(chartType === ChartType.BAR ||
                 chartType === ChartType.AREA ||
-                chartType === ChartType.LINE_BAR) && (
+                chartType === ChartType.LINE_BAR ||
+                chartType === ChartType.FUNNEL) && (
                 <BarChartTooltip
                     originalData={originalData}
                     label={label}
+                    payload={payload}
                     getColor={getColor}
                     xAxis={xAxis}
                     yAxis={yAxis}
+                    formatter={formatter}
+                    labelFormatter={labelFormatter}
                 />
             )}
             {chartType === ChartType.PIE && (
@@ -203,8 +261,11 @@ export const CustomTooltip = ({
                     setHoveredKey={setHoveredKey}
                     originalData={originalData}
                     hoveredKey={hoveredKey}
+                    label={label}
                     xAxis={xAxis}
                     yAxis={yAxis}
+                    formatter={formatter}
+                    labelFormatter={labelFormatter}
                 />
             )}
             {chartType === ChartType.SCATTER && (
@@ -216,6 +277,8 @@ export const CustomTooltip = ({
                     hoveredKey={hoveredKey}
                     xAxis={xAxis}
                     yAxis={yAxis}
+                    formatter={formatter}
+                    labelFormatter={labelFormatter}
                 />
             )}
         </Block>
@@ -225,17 +288,24 @@ export const CustomTooltip = ({
 const BarChartTooltip = ({
     originalData,
     label,
+    payload,
     getColor,
     xAxis,
     yAxis,
+    formatter,
+    labelFormatter,
 }: {
     originalData: NewNestedDataPoint[]
     label: string | number
+    payload: Payload<ValueType, NameType>[]
     getColor: (key: string) => string | undefined
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    formatter?: TooltipFormatter
+    labelFormatter?: CustomTooltipProps['labelFormatter']
 }) => {
     const relevantData = findDataPointByLabel(originalData, label)?.data
+    const dataIndex = getDataIndex(originalData, label)
 
     // Collect all aux data from all DataPoints in relevantData, attaching the key to each aux item
     const auxData = relevantData
@@ -259,7 +329,7 @@ const BarChartTooltip = ({
                     fontWeight={FOUNDATION_THEME.font.weight[600]}
                     color={FOUNDATION_THEME.colors.gray[900]}
                 >
-                    {formatTooltipLabel(label, xAxis)}
+                    {formatTooltipHeader(label, xAxis, labelFormatter)}
                 </Text>
             </Block>
 
@@ -272,66 +342,93 @@ const BarChartTooltip = ({
                 {relevantData &&
                     Object.keys(relevantData)
                         .filter((key) => key !== 'name')
-                        .map((key, index) => (
-                            <Block
-                                display="flex"
-                                alignItems="center"
-                                justifyContent="space-between"
-                                key={`bar-${index}`}
-                                width="100%"
-                            >
+                        .map((key, index) => {
+                            const payloadItem = payload.find(
+                                (item) =>
+                                    String(item.dataKey) === key ||
+                                    item.payload?.seriesKey === key
+                            )
+
+                            return (
                                 <Block
                                     display="flex"
                                     alignItems="center"
-                                    gap={FOUNDATION_THEME.unit[8]}
+                                    justifyContent="space-between"
+                                    key={`bar-${index}`}
+                                    width="100%"
                                 >
                                     <Block
-                                        backgroundColor={
-                                            getColor(key) || '#AD46FF'
-                                        }
-                                        width={FOUNDATION_THEME.unit[4]}
-                                        height={FOUNDATION_THEME.unit[16]}
-                                        borderRadius={
-                                            FOUNDATION_THEME.border.radius[8]
-                                        }
-                                    />
-                                    <Text
-                                        fontSize={
-                                            FOUNDATION_THEME.font.size.body.sm
-                                                .fontSize as number
-                                        }
-                                        fontWeight={
-                                            FOUNDATION_THEME.font.weight[500]
-                                        }
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[400]
-                                        }
+                                        display="flex"
+                                        alignItems="center"
+                                        gap={FOUNDATION_THEME.unit[8]}
                                     >
-                                        {key}
-                                    </Text>
+                                        <Block
+                                            backgroundColor={
+                                                getColor(key) || '#AD46FF'
+                                            }
+                                            width={FOUNDATION_THEME.unit[4]}
+                                            height={FOUNDATION_THEME.unit[16]}
+                                            borderRadius={
+                                                FOUNDATION_THEME.border
+                                                    .radius[8]
+                                            }
+                                        />
+                                        <Text
+                                            fontSize={
+                                                FOUNDATION_THEME.font.size.body
+                                                    .sm.fontSize as number
+                                            }
+                                            fontWeight={
+                                                FOUNDATION_THEME.font
+                                                    .weight[500]
+                                            }
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[400]
+                                            }
+                                        >
+                                            {key}
+                                        </Text>
+                                    </Block>
+                                    <Block>
+                                        <Text
+                                            fontSize={
+                                                FOUNDATION_THEME.font.size.body
+                                                    .sm.fontSize as number
+                                            }
+                                            fontWeight={
+                                                FOUNDATION_THEME.font
+                                                    .weight[600]
+                                            }
+                                            color={
+                                                FOUNDATION_THEME.colors
+                                                    .gray[900]
+                                            }
+                                            truncate={!formatter}
+                                        >
+                                            {formatPrimaryTooltipValue({
+                                                value: relevantData[key].primary
+                                                    .val,
+                                                seriesName:
+                                                    payloadItem?.payload
+                                                        ?.seriesKey ||
+                                                    payloadItem?.name ||
+                                                    key,
+                                                dataIndex,
+                                                color:
+                                                    payloadItem?.color ||
+                                                    getColor(key),
+                                                payload:
+                                                    payloadItem?.payload ||
+                                                    relevantData[key],
+                                                yAxis,
+                                                formatter,
+                                            })}
+                                        </Text>
+                                    </Block>
                                 </Block>
-                                <Block>
-                                    <Text
-                                        fontSize={
-                                            FOUNDATION_THEME.font.size.body.sm
-                                                .fontSize as number
-                                        }
-                                        fontWeight={
-                                            FOUNDATION_THEME.font.weight[600]
-                                        }
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[900]
-                                        }
-                                        truncate={true}
-                                    >
-                                        {formatTooltipValue(
-                                            relevantData[key].primary.val,
-                                            yAxis
-                                        )}
-                                    </Text>
-                                </Block>
-                            </Block>
-                        ))}
+                            )
+                        })}
             </Block>
             {auxData && auxData.length > 0 && (
                 <Block
@@ -391,6 +488,8 @@ const LineChartTooltip = ({
     setHoveredKey,
     xAxis,
     yAxis,
+    formatter,
+    labelFormatter,
 }: {
     originalData: NewNestedDataPoint[]
     hoveredKey: string | null
@@ -402,6 +501,8 @@ const LineChartTooltip = ({
     setHoveredKey: (key: string) => void
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    formatter?: TooltipFormatter
+    labelFormatter?: CustomTooltipProps['labelFormatter']
 }) => {
     const updateScheduledRef = useRef(false)
 
@@ -459,7 +560,7 @@ const LineChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[500]}
                         color={FOUNDATION_THEME.colors.gray[400]}
                     >
-                        {formatTooltipLabel(label, xAxis)}
+                        {formatTooltipHeader(label, xAxis, labelFormatter)}
                     </Text>
                 </Block>
             </Block>
@@ -476,9 +577,20 @@ const LineChartTooltip = ({
                     fontSize={12}
                     fontWeight={FOUNDATION_THEME.font.weight[600]}
                     color={FOUNDATION_THEME.colors.gray[900]}
-                    truncate={true}
+                    truncate={!formatter}
                 >
-                    {formatTooltipValue(relevantData.primary.val, yAxis)}
+                    {formatPrimaryTooltipValue({
+                        value: relevantData.primary.val,
+                        seriesName: hoveredKey,
+                        dataIndex: getDataIndex(originalData, label),
+                        color: getColor(hoveredKey),
+                        payload:
+                            payload.find(
+                                (item) => String(item.dataKey) === hoveredKey
+                            )?.payload || relevantData,
+                        yAxis,
+                        formatter,
+                    })}
                 </Text>
             </Block>
 
@@ -614,6 +726,9 @@ const PieChartTooltip = ({
     setHoveredKey,
     xAxis,
     yAxis,
+    label,
+    formatter,
+    labelFormatter,
 }: {
     originalData: NewNestedDataPoint[]
     hoveredKey: string | null
@@ -621,8 +736,11 @@ const PieChartTooltip = ({
     payload: Payload<ValueType, NameType>[]
     selectedKeys: string[]
     setHoveredKey: (key: string) => void
+    label: string | number
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    formatter?: TooltipFormatter
+    labelFormatter?: CustomTooltipProps['labelFormatter']
 }) => {
     const updateScheduledRef = useRef(false)
 
@@ -681,7 +799,11 @@ const PieChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[500]}
                         color={FOUNDATION_THEME.colors.gray[400]}
                     >
-                        {formatTooltipLabel(originalData[0].name, xAxis)}
+                        {formatTooltipHeader(
+                            label || originalData[0].name,
+                            xAxis,
+                            labelFormatter
+                        )}
                     </Text>
                 </Block>
             </Block>
@@ -698,9 +820,20 @@ const PieChartTooltip = ({
                     fontSize={12}
                     fontWeight={FOUNDATION_THEME.font.weight[600]}
                     color={FOUNDATION_THEME.colors.gray[900]}
-                    truncate={true}
+                    truncate={!formatter}
                 >
-                    {formatTooltipValue(data.primary.val, yAxis)}
+                    {formatPrimaryTooltipValue({
+                        value: data.primary.val,
+                        seriesName: name,
+                        dataIndex: getDataIndex(
+                            originalData,
+                            originalData[0].name
+                        ),
+                        color: payload[0].color || payload[0].payload.fill,
+                        payload: payload[0].payload,
+                        yAxis,
+                        formatter,
+                    })}
                 </Text>
             </Block>
 
@@ -751,6 +884,8 @@ const ScatterChartTooltip = ({
     selectedKeys,
     xAxis,
     yAxis,
+    formatter,
+    labelFormatter,
 }: {
     originalData: NewNestedDataPoint[]
     hoveredKey: string | null
@@ -759,6 +894,8 @@ const ScatterChartTooltip = ({
     selectedKeys: string[]
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    formatter?: TooltipFormatter
+    labelFormatter?: CustomTooltipProps['labelFormatter']
 }) => {
     if (!active || !payload || !payload.length) {
         return null
@@ -815,7 +952,11 @@ const ScatterChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[500]}
                         color={FOUNDATION_THEME.colors.gray[400]}
                     >
-                        {point.name || 'Data Point'}
+                        {formatTooltipHeader(
+                            point.name || 'Data Point',
+                            xAxis,
+                            labelFormatter
+                        )}
                     </Text>
                 </Block>
             </Block>
@@ -863,9 +1004,20 @@ const ScatterChartTooltip = ({
                         fontSize={12}
                         fontWeight={FOUNDATION_THEME.font.weight[600]}
                         color={FOUNDATION_THEME.colors.gray[900]}
-                        truncate={true}
+                        truncate={!formatter}
                     >
-                        {formatTooltipValue(point.y, yAxis)}
+                        {formatPrimaryTooltipValue({
+                            value: point.y,
+                            seriesName: seriesKey,
+                            dataIndex: getDataIndex(
+                                originalData,
+                                point.name || ''
+                            ),
+                            color: point.fill,
+                            payload: point,
+                            yAxis,
+                            formatter,
+                        })}
                     </Text>
                 </Block>
             </Block>

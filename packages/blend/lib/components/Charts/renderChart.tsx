@@ -28,6 +28,7 @@ import {
     FlattenedDataPoint,
 } from './types'
 import SankeyChartWrapper from './SankeyChartWrapper'
+import FunnelChart from './FunnelChart'
 import {
     formatNumber,
     getAxisFormatter,
@@ -58,6 +59,7 @@ export const renderChart = ({
     xAxis,
     yAxis,
     tooltip,
+    funnelConfig,
     noData,
     height,
     CustomizedDot,
@@ -388,6 +390,8 @@ export const renderChart = ({
                                     {...mergedProps}
                                     hoveredKey={hoveredKey}
                                     setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
                                 />
                             )
                         }}
@@ -631,6 +635,8 @@ export const renderChart = ({
                                     {...mergedProps}
                                     hoveredKey={hoveredKey}
                                     setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
                                 />
                             )
                         }}
@@ -746,6 +752,8 @@ export const renderChart = ({
                                     {...mergedProps}
                                     hoveredKey={hoveredKey}
                                     setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
                                 />
                             )
                         }}
@@ -988,6 +996,8 @@ export const renderChart = ({
                                     {...mergedProps}
                                     hoveredKey={hoveredKey}
                                     setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
                                 />
                             )
                         }}
@@ -1155,6 +1165,8 @@ export const renderChart = ({
                                     {...mergedProps}
                                     hoveredKey={hoveredKey}
                                     setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
                                 />
                             )
                         }}
@@ -1263,6 +1275,24 @@ export const renderChart = ({
                     sankeyWidth={sankeyWidth}
                     sankeyHeight={sankeyHeight}
                     isSmallScreen={isSmallScreen}
+                />
+            )
+        }
+
+        case ChartType.FUNNEL: {
+            return (
+                <FunnelChart
+                    data={originalData}
+                    selectedKeys={selectedKeys}
+                    colors={colors}
+                    funnelConfig={funnelConfig}
+                    barsize={barsize}
+                    tooltip={tooltip}
+                    xAxis={finalXAxis}
+                    yAxis={finalYAxis}
+                    isSmallScreen={isSmallScreen}
+                    hoveredKey={hoveredKey}
+                    setHoveredKey={setHoveredKey}
                 />
             )
         }
@@ -1406,6 +1436,8 @@ export const renderChart = ({
                                     {...mergedProps}
                                     hoveredKey={hoveredKey}
                                     setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
                                 />
                             )
                         }}

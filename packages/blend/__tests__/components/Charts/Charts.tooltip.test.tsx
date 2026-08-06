@@ -4,10 +4,17 @@ import { render } from '../../test-utils'
 import { renderChart } from '../../../lib/components/Charts/renderChart'
 import { CustomTooltip } from '../../../lib/components/Charts/CustomTooltip'
 import {
+    calculateFunnelDropOff,
+    FunnelChart,
+    getFunnelStages,
+} from '../../../lib/components/Charts/FunnelChart'
+import {
     ChartType,
     NewNestedDataPoint,
+    TooltipConfig,
     TooltipContentProps,
 } from '../../../lib/components/Charts/types'
+import { DEFAULT_COLORS } from '../../../lib/components/Charts/utils'
 import { FOUNDATION_THEME } from '../../../lib/tokens'
 
 /**
@@ -22,6 +29,8 @@ vi.mock('recharts', async (importOriginal) => {
     const actual = await importOriginal<typeof import('recharts')>()
     const Passthrough = ({ children }: { children?: React.ReactNode }) =>
         React.createElement('div', null, children)
+    const MockLabelList = () =>
+        React.createElement('div', { 'data-testid': 'funnel-label-list' })
 
     const MockTooltip = ({
         content,
@@ -57,6 +66,8 @@ vi.mock('recharts', async (importOriginal) => {
         Area: Passthrough,
         Pie: Passthrough,
         Cell: Passthrough,
+        CartesianGrid: Passthrough,
+        LabelList: MockLabelList,
         Scatter: Passthrough,
         XAxis: Passthrough,
         YAxis: Passthrough,
@@ -77,6 +88,21 @@ const chartData: NewNestedDataPoint[] = [
             revenue: { primary: { label: 'Revenue', val: 3000 } },
             profit: { primary: { label: 'Profit', val: 1398 } },
         },
+    },
+]
+
+const funnelData: NewNestedDataPoint[] = [
+    {
+        name: 'Visited',
+        data: { visitors: { primary: { label: 'Visitors', val: 1000 } } },
+    },
+    {
+        name: 'Started',
+        data: { visitors: { primary: { label: 'Visitors', val: 500 } } },
+    },
+    {
+        name: 'Completed',
+        data: { visitors: { primary: { label: 'Visitors', val: 250 } } },
     },
 ]
 
@@ -248,6 +274,37 @@ describe('Charts tooltip.content', () => {
         expect(lastCallArg.chartType).toBe(ChartType.AREA)
     })
 
+    it('passes chartType=FUNNEL and funnel config to custom content', () => {
+        const contentSpy = createContentSpy()
+
+        render(
+            <svg>
+                {renderChart({
+                    ...baseRenderProps,
+                    chartType: ChartType.FUNNEL,
+                    data: funnelData,
+                    flattenedData: funnelData.map((item) => ({
+                        name: item.name,
+                        visitors: item.data.visitors.primary.val,
+                    })),
+                    lineKeys: ['visitors'],
+                    funnelConfig: {
+                        percentageBase: 'first',
+                        showLabels: false,
+                    },
+                    tooltip: { content: contentSpy },
+                })}
+            </svg>
+        )
+
+        expect(contentSpy).toHaveBeenCalled()
+        const lastCallArg = contentSpy.mock.calls.at(
+            -1
+        )?.[0] as unknown as Partial<TooltipContentProps>
+        expect(lastCallArg.chartType).toBe(ChartType.FUNNEL)
+        expect(lastCallArg.originalData).toBe(funnelData)
+    })
+
     it('renders default CustomTooltip as a JSX element when content is not provided', () => {
         // When no tooltip.content is given, CustomTooltip should be rendered
         // as <CustomTooltip {...mergedProps} /> (JSX), not a bare function call.
@@ -368,5 +425,255 @@ describe('Charts tooltip.content', () => {
                 },
             })
         expect(typeof renderer).toBe('function')
+    })
+
+    it('calculates funnel drop-off against the previous stage by default', () => {
+        const stages = getFunnelStages(
+            funnelData,
+            ['visitors'],
+            [{ key: 'visitors', color: '#4F46E5' }]
+        )
+
+        expect(stages.map((stage) => stage.dropOffPercentage)).toEqual([
+            0, 50, 50,
+        ])
+        expect(stages.map((stage) => stage.color)).toEqual([
+            '#4F46E5',
+            '#4F46E5',
+            '#4F46E5',
+        ])
+    })
+
+    it('calculates funnel drop-off against the first stage when configured', () => {
+        const stages = getFunnelStages(
+            funnelData,
+            ['visitors'],
+            [{ key: 'visitors', color: '#4F46E5' }],
+            'first'
+        )
+
+        expect(stages.map((stage) => stage.dropOffPercentage)).toEqual([
+            0, 50, 75,
+        ])
+    })
+
+    it('returns a finite drop-off for a zero comparison base', () => {
+        expect(calculateFunnelDropOff(0, 0)).toBe(0)
+        expect(calculateFunnelDropOff(10, 0)).toBe(0)
+        expect(getFunnelStages([], [], [])).toEqual([])
+    })
+
+    it('uses safe values and default token colors for malformed funnel data', () => {
+        const stages = getFunnelStages(
+            [
+                {
+                    name: 'Visited',
+                    data: {
+                        visitors: {
+                            primary: { label: 'Visitors', val: Number.NaN },
+                        },
+                    },
+                },
+                {
+                    name: 'Completed',
+                    data: {
+                        visitors: {
+                            primary: { label: 'Visitors', val: 25 },
+                        },
+                    },
+                },
+            ],
+            ['visitors'],
+            []
+        )
+
+        expect(stages.map((stage) => stage.value)).toEqual([0, 25])
+        expect(stages.map((stage) => stage.color)).toEqual([
+            DEFAULT_COLORS[0].color,
+            DEFAULT_COLORS[1].color,
+        ])
+        expect(
+            stages.every((stage) => Number.isFinite(stage.dropOffPercentage))
+        ).toBe(true)
+    })
+
+    it('supports disabling funnel labels and falls back from an invalid selected key', () => {
+        expect(
+            getFunnelStages(
+                funnelData,
+                ['missing'],
+                [{ key: 'visitors', color: '#4F46E5' }]
+            )[0].seriesKey
+        ).toBe('visitors')
+
+        const chartProps = {
+            data: funnelData,
+            selectedKeys: ['visitors'],
+            colors: [{ key: 'visitors', color: '#4F46E5' }],
+            hoveredKey: null,
+            setHoveredKey: () => {},
+        }
+        const withLabels = render(
+            <FunnelChart {...chartProps} funnelConfig={{ showLabels: true }} />
+        )
+        expect(withLabels.getByTestId('funnel-label-list')).toBeTruthy()
+        withLabels.unmount()
+
+        const withoutLabels = render(
+            <FunnelChart {...chartProps} funnelConfig={{ showLabels: false }} />
+        )
+        expect(withoutLabels.queryByTestId('funnel-label-list')).toBeNull()
+    })
+
+    it('renders formatter and labelFormatter output inside the default tooltip chrome', () => {
+        const formatter = vi.fn(
+            ({ seriesName, value, dataIndex, color, payload }) => (
+                <span data-testid="formatted-value">
+                    {`${seriesName}:${value}:${dataIndex}:${color}:${String(
+                        (payload as { name: string }).name
+                    )}`}
+                    <br />
+                    details
+                </span>
+            )
+        )
+        const labelFormatter = vi.fn((axisValue) => (
+            <span data-testid="formatted-label">Stage: {axisValue}</span>
+        ))
+        const formatterData: NewNestedDataPoint[] = [
+            {
+                name: 'Jan',
+                data: {
+                    revenue: { primary: { label: 'Revenue', val: 4000 } },
+                },
+            },
+        ]
+        const payload = [
+            {
+                dataKey: 'revenue',
+                name: 'Revenue',
+                value: 4000,
+                color: '#4F46E5',
+                payload: { name: 'Jan', revenue: 4000 },
+            },
+        ]
+
+        const { getByTestId } = render(
+            <CustomTooltip
+                active
+                payload={payload}
+                label="Jan"
+                hoveredKey={null}
+                originalData={formatterData}
+                setHoveredKey={() => {}}
+                chartType={ChartType.BAR}
+                selectedKeys={[]}
+                formatter={formatter}
+                labelFormatter={labelFormatter}
+            />
+        )
+
+        expect(formatter).toHaveBeenCalledWith({
+            seriesName: 'Revenue',
+            value: 4000,
+            dataIndex: 0,
+            color: '#4F46E5',
+            payload: { name: 'Jan', revenue: 4000 },
+        })
+        expect(labelFormatter).toHaveBeenCalledWith('Jan')
+        expect(getByTestId('formatted-label').textContent).toBe('Stage: Jan')
+        expect(getByTestId('formatted-value').textContent).toContain(
+            'Revenue:4000:0:#4F46E5:Jan'
+        )
+        expect(getByTestId('formatted-value').textContent).toContain('details')
+    })
+
+    it('applies formatter callbacks to line, pie, and scatter tooltip branches', () => {
+        const formatter = vi.fn(({ seriesName, value }) =>
+            React.createElement(
+                'span',
+                null,
+                `${String(seriesName)}:${String(value)}`
+            )
+        )
+        const labelFormatter = vi.fn((axisValue) => `Period: ${axisValue}`)
+
+        const branchProps = [
+            {
+                chartType: ChartType.LINE,
+                payload: [
+                    {
+                        dataKey: 'revenue',
+                        name: 'Revenue',
+                        value: 4000,
+                        color: '#4F46E5',
+                        payload: { name: 'Jan', revenue: 4000 },
+                    },
+                ],
+                hoveredKey: 'revenue',
+            },
+            {
+                chartType: ChartType.PIE,
+                payload: [
+                    {
+                        dataKey: 'revenue',
+                        name: 'revenue',
+                        value: 4000,
+                        color: '#4F46E5',
+                        payload: { name: 'revenue', fill: '#4F46E5' },
+                    },
+                ],
+                hoveredKey: 'revenue',
+            },
+            {
+                chartType: ChartType.SCATTER,
+                payload: [
+                    {
+                        dataKey: 'revenue',
+                        name: 'revenue',
+                        value: 4000,
+                        color: '#4F46E5',
+                        payload: {
+                            name: 'Jan',
+                            x: 1,
+                            y: 4000,
+                            fill: '#4F46E5',
+                        },
+                    },
+                ],
+                hoveredKey: 'revenue',
+            },
+        ] as const
+
+        branchProps.forEach(({ chartType, payload, hoveredKey }) => {
+            const view = render(
+                <CustomTooltip
+                    active
+                    payload={payload}
+                    label="Jan"
+                    hoveredKey={hoveredKey}
+                    originalData={chartData}
+                    setHoveredKey={() => {}}
+                    chartType={chartType}
+                    selectedKeys={['revenue']}
+                    formatter={formatter}
+                    labelFormatter={labelFormatter}
+                />
+            )
+            view.unmount()
+        })
+
+        expect(formatter).toHaveBeenCalledTimes(3)
+        expect(labelFormatter).toHaveBeenCalledTimes(3)
+    })
+
+    it('exposes the formatter API in TooltipConfig', () => {
+        const tooltipConfig: TooltipConfig = {
+            formatter: ({ value }) => `Value: ${String(value)}`,
+            labelFormatter: (axisValue) => `Stage: ${axisValue}`,
+        }
+
+        expect(tooltipConfig.formatter).toBeDefined()
+        expect(tooltipConfig.labelFormatter).toBeDefined()
     })
 })
