@@ -50,10 +50,24 @@ const DEFAULT_CURVE = 'cubic-bezier(0.32, 0.72, 0, 1)'
  */
 let frameQueue: FrameRequestCallback[] = []
 
+const MAX_FRAME_GENERATIONS = 10
+
 function flushFrames() {
-    // Nested rAF: draining one generation schedules the next.
+    // Nested rAF: draining one generation schedules the next. The hook is
+    // double-rAF, so two generations is the real ceiling. Throw rather than
+    // exit quietly if that ever grows — a silent truncation would leave every
+    // assertion reading stale pre-commit state while still passing, which is
+    // exactly the wrong-but-doesn't-throw failure this suite exists to catch.
     let generations = 0
-    while (frameQueue.length > 0 && generations++ < 10) {
+    while (frameQueue.length > 0) {
+        if (generations++ >= MAX_FRAME_GENERATIONS) {
+            throw new Error(
+                `flushFrames exceeded ${MAX_FRAME_GENERATIONS} generations with ` +
+                    `${frameQueue.length} callback(s) still queued — the hook's ` +
+                    `rAF nesting changed, and these assertions are no longer ` +
+                    `observing committed styles.`
+            )
+        }
         const pending = frameQueue
         frameQueue = []
         pending.forEach((cb) => cb(0))
@@ -236,6 +250,13 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
     })
 
     describe('the enter path', () => {
+        // KNOWN LIMITATION, pinned deliberately: the enter animation always
+        // uses DEFAULT_CURVE, ignoring the configured `bezier` — see the
+        // comment on the enter loop in useRowFlip.ts. These `toBe` assertions
+        // therefore expect the default curve even where the config carries a
+        // different one. If you are here because you taught the enter path to
+        // honour `bezier`, you are correcting that limitation, not breaking a
+        // spec: update these expectations.
         const enterlessConfig = {
             transitionType: 'bezier',
             duration: 0.4,
@@ -265,7 +286,7 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
             expect(row.style.opacity).toBe('1')
         })
 
-        it('applies well-formed enter values verbatim', () => {
+        it('applies well-formed enter values verbatim, but not the configured curve', () => {
             const config: RowAnimationConfig = {
                 enterDuration: 0.6,
                 enterOffset: 40,
@@ -278,8 +299,12 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
             expect(row.style.transform).toBe('translateY(40px)')
 
             flushFrames()
+            // enterDuration is honoured; `bezier` is not (known limitation).
             expect(row.style.transition).toBe(
                 `transform 0.6s ${DEFAULT_CURVE}, opacity 0.6s ${DEFAULT_CURVE}`
+            )
+            expect(row.style.transition).not.toContain(
+                'cubic-bezier(0.1, 0.2, 0.3, 0.4)'
             )
         })
 

@@ -220,7 +220,17 @@ export function useRowFlip(
 
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    el.style.transition = `transform ${enterDuration}s cubic-bezier(0.32, 0.72, 0, 1), opacity ${enterDuration}s cubic-bezier(0.32, 0.72, 0, 1)`
+                    // KNOWN LIMITATION: the enter animation always uses the
+                    // default curve, so a caller passing `bezier` gets their
+                    // curve on reorder and this one on row entry. The public
+                    // type documents `bezier` as the easing curve without
+                    // scoping it to reorder, so this is very likely an
+                    // oversight rather than a design choice — but changing it
+                    // alters the enter animation for every existing consumer,
+                    // which does not belong in a defensive-guard change. The
+                    // `enter path` tests assert this curve deliberately; they
+                    // pin current behaviour, not a spec.
+                    el.style.transition = `transform ${enterDuration}s ${DEFAULT_BEZIER}, opacity ${enterDuration}s ${DEFAULT_BEZIER}`
                     el.style.transform = ''
                     el.style.opacity = '1'
                 })
