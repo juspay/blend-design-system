@@ -102,7 +102,10 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                         <Block
                             height="24px"
                             width="1px"
-                            backgroundColor={FOUNDATION_THEME.colors.gray[300]}
+                            backgroundColor={
+                                tableToken.dataTable.table.header.filter
+                                    .separatorColor
+                            }
                             flexShrink={0}
                         />
                     </Block>
@@ -242,7 +245,10 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                         <Block
                             height="24px"
                             width="1px"
-                            backgroundColor={FOUNDATION_THEME.colors.gray[300]}
+                            backgroundColor={
+                                tableToken.dataTable.table.header.filter
+                                    .separatorColor
+                            }
                             style={{ flexShrink: 0 }}
                         />
 
@@ -263,7 +269,9 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                 <Block
                     height="24px"
                     width="1px"
-                    backgroundColor={FOUNDATION_THEME.colors.gray[300]}
+                    backgroundColor={
+                        tableToken.dataTable.table.header.filter.separatorColor
+                    }
                     style={{ flexShrink: 0 }}
                 />
 
@@ -278,7 +286,8 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                         fontWeight:
                             tableToken.dataTable.bulkActions.selectText
                                 .fontWeight,
-                        color: FOUNDATION_THEME.colors.gray[600],
+                        color: tableToken.dataTable.table.footer.pagination
+                            .pageText.color,
                         background: 'none',
                         border: 'none',
                         cursor: 'pointer',

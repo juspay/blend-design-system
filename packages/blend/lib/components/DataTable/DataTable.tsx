@@ -76,6 +76,7 @@ import MobileColumnDrawer from './MobileColumnDrawer'
 import PivotTableModal from './PivotTableModal'
 import type { PivotTableConfig } from './PivotTableModal/types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTheme } from '../../context/ThemeContext'
 import styled from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 
@@ -97,12 +98,31 @@ const ScrollableContainer = styled(Block)`
 const DefaultTableState = ({
     state,
     onRetry,
+    tableToken,
+    isDarkTheme,
 }: {
     state: 'empty' | 'error'
     onRetry?: () => void
+    tableToken: TableTokenType
+    isDarkTheme: boolean
 }) => {
     const isError = state === 'error'
     const StateIcon = isError ? CircleAlert : Inbox
+    const stateTextColor = tableToken.dataTable.table.body.cell.color
+    const iconBackground = isError
+        ? isDarkTheme
+            ? FOUNDATION_THEME.colors.red[900]
+            : FOUNDATION_THEME.colors.red[50]
+        : isDarkTheme
+          ? tableToken.dataTable.table.header.filter.selectedBackground
+          : FOUNDATION_THEME.colors.gray[100]
+    const iconColor = isError
+        ? isDarkTheme
+            ? FOUNDATION_THEME.colors.red[400]
+            : FOUNDATION_THEME.colors.red[600]
+        : isDarkTheme
+          ? tableToken.dataTable.table.body.cell.color
+          : FOUNDATION_THEME.colors.gray[500]
 
     return (
         <Block
@@ -120,12 +140,8 @@ const DefaultTableState = ({
                     width: FOUNDATION_THEME.unit[40],
                     height: FOUNDATION_THEME.unit[40],
                     borderRadius: '50%',
-                    backgroundColor: isError
-                        ? FOUNDATION_THEME.colors.red[50]
-                        : FOUNDATION_THEME.colors.gray[100],
-                    color: isError
-                        ? FOUNDATION_THEME.colors.red[600]
-                        : FOUNDATION_THEME.colors.gray[500],
+                    backgroundColor: iconBackground,
+                    color: iconColor,
                 }}
             >
                 <StateIcon
@@ -135,7 +151,7 @@ const DefaultTableState = ({
             </Block>
             <PrimitiveText
                 style={{
-                    color: FOUNDATION_THEME.colors.gray[700],
+                    color: stateTextColor,
                     fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
                     fontWeight: FOUNDATION_THEME.font.weight[500],
                 }}
@@ -244,6 +260,8 @@ const DataTable = forwardRef(
         ref: React.Ref<HTMLDivElement>
     ) => {
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+        const { theme } = useTheme()
+        const isDarkTheme = theme === 'dark'
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
         const scrollContainerRef = useRef<HTMLDivElement>(null)
         const tableContainerRef = useRef<HTMLDivElement>(null)
@@ -2212,9 +2230,11 @@ const DataTable = forwardRef(
                                     <Block
                                         style={{
                                             backgroundColor:
-                                                FOUNDATION_THEME.colors
-                                                    .gray[100],
-                                            border: `1px solid ${FOUNDATION_THEME.colors.gray[300]}`,
+                                                tableToken.dataTable.table.body
+                                                    .row['&:hover']
+                                                    .backgroundColor,
+                                            border: tableToken.dataTable.table
+                                                .body.cell.borderTop,
                                             borderRadius:
                                                 FOUNDATION_THEME.unit[4],
                                             boxShadow:
@@ -2235,8 +2255,8 @@ const DataTable = forwardRef(
                                                     FOUNDATION_THEME.font.size
                                                         .body.sm.fontSize,
                                                 fontWeight: 600,
-                                                color: FOUNDATION_THEME.colors
-                                                    .gray[500],
+                                                color: tableToken.dataTable
+                                                    .table.body.cell.color,
                                                 whiteSpace: 'nowrap',
                                                 overflow: 'hidden',
                                                 textOverflow: 'ellipsis',
@@ -2269,7 +2289,8 @@ const DataTable = forwardRef(
                                             ? stateAreaHeight
                                             : undefined,
                                     backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[0],
+                                        tableToken.dataTable.table.body
+                                            .backgroundColor,
                                     color: tableToken.dataTable.table.body.cell
                                         .color,
                                     fontSize:
@@ -2302,12 +2323,18 @@ const DataTable = forwardRef(
                                         <DefaultTableState
                                             state="error"
                                             onRetry={onRetry}
+                                            tableToken={tableToken}
+                                            isDarkTheme={isDarkTheme}
                                         />
                                     )
                                 ) : renderEmptyState ? (
                                     renderEmptyState()
                                 ) : showEmptyState ? (
-                                    <DefaultTableState state="empty" />
+                                    <DefaultTableState
+                                        state="empty"
+                                        tableToken={tableToken}
+                                        isDarkTheme={isDarkTheme}
+                                    />
                                 ) : (
                                     <span>No data available</span>
                                 )}

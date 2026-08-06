@@ -14,6 +14,8 @@ import {
     Button,
     ButtonType,
     ButtonSize,
+    Theme,
+    ThemeProvider,
     TooltipSide,
     TooltipAlign,
     TooltipSize,
@@ -1223,6 +1225,117 @@ export const ServerSideOperations: Story = {
         docs: {
             description: {
                 story: 'DataTable with server-side pagination, sorting, and search. Data is fetched on demand.',
+            },
+        },
+    },
+}
+
+const darkSurfaceColumns: ColumnDefinition<Record<string, unknown>>[] = [
+    ...(userColumns.slice(0, 5) as ColumnDefinition<Record<string, unknown>>[]),
+    {
+        field: 'progress',
+        header: 'Progress',
+        type: ColumnType.PROGRESS,
+        minWidth: '140px',
+        isSortable: true,
+    },
+    {
+        field: 'assignment',
+        header: 'Assignment',
+        type: ColumnType.DROPDOWN,
+        minWidth: '160px',
+        isSortable: true,
+        dropdownOptions: [
+            { id: 'core', label: 'Core platform', value: 'core' },
+            { id: 'growth', label: 'Growth', value: 'growth' },
+            { id: 'infra', label: 'Infrastructure', value: 'infra' },
+        ],
+    },
+]
+
+const darkSurfaceData = sampleUsers.slice(0, 8).map((user, index) => ({
+    ...user,
+    progress: 20 + index * 9,
+    assignment: {
+        options: [
+            { id: 'core', label: 'Core platform', value: 'core' },
+            { id: 'growth', label: 'Growth', value: 'growth' },
+            { id: 'infra', label: 'Infrastructure', value: 'infra' },
+        ],
+        selectedValue: index % 2 === 0 ? 'core' : 'growth',
+    },
+}))
+
+const DarkThemeFullSurfaceDataTable: React.FC = () => (
+    <ThemeProvider theme={Theme.DARK}>
+        <div
+            style={{
+                display: 'grid',
+                gap: 32,
+                padding: 32,
+                background: '#111827',
+            }}
+        >
+            <DataTable
+                data={darkSurfaceData as Record<string, unknown>[]}
+                columns={darkSurfaceColumns}
+                idField="id"
+                title="Dark theme DataTable"
+                description="Filters, selection, expansion, bulk actions, tags, progress, and dropdown cells"
+                enableSearch
+                enableFiltering
+                enableColumnManager
+                enableRowSelection
+                enableRowExpansion
+                isHoverable
+                renderExpandedRow={({ row }) => (
+                    <div style={{ padding: 16 }}>
+                        Expanded details for {String(row.name)}
+                    </div>
+                )}
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 8,
+                    totalRows: darkSurfaceData.length,
+                    pageSizeOptions: [8, 16, 24],
+                }}
+            />
+            <DataTable
+                data={darkSurfaceData as Record<string, unknown>[]}
+                columns={darkSurfaceColumns}
+                idField="id"
+                title="Dark theme loading state"
+                isLoading
+                showSkeleton
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 8,
+                    totalRows: darkSurfaceData.length,
+                }}
+            />
+        </div>
+    </ThemeProvider>
+)
+
+export const DarkThemeFullSurface: Story = {
+    render: () => <DarkThemeFullSurfaceDataTable />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+
+        await userEvent.click(
+            canvas.getByRole('checkbox', { name: /Select row 1/ })
+        )
+        await userEvent.click(
+            canvas.getByRole('button', { name: 'Expand row' })
+        )
+        await userEvent.click(
+            canvas.getByRole('button', { name: 'Filter Role' })
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Full DataTable surface rendered through ThemeProvider theme=dark. The play interaction leaves a row selected, expanded, and the Role filter open while a second table shows dark loading skeletons.',
             },
         },
     },

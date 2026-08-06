@@ -14,6 +14,8 @@ import {
 import { Button, ButtonType, ButtonSize } from '../../Button'
 import { MultiSelect } from '../../MultiSelect'
 import { MultiSelectMenuGroupType } from '../../MultiSelect/types'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import type { TableTokenType } from '../dataTable.tokens'
 
 export interface MobileColumnManagerDrawerProps<
     T extends Record<string, unknown>,
@@ -28,6 +30,7 @@ export interface MobileColumnManagerDrawerProps<
 const MobileColumnManagerDrawer: React.FC<
     MobileColumnManagerDrawerProps<Record<string, unknown>>
 > = ({ isOpen, onClose, columns, visibleColumns, onColumnChange }) => {
+    const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
     const [selectedValues, setSelectedValues] = useState<string[]>(() =>
         visibleColumns.map((col) => String(col.field))
     )
@@ -104,7 +107,7 @@ const MobileColumnManagerDrawer: React.FC<
                                         .fontSize
                                 }
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
-                                color={FOUNDATION_THEME.colors.gray[900]}
+                                color={tableToken.header.title.color}
                             >
                                 Add Columns
                             </PrimitiveText>
@@ -141,7 +144,9 @@ const MobileColumnManagerDrawer: React.FC<
                                 gap={FOUNDATION_THEME.unit[12]}
                                 padding={`${FOUNDATION_THEME.unit[20]} ${FOUNDATION_THEME.unit[20]} ${FOUNDATION_THEME.unit[24]} ${FOUNDATION_THEME.unit[20]}`}
                                 style={{
-                                    borderTop: `1px solid ${FOUNDATION_THEME.colors.gray[100]}`,
+                                    borderTop:
+                                        tableToken.dataTable.table.footer
+                                            .borderTop,
                                 }}
                             >
                                 <Block style={{ flex: 2 }}>

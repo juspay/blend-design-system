@@ -32,17 +32,21 @@ import { Checkbox, CheckboxSize } from '../../Checkbox'
 import { Tooltip } from '../../Tooltip'
 import type { TableTokenType } from '../dataTable.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useTheme } from '../../../context/ThemeContext'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip/types'
 
 const TableRow = styled.tr<{
+    $tableToken: TableTokenType
     $isClickable?: boolean
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
     $isSticky?: boolean
     $headerHeight?: string
 }>`
-    border-bottom: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
-    background-color: ${FOUNDATION_THEME.colors.gray[0]};
+    border-bottom: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.cell.borderTop};
+    background-color: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.row.backgroundColor};
 
     ${({
         $customBackgroundColor,
@@ -50,6 +54,7 @@ const TableRow = styled.tr<{
         $hasCustomBackground,
         $isSticky,
         $headerHeight,
+        $tableToken,
     }) => css`
         ${$customBackgroundColor &&
         css`
@@ -72,12 +77,14 @@ const TableRow = styled.tr<{
         css`
             &:hover,
             &[data-focused-row='true'] {
-                background-color: ${FOUNDATION_THEME.colors
-                    .gray[100]} !important;
+                background-color: ${$tableToken.dataTable.table.body.row[
+                    '&:hover'
+                ].backgroundColor} !important;
 
                 td {
-                    background-color: ${FOUNDATION_THEME.colors
-                        .gray[100]} !important;
+                    background-color: ${$tableToken.dataTable.table.body.row[
+                        '&:hover'
+                    ].backgroundColor} !important;
                 }
             }
         `}
@@ -85,22 +92,30 @@ const TableRow = styled.tr<{
 `
 
 const StyledTableCell = styled.td<{
+    $tableToken: TableTokenType
     $width?: string
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
     $isFirstRow?: boolean
 }>`
+    ${({ $tableToken }) => $tableToken.dataTable.table.body.cell}
     padding: ${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]};
     text-align: left;
     vertical-align: middle;
-    background-color: ${FOUNDATION_THEME.colors.gray[0]};
-    ${({ $isFirstRow }) =>
+    background-color: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.row.backgroundColor};
+    ${({ $isFirstRow, $tableToken }) =>
         !$isFirstRow &&
         css`
-            border-top: 1px solid ${FOUNDATION_THEME.colors.gray[150]};
+            border-top: ${$tableToken.dataTable.table.body.cell.borderTop};
         `}
 
-    ${({ $width, $customBackgroundColor, $hasCustomBackground }) => css`
+    ${({
+        $width,
+        $customBackgroundColor,
+        $hasCustomBackground,
+        $tableToken,
+    }) => css`
         ${$width &&
         css`
             width: ${$width};
@@ -117,45 +132,68 @@ const StyledTableCell = styled.td<{
         ${!$hasCustomBackground &&
         css`
             tr:hover & {
-                background-color: ${FOUNDATION_THEME.colors
-                    .gray[100]} !important;
+                background-color: ${$tableToken.dataTable.table.body.row[
+                    '&:hover'
+                ].backgroundColor} !important;
             }
         `}
     `}
 `
 
-const ExpandedCell = styled.td`
-    padding: ${FOUNDATION_THEME.unit[16]};
-    background-color: ${FOUNDATION_THEME.colors.gray[50]} !important;
+const ExpandedCell = styled.td<{ $tableToken: TableTokenType }>`
+    ${({ $tableToken }) => $tableToken.dataTable.table.body.cell.expandable}
+    background-color: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.row['&:hover']
+            .backgroundColor} !important;
     position: relative;
     overflow: hidden;
     z-index: 0;
 `
 
 const ExpandedRow = styled(TableRow)`
-    background-color: ${FOUNDATION_THEME.colors.gray[50]};
+    background-color: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.row['&:hover'].backgroundColor};
 `
 
-const ExpandButton = styled.button`
+const ExpandButton = styled.button<{ $tableToken: TableTokenType }>`
     display: flex;
     align-items: center;
     justify-content: center;
     padding: ${FOUNDATION_THEME.unit[4]};
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    border-radius: ${FOUNDATION_THEME.border.radius[4]};
-    color: ${FOUNDATION_THEME.colors.gray[600]};
+    border: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.cell.expandable.expandButton.border};
+    background: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.cell.expandable.expandButton
+            .backgroundColor};
+    cursor: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.cell.expandable.expandButton.cursor};
+    border-radius: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.cell.expandable.expandButton
+            .borderRadius};
+    color: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.cell.expandable.expandButton.color};
+    transition: ${({ $tableToken }) =>
+        $tableToken.dataTable.table.body.cell.expandable.expandButton
+            .transition};
+
+    &:hover {
+        background-color: ${({ $tableToken }) =>
+            $tableToken.dataTable.table.body.cell.expandable.expandButton[
+                '&:hover'
+            ].backgroundColor};
+        color: ${({ $tableToken }) =>
+            $tableToken.dataTable.table.body.cell.expandable.expandButton[
+                '&:hover'
+            ].color};
+    }
+
     visibility: visible;
     opacity: 1;
 
-    &:hover {
-        background-color: ${FOUNDATION_THEME.colors.gray[100]};
-        color: ${FOUNDATION_THEME.colors.gray[800]};
-    }
-
     &:focus-visible {
-        outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]};
+        outline: ${({ $tableToken }) =>
+            $tableToken.header.actionIcons.columnManagerTrigger?.focusVisible
+                .outline};
     }
 `
 
@@ -606,6 +644,11 @@ const TableBody = forwardRef<
         ])
 
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
+        const { theme } = useTheme()
+        const skeletonBackgroundColor =
+            theme === 'dark'
+                ? tableToken.dataTable.table.body.row['&:hover'].backgroundColor
+                : undefined
 
         const hasAnySubtext = visibleColumns.some(
             (col) => col.headerSubtext && col.headerSubtext.trim() !== ''
@@ -684,7 +727,8 @@ const TableBody = forwardRef<
                 animate={isPageTransition ? { opacity: 1 } : undefined}
                 transition={isPageTransition ? { duration: 0.3 } : undefined}
                 style={{
-                    backgroundColor: FOUNDATION_THEME.colors.gray[0],
+                    backgroundColor:
+                        tableToken.dataTable.table.body.backgroundColor,
                 }}
             >
                 {currentData.length > 0
@@ -727,6 +771,7 @@ const TableBody = forwardRef<
                           return (
                               <React.Fragment key={rowKey}>
                                   <TableRow
+                                      $tableToken={tableToken}
                                       ref={
                                           enableRowAnimation
                                               ? getFlipRefCallback(rowId)
@@ -773,6 +818,7 @@ const TableBody = forwardRef<
                                   >
                                       {enableRowExpansion && (
                                           <StyledTableCell
+                                              $tableToken={tableToken}
                                               $width="50px"
                                               $customBackgroundColor={
                                                   rowStyling.backgroundColor
@@ -806,8 +852,9 @@ const TableBody = forwardRef<
                                                       zIndex: 9,
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
-                                                          FOUNDATION_THEME
-                                                              .colors.gray[0],
+                                                          tableToken.dataTable
+                                                              .table.body.row
+                                                              .backgroundColor,
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -820,6 +867,9 @@ const TableBody = forwardRef<
                                                   <Skeleton
                                                       variant={skeletonVariant}
                                                       loading
+                                                      backgroundColor={
+                                                          skeletonBackgroundColor
+                                                      }
                                                       width="20px"
                                                       height="28px"
                                                       borderRadius="4px"
@@ -839,6 +889,9 @@ const TableBody = forwardRef<
                                                   >
                                                       {canExpand ? (
                                                           <ExpandButton
+                                                              $tableToken={
+                                                                  tableToken
+                                                              }
                                                               type="button"
                                                               aria-label={
                                                                   isExpanded
@@ -887,6 +940,7 @@ const TableBody = forwardRef<
 
                                       {enableRowSelection && (
                                           <StyledTableCell
+                                              $tableToken={tableToken}
                                               $width="50px"
                                               $customBackgroundColor={
                                                   rowStyling.backgroundColor
@@ -933,8 +987,9 @@ const TableBody = forwardRef<
                                                       zIndex: 9,
                                                       backgroundColor:
                                                           rowStyling.backgroundColor ||
-                                                          FOUNDATION_THEME
-                                                              .colors.gray[0],
+                                                          tableToken.dataTable
+                                                              .table.body.row
+                                                              .backgroundColor,
                                                       fontSize:
                                                           tableToken.dataTable
                                                               .table.body.cell
@@ -1090,12 +1145,20 @@ const TableBody = forwardRef<
                                                               zIndex: 8,
                                                               backgroundColor:
                                                                   rowStyling.backgroundColor ||
-                                                                  FOUNDATION_THEME
-                                                                      .colors
-                                                                      .gray[0],
+                                                                  tableToken
+                                                                      .dataTable
+                                                                      .table
+                                                                      .body.row
+                                                                      .backgroundColor,
                                                               ...(colIndex ===
                                                                   rightFreezeStartIndex && {
-                                                                  borderLeft: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
+                                                                  borderLeft:
+                                                                      tableToken
+                                                                          .dataTable
+                                                                          .table
+                                                                          .body
+                                                                          .cell
+                                                                          .borderTop,
                                                               }),
                                                           }
                                                       }
@@ -1148,9 +1211,11 @@ const TableBody = forwardRef<
                                                           zIndex: 8,
                                                           backgroundColor:
                                                               rowStyling.backgroundColor ||
-                                                              FOUNDATION_THEME
-                                                                  .colors
-                                                                  .gray[0],
+                                                              tableToken
+                                                                  .dataTable
+                                                                  .table.body
+                                                                  .row
+                                                                  .backgroundColor,
                                                           minWidth:
                                                               cellMinWidth,
                                                           maxWidth:
@@ -1160,7 +1225,12 @@ const TableBody = forwardRef<
                                                               'border-box' as const,
                                                           overflow: 'hidden',
                                                           ...(isLastFrozenColumn && {
-                                                              borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
+                                                              borderRight:
+                                                                  tableToken
+                                                                      .dataTable
+                                                                      .table
+                                                                      .body.cell
+                                                                      .borderTop,
                                                           }),
                                                       }
                                                   }
@@ -1181,6 +1251,9 @@ const TableBody = forwardRef<
                                                       )
                                                   return (
                                                       <StyledTableCell
+                                                          $tableToken={
+                                                              tableToken
+                                                          }
                                                           key={`${rowKey}-${String(column.field)}`}
                                                           $customBackgroundColor={
                                                               rowStyling.backgroundColor
@@ -1229,6 +1302,9 @@ const TableBody = forwardRef<
                                                                   cellSkeleton.skeletonVariant
                                                               }
                                                               loading
+                                                              backgroundColor={
+                                                                  skeletonBackgroundColor
+                                                              }
                                                               width="90%"
                                                               height="28px"
                                                               borderRadius="4px"
@@ -1341,12 +1417,15 @@ const TableBody = forwardRef<
                                                   )
                                               return (
                                                   <StyledTableCell
+                                                      $tableToken={tableToken}
                                                       $customBackgroundColor={
                                                           hasCustomBackground
                                                               ? rowStyling.backgroundColor
-                                                              : FOUNDATION_THEME
-                                                                    .colors
-                                                                    .gray[0]
+                                                              : tableToken
+                                                                    .dataTable
+                                                                    .table.body
+                                                                    .row
+                                                                    .backgroundColor
                                                       }
                                                       $hasCustomBackground={
                                                           true
@@ -1405,6 +1484,9 @@ const TableBody = forwardRef<
                                                                   skeletonVariant
                                                               }
                                                               loading
+                                                              backgroundColor={
+                                                                  skeletonBackgroundColor
+                                                              }
                                                               width="80px"
                                                               height="32px"
                                                               borderRadius="4px"
@@ -1460,6 +1542,7 @@ const TableBody = forwardRef<
                                                   )
                                               return (
                                                   <StyledTableCell
+                                                      $tableToken={tableToken}
                                                       $width="40px"
                                                       $customBackgroundColor={
                                                           rowStyling.backgroundColor
@@ -1517,6 +1600,9 @@ const TableBody = forwardRef<
                                                           }}
                                                       >
                                                           <ExpandButton
+                                                              $tableToken={
+                                                                  tableToken
+                                                              }
                                                               type="button"
                                                               aria-label="View more details"
                                                               title="View more details"
@@ -1526,9 +1612,11 @@ const TableBody = forwardRef<
                                                                   )
                                                               }
                                                               style={{
-                                                                  color: FOUNDATION_THEME
-                                                                      .colors
-                                                                      .gray[800],
+                                                                  color: tableToken
+                                                                      .dataTable
+                                                                      .table
+                                                                      .body.cell
+                                                                      .color,
                                                               }}
                                                           >
                                                               <ChevronRight
@@ -1562,6 +1650,7 @@ const TableBody = forwardRef<
                                                   )
                                               return (
                                                   <StyledTableCell
+                                                      $tableToken={tableToken}
                                                       $width="48px"
                                                       $customBackgroundColor={
                                                           rowStyling.backgroundColor
@@ -1613,9 +1702,12 @@ const TableBody = forwardRef<
                                                           backgroundColor:
                                                               hasCustomBackground
                                                                   ? rowStyling.backgroundColor
-                                                                  : FOUNDATION_THEME
-                                                                        .colors
-                                                                        .gray[0],
+                                                                  : tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .body
+                                                                        .row
+                                                                        .backgroundColor,
                                                           outline: 'none',
                                                       }}
                                                   />
@@ -1629,9 +1721,13 @@ const TableBody = forwardRef<
                                       canExpand && (
                                           <ExpandedRow
                                               key={`${rowKey}-expanded`}
+                                              $tableToken={tableToken}
                                               $isClickable={false}
                                           >
-                                              <ExpandedCell colSpan={colSpan}>
+                                              <ExpandedCell
+                                                  $tableToken={tableToken}
+                                                  colSpan={colSpan}
+                                              >
                                                   {renderExpandedRow({
                                                       row,
                                                       index,

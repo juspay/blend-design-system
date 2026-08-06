@@ -32,6 +32,7 @@ import {
 } from './utils'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { useTheme } from '../../../context/ThemeContext'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { Popover } from '../../Popover'
 import MobileFilterDrawer from './MobileFilterDrawer'
@@ -93,6 +94,11 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
         },
         ref
     ) => {
+        const { theme } = useTheme()
+        const destructiveColor =
+            theme === 'dark'
+                ? FOUNDATION_THEME.colors.red[400]
+                : FOUNDATION_THEME.colors.red[500]
         const interactiveHandlers = onClick
             ? {
                   onClick: (e: React.MouseEvent<HTMLDivElement>) => {
@@ -154,7 +160,7 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
                                 tableToken.dataTable.table.header.filter
                                     .sortOption.fontSize,
                             color: isDestructive
-                                ? FOUNDATION_THEME.colors.red[500]
+                                ? destructiveColor
                                 : tableToken.dataTable.table.header.filter
                                       .sortOption.textColor,
                             fontWeight: isDestructive
@@ -212,7 +218,9 @@ const renderSortOption = (
         role="menuitem"
         _focus={{ outline: 'none' }}
         _focusVisible={{
-            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+            outline:
+                tableToken.header.actionIcons.columnManagerTrigger?.focusVisible
+                    .outline,
             outlineOffset: '2px',
         }}
     >
@@ -235,7 +243,11 @@ const renderSortOption = (
         {isActive && (
             <Check
                 size={FOUNDATION_THEME.unit[16]}
-                color={checkColor || FOUNDATION_THEME.colors.gray[900]}
+                color={
+                    checkColor ||
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .textColor
+                }
             />
         )}
     </Block>
@@ -305,7 +317,7 @@ export const SortOptions: React.FC<{
                     onPopoverClose?.()
                 },
                 isPrimaryAscendingActive,
-                FOUNDATION_THEME.colors.gray[900]
+                tableToken.dataTable.table.header.filter.sortOption.textColor
             )}
             {renderSortOption(
                 tableToken,
@@ -323,13 +335,16 @@ export const SortOptions: React.FC<{
                     onPopoverClose?.()
                 },
                 isPrimaryDescendingActive,
-                FOUNDATION_THEME.colors.green[900]
+                tableToken.dataTable.table.header.filter.sortOption.textColor
             )}
             {hasDeltaSort && (
                 <>
                     <Block
                         height="1px"
-                        backgroundColor={FOUNDATION_THEME.colors.gray[200]}
+                        backgroundColor={
+                            tableToken.dataTable.table.header.filter
+                                .separatorColor
+                        }
                         marginY={FOUNDATION_THEME.unit[4]}
                     />
                     <PrimitiveText
@@ -363,7 +378,8 @@ export const SortOptions: React.FC<{
                             onPopoverClose?.()
                         },
                         isDeltaAscendingActive,
-                        FOUNDATION_THEME.colors.gray[900]
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .textColor
                     )}
                     {renderSortOption(
                         tableToken,
@@ -381,7 +397,8 @@ export const SortOptions: React.FC<{
                             onPopoverClose?.()
                         },
                         isDeltaDescendingActive,
-                        FOUNDATION_THEME.colors.green[900]
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .textColor
                     )}
                 </>
             )}
@@ -597,7 +614,10 @@ export const SingleSelectItems: React.FC<{
                                         aria-checked={isSelected}
                                         _focus={{ outline: 'none' }}
                                         _focusVisible={{
-                                            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                            outline:
+                                                tableToken.header.actionIcons
+                                                    .columnManagerTrigger
+                                                    ?.focusVisible.outline,
                                             outlineOffset: '2px',
                                         }}
                                     >
@@ -625,8 +645,9 @@ export const SingleSelectItems: React.FC<{
                                             <Check
                                                 size={FOUNDATION_THEME.unit[16]}
                                                 color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[600]
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.textColor
                                                 }
                                             />
                                         )}
@@ -805,7 +826,10 @@ export const MultiSelectItems: React.FC<{
                                         aria-checked={isSelected}
                                         _focus={{ outline: 'none' }}
                                         _focusVisible={{
-                                            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                            outline:
+                                                tableToken.header.actionIcons
+                                                    .columnManagerTrigger
+                                                    ?.focusVisible.outline,
                                             outlineOffset: '2px',
                                         }}
                                     >
@@ -1101,6 +1125,11 @@ export const DateFilter: React.FC<{
     filterState: FilterState
     onColumnFilter?: ColumnFilterHandler
 }> = ({ column, fieldKey, tableToken, filterState, onColumnFilter }) => {
+    const { theme } = useTheme()
+    const destructiveColor =
+        theme === 'dark'
+            ? FOUNDATION_THEME.colors.red[400]
+            : FOUNDATION_THEME.colors.red[600]
     const selectedValue = filterState.columnSelectedValues[fieldKey]
     const selectedRange = Array.isArray(selectedValue)
         ? selectedValue
@@ -1182,7 +1211,7 @@ export const DateFilter: React.FC<{
                     icon={
                         <TrashSimpleIcon
                             size={FOUNDATION_THEME.unit[16]}
-                            color={FOUNDATION_THEME.colors.red[600]}
+                            color={destructiveColor}
                             weight="bold"
                         />
                     }
@@ -1223,6 +1252,11 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     onPopoverClose,
     onFilterApplied,
 }) => {
+    const { theme } = useTheme()
+    const destructiveColor =
+        theme === 'dark'
+            ? FOUNDATION_THEME.colors.red[400]
+            : FOUNDATION_THEME.colors.red[600]
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isMobile = breakPointLabel === 'sm'
     const columnConfig = getColumnTypeConfigForColumn(column)
@@ -1459,7 +1493,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                         icon={
                             <TrashSimpleIcon
                                 size={iconSize}
-                                color={FOUNDATION_THEME.colors.red[600]}
+                                color={destructiveColor}
                                 weight="bold"
                             />
                         }
@@ -1567,7 +1601,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     icon={
                         <TrashSimpleIcon
                             size={iconSize}
-                            color={FOUNDATION_THEME.colors.red[600]}
+                            color={destructiveColor}
                             weight="bold"
                         />
                     }
