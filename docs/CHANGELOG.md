@@ -4,8 +4,8 @@
 
 ## 🚀 Features
 
-- Add dark-theme support across the DateRangePicker trigger, calendar, presets, time controls, footer, and mobile drawer.
-- Route DateRangePicker component tokens through ThemeProvider and preserve the existing light/no-theme token output.
+- DateRangePicker now supports dark-theme styling across its trigger, calendar, presets, time controls, footer, and mobile drawer.
+- DateRangePicker now resolves component tokens through ThemeProvider while preserving the existing light and no-theme output.
 
 - **charts**: add showAllLegends prop (#1601) ([18b47e9](https://github.com/juspay/blend-design-system/commit/18b47e9))
 - added virtualized directory (#1593) ([2239edd](https://github.com/juspay/blend-design-system/commit/2239edd))

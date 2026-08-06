@@ -147,7 +147,7 @@ The responsive design system operates on **mobile-first principles** with carefu
 
 ### Theming Flexibility
 
-The theming system supports **extensive customization capabilities** with hierarchical token organization, runtime theme switching, brand-specific adaptations, and custom component styling. Organizations can implement their brand identity while maintaining the structural integrity and accessibility features of the design system.
+The theming system supports **extensive customization capabilities** with hierarchical token organization, runtime theme switching, brand-specific adaptations, and custom component styling. DateRangePicker also resolves dark-theme tokens through `ThemeProvider theme={Theme.DARK}` across its trigger, calendar, presets, time controls, footer, and mobile drawer. Organizations can implement their brand identity while maintaining the structural integrity and accessibility features of the design system.
 
 ### Developer Experience
 
