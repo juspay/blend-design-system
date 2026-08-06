@@ -5,15 +5,15 @@ import type { RowAnimationConfig } from '../types'
 const DEFAULT_DURATION = 0.35
 const DEFAULT_ENTER_DURATION = 0.35
 const DEFAULT_ENTER_OFFSET = 12
+const DEFAULT_BEZIER = 'cubic-bezier(0.32, 0.72, 0, 1)'
 
-const warnedMessages = new Set<string>()
+export const ROW_ANIMATION_WARNINGS = {
+    bezier: `transitionType is 'bezier' but 'bezier' is not a tuple of four finite numbers — falling back to the default curve.`,
+    spring: `transitionType 'spring' is not implemented — 'stiffness', 'damping' and 'mass' are ignored and rows animate with the default curve.`,
+    enter: `'enterDuration' and 'enterOffset' must both be finite numbers — falling back to defaults.`,
+} as const
 
-function warnInvalidConfig(message: string) {
-    if (process.env.NODE_ENV === 'production') return
-    if (warnedMessages.has(message)) return
-    warnedMessages.add(message)
-    console.warn(`[DataTable] rowAnimationConfig: ${message}`)
-}
+type WarnFn = (message: string) => void
 
 function toFiniteNumber(value: unknown, fallback: number): number {
     return typeof value === 'number' && Number.isFinite(value)
@@ -31,32 +31,48 @@ function isBezierTuple(
     )
 }
 
-function toCssTransition(config: RowAnimationConfig): {
+function buildTransition(duration: number, cssBezier: string) {
+    return {
+        duration,
+        transition: `transform ${duration}s ${cssBezier}, opacity ${duration}s ${cssBezier}`,
+    }
+}
+
+function toCssTransition(
+    config: RowAnimationConfig,
+    warn: WarnFn
+): {
     transition: string
     duration: number
 } {
+    // `duration` only narrows on the bezier arm, but it is independently valid
+    // and independently usable: a caller that got the curve wrong may still
+    // have supplied a good duration. Read it before branching so a malformed
+    // `bezier` costs the caller the curve only, not their timing too.
+    const duration = toFiniteNumber(
+        (config as { duration?: unknown }).duration,
+        DEFAULT_DURATION
+    )
+
     if (config.transitionType === 'bezier') {
         if (isBezierTuple(config.bezier)) {
             const [p0, p1, p2, p3] = config.bezier
-            const cssBezier = `cubic-bezier(${p0}, ${p1}, ${p2}, ${p3})`
-            const duration = toFiniteNumber(config.duration, DEFAULT_DURATION)
-            return {
+            return buildTransition(
                 duration,
-                transition: `transform ${duration}s ${cssBezier}, opacity ${duration}s ${cssBezier}`,
-            }
+                `cubic-bezier(${p0}, ${p1}, ${p2}, ${p3})`
+            )
         }
 
-        warnInvalidConfig(
-            `transitionType is 'bezier' but 'bezier' is not a tuple of four finite numbers — falling back to the default curve.`
-        )
+        warn(ROW_ANIMATION_WARNINGS.bezier)
+    } else if (config.transitionType === 'spring') {
+        // The 'spring' arm has never been implemented — `stiffness`, `damping`
+        // and `mass` are declared in `RowAnimationConfig` but read nowhere. A
+        // fully valid spring config silently renders as the default curve, so
+        // say so rather than letting the caller believe their sliders work.
+        warn(ROW_ANIMATION_WARNINGS.spring)
     }
 
-    const cssBezier = `cubic-bezier(0.32, 0.72, 0, 1)`
-    const transition = `transform ${DEFAULT_DURATION}s ${cssBezier}, opacity ${DEFAULT_DURATION}s ${cssBezier}`
-    return {
-        duration: DEFAULT_DURATION,
-        transition,
-    }
+    return buildTransition(duration, DEFAULT_BEZIER)
 }
 
 interface UseRowFlipReturn {
@@ -74,10 +90,22 @@ export function useRowFlip(
     const orderedIdsRef = useRef(orderedIds)
     const prefersReducedMotion = useReducedMotion()
     const cleanupTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const warnedMessagesRef = useRef<Set<string>>(new Set())
     const serializedOrderedIds = useMemo(
         () => JSON.stringify(orderedIds),
         [orderedIds]
     )
+
+    // Deduped per hook instance rather than per module: the layout effect runs
+    // on every reorder, so an undeduped warning would spam, but a module-level
+    // Set would stay poisoned across an HMR edit — you fix the config, break it
+    // again, and never hear about it. A remount gives you a fresh Set.
+    const warn = useCallback((message: string) => {
+        if (process.env.NODE_ENV === 'production') return
+        if (warnedMessagesRef.current.has(message)) return
+        warnedMessagesRef.current.add(message)
+        console.warn(`[DataTable] rowAnimationConfig: ${message}`)
+    }, [])
 
     configRef.current = animationConfig
     orderedIdsRef.current = orderedIds
@@ -124,15 +152,15 @@ export function useRowFlip(
             return
         }
 
-        const { transition: cssTransition, duration } =
-            toCssTransition(currentConfig)
+        const { transition: cssTransition, duration } = toCssTransition(
+            currentConfig,
+            warn
+        )
         if (
             !Number.isFinite(currentConfig.enterDuration) ||
             !Number.isFinite(currentConfig.enterOffset)
         ) {
-            warnInvalidConfig(
-                `'enterDuration' and 'enterOffset' must both be finite numbers — falling back to defaults.`
-            )
+            warn(ROW_ANIMATION_WARNINGS.enter)
         }
         const enterDuration = toFiniteNumber(
             currentConfig.enterDuration,
@@ -214,7 +242,7 @@ export function useRowFlip(
                 cleanupTimeoutRef.current = null
             }
         }
-    }, [serializedOrderedIds, prefersReducedMotion])
+    }, [serializedOrderedIds, prefersReducedMotion, warn])
 
     return { register }
 }
