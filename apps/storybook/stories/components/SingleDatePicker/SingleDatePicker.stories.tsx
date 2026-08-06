@@ -136,6 +136,17 @@ const [date, setDate] = useState<Date | undefined>(new Date());
                 category: 'Date Configuration',
             },
         },
+        granularity: {
+            control: { type: 'select' },
+            options: ['day', 'month', 'year'],
+            description:
+                "`'month'` swaps the day calendar for a 12-cell month grid and returns the first day of the selected month; `'year'` renders a year grid and returns 1 January of the selected year. `minDate`/`maxDate` are compared at the same resolution, and `dateFormat`/`placeholder` pick granularity-appropriate defaults unless set explicitly.",
+            table: {
+                type: { summary: "'day' | 'month' | 'year'" },
+                defaultValue: { summary: 'day' },
+                category: 'Date Configuration',
+            },
+        },
 
         // Time Configuration
         showTime: {
@@ -600,6 +611,60 @@ export const Sizes: Story = {
         docs: {
             description: {
                 story: 'SingleDatePicker rendered at all three size variants: small, medium, and large.',
+            },
+        },
+    },
+}
+
+// Month granularity
+export const MonthPicker: Story = {
+    render: function MonthPicker() {
+        const [date, setDate] = useState<Date | undefined>(new Date())
+
+        return (
+            <div className="w-100">
+                <SingleDatePicker
+                    value={date}
+                    onChange={setDate}
+                    granularity="month"
+                />
+                <p className="mt-3 text-xs text-gray-500">
+                    Returned date: {date?.toDateString() ?? 'none'}
+                </p>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'SingleDatePicker with `granularity="month"`, rendering a 12-cell month grid with year navigation. The returned value is always the first day of the selected month.',
+            },
+        },
+    },
+}
+
+// Year granularity
+export const YearPicker: Story = {
+    render: function YearPicker() {
+        const [date, setDate] = useState<Date | undefined>(new Date())
+
+        return (
+            <div className="w-100">
+                <SingleDatePicker
+                    value={date}
+                    onChange={setDate}
+                    granularity="year"
+                />
+                <p className="mt-3 text-xs text-gray-500">
+                    Returned date: {date?.toDateString() ?? 'none'}
+                </p>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'SingleDatePicker with `granularity="year"`, rendering a year grid. The returned value is always 1 January of the selected year.',
             },
         },
     },

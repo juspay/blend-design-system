@@ -60,7 +60,7 @@ breakpoints/    only two: { sm: 320, lg: 1024 }
 main.ts node.ts token-engine.ts token-engine-server.ts   ← the four build entries
 ```
 
-`components/shared/` holds cross-component internals, not components. `shared/datetime/` is the date+time layer: `timeCore.ts` (pure time math — parsing, clamping, `minuteStep` snapping, 12h/24h formatting) and `PickerTrigger.tsx` (the shared trigger button) back `DateRangePicker`, `SingleDatePicker` and `TimePicker`. A change there hits all three, so test all three.
+`components/shared/` holds cross-component internals, not components. `shared/datetime/` is the date+time layer: `timeCore.ts` (pure time math — parsing, clamping, `minuteStep` snapping, 12h/24h formatting), `granularity.ts` (period normalization), `MonthYearGrid.tsx` (month/year selection), and `PickerTrigger.tsx` (the shared trigger button) back `DateRangePicker`, `SingleDatePicker` and `TimePicker`. A change there hits all three, so test all three.
 
 Tests live **outside** `lib/`, in `packages/blend/__tests__/`, mirroring the component tree. `packages/blend/rfcs/` holds the authoritative standards docs (0002 testing, 0003 accessibility, 0005 token naming, 0007 refactoring).
 

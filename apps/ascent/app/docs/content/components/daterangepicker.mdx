@@ -1,6 +1,6 @@
 ---
 title: DateRangePicker
-description: The DateRangePicker component provides a comprehensive date and time selection interface with calendar grid, preset options, mobile drawer support, and flexible configuration for single or range date selection with time picker integration.
+description: The DateRangePicker component provides a comprehensive date, month, and time selection interface with calendar grids, preset options, mobile drawer support, and flexible configuration for single or range selection.
 category: Selection
 tags:
     - daterangepicker
@@ -46,6 +46,11 @@ function MyComponent() {
     )
 }
 ```
+
+For month ranges, set `granularity="month"`. The selected `startDate` is
+normalized to the first day of the start month and `endDate` to the last day
+of the end month; day-only presets, date/time inputs, and the mobile drawer
+are not shown in this mode.
 
 ## API Reference
 
@@ -167,6 +172,18 @@ function MyComponent() {
                     'Date format string using format tokens (dd, MM, yyyy, etc.)',
             },
             { content: '' },
+        ],
+        [
+            {
+                content: 'granularity',
+                hintText:
+                    'Controls the selection resolution. Defaults to day. Set to month to display a month grid and select a month range; the returned startDate is the first day of the start month and endDate is the last day of the end month. Month mode suppresses day-only presets, date/time inputs, and the mobile drawer.',
+            },
+            {
+                content: "'day' | 'month'",
+                hintText: 'Selection resolution for day or month ranges',
+            },
+            { content: "'day', 'month'" },
         ],
         [
             {

@@ -90,8 +90,8 @@ export default App
 ### Layout
 
 - **Accordion** - Collapsible content sections
-- **DateRangePicker** - Date range selection
-- **SingleDatePicker** - Single date selection, with optional time
+- **DateRangePicker** - Day or month range selection
+- **SingleDatePicker** - Day, month, or year selection, with optional time for day selection
 - **TimePicker** - Time-of-day selection, 12h or 24h display
 
 ## 🎨 Design Tokens

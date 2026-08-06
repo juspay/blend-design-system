@@ -238,6 +238,17 @@ const [dateRange, setDateRange] = useState({
                 category: 'Date Configuration',
             },
         },
+        granularity: {
+            control: { type: 'select' },
+            options: ['day', 'month'],
+            description:
+                "`'month'` swaps the day calendar for a month grid and selects a month range: `startDate` becomes the first day of the start month and `endDate` the last day of the end month. Month mode suppresses `showPresets`, the DD/MM/YYYY text inputs, and the mobile drawer (`useDrawerOnMobile`).",
+            table: {
+                type: { summary: "'day' | 'month'" },
+                defaultValue: { summary: 'day' },
+                category: 'Date Configuration',
+            },
+        },
 
         // Preset Props
         showPresets: {
@@ -1259,6 +1270,46 @@ export const CustomFormatting: Story = {
         docs: {
             description: {
                 story: 'DateRangePicker with different date formatting options: US format, ISO format, and custom format.',
+            },
+        },
+    },
+}
+
+// Month granularity range selection
+export const MonthRange: Story = {
+    render: function MonthRange() {
+        const [monthRange, setMonthRange] = useState<DateRange>({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        })
+
+        return (
+            <div className="w-100">
+                <h4 className="text-sm font-semibold mb-3">
+                    Month Range Selection
+                </h4>
+                <DateRangePicker
+                    value={monthRange}
+                    onChange={setMonthRange}
+                    granularity="month"
+                />
+                <div className="mt-3 text-xs text-gray-500">
+                    <div>
+                        <strong>Start:</strong>{' '}
+                        {monthRange.startDate.toDateString()}
+                    </div>
+                    <div>
+                        <strong>End:</strong>{' '}
+                        {monthRange.endDate?.toDateString() ?? 'Not selected'}
+                    </div>
+                </div>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DateRangePicker with `granularity="month"`, selecting a month range instead of individual days. `startDate` is normalised to the first day of the start month and `endDate` to the last day of the end month; presets, the DD/MM/YYYY text inputs, and the mobile drawer are suppressed in this mode.',
             },
         },
     },

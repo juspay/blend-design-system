@@ -15,6 +15,8 @@ import Popover from '../Popover/Popover'
 import Button from '../Button/Button'
 import { ButtonSize, ButtonType } from '../Button/types'
 import CalendarGrid from '../DateRangePicker/CalendarGrid'
+import MonthYearGrid from '../shared/datetime/MonthYearGrid'
+import { startOfPeriod } from '../shared/datetime/granularity'
 import { DateRangePickerSize, type DateRange } from '../DateRangePicker/types'
 import type { CalendarTokenType } from '../DateRangePicker/dateRangePicker.tokens'
 import {
@@ -65,7 +67,40 @@ import type { SingleDatePickerProps } from './singleDatePicker.types'
  * time section *and the error message* come from `TIME_PICKER`, shared with
  * `TimePicker` — overriding that slot restyles this component's error text and
  * time columns too. There is deliberately no `SINGLE_DATE_PICKER` slot.
+ *
+ * `granularity` swaps only the selection surface: `'month'` and `'year'` render
+ * `MonthYearGrid` in place of `CalendarGrid` and normalise the committed value
+ * to the period's first day. Everything else — the draft/Apply model, the
+ * trigger, the optional time section, clearing — is shared with day mode, and
+ * day mode itself takes no new branches.
  */
+/**
+ * Day granularity keeps every historical default verbatim. The coarser modes
+ * pick a pattern `formatDate` can actually render — it substitutes `dd`, `MM`,
+ * `yyyy`, `HH` and `mm` and has no month-name token — plus a matching
+ * placeholder and in-popover label.
+ */
+const GRANULARITY_DEFAULTS = {
+    day: {
+        dateFormat: 'dd/MM/yyyy',
+        placeholder: 'Select date',
+        label: 'Date',
+        ariaLabel: 'Choose date',
+    },
+    month: {
+        dateFormat: 'MM/yyyy',
+        placeholder: 'Select month',
+        label: 'Month',
+        ariaLabel: 'Choose month',
+    },
+    year: {
+        dateFormat: 'yyyy',
+        placeholder: 'Select year',
+        label: 'Year',
+        ariaLabel: 'Choose year',
+    },
+} as const
+
 const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
     (
         {
@@ -73,14 +108,15 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
             onChange,
             minDate,
             maxDate,
+            granularity = 'day',
             disableDates,
             showTime = false,
             timeFormat = '12h',
             showSeconds = false,
             timezone,
-            dateFormat = 'dd/MM/yyyy',
+            dateFormat,
             formatConfig,
-            placeholder = 'Select date',
+            placeholder,
             disabled = false,
             error = false,
             errorMessage,
@@ -95,6 +131,13 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
         const { foundationTokens } = useTheme()
         const timePickerToken =
             useResponsiveTokens<TimePickerTokensType>('TIME_PICKER')
+
+        const granularityDefaults = GRANULARITY_DEFAULTS[granularity]
+        const isDayGranularity = granularity === 'day'
+        const showTimeForGranularity = showTime && isDayGranularity
+        const resolvedDateFormat = dateFormat ?? granularityDefaults.dateFormat
+        const resolvedPlaceholder =
+            placeholder ?? granularityDefaults.placeholder
 
         const [isOpen, setIsOpen] = useState(false)
         // Bumped on every close so `CalendarGrid` re-derives its scroll offset
@@ -168,10 +211,12 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
             () =>
                 formatConfig && {
                     ...formatConfig,
-                    includeTime: formatConfig.includeTime ?? showTime,
+                    includeTime:
+                        isDayGranularity &&
+                        (formatConfig.includeTime ?? showTime),
                     timeFormat: formatConfig.timeFormat ?? timeFormat,
                 },
-            [formatConfig, showTime, timeFormat]
+            [formatConfig, isDayGranularity, showTime, timeFormat]
         )
 
         // Without a `formatConfig` the trigger uses the same `dateFormat` as
@@ -182,12 +227,12 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                   displayRange,
                   resolvedFormatConfig,
                   true,
-                  placeholder,
+                  resolvedPlaceholder,
                   timezone
               )
             : committedDate
-              ? `${formatDate(committedDate, dateFormat, timezone)}${
-                    showTime
+              ? `${formatDate(committedDate, resolvedDateFormat, timezone)}${
+                    showTimeForGranularity
                         ? ` ${formatTimeValue(
                               timeValueFromDate(committedDate, timezone),
                               {
@@ -197,7 +242,7 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                           )}`
                         : ''
                 }`
-              : placeholder
+              : resolvedPlaceholder
 
         // `minDate` / `maxDate` bound the *day* in the calendar; on the boundary
         // day they also bound the selectable time, otherwise the time columns
@@ -220,9 +265,17 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
 
         const handleDateSelect = useCallback(
             (range: DateRange) => {
-                const picked = range.startDate
+                // A no-op for day granularity; for month/year it is what makes
+                // the committed value the period's first day rather than
+                // whatever day the grid happened to build its cell from.
+                const picked = startOfPeriod(range.startDate, granularity)
 
-                if (!showTime) {
+                if (!showTimeForGranularity) {
+                    if (!isDayGranularity) {
+                        setDraftDate(picked)
+                        return
+                    }
+
                     // CalendarGrid returns start-of-day. When minDate/maxDate
                     // carry a time-of-day on this same day, midnight would sit
                     // outside the caller's range, so clamp here as well.
@@ -257,7 +310,14 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                     )
                 )
             },
-            [showTime, draftDate, timeBoundsFor, timezone]
+            [
+                showTimeForGranularity,
+                isDayGranularity,
+                draftDate,
+                timeBoundsFor,
+                timezone,
+                granularity,
+            ]
         )
 
         const handleTimeChange = useCallback(
@@ -298,10 +358,21 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
 
         const handleApply = useCallback(() => {
             if (!draftDate) return
-            if (!isControlled) setInternalDate(draftDate)
-            onChange?.(draftDate)
-            closeAndReset(isControlled ? committedDate : draftDate)
-        }, [draftDate, isControlled, committedDate, onChange, closeAndReset])
+            const valueToApply = isDayGranularity
+                ? draftDate
+                : startOfPeriod(draftDate, granularity)
+            if (!isControlled) setInternalDate(valueToApply)
+            onChange?.(valueToApply)
+            closeAndReset(isControlled ? committedDate : valueToApply)
+        }, [
+            draftDate,
+            granularity,
+            isDayGranularity,
+            isControlled,
+            committedDate,
+            onChange,
+            closeAndReset,
+        ])
 
         const handleCancel = useCallback(() => {
             closeAndReset(committedDate)
@@ -395,7 +466,7 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                          */}
                         <Block
                             role="group"
-                            aria-label="Choose date"
+                            aria-label={granularityDefaults.ariaLabel}
                             style={{ ...calendarToken.calendar }}
                             maxHeight="var(--radix-popper-available-height)"
                             display="flex"
@@ -431,7 +502,7 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                                             ?.dateInput?.label?.fontWeight
                                     }
                                 >
-                                    Date
+                                    {granularityDefaults.label}
                                 </PrimitiveText>
                                 <PrimitiveText
                                     as="span"
@@ -448,29 +519,49 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                                     {draftDate
                                         ? formatDate(
                                               draftDate,
-                                              dateFormat,
+                                              resolvedDateFormat,
                                               timezone
                                           )
-                                        : placeholder}
+                                        : resolvedPlaceholder}
                                 </PrimitiveText>
                             </Block>
 
                             <Block flexGrow={1} minHeight={0} overflow="auto">
-                                <CalendarGrid
-                                    selectedRange={draftRange}
-                                    onDateSelect={handleDateSelect}
-                                    today={today}
-                                    customDisableDates={disableDates}
-                                    showDateTimePicker={showTime}
-                                    resetScrollPosition={popoverKey}
-                                    timezone={timezone}
-                                    isSingleDatePicker
-                                    minDate={minDate}
-                                    maxDate={maxDate}
-                                />
+                                {granularity === 'day' ? (
+                                    <CalendarGrid
+                                        selectedRange={draftRange}
+                                        onDateSelect={handleDateSelect}
+                                        today={today}
+                                        customDisableDates={disableDates}
+                                        showDateTimePicker={
+                                            showTimeForGranularity
+                                        }
+                                        resetScrollPosition={popoverKey}
+                                        timezone={timezone}
+                                        isSingleDatePicker
+                                        minDate={minDate}
+                                        maxDate={maxDate}
+                                    />
+                                ) : (
+                                    <MonthYearGrid
+                                        granularity={granularity}
+                                        selectedRange={draftRange}
+                                        onSelect={(periodStart) =>
+                                            handleDateSelect({
+                                                startDate: periodStart,
+                                            })
+                                        }
+                                        today={today}
+                                        timezone={timezone}
+                                        customDisableDates={disableDates}
+                                        resetScrollPosition={popoverKey}
+                                        minDate={minDate}
+                                        maxDate={maxDate}
+                                    />
+                                )}
                             </Block>
 
-                            {showTime && (
+                            {showTimeForGranularity && (
                                 <Block
                                     display="flex"
                                     flexDirection="column"
