@@ -1163,7 +1163,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 <PopoverV2
                     key={popoverKey}
                     open={isOpen}
-                    useDrawerOnMobile={useDrawerOnMobile}
                     onOpenChange={(open) => {
                         setIsOpen(open)
                     }}
