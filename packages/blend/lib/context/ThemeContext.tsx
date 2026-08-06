@@ -113,6 +113,10 @@ import {
     ResponsiveStepperTokens,
 } from '../components/Stepper/stepper.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import {
+    getButtonGroupTokens,
+    type ResponsiveButtonGroupTokens,
+} from '../components/ButtonGroup/buttonGroup.tokens'
 
 import getChatInputTokens, {
     ResponsiveChatInputTokensType,
@@ -308,6 +312,7 @@ export type ComponentTokenType = {
     MOBILE_NAVIGATION_V2?: ResponsiveMobileNavigationV2Tokens
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
+    BUTTON_GROUP?: ResponsiveButtonGroupTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
     CHAT_INPUTV2?: ResponsiveChatInputV2TokensType
     TIMELINE?: ResponsiveTimelineTokens
@@ -394,18 +399,22 @@ const ThemeContext = createContext<ThemeContextType>({
         CARDV2: getCardV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
         TOPBARV2: getTopbarV2Tokens(FOUNDATION_THEME),
-        SKELETON: getSkeletonTokens(FOUNDATION_THEME),
+        SKELETON: getSkeletonTokens(FOUNDATION_THEME, Theme.LIGHT),
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
-        AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
+        AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME, Theme.LIGHT),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
-        DIRECTORY: getDirectoryTokens(FOUNDATION_THEME),
-        MOBILE_NAVIGATION: getMobileNavigationTokens(FOUNDATION_THEME),
+        DIRECTORY: getDirectoryTokens(FOUNDATION_THEME, Theme.LIGHT),
+        MOBILE_NAVIGATION: getMobileNavigationTokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
         MOBILE_NAVIGATION_V2: getMobileNavigationV2Tokens(
             FOUNDATION_THEME,
             Theme.LIGHT
         ),
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
-        CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
+        CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME, Theme.LIGHT),
+        BUTTON_GROUP: getButtonGroupTokens(FOUNDATION_THEME, Theme.LIGHT),
         CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),
         BUTTONV2: getButtonV2Tokens(FOUNDATION_THEME),
         TAGV2: getTagV2Tokens(FOUNDATION_THEME, Theme.LIGHT),

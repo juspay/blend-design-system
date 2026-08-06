@@ -80,6 +80,7 @@ import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/Sea
 import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 import { getBadgeTokens } from '../components/Badge/badge.tokens'
 import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
+import { getButtonGroupTokens } from '../components/ButtonGroup/buttonGroup.tokens'
 
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
@@ -168,7 +169,8 @@ const computeTokens = (
         CARDV2:
             componentTokens.CARDV2 ?? getCardV2Tokens(foundationTokens, theme),
         SKELETON:
-            componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
+            componentTokens.SKELETON ??
+            getSkeletonTokens(foundationTokens, theme),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
         TOPBARV2:
             componentTokens.TOPBARV2 ??
@@ -176,20 +178,25 @@ const computeTokens = (
         AVATAR: componentTokens.AVATAR ?? getAvatarTokens(foundationTokens),
         AVATAR_GROUP:
             componentTokens.AVATAR_GROUP ??
-            getAvatarGroupTokens(foundationTokens),
+            getAvatarGroupTokens(foundationTokens, theme),
         SIDEBAR: componentTokens.SIDEBAR ?? getSidebarTokens(foundationTokens),
         DIRECTORY:
-            componentTokens.DIRECTORY ?? getDirectoryTokens(foundationTokens),
+            componentTokens.DIRECTORY ??
+            getDirectoryTokens(foundationTokens, theme),
         MOBILE_NAVIGATION:
             componentTokens.MOBILE_NAVIGATION ??
-            getMobileNavigationTokens(foundationTokens),
+            getMobileNavigationTokens(foundationTokens, theme),
         MOBILE_NAVIGATION_V2:
             componentTokens.MOBILE_NAVIGATION_V2 ??
             getMobileNavigationV2Tokens(foundationTokens, theme),
         UPLOAD:
             componentTokens.UPLOAD ?? getUploadTokens(foundationTokens, theme),
         CODE_BLOCK:
-            componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
+            componentTokens.CODE_BLOCK ??
+            getCodeBlockTokens(foundationTokens, theme),
+        BUTTON_GROUP:
+            componentTokens.BUTTON_GROUP ??
+            getButtonGroupTokens(foundationTokens, theme),
         CHAT_INPUT:
             componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
         CHAT_INPUTV2:

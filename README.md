@@ -44,7 +44,7 @@ The design system encompasses **over 30 production-ready components** organized 
 
 **Layout Components** provide structural elements such as Accordion, Alert, Avatar, AvatarGroup, Breadcrumb, Modal, Popover, Sidebar, and Tabs. The sophisticated DataTable component offers advanced features for data presentation, while Directory components handle hierarchical navigation.
 
-**Display Components** focus on data visualization and content presentation, including Charts powered by Recharts, StatCard for metrics display, Tags and SplitTag for categorization, Text components with comprehensive typography support, Tooltip for contextual information, and specialized components like GradientBlur for visual effects.
+**Display Components** focus on data visualization and content presentation, including Charts powered by Recharts, StatCard for metrics display, Tags and SplitTag for categorization, Text components with comprehensive typography support, and Tooltip for contextual information.
 
 **Navigation Components** encompass Menu systems and interactive elements that facilitate user movement through applications.
 

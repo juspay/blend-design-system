@@ -66,7 +66,7 @@ Tests live **outside** `lib/`, in `packages/blend/__tests__/`, mirroring the com
 
 ### V1 vs V2
 
-Many components exist twice: `Button/` and `ButtonV2/`, `Alert/` and `AlertV2/`. V2 is the current generation and supports dark mode. Most V1 components remain light-only, but legacy Modal, Card, Upload, Tags, Badge, and Timeline factories support light/dark token dispatch. Some V2 components are grouped under umbrella dirs (`InputsV2/TextInputV2`, `SelectorV2/CheckboxV2`, `ButtonV2/ButtonGroupV2`).
+Many components exist twice: `Button/` and `ButtonV2/`, `Alert/` and `AlertV2/`. V2 is the current generation and supports dark mode. Most V1 components remain light-only, but legacy Modal, Card, Upload, Tags, Badge, Timeline, `AvatarGroup`, `ButtonGroup`, `CodeBlock`, `Directory`, `Skeleton`, and `SidebarMobile` factories support light/dark token dispatch. Some V2 components are grouped under umbrella dirs (`InputsV2/TextInputV2`, `SelectorV2/CheckboxV2`, `ButtonV2/ButtonGroupV2`).
 
 New work should target V2. `useResponsiveTokens` emits a one-time deprecation `console.warn` for V1 slots via `v1TokenReplacementMap` (`lib/hooks/useResponsiveTokens.ts`) — keep that map in sync with `lib/main.ts` when adding or retiring components.
 
@@ -76,7 +76,7 @@ Three layers, and the middle one is where mistakes happen.
 
 1. **Foundation** — `lib/tokens/theme.token.ts` exports `FOUNDATION_THEME` (colors, spacing, shadows, borders). Values are typed against styled-components' `CSSObject`, not raw strings.
 2. **Component tokens** — every component ships a `getXTokens(foundation, theme?)` factory returning a **responsive** object keyed by breakpoint: `{ sm: {...}, lg: {...} }`. That's what every `ResponsiveXTokens` type means.
-    - V1: themed factories such as `getTagTokens(foundation, theme = Theme.LIGHT)` dispatch to separate light/dark token modules; older factories may remain light-only.
+    - V1: themed factories such as `getTagTokens(foundation, theme = Theme.LIGHT)` dispatch to separate light/dark token modules (including retrofitted `AvatarGroup`, `ButtonGroup`, `CodeBlock`, `Directory`, `MOBILE_NAVIGATION`, and `Skeleton`); older factories may remain light-only.
     - V2: `getButtonV2Tokens(foundation, theme = Theme.LIGHT)`, dispatching to separate `buttonV2.light.tokens.ts` / `buttonV2.dark.tokens.ts` files.
     - A component that reuses another component's slot ships no factory of its own — `SingleDatePicker` styles itself from `CALENDAR` and `TIME_PICKER`.
 3. **Consumption** — components call `useResponsiveTokens<XTokensType>('BUTTONV2')`, which resolves the slot and returns the values already flattened for the current breakpoint. It **throws** on an unknown slot.
