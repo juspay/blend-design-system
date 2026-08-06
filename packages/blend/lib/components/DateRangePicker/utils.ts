@@ -2298,48 +2298,52 @@ export const calculateDayCellProps = (
         maxRangeDays
     )
 
+    const dayTokens = calendarToken.calendar.calendarGrid.day
+
     const getCellStyles = () => {
-        // Base cell styles - hardcoded values for consistent styling
         let styles: Record<string, unknown> = {
             cursor: 'pointer',
             textAlign: 'center',
-            padding: '10px 8px',
+            padding: `${dayTokens.cell.padding.y} ${dayTokens.cell.padding.x}`,
             position: 'relative',
-            fontWeight: '500',
+            fontWeight: dayTokens.cell.fontWeight,
             boxSizing: 'border-box',
             outline: '1px solid transparent',
-            fontSize: '16px',
-            lineHeight: '20px',
+            fontSize: dayTokens.cell.fontSize,
+            lineHeight: dayTokens.cell.lineHeight,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
         }
 
-        // Apply state-specific styles with hardcoded values
         if (dateStates.isSingleDate) {
             styles = {
                 ...styles,
-                backgroundColor: '#3b82f6',
-                borderRadius: '8px',
+                backgroundColor: dayTokens.states.singleDate.backgroundColor,
+                borderRadius: dayTokens.states.singleDate.borderRadius,
             }
         } else if (dateStates.isStart) {
             styles = {
                 ...styles,
-                backgroundColor: '#3b82f6',
-                borderTopLeftRadius: '8px',
-                borderBottomLeftRadius: '8px',
+                backgroundColor: dayTokens.states.startDate.backgroundColor,
+                borderTopLeftRadius:
+                    dayTokens.states.startDate.borderRadius.topLeft,
+                borderBottomLeftRadius:
+                    dayTokens.states.startDate.borderRadius.bottomLeft,
             }
         } else if (dateStates.isEnd) {
             styles = {
                 ...styles,
-                backgroundColor: '#3b82f6',
-                borderTopRightRadius: '8px',
-                borderBottomRightRadius: '8px',
+                backgroundColor: dayTokens.states.endDate.backgroundColor,
+                borderTopRightRadius:
+                    dayTokens.states.endDate.borderRadius.topRight,
+                borderBottomRightRadius:
+                    dayTokens.states.endDate.borderRadius.bottomRight,
             }
         } else if (dateStates.isRangeDay) {
             styles = {
                 ...styles,
-                backgroundColor: '#dbeafe',
+                backgroundColor: dayTokens.states.rangeDay.backgroundColor,
             }
         }
 

@@ -1,8 +1,11 @@
-# Changelog for v0.0.37
+# Changelog for v0.0.38
 
 > **Stable Release** - This version is production-ready and recommended for general use.
 
 ## 🚀 Features
+
+- Add dark-theme support across the DateRangePicker trigger, calendar, presets, time controls, footer, and mobile drawer.
+- Route DateRangePicker component tokens through ThemeProvider and preserve the existing light/no-theme token output.
 
 - **charts**: add showAllLegends prop (#1601) ([18b47e9](https://github.com/juspay/blend-design-system/commit/18b47e9))
 - added virtualized directory (#1593) ([2239edd](https://github.com/juspay/blend-design-system/commit/2239edd))
@@ -25,6 +28,10 @@
 - introduce MenuV2 with enhanced features and accessibility (#1249) ([92aef49](https://github.com/juspay/blend-design-system/commit/92aef49))
 - provided valid button events support to single & multi select (#1253) ([0aef3f1](https://github.com/juspay/blend-design-system/commit/0aef3f1))
 - add Shadow DOM support for MFE compatibility (#1243) ([9990b8a](https://github.com/juspay/blend-design-system/commit/9990b8a))
+
+## 🧪 Tests
+
+- Add dark desktop/mobile rendering coverage, mobile preset behavior coverage, and no-theme token regression coverage.
 
 ## 🐛 Bug Fixes
 
@@ -180,18 +187,16 @@
 
 ---
 
-**Release Date**: 2026-07-28
-**Commit Range**: v0.0.36..HEAD
-**Total Changes**: 158 commits
+**Release Date**: 2026-08-06
+**Commit Range**: v0.0.37..HEAD
+**Total Changes**: 1 commit
 
 ## Installation
 
 ```bash
 npm install @juspay/blend-design-system@latest
 # or specific version
-npm install @juspay/blend-design-system@0.0.37
+npm install @juspay/blend-design-system@0.0.38
 ```
 
 ---
-
-**Promoted from:** `0.0.37-beta.8` (beta iteration #8)

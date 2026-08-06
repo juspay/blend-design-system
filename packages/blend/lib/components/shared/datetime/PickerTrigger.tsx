@@ -2,8 +2,7 @@ import { type ReactElement, type ReactNode } from 'react'
 import { Calendar, ChevronDown, ChevronUp, X } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
-import Button from '../../Button/Button'
-import { ButtonType, ButtonSize } from '../../Button/types'
+import { ButtonV2, ButtonV2Size, ButtonV2Type } from '../../ButtonV2'
 import { FOUNDATION_THEME } from '../../../tokens'
 import type { CalendarTokenType } from '../../DateRangePicker/dateRangePicker.tokens'
 import type {
@@ -177,12 +176,13 @@ export const renderPickerTrigger = ({
     // ---- Branch 3: mobile drawer -------------------------------------------
     if (isMobileDrawer) {
         return (
-            <Button
-                buttonType={ButtonType.SECONDARY}
-                size={ButtonSize.MEDIUM}
+            <ButtonV2
+                buttonType={ButtonV2Type.SECONDARY}
+                size={ButtonV2Size.MEDIUM}
                 text={mobileText ?? displayText}
                 disabled={isDisabled}
                 onClick={() => onMobileOpen?.()}
+                width="100%"
             />
         )
     }
@@ -231,7 +231,7 @@ export const renderPickerTrigger = ({
                     : dateInputToken?.borderRadius?.withoutQuickSelector
             }
             border={border}
-            boxShadow={FOUNDATION_THEME.shadows.xs}
+            boxShadow={calendarToken?.calendar?.boxShadow}
             // NOTE: deliberately no onClick — Popover.Trigger renders `asChild`
             // and attaches its own handler. Adding one here double-toggles.
             aria-expanded={isOpen}
