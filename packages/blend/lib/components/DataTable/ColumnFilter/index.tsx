@@ -9,6 +9,8 @@ import MultiSelectMenu from '../../MultiSelect/MultiSelectMenu'
 import SingleSelectMenu from '../../SingleSelect/SingleSelectMenu'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { SelectMenuGroupType } from '../../Select/types'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import type { TableTokenType } from '../dataTable.tokens'
 
 export type ColumnFilterProps<T extends Record<string, unknown>> = {
     column: ColumnDefinition<T>
@@ -26,6 +28,8 @@ const ColumnFilter = forwardRef<
     HTMLDivElement,
     ColumnFilterProps<Record<string, unknown>>
 >(({ column, data, currentFilter, onFilter }, ref) => {
+    const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+    const filterToken = tableToken.dataTable.table.header.filter
     const [searchValue, setSearchValue] = useState(
         (currentFilter?.value as string) || ''
     )
@@ -135,7 +139,7 @@ const ColumnFilter = forwardRef<
                         style={{
                             fontSize:
                                 FOUNDATION_THEME.font.size.body.xs.fontSize,
-                            color: FOUNDATION_THEME.colors.primary[600],
+                            color: filterToken.sortOption.textColor,
                             cursor: 'pointer',
                             textDecoration: 'underline',
                         }}
@@ -167,13 +171,12 @@ const ColumnFilter = forwardRef<
                             alignItems="center"
                             justifyContent="space-between"
                             padding={`${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[12]}`}
-                            border={`1px solid ${FOUNDATION_THEME.colors.gray[300]}`}
+                            border={filterToken.border}
                             borderRadius={FOUNDATION_THEME.border.radius[8]}
-                            backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                            backgroundColor={filterToken.backgroundColor}
                             cursor="pointer"
                             _hover={{
-                                backgroundColor:
-                                    FOUNDATION_THEME.colors.gray[25],
+                                backgroundColor: filterToken.hoverBackground,
                             }}
                         >
                             <PrimitiveText
@@ -182,8 +185,8 @@ const ColumnFilter = forwardRef<
                                         FOUNDATION_THEME.font.size.body.sm
                                             .fontSize,
                                     color: selectedValues[0]
-                                        ? FOUNDATION_THEME.colors.gray[700]
-                                        : FOUNDATION_THEME.colors.gray[400],
+                                        ? filterToken.selectedTextColor
+                                        : filterToken.normalTextColor,
                                 }}
                             >
                                 {selectedValues[0]
@@ -220,13 +223,12 @@ const ColumnFilter = forwardRef<
                             alignItems="center"
                             justifyContent="space-between"
                             padding={`${FOUNDATION_THEME.unit[8]} ${FOUNDATION_THEME.unit[12]}`}
-                            border={`1px solid ${FOUNDATION_THEME.colors.gray[300]}`}
+                            border={filterToken.border}
                             borderRadius={FOUNDATION_THEME.border.radius[8]}
-                            backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                            backgroundColor={filterToken.backgroundColor}
                             cursor="pointer"
                             _hover={{
-                                backgroundColor:
-                                    FOUNDATION_THEME.colors.gray[25],
+                                backgroundColor: filterToken.hoverBackground,
                             }}
                         >
                             <PrimitiveText
@@ -236,8 +238,8 @@ const ColumnFilter = forwardRef<
                                             .fontSize,
                                     color:
                                         selectedValues.length > 0
-                                            ? FOUNDATION_THEME.colors.gray[700]
-                                            : FOUNDATION_THEME.colors.gray[400],
+                                            ? filterToken.selectedTextColor
+                                            : filterToken.normalTextColor,
                                 }}
                             >
                                 {selectedValues.length > 0
@@ -268,7 +270,7 @@ const ColumnFilter = forwardRef<
                         style={{
                             fontSize:
                                 FOUNDATION_THEME.font.size.body.xs.fontSize,
-                            color: FOUNDATION_THEME.colors.gray[600],
+                            color: filterToken.textColor,
                         }}
                     >
                         Number range filtering coming soon...

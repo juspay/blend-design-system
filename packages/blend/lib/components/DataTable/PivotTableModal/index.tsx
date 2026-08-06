@@ -465,9 +465,10 @@ const PivotTableModal = forwardRef<
                 key={field.field}
                 style={{
                     padding: FOUNDATION_THEME.unit[12],
-                    backgroundColor: FOUNDATION_THEME.colors.gray[25] as string,
+                    backgroundColor: tableToken.dataTable.table.header.filter
+                        .backgroundColor as string,
                     borderRadius: FOUNDATION_THEME.border.radius[8],
-                    border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                    border: tableToken.dataTable.table.header.filter.border,
                     marginBottom: FOUNDATION_THEME.unit[12],
                 }}
             >
@@ -500,8 +501,9 @@ const PivotTableModal = forwardRef<
                         style={removeButtonStyle}
                         onClick={onRemove}
                         onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                                FOUNDATION_THEME.colors.gray[100] as string
+                            e.currentTarget.style.backgroundColor = tableToken
+                                .dataTable.table.header.filter
+                                .hoverBackground as string
                         }}
                         onMouseLeave={(e) => {
                             e.currentTarget.style.backgroundColor =
@@ -511,7 +513,10 @@ const PivotTableModal = forwardRef<
                     >
                         <X
                             size={16}
-                            color={FOUNDATION_THEME.colors.gray[500] as string}
+                            color={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.iconColor as string
+                            }
                         />
                     </button>
                 </Block>
@@ -786,7 +791,7 @@ const PivotTableModal = forwardRef<
                                 padding: FOUNDATION_THEME.unit[16],
                                 overflow: 'auto',
                                 overflowX: 'hidden',
-                                border: `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                                border: tableToken.dataTable.border,
                                 borderRadius: FOUNDATION_THEME.border.radius[8],
                                 width: pivot.rightPanel.width,
                                 minWidth: pivot.rightPanel.width,

@@ -240,9 +240,10 @@ export const getFrozenRightColumnStyles = (
         column: ColumnDefinition<Record<string, unknown>>,
         index: number
     ) => React.CSSProperties,
-    backgroundColor: string,
-    rightStickyOffsetPx: number
-) => {
+    backgroundColor: React.CSSProperties['backgroundColor'],
+    rightStickyOffsetPx: number,
+    frozenBorder?: React.CSSProperties['borderBottom']
+): React.CSSProperties => {
     if (columnFreezeRight <= 0) return {}
     const startIndex = Math.max(visibleColumns.length - columnFreezeRight, 0)
     if (index < startIndex) return {}
@@ -279,7 +280,9 @@ export const getFrozenRightColumnStyles = (
         boxSizing: 'border-box' as const,
         overflow: 'hidden',
         ...(isFirstRightFrozen && {
-            borderLeft: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+            borderLeft:
+                frozenBorder ??
+                `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
         }),
     }
 }
@@ -294,9 +297,10 @@ export const getFrozenColumnStyles = (
         column: ColumnDefinition<Record<string, unknown>>,
         index: number
     ) => React.CSSProperties,
-    backgroundColor: string,
-    measuredFrozenWidths?: number[]
-) => {
+    backgroundColor: React.CSSProperties['backgroundColor'],
+    measuredFrozenWidths?: number[],
+    frozenBorder?: React.CSSProperties['borderBottom']
+): React.CSSProperties => {
     if (index >= columnFreeze) return { padding: '0 16px' }
 
     const currentColumn = visibleColumns[index]
@@ -333,7 +337,9 @@ export const getFrozenColumnStyles = (
         boxSizing: 'border-box' as const,
         overflow: 'hidden',
         ...(isLastFrozenColumn && {
-            borderRight: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+            borderRight:
+                frozenBorder ??
+                `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
         }),
     }
 }
