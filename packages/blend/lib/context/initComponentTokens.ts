@@ -139,7 +139,7 @@ const computeTokens = (
         SINGLE_SELECT:
             componentTokens.SINGLE_SELECT ??
             getSingleSelectTokens(foundationTokens),
-        TABLE: componentTokens.TABLE ?? getTableToken(foundationTokens),
+        TABLE: componentTokens.TABLE ?? getTableToken(foundationTokens, theme),
         CALENDAR:
             componentTokens.CALENDAR ??
             getCalendarToken(foundationTokens, theme),

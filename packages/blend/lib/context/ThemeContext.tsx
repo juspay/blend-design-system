@@ -369,7 +369,7 @@ const ThemeContext = createContext<ThemeContextType>({
         MENU_V2: getMenuV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         MULTI_SELECT: getMultiSelectTokens(FOUNDATION_THEME),
         SINGLE_SELECT: getSingleSelectTokens(FOUNDATION_THEME),
-        TABLE: getTableToken(FOUNDATION_THEME),
+        TABLE: getTableToken(FOUNDATION_THEME, Theme.LIGHT),
         CALENDAR: getCalendarToken(FOUNDATION_THEME, Theme.LIGHT),
         TIME_PICKER: getTimePickerTokens(FOUNDATION_THEME),
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
