@@ -47,6 +47,8 @@ import {
     getTopbarTokens,
     getSidebarTokens,
     getMobileNavigationTokens,
+    getSpinnerTokens,
+    getEmptyStateTokens,
 } from '@juspay/blend-design-system/node'
 import type { FoundationTokenType } from '@juspay/blend-design-system/node'
 
@@ -86,6 +88,8 @@ const V2_RESOLVERS: Record<
     TOPBARV2: getTopbarTokens,
     SIDEBARV2: getSidebarTokens,
     MOBILE_NAVIGATION_V2: getMobileNavigationTokens,
+    SPINNER: getSpinnerTokens,
+    EMPTY_STATE: getEmptyStateTokens,
 }
 
 // ---------------------------------------------------------------------------

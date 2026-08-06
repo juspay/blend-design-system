@@ -94,6 +94,14 @@ import {
     getSkeletonTokens,
     ResponsiveSkeletonTokens,
 } from '../components/Skeleton/skeleton.tokens'
+import {
+    getSpinnerTokens,
+    type ResponsiveSpinnerTokens,
+} from '../components/Spinner/spinner.tokens'
+import {
+    getEmptyStateTokens,
+    type ResponsiveEmptyStateTokens,
+} from '../components/EmptyState/emptyState.tokens'
 import { BREAKPOINTS } from '../breakpoints/breakPoints'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
@@ -302,6 +310,8 @@ export type ComponentTokenType = {
     CARD?: ResponsiveCardTokens
     CARDV2?: ResponsiveCardV2Tokens
     SKELETON?: ResponsiveSkeletonTokens
+    SPINNER?: ResponsiveSpinnerTokens
+    EMPTY_STATE?: ResponsiveEmptyStateTokens
     TOPBAR?: ResponsiveTopbarTokens
     TOPBARV2?: ResponsiveTopbarV2Tokens
     AVATAR?: ResponsiveAvatarTokens
@@ -400,6 +410,8 @@ const ThemeContext = createContext<ThemeContextType>({
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
         TOPBARV2: getTopbarV2Tokens(FOUNDATION_THEME),
         SKELETON: getSkeletonTokens(FOUNDATION_THEME, Theme.LIGHT),
+        SPINNER: getSpinnerTokens(FOUNDATION_THEME, Theme.LIGHT),
+        EMPTY_STATE: getEmptyStateTokens(FOUNDATION_THEME, Theme.LIGHT),
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
         AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME, Theme.LIGHT),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
