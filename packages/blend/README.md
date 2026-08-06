@@ -71,7 +71,7 @@ export default App
 
 ### Data Display
 
-- **DataTable** - Feature-rich data tables with sorting, filtering
+- **DataTable** - Feature-rich data tables with sorting, filtering, and light/dark theme support
 - **StatCard** - Statistical information cards
 - **Charts** - Data visualization components
 - **Avatar** - User profile pictures
