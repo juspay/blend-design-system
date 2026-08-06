@@ -33,13 +33,14 @@ import TimeSelector from './TimeSelector'
 import MobileDrawerPresets from './MobileDrawerPresets'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
-import { Popover } from '../Popover'
-import { TextInput, TextInputSize } from '../Inputs/TextInput'
+import { PopoverV2, PopoverV2Align, PopoverV2Side } from '../PopoverV2'
+import { InputSizeV2, TextInputV2 } from '../InputsV2/TextInputV2'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import { ButtonType, ButtonSize, Button } from '../Button'
-import { Tooltip } from '../Tooltip'
+import { ButtonV2, ButtonV2Size, ButtonV2Type } from '../ButtonV2'
+import { TooltipV2 } from '../TooltipV2'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTheme } from '../../context'
 import { renderPickerTrigger } from '../shared/datetime/PickerTrigger'
 
 type DateInputsSectionProps = {
@@ -130,19 +131,17 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         width="100%"
                     >
                         <Block data-element="start-date-selector" flexGrow={1}>
-                            <TextInput
+                            <TextInputV2
                                 id={startDateId}
                                 label=""
                                 placeholder="DD/MM/YYYY"
                                 value={startDate || ''}
                                 onChange={onStartDateChange}
-                                error={!startDateValidation.isValid}
-                                errorMessage={
-                                    !startDateValidation.isValid
-                                        ? startDateValidation.message
-                                        : undefined
-                                }
-                                size={TextInputSize.SMALL}
+                                error={{
+                                    show: !startDateValidation.isValid,
+                                    message: startDateValidation.message,
+                                }}
+                                size={InputSizeV2.SM}
                                 autoFocus={false}
                                 aria-invalid={!startDateValidation.isValid}
                             />
@@ -212,19 +211,17 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                     data-element="end-date-selector"
                                     flexGrow={1}
                                 >
-                                    <TextInput
+                                    <TextInputV2
                                         id={endDateId}
                                         label=""
                                         placeholder="DD/MM/YYYY"
                                         value={endDate || ''}
                                         onChange={onEndDateChange}
-                                        error={!endDateValidation.isValid}
-                                        errorMessage={
-                                            !endDateValidation.isValid
-                                                ? endDateValidation.message
-                                                : undefined
-                                        }
-                                        size={TextInputSize.SMALL}
+                                        error={{
+                                            show: !endDateValidation.isValid,
+                                            message: endDateValidation.message,
+                                        }}
+                                        size={InputSizeV2.SM}
                                         autoFocus={false}
                                         aria-invalid={
                                             !endDateValidation.isValid
@@ -344,26 +341,26 @@ const FooterControls: React.FC<FooterControlsProps> = ({
         borderTop={calendarToken?.calendar?.footer?.borderTop}
     >
         <Block display="flex" gap={calendarToken?.calendar?.footer?.gap}>
-            <Button
-                buttonType={ButtonType.SECONDARY}
-                size={ButtonSize.SMALL}
+            <ButtonV2
+                buttonType={ButtonV2Type.SECONDARY}
+                size={ButtonV2Size.SMALL}
                 onClick={onCancel}
                 text="Cancel"
             />
             {isApplyDisabled ? (
-                <Tooltip content={applyDisabledMessage}>
-                    <Button
-                        buttonType={ButtonType.PRIMARY}
-                        size={ButtonSize.SMALL}
+                <TooltipV2 content={applyDisabledMessage || ''}>
+                    <ButtonV2
+                        buttonType={ButtonV2Type.PRIMARY}
+                        size={ButtonV2Size.SMALL}
                         onClick={onApply}
                         text="Apply"
                         disabled={true}
                     />
-                </Tooltip>
+                </TooltipV2>
             ) : (
-                <Button
-                    buttonType={ButtonType.PRIMARY}
-                    size={ButtonSize.SMALL}
+                <ButtonV2
+                    buttonType={ButtonV2Type.PRIMARY}
+                    size={ButtonV2Size.SMALL}
                     onClick={onApply}
                     text="Apply"
                     disabled={false}
@@ -415,6 +412,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
         const [drawerOpen, setDrawerOpen] = useState(false)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+        const { foundationTokens } = useTheme()
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
         const showPresets = shouldShowPresets && !isSingleDatePicker
@@ -971,6 +969,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 isDisabled,
                 size,
                 calendarToken,
+                foundationTokens,
                 hasQuickSelector: showPresets,
                 triggerConfig,
                 triggerElement,
@@ -1084,15 +1083,22 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     />
                 )}
 
-                <Popover
+                <PopoverV2
                     key={popoverKey}
                     open={isOpen}
+                    useDrawerOnMobile={useDrawerOnMobile}
                     onOpenChange={(open) => {
                         setIsOpen(open)
                     }}
                     trigger={renderTrigger()}
-                    side={popoverConfig?.side || 'bottom'}
-                    align={popoverConfig?.align || 'start'}
+                    side={
+                        (popoverConfig?.side as PopoverV2Side) ||
+                        PopoverV2Side.BOTTOM
+                    }
+                    align={
+                        (popoverConfig?.align as PopoverV2Align) ||
+                        PopoverV2Align.START
+                    }
                     sideOffset={popoverConfig?.sideOffset ?? 4}
                     shadow="sm"
                 >
@@ -1164,7 +1170,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             calendarToken={calendarToken}
                         />
                     </Block>
-                </Popover>
+                </PopoverV2>
             </Block>
         )
     }

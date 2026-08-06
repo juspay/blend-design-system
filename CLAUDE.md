@@ -66,7 +66,7 @@ Tests live **outside** `lib/`, in `packages/blend/__tests__/`, mirroring the com
 
 ### V1 vs V2
 
-Many components exist twice: `Button/` and `ButtonV2/`, `Alert/` and `AlertV2/`. V2 is the current generation and supports dark mode. Most V1 components remain light-only, but legacy Modal, Card, Upload, Tags, Badge, Timeline, `AvatarGroup`, `ButtonGroup`, `CodeBlock`, `Directory`, `Skeleton`, and `SidebarMobile` factories support light/dark token dispatch. Some V2 components are grouped under umbrella dirs (`InputsV2/TextInputV2`, `SelectorV2/CheckboxV2`, `ButtonV2/ButtonGroupV2`).
+Many components exist twice: `Button/` and `ButtonV2/`, `Alert/` and `AlertV2/`. V2 is the current generation and supports dark mode. Most V1 components remain light-only, but legacy Modal, Card, Upload, Tags, Badge, Timeline, `AvatarGroup`, `ButtonGroup`, `CodeBlock`, `Directory`, `Skeleton`, and `SidebarMobile` factories support light/dark token dispatch; DateRangePicker is also an exception because its calendar and mobile tokens resolve through the active theme. Some V2 components are grouped under umbrella dirs (`InputsV2/TextInputV2`, `SelectorV2/CheckboxV2`, `ButtonV2/ButtonGroupV2`).
 
 New work should target V2. `useResponsiveTokens` emits a one-time deprecation `console.warn` for V1 slots via `v1TokenReplacementMap` (`lib/hooks/useResponsiveTokens.ts`) — keep that map in sync with `lib/main.ts` when adding or retiring components.
 

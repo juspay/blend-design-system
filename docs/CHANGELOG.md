@@ -4,6 +4,9 @@
 
 ## 🚀 Features
 
+- DateRangePicker now supports dark-theme styling across its trigger, calendar, presets, time controls, footer, and mobile drawer.
+- DateRangePicker now resolves component tokens through ThemeProvider while preserving the existing light and no-theme output.
+
 - **charts**: add showAllLegends prop (#1601) ([18b47e9](https://github.com/juspay/blend-design-system/commit/18b47e9))
 - added virtualized directory (#1593) ([2239edd](https://github.com/juspay/blend-design-system/commit/2239edd))
 - added lines support in directory (#1591) ([0b3356e](https://github.com/juspay/blend-design-system/commit/0b3356e))
@@ -25,6 +28,10 @@
 - introduce MenuV2 with enhanced features and accessibility (#1249) ([92aef49](https://github.com/juspay/blend-design-system/commit/92aef49))
 - provided valid button events support to single & multi select (#1253) ([0aef3f1](https://github.com/juspay/blend-design-system/commit/0aef3f1))
 - add Shadow DOM support for MFE compatibility (#1243) ([9990b8a](https://github.com/juspay/blend-design-system/commit/9990b8a))
+
+## 🧪 Tests
+
+- Add dark desktop/mobile rendering coverage, mobile preset behavior coverage, and no-theme token regression coverage.
 
 ## 🐛 Bug Fixes
 

@@ -6,15 +6,8 @@ import React, {
     useEffect,
 } from 'react'
 import Block from '../Primitives/Block/Block'
-import TextInput from '../Inputs/TextInput/TextInput'
-import { TextInputSize } from '../Inputs/TextInput/types'
-import Menu from '../Menu/Menu'
-import {
-    MenuItemType,
-    MenuGroupType,
-    MenuAlignment,
-    MenuSide,
-} from '../Menu/types'
+import { TextInputV2, InputSizeV2 } from '../InputsV2/TextInputV2'
+import { MenuV2, MenuV2Alignment, MenuV2GroupType, MenuV2Side } from '../MenuV2'
 import { isDateToday, getDatePartsInTimezone } from './utils'
 import { DateRange } from './types'
 import {
@@ -61,13 +54,13 @@ const generateTimeOptions = (
     onSelect: (timeValue: string) => void,
     minTime: TimeValue,
     maxTime: TimeValue
-): MenuGroupType[] => {
-    const options: MenuItemType[] = generateTimeSlots({
+): MenuV2GroupType[] => {
+    const options = generateTimeSlots({
         stepMinutes: TIME_SELECTOR_STEP_MINUTES,
         minTime,
         maxTime,
     }).map((slot) => ({
-        label: formatTimeValue(slot, { format: '12h' }),
+        label: { text: formatTimeValue(slot, { format: '12h' }) },
         onClick: () => onSelect(timeValueToString(slot)),
     }))
 
@@ -312,7 +305,7 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 tabIndex={-1}
                 style={{ width: '118px', flexShrink: 0 }}
             >
-                <TextInput
+                <TextInputV2
                     id={id}
                     type="text"
                     disabled={
@@ -327,8 +320,8 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                     onClick={handleInputClick}
                     onKeyDown={handleInputKeyDown}
                     placeholder="12:00 PM"
-                    size={TextInputSize.SMALL}
-                    error={!isValidTime}
+                    size={InputSizeV2.SM}
+                    error={{ show: !isValidTime, message: '' }}
                     tabIndex={tabIndex}
                     label=""
                     aria-label={ariaLabel}
@@ -338,17 +331,19 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
 
         return (
             <Block ref={ref} style={{ width: '118px', flexShrink: 0 }}>
-                <Menu
+                <MenuV2
                     trigger={triggerElement}
                     items={timeOptions}
                     open={isOpen && !isProcessingSelection}
                     onOpenChange={handleOpenChange}
-                    side={MenuSide.BOTTOM}
-                    alignment={MenuAlignment.START}
+                    side={MenuV2Side.BOTTOM}
+                    alignment={MenuV2Alignment.START}
                     sideOffset={4}
-                    maxHeight={200}
-                    minWidth={120}
-                    maxWidth={120}
+                    dimensions={{
+                        maxHeight: 200,
+                        minWidth: 120,
+                        maxWidth: 120,
+                    }}
                 />
             </Block>
         )

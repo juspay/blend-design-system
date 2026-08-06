@@ -64,6 +64,20 @@ describe('initTokens memoisation', () => {
         expect(overridden.UPLOAD).toBe(uploadOverride)
     })
 
+    it('dispatches the calendar token slice for the active theme', () => {
+        const light = initTokens(EMPTY, FOUNDATION_THEME, Theme.LIGHT)
+        const dark = initTokens(EMPTY, FOUNDATION_THEME, Theme.DARK)
+
+        expect(dark.CALENDAR?.lg.calendar.backgroundColor).not.toBe(
+            light.CALENDAR?.lg.calendar.backgroundColor
+        )
+        expect(
+            dark.CALENDAR?.lg.calendar.calendarGrid.day.text.dayNumber.color
+        ).not.toBe(
+            light.CALENDAR?.lg.calendar.calendarGrid.day.text.dayNumber.color
+        )
+    })
+
     it('returns a different object for a different componentTokens reference', () => {
         const overrideA: ComponentTokenType = {
             BUTTONV2: { sm: {}, lg: {} } as ComponentTokenType['BUTTONV2'],

@@ -47,6 +47,7 @@ const PopoverV2 = forwardRef<HTMLDivElement, PopoverV2Props>(
             maxHeight,
             size = PopoverV2Size.MD,
             onClose,
+            shadow = 'lg',
             useDrawerOnMobile = true,
             avoidCollisions = true,
             skeleton,
@@ -147,7 +148,10 @@ const PopoverV2 = forwardRef<HTMLDivElement, PopoverV2Props>(
                                 ? { 'aria-describedby': ariaDescribedBy }
                                 : {})}
                             backgroundColor={popoverTokens.background}
-                            boxShadow={popoverTokens.shadow?.lg}
+                            boxShadow={
+                                popoverTokens.shadow?.[shadow] ||
+                                popoverTokens.shadow?.lg
+                            }
                             borderRadius={popoverTokens.borderRadius[size]}
                             border={popoverTokens.border}
                             width={width}

@@ -6,6 +6,7 @@ import {
     getPresetLabelWithCustom,
     handleCalendarDateClick,
     handleCustomRangeCalendarDateClick,
+    calculateDayCellProps,
 } from '../../../lib/components/DateRangePicker/utils'
 import { DateRangePreset } from '../../../lib/components/DateRangePicker/types'
 import type {
@@ -13,6 +14,87 @@ import type {
     CustomPresetDefinition,
     DateRange,
 } from '../../../lib/components/DateRangePicker/types'
+import FOUNDATION_THEME from '../../../lib/tokens/theme.token'
+import { Theme } from '../../../lib/context/theme.enum'
+import { getCalendarToken } from '../../../lib/components/DateRangePicker/dateRangePicker.tokens'
+
+describe('calculateDayCellProps theme styling', () => {
+    const lightTokens = getCalendarToken(FOUNDATION_THEME, Theme.LIGHT).sm
+    const darkTokens = getCalendarToken(FOUNDATION_THEME, Theme.DARK).sm
+    const today = new Date(2026, 5, 15)
+    const selectedRange = {
+        startDate: new Date(2026, 5, 10),
+        endDate: new Date(2026, 5, 20),
+    }
+
+    it('uses the selected-range state colors from the active theme', () => {
+        const start = calculateDayCellProps(
+            selectedRange.startDate,
+            selectedRange,
+            today,
+            false,
+            false,
+            darkTokens
+        )
+        const inRange = calculateDayCellProps(
+            new Date(2026, 5, 15),
+            selectedRange,
+            today,
+            false,
+            false,
+            darkTokens
+        )
+        const end = calculateDayCellProps(
+            selectedRange.endDate,
+            selectedRange,
+            today,
+            false,
+            false,
+            darkTokens
+        )
+
+        expect(start.styles.backgroundColor).toBe(
+            darkTokens.calendar.calendarGrid.day.states.startDate
+                .backgroundColor
+        )
+        expect(inRange.styles.backgroundColor).toBe(
+            darkTokens.calendar.calendarGrid.day.states.rangeDay.backgroundColor
+        )
+        expect(end.styles.backgroundColor).toBe(
+            darkTokens.calendar.calendarGrid.day.states.endDate.backgroundColor
+        )
+    })
+
+    it('uses themed disabled and today text colors', () => {
+        const disabled = calculateDayCellProps(
+            new Date(2026, 5, 10),
+            undefined,
+            today,
+            false,
+            true,
+            darkTokens
+        )
+        const todayCell = calculateDayCellProps(
+            today,
+            undefined,
+            today,
+            false,
+            false,
+            darkTokens
+        )
+
+        expect(disabled.textColor).toBe(
+            darkTokens.calendar.calendarGrid.day.text.disabledDate.color
+        )
+        expect(todayCell.textColor).toBe(
+            darkTokens.calendar.calendarGrid.day.text.todayDay.color
+        )
+        expect(todayCell.showTodayIndicator).toBe(true)
+        expect(todayCell.textColor).not.toBe(
+            lightTokens.calendar.calendarGrid.day.text.todayDay.color
+        )
+    })
+})
 
 describe('isControlledDateRange', () => {
     it('returns false for null, undefined, and empty objects', () => {

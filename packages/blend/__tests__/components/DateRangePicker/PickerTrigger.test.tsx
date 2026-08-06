@@ -3,6 +3,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '../../test-utils'
 import DateRangePicker from '../../../lib/components/DateRangePicker/DateRangePicker'
 import SingleDatePicker from '../../../lib/components/SingleDatePicker/SingleDatePicker'
+import ThemeProvider from '../../../lib/context/ThemeProvider'
+import FOUNDATION_THEME from '../../../lib/tokens/theme.token'
 import type { DateRange } from '../../../lib/components/DateRangePicker/types'
 
 if (typeof PointerEvent === 'undefined') {
@@ -333,6 +335,36 @@ describe('renderPickerTrigger', () => {
             expect(
                 screen.queryByRole('button', { name: 'Element' })
             ).not.toBeInTheDocument()
+        })
+    })
+
+    describe('foundation-token error fallback', () => {
+        it('uses the provider foundation palette for light error borders', () => {
+            const errorColor = '#c026d3'
+            const customFoundation = {
+                ...FOUNDATION_THEME,
+                colors: {
+                    ...FOUNDATION_THEME.colors,
+                    red: {
+                        ...FOUNDATION_THEME.colors.red,
+                        500: errorColor,
+                    },
+                },
+            }
+
+            render(
+                <ThemeProvider foundationTokens={customFoundation}>
+                    <SingleDatePicker
+                        value={FIXED_DATE}
+                        onChange={() => {}}
+                        error
+                    />
+                </ThemeProvider>
+            )
+
+            expect(getDefaultTrigger()).toHaveStyle(
+                `border: 1px solid ${errorColor}`
+            )
         })
     })
 

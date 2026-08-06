@@ -1,9 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { userEvent, within } from '@storybook/test'
 import {
     DateRangePicker,
     Button,
     ButtonType,
+    Theme,
+    ThemeProvider,
 } from '@juspay/blend-design-system'
 import {
     getA11yConfig,
@@ -531,6 +534,48 @@ export const WithPresets: Story = {
         docs: {
             description: {
                 story: 'DateRangePicker with quick preset ranges for common time periods like "Last 7 days", "Last 30 days", etc.',
+            },
+        },
+    },
+}
+
+// Dark theme with a controlled range keeps every stateful picker surface open
+// for visual review: trigger, presets, date inputs, calendar grid and footer.
+export const DarkThemeWithSelectedRangeAndPresets: Story = {
+    render: () => {
+        const dateRange: DateRange = {
+            startDate: new Date(2025, 8, 10, 9, 0),
+            endDate: new Date(2025, 8, 18, 17, 30),
+        }
+
+        return (
+            <ThemeProvider theme={Theme.DARK}>
+                <div className="rounded-lg p-6 bg-[#181B25] text-white">
+                    <h4 className="text-sm font-semibold mb-3">
+                        Dark DateRangePicker
+                    </h4>
+                    <DateRangePicker
+                        value={dateRange}
+                        onChange={() => {}}
+                        showPresets={true}
+                        showDateTimePicker={true}
+                        placeholder="Choose time period"
+                        icon={React.createElement(CalendarDays, { size: 16 })}
+                    />
+                </div>
+            </ThemeProvider>
+        )
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        await userEvent.click(
+            canvas.getByRole('button', { name: /date range picker/i })
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DateRangePicker rendered through ThemeProvider in dark mode with a selected range, presets, date inputs, time inputs, and an open calendar.',
             },
         },
     },
