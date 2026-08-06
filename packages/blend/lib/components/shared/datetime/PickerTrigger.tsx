@@ -4,6 +4,7 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { ButtonV2, ButtonV2Size, ButtonV2Type } from '../../ButtonV2'
 import { FOUNDATION_THEME } from '../../../tokens'
+import type { ThemeType } from '../../../tokens'
 import type { CalendarTokenType } from '../../DateRangePicker/dateRangePicker.tokens'
 import type {
     DateRange,
@@ -39,6 +40,8 @@ export type PickerTriggerProps = {
     isDisabled: boolean
     size: DateRangePickerSize
     calendarToken: CalendarTokenType
+    /** Foundation palette used for legacy fallback styles. */
+    foundationTokens?: ThemeType
     /** Squares off the left edge when a quick-range selector sits beside it. */
     hasQuickSelector?: boolean
     triggerConfig?: TriggerConfig
@@ -130,6 +133,7 @@ export const renderPickerTrigger = ({
     isDisabled,
     size,
     calendarToken,
+    foundationTokens = FOUNDATION_THEME,
     hasQuickSelector = false,
     triggerConfig,
     triggerElement,
@@ -203,7 +207,7 @@ export const renderPickerTrigger = ({
             // the whole slot, so a consumer on an older override would
             // otherwise render the error state identically to the resting one.
             (dateInputToken?.border?.error ??
-            `${FOUNDATION_THEME.border.width[1]} solid ${FOUNDATION_THEME.colors.red[500]}`)
+            `${foundationTokens.border.width[1]} solid ${foundationTokens.colors.red[500]}`)
           : dateInputToken?.border?.default
 
     return (

@@ -12,6 +12,7 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import Popover from '../Popover/Popover'
 import TimeColumns from './TimeColumns'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTheme } from '../../context'
 import { renderPickerTrigger } from '../shared/datetime/PickerTrigger'
 import type { CalendarTokenType } from '../DateRangePicker/dateRangePicker.tokens'
 import type { DateRangePickerSize } from '../DateRangePicker/types'
@@ -119,6 +120,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
         ref
     ) => {
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+        const { foundationTokens } = useTheme()
         const timeToken =
             useResponsiveTokens<TimePickerTokensType>('TIME_PICKER')
 
@@ -265,6 +267,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             isDisabled: disabled,
             size: size as unknown as DateRangePickerSize,
             calendarToken,
+            foundationTokens,
             onToggle: () => setIsOpen((open) => !open),
             ariaLabel: ariaLabel ?? `Time picker, ${displayText}`,
             dataDatePicker: 'timePicker-Filter',

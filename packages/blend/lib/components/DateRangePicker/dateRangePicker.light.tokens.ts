@@ -103,7 +103,6 @@ export const getCalendarLightTokens = (
                     hover: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
                     active: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[300]}`,
                     disabled: `${foundationToken.border.width[1]} solid ${foundationToken.colors.gray[200]}`,
-                    error: `${foundationToken.border.width[1]} solid ${foundationToken.colors.red[500]}`,
                 },
                 backgroundColor: foundationToken.colors.gray[0],
                 iconSize: foundationToken.unit[16],

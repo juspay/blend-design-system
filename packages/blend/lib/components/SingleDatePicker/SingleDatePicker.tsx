@@ -38,6 +38,7 @@ import {
 import TimeColumns from '../TimePicker/TimeColumns'
 import type { TimePickerTokensType } from '../TimePicker/timePicker.tokens.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTheme } from '../../context'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { SingleDatePickerProps } from './singleDatePicker.types'
 
@@ -91,6 +92,7 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
         ref
     ) => {
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+        const { foundationTokens } = useTheme()
         const timePickerToken =
             useResponsiveTokens<TimePickerTokensType>('TIME_PICKER')
 
@@ -333,6 +335,7 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
             isDisabled: disabled,
             size,
             calendarToken,
+            foundationTokens,
             triggerConfig,
             onToggle: () => setIsOpen(!isOpen),
             ariaLabel: `Date picker, ${displayText || 'Select date'}`,

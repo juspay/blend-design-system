@@ -40,6 +40,7 @@ import { ButtonV2, ButtonV2Size, ButtonV2Type } from '../ButtonV2'
 import { TooltipV2 } from '../TooltipV2'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTheme } from '../../context'
 import { renderPickerTrigger } from '../shared/datetime/PickerTrigger'
 
 type DateInputsSectionProps = {
@@ -411,6 +412,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
         const [drawerOpen, setDrawerOpen] = useState(false)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+        const { foundationTokens } = useTheme()
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
         const showPresets = shouldShowPresets && !isSingleDatePicker
@@ -967,6 +969,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 isDisabled,
                 size,
                 calendarToken,
+                foundationTokens,
                 hasQuickSelector: showPresets,
                 triggerConfig,
                 triggerElement,
