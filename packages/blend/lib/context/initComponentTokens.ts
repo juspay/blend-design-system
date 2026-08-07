@@ -36,6 +36,8 @@ import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.t
 import { getCardTokens } from '../components/Card/card.tokens'
 import { getCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
+import { getSpinnerTokens } from '../components/Spinner/spinner.tokens'
+import { getEmptyStateTokens } from '../components/EmptyState/emptyState.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 import { getTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
@@ -171,6 +173,12 @@ const computeTokens = (
         SKELETON:
             componentTokens.SKELETON ??
             getSkeletonTokens(foundationTokens, theme),
+        SPINNER:
+            componentTokens.SPINNER ??
+            getSpinnerTokens(foundationTokens, theme),
+        EMPTY_STATE:
+            componentTokens.EMPTY_STATE ??
+            getEmptyStateTokens(foundationTokens, theme),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
         TOPBARV2:
             componentTokens.TOPBARV2 ??

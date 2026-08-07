@@ -76,7 +76,9 @@ describe('DataTable body states', () => {
             <DataTable {...stateProps} data={[]} isLoading error />
         )
 
-        expect(screen.getByText('Loading data...')).toBeInTheDocument()
+        expect(
+            screen.getByRole('status', { name: 'Loading data...' })
+        ).toBeInTheDocument()
         expect(screen.queryByText('Custom error state')).not.toBeInTheDocument()
         expect(screen.queryByText('Custom empty state')).not.toBeInTheDocument()
 
@@ -137,6 +139,9 @@ describe('DataTable body states', () => {
         )
 
         expect(screen.getByText('No data')).toBeInTheDocument()
+        expect(
+            screen.getByRole('heading', { level: 2, name: 'No data' })
+        ).toBeInTheDocument()
         expect(
             container.querySelector('[data-table-body-state="empty"]')
         ).toHaveStyle({ height: '240px', minHeight: '240px' })
@@ -260,10 +265,9 @@ describe('DataTable body states Accessibility', () => {
             />
         )
 
-        expect(container.querySelector('.lucide-inbox')).toHaveAttribute(
-            'aria-hidden',
-            'true'
-        )
+        expect(
+            screen.getByRole('heading', { level: 2, name: 'No data' })
+        ).toBeInTheDocument()
 
         rerender(
             <DataTable

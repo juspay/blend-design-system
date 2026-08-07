@@ -36,6 +36,8 @@ import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValu
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import type { ResponsiveCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
+import type { ResponsiveSpinnerTokens } from '../components/Spinner/spinner.tokens'
+import type { ResponsiveEmptyStateTokens } from '../components/EmptyState/emptyState.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
@@ -123,6 +125,8 @@ export const useComponentToken = (
     | ResponsiveCardTokens
     | ResponsiveCardV2Tokens
     | ResponsiveSkeletonTokens
+    | ResponsiveSpinnerTokens
+    | ResponsiveEmptyStateTokens
     | ResponsiveTopbarTokens
     | ResponsiveAvatarTokens
     | ResponsiveAvatarGroupTokens
@@ -252,6 +256,10 @@ export const useComponentToken = (
             return componentTokens.CARDV2
         case 'SKELETON':
             return componentTokens.SKELETON
+        case 'SPINNER':
+            return componentTokens.SPINNER
+        case 'EMPTY_STATE':
+            return componentTokens.EMPTY_STATE
         case 'TOPBAR':
             return componentTokens.TOPBAR
         case 'TOPBARV2':

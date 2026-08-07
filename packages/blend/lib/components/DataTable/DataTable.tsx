@@ -58,15 +58,10 @@ import TableFooter from './TableFooter'
 import BulkActionBar from './TableBody/BulkActionBar'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
+import { Spinner } from '../Spinner'
+import { EmptyState } from '../EmptyState'
 import { ButtonSize, ButtonType } from '../Button/types'
-import {
-    Settings,
-    Check,
-    Loader2,
-    Inbox,
-    CircleAlert,
-    Download,
-} from 'lucide-react'
+import { Settings, Check, CircleAlert, Download } from 'lucide-react'
 import Menu from '../Menu/Menu'
 import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
@@ -96,33 +91,21 @@ const ScrollableContainer = styled(Block)`
 `
 
 const DefaultTableState = ({
-    state,
     onRetry,
     tableToken,
     isDarkTheme,
 }: {
-    state: 'empty' | 'error'
     onRetry?: () => void
     tableToken: TableTokenType
     isDarkTheme: boolean
 }) => {
-    const isError = state === 'error'
-    const StateIcon = isError ? CircleAlert : Inbox
     const stateTextColor = tableToken.dataTable.table.body.cell.color
-    const iconBackground = isError
-        ? isDarkTheme
-            ? FOUNDATION_THEME.colors.red[900]
-            : FOUNDATION_THEME.colors.red[50]
-        : isDarkTheme
-          ? tableToken.dataTable.table.header.filter.selectedBackground
-          : FOUNDATION_THEME.colors.gray[100]
-    const iconColor = isError
-        ? isDarkTheme
-            ? FOUNDATION_THEME.colors.red[400]
-            : FOUNDATION_THEME.colors.red[600]
-        : isDarkTheme
-          ? tableToken.dataTable.table.body.cell.color
-          : FOUNDATION_THEME.colors.gray[500]
+    const iconBackground = isDarkTheme
+        ? FOUNDATION_THEME.colors.red[900]
+        : FOUNDATION_THEME.colors.red[50]
+    const iconColor = isDarkTheme
+        ? FOUNDATION_THEME.colors.red[400]
+        : FOUNDATION_THEME.colors.red[600]
 
     return (
         <Block
@@ -144,7 +127,7 @@ const DefaultTableState = ({
                     color: iconColor,
                 }}
             >
-                <StateIcon
+                <CircleAlert
                     size={FOUNDATION_THEME.unit[20]}
                     aria-hidden="true"
                 />
@@ -156,9 +139,9 @@ const DefaultTableState = ({
                     fontWeight: FOUNDATION_THEME.font.weight[500],
                 }}
             >
-                {isError ? 'Unable to load data' : 'No data'}
+                Unable to load data
             </PrimitiveText>
-            {isError && onRetry && (
+            {onRetry && (
                 <Button
                     buttonType={ButtonType.SECONDARY}
                     size={ButtonSize.SMALL}
@@ -2300,28 +2283,15 @@ const DataTable = forwardRef(
                                 }}
                             >
                                 {bodyState === 'loading' ? (
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        gap={FOUNDATION_THEME.unit[8]}
-                                    >
-                                        <Loader2
-                                            size={FOUNDATION_THEME.unit[20]}
-                                            className="animate-spin"
-                                            style={{
-                                                animation:
-                                                    'spin 1s linear infinite',
-                                            }}
-                                        />
-                                        <span>Loading data...</span>
-                                    </Block>
+                                    <Spinner
+                                        size="md"
+                                        label="Loading data..."
+                                    />
                                 ) : bodyState === 'error' ? (
                                     renderErrorState ? (
                                         renderErrorState(onRetry)
                                     ) : (
                                         <DefaultTableState
-                                            state="error"
                                             onRetry={onRetry}
                                             tableToken={tableToken}
                                             isDarkTheme={isDarkTheme}
@@ -2330,11 +2300,7 @@ const DataTable = forwardRef(
                                 ) : renderEmptyState ? (
                                     renderEmptyState()
                                 ) : showEmptyState ? (
-                                    <DefaultTableState
-                                        state="empty"
-                                        tableToken={tableToken}
-                                        isDarkTheme={isDarkTheme}
-                                    />
+                                    <EmptyState title="No data" size="sm" />
                                 ) : (
                                     <span>No data available</span>
                                 )}
