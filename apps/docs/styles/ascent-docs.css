@@ -1,0 +1,188 @@
+.ascent-docs-shell {
+    min-height: 100dvh;
+    background: var(--blend-background);
+}
+.ascent-docs-navbar {
+    height: 3.75rem;
+    border-bottom: 1px solid var(--blend-border);
+}
+.ascent-docs-navbar-content,
+.ascent-docs-frame {
+    width: min(100%, 1440px);
+    margin-inline: auto;
+    border-inline: 1px solid var(--blend-border);
+}
+.ascent-docs-navbar-content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-inline: 1.5rem;
+    gap: 1.5rem;
+}
+.ascent-docs-brand {
+    color: var(--blend-primary);
+    font-size: 0.9375rem;
+    font-weight: 650;
+}
+.ascent-docs-nav {
+    display: flex;
+    gap: 1rem;
+}
+.ascent-docs-nav a {
+    color: var(--blend-muted);
+    font-size: 0.875rem;
+}
+.ascent-docs-nav a.is-active,
+.ascent-docs-nav a:hover {
+    color: var(--blend-primary);
+}
+.ascent-docs-frame {
+    display: flex;
+    align-items: stretch;
+    min-height: calc(100dvh - 3.75rem);
+}
+.ascent-docs-sidebar {
+    width: 14rem;
+    flex: 0 0 14rem;
+    border-inline-end: 1px solid var(--blend-border);
+    padding: 0.75rem 0.5rem;
+}
+.ascent-docs-sidebar-label {
+    color: var(--blend-muted);
+    font-size: 0.75rem;
+    margin: 0.75rem 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.ascent-docs-sidebar a {
+    display: block;
+    border-radius: 0.5rem;
+    color: color-mix(in srgb, var(--blend-foreground) 68%, transparent);
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+}
+.ascent-docs-sidebar a:hover,
+.ascent-docs-sidebar a.is-active {
+    background: oklch(0.9668 0.0058 264.53);
+    color: var(--blend-foreground);
+}
+.ascent-docs-main {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+}
+.ascent-docs-article {
+    flex: 1;
+    min-width: 0;
+}
+.ascent-docs-page-header {
+    border-bottom: 1px solid var(--blend-border);
+    padding-block: 2.75rem;
+}
+.ascent-docs-page-header h1,
+.ascent-docs-content {
+    width: min(calc(100% - 5rem), 860px);
+    margin-inline: auto;
+}
+.ascent-docs-page-header h1 {
+    color: var(--blend-primary);
+    font-family: var(--font-manrope), sans-serif;
+    font-size: clamp(2.25rem, 7vw, 5.375rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+}
+.ascent-docs-content {
+    padding-block: 2rem;
+}
+.ascent-docs-description,
+.ascent-docs-content p,
+.ascent-docs-content li {
+    color: var(--blend-foreground);
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+    line-height: 1.75rem;
+}
+.ascent-docs-description {
+    margin: 0 0 1rem;
+}
+.ascent-docs-content h1 {
+    display: none;
+}
+.ascent-docs-content h2 {
+    color: var(--blend-primary);
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin: 2.5rem 0 0.5rem;
+    scroll-margin-top: 5rem;
+}
+.ascent-docs-content h3 {
+    color: var(--blend-primary);
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 2rem 0 0.5rem;
+    scroll-margin-top: 5rem;
+}
+.ascent-docs-content ul,
+.ascent-docs-content ol {
+    margin: 0.75rem 0;
+    padding-inline-start: 1.5rem;
+}
+.ascent-docs-content ul {
+    list-style: disc;
+}
+.ascent-docs-content ol {
+    list-style: decimal;
+}
+.ascent-docs-content a {
+    color: #3b82f6;
+}
+.ascent-docs-content a:hover {
+    color: #1d4ed8;
+}
+.ascent-docs-toc {
+    width: 14rem;
+    flex: 0 0 14rem;
+    border-inline-start: 1px solid var(--blend-border);
+    padding: 1.5rem;
+}
+.ascent-docs-toc > p {
+    color: var(--blend-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.ascent-docs-toc a {
+    display: block;
+    color: var(--blend-muted);
+    font-size: 0.875rem;
+    line-height: 1.35;
+    padding-block: 0.35rem;
+}
+.ascent-docs-toc a:hover {
+    color: var(--blend-foreground);
+}
+@media (max-width: 1100px) {
+    .ascent-docs-toc {
+        display: none;
+    }
+}
+@media (max-width: 768px) {
+    .ascent-docs-navbar-content,
+    .ascent-docs-frame {
+        border-inline: 0;
+    }
+    .ascent-docs-sidebar {
+        display: none;
+    }
+    .ascent-docs-nav a:nth-child(n + 3) {
+        display: none;
+    }
+    .ascent-docs-page-header h1,
+    .ascent-docs-content {
+        width: calc(100% - 3rem);
+    }
+}
