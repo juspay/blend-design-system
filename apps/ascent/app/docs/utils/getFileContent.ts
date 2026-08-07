@@ -1,7 +1,4 @@
-import { useMDXComponents } from '@/mdx-components'
-import fs from 'fs'
-import { compileMDX } from 'next-mdx-remote/rsc'
-import path from 'path'
+import { getDoc } from '@/lib/docs-source'
 
 export interface PageMetadata {
     title?: string
@@ -16,32 +13,6 @@ export interface PageMetadata {
 }
 
 export async function getFileContent(slugArray: string[]) {
-    const basePath = path.join(process.cwd(), 'app', 'docs', 'content')
-
-    let filePath =
-        path.join(
-            basePath,
-            Array.isArray(slugArray) ? slugArray.join('/') : slugArray
-        ) + '.mdx'
-    if (!fs.existsSync(filePath)) {
-        filePath = path.join(basePath, ...slugArray, 'page.mdx')
-        if (!fs.existsSync(filePath)) {
-            return null
-        }
-    }
-
-    const fileContent = fs.readFileSync(filePath, 'utf8')
-    const { frontmatter } = await compileMDX({
-        source: fileContent,
-        options: {
-            parseFrontmatter: true,
-            mdxOptions: {
-                remarkPlugins: [],
-                rehypePlugins: [],
-            },
-        },
-        components: useMDXComponents(),
-    })
-
-    return frontmatter as PageMetadata
+    const page = getDoc(slugArray)
+    return page?.data as PageMetadata | undefined
 }
