@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 import type { CSSObject } from 'styled-components'
+import type { MenuSelectionMode, MenuSelectionStyle } from '../Menu/selection'
 
 export enum MenuV2Alignment {
     START = 'start',
@@ -42,8 +43,8 @@ export type MenuV2SearchSortFn = (
     items: MenuV2ItemType[],
     searchText: string
 ) => MenuV2ItemType[]
-export type MenuV2SelectionStyle = 'checkmark' | 'highlight'
-export type MenuV2SelectionMode = 'single' | 'multiple'
+export type MenuV2SelectionStyle = MenuSelectionStyle
+export type MenuV2SelectionMode = MenuSelectionMode
 
 export type MenuV2ItemType = {
     id?: string
