@@ -163,7 +163,7 @@ const DropdownInput = ({
         } else {
             setDropdownWidth(0)
         }
-    }, [slot, dropDownValue])
+    }, [slot, dropDownValue, dropDownPlaceholder, placeholder])
 
     return (
         <Block

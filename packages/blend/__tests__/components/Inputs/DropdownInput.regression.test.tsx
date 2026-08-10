@@ -169,7 +169,7 @@ describe('DropdownInput dropdown placeholder', () => {
 
         expect(
             screen.getByRole('button', { name: 'Select option' })
-        ).not.toHaveTextContent('Enter city')
+        ).toHaveTextContent(/^$/)
         expect(screen.getByRole('textbox')).toHaveAttribute(
             'placeholder',
             'Enter city'
