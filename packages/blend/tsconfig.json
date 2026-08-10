@@ -23,7 +23,10 @@
                 "../token-engine/src/server.ts"
             ],
             "@juspay/blend-design-system/node": ["./lib/node.ts"],
-            "@juspay/blend-design-system": ["./lib/main.ts"]
+            "@juspay/blend-design-system": ["./lib/main.ts"],
+            "@juspay/blend-design-system/deprecated/*": [
+                "./lib/deprecated/*/index.ts"
+            ]
         }
     },
     "include": ["src", "lib"],

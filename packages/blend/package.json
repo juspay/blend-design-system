@@ -30,6 +30,150 @@
             "import": "./dist/tokens-server.js",
             "types": "./dist/tokens-server.d.ts"
         },
+        "./deprecated/accordion": {
+            "import": "./dist/deprecated/accordion.js",
+            "types": "./dist/deprecated/accordion.d.ts"
+        },
+        "./deprecated/alert": {
+            "import": "./dist/deprecated/alert.js",
+            "types": "./dist/deprecated/alert.d.ts"
+        },
+        "./deprecated/avatar": {
+            "import": "./dist/deprecated/avatar.js",
+            "types": "./dist/deprecated/avatar.d.ts"
+        },
+        "./deprecated/breadcrumb": {
+            "import": "./dist/deprecated/breadcrumb.js",
+            "types": "./dist/deprecated/breadcrumb.d.ts"
+        },
+        "./deprecated/button": {
+            "import": "./dist/deprecated/button.js",
+            "types": "./dist/deprecated/button.d.ts"
+        },
+        "./deprecated/button-group": {
+            "import": "./dist/deprecated/button-group.js",
+            "types": "./dist/deprecated/button-group.d.ts"
+        },
+        "./deprecated/card": {
+            "import": "./dist/deprecated/card.js",
+            "types": "./dist/deprecated/card.d.ts"
+        },
+        "./deprecated/charts": {
+            "import": "./dist/deprecated/charts.js",
+            "types": "./dist/deprecated/charts.d.ts"
+        },
+        "./deprecated/chat-input": {
+            "import": "./dist/deprecated/chat-input.js",
+            "types": "./dist/deprecated/chat-input.d.ts"
+        },
+        "./deprecated/checkbox": {
+            "import": "./dist/deprecated/checkbox.js",
+            "types": "./dist/deprecated/checkbox.d.ts"
+        },
+        "./deprecated/code-editor": {
+            "import": "./dist/deprecated/code-editor.js",
+            "types": "./dist/deprecated/code-editor.d.ts"
+        },
+        "./deprecated/drawer": {
+            "import": "./dist/deprecated/drawer.js",
+            "types": "./dist/deprecated/drawer.d.ts"
+        },
+        "./deprecated/key-value-pair": {
+            "import": "./dist/deprecated/key-value-pair.js",
+            "types": "./dist/deprecated/key-value-pair.d.ts"
+        },
+        "./deprecated/menu": {
+            "import": "./dist/deprecated/menu.js",
+            "types": "./dist/deprecated/menu.d.ts"
+        },
+        "./deprecated/modal": {
+            "import": "./dist/deprecated/modal.js",
+            "types": "./dist/deprecated/modal.d.ts"
+        },
+        "./deprecated/multi-select": {
+            "import": "./dist/deprecated/multi-select.js",
+            "types": "./dist/deprecated/multi-select.d.ts"
+        },
+        "./deprecated/multi-value-input": {
+            "import": "./dist/deprecated/multi-value-input.js",
+            "types": "./dist/deprecated/multi-value-input.d.ts"
+        },
+        "./deprecated/number-input": {
+            "import": "./dist/deprecated/number-input.js",
+            "types": "./dist/deprecated/number-input.d.ts"
+        },
+        "./deprecated/otp-input": {
+            "import": "./dist/deprecated/otp-input.js",
+            "types": "./dist/deprecated/otp-input.d.ts"
+        },
+        "./deprecated/popover": {
+            "import": "./dist/deprecated/popover.js",
+            "types": "./dist/deprecated/popover.d.ts"
+        },
+        "./deprecated/progress-bar": {
+            "import": "./dist/deprecated/progress-bar.js",
+            "types": "./dist/deprecated/progress-bar.d.ts"
+        },
+        "./deprecated/radio": {
+            "import": "./dist/deprecated/radio.js",
+            "types": "./dist/deprecated/radio.d.ts"
+        },
+        "./deprecated/search-input": {
+            "import": "./dist/deprecated/search-input.js",
+            "types": "./dist/deprecated/search-input.d.ts"
+        },
+        "./deprecated/sidebar": {
+            "import": "./dist/deprecated/sidebar.js",
+            "types": "./dist/deprecated/sidebar.d.ts"
+        },
+        "./deprecated/single-select": {
+            "import": "./dist/deprecated/single-select.js",
+            "types": "./dist/deprecated/single-select.d.ts"
+        },
+        "./deprecated/snackbar": {
+            "import": "./dist/deprecated/snackbar.js",
+            "types": "./dist/deprecated/snackbar.d.ts"
+        },
+        "./deprecated/stat-card": {
+            "import": "./dist/deprecated/stat-card.js",
+            "types": "./dist/deprecated/stat-card.d.ts"
+        },
+        "./deprecated/stepper": {
+            "import": "./dist/deprecated/stepper.js",
+            "types": "./dist/deprecated/stepper.d.ts"
+        },
+        "./deprecated/switch": {
+            "import": "./dist/deprecated/switch.js",
+            "types": "./dist/deprecated/switch.d.ts"
+        },
+        "./deprecated/tabs": {
+            "import": "./dist/deprecated/tabs.js",
+            "types": "./dist/deprecated/tabs.d.ts"
+        },
+        "./deprecated/tag": {
+            "import": "./dist/deprecated/tag.js",
+            "types": "./dist/deprecated/tag.d.ts"
+        },
+        "./deprecated/text-area": {
+            "import": "./dist/deprecated/text-area.js",
+            "types": "./dist/deprecated/text-area.d.ts"
+        },
+        "./deprecated/text-input": {
+            "import": "./dist/deprecated/text-input.js",
+            "types": "./dist/deprecated/text-input.d.ts"
+        },
+        "./deprecated/tooltip": {
+            "import": "./dist/deprecated/tooltip.js",
+            "types": "./dist/deprecated/tooltip.d.ts"
+        },
+        "./deprecated/topbar": {
+            "import": "./dist/deprecated/topbar.js",
+            "types": "./dist/deprecated/topbar.d.ts"
+        },
+        "./deprecated/upload": {
+            "import": "./dist/deprecated/upload.js",
+            "types": "./dist/deprecated/upload.d.ts"
+        },
         "./style.css": "./dist/style.css",
         "./lib/*": "./lib/*"
     },
