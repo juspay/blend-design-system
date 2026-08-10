@@ -2,6 +2,7 @@ import React from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import { render, screen, waitFor, within } from '../../test-utils'
 import DropdownInput from '../../../lib/components/Inputs/DropdownInput/DropdownInput'
+import { DropdownPosition } from '../../../lib/components/Inputs/DropdownInput/types'
 import ThemeProvider from '../../../lib/context/ThemeProvider'
 
 const items = [
@@ -106,5 +107,72 @@ describe('DropdownInput menu behavior', () => {
 
         unmount()
         host.remove()
+    })
+})
+
+describe('DropdownInput dropdown placeholder', () => {
+    it.each([DropdownPosition.LEFT, DropdownPosition.RIGHT])(
+        'gives the %s dropdown its own placeholder without touching the input',
+        (dropdownPosition) => {
+            render(
+                <DropdownInput
+                    value=""
+                    onChange={() => {}}
+                    dropDownValue=""
+                    onDropDownChange={() => {}}
+                    dropDownItems={items}
+                    dropdownPosition={dropdownPosition}
+                    placeholder="Enter your mobile number"
+                    dropDownPlaceholder="Code"
+                />
+            )
+
+            expect(
+                screen.getByRole('button', { name: 'Select option' })
+            ).toHaveTextContent('Code')
+            expect(screen.getByRole('textbox')).toHaveAttribute(
+                'placeholder',
+                'Enter your mobile number'
+            )
+        }
+    )
+
+    it('falls back to the input placeholder when dropDownPlaceholder is omitted', () => {
+        render(
+            <DropdownInput
+                value=""
+                onChange={() => {}}
+                dropDownValue=""
+                onDropDownChange={() => {}}
+                dropDownItems={items}
+                placeholder="Enter city"
+            />
+        )
+
+        expect(
+            screen.getByRole('button', { name: 'Select option' })
+        ).toHaveTextContent('Enter city')
+    })
+
+    it('lets an empty dropDownPlaceholder clear the dropdown hint only', () => {
+        render(
+            <DropdownInput
+                value=""
+                onChange={() => {}}
+                dropDownValue=""
+                onDropDownChange={() => {}}
+                dropDownItems={items}
+                placeholder="Enter city"
+                dropDownPlaceholder=""
+            />
+        )
+
+        expect(
+            screen.getByRole('button', { name: 'Select option' })
+        ).not.toHaveTextContent('Enter city')
+        expect(screen.getByRole('textbox')).toHaveAttribute(
+            'placeholder',
+            'Enter city'
+        )
     })
 })
