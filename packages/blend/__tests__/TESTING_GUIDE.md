@@ -85,22 +85,16 @@ __tests__/
 
 ### Configuration
 
-```typescript
-// vitest.config.ts
-import { defineConfig } from 'vitest/config'
+Key settings in `packages/blend/vitest.config.ts` (see that file for the full config):
 
-export default defineConfig({
-    test: {
-        globals: true,
-        environment: 'jsdom',
-        setupFiles: './vitest.setup.ts',
-        coverage: {
-            reporter: ['text', 'json', 'html'],
-            exclude: ['node_modules/', 'test/'],
-        },
-    },
-})
-```
+- `environment: 'jsdom'`, `setupFiles: './vitest.setup.ts'`, `pool: 'threads'`
+- `testTimeout: 15000` / `hookTimeout: 10000` for both local and CI (avoids "passes alone, times out in suite")
+- Local only: `maxWorkers: 6` — uncapped `(cores - 1)` workers starve concurrent jsdom environments
+- Two vitest projects:
+    - **`unit`** — all tests except `*.performance.test.tsx`
+    - **`performance`** — only `*.performance.test.tsx`, runs after unit (`groupOrder: 1`), `singleThread: true`
+
+Heavy third-party editors (e.g. Monaco) should be stubbed in component tests. CodeEditorV2 uses `__tests__/mocks/monaco-editor-react.tsx` via `vi.mock('@monaco-editor/react', ...)`.
 
 ## Test Types
 
@@ -133,6 +127,8 @@ export default defineConfig({
 ### 3. Performance Tests (.performance.test.tsx)
 
 **Purpose**: Environment-aware performance benchmarks and optimization validation
+
+These files run in the dedicated `performance` vitest project (after all unit tests, one file at a time in a single worker) so wall-clock assertions are not skewed by parallel suite load.
 
 **Common Test Areas**:
 

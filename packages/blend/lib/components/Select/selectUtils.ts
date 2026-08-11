@@ -10,6 +10,10 @@ type BaseMenuGroupType<T extends BaseMenuItemType = BaseMenuItemType> = {
     showSeparator?: boolean
 }
 
+export const hasRenderableSelectItems = (
+    groups: ReadonlyArray<{ items: readonly unknown[] }>
+): boolean => groups.some((group) => group.items.length > 0)
+
 /**
  * Checks if the search text exactly matches any existing item's label or value
  * @param searchText - The text to search for

@@ -9,6 +9,7 @@ import { SelectMenuSize, SelectMenuVariant } from '../Select/types'
 import SingleSelect from '../SingleSelect/SingleSelect'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTheme } from '../../context/ThemeContext'
 
 type DataTablePaginationProps = {
     currentPage: number
@@ -36,9 +37,19 @@ export function DataTablePagination({
     onPageSizeChange,
 }: DataTablePaginationProps) {
     const tableToken = useResponsiveTokens('TABLE') as TableTokenType
+    const { theme } = useTheme()
+    const isDarkTheme = theme === 'dark'
     const { breakPointLabel } = useBreakpoints()
     const isMobile = isNarrowContainer || breakPointLabel === 'sm'
     const PAGINATION_ITEM_HEIGHT = 33
+    const paginationToken = tableToken.dataTable.table.footer.pagination
+    const filterToken = tableToken.dataTable.table.header.filter
+    const disabledColor = isDarkTheme
+        ? tableToken.dataTable.table.header.cell.color
+        : FOUNDATION_THEME.colors.gray[300]
+    const mobileBorder = isDarkTheme
+        ? tableToken.dataTable.table.footer.borderTop
+        : `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
 
     const totalPages = Math.ceil(totalRows / pageSize)
     const hasVisibleRows = hasData && visibleRows > 0
@@ -302,11 +313,7 @@ export function DataTablePagination({
                     width={FOUNDATION_THEME.unit[32]}
                     height={FOUNDATION_THEME.unit[32]}
                     backgroundColor="transparent"
-                    border={
-                        isMobile
-                            ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
-                            : 'none'
-                    }
+                    border={isMobile ? mobileBorder : 'none'}
                     borderRadius={
                         isMobile
                             ? FOUNDATION_THEME.border.radius[10]
@@ -314,8 +321,8 @@ export function DataTablePagination({
                     }
                     color={
                         currentPage === 1 || !hasData
-                            ? FOUNDATION_THEME.colors.gray[300]
-                            : FOUNDATION_THEME.colors.gray[600]
+                            ? disabledColor
+                            : paginationToken.pageSizeSelector.color
                     }
                     disabled={currentPage === 1 || isLoading || !hasData}
                     onClick={handlePreviousPage}
@@ -333,7 +340,7 @@ export function DataTablePagination({
                         backgroundColor:
                             currentPage === 1 || !hasData
                                 ? 'transparent'
-                                : FOUNDATION_THEME.colors.gray[50],
+                                : paginationToken.pageSizeSelector.hoverColor,
                     }}
                     style={{
                         cursor:
@@ -367,19 +374,18 @@ export function DataTablePagination({
                                     height={FOUNDATION_THEME.unit[32]}
                                     backgroundColor={
                                         currentPage === page
-                                            ? FOUNDATION_THEME.colors.gray[100]
+                                            ? filterToken.selectedBackground
                                             : 'transparent'
                                     }
                                     color={
                                         currentPage === page
-                                            ? FOUNDATION_THEME.colors.gray[700]
+                                            ? filterToken.selectedTextColor
                                             : isLoading ||
                                                 !hasData ||
                                                 page > totalPages
-                                              ? FOUNDATION_THEME.colors
-                                                    .gray[300]
-                                              : FOUNDATION_THEME.colors
-                                                    .gray[600]
+                                              ? disabledColor
+                                              : paginationToken.pageSizeSelector
+                                                    .color
                                     }
                                     borderRadius={
                                         FOUNDATION_THEME.border.radius[8]
@@ -422,11 +428,11 @@ export function DataTablePagination({
                                             !hasData ||
                                             page > totalPages
                                                 ? currentPage === page
-                                                    ? FOUNDATION_THEME.colors
-                                                          .gray[100]
+                                                    ? filterToken.selectedBackground
                                                     : 'transparent'
-                                                : FOUNDATION_THEME.colors
-                                                      .gray[50],
+                                                : paginationToken
+                                                      .pageSizeSelector
+                                                      .hoverColor,
                                     }}
                                     style={{
                                         fontSize:
@@ -509,8 +515,8 @@ export function DataTablePagination({
                                             height={FOUNDATION_THEME.unit[32]}
                                             backgroundColor="transparent"
                                             color={
-                                                FOUNDATION_THEME.colors
-                                                    .gray[600]
+                                                paginationToken.pageSizeSelector
+                                                    .color
                                             }
                                             borderRadius={
                                                 FOUNDATION_THEME.border
@@ -520,8 +526,9 @@ export function DataTablePagination({
                                             aria-label={`Jump to page (currently showing page ${currentPage} of ${totalPages})`}
                                             _hover={{
                                                 backgroundColor:
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[50],
+                                                    paginationToken
+                                                        .pageSizeSelector
+                                                        .hoverColor,
                                             }}
                                             style={{
                                                 fontSize:
@@ -550,11 +557,7 @@ export function DataTablePagination({
                     width={FOUNDATION_THEME.unit[32]}
                     height={FOUNDATION_THEME.unit[32]}
                     backgroundColor="transparent"
-                    border={
-                        isMobile
-                            ? `1px solid ${FOUNDATION_THEME.colors.gray[200]}`
-                            : 'none'
-                    }
+                    border={isMobile ? mobileBorder : 'none'}
                     borderRadius={
                         isMobile
                             ? FOUNDATION_THEME.border.radius[10]
@@ -562,8 +565,8 @@ export function DataTablePagination({
                     }
                     color={
                         currentPage === totalPages || !hasData
-                            ? FOUNDATION_THEME.colors.gray[300]
-                            : FOUNDATION_THEME.colors.gray[600]
+                            ? disabledColor
+                            : paginationToken.pageSizeSelector.color
                     }
                     disabled={
                         currentPage === totalPages || isLoading || !hasData
@@ -585,7 +588,7 @@ export function DataTablePagination({
                         backgroundColor:
                             currentPage === totalPages || !hasData
                                 ? 'transparent'
-                                : FOUNDATION_THEME.colors.gray[50],
+                                : paginationToken.pageSizeSelector.hoverColor,
                     }}
                     style={{
                         cursor:

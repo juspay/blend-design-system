@@ -1,5 +1,4 @@
 import React, { forwardRef, useState, useEffect, useCallback } from 'react'
-import { Calendar, ChevronDown, ChevronUp } from 'lucide-react'
 import {
     DateRangePickerProps,
     DateRangePreset,
@@ -33,16 +32,18 @@ import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
 import MobileDrawerPresets from './MobileDrawerPresets'
 import { CalendarTokenType } from './dateRangePicker.tokens'
-import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
-import { Popover } from '../Popover'
-import { TextInput, TextInputSize } from '../Inputs/TextInput'
+import { PopoverV2, PopoverV2Align, PopoverV2Side } from '../PopoverV2'
+import { InputSizeV2, TextInputV2 } from '../InputsV2/TextInputV2'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
-import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
-import { ButtonType, ButtonSize, Button } from '../Button'
-import { Tooltip } from '../Tooltip'
+import { ButtonV2, ButtonV2Size, ButtonV2Type } from '../ButtonV2'
+import { TooltipV2 } from '../TooltipV2'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTheme } from '../../context'
+import { renderPickerTrigger } from '../shared/datetime/PickerTrigger'
+import MonthYearGrid from '../shared/datetime/MonthYearGrid'
+import { nextMonthRange } from '../shared/datetime/granularity'
 
 type DateInputsSectionProps = {
     startDate?: string
@@ -132,19 +133,17 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         width="100%"
                     >
                         <Block data-element="start-date-selector" flexGrow={1}>
-                            <TextInput
+                            <TextInputV2
                                 id={startDateId}
                                 label=""
                                 placeholder="DD/MM/YYYY"
                                 value={startDate || ''}
                                 onChange={onStartDateChange}
-                                error={!startDateValidation.isValid}
-                                errorMessage={
-                                    !startDateValidation.isValid
-                                        ? startDateValidation.message
-                                        : undefined
-                                }
-                                size={TextInputSize.SMALL}
+                                error={{
+                                    show: !startDateValidation.isValid,
+                                    message: startDateValidation.message,
+                                }}
+                                size={InputSizeV2.SM}
                                 autoFocus={false}
                                 aria-invalid={!startDateValidation.isValid}
                             />
@@ -214,19 +213,17 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                     data-element="end-date-selector"
                                     flexGrow={1}
                                 >
-                                    <TextInput
+                                    <TextInputV2
                                         id={endDateId}
                                         label=""
                                         placeholder="DD/MM/YYYY"
                                         value={endDate || ''}
                                         onChange={onEndDateChange}
-                                        error={!endDateValidation.isValid}
-                                        errorMessage={
-                                            !endDateValidation.isValid
-                                                ? endDateValidation.message
-                                                : undefined
-                                        }
-                                        size={TextInputSize.SMALL}
+                                        error={{
+                                            show: !endDateValidation.isValid,
+                                            message: endDateValidation.message,
+                                        }}
+                                        size={InputSizeV2.SM}
                                         autoFocus={false}
                                         aria-invalid={
                                             !endDateValidation.isValid
@@ -274,6 +271,7 @@ type CalendarSectionProps = {
     minDate?: Date
     maxDate?: Date
     maxRangeDays?: number
+    granularity?: 'day' | 'month'
 }
 
 const CalendarSection: React.FC<
@@ -297,30 +295,62 @@ const CalendarSection: React.FC<
     minDate,
     maxDate,
     maxRangeDays,
-}) => (
-    <Block flexGrow={1} minHeight={0} overflow="auto">
-        <CalendarGrid
-            selectedRange={selectedRange}
-            onDateSelect={onDateSelect}
-            today={today}
-            allowSingleDateSelection={allowSingleDateSelection}
-            disableFutureDates={disableFutureDates}
-            disablePastDates={disablePastDates}
-            hideFutureDates={hideFutureDates}
-            hidePastDates={hidePastDates}
-            customDisableDates={customDisableDates}
-            customRangeConfig={customRangeConfig}
-            showDateTimePicker={showDateTimePicker}
-            resetScrollPosition={resetScrollPosition}
-            timezone={timezone}
-            isSingleDatePicker={isSingleDatePicker}
-            maxYearOffset={maxYearOffset}
-            minDate={minDate}
-            maxDate={maxDate}
-            maxRangeDays={maxRangeDays}
-        />
-    </Block>
-)
+    granularity = 'day',
+}) =>
+    granularity === 'month' ? (
+        <Block flexGrow={1} minHeight={0} overflow="auto">
+            <MonthYearGrid
+                granularity="month"
+                selectedRange={selectedRange}
+                // The grid only knows which month was clicked; turning that
+                // into a start-or-end decision is range bookkeeping, and
+                // `nextMonthRange` applies the same rules the day calendar
+                // uses (later click closes the range, earlier click restarts).
+                onSelect={(periodStart) =>
+                    onDateSelect(
+                        isSingleDatePicker
+                            ? { startDate: periodStart }
+                            : nextMonthRange(selectedRange, periodStart)
+                    )
+                }
+                today={today}
+                isRange={!isSingleDatePicker}
+                timezone={timezone}
+                disableFutureDates={disableFutureDates}
+                disablePastDates={disablePastDates}
+                hideFutureDates={hideFutureDates}
+                hidePastDates={hidePastDates}
+                customDisableDates={customDisableDates}
+                resetScrollPosition={resetScrollPosition}
+                maxYearOffset={maxYearOffset}
+                minDate={minDate}
+                maxDate={maxDate}
+            />
+        </Block>
+    ) : (
+        <Block flexGrow={1} minHeight={0} overflow="auto">
+            <CalendarGrid
+                selectedRange={selectedRange}
+                onDateSelect={onDateSelect}
+                today={today}
+                allowSingleDateSelection={allowSingleDateSelection}
+                disableFutureDates={disableFutureDates}
+                disablePastDates={disablePastDates}
+                hideFutureDates={hideFutureDates}
+                hidePastDates={hidePastDates}
+                customDisableDates={customDisableDates}
+                customRangeConfig={customRangeConfig}
+                showDateTimePicker={showDateTimePicker}
+                resetScrollPosition={resetScrollPosition}
+                timezone={timezone}
+                isSingleDatePicker={isSingleDatePicker}
+                maxYearOffset={maxYearOffset}
+                minDate={minDate}
+                maxDate={maxDate}
+                maxRangeDays={maxRangeDays}
+            />
+        </Block>
+    )
 
 type FooterControlsProps = {
     onCancel: () => void
@@ -346,26 +376,26 @@ const FooterControls: React.FC<FooterControlsProps> = ({
         borderTop={calendarToken?.calendar?.footer?.borderTop}
     >
         <Block display="flex" gap={calendarToken?.calendar?.footer?.gap}>
-            <Button
-                buttonType={ButtonType.SECONDARY}
-                size={ButtonSize.SMALL}
+            <ButtonV2
+                buttonType={ButtonV2Type.SECONDARY}
+                size={ButtonV2Size.SMALL}
                 onClick={onCancel}
                 text="Cancel"
             />
             {isApplyDisabled ? (
-                <Tooltip content={applyDisabledMessage}>
-                    <Button
-                        buttonType={ButtonType.PRIMARY}
-                        size={ButtonSize.SMALL}
+                <TooltipV2 content={applyDisabledMessage || ''}>
+                    <ButtonV2
+                        buttonType={ButtonV2Type.PRIMARY}
+                        size={ButtonV2Size.SMALL}
                         onClick={onApply}
                         text="Apply"
                         disabled={true}
                     />
-                </Tooltip>
+                </TooltipV2>
             ) : (
-                <Button
-                    buttonType={ButtonType.PRIMARY}
-                    size={ButtonSize.SMALL}
+                <ButtonV2
+                    buttonType={ButtonV2Type.PRIMARY}
+                    size={ButtonV2Size.SMALL}
                     onClick={onApply}
                     text="Apply"
                     disabled={false}
@@ -387,6 +417,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             customPresets,
             isDisabled = false,
             dateFormat = 'dd/MM/yyyy',
+            granularity = 'day',
             allowSingleDateSelection = false,
             isSingleDatePicker = false,
             disableFutureDates = false,
@@ -417,9 +448,21 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
         const [drawerOpen, setDrawerOpen] = useState(false)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
+        const { foundationTokens } = useTheme()
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
-        const showPresets = shouldShowPresets && !isSingleDatePicker
+
+        // Month mode turns off the three surfaces that only make sense for
+        // days: the presets are all day ranges, the DD/MM/YYYY text inputs
+        // would let a keystroke produce a range that starts mid-month, and the
+        // mobile drawer's scroll wheel has no month-range mode at all — so
+        // mobile falls through to the same popover desktop uses. See the
+        // `granularity` docs on `DateRangePickerProps`.
+        const isMonthGranularity = granularity === 'month'
+        const showPresets =
+            shouldShowPresets && !isSingleDatePicker && !isMonthGranularity
+        const showDateInputs = showDateInput && !isMonthGranularity
+        const useDrawer = useDrawerOnMobile && !isMonthGranularity
 
         const [selectedRange, setSelectedRange] = useState<
             DateRange | undefined
@@ -897,49 +940,60 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             // Use the committed value (value prop) for trigger display, not the selectedRange
             const displayRange = value
 
-            if (triggerConfig?.renderTrigger) {
-                const formattedValue = formatConfig
-                    ? formatTriggerDisplay(
-                          displayRange,
-                          formatConfig,
-                          isSingleDatePicker,
-                          triggerConfig.placeholder,
-                          timezone
-                      )
+            // The caller-supplied-element branch returns before any formatting
+            // ran in the original inline implementation. Keep it that way: a
+            // consumer's `formatConfig.customFormat` must not be invoked (and
+            // must not be able to throw) when it owns the trigger markup.
+            const usesCustomElement =
+                !triggerConfig?.renderTrigger &&
+                Boolean(triggerConfig?.element || triggerElement)
+
+            // A month range is two month names, not two timestamps:
+            // `formatDateDisplay` would render "Sep 1, 2025, 12:00 AM - Sep 30,
+            // 2025, 12:00 AM" for what the user picked as "September".
+            const formatMonthRangeDisplay = (
+                range: DateRange | undefined
+            ): string => {
+                if (!range?.startDate) return 'Select month range'
+
+                const options: Intl.DateTimeFormatOptions = {
+                    month: 'short',
+                    year: 'numeric',
+                    ...(timezone && { timeZone: timezone }),
+                }
+                const startStr = range.startDate.toLocaleDateString(
+                    'en-US',
+                    options
+                )
+                if (!range.endDate) return startStr
+
+                const endStr = range.endDate.toLocaleDateString(
+                    'en-US',
+                    options
+                )
+                return startStr === endStr
+                    ? startStr
+                    : `${startStr} - ${endStr}`
+            }
+
+            const displayText = usesCustomElement
+                ? ''
+                : formatConfig
+                  ? formatTriggerDisplay(
+                        displayRange,
+                        formatConfig,
+                        isSingleDatePicker,
+                        triggerConfig?.placeholder,
+                        timezone
+                    )
+                  : isMonthGranularity
+                    ? formatMonthRangeDisplay(displayRange)
                     : formatDateDisplay(
                           displayRange,
                           allowSingleDateSelection,
                           timezone,
                           isSingleDatePicker
                       )
-
-                return (
-                    <Block width="100%" display="flex">
-                        {triggerConfig.renderTrigger({
-                            selectedRange: displayRange,
-                            isOpen,
-                            isDisabled,
-                            formattedValue,
-                            onClick: () => setIsOpen(!isOpen),
-                        })}
-                    </Block>
-                )
-            }
-
-            if (triggerConfig?.element || triggerElement) {
-                return (
-                    <Block
-                        style={{
-                            opacity: isDisabled ? 0.5 : 1,
-                            cursor: isDisabled ? 'not-allowed' : 'pointer',
-                            width: '100%',
-                            ...triggerConfig?.style,
-                        }}
-                    >
-                        {triggerConfig?.element || triggerElement}
-                    </Block>
-                )
-            }
 
             const formatMobileDateRange = (
                 range: DateRange | undefined
@@ -981,152 +1035,30 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 return `${startStr} - ${endStr}`
             }
 
-            if (isMobile && useDrawerOnMobile) {
-                return (
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        size={ButtonSize.MEDIUM}
-                        text={formatMobileDateRange(displayRange)}
-                        disabled={isDisabled}
-                        onClick={() => setDrawerOpen(true)}
-                    />
-                )
-            }
-
-            const displayText = formatConfig
-                ? formatTriggerDisplay(
-                      displayRange,
-                      formatConfig,
-                      isSingleDatePicker,
-                      triggerConfig?.placeholder,
-                      timezone
-                  )
-                : formatDateDisplay(
-                      displayRange,
-                      allowSingleDateSelection,
-                      timezone,
-                      isSingleDatePicker
-                  )
-
-            const iconElement =
-                triggerConfig?.showIcon === false
-                    ? null
-                    : triggerConfig?.icon || (
-                          <Calendar
-                              size={calendarToken?.trigger?.dateInput?.iconSize}
-                          />
-                      )
-
-            return (
-                <PrimitiveButton
-                    display="flex"
-                    width="100%"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    backgroundColor={
-                        calendarToken?.trigger?.dateInput?.backgroundColor
-                    }
-                    color={calendarToken?.trigger?.dateInput?.text?.color}
-                    cursor={isDisabled ? 'not-allowed' : 'pointer'}
-                    paddingX={
-                        calendarToken?.trigger?.dateInput?.padding?.[
-                            size as keyof CalendarTokenType['trigger']['dateInput']['padding']
-                        ]?.x
-                    }
-                    paddingY={
-                        calendarToken?.trigger?.dateInput?.padding?.[
-                            size as keyof CalendarTokenType['trigger']['dateInput']['padding']
-                        ]?.y
-                    }
-                    borderRadius={
-                        showPresets
-                            ? calendarToken?.trigger?.dateInput?.borderRadius
-                                  ?.withQuickSelector
-                            : calendarToken?.trigger?.dateInput?.borderRadius
-                                  ?.withoutQuickSelector
-                    }
-                    border={
-                        isDisabled
-                            ? calendarToken?.trigger?.dateInput?.border
-                                  ?.disabled
-                            : calendarToken?.trigger?.dateInput?.border?.default
-                    }
-                    boxShadow={FOUNDATION_THEME.shadows.xs}
-                    aria-expanded={isOpen}
-                    aria-disabled={isDisabled}
-                    aria-label={`Date range picker, ${displayText || 'Select date range'}`}
-                    aria-haspopup="dialog"
-                    disabled={isDisabled}
-                    data-component-field-wrapper=""
-                    data-date-picker="dateRangePicker-Filter"
-                    data-id={displayText.replace(/\s/g, '').replace(/-/g, '➟')}
-                    data-status={isDisabled ? 'disabled' : 'enabled'}
-                    type="button"
-                    data-element="datepicker-selector"
-                >
-                    <Block
-                        flexGrow={1}
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        style={{
-                            color: calendarToken?.trigger?.dateInput?.text
-                                ?.color,
-                            fontWeight:
-                                calendarToken?.trigger?.dateInput?.text
-                                    ?.fontWeight,
-                            fontSize:
-                                calendarToken?.trigger?.dateInput?.text
-                                    ?.fontSize?.[
-                                    size as keyof CalendarTokenType['trigger']['dateInput']['text']['fontSize']
-                                ],
-                        }}
-                    >
-                        <Block
-                            display="flex"
-                            alignItems="center"
-                            gap={calendarToken?.trigger?.dateInput?.gap}
-                        >
-                            {iconElement && (
-                                <span aria-hidden="true">{iconElement}</span>
-                            )}
-                            <span
-                                data-element="placeholder"
-                                data-id={displayText}
-                                style={{ whiteSpace: 'nowrap' }}
-                            >
-                                {displayText}
-                            </span>
-                        </Block>
-                        {isOpen ? (
-                            <ChevronUp
-                                size={
-                                    calendarToken?.trigger?.dateInput?.iconSize
-                                }
-                                aria-hidden="true"
-                                style={{
-                                    marginLeft:
-                                        calendarToken?.trigger?.dateInput?.gap,
-                                }}
-                            />
-                        ) : (
-                            <ChevronDown
-                                size={
-                                    calendarToken?.trigger?.dateInput?.iconSize
-                                }
-                                aria-hidden="true"
-                                style={{
-                                    marginLeft:
-                                        calendarToken?.trigger?.dateInput?.gap,
-                                }}
-                            />
-                        )}
-                    </Block>
-                </PrimitiveButton>
-            )
+            return renderPickerTrigger({
+                displayText,
+                mobileText:
+                    isMobile && useDrawer
+                        ? formatMobileDateRange(displayRange)
+                        : undefined,
+                displayRange,
+                isOpen,
+                isDisabled,
+                size,
+                calendarToken,
+                foundationTokens,
+                hasQuickSelector: showPresets,
+                triggerConfig,
+                triggerElement,
+                isMobileDrawer: isMobile && useDrawer,
+                onToggle: () => setIsOpen(!isOpen),
+                onMobileOpen: () => setDrawerOpen(true),
+                ariaLabel: `Date range picker, ${displayText || 'Select date range'}`,
+                dataDatePicker: 'dateRangePicker-Filter',
+            })
         }
 
-        if (isMobile && useDrawerOnMobile) {
+        if (isMobile && useDrawer) {
             const getMobilePresets = () => {
                 const presetsWithCustom = [...availablePresets]
                 if (!presetsWithCustom.includes(DateRangePreset.CUSTOM)) {
@@ -1228,17 +1160,24 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     />
                 )}
 
-                <Popover
+                <PopoverV2
                     key={popoverKey}
                     open={isOpen}
                     onOpenChange={(open) => {
                         setIsOpen(open)
                     }}
                     trigger={renderTrigger()}
-                    side={popoverConfig?.side || 'bottom'}
-                    align={popoverConfig?.align || 'start'}
+                    side={
+                        (popoverConfig?.side as PopoverV2Side) ||
+                        PopoverV2Side.BOTTOM
+                    }
+                    align={
+                        (popoverConfig?.align as PopoverV2Align) ||
+                        PopoverV2Align.START
+                    }
                     sideOffset={popoverConfig?.sideOffset ?? 4}
                     shadow="sm"
+                    useDrawerOnMobile={useDrawer}
                 >
                     <Block
                         style={{
@@ -1249,7 +1188,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         flexDirection="column"
                         overflow="hidden"
                     >
-                        {showDateInput && (
+                        {showDateInputs && (
                             <DateInputsSection
                                 startDate={startDate}
                                 endDate={endDate}
@@ -1298,6 +1237,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             minDate={minDate}
                             maxDate={maxDate}
                             maxRangeDays={maxRangeDays}
+                            granularity={granularity}
                         />
 
                         <FooterControls
@@ -1308,7 +1248,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             calendarToken={calendarToken}
                         />
                     </Block>
-                </Popover>
+                </PopoverV2>
             </Block>
         )
     }

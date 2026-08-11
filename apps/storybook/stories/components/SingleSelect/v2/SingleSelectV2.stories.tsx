@@ -4,12 +4,17 @@ import {
     SingleSelectV2,
     SingleSelectV2Size,
     SingleSelectV2Variant,
+    type SingleSelectV2GroupType,
 } from '@juspay/blend-design-system'
-import type { SingleSelectV2GroupType } from '../../../../../../packages/blend/lib/components/SingleSelectV2/singleSelectV2.types'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
+import {
+    createControlledAsyncSearchPlay,
+    mockAsyncSearchItems,
+    useMockAsyncSearch,
+} from '../../selectAsyncSearchStory'
 
 const defaultItems: SingleSelectV2GroupType[] = [
     {
@@ -200,6 +205,63 @@ export const WithMenuFooterEmptyList: Story = {
             description: {
                 story: 'The `menuFooter` stays reachable even when there are zero items, so a "Create new" action is always accessible.',
             },
+        },
+    },
+}
+
+const ControlledAsyncSearchExample = () => {
+    const [selected, setSelected] = useState('')
+    const search = useMockAsyncSearch()
+
+    return (
+        <SingleSelectV2
+            label="Find a person"
+            placeholder="Select a person"
+            items={search.items}
+            selected={selected}
+            onSelect={setSelected}
+            search={search}
+        />
+    )
+}
+
+export const ControlledAsyncSearch: Story = {
+    render: () => <ControlledAsyncSearchExample />,
+    play: createControlledAsyncSearchPlay(
+        'button',
+        /select a person/i,
+        /alan turing/i
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Controlled search debounces a mock API request. The consumer owns the query and supplies already-filtered items.',
+            },
+        },
+    },
+}
+
+export const ControlledSearchLoading: Story = {
+    args: {
+        label: 'Find a person',
+        placeholder: 'Select a person',
+        items: mockAsyncSearchItems,
+        selected: '',
+        onSelect: () => {},
+        search: { searchText: 'ada', isSearchLoading: true },
+    },
+}
+
+export const ControlledSearchEmpty: Story = {
+    args: {
+        label: 'Find a person',
+        placeholder: 'Select a person',
+        items: [],
+        selected: '',
+        onSelect: () => {},
+        search: {
+            searchText: '',
+            emptyStateText: 'Start typing to search',
         },
     },
 }

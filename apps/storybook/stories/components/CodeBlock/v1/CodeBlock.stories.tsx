@@ -4,11 +4,13 @@ import {
     CodeBlock,
     CodeBlockVariant,
     DiffLineType,
+    ThemeProvider,
 } from '@juspay/blend-design-system'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
+import { Theme } from '../../../../../../packages/blend/lib/context/theme.enum'
 
 const meta: Meta<typeof CodeBlock> = {
     title: 'Components/CodeBlock',
@@ -727,5 +729,47 @@ export const AdvancedDiff: Story = {
                 story: 'Demonstrates advanced diff features including collapsed unchanged lines (GitHub-style), configurable context lines, and expandable chunks.',
             },
         },
+    },
+}
+
+/** Container, gutter, and syntax colors under dark theme tokens. */
+export const Dark: Story = {
+    name: 'Dark theme',
+    decorators: [
+        (Story) => (
+            <ThemeProvider theme={Theme.DARK}>
+                <div
+                    style={{
+                        background: '#0E121B',
+                        padding: 24,
+                        borderRadius: 8,
+                    }}
+                >
+                    <Story />
+                </div>
+            </ThemeProvider>
+        ),
+    ],
+    render: () => (
+        <CodeBlock
+            code={`// Dark syntax palette
+function greet(name: string) {
+  const message = \`Hello, \${name}!\`;
+  return message.length > 0 ? message : 42;
+}`}
+            language="typescript"
+            showLineNumbers
+            showHeader
+            header="greet.ts"
+            showCopyButton
+        />
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Dark theme CodeBlock: container/gutter chrome and syntax map (keyword/string/comment/etc.).',
+            },
+        },
+        chromatic: { ...CHROMATIC_CONFIG, delay: 400 },
     },
 }

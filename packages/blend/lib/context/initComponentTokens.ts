@@ -25,6 +25,7 @@ import { getMultiSelectTokens } from '../components/MultiSelect/multiSelect.toke
 import { getSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { getTableToken } from '../components/DataTable/dataTable.tokens'
 import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
+import { getTimePickerTokens } from '../components/TimePicker/timePicker.tokens'
 import { getAccordionToken } from '../components/Accordion/accordion.tokens'
 import { getStatCardToken } from '../components/StatCard/statcard.tokens'
 import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
@@ -35,6 +36,8 @@ import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.t
 import { getCardTokens } from '../components/Card/card.tokens'
 import { getCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
+import { getSpinnerTokens } from '../components/Spinner/spinner.tokens'
+import { getEmptyStateTokens } from '../components/EmptyState/emptyState.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 import { getTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
@@ -79,11 +82,14 @@ import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/Sea
 import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 import { getBadgeTokens } from '../components/Badge/badge.tokens'
 import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
+import { getButtonGroupTokens } from '../components/ButtonGroup/buttonGroup.tokens'
 
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 import { getUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
-const initTokens = (
+import { getSliderTokens } from '../components/Slider/slider.tokens'
+import { getSelectTokens } from '../components/Select/select.tokens'
+const computeTokens = (
     componentTokens: ComponentTokenType,
     foundationTokens: ThemeType,
     theme: Theme | string = Theme.LIGHT
@@ -107,13 +113,14 @@ const initTokens = (
             componentTokens.OTP_INPUT ?? getOTPInputTokens(foundationTokens),
         TOOLTIP: componentTokens.TOOLTIP ?? getTooltipTokens(foundationTokens),
         UNIT_INPUT:
-            componentTokens.UNIT_INPUT ?? getUnitInputTokens(foundationTokens),
+            componentTokens.UNIT_INPUT ??
+            getUnitInputTokens(foundationTokens, theme),
         MULTI_VALUE_INPUT:
             componentTokens.MULTI_VALUE_INPUT ??
             getMultiValueInputTokens(foundationTokens),
         DROPDOWN_INPUT:
             componentTokens.DROPDOWN_INPUT ??
-            getDropdownInputTokens(foundationTokens),
+            getDropdownInputTokens(foundationTokens, theme),
         CHECKBOX:
             componentTokens.CHECKBOX ?? getCheckboxTokens(foundationTokens),
         TABS: componentTokens.TABS ?? getTabsTokens(foundationTokens),
@@ -122,7 +129,8 @@ const initTokens = (
             componentTokens.KEYVALUEPAIR ??
             getKeyValuePairTokens(foundationTokens),
         MODAL:
-            componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
+            componentTokens.MODAL ??
+            getModalComponentTokens(foundationTokens, theme),
         MODALV2:
             componentTokens.MODALV2 ??
             getModalV2Tokens(foundationTokens, theme),
@@ -138,9 +146,13 @@ const initTokens = (
         SINGLE_SELECT:
             componentTokens.SINGLE_SELECT ??
             getSingleSelectTokens(foundationTokens),
-        TABLE: componentTokens.TABLE ?? getTableToken(foundationTokens),
+        TABLE: componentTokens.TABLE ?? getTableToken(foundationTokens, theme),
         CALENDAR:
-            componentTokens.CALENDAR ?? getCalendarToken(foundationTokens),
+            componentTokens.CALENDAR ??
+            getCalendarToken(foundationTokens, theme),
+        TIME_PICKER:
+            componentTokens.TIME_PICKER ??
+            getTimePickerTokens(foundationTokens, theme),
         ACCORDION:
             componentTokens.ACCORDION ?? getAccordionToken(foundationTokens),
         STAT_CARD:
@@ -155,11 +167,18 @@ const initTokens = (
         SNACKBAR:
             componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
         STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
-        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
+        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens, theme),
         CARDV2:
             componentTokens.CARDV2 ?? getCardV2Tokens(foundationTokens, theme),
         SKELETON:
-            componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
+            componentTokens.SKELETON ??
+            getSkeletonTokens(foundationTokens, theme),
+        SPINNER:
+            componentTokens.SPINNER ??
+            getSpinnerTokens(foundationTokens, theme),
+        EMPTY_STATE:
+            componentTokens.EMPTY_STATE ??
+            getEmptyStateTokens(foundationTokens, theme),
         TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
         TOPBARV2:
             componentTokens.TOPBARV2 ??
@@ -167,19 +186,25 @@ const initTokens = (
         AVATAR: componentTokens.AVATAR ?? getAvatarTokens(foundationTokens),
         AVATAR_GROUP:
             componentTokens.AVATAR_GROUP ??
-            getAvatarGroupTokens(foundationTokens),
+            getAvatarGroupTokens(foundationTokens, theme),
         SIDEBAR: componentTokens.SIDEBAR ?? getSidebarTokens(foundationTokens),
         DIRECTORY:
-            componentTokens.DIRECTORY ?? getDirectoryTokens(foundationTokens),
+            componentTokens.DIRECTORY ??
+            getDirectoryTokens(foundationTokens, theme),
         MOBILE_NAVIGATION:
             componentTokens.MOBILE_NAVIGATION ??
-            getMobileNavigationTokens(foundationTokens),
+            getMobileNavigationTokens(foundationTokens, theme),
         MOBILE_NAVIGATION_V2:
             componentTokens.MOBILE_NAVIGATION_V2 ??
             getMobileNavigationV2Tokens(foundationTokens, theme),
-        UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
+        UPLOAD:
+            componentTokens.UPLOAD ?? getUploadTokens(foundationTokens, theme),
         CODE_BLOCK:
-            componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
+            componentTokens.CODE_BLOCK ??
+            getCodeBlockTokens(foundationTokens, theme),
+        BUTTON_GROUP:
+            componentTokens.BUTTON_GROUP ??
+            getButtonGroupTokens(foundationTokens, theme),
         CHAT_INPUT:
             componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
         CHAT_INPUTV2:
@@ -276,7 +301,54 @@ const initTokens = (
         UPLOADV2:
             componentTokens.UPLOADV2 ??
             getUploadV2Tokens(foundationTokens, theme),
+        SLIDER:
+            componentTokens.SLIDER ?? getSliderTokens(foundationTokens, theme),
+        SELECT:
+            componentTokens.SELECT ?? getSelectTokens(foundationTokens, theme),
     }
+}
+
+/**
+ * Resolving the full token set runs ~90 token factories, so identical inputs
+ * are memoised. Object inputs are matched by reference (they are module-scope
+ * singletons in practice), the theme by value. Resolved tokens are never
+ * mutated by consumers, so sharing one object across mounts is safe.
+ */
+const NO_COMPONENT_TOKENS: ComponentTokenType = {}
+
+const tokenCache = new WeakMap<
+    ThemeType,
+    WeakMap<
+        ComponentTokenType,
+        Map<Theme | string, Required<ComponentTokenType>>
+    >
+>()
+
+const initTokens = (
+    componentTokens: ComponentTokenType,
+    foundationTokens: ThemeType,
+    theme: Theme | string = Theme.LIGHT
+): Required<ComponentTokenType> => {
+    const componentTokensKey = componentTokens ?? NO_COMPONENT_TOKENS
+
+    let byComponentTokens = tokenCache.get(foundationTokens)
+    if (!byComponentTokens) {
+        byComponentTokens = new WeakMap()
+        tokenCache.set(foundationTokens, byComponentTokens)
+    }
+
+    let byTheme = byComponentTokens.get(componentTokensKey)
+    if (!byTheme) {
+        byTheme = new Map()
+        byComponentTokens.set(componentTokensKey, byTheme)
+    }
+
+    const cached = byTheme.get(theme)
+    if (cached) return cached
+
+    const resolved = computeTokens(componentTokensKey, foundationTokens, theme)
+    byTheme.set(theme, resolved)
+    return resolved
 }
 
 export default initTokens

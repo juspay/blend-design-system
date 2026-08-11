@@ -26,7 +26,7 @@ import type { ResponsiveMenuV2TokensType } from '../components/MenuV2/menuV2.tok
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
-import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
+import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens.types'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens'
 import {
@@ -94,6 +94,14 @@ import {
     getSkeletonTokens,
     ResponsiveSkeletonTokens,
 } from '../components/Skeleton/skeleton.tokens'
+import {
+    getSpinnerTokens,
+    type ResponsiveSpinnerTokens,
+} from '../components/Spinner/spinner.tokens'
+import {
+    getEmptyStateTokens,
+    type ResponsiveEmptyStateTokens,
+} from '../components/EmptyState/emptyState.tokens'
 import { BREAKPOINTS } from '../breakpoints/breakPoints'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
 import { getAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
@@ -113,6 +121,10 @@ import {
     ResponsiveStepperTokens,
 } from '../components/Stepper/stepper.tokens'
 import { getCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import {
+    getButtonGroupTokens,
+    type ResponsiveButtonGroupTokens,
+} from '../components/ButtonGroup/buttonGroup.tokens'
 
 import getChatInputTokens, {
     ResponsiveChatInputTokensType,
@@ -249,6 +261,16 @@ import {
 } from '../components/InputsV2/UploadV2/UploadV2.tokens'
 import { getModalV2Tokens } from '../components/ModalV2/modalV2.tokens'
 import type { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens.types'
+import { getTimePickerTokens } from '../components/TimePicker/timePicker.tokens'
+import type { ResponsiveTimePickerTokens } from '../components/TimePicker/timePicker.tokens.types'
+import {
+    getSliderTokens,
+    ResponsiveSliderTokens,
+} from '../components/Slider/slider.tokens'
+import {
+    getSelectTokens,
+    ResponsiveSelectTokens,
+} from '../components/Select/select.tokens'
 export type ComponentTokenType = {
     TAGS?: ResponsiveTagTokens
     SEARCH_INPUT?: ResponsiveSearchInputTokens
@@ -276,6 +298,7 @@ export type ComponentTokenType = {
     SINGLE_SELECT?: ResponsiveSingleSelectTokens
     TABLE?: ResponsiveTableTokens
     CALENDAR?: ResponsiveCalendarTokens
+    TIME_PICKER?: ResponsiveTimePickerTokens
     ACCORDION?: ResponsiveAccordionTokens
     STAT_CARD?: ResponsiveStatCardTokens
     PROGRESS_BAR?: ResponsiveProgressBarTokens
@@ -287,6 +310,8 @@ export type ComponentTokenType = {
     CARD?: ResponsiveCardTokens
     CARDV2?: ResponsiveCardV2Tokens
     SKELETON?: ResponsiveSkeletonTokens
+    SPINNER?: ResponsiveSpinnerTokens
+    EMPTY_STATE?: ResponsiveEmptyStateTokens
     TOPBAR?: ResponsiveTopbarTokens
     TOPBARV2?: ResponsiveTopbarV2Tokens
     AVATAR?: ResponsiveAvatarTokens
@@ -297,6 +322,7 @@ export type ComponentTokenType = {
     MOBILE_NAVIGATION_V2?: ResponsiveMobileNavigationV2Tokens
     UPLOAD?: ResponsiveUploadTokens
     CODE_BLOCK?: ResponsiveCodeBlockTokens
+    BUTTON_GROUP?: ResponsiveButtonGroupTokens
     CHAT_INPUT?: ResponsiveChatInputTokensType
     CHAT_INPUTV2?: ResponsiveChatInputV2TokensType
     TIMELINE?: ResponsiveTimelineTokens
@@ -331,6 +357,8 @@ export type ComponentTokenType = {
     STEPPERV2?: ResponsiveStepperV2Tokens
     UPLOADV2?: ResponsiveUploadV2Tokens
     MODALV2?: ResponsiveModalV2Tokens
+    SLIDER?: ResponsiveSliderTokens
+    SELECT?: ResponsiveSelectTokens
 }
 
 type ThemeContextType = {
@@ -366,8 +394,9 @@ const ThemeContext = createContext<ThemeContextType>({
         MENU_V2: getMenuV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         MULTI_SELECT: getMultiSelectTokens(FOUNDATION_THEME),
         SINGLE_SELECT: getSingleSelectTokens(FOUNDATION_THEME),
-        TABLE: getTableToken(FOUNDATION_THEME),
-        CALENDAR: getCalendarToken(FOUNDATION_THEME),
+        TABLE: getTableToken(FOUNDATION_THEME, Theme.LIGHT),
+        CALENDAR: getCalendarToken(FOUNDATION_THEME, Theme.LIGHT),
+        TIME_PICKER: getTimePickerTokens(FOUNDATION_THEME),
         ACCORDION: getAccordionToken(FOUNDATION_THEME),
         STAT_CARD: getStatCardToken(FOUNDATION_THEME),
         PROGRESS_BAR: getProgressBarTokens(FOUNDATION_THEME),
@@ -380,18 +409,24 @@ const ThemeContext = createContext<ThemeContextType>({
         CARDV2: getCardV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TOPBAR: getTopbarTokens(FOUNDATION_THEME),
         TOPBARV2: getTopbarV2Tokens(FOUNDATION_THEME),
-        SKELETON: getSkeletonTokens(FOUNDATION_THEME),
+        SKELETON: getSkeletonTokens(FOUNDATION_THEME, Theme.LIGHT),
+        SPINNER: getSpinnerTokens(FOUNDATION_THEME, Theme.LIGHT),
+        EMPTY_STATE: getEmptyStateTokens(FOUNDATION_THEME, Theme.LIGHT),
         AVATAR: getAvatarTokens(FOUNDATION_THEME),
-        AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME),
+        AVATAR_GROUP: getAvatarGroupTokens(FOUNDATION_THEME, Theme.LIGHT),
         SIDEBAR: getSidebarTokens(FOUNDATION_THEME),
-        DIRECTORY: getDirectoryTokens(FOUNDATION_THEME),
-        MOBILE_NAVIGATION: getMobileNavigationTokens(FOUNDATION_THEME),
+        DIRECTORY: getDirectoryTokens(FOUNDATION_THEME, Theme.LIGHT),
+        MOBILE_NAVIGATION: getMobileNavigationTokens(
+            FOUNDATION_THEME,
+            Theme.LIGHT
+        ),
         MOBILE_NAVIGATION_V2: getMobileNavigationV2Tokens(
             FOUNDATION_THEME,
             Theme.LIGHT
         ),
         UPLOAD: getUploadTokens(FOUNDATION_THEME),
-        CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME),
+        CODE_BLOCK: getCodeBlockTokens(FOUNDATION_THEME, Theme.LIGHT),
+        BUTTON_GROUP: getButtonGroupTokens(FOUNDATION_THEME, Theme.LIGHT),
         CHAT_INPUT: getChatInputTokens(FOUNDATION_THEME),
         BUTTONV2: getButtonV2Tokens(FOUNDATION_THEME),
         TAGV2: getTagV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
@@ -436,6 +471,8 @@ const ThemeContext = createContext<ThemeContextType>({
         STEPPERV2: getStepperV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         UPLOADV2: getUploadV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         MODALV2: getModalV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SLIDER: getSliderTokens(FOUNDATION_THEME, Theme.LIGHT),
+        SELECT: getSelectTokens(FOUNDATION_THEME, Theme.LIGHT),
     },
     breakpoints: BREAKPOINTS,
     theme: 'light',

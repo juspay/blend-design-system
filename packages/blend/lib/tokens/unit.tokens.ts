@@ -45,6 +45,9 @@ export type UnitTokensType = Readonly<{
     120: UnitType
     144: UnitType
     150: UnitType
+    200: UnitType
+    280: UnitType
+    350: UnitType
     auto: UnitType
     [key: string]: UnitType
 }>
@@ -94,6 +97,7 @@ const unitTokens: UnitTokensType = {
     150: '150px',
     190: '190px',
     200: '200px',
+    280: '280px',
     350: '350px',
     auto: 'auto',
 }

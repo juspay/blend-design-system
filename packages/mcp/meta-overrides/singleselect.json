@@ -3,7 +3,7 @@
     "features": [
         "Three sizes: SMALL, MEDIUM, LARGE",
         "Two variants: CONTAINER (bordered trigger) and NO_CONTAINER (minimal trigger)",
-        "Built-in search with customizable placeholder",
+        "Built-in client-side search or controlled server-side search",
         "Grouped items with optional group labels and separators",
         "Virtualized rendering for large item lists",
         "Infinite scroll with onEndReached and hasMore",
@@ -31,6 +31,11 @@
             "title": "Large list with virtualization and infinite scroll",
             "description": "Virtualized select for a large user list with infinite scroll.",
             "code": "<SingleSelect\n  label=\"Assign to\"\n  placeholder=\"Select team member\"\n  selected={assignee}\n  onSelect={setAssignee}\n  enableSearch\n  enableVirtualization\n  hasMore={hasMoreUsers}\n  onEndReached={loadMoreUsers}\n  loadingComponent={<Spinner />}\n  size={SelectMenuSize.MEDIUM}\n  items={[{ items: users.map(u => ({ label: u.name, value: u.id, slot1: <Avatar name={u.name} /> })) }]}\n/>"
+        },
+        {
+            "title": "Controlled server-side search",
+            "description": "The consumer debounces requests and supplies already-filtered results. Providing searchText disables internal filtering.",
+            "code": "<SingleSelect\n  label=\"Assign to\"\n  placeholder=\"Select team member\"\n  selected={assignee}\n  onSelect={setAssignee}\n  items={searchResults}\n  searchText={query}\n  onSearchChange={setQuery}\n  isSearchLoading={isSearching}\n  emptyStateText={query ? 'No people found' : 'Start typing to search'}\n/>"
         }
     ],
     "propOverrides": {
@@ -53,6 +58,22 @@
         "enableSearch": {
             "llmContext": "Set to true when the item list has more than 7-8 items. Adds a search input at the top of the dropdown. Essential for country lists, user lists, and any long enumeration.",
             "propDescription": "Adds a search input to filter items"
+        },
+        "searchText": {
+            "llmContext": "Providing this prop, including an empty string, enables controlled server-side search and disables internal filtering. Always pass already-filtered items. Debounce API calls in the consumer.",
+            "propDescription": "Controlled search query; disables internal filtering when present"
+        },
+        "onSearchChange": {
+            "llmContext": "Called for every user input change. Update searchText immediately and debounce only the API request. Optional: omitting it creates a read-only controlled query.",
+            "propDescription": "Called with the next controlled search query"
+        },
+        "isSearchLoading": {
+            "llmContext": "Use only for the controlled search request. This renders a loading state in the results region and is separate from hasMore/loadingComponent pagination.",
+            "propDescription": "Shows search-specific loading feedback in the menu"
+        },
+        "emptyStateText": {
+            "llmContext": "Custom menu message when no result items are supplied, such as 'Start typing to search' or 'No people found'.",
+            "propDescription": "Custom empty search-results message"
         },
         "variant": {
             "llmContext": "CONTAINER (default) renders a bordered input-like trigger — use in forms. NO_CONTAINER renders a minimal trigger with no border — use for settings toggles, inline editors, or toolbar selectors.",

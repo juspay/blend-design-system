@@ -29,17 +29,21 @@ import { parseDateLike, formatDateString } from '../utils'
 const StyledTableCell = styled.td<{
     width?: React.CSSProperties
     $hasCustomContent?: boolean
-    $tableToken?: TableTokenType
+    $tableToken: TableTokenType
     $isFirstRow?: boolean
     $customBackgroundColor?: string
     $hasCustomBackground?: boolean
 }>`
     ${(props) =>
         props.$tableToken ? props.$tableToken.dataTable.table.body.cell : ''}
-    background-color: ${({ $customBackgroundColor, $hasCustomBackground }) =>
+    background-color: ${({
+        $customBackgroundColor,
+        $hasCustomBackground,
+        $tableToken,
+    }) =>
         $hasCustomBackground && $customBackgroundColor
             ? $customBackgroundColor
-            : FOUNDATION_THEME.colors.gray[0]} !important;
+            : $tableToken.dataTable.table.body.row.backgroundColor} !important;
     box-sizing: border-box;
     ${({ $isFirstRow }) => $isFirstRow && 'border-top: none'}
 `
@@ -510,7 +514,8 @@ const TableCell = forwardRef<
                         <TruncatedTextWithTooltip
                             text={date ? formatDate(date) : '-'}
                             style={{
-                                color: FOUNDATION_THEME.colors.gray[700],
+                                color: tableToken.dataTable.table.body.cell
+                                    .color,
                             }}
                             suffix={dateLabelStr}
                             tableToken={tableToken}

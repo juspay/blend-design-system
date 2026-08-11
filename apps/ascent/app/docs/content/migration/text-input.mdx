@@ -1,0 +1,109 @@
+---
+title: Text Input v1 to v2
+description: Migrate TextInput to TextInputV2, including labels, validation, slots, and embedded selects.
+---
+
+## Overview
+
+`TextInput` is deprecated in favor of `TextInputV2`. Controlled `value` and
+`onChange`, native input attributes, labels, help text, required state, focus
+handlers, and left/right adornments remain available.
+
+V2 standardizes input sizes, label naming, validation, and slots. It also adds
+an inline `SingleSelectV2` embed for inputs that need a country, currency, or
+other selectable prefix/suffix.
+
+## Quick migration
+
+```tsx
+// v1
+import { TextInput, TextInputSize } from '@juspay/blend-design-system'
+;<TextInput
+    label="Email"
+    sublabel="Used for notifications"
+    helpIconHintText="We never share your address"
+    value={email}
+    onChange={(event) => setEmail(event.target.value)}
+    size={TextInputSize.MEDIUM}
+    leftSlot={<MailIcon />}
+    error={hasError}
+    errorMessage="Enter a valid email address"
+/>
+```
+
+```tsx
+// v2
+import { InputSizeV2, TextInputV2 } from '@juspay/blend-design-system'
+;<TextInputV2
+    label="Email"
+    subLabel="Used for notifications"
+    helpIconText="We never share your address"
+    value={email}
+    onChange={(event) => setEmail(event.target.value)}
+    size={InputSizeV2.MD}
+    leftSlot={{ slot: <MailIcon /> }}
+    error={{ show: hasError, message: 'Enter a valid email address' }}
+/>
+```
+
+## Breaking changes
+
+### Rename label, help, size, and error props
+
+Use `subLabel` instead of `sublabel`, `helpIconText` instead of
+`helpIconHintText`, and `InputSizeV2.SM`/`.MD`/`.LG` instead of
+`TextInputSize.SMALL`/`.MEDIUM`/`.LARGE`. Move `error` and `errorMessage` into
+`error={{ show, message }}`. The default size changes from v1 medium to V2
+small, so set `InputSizeV2.MD` where the prior default height is required.
+
+### Wrap slots and remove group-position styling
+
+V1 slots accept `ReactNode`; V2 uses
+`{ slot: ReactElement; maxHeight?: string | number }`. Wrap the existing icon:
+`leftSlot={<MailIcon />}` becomes `leftSlot={{ slot: <MailIcon /> }}`.
+
+`textInputGroupPosition` is removed. Use the surrounding input-group layout or
+an embedded select's group position instead of relying on a root input radius
+override.
+
+### Replace password visibility controls
+
+`passwordToggle` is not available on `TextInputV2`. Keep the input
+`type="password"` and provide an application-owned visibility control through
+`rightSlot` when the field needs one.
+
+### Use `dropdown` for embedded selects
+
+V2 adds `dropdown`, one or two `SingleSelectV2` prop objects with a required
+`position: 'left' | 'right'`. It replaces the normal slots when present.
+
+```tsx
+<TextInputV2
+    value={phone}
+    onChange={onPhoneChange}
+    dropdown={{
+        position: 'left',
+        placeholder: 'Code',
+        items: countryCodes,
+        selected: countryCode,
+        onSelect: setCountryCode,
+    }}
+/>
+```
+
+### Update tokens
+
+Rebuild `TEXT_INPUT` overrides against `TEXT_INPUTV2`. V2 uses per-side
+padding, line-height, slot, top-container, and bottom-container token paths.
+
+## What continues to work
+
+`label`, `hintText`, `required`, `value`, `onChange`, `onFocus`, `onBlur`,
+`placeholder`, `disabled`, `name`, and standard input attributes retain their
+purpose. V2 still exposes error and hint text through ARIA relationships.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/textinput#component-tokens) with the [V2 component token reference](/docs/components/text-input-v2#component-tokens).

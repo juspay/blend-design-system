@@ -6,6 +6,7 @@ import {
     ButtonSize,
     ButtonSubType,
     ButtonState,
+    ThemeProvider,
 } from '@juspay/blend-design-system'
 import {
     Plus,
@@ -21,6 +22,7 @@ import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
+import { Theme } from '../../../../../../packages/blend/lib/context/theme.enum'
 
 // ============================================================================
 // Meta Configuration
@@ -823,5 +825,55 @@ export const SkeletonState: Story = {
             },
         },
         a11y: getA11yConfig('content'),
+    },
+}
+
+/** Host verification: Button skeletons consume dark Skeleton tokens. */
+export const SkeletonStateDark: Story = {
+    name: 'Skeleton state (dark)',
+    decorators: [
+        (Story) => (
+            <ThemeProvider theme={Theme.DARK}>
+                <div
+                    style={{
+                        background: '#181B25',
+                        padding: 24,
+                        borderRadius: 8,
+                    }}
+                >
+                    <Story />
+                </div>
+            </ThemeProvider>
+        ),
+    ],
+    render: () => (
+        <div className="flex gap-3 flex-wrap">
+            <Button
+                text="Primary"
+                buttonType={ButtonType.PRIMARY}
+                showSkeleton
+                skeletonVariant="shimmer"
+            />
+            <Button
+                text="Secondary"
+                buttonType={ButtonType.SECONDARY}
+                showSkeleton
+                skeletonVariant="pulse"
+            />
+            <Button
+                text="Medium"
+                size={ButtonSize.MEDIUM}
+                showSkeleton
+                skeletonVariant="wave"
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Verifies Skeleton dark base/highlight/shimmer colors inside a Button host.',
+            },
+        },
+        chromatic: { ...CHROMATIC_CONFIG, delay: 400 },
     },
 }

@@ -84,6 +84,7 @@ const ModalHeader = ({
             overflow="auto"
             maxHeight="20vh"
             gap={FOUNDATION_THEME.unit[16]}
+            backgroundColor={modalTokens.header.backgroundColor}
             borderBottom={
                 showDivider ? modalTokens.header.borderBottom : undefined
             }
@@ -131,7 +132,13 @@ const ModalHeader = ({
                 <Button
                     subType={ButtonSubType.INLINE}
                     buttonType={ButtonType.SECONDARY}
-                    leadingIcon={<X size={16} aria-hidden="true" />}
+                    leadingIcon={
+                        <X
+                            size={16}
+                            color={modalTokens.closeButton.color}
+                            aria-hidden="true"
+                        />
+                    }
                     onClick={onClose}
                     aria-label="Close modal"
                 />
@@ -296,7 +303,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                     alignItems="center"
                     justifyContent="center"
                     padding={FOUNDATION_THEME.unit[16]}
-                    boxShadow={modalTokens.boxShadow}
                     {...props}
                 >
                     <AnimatedBackdrop
@@ -317,13 +323,13 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         display="flex"
                         flexDirection="column"
                         position="relative"
-                        backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                        backgroundColor={modalTokens.body.backgroundColor}
                         minWidth={minWidth}
                         minHeight={minHeight}
                         maxWidth={maxWidth}
                         maxHeight={maxHeight}
-                        borderRadius={FOUNDATION_THEME.border.radius[12]}
-                        boxShadow={FOUNDATION_THEME.shadows.xs}
+                        borderRadius={modalTokens.borderRadius}
+                        boxShadow={modalTokens.boxShadow}
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby={titleId}
@@ -349,6 +355,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         <Block
                             data-element="body"
                             padding={isCustom ? '0' : modalTokens.body.padding}
+                            backgroundColor={modalTokens.body.backgroundColor}
                             overflow="auto"
                             flexGrow={1}
                             borderRadius={

@@ -13,6 +13,8 @@ import DatePickerComponent from './components/DatePickerComponent'
 import PresetItem from './components/PresetItem'
 import ActionButtons from './components/ActionButtons'
 import { MobileDrawerPresetsProps } from './types'
+import { useTheme } from '../../context'
+import { getMobileToken } from './components/mobile.tokens'
 
 const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
     drawerOpen,
@@ -41,6 +43,8 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
     disablePastDates = false,
     maxYearOffset,
 }) => {
+    const { foundationTokens, theme } = useTheme()
+    const mobileTokens = getMobileToken(foundationTokens, theme).sm
     const [isCustomExpanded, setIsCustomExpanded] = useState(
         showCustomDropdownOnly
     )
@@ -99,6 +103,22 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                 <DrawerOverlay />
                 <DrawerContent
                     contentDriven={true}
+                    style={{
+                        backgroundColor: mobileTokens.drawer.backgroundColor,
+                    }}
+                    handle={
+                        <Block
+                            width={foundationTokens.unit[48]}
+                            height={foundationTokens.unit[6]}
+                            backgroundColor={
+                                mobileTokens.picker.divider.strokeColor
+                            }
+                            borderRadius={foundationTokens.border.radius.full}
+                            margin="14px auto"
+                            flexShrink={0}
+                            aria-hidden="true"
+                        />
+                    }
                     mobileOffset={
                         showCustomDropdownOnly || !showPresets
                             ? undefined
@@ -111,6 +131,9 @@ const MobileDrawerPresets: React.FC<MobileDrawerPresetsProps> = ({
                             flexDirection="column"
                             height="100%"
                             maxHeight="80vh"
+                            backgroundColor={
+                                mobileTokens.drawer.backgroundColor
+                            }
                             style={{
                                 opacity: isDisabled ? 0.6 : 1,
                                 pointerEvents: isDisabled ? 'none' : 'auto',

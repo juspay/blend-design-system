@@ -19,11 +19,17 @@ import { type MultiSelectTokensType } from './multiSelect.tokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import {
+    getAllValues,
     getMultiSelectBorderRadius,
     getMultiSelectCrossBorderRadius,
-    handleSelectAll,
     map,
 } from './utils'
+import {
+    clampScopeToMaxSelections,
+    emitLegacyScopeChanges,
+    getNextSelectionAfterToggle,
+    getNextSelectionForScope,
+} from '../shared/multiSelectSelection'
 import { toPixels } from '../../global-utils/GlobalUtils'
 import FloatingLabels from '../Inputs/utils/FloatingLabels/FloatingLabels'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
@@ -44,6 +50,7 @@ const Wrapper = styled(Block)`
 const MultiSelect = ({
     selectedValues,
     onChange,
+    onSelectionChange,
     items = [],
     label,
     sublabel,
@@ -59,6 +66,10 @@ const MultiSelect = ({
     size = MultiSelectMenuSize.MEDIUM,
     enableSearch = true,
     searchPlaceholder = 'Search options...',
+    searchText,
+    onSearchChange,
+    isSearchLoading,
+    emptyStateText,
     enableSelectAll = false,
     selectAllText = 'Select All',
     maxSelections,
@@ -185,11 +196,53 @@ const MultiSelect = ({
     })
     useDropdownInteractionLock(!isMobile && open)
 
+    const handleItemSelect = (value: string) => {
+        const nextSelection = getNextSelectionAfterToggle(selectedValues, value)
+        onChange?.(value)
+        onSelectionChange?.(nextSelection)
+    }
+
+    const handleBulkSelection = (
+        selectAll: boolean,
+        filteredItems: typeof items
+    ) => {
+        const availableValues = getAllValues(filteredItems)
+        const scopedValues = selectAll
+            ? clampScopeToMaxSelections(
+                  selectedValues,
+                  availableValues,
+                  maxSelections
+              )
+            : availableValues
+        const nextSelection = getNextSelectionForScope(
+            selectedValues,
+            scopedValues,
+            selectAll
+        )
+        emitLegacyScopeChanges(
+            selectAll,
+            scopedValues,
+            selectedValues,
+            onChange
+        )
+        onSelectionChange?.(nextSelection)
+    }
+
+    const handleClearSelection = () => {
+        if (onClearAllClick) {
+            onClearAllClick()
+            return
+        }
+        onChange?.('')
+        onSelectionChange?.([])
+    }
+
     if (isMobile && useDrawerOnMobile) {
         return (
             <MobileMultiSelect
                 selectedValues={selectedValues}
                 onChange={onChange}
+                onSelectionChange={onSelectionChange}
                 items={items}
                 label={label}
                 sublabel={sublabel}
@@ -205,8 +258,13 @@ const MultiSelect = ({
                 size={size}
                 enableSearch={enableSearch}
                 searchPlaceholder={searchPlaceholder}
+                searchText={searchText}
+                onSearchChange={onSearchChange}
+                isSearchLoading={isSearchLoading}
+                emptyStateText={emptyStateText}
                 enableSelectAll={enableSelectAll}
                 selectAllText={selectAllText}
+                maxSelections={maxSelections}
                 customTrigger={customTrigger}
                 onBlur={callOnBlur}
                 onFocus={callOnFocus}
@@ -297,25 +355,20 @@ const MultiSelect = ({
                             skeleton={skeleton}
                             items={items}
                             selected={selectedValues}
-                            onSelect={onChange}
+                            onSelect={handleItemSelect}
                             disabled={disabled}
                             enableSearch={enableSearch}
                             searchPlaceholder={searchPlaceholder}
+                            searchText={searchText}
+                            onSearchChange={onSearchChange}
+                            isSearchLoading={isSearchLoading}
+                            emptyStateText={emptyStateText}
                             enableSelectAll={enableSelectAll}
                             selectAllText={selectAllText}
                             maxSelections={maxSelections}
                             onSelectAll={
                                 enableSelectAll
-                                    ? (
-                                          selectAll: boolean,
-                                          filteredItems: typeof items
-                                      ) =>
-                                          handleSelectAll(
-                                              selectAll,
-                                              filteredItems,
-                                              selectedValues,
-                                              onChange
-                                          )
+                                    ? handleBulkSelection
                                     : undefined
                             }
                             minMenuWidth={minMenuWidth}
@@ -689,7 +742,11 @@ const MultiSelect = ({
                                                                       (v) =>
                                                                           valueLabelMap[
                                                                               v
-                                                                          ]
+                                                                          ] ??
+                                                                          (searchText !==
+                                                                          undefined
+                                                                              ? v
+                                                                              : undefined)
                                                                   )
                                                                   .join(', ')
                                                     }
@@ -702,7 +759,11 @@ const MultiSelect = ({
                                                                   (v) =>
                                                                       valueLabelMap[
                                                                           v
-                                                                      ]
+                                                                      ] ??
+                                                                      (searchText !==
+                                                                      undefined
+                                                                          ? v
+                                                                          : undefined)
                                                               )
                                                               .join(', ')}
                                                 </Text>
@@ -761,13 +822,7 @@ const MultiSelect = ({
                                 opacity: 1,
                                 cursor: disabled ? 'not-allowed' : 'pointer',
                             }}
-                            onClick={() => {
-                                if (onClearAllClick) {
-                                    onClearAllClick()
-                                } else {
-                                    onChange('')
-                                }
-                            }}
+                            onClick={handleClearSelection}
                             aria-label={
                                 label
                                     ? `Clear selection for ${label}`

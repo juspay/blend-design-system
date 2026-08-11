@@ -20,6 +20,7 @@ export type MultiSelectV2MenuItemsProps = {
     tokens: MultiSelectV2TokensType
     size: MultiSelectV2Size
     variant: MultiSelectV2Variant
+    focusIdentityEnabled?: boolean
 }
 
 const MultiSelectV2MenuItems = ({
@@ -31,6 +32,7 @@ const MultiSelectV2MenuItems = ({
     tokens,
     size,
     variant,
+    focusIdentityEnabled,
 }: MultiSelectV2MenuItemsProps) => (
     <Block
         style={{
@@ -89,6 +91,7 @@ const MultiSelectV2MenuItems = ({
                             maxSelections={maxSelections}
                             allItems={allItemsFlat}
                             index={groupStartIndex + itemIndex}
+                            focusIdentityEnabled={focusIdentityEnabled}
                         />
                     ))}
                     {groupId !== filteredItems.length - 1 &&

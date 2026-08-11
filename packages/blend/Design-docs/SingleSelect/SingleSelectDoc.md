@@ -2,12 +2,13 @@
 
 ## Overview
 
-The Blend design system provides two SingleSelect components:
+The Blend design system provides two dropdown SingleSelect components and an inline SelectListV2:
 
 - **SingleSelect (v1)** – Original component; open state is internal; uses `useDrawerOnMobile` and `minMenuWidth` / `maxMenuWidth` / `maxMenuHeight`; flat props for alignment, side, error, search, trigger dimensions; supports `allowDeselect`.
 - **SingleSelectV2** – Refactored API with controlled open state (`open` / `onOpenChange`), **grouped props** for menu dimensions, trigger dimensions, menu position, search, and error; extends `ButtonHTMLAttributes` (so `disabled`, `name`, `onFocus`, `onBlur` come from HTML); stricter typing for `customTrigger` (ReactElement); no `allowDeselect` (parent can call `onSelect('')` if needed).
+- **SelectListV2** – Always-visible V2 listbox for filter panels, settings surfaces, and drawer bodies; supports grouped items, controlled or local search, keyboard navigation, optional bulk pagination, and automatic virtualization for lists above 20 options.
 
-Both support: label/sublabel, hint text, required, help icon, placeholder, sizes (sm/md/lg), variants (container / no-container), grouped items, search, virtualization, infinite scroll, custom trigger, and mobile panel/drawer.
+The dropdown components support: label/sublabel, hint text, required, help icon, placeholder, sizes (sm/md/lg), variants (container / no-container), grouped items, search, virtualization, infinite scroll, custom trigger, and mobile panel/drawer. SelectListV2 shares the V2 item model but renders inline instead of behind a trigger.
 
 ---
 

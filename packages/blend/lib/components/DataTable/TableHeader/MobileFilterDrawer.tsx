@@ -6,6 +6,7 @@ import {
     ChevronRight,
     Search,
 } from 'lucide-react'
+import { TrashSimpleIcon } from '@phosphor-icons/react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { TextInput } from '../../Inputs/TextInput'
@@ -13,13 +14,7 @@ import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
 import Slider from '../../Slider/Slider'
 import { SliderSize, SliderValueType } from '../../Slider/types'
-import {
-    ColumnDefinition,
-    ColumnType,
-    FilterType,
-    SortDirection,
-} from '../types'
-import { getColumnTypeConfig } from '../columnTypes'
+import { ColumnDefinition, FilterType, SortDirection } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
 import {
     SortHandlers,
@@ -32,8 +27,10 @@ import {
     getSelectMenuItems,
     getMultiSelectMenuItems,
     filterItemsBySearch,
+    getColumnTypeConfigForColumn,
 } from './utils'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useTheme } from '../../../context/ThemeContext'
 import {
     Drawer,
     DrawerPortal,
@@ -53,6 +50,8 @@ type MobileFilterDrawerProps = {
     filterHandlers: FilterHandlers
     filterState: FilterState
     sortState: SortState
+    /** When false, no filter UI is offered — a filter here could not affect rows. */
+    enableFiltering?: boolean
     onColumnFilter?: ColumnFilterHandler
     onPopoverClose?: () => void
 }
@@ -60,17 +59,35 @@ type MobileFilterDrawerProps = {
 export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     column,
     data,
+    tableToken,
     sortHandlers,
     filterHandlers,
     filterState,
     sortState,
+    enableFiltering = true,
     onColumnFilter,
     onPopoverClose,
 }) => {
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false)
+    const { theme } = useTheme()
+    const destructiveColor =
+        theme === 'dark'
+            ? FOUNDATION_THEME.colors.red[400]
+            : FOUNDATION_THEME.colors.red[600]
+    const filterToken = tableToken.dataTable.table.header.filter
 
-    const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
+    const columnConfig = getColumnTypeConfigForColumn(column)
     const fieldKey = String(column.field)
+    const hasFiltering = columnConfig.supportsFiltering && enableFiltering
+
+    // Mirrors the desktop clear affordance: an applied value can be absent from
+    // the current option list, so this is driven by filter state rather than by
+    // what the option list happens to render. The date filter has its own clear
+    // inside the nested drawer.
+    const selectedFilterValue = filterState.columnSelectedValues[fieldKey]
+    const hasActiveSelection = Array.isArray(selectedFilterValue)
+        ? selectedFilterValue.length > 0
+        : selectedFilterValue !== undefined && selectedFilterValue !== ''
 
     const isSortingEnabled =
         columnConfig.supportsSorting && column.isSortable !== false
@@ -108,10 +125,12 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
             padding="14px 20px"
             cursor="pointer"
             backgroundColor={
-                isActive ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
+                isActive
+                    ? filterToken.sortOption.hoverBackground
+                    : 'transparent'
             }
             _hover={{
-                backgroundColor: FOUNDATION_THEME.colors.gray[50],
+                backgroundColor: filterToken.sortOption.hoverBackground,
             }}
             onClick={onClick}
         >
@@ -119,7 +138,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
             <PrimitiveText
                 style={{
                     fontSize: 14,
-                    color: FOUNDATION_THEME.colors.gray[700],
+                    color: filterToken.sortOption.textColor,
                     fontWeight: 500,
                 }}
             >
@@ -140,10 +159,10 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
             padding="14px 20px"
             cursor="pointer"
             backgroundColor={
-                isSelected ? FOUNDATION_THEME.colors.gray[50] : 'transparent'
+                isSelected ? filterToken.selectedBackground : 'transparent'
             }
             _hover={{
-                backgroundColor: FOUNDATION_THEME.colors.gray[50],
+                backgroundColor: filterToken.hoverBackground,
             }}
             onClick={onClick}
         >
@@ -151,8 +170,8 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                 style={{
                     fontSize: 14,
                     color: isSelected
-                        ? FOUNDATION_THEME.colors.gray[700]
-                        : FOUNDATION_THEME.colors.gray[600],
+                        ? filterToken.selectedTextColor
+                        : filterToken.normalTextColor,
                     fontWeight: isSelected ? 600 : 500,
                     flexGrow: 1,
                 }}
@@ -239,7 +258,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                     <PrimitiveText
                         style={{
                             fontSize: 14,
-                            color: FOUNDATION_THEME.colors.gray[500],
+                            color: filterToken.groupLabelColor,
                         }}
                     >
                         Slider configuration missing
@@ -292,7 +311,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         style={{
                             fontSize: 14,
                             fontWeight: 600,
-                            color: FOUNDATION_THEME.colors.gray[700],
+                            color: filterToken.selectedTextColor,
                         }}
                     >
                         Filter by Range
@@ -306,7 +325,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         <PrimitiveText
                             style={{
                                 fontSize: 12,
-                                color: FOUNDATION_THEME.colors.gray[600],
+                                color: filterToken.sortOption.textColor,
                             }}
                         >
                             {sliderConfig.prefix || ''}
@@ -316,7 +335,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         <PrimitiveText
                             style={{
                                 fontSize: 12,
-                                color: FOUNDATION_THEME.colors.gray[600],
+                                color: filterToken.sortOption.textColor,
                             }}
                         >
                             {sliderConfig.prefix || ''}
@@ -349,7 +368,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         <PrimitiveText
                             style={{
                                 fontSize: 11,
-                                color: FOUNDATION_THEME.colors.gray[500],
+                                color: filterToken.groupLabelColor,
                             }}
                         >
                             {sliderConfig.prefix || ''}
@@ -359,7 +378,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         <PrimitiveText
                             style={{
                                 fontSize: 11,
-                                color: FOUNDATION_THEME.colors.gray[500],
+                                color: filterToken.groupLabelColor,
                             }}
                         >
                             {sliderConfig.prefix || ''}
@@ -380,7 +399,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         {renderSortItem(
                             <ArrowUp
                                 size={16}
-                                color={FOUNDATION_THEME.colors.gray[600]}
+                                color={filterToken.sortOption.iconColor}
                             />,
                             'Sort Ascending',
                             () =>
@@ -392,7 +411,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         {renderSortItem(
                             <ArrowDown
                                 size={16}
-                                color={FOUNDATION_THEME.colors.gray[600]}
+                                color={filterToken.sortOption.iconColor}
                             />,
                             'Sort Descending',
                             () =>
@@ -404,14 +423,14 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                     </>
                 )}
 
-                {isSortingEnabled && columnConfig.supportsFiltering && (
+                {isSortingEnabled && hasFiltering && (
                     <Block
                         height="1px"
-                        backgroundColor={FOUNDATION_THEME.colors.gray[200]}
+                        backgroundColor={filterToken.separatorColor}
                     />
                 )}
 
-                {columnConfig.supportsFiltering && (
+                {hasFiltering && (
                     <Block
                         display="flex"
                         alignItems="center"
@@ -420,7 +439,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         cursor="pointer"
                         backgroundColor="transparent"
                         _hover={{
-                            backgroundColor: FOUNDATION_THEME.colors.gray[50],
+                            backgroundColor: filterToken.hoverBackground,
                         }}
                         onClick={handleOpenFilterDrawer}
                     >
@@ -431,12 +450,12 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         >
                             <ListFilter
                                 size={16}
-                                color={FOUNDATION_THEME.colors.gray[600]}
+                                color={filterToken.sortOption.iconColor}
                             />
                             <PrimitiveText
                                 style={{
                                     fontSize: 14,
-                                    color: FOUNDATION_THEME.colors.gray[700],
+                                    color: filterToken.selectedTextColor,
                                     fontWeight: 500,
                                 }}
                             >
@@ -445,10 +464,50 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                         </Block>
                         <ChevronRight
                             size={16}
-                            color={FOUNDATION_THEME.colors.gray[400]}
+                            color={filterToken.sortOption.iconColor}
                         />
                     </Block>
                 )}
+
+                {hasFiltering &&
+                    columnConfig.filterComponent !== 'dateRange' &&
+                    hasActiveSelection && (
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            gap={FOUNDATION_THEME.unit[8]}
+                            padding="14px 20px"
+                            cursor="pointer"
+                            backgroundColor="transparent"
+                            _hover={{
+                                backgroundColor: filterToken.hoverBackground,
+                            }}
+                            onClick={() => {
+                                onColumnFilter?.(
+                                    fieldKey,
+                                    columnConfig.filterType,
+                                    [],
+                                    'equals'
+                                )
+                                onPopoverClose?.()
+                            }}
+                        >
+                            <TrashSimpleIcon
+                                size={16}
+                                color={destructiveColor}
+                                weight="bold"
+                            />
+                            <PrimitiveText
+                                style={{
+                                    fontSize: 14,
+                                    color: destructiveColor,
+                                    fontWeight: 500,
+                                }}
+                            >
+                                Clear Filter
+                            </PrimitiveText>
+                        </Block>
+                    )}
             </Block>
 
             <Drawer
@@ -484,8 +543,8 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                                 <Search
                                                     size={16}
                                                     color={
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[400]
+                                                        filterToken.sortOption
+                                                            .iconColor
                                                     }
                                                 />
                                             }
@@ -665,9 +724,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                                             style={{
                                                                 fontSize: 12,
                                                                 fontWeight: 600,
-                                                                color: FOUNDATION_THEME
-                                                                    .colors
-                                                                    .red[600],
+                                                                color: destructiveColor,
                                                             }}
                                                         >
                                                             Clear Filter
@@ -750,8 +807,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                         <PrimitiveText
                                             style={{
                                                 fontSize: 14,
-                                                color: FOUNDATION_THEME.colors
-                                                    .gray[500],
+                                                color: filterToken.groupLabelColor,
                                                 fontStyle: 'italic',
                                             }}
                                         >

@@ -6,6 +6,7 @@ import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { Checkbox } from '../Checkbox'
 import { Tooltip, TooltipSide } from '../Tooltip'
 import { checkIfTruncated } from '../Select/SelectItem/utils'
+import SelectItemIndicator from './SelectItemIndicator'
 import type { SelectItemV2Props } from './types'
 
 const SlotWrapper = ({ slot }: { slot: React.ReactNode }) => (
@@ -23,6 +24,15 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
             index = 0,
             selectedPosition = 'none',
             className,
+            asMenuItem = true,
+            focusIdentityValue,
+            role,
+            tabIndex,
+            ariaSelected,
+            ariaSetSize,
+            ariaPosInSet,
+            ariaDescription,
+            decorativeIndicator = false,
         } = props
 
         const textRef = useRef<HTMLDivElement>(null)
@@ -40,6 +50,9 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
         const isMulti = props.mode === 'multi'
         const showCheckmark =
             props.mode === 'single' ? (props.showCheckmark ?? true) : false
+
+        const resolvedRole = role ?? (isMulti ? 'option' : 'menuitem')
+        const isListRow = role !== undefined
 
         const checkTruncation = useCallback(() => {
             if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
@@ -86,6 +99,17 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
             onSelect(item.value)
         }
 
+        const handleClick = () => {
+            if (item.disabled) return
+            onSelect(item.value)
+        }
+
+        const handleKeyDown = (e: React.KeyboardEvent) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return
+            e.preventDefault()
+            handleClick()
+        }
+
         const hasTooltip =
             (showTooltip && !!item.label) ||
             (showSubLabelTooltip && !!item.subLabel) ||
@@ -120,171 +144,104 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
               ? 'selected'
               : 'default'
 
-        const itemContent = (
-            <RadixMenu.Item
-                asChild
-                onSelect={handleSelect}
-                data-disabled={item.disabled}
-                disabled={item.disabled}
+        const itemBlock = (
+            <Block
+                data-numeric={index + 1}
+                data-state={isSelected ? 'selected' : 'not selected'}
+                data-element={isMulti ? 'select-item-v2-multi' : 'select-item'}
+                data-id={
+                    item.label ||
+                    (isMulti ? 'select-item-v2-multi' : 'select-item')
+                }
+                data-value={focusIdentityValue}
+                ref={ref}
+                role={resolvedRole}
+                aria-selected={
+                    resolvedRole === 'option'
+                        ? (ariaSelected ?? isSelected)
+                        : undefined
+                }
+                aria-setsize={ariaSetSize}
+                aria-posinset={ariaPosInSet}
+                aria-description={ariaDescription}
+                aria-disabled={isListRow && item.disabled ? true : undefined}
+                tabIndex={tabIndex ?? (item.disabled ? -1 : 0)}
+                onClick={asMenuItem ? undefined : handleClick}
+                onKeyDown={asMenuItem ? undefined : handleKeyDown}
+                style={{
+                    paddingTop: itemTokens.paddingTop,
+                    paddingRight: itemTokens.paddingRight,
+                    paddingBottom: itemTokens.paddingBottom,
+                    paddingLeft: itemTokens.paddingLeft,
+                    userSelect: 'none',
+                    overflow: 'hidden',
+                }}
+                display="flex"
+                flexDirection="column"
+                gap={itemTokens.gap as number}
+                borderRadius={getBorderRadius()}
+                outline="none"
+                border="none"
+                width="100%"
+                maxWidth="100%"
+                minWidth={0}
+                color={itemTokens.option.color[colorState]}
+                backgroundColor={
+                    isSelected
+                        ? itemTokens.backgroundColor.selected
+                        : itemTokens.backgroundColor.default
+                }
+                _hover={{
+                    backgroundColor: itemTokens.backgroundColor.hover,
+                }}
+                _active={{
+                    backgroundColor: itemTokens.backgroundColor.active,
+                }}
+                _focus={{
+                    backgroundColor: itemTokens.backgroundColor.focus,
+                }}
+                _focusVisible={{
+                    backgroundColor: itemTokens.backgroundColor.focusVisible,
+                    ...(isListRow && {
+                        outline: `2px solid ${itemTokens.option.color.focusVisible}`,
+                        outlineOffset: -2,
+                    }),
+                }}
+                cursor={item.disabled ? 'not-allowed' : 'pointer'}
+                className={className}
             >
                 <Block
-                    data-numeric={index + 1}
-                    data-state={isSelected ? 'selected' : 'not selected'}
-                    data-element={
-                        isMulti ? 'select-item-v2-multi' : 'select-item'
-                    }
-                    data-id={
-                        item.label ||
-                        (isMulti ? 'select-item-v2-multi' : 'select-item')
-                    }
-                    ref={ref}
-                    role={isMulti ? 'option' : 'menuitem'}
-                    aria-selected={isMulti ? isSelected : undefined}
-                    tabIndex={item.disabled ? -1 : 0}
-                    style={{
-                        paddingTop: itemTokens.paddingTop,
-                        paddingRight: itemTokens.paddingRight,
-                        paddingBottom: itemTokens.paddingBottom,
-                        paddingLeft: itemTokens.paddingLeft,
-                        userSelect: 'none',
-                        overflow: 'hidden',
-                    }}
                     display="flex"
-                    flexDirection="column"
-                    gap={itemTokens.gap as number}
-                    borderRadius={getBorderRadius()}
-                    outline="none"
-                    border="none"
+                    alignItems="center"
+                    justifyContent="space-between"
                     width="100%"
                     maxWidth="100%"
-                    minWidth={0}
-                    color={itemTokens.option.color[colorState]}
-                    backgroundColor={
-                        isSelected
-                            ? itemTokens.backgroundColor.selected
-                            : itemTokens.backgroundColor.default
-                    }
-                    _hover={{
-                        backgroundColor: itemTokens.backgroundColor.hover,
-                    }}
-                    _active={{
-                        backgroundColor: itemTokens.backgroundColor.active,
-                    }}
-                    _focus={{
-                        backgroundColor: itemTokens.backgroundColor.focus,
-                    }}
-                    _focusVisible={{
-                        backgroundColor:
-                            itemTokens.backgroundColor.focusVisible,
-                    }}
-                    cursor={item.disabled ? 'not-allowed' : 'pointer'}
-                    className={className}
+                    gap={8}
+                    style={{ minWidth: 0 }}
                 >
                     <Block
+                        as="div"
                         display="flex"
                         alignItems="center"
-                        justifyContent="space-between"
-                        width="100%"
-                        maxWidth="100%"
                         gap={8}
-                        style={{ minWidth: 0 }}
+                        flexGrow={1}
+                        minWidth={0}
+                        style={{ overflow: 'hidden' }}
                     >
+                        {item.slot1 && <SlotWrapper slot={item.slot1} />}
                         <Block
-                            as="div"
-                            display="flex"
-                            alignItems="center"
-                            gap={8}
+                            data-element="select-item-label"
+                            data-id={item.label || 'select-item-label'}
                             flexGrow={1}
-                            minWidth={0}
-                            style={{ overflow: 'hidden' }}
-                        >
-                            {item.slot1 && <SlotWrapper slot={item.slot1} />}
-                            <Block
-                                data-element="select-item-label"
-                                data-id={item.label || 'select-item-label'}
-                                flexGrow={1}
-                                display="flex"
-                                overflow="hidden"
-                                ref={textRef}
-                                style={{ minWidth: 0, maxWidth: '100%' }}
-                            >
-                                <PrimitiveText
-                                    data-text={item.label}
-                                    fontSize={itemTokens.option.fontSize}
-                                    fontWeight={itemTokens.option.fontWeight}
-                                    truncate={!item.disableTruncation}
-                                    data-truncate="true"
-                                    style={{
-                                        width: '100%',
-                                        minWidth: 0,
-                                        maxWidth: '100%',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
-                                        whiteSpace: 'nowrap',
-                                    }}
-                                >
-                                    {item.label}
-                                </PrimitiveText>
-                            </Block>
-                        </Block>
-
-                        <Block
-                            as="div"
                             display="flex"
-                            alignItems="center"
-                            gap={4}
-                            flexShrink={0}
-                        >
-                            {item.slot2 && <SlotWrapper slot={item.slot2} />}
-                            {item.slot3 && <SlotWrapper slot={item.slot3} />}
-                            {item.slot4 && <SlotWrapper slot={item.slot4} />}
-
-                            {showCheckmark && isSelected && (
-                                <Block
-                                    as="span"
-                                    display="flex"
-                                    alignItems="center"
-                                    flexShrink={0}
-                                >
-                                    <Check
-                                        data-element="checkbox"
-                                        data-id={item.value || 'checkbox'}
-                                        data-state="selected"
-                                        data-status={
-                                            item.disabled
-                                                ? 'disabled'
-                                                : 'enabled'
-                                        }
-                                        size={16}
-                                    />
-                                </Block>
-                            )}
-
-                            {isMulti && (
-                                <Checkbox
-                                    checked={isSelected}
-                                    disabled={item.disabled}
-                                />
-                            )}
-                        </Block>
-                    </Block>
-
-                    {item.subLabel && (
-                        <Block
-                            data-element="select-item-sublabel"
-                            data-id={item.subLabel || 'select-item-sublabel'}
-                            ref={subLabelRef}
                             overflow="hidden"
+                            ref={textRef}
                             style={{ minWidth: 0, maxWidth: '100%' }}
                         >
                             <PrimitiveText
-                                fontSize={itemTokens.description.fontSize}
-                                fontWeight={itemTokens.description.fontWeight}
-                                color={
-                                    itemTokens.description.color[
-                                        isSelected ? 'selected' : 'default'
-                                    ]
-                                }
+                                data-text={item.label}
+                                fontSize={itemTokens.option.fontSize}
+                                fontWeight={itemTokens.option.fontWeight}
                                 truncate={!item.disableTruncation}
                                 data-truncate="true"
                                 style={{
@@ -296,12 +253,115 @@ const SelectItemV2 = forwardRef<HTMLDivElement, SelectItemV2Props>(
                                     whiteSpace: 'nowrap',
                                 }}
                             >
-                                {item.subLabel}
+                                {item.label}
                             </PrimitiveText>
                         </Block>
-                    )}
+                    </Block>
+
+                    <Block
+                        as="div"
+                        display="flex"
+                        alignItems="center"
+                        gap={4}
+                        flexShrink={0}
+                    >
+                        {item.slot2 && <SlotWrapper slot={item.slot2} />}
+                        {item.slot3 && <SlotWrapper slot={item.slot3} />}
+                        {item.slot4 && <SlotWrapper slot={item.slot4} />}
+
+                        {showCheckmark && isSelected && (
+                            <Block
+                                as="span"
+                                display="flex"
+                                alignItems="center"
+                                flexShrink={0}
+                            >
+                                <Check
+                                    data-element="checkbox"
+                                    data-id={item.value || 'checkbox'}
+                                    data-state="selected"
+                                    data-status={
+                                        item.disabled ? 'disabled' : 'enabled'
+                                    }
+                                    size={16}
+                                />
+                            </Block>
+                        )}
+
+                        {isMulti &&
+                            (decorativeIndicator ? (
+                                <Block
+                                    data-element="checkbox"
+                                    data-id={item.value || 'checkbox'}
+                                    data-state={
+                                        isSelected ? 'selected' : 'not selected'
+                                    }
+                                    data-status={
+                                        item.disabled ? 'disabled' : 'enabled'
+                                    }
+                                    display="flex"
+                                    alignItems="center"
+                                    flexShrink={0}
+                                >
+                                    <SelectItemIndicator
+                                        checked={isSelected}
+                                        disabled={item.disabled}
+                                    />
+                                </Block>
+                            ) : (
+                                <Checkbox
+                                    checked={isSelected}
+                                    disabled={item.disabled}
+                                />
+                            ))}
+                    </Block>
                 </Block>
+
+                {item.subLabel && (
+                    <Block
+                        data-element="select-item-sublabel"
+                        data-id={item.subLabel || 'select-item-sublabel'}
+                        ref={subLabelRef}
+                        overflow="hidden"
+                        style={{ minWidth: 0, maxWidth: '100%' }}
+                    >
+                        <PrimitiveText
+                            fontSize={itemTokens.description.fontSize}
+                            fontWeight={itemTokens.description.fontWeight}
+                            color={
+                                itemTokens.description.color[
+                                    isSelected ? 'selected' : 'default'
+                                ]
+                            }
+                            truncate={!item.disableTruncation}
+                            data-truncate="true"
+                            style={{
+                                width: '100%',
+                                minWidth: 0,
+                                maxWidth: '100%',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            {item.subLabel}
+                        </PrimitiveText>
+                    </Block>
+                )}
+            </Block>
+        )
+
+        const itemContent = asMenuItem ? (
+            <RadixMenu.Item
+                asChild
+                onSelect={handleSelect}
+                data-disabled={item.disabled}
+                disabled={item.disabled}
+            >
+                {itemBlock}
             </RadixMenu.Item>
+        ) : (
+            itemBlock
         )
 
         if (hasTooltip) {

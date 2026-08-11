@@ -10,12 +10,18 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { DirectoryTokenType } from './directory.tokens'
 import {
+    DEFAULT_END_REACHED_THRESHOLD,
     flattenDirectoryData,
+    getItemPathSegment,
+    getItemVisualState,
     handleKeyDown,
     normalizeExpandedItems,
     normalizeDirectoryData,
+    resolveItemColors,
+    useDirectoryEndReached,
 } from './utils'
 import type { DirectoryFlatRow, DirectoryProps, NavbarItem } from './types'
+import type { DirectoryItemVisualState } from './directory.tokens.types'
 
 const DEFAULT_ROW_HEIGHT = 36
 const DEFAULT_SECTION_HEIGHT = 28
@@ -49,7 +55,6 @@ const SectionRow = styled.div<{
 
 const ItemRow = styled.div<{
     $tokens: DirectoryTokenType
-    $isActive: boolean
     $depth: number
 }>`
     width: 100%;
@@ -76,7 +81,7 @@ const ConnectorVerticalLine = styled.span<{
     top: 0;
     height: ${({ $tokens, $isCurrent, $isLast }) =>
         $isCurrent && $isLast
-            ? `calc(${$tokens.section.itemList.nested.connector.elbowTop} + ${$tokens.section.itemList.nested.connector.elbowHeight})`
+            ? $tokens.section.itemList.nested.connector.elbowTop
             : '100%'};
     border-left: ${({ $tokens }) =>
         `${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color}`};
@@ -105,7 +110,7 @@ const ConnectorElbow = styled.span<{
 
 const ItemButton = styled(Block)<{
     $tokens: DirectoryTokenType
-    $isActive: boolean
+    $visualState: DirectoryItemVisualState
     $showHierarchyLines: boolean
 }>`
     width: ${({ $tokens, $showHierarchyLines }) =>
@@ -120,14 +125,10 @@ const ItemButton = styled(Block)<{
     border: none;
     border-radius: ${({ $tokens }) =>
         $tokens.section.itemList.item.borderRadius};
-    background-color: ${({ $tokens, $isActive }) =>
-        $isActive
-            ? $tokens.section.itemList.item.backgroundColor.active
-            : $tokens.section.itemList.item.backgroundColor.default};
-    color: ${({ $tokens, $isActive }) =>
-        $isActive
-            ? $tokens.section.itemList.item.color.active
-            : $tokens.section.itemList.item.color.default};
+    background-color: ${({ $tokens, $visualState }) =>
+        resolveItemColors($tokens, $visualState).backgroundColor};
+    color: ${({ $tokens, $visualState }) =>
+        resolveItemColors($tokens, $visualState).color};
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -143,17 +144,20 @@ const ItemButton = styled(Block)<{
         addPxToValue($tokens.section.itemList.item.fontSize)};
     font-weight: ${({ $tokens }) => $tokens.section.itemList.item.fontWeight};
     overflow: hidden;
+    text-align: left;
     text-decoration: none;
     transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
 
+    /* muted rows lift to the hover tier here, so a de-emphasised row regains
+       full contrast the moment it is hovered or keyboard-focused */
     &:hover,
     &:focus-visible {
-        background-color: ${({ $tokens, $isActive }) =>
-            $isActive
+        background-color: ${({ $tokens, $visualState }) =>
+            $visualState === 'active'
                 ? $tokens.section.itemList.item.backgroundColor.active
                 : $tokens.section.itemList.item.backgroundColor.hover};
-        color: ${({ $tokens, $isActive }) =>
-            $isActive
+        color: ${({ $tokens, $visualState }) =>
+            $visualState === 'active'
                 ? $tokens.section.itemList.item.color.active
                 : $tokens.section.itemList.item.color.hover};
         outline: none;
@@ -242,6 +246,10 @@ const VirtualizedDirectory = ({
     defaultExpandedItems,
     onExpandedItemsChange,
     onItemExpand,
+    onEndReached,
+    endReachedThreshold = DEFAULT_END_REACHED_THRESHOLD,
+    enableParentSelection = false,
+    highlightActivePath = false,
     virtualization,
 }: DirectoryProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
@@ -311,6 +319,13 @@ const VirtualizedDirectory = ({
             width: 0,
             height: viewportHeight,
         },
+    })
+    useDirectoryEndReached({
+        scrollRef,
+        externalRef: virtualization?.viewportRef,
+        onEndReached,
+        threshold: endReachedThreshold,
+        contentKey: rows.length,
     })
     const virtualRows = virtualizer.getVirtualItems()
     const fallbackRows =
@@ -445,11 +460,23 @@ const VirtualizedDirectory = ({
     ) => {
         const hasChildren = !!row.item.items?.length
         const isExpanded = currentExpandedItems.has(row.itemPath)
+        const isSelectable = enableParentSelection || !hasChildren
+        // bare-label matching is a backward-compat fallback for id-less items
+        // only, so a label-valued activeItem can't co-select id'd duplicates
         const isActive =
             row.item.isSelected !== undefined
-                ? row.item.isSelected && !hasChildren
-                : !hasChildren &&
-                  (activeItem === row.itemPath || activeItem === row.item.label)
+                ? row.item.isSelected && isSelectable
+                : isSelectable &&
+                  (activeItem === row.itemPath ||
+                      (!row.item.id && activeItem === row.item.label))
+
+        const visualState = getItemVisualState({
+            isActive,
+            itemPath: row.itemPath,
+            activeItem,
+            highlightActivePath,
+        })
+        const itemColors = resolveItemColors(tokens, visualState)
 
         const Element = row.item.href ? 'a' : 'button'
         const elementProps = row.item.href
@@ -468,6 +495,10 @@ const VirtualizedDirectory = ({
         const activateItem = () => {
             if (hasChildren) {
                 setExpanded(row.item, row.itemPath, !isExpanded)
+                if (enableParentSelection) {
+                    setActiveItem(row.itemPath)
+                }
+                row.item.onClick?.()
             } else {
                 setActiveItem(row.itemPath)
                 row.item.onClick?.()
@@ -477,7 +508,6 @@ const VirtualizedDirectory = ({
         return (
             <ItemRow
                 $tokens={tokens}
-                $isActive={isActive}
                 $depth={row.depth}
                 data-directory-hierarchy-item={
                     showItemHierarchyLines ? 'true' : undefined
@@ -511,13 +541,14 @@ const VirtualizedDirectory = ({
                     as={Element}
                     {...elementProps}
                     $tokens={tokens}
-                    $isActive={isActive}
+                    $visualState={visualState}
                     $showHierarchyLines={showItemHierarchyLines}
                     aria-expanded={hasChildren ? isExpanded : undefined}
                     aria-label={row.item.label}
                     data-element="sidebar-sub-section"
-                    data-id={row.item.label}
+                    data-id={getItemPathSegment(row.item)}
                     data-status={isActive ? 'selected' : 'not selected'}
+                    data-path-state={visualState}
                     data-directory-row-index={rowIndex}
                     onClick={(event: React.MouseEvent<HTMLElement>) => {
                         if (
@@ -555,13 +586,7 @@ const VirtualizedDirectory = ({
                                             size?: number
                                         }
                                     >,
-                                    {
-                                        color: isActive
-                                            ? tokens.section.itemList.item.color
-                                                  .active
-                                            : tokens.section.itemList.item.color
-                                                  .default,
-                                    }
+                                    { color: itemColors.color }
                                 )}
                             </IconWrapper>
                         )}

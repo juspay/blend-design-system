@@ -96,6 +96,9 @@ import { MenuV2 } from '@juspay/blend-design-system';
 - Search results ranked by relevance (exact → prefix → substring) by default; override via \`searchSortFn\`
 - \`onEnter\` callback for command-palette-style "confirm search" behavior
 - Controlled or uncontrolled open state
+- Controlled item selection via \`selected\` + \`selectionStyle\` (\`checkmark\` | \`highlight\`)
+- Accessible selection semantics via \`selectionMode\` (\`single\` | \`multiple\`)
+- \`closeOnSelect\` (default \`true\`) for multi-select menus that stay open
 
                 `,
             },
@@ -158,6 +161,23 @@ import { MenuV2 } from '@juspay/blend-design-system';
             action: 'enter',
             description:
                 'Fired when Enter is pressed while the search input is focused. Receives `(searchText, filteredGroups)`.',
+        },
+        selectionStyle: {
+            control: 'inline-radio',
+            options: ['checkmark', 'highlight'],
+            description:
+                'How selected items are indicated. Group-level `selectionStyle` overrides this.',
+        },
+        selectionMode: {
+            control: 'inline-radio',
+            options: ['single', 'multiple'],
+            description:
+                'Selection cardinality for accessible radio/checkbox semantics. Group-level `selectionMode` overrides this.',
+        },
+        closeOnSelect: {
+            control: 'boolean',
+            description:
+                'When false, selecting an item keeps the menu open (multi-select). Defaults to true.',
         },
     },
     tags: ['autodocs'],
@@ -507,6 +527,255 @@ export const WithSubmenuSearchRanking: Story = {
         docs: {
             description: {
                 story: `Per-item sub-menu search also ranks results by relevance. Set \`enableSubMenuSearch\` on the parent item and (optionally) \`onSubMenuSearchEnter\` to handle Enter while the sub-menu search input is focused.`,
+            },
+        },
+    },
+}
+
+export const SingleSelectCheckmark: Story = {
+    render: function SingleSelectCheckmarkRender() {
+        const [sortBy, setSortBy] = React.useState('name-asc')
+
+        const options: { id: string; label: string }[] = [
+            { id: 'name-asc', label: 'Name (A–Z)' },
+            { id: 'name-desc', label: 'Name (Z–A)' },
+            { id: 'date-newest', label: 'Date (newest)' },
+            { id: 'date-oldest', label: 'Date (oldest)' },
+        ]
+
+        const items: MenuV2GroupType[] = [
+            {
+                label: 'Sort by',
+                items: options.map((option) => ({
+                    id: option.id,
+                    label: { text: option.label },
+                    selected: sortBy === option.id,
+                    onClick: () => setSortBy(option.id),
+                })),
+            },
+        ]
+
+        return (
+            <div className="flex flex-col gap-3">
+                <MenuV2
+                    trigger={
+                        <Button buttonType={ButtonType.SECONDARY}>
+                            Sort: {options.find((o) => o.id === sortBy)?.label}
+                        </Button>
+                    }
+                    items={items}
+                    selectionStyle="checkmark"
+                    selectionMode="single"
+                />
+                <p className="text-xs text-gray-600">
+                    Single-select sort picker. Selected item shows a trailing
+                    checkmark; choosing an option closes the menu (
+                    <code>closeOnSelect</code> default). Items use{' '}
+                    <code>role=&quot;menuitemradio&quot;</code> with{' '}
+                    <code>aria-checked</code>.
+                </p>
+            </div>
+        )
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const trigger = canvas.getByRole('button', { name: /sort:/i })
+
+        await userEvent.click(trigger)
+
+        const nameDesc = await canvas.findByRole('menuitemradio', {
+            name: /name \(z–a\)/i,
+        })
+        await expect(nameDesc).toHaveAttribute('aria-checked', 'false')
+
+        const nameAsc = canvas.getByRole('menuitemradio', {
+            name: /name \(a–z\)/i,
+        })
+        await expect(nameAsc).toHaveAttribute('aria-checked', 'true')
+
+        await userEvent.keyboard('{ArrowDown}')
+        await expect(nameDesc).toHaveFocus()
+
+        await userEvent.keyboard('{Enter}')
+        await expect(trigger).toHaveTextContent(/name \(z–a\)/i)
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Controlled single-select menu with \`selectionStyle="checkmark"\` and \`selectionMode="single"\`. Pass \`selected\` on each item; the consumer owns selection state. Keyboard ↑/↓ navigates; Enter/Space activates.`,
+            },
+        },
+    },
+}
+
+export const MultiSelectHighlight: Story = {
+    render: function MultiSelectHighlightRender() {
+        const [views, setViews] = React.useState<string[]>(['grid', 'preview'])
+
+        const options: { id: string; label: string }[] = [
+            { id: 'list', label: 'List' },
+            { id: 'grid', label: 'Grid' },
+            { id: 'preview', label: 'Preview pane' },
+            { id: 'sidebar', label: 'Sidebar' },
+        ]
+
+        const toggle = (id: string) => {
+            setViews((prev) =>
+                prev.includes(id)
+                    ? prev.filter((value) => value !== id)
+                    : [...prev, id]
+            )
+        }
+
+        const items: MenuV2GroupType[] = [
+            {
+                label: 'Visible panels',
+                items: options.map((option) => ({
+                    id: option.id,
+                    label: { text: option.label },
+                    selected: views.includes(option.id),
+                    onClick: () => toggle(option.id),
+                })),
+            },
+        ]
+
+        return (
+            <div className="flex flex-col gap-3">
+                <MenuV2
+                    trigger={
+                        <Button buttonType={ButtonType.SECONDARY}>
+                            View options
+                        </Button>
+                    }
+                    items={items}
+                    selectionStyle="highlight"
+                    selectionMode="multiple"
+                    closeOnSelect={false}
+                />
+                <p className="text-xs text-gray-600">
+                    Multi-select view switcher with{' '}
+                    <code>selectionStyle=&quot;highlight&quot;</code> and{' '}
+                    <code>closeOnSelect: false</code>. Selected items use the
+                    token <code>selected</code> background; the menu stays open
+                    across clicks. Items use{' '}
+                    <code>role=&quot;menuitemcheckbox&quot;</code> with{' '}
+                    <code>aria-checked</code>.
+                </p>
+                <div className="text-xs text-gray-600">
+                    Active:{' '}
+                    <strong>
+                        {views.length > 0 ? views.join(', ') : 'none'}
+                    </strong>
+                </div>
+            </div>
+        )
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const trigger = canvas.getByRole('button', { name: /view options/i })
+
+        await userEvent.click(trigger)
+
+        const list = await canvas.findByRole('menuitemcheckbox', {
+            name: /^list$/i,
+        })
+        const grid = canvas.getByRole('menuitemcheckbox', { name: /^grid$/i })
+
+        await expect(list).toHaveAttribute('aria-checked', 'false')
+        await expect(grid).toHaveAttribute('aria-checked', 'true')
+
+        await userEvent.click(list)
+        await expect(
+            await canvas.findByRole('menuitemcheckbox', { name: /^list$/i })
+        ).toHaveAttribute('aria-checked', 'true')
+        // Menu stays open for multi-select
+        await expect(
+            canvas.getByRole('menuitemcheckbox', { name: /^grid$/i })
+        ).toBeInTheDocument()
+
+        const focusedGrid = canvas.getByRole('menuitemcheckbox', {
+            name: /^grid$/i,
+        })
+        await userEvent.keyboard('{ArrowDown}')
+        await expect(focusedGrid).toHaveFocus()
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Controlled multi-select menu with \`selectionStyle="highlight"\`, \`selectionMode="multiple"\`, and \`closeOnSelect={false}\`. Selection state is fully owned by the consumer.`,
+            },
+        },
+    },
+}
+
+export const SearchableSingleSelect: Story = {
+    render: function SearchableSingleSelectRender() {
+        const [timezone, setTimezone] = React.useState('Asia/Kolkata')
+
+        const options = [
+            { id: 'Asia/Kolkata', label: 'India Standard Time' },
+            { id: 'America/New_York', label: 'Eastern Time' },
+            { id: 'Europe/London', label: 'Greenwich Mean Time' },
+            { id: 'Asia/Singapore', label: 'Singapore Standard Time' },
+        ]
+
+        const items: MenuV2GroupType[] = [
+            {
+                label: 'Timezone',
+                items: options.map((option) => ({
+                    id: option.id,
+                    label: { text: option.label },
+                    selected: timezone === option.id,
+                    onClick: () => setTimezone(option.id),
+                })),
+            },
+        ]
+
+        return (
+            <div className="flex flex-col gap-3">
+                <MenuV2
+                    trigger={
+                        <Button buttonType={ButtonType.SECONDARY}>
+                            Timezone:{' '}
+                            {
+                                options.find((option) => option.id === timezone)
+                                    ?.label
+                            }
+                        </Button>
+                    }
+                    items={items}
+                    enableSearch
+                    searchPlaceholder="Search timezones..."
+                    selectionStyle="checkmark"
+                    selectionMode="single"
+                />
+                <p className="text-xs text-gray-600">
+                    Filtering changes only the visible rows; the selected value
+                    remains controlled by the consumer.
+                </p>
+            </div>
+        )
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const trigger = canvas.getByRole('button', { name: /timezone:/i })
+
+        await userEvent.click(trigger)
+        await userEvent.type(
+            await canvas.findByPlaceholderText('Search timezones...'),
+            'india'
+        )
+
+        await expect(
+            canvas.getByRole('menuitemradio', {
+                name: /india standard time/i,
+            })
+        ).toHaveAttribute('aria-checked', 'true')
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Searchable controlled selection. Filtering preserves each item's consumer-owned \`selected\` state and accessible radio semantics.`,
             },
         },
     },

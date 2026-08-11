@@ -81,7 +81,7 @@ function MyComponent() {
             placeholder="Choose technologies you're familiar with"
             items={skillOptions}
             selectedValues={selectedSkills}
-            onChange={setSelectedSkills}
+            onSelectionChange={setSelectedSkills}
             enableSearch={true}
             searchPlaceholder="Search technologies..."
             size={MultiSelectMenuSize.MEDIUM}
@@ -93,6 +93,57 @@ function MyComponent() {
     )
 }
 ```
+
+`MultiSelect` is controlled: pass the array from `onSelectionChange` back to
+`selectedValues`. The callback is the recommended API because it fires once per
+user gesture with the complete resulting selection. Existing selection order is
+retained, and newly selected filtered values are appended in item order.
+
+### Migrating from `onChange`
+
+Replace toggle reducers or debounce logic attached to `onChange` with direct
+array assignment through `onSelectionChange`. The legacy `onChange` callback
+remains supported with its existing per-item string payloads and callback counts.
+
+## Server-side search
+
+Pass `searchText` to make search controlled. In this mode, `MultiSelect` renders
+that value, calls `onSearchChange` for every input change, and does not filter
+`items`; supply the already-filtered API results yourself. Debouncing, request
+cancellation, caching, and error handling remain consumer responsibilities.
+
+```tsx
+<MultiSelect
+    label="Find people"
+    placeholder="Select people"
+    items={apiResults}
+    selectedValues={selected}
+    onSelectionChange={setSelected}
+    searchText={query}
+    onSearchChange={setQuery}
+    isSearchLoading={isSearching}
+    emptyStateText={query ? 'No people found' : 'Start typing to search'}
+/>
+```
+
+Controlled mode is selected by the presence of `searchText`, including an empty
+string. Omitting `onSearchChange` creates a read-only search input. Setting
+`enableSearch={false}` hides the input but still disables internal filtering.
+`isSearchLoading` describes search requests only; pagination continues to use
+`hasMore` and `loadingComponent`.
+
+The controlled query persists when the menu closes and reopens. Clear it in
+your own lifecycle handler only when that is the experience you want, for
+example with `onOpenChange={(open) => !open && setQuery('')}`. With remote
+results, Select All applies only to the items currently supplied to the
+component; it does not select every match on the server.
+
+| Legacy `MultiSelect` prop | `MultiSelectV2` equivalent |
+| ------------------------- | -------------------------- |
+| `searchText`              | `search.searchText`        |
+| `onSearchChange`          | `search.onSearchChange`    |
+| `isSearchLoading`         | `search.isSearchLoading`   |
+| `emptyStateText`          | `search.emptyStateText`    |
 
 ## API Reference
 
@@ -149,14 +200,25 @@ function MyComponent() {
         ],
         [
             {
+                content: 'MultiSelect.onSelectionChange',
+                hintText:
+                    'Recommended optional callback invoked once per accepted user gesture with the complete resulting selection. Feed this array back through selectedValues.',
+            },
+            {
+                content: '(selectedValues: string[]) => void',
+                hintText: 'Complete selection callback',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'MultiSelect.onChange',
                 hintText:
-                    'Required callback function invoked when a selection changes (item is selected or deselected). Receives the value string of the toggled item. Use this to update your selectedValues state. The function is called for both selection and deselection.',
+                    'Legacy optional callback invoked once per toggled item. Select All may invoke it multiple times. Prefer onSelectionChange for form state.',
             },
             {
                 content: '(selectedValue: string) => void',
-                hintText:
-                    'Function called with the toggled item value when selection changes',
+                hintText: 'Legacy per-item toggle callback',
             },
             { content: '' },
         ],
@@ -286,6 +348,40 @@ function MyComponent() {
                 content: 'string',
                 hintText: 'Placeholder text shown when search input is empty',
             },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.searchText',
+                hintText:
+                    'Controlled search value. When present, the component does not filter items internally.',
+            },
+            { content: 'string', hintText: 'Controlled search query' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.onSearchChange',
+                hintText: 'Called for every user change to the search input.',
+            },
+            { content: '(text: string) => void', hintText: 'Change callback' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.isSearchLoading',
+                hintText: 'Shows the search loading state inside the menu.',
+            },
+            { content: 'boolean', hintText: 'Search request state' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MultiSelect.emptyStateText',
+                hintText:
+                    'Overrides the message shown when no items are available.',
+            },
+            { content: 'string', hintText: 'Empty-state message' },
             { content: '' },
         ],
         [
@@ -610,7 +706,7 @@ function MyComponent() {
             {
                 content: 'MultiSelect.maxSelections',
                 hintText:
-                    'Optional maximum number of items that can be selected. When the limit is reached, users cannot select additional items. Useful for enforcing business rules or API constraints. If not provided, unlimited selections are allowed.',
+                    'Optional maximum number of items that can be selected. When the limit is reached, users cannot select additional items, and Select All stops at the limit so the emitted selection never exceeds it. Useful for enforcing business rules or API constraints. If not provided, unlimited selections are allowed.',
             },
             {
                 content: 'number',
@@ -805,7 +901,7 @@ function MyComponent() {
             {
                 content: 'MultiSelect.onClearAllClick',
                 hintText:
-                    "Optional callback function invoked when the X icon (clear button) is clicked. Provides a separate callback from onChange, allowing you to handle clear actions differently (e.g., making API calls). If not provided, clicking the clear button calls onChange('') to clear selections. Useful for analytics filters where clearing should trigger API calls.",
+                    "Optional callback function invoked when the X icon (clear button) is clicked. Provides a separate callback from onChange, allowing you to handle clear actions differently (e.g., making API calls). When provided it fully replaces the default clear, so neither onChange nor onSelectionChange fires and you decide what the resulting selection is. If not provided, clicking the clear button calls onChange('') and onSelectionChange([]). Useful for analytics filters where clearing should trigger API calls.",
             },
             {
                 content: '() => void',

@@ -76,13 +76,14 @@ describe('Charts Accessibility', () => {
             expect(results).toHaveNoViolations()
         })
 
-        it('meets WCAG standards for all chart types (Line, Bar, Pie, Scatter)', async () => {
+        it('meets WCAG standards for all chart types (Line, Bar, Pie, Scatter, Funnel)', async () => {
             const data = generateChartData()
             const chartTypes = [
                 ChartType.LINE,
                 ChartType.BAR,
                 ChartType.PIE,
                 ChartType.SCATTER,
+                ChartType.FUNNEL,
             ]
 
             for (const chartType of chartTypes) {

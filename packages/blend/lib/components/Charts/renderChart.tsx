@@ -28,6 +28,7 @@ import {
     FlattenedDataPoint,
 } from './types'
 import SankeyChartWrapper from './SankeyChartWrapper'
+import FunnelChart from './FunnelChart'
 import {
     formatNumber,
     getAxisFormatter,
@@ -58,6 +59,7 @@ export const renderChart = ({
     xAxis,
     yAxis,
     tooltip,
+    funnelConfig,
     noData,
     height,
     CustomizedDot,
@@ -372,18 +374,27 @@ export const renderChart = ({
                             strokeDasharray: '6 5',
                             stroke: FOUNDATION_THEME.colors.gray[400],
                         }}
-                        content={(props) =>
-                            CustomTooltip({
+                        content={(props) => {
+                            const mergedProps = {
                                 ...props,
-                                hoveredKey,
                                 originalData,
-                                setHoveredKey,
                                 chartType,
                                 selectedKeys,
                                 xAxis: finalXAxis,
                                 yAxis: finalYAxis,
-                            })
-                        }
+                            }
+                            return tooltip?.content ? (
+                                tooltip.content(mergedProps)
+                            ) : (
+                                <CustomTooltip
+                                    {...mergedProps}
+                                    hoveredKey={hoveredKey}
+                                    setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
+                                />
+                            )
+                        }}
                     />
                     {[...lineKeys]
                         .sort((a, b) => {
@@ -610,16 +621,25 @@ export const renderChart = ({
                         cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
-                        content={(props) =>
-                            CustomTooltip({
+                        content={(props) => {
+                            const mergedProps = {
                                 ...props,
-                                hoveredKey,
                                 originalData,
-                                setHoveredKey,
                                 chartType,
                                 selectedKeys,
-                            })
-                        }
+                            }
+                            return tooltip?.content ? (
+                                tooltip.content(mergedProps)
+                            ) : (
+                                <CustomTooltip
+                                    {...mergedProps}
+                                    hoveredKey={hoveredKey}
+                                    setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
+                                />
+                            )
+                        }}
                     />
                     {lineKeys.map((key) => (
                         <Bar
@@ -716,18 +736,27 @@ export const renderChart = ({
                         cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
-                        content={(props) =>
-                            CustomTooltip({
+                        content={(props) => {
+                            const mergedProps = {
                                 ...props,
-                                hoveredKey,
                                 originalData,
-                                setHoveredKey,
                                 chartType,
                                 selectedKeys,
                                 xAxis: finalXAxis,
                                 yAxis: finalYAxis,
-                            })
-                        }
+                            }
+                            return tooltip?.content ? (
+                                tooltip.content(mergedProps)
+                            ) : (
+                                <CustomTooltip
+                                    {...mergedProps}
+                                    hoveredKey={hoveredKey}
+                                    setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
+                                />
+                            )
+                        }}
                     />
                     {(() => {
                         const barSeries = lineKeys.filter(
@@ -953,16 +982,25 @@ export const renderChart = ({
                     <Tooltip
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
-                        content={(props) =>
-                            CustomTooltip({
+                        content={(props) => {
+                            const mergedProps = {
                                 ...props,
-                                hoveredKey,
                                 originalData,
-                                setHoveredKey,
                                 chartType: ChartType.PIE,
                                 selectedKeys,
-                            })
-                        }
+                            }
+                            return tooltip?.content ? (
+                                tooltip.content(mergedProps)
+                            ) : (
+                                <CustomTooltip
+                                    {...mergedProps}
+                                    hoveredKey={hoveredKey}
+                                    setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
+                                />
+                            )
+                        }}
                     />
                 </PieChart>
             )
@@ -1111,18 +1149,27 @@ export const renderChart = ({
                             strokeDasharray: '6 5',
                             stroke: FOUNDATION_THEME.colors.gray[400],
                         }}
-                        content={(props) =>
-                            CustomTooltip({
+                        content={(props) => {
+                            const mergedProps = {
                                 ...props,
-                                hoveredKey,
                                 originalData,
-                                setHoveredKey,
                                 chartType: ChartType.SCATTER,
                                 selectedKeys,
                                 xAxis: finalXAxis,
                                 yAxis: finalYAxis,
-                            })
-                        }
+                            }
+                            return tooltip?.content ? (
+                                tooltip.content(mergedProps)
+                            ) : (
+                                <CustomTooltip
+                                    {...mergedProps}
+                                    hoveredKey={hoveredKey}
+                                    setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
+                                />
+                            )
+                        }}
                     />
                     {Object.keys(seriesByKey).map((key) => (
                         <Scatter
@@ -1228,6 +1275,24 @@ export const renderChart = ({
                     sankeyWidth={sankeyWidth}
                     sankeyHeight={sankeyHeight}
                     isSmallScreen={isSmallScreen}
+                />
+            )
+        }
+
+        case ChartType.FUNNEL: {
+            return (
+                <FunnelChart
+                    data={originalData}
+                    selectedKeys={selectedKeys}
+                    colors={colors}
+                    funnelConfig={funnelConfig}
+                    barsize={barsize}
+                    tooltip={tooltip}
+                    xAxis={finalXAxis}
+                    yAxis={finalYAxis}
+                    isSmallScreen={isSmallScreen}
+                    hoveredKey={hoveredKey}
+                    setHoveredKey={setHoveredKey}
                 />
             )
         }
@@ -1357,16 +1422,25 @@ export const renderChart = ({
                         cursor={{ fill: FOUNDATION_THEME.colors.gray[150] }}
                         position={tooltip?.position}
                         allowEscapeViewBox={tooltip?.allowEscapeViewBox}
-                        content={(props) =>
-                            CustomTooltip({
+                        content={(props) => {
+                            const mergedProps = {
                                 ...props,
-                                hoveredKey,
                                 originalData,
-                                setHoveredKey,
                                 chartType,
                                 selectedKeys,
-                            })
-                        }
+                            }
+                            return tooltip?.content ? (
+                                tooltip.content(mergedProps)
+                            ) : (
+                                <CustomTooltip
+                                    {...mergedProps}
+                                    hoveredKey={hoveredKey}
+                                    setHoveredKey={setHoveredKey}
+                                    formatter={tooltip?.formatter}
+                                    labelFormatter={tooltip?.labelFormatter}
+                                />
+                            )
+                        }}
                     />
                     {lineKeys.map((key) => (
                         <Area

@@ -2,25 +2,79 @@ import { useRef, useLayoutEffect, useCallback, useMemo } from 'react'
 import { useReducedMotion } from './useReducedMotion'
 import type { RowAnimationConfig } from '../types'
 
-function toCssTransition(config: RowAnimationConfig): {
+const DEFAULT_DURATION = 0.35
+const DEFAULT_ENTER_DURATION = 0.35
+const DEFAULT_ENTER_OFFSET = 12
+const DEFAULT_BEZIER = 'cubic-bezier(0.32, 0.72, 0, 1)'
+
+export const ROW_ANIMATION_WARNINGS = {
+    bezier: `transitionType is 'bezier' but 'bezier' is not a tuple of four finite numbers — falling back to the default curve.`,
+    duration: `'duration' must be a finite number — falling back to the default.`,
+    spring: `transitionType 'spring' is not implemented — 'stiffness', 'damping' and 'mass' are ignored and rows animate with the default curve.`,
+    enter: `'enterDuration' and 'enterOffset' must both be finite numbers — falling back to defaults.`,
+} as const
+
+type WarnFn = (message: string) => void
+
+function toFiniteNumber(value: unknown, fallback: number): number {
+    return typeof value === 'number' && Number.isFinite(value)
+        ? value
+        : fallback
+}
+
+function isBezierTuple(
+    value: unknown
+): value is [number, number, number, number] {
+    return (
+        Array.isArray(value) &&
+        value.length === 4 &&
+        value.every((n) => typeof n === 'number' && Number.isFinite(n))
+    )
+}
+
+function buildTransition(duration: number, cssBezier: string) {
+    return {
+        duration,
+        transition: `transform ${duration}s ${cssBezier}, opacity ${duration}s ${cssBezier}`,
+    }
+}
+
+function toCssTransition(
+    config: RowAnimationConfig,
+    warn: WarnFn
+): {
     transition: string
     duration: number
 } {
-    if (config.transitionType === 'bezier') {
-        const [p0, p1, p2, p3] = config.bezier
-        const cssBezier = `cubic-bezier(${p0}, ${p1}, ${p2}, ${p3})`
-        return {
-            duration: config.duration,
-            transition: `transform ${config.duration}s ${cssBezier}, opacity ${config.duration}s ${cssBezier}`,
-        }
+    // Read before branching so a bad curve doesn't cost the caller their
+    // timing too. Only the bezier arm declares `duration`.
+    const rawDuration = (config as { duration?: unknown }).duration
+
+    if (
+        config.transitionType === 'bezier' &&
+        !Number.isFinite(rawDuration as number)
+    ) {
+        warn(ROW_ANIMATION_WARNINGS.duration)
     }
 
-    const cssBezier = `cubic-bezier(0.32, 0.72, 0, 1)`
-    const transition = `transform 0.35s ${cssBezier}, opacity 0.35s ${cssBezier}`
-    return {
-        duration: 0.35,
-        transition,
+    const duration = toFiniteNumber(rawDuration, DEFAULT_DURATION)
+
+    if (config.transitionType === 'bezier') {
+        if (isBezierTuple(config.bezier)) {
+            const [p0, p1, p2, p3] = config.bezier
+            return buildTransition(
+                duration,
+                `cubic-bezier(${p0}, ${p1}, ${p2}, ${p3})`
+            )
+        }
+
+        warn(ROW_ANIMATION_WARNINGS.bezier)
+    } else if (config.transitionType === 'spring') {
+        // `stiffness`/`damping`/`mass` are declared but read nowhere.
+        warn(ROW_ANIMATION_WARNINGS.spring)
     }
+
+    return buildTransition(duration, DEFAULT_BEZIER)
 }
 
 interface UseRowFlipReturn {
@@ -38,10 +92,20 @@ export function useRowFlip(
     const orderedIdsRef = useRef(orderedIds)
     const prefersReducedMotion = useReducedMotion()
     const cleanupTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const warnedMessagesRef = useRef<Set<string>>(new Set())
     const serializedOrderedIds = useMemo(
         () => JSON.stringify(orderedIds),
         [orderedIds]
     )
+
+    // Per instance, not per module: a module-level Set would stay poisoned
+    // across an HMR edit that re-breaks the config.
+    const warn = useCallback((message: string) => {
+        if (process.env.NODE_ENV === 'production') return
+        if (warnedMessagesRef.current.has(message)) return
+        warnedMessagesRef.current.add(message)
+        console.warn(`[DataTable] rowAnimationConfig: ${message}`)
+    }, [])
 
     configRef.current = animationConfig
     orderedIdsRef.current = orderedIds
@@ -88,10 +152,24 @@ export function useRowFlip(
             return
         }
 
-        const { transition: cssTransition, duration } =
-            toCssTransition(currentConfig)
-        const enterDuration = currentConfig.enterDuration
-        const enterOffset = currentConfig.enterOffset
+        const { transition: cssTransition, duration } = toCssTransition(
+            currentConfig,
+            warn
+        )
+        if (
+            !Number.isFinite(currentConfig.enterDuration) ||
+            !Number.isFinite(currentConfig.enterOffset)
+        ) {
+            warn(ROW_ANIMATION_WARNINGS.enter)
+        }
+        const enterDuration = toFiniteNumber(
+            currentConfig.enterDuration,
+            DEFAULT_ENTER_DURATION
+        )
+        const enterOffset = toFiniteNumber(
+            currentConfig.enterOffset,
+            DEFAULT_ENTER_OFFSET
+        )
 
         const prevIds = prevIdsRef.current
         const newRowIdSet = new Set(
@@ -131,7 +209,9 @@ export function useRowFlip(
 
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    el.style.transition = `transform ${enterDuration}s cubic-bezier(0.32, 0.72, 0, 1), opacity ${enterDuration}s cubic-bezier(0.32, 0.72, 0, 1)`
+                    // KNOWN LIMITATION: entering rows ignore the configured
+                    // `bezier` and always use the default curve.
+                    el.style.transition = `transform ${enterDuration}s ${DEFAULT_BEZIER}, opacity ${enterDuration}s ${DEFAULT_BEZIER}`
                     el.style.transform = ''
                     el.style.opacity = '1'
                 })
@@ -164,7 +244,7 @@ export function useRowFlip(
                 cleanupTimeoutRef.current = null
             }
         }
-    }, [serializedOrderedIds, prefersReducedMotion])
+    }, [serializedOrderedIds, prefersReducedMotion, warn])
 
     return { register }
 }

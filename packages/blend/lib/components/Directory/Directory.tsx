@@ -6,8 +6,14 @@ import type { DirectoryProps } from './types'
 import Section from './Section'
 import VirtualizedDirectory from './VirtualizedDirectory'
 import Block from '../Primitives/Block/Block'
-import { handleSectionNavigation, normalizeDirectoryData } from './utils'
-import { ActiveItemProvider } from './NavItem'
+import {
+    countDirectoryItems,
+    DEFAULT_END_REACHED_THRESHOLD,
+    handleSectionNavigation,
+    normalizeDirectoryData,
+    useDirectoryEndReached,
+} from './utils'
+import { ActiveItemProvider, ExpandedItemsProvider } from './NavItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 
@@ -24,6 +30,10 @@ const Directory = ({
     defaultExpandedItems,
     onExpandedItemsChange,
     onItemExpand,
+    onEndReached,
+    endReachedThreshold = DEFAULT_END_REACHED_THRESHOLD,
+    enableParentSelection = false,
+    highlightActivePath = false,
     enableVirtualization = false,
     virtualization,
 }: DirectoryProps) => {
@@ -31,6 +41,7 @@ const Directory = ({
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
         []
     )
+    const scrollRef = useRef<HTMLDivElement | null>(null)
 
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     useEffect(() => {
@@ -38,6 +49,14 @@ const Directory = ({
             createRef<HTMLDivElement | null>()
         )
     }, [directoryData])
+
+    useDirectoryEndReached({
+        scrollRef,
+        onEndReached:
+            enableVirtualization && !iconOnlyMode ? undefined : onEndReached,
+        threshold: endReachedThreshold,
+        contentKey: countDirectoryItems(directoryData),
+    })
 
     if (enableVirtualization && !iconOnlyMode) {
         return (
@@ -53,6 +72,10 @@ const Directory = ({
                 defaultExpandedItems={defaultExpandedItems}
                 onExpandedItemsChange={onExpandedItemsChange}
                 onItemExpand={onItemExpand}
+                onEndReached={onEndReached}
+                endReachedThreshold={endReachedThreshold}
+                enableParentSelection={enableParentSelection}
+                highlightActivePath={highlightActivePath}
                 enableVirtualization={enableVirtualization}
                 virtualization={virtualization}
             />
@@ -65,39 +88,54 @@ const Directory = ({
             onActiveItemChange={onActiveItemChange}
             defaultActiveItem={defaultActiveItem}
         >
-            <Block
-                as="nav"
-                width="100%"
-                height="100%"
-                flexGrow={1}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                overflow="auto"
-                aria-label="Directory navigation"
-                gap={iconOnlyMode ? '8px' : tokens.gap}
-                paddingX={iconOnlyMode ? '12px' : tokens.paddingX}
-                paddingY={tokens.paddingY}
+            <ExpandedItemsProvider
+                expandedItems={expandedItems}
+                defaultExpandedItems={defaultExpandedItems}
+                onExpandedItemsChange={onExpandedItemsChange}
+                onItemExpand={onItemExpand}
             >
-                {directoryData.map((section, sectionIndex) => (
-                    <Section
-                        key={sectionIndex}
-                        section={section}
-                        sectionIndex={sectionIndex}
-                        idPrefix={idPrefix}
-                        iconOnlyMode={iconOnlyMode}
-                        showHierarchyLines={showHierarchyLines}
-                        hierarchyLineBorderRadius={hierarchyLineBorderRadius}
-                        onNavigateBetweenSections={(direction, currentIndex) =>
-                            handleSectionNavigation(
+                <Block
+                    as="nav"
+                    ref={scrollRef}
+                    width="100%"
+                    height="100%"
+                    flexGrow={1}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                    overflow="auto"
+                    aria-label="Directory navigation"
+                    gap={iconOnlyMode ? '8px' : tokens.gap}
+                    paddingX={iconOnlyMode ? '12px' : tokens.paddingX}
+                    paddingY={tokens.paddingY}
+                >
+                    {directoryData.map((section, sectionIndex) => (
+                        <Section
+                            key={sectionIndex}
+                            section={section}
+                            sectionIndex={sectionIndex}
+                            idPrefix={idPrefix}
+                            iconOnlyMode={iconOnlyMode}
+                            showHierarchyLines={showHierarchyLines}
+                            hierarchyLineBorderRadius={
+                                hierarchyLineBorderRadius
+                            }
+                            enableParentSelection={enableParentSelection}
+                            highlightActivePath={highlightActivePath}
+                            onNavigateBetweenSections={(
                                 direction,
-                                currentIndex,
-                                directoryData.length
-                            )
-                        }
-                    />
-                ))}
-            </Block>
+                                currentIndex
+                            ) =>
+                                handleSectionNavigation(
+                                    direction,
+                                    currentIndex,
+                                    directoryData.length
+                                )
+                            }
+                        />
+                    ))}
+                </Block>
+            </ExpandedItemsProvider>
         </ActiveItemProvider>
     )
 }

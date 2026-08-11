@@ -41,10 +41,14 @@ import {
     getTagV2Tokens,
     getTextInputV2Tokens,
     getTimelineTokens,
+    getTimePickerTokens,
+    getCalendarToken,
     getTooltipV2Tokens,
     getTopbarTokens,
     getSidebarTokens,
     getMobileNavigationTokens,
+    getSpinnerTokens,
+    getEmptyStateTokens,
 } from '@juspay/blend-design-system/node'
 import type { FoundationTokenType } from '@juspay/blend-design-system/node'
 
@@ -78,10 +82,14 @@ const V2_RESOLVERS: Record<
     TAGV2: getTagV2Tokens,
     TEXT_INPUTV2: getTextInputV2Tokens,
     TIMELINE: getTimelineTokens,
+    TIME_PICKER: getTimePickerTokens,
+    CALENDAR: getCalendarToken,
     TOOLTIPV2: getTooltipV2Tokens,
     TOPBARV2: getTopbarTokens,
     SIDEBARV2: getSidebarTokens,
     MOBILE_NAVIGATION_V2: getMobileNavigationTokens,
+    SPINNER: getSpinnerTokens,
+    EMPTY_STATE: getEmptyStateTokens,
 }
 
 // ---------------------------------------------------------------------------

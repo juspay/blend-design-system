@@ -20,6 +20,7 @@ type MultiSelectV2SubMenuProps = {
     onSelect: (value: string) => void
     selected: string[]
     maxSelections?: number
+    focusIdentityEnabled?: boolean
 }
 
 const MultiSelectV2SubMenu = ({
@@ -27,6 +28,7 @@ const MultiSelectV2SubMenu = ({
     onSelect,
     selected,
     maxSelections,
+    focusIdentityEnabled,
 }: MultiSelectV2SubMenuProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
@@ -143,6 +145,7 @@ const MultiSelectV2SubMenu = ({
                             onSelect={onSelect}
                             selected={selected}
                             maxSelections={maxSelections}
+                            focusIdentityEnabled={focusIdentityEnabled}
                         />
                     ))}
                 </Block>

@@ -6,7 +6,7 @@ import React, {
     useCallback,
 } from 'react'
 import { EllipsisVertical, GripVertical } from 'lucide-react'
-import { styled } from 'styled-components'
+import { styled, type CSSObject } from 'styled-components'
 import type { DraggableAttributes } from '@dnd-kit/core'
 import type { useSortable } from '@dnd-kit/sortable'
 
@@ -20,6 +20,7 @@ import { CheckboxSize } from '../../Checkbox/types'
 import { ColumnManager } from '../ColumnManager'
 import { TableTokenType } from '../dataTable.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useTheme } from '../../../context/ThemeContext'
 import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip'
 import Skeleton from '../../Skeleton/Skeleton'
 
@@ -35,10 +36,9 @@ import {
     getPopoverAlignment,
     getFrozenColumnStyles,
     getFrozenRightColumnStyles,
+    getColumnTypeConfigForColumn,
 } from './utils'
 import { ColumnFilter } from './FilterComponents'
-import { ColumnType } from '../types'
-import { getColumnTypeConfig } from '../columnTypes'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import {
@@ -51,37 +51,41 @@ import {
 } from '../../Drawer'
 import { DraggableColumnHeader } from './DraggableColumnHeader'
 
-const FilterIcon = styled(EllipsisVertical)<{ $isActive?: boolean }>`
+const FilterIcon = styled(EllipsisVertical)<{
+    $isActive?: boolean
+    $activeColor?: string
+    $inactiveColor?: string
+    $hoverColor?: string
+}>`
     cursor: pointer;
-    color: ${({ $isActive }) =>
-        $isActive
-            ? FOUNDATION_THEME.colors.primary[600]
-            : FOUNDATION_THEME.colors.gray[400]};
+    color: ${({ $isActive, $activeColor, $inactiveColor }) =>
+        $isActive ? $activeColor : $inactiveColor};
     transition: color 0.2s ease;
 
     &:hover {
-        color: ${({ $isActive }) =>
-            $isActive
-                ? FOUNDATION_THEME.colors.primary[700]
-                : FOUNDATION_THEME.colors.gray[600]};
+        color: ${({ $hoverColor }) => $hoverColor};
     }
 `
 
-const FilterButton = styled(PrimitiveButton)<{ $isActive?: boolean }>`
+const FilterButton = styled(PrimitiveButton)<{
+    $isActive?: boolean
+    $focusOutline?: CSSObject['outline']
+    $focusBoxShadow?: CSSObject['boxShadow']
+}>`
     outline: none !important;
 
     &:focus {
-        outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]} !important;
+        outline: ${({ $focusOutline }) => $focusOutline} !important;
         outline-offset: 2px !important;
         border-radius: 4px;
-        box-shadow: 0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]};
+        box-shadow: ${({ $focusBoxShadow }) => $focusBoxShadow};
     }
 
     &:focus-visible {
-        outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]} !important;
+        outline: ${({ $focusOutline }) => $focusOutline} !important;
         outline-offset: 2px !important;
         border-radius: 4px;
-        box-shadow: 0 0 0 2px ${FOUNDATION_THEME.colors.primary[100]};
+        box-shadow: ${({ $focusBoxShadow }) => $focusBoxShadow};
     }
 `
 
@@ -206,6 +210,7 @@ const TableHeader = forwardRef<
             sortConfig,
             enableInlineEdit = false,
             showActionsColumn = true,
+            enableFiltering = true,
             enableColumnManager = true,
             enableColumnReordering = false,
             showSkeleton = false,
@@ -362,6 +367,11 @@ const TableHeader = forwardRef<
         }, [visibleColumns])
 
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+        const { theme } = useTheme()
+        const skeletonBackgroundColor =
+            theme === 'dark'
+                ? tableToken.dataTable.table.body.row['&:hover'].backgroundColor
+                : undefined
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isMobile = breakPointLabel === 'sm'
         const subheaderLineHeight =
@@ -750,9 +760,8 @@ const TableHeader = forwardRef<
                     {visibleColumns.map((column, index) => {
                         const columnStyles = getColumnWidth(column, index)
                         const isEditing = editingField === String(column.field)
-                        const columnConfig = getColumnTypeConfig(
-                            column.type || ColumnType.TEXT
-                        )
+                        const columnConfig =
+                            getColumnTypeConfigForColumn(column)
                         const fieldKey = String(column.field)
 
                         const hasActiveFilter = () => {
@@ -797,9 +806,9 @@ const TableHeader = forwardRef<
                             enableRowSelection,
                             visibleColumns,
                             getColumnWidth,
-                            tableToken.dataTable.table.header.backgroundColor ||
-                                '#ffffff',
-                            measuredFrozenWidths
+                            tableToken.dataTable.table.header.backgroundColor,
+                            measuredFrozenWidths,
+                            tableToken.dataTable.table.header.borderBottom
                         )
 
                         const rightStickyOffsetPx = enableColumnManager
@@ -816,9 +825,9 @@ const TableHeader = forwardRef<
                             columnFreezeRight,
                             visibleColumns,
                             getColumnWidth,
-                            tableToken.dataTable.table.header.backgroundColor ||
-                                '#ffffff',
-                            rightStickyOffsetPx
+                            tableToken.dataTable.table.header.backgroundColor,
+                            rightStickyOffsetPx,
+                            tableToken.dataTable.table.header.borderBottom
                         )
 
                         const isLastColumn =
@@ -940,9 +949,9 @@ const TableHeader = forwardRef<
                                                     <GripVertical
                                                         size={14}
                                                         color={
-                                                            FOUNDATION_THEME
-                                                                .colors
-                                                                .gray[400]
+                                                            tableToken.dataTable
+                                                                .table.header
+                                                                .cell.color
                                                         }
                                                     />
                                                 </Block>
@@ -977,6 +986,9 @@ const TableHeader = forwardRef<
                                                         <Skeleton
                                                             variant="pulse"
                                                             loading
+                                                            backgroundColor={
+                                                                skeletonBackgroundColor
+                                                            }
                                                             width="80%"
                                                             height="16px"
                                                             borderRadius="4px"
@@ -1046,6 +1058,9 @@ const TableHeader = forwardRef<
                                                                 <Skeleton
                                                                     variant="pulse"
                                                                     loading
+                                                                    backgroundColor={
+                                                                        skeletonBackgroundColor
+                                                                    }
                                                                     width="60%"
                                                                     height="12px"
                                                                     borderRadius="4px"
@@ -1113,7 +1128,8 @@ const TableHeader = forwardRef<
 
                                 {((columnConfig.supportsSorting &&
                                     column.isSortable !== false) ||
-                                    columnConfig.supportsFiltering) &&
+                                    (columnConfig.supportsFiltering &&
+                                        enableFiltering)) &&
                                     !isDisabled && (
                                         <Block
                                             data-element="sorting-icon"
@@ -1271,6 +1287,22 @@ const TableHeader = forwardRef<
                                                             aria-label={`Filter ${column.header}`}
                                                             tabIndex={0}
                                                             $isActive={hasActiveFilter()}
+                                                            $focusOutline={
+                                                                tableToken
+                                                                    .header
+                                                                    .actionIcons
+                                                                    .columnManagerTrigger
+                                                                    ?.focusVisible
+                                                                    .outline
+                                                            }
+                                                            $focusBoxShadow={
+                                                                tableToken
+                                                                    .header
+                                                                    .actionIcons
+                                                                    .columnManagerTrigger
+                                                                    ?.focusVisible
+                                                                    .boxShadow
+                                                            }
                                                             onKeyDown={(e) => {
                                                                 if (
                                                                     e.key ===
@@ -1309,6 +1341,32 @@ const TableHeader = forwardRef<
                                                                 size={16}
                                                                 aria-hidden="true"
                                                                 $isActive={hasActiveFilter()}
+                                                                $activeColor={
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .filter
+                                                                        .selectedTextColor
+                                                                }
+                                                                $inactiveColor={
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .filter
+                                                                        .sortOption
+                                                                        .iconColor
+                                                                }
+                                                                $hoverColor={
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .filter
+                                                                        .sortOption
+                                                                        .textColor
+                                                                }
                                                             />
                                                         </FilterButton>
                                                     </DrawerTrigger>
@@ -1323,6 +1381,9 @@ const TableHeader = forwardRef<
                                                                 <ColumnFilter
                                                                     column={
                                                                         column
+                                                                    }
+                                                                    enableFiltering={
+                                                                        enableFiltering
                                                                     }
                                                                     data={data}
                                                                     tableToken={
@@ -1527,6 +1588,22 @@ const TableHeader = forwardRef<
                                                             aria-label={`Filter ${column.header}`}
                                                             tabIndex={0}
                                                             $isActive={hasActiveFilter()}
+                                                            $focusOutline={
+                                                                tableToken
+                                                                    .header
+                                                                    .actionIcons
+                                                                    .columnManagerTrigger
+                                                                    ?.focusVisible
+                                                                    .outline
+                                                            }
+                                                            $focusBoxShadow={
+                                                                tableToken
+                                                                    .header
+                                                                    .actionIcons
+                                                                    .columnManagerTrigger
+                                                                    ?.focusVisible
+                                                                    .boxShadow
+                                                            }
                                                             onKeyDown={(e) => {
                                                                 if (
                                                                     e.key ===
@@ -1565,6 +1642,32 @@ const TableHeader = forwardRef<
                                                                 size={16}
                                                                 aria-hidden="true"
                                                                 $isActive={hasActiveFilter()}
+                                                                $activeColor={
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .filter
+                                                                        .selectedTextColor
+                                                                }
+                                                                $inactiveColor={
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .filter
+                                                                        .sortOption
+                                                                        .iconColor
+                                                                }
+                                                                $hoverColor={
+                                                                    tableToken
+                                                                        .dataTable
+                                                                        .table
+                                                                        .header
+                                                                        .filter
+                                                                        .sortOption
+                                                                        .textColor
+                                                                }
                                                             />
                                                         </FilterButton>
                                                     }
@@ -1637,6 +1740,9 @@ const TableHeader = forwardRef<
                                                 >
                                                     <ColumnFilter
                                                         column={column}
+                                                        enableFiltering={
+                                                            enableFiltering
+                                                        }
                                                         data={data}
                                                         tableToken={tableToken}
                                                         sortHandlers={
@@ -1841,6 +1947,11 @@ const TableHeader = forwardRef<
                                     data-element="table-header"
                                     data-id={column.header}
                                     disabled={false}
+                                    hoverBackground={
+                                        tableToken.dataTable.table.header.row[
+                                            '&:hover'
+                                        ].backgroundColor
+                                    }
                                     tabIndex={-1}
                                 >
                                     {(dragHandleProps) =>

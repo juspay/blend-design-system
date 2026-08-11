@@ -16,6 +16,20 @@ import { Checkbox } from '../../Checkbox'
 import { FOUNDATION_THEME } from '../../../tokens'
 import type { SelectDrawerProps } from '../types'
 
+/**
+ * @deprecated Use `MultiSelectListV2` instead. `MultiSelectDrawer` predates the
+ * V2 token system: it hardcodes `FOUNDATION_THEME` (so it cannot render dark
+ * mode), uses a parallel `SelectDrawerItem` model without `slot2`-`slot4`,
+ * `tooltip` or `alwaysSelected`, has no keyboard support, and drops every
+ * `groupLabel` as soon as the user searches. `MultiSelectListV2` takes the
+ * standard `MultiSelectV2GroupType` item model and is APG listbox-conformant.
+ *
+ * Not a drop-in: `MultiSelectListV2` is an inline list only. It has no `open`
+ * state, no overlay, and no staged Confirm/Cancel — selection is applied
+ * immediately. To keep this component's modal, staged-selection UX, render
+ * `MultiSelectListV2` inside your own `DrawerV2` with your own footer buttons
+ * and hold the pending selection in local state until Confirm.
+ */
 export const MultiSelectDrawer = ({
     open,
     onOpenChange,
@@ -359,6 +373,19 @@ export const MultiSelectDrawer = ({
     )
 }
 
+/**
+ * @deprecated Use `SelectListV2` instead. `SingleSelectDrawer` predates the
+ * V2 token system: it hardcodes `FOUNDATION_THEME` (so it cannot render dark
+ * mode), uses a parallel `SelectDrawerItem` model without `slot2`-`slot4`,
+ * `tooltip` or `alwaysSelected`, has no keyboard support, and drops every
+ * `groupLabel` as soon as the user searches. `SelectListV2` takes the
+ * standard `SingleSelectV2GroupType` item model and is APG listbox-conformant.
+ *
+ * Not a drop-in: `SelectListV2` is an inline list only. It has no `open` state,
+ * no overlay, and no staged Confirm/Cancel — selection is applied immediately.
+ * To keep this component's modal UX, render `SelectListV2` inside your own
+ * `DrawerV2` with your own footer buttons.
+ */
 export const SingleSelectDrawer = ({
     open,
     onOpenChange,

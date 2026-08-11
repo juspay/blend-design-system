@@ -1,3 +1,4 @@
+import React from 'react'
 import {
     SortDirection,
     SortConfig,
@@ -6,8 +7,10 @@ import {
     FilterType,
     ColumnDefinition,
     ColumnType,
+    FilterOption,
     PivotAggregationType,
     DateFormat,
+    DateColumnProps,
 } from './types'
 import {
     validateColumnData,
@@ -18,6 +21,71 @@ import {
     DateData,
     DateRangeData,
 } from './columnTypes'
+
+export type DataTableBodyState = 'loading' | 'error' | 'empty' | 'rows'
+
+export const getDataTableBodyState = ({
+    isLoading,
+    error,
+    hasRows,
+}: {
+    isLoading: boolean
+    error: boolean
+    hasRows: boolean
+}): DataTableBodyState => {
+    if (isLoading && !hasRows) return 'loading'
+    if (error && !isLoading) return 'error'
+    if (!hasRows) return 'empty'
+    return 'rows'
+}
+
+/**
+ * Compares filter option lists by content. Consumers commonly build `columns`
+ * inline, so a new-but-equal array must not count as a change: that would sync
+ * column state on every parent render and re-run the whole data pipeline.
+ *
+ * Array-checked rather than truthy-checked, and indexed rather than using
+ * `every`: this runs inside a render effect and JS consumers are not bound by
+ * the type, so a malformed value must compare unequal instead of throwing and
+ * taking the table down with it. Indexing also makes array holes compare
+ * unequal, which `every` skips.
+ *
+ * Absent, empty and malformed values all compare equal to each other, because
+ * they all render the same option list.
+ */
+const hasUsableFilterOptions = (
+    value?: FilterOption[]
+): value is FilterOption[] => Array.isArray(value) && value.length > 0
+
+export const haveSameFilterOptions = (
+    a?: FilterOption[],
+    b?: FilterOption[]
+): boolean => {
+    if (a === b) return true
+
+    // getFilterOptions only uses the prop when it is a non-empty array, and
+    // otherwise derives options from the rows. So calling absent-vs-empty a
+    // change would resync column state on every render, which is what this
+    // comparator exists to prevent.
+    if (!hasUsableFilterOptions(a) && !hasUsableFilterOptions(b)) return true
+    if (!hasUsableFilterOptions(a) || !hasUsableFilterOptions(b)) return false
+
+    if (a.length !== b.length) return false
+
+    for (let index = 0; index < a.length; index++) {
+        const option = a[index]
+        const other = b[index]
+        if (
+            option?.id !== other?.id ||
+            option?.label !== other?.label ||
+            option?.value !== other?.value
+        ) {
+            return false
+        }
+    }
+
+    return true
+}
 
 export const isDateOnlyString = (value: string): boolean =>
     /^\d{4}-\d{2}-\d{2}$/.test(value)
@@ -1043,7 +1111,8 @@ export const updateColumnFilter = (
 
 const getExportValue = <T extends Record<string, unknown>>(
     value: unknown,
-    column: ColumnDefinition<T>
+    column: ColumnDefinition<T>,
+    defaultDateLabel?: string
 ): string => {
     if (value == null) return ''
 
@@ -1073,50 +1142,25 @@ const getExportValue = <T extends Record<string, unknown>>(
         }
 
         case ColumnType.DATE: {
-            if (
-                typeof value === 'object' &&
-                value !== null &&
-                'date' in value
-            ) {
-                const dateData = value as {
-                    date: Date | string
-                    format?: DateFormat
-                    showTime?: boolean
-                }
-                const date = new Date(dateData.date)
-                if (isNaN(date.getTime())) return 'Invalid Date'
+            const dateData =
+                typeof value === 'object' && value !== null && 'date' in value
+                    ? (value as DateColumnProps)
+                    : ({
+                          date: value as Date | string,
+                          showTime: false,
+                      } as DateColumnProps)
+            const date = parseDateLike(dateData.date)
+            if (!date) return '-'
 
-                const options: Intl.DateTimeFormatOptions = {
-                    year: 'numeric',
-                    month: 'short',
-                    day: '2-digit',
-                }
+            const format =
+                dateData.format ||
+                column.dateFormat ||
+                (dateData.showTime ? 'DD MMM YYYY, hh:mm A' : 'DD MMM YYYY')
+            const label =
+                dateData.dateLabel || column.dateLabel || defaultDateLabel
+            const formattedDate = formatDateString(date, format)
 
-                if (dateData.showTime) {
-                    options.hour = '2-digit'
-                    options.minute = '2-digit'
-                }
-
-                return new Intl.DateTimeFormat('en-US', options).format(date)
-            }
-            if (value instanceof Date) {
-                return new Intl.DateTimeFormat('en-US', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: '2-digit',
-                }).format(value)
-            }
-            if (typeof value === 'string') {
-                const date = new Date(value)
-                if (!isNaN(date.getTime())) {
-                    return new Intl.DateTimeFormat('en-US', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: '2-digit',
-                    }).format(date)
-                }
-            }
-            return String(value)
+            return label ? `${formattedDate} ${label}` : formattedDate
         }
 
         case ColumnType.AVATAR: {
@@ -1206,6 +1250,370 @@ const getExportValue = <T extends Record<string, unknown>>(
         default:
             return String(value)
     }
+}
+
+type ReactNodeText = {
+    text?: string
+    complete: boolean
+}
+
+const getTextFromReactNode = (node: React.ReactNode): ReactNodeText => {
+    if (
+        typeof node === 'string' ||
+        typeof node === 'number' ||
+        typeof node === 'bigint'
+    ) {
+        return { text: String(node), complete: true }
+    }
+
+    if (Array.isArray(node)) {
+        const parts = node.map(getTextFromReactNode)
+        const textParts = parts
+            .map((part) => part.text)
+            .filter((part): part is string => part !== undefined)
+        return {
+            text: textParts.length > 0 ? textParts.join('') : undefined,
+            complete: parts.every((part) => part.complete),
+        }
+    }
+
+    if (React.isValidElement<{ children?: React.ReactNode }>(node)) {
+        if (
+            typeof node.type !== 'string' ||
+            'dangerouslySetInnerHTML' in node.props
+        ) {
+            return { complete: false }
+        }
+
+        return getTextFromReactNode(node.props.children)
+    }
+
+    if (node == null || typeof node === 'boolean') {
+        return { complete: true }
+    }
+
+    return { complete: false }
+}
+
+type DataTableExportValueOptions<T extends Record<string, unknown>> = {
+    getDisplayValue?: (value: unknown, column: ColumnDefinition<T>) => unknown
+    dateLabel?: string
+}
+
+type DataTableExportCell = {
+    text: string
+    rendered?: React.ReactNode
+}
+
+const getDataTableExportCell = <T extends Record<string, unknown>>(
+    row: T,
+    column: ColumnDefinition<T>,
+    rowIndex: number,
+    options: DataTableExportValueOptions<T> = {}
+): DataTableExportCell => {
+    const value = row[column.field]
+    const displayValue = options.getDisplayValue
+        ? options.getDisplayValue(value, column)
+        : value
+    const fallback = getExportValue(displayValue, column, options.dateLabel)
+
+    if (
+        column.type === ColumnType.DATE ||
+        column.type === ColumnType.DROPDOWN
+    ) {
+        return { text: fallback }
+    }
+
+    if (column.type !== ColumnType.REACT_ELEMENT && column.renderCell) {
+        try {
+            const rendered = (
+                column.renderCell as (
+                    value: unknown,
+                    row: T,
+                    index: number
+                ) => React.ReactNode
+            )(displayValue, row, rowIndex)
+            const directText = getTextFromReactNode(rendered)
+
+            if (directText.complete) {
+                return { text: directText.text ?? fallback }
+            }
+
+            if (rendered !== undefined) {
+                return { text: fallback, rendered }
+            }
+        } catch {
+            // A visual-only renderer should not prevent raw-value export.
+        }
+    }
+
+    return { text: fallback }
+}
+
+const EXPORT_ROW_BATCH_SIZE = 250
+const EXPORT_RENDER_RECOVERY_ATTEMPT_LIMIT = 32
+
+const createExportBatchToken = (): string => {
+    if (
+        typeof crypto !== 'undefined' &&
+        typeof crypto.randomUUID === 'function'
+    ) {
+        return crypto.randomUUID()
+    }
+
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`
+}
+
+const applyRenderedCellText = (
+    cells: DataTableExportCell[],
+    renderToStaticMarkup: (
+        node: React.ReactNode,
+        options?: { identifierPrefix?: string }
+    ) => string
+): void => {
+    const pendingCells = cells.filter((cell) => cell.rendered !== undefined)
+    if (pendingCells.length === 0 || typeof DOMParser === 'undefined') return
+
+    const batchToken = createExportBatchToken()
+
+    const markup = renderToStaticMarkup(
+        React.createElement(
+            'div',
+            { 'data-blend-export-root': batchToken },
+            pendingCells.map((cell, index) =>
+                React.createElement(
+                    'div',
+                    {
+                        key: index,
+                        'data-blend-export-cell': `${batchToken}-${index}`,
+                    },
+                    cell.rendered
+                )
+            )
+        )
+    )
+    const renderedDocument = new DOMParser().parseFromString(
+        markup,
+        'text/html'
+    )
+    renderedDocument
+        .querySelectorAll('script, style, noscript')
+        .forEach((element) => element.remove())
+    const roots = Array.from(
+        renderedDocument.querySelectorAll('[data-blend-export-root]')
+    ).filter(
+        (root) => root.getAttribute('data-blend-export-root') === batchToken
+    )
+    const wrappers = roots.length === 1 ? Array.from(roots[0].children) : []
+
+    if (wrappers.length !== pendingCells.length) {
+        throw new Error('DataTable export renderer boundary was invalid')
+    }
+
+    const renderedText = wrappers.map((wrapper, index) => {
+        const expectedToken = `${batchToken}-${index}`
+
+        if (wrapper.getAttribute('data-blend-export-cell') !== expectedToken) {
+            throw new Error('DataTable export renderer boundary was invalid')
+        }
+
+        return wrapper.textContent
+    })
+
+    pendingCells.forEach((cell, index) => {
+        const text = renderedText[index]
+        if (text) cell.text = text
+    })
+}
+
+const applyRenderedCellTextSafely = (
+    cells: DataTableExportCell[],
+    renderToStaticMarkup: (
+        node: React.ReactNode,
+        options?: { identifierPrefix?: string }
+    ) => string,
+    recoveryBudget: { remaining: number },
+    isRecoveryAttempt = false
+): void => {
+    const pendingCells = cells.filter((cell) => cell.rendered !== undefined)
+    if (pendingCells.length === 0) return
+
+    if (isRecoveryAttempt) {
+        if (recoveryBudget.remaining === 0) return
+        recoveryBudget.remaining -= 1
+    }
+
+    try {
+        applyRenderedCellText(pendingCells, renderToStaticMarkup)
+    } catch {
+        if (pendingCells.length === 1) return
+
+        const midpoint = Math.ceil(pendingCells.length / 2)
+        applyRenderedCellTextSafely(
+            pendingCells.slice(0, midpoint),
+            renderToStaticMarkup,
+            recoveryBudget,
+            true
+        )
+        applyRenderedCellTextSafely(
+            pendingCells.slice(midpoint),
+            renderToStaticMarkup,
+            recoveryBudget,
+            true
+        )
+    }
+}
+
+const serializeDataTableRows = async <T extends Record<string, unknown>>(
+    data: T[],
+    columns: ColumnDefinition<T>[],
+    options: DataTableExportValueOptions<T>,
+    rowIndexOffset = 0
+): Promise<string[][]> => {
+    const rows: string[][] = []
+    const renderRecoveryBudget = {
+        remaining: EXPORT_RENDER_RECOVERY_ATTEMPT_LIMIT,
+    }
+    let staticRenderer:
+        | (typeof import('react-dom/server'))['renderToStaticMarkup']
+        | undefined
+
+    for (
+        let batchStart = 0;
+        batchStart < data.length;
+        batchStart += EXPORT_ROW_BATCH_SIZE
+    ) {
+        const batch = data.slice(batchStart, batchStart + EXPORT_ROW_BATCH_SIZE)
+        const cells = batch.map((row, index) =>
+            columns.map((column) =>
+                getDataTableExportCell(
+                    row,
+                    column,
+                    rowIndexOffset + batchStart + index,
+                    options
+                )
+            )
+        )
+        const flattenedCells = cells.flat()
+
+        if (flattenedCells.some((cell) => cell.rendered !== undefined)) {
+            staticRenderer ??= (await import('react-dom/server'))
+                .renderToStaticMarkup
+            applyRenderedCellTextSafely(
+                flattenedCells,
+                staticRenderer,
+                renderRecoveryBudget
+            )
+        }
+
+        rows.push(...cells.map((row) => row.map((cell) => cell.text)))
+    }
+
+    return rows
+}
+
+export const getDataTableExportValue = async <
+    T extends Record<string, unknown>,
+>(
+    row: T,
+    column: ColumnDefinition<T>,
+    rowIndex: number,
+    options: DataTableExportValueOptions<T> = {}
+): Promise<string> => {
+    const [serializedRow] = await serializeDataTableRows(
+        [row],
+        [column],
+        options,
+        rowIndex
+    )
+    return serializedRow[0]
+}
+
+const escapeCSVValue = (value: string): string => {
+    const safeValue = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
+    if (!/[",\r\n]/.test(safeValue)) return safeValue
+    return `"${safeValue.replace(/"/g, '""')}"`
+}
+
+export const generateDataTableCSV = async <T extends Record<string, unknown>>(
+    data: T[],
+    columns: ColumnDefinition<T>[],
+    options: DataTableExportValueOptions<T> = {}
+): Promise<string> => {
+    if (data.length === 0) {
+        throw new Error('No data available for export')
+    }
+
+    const header = columns.map((column) => column.header)
+    const rows = await serializeDataTableRows(data, columns, options)
+
+    return [header, ...rows]
+        .map((row) => row.map(escapeCSVValue).join(','))
+        .join('\r\n')
+}
+
+export const getDataTableExportMatrix = async <
+    T extends Record<string, unknown>,
+>(
+    data: T[],
+    columns: ColumnDefinition<T>[],
+    options: DataTableExportValueOptions<T> = {}
+): Promise<string[][]> => {
+    if (data.length === 0) {
+        throw new Error('No data available for export')
+    }
+
+    const rows = await serializeDataTableRows(data, columns, options)
+
+    return [columns.map((column) => column.header), ...rows]
+}
+
+const getExportFileName = (fileName: string, extension: string): string => {
+    const knownExtension = /\.(csv|xlsx)$/i
+    return knownExtension.test(fileName)
+        ? fileName.replace(knownExtension, `.${extension}`)
+        : `${fileName}.${extension}`
+}
+
+const downloadBlob = (blob: Blob, fileName: string): void => {
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+
+    link.href = url
+    link.download = fileName
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+}
+
+export const downloadDataTableExport = async <
+    T extends Record<string, unknown>,
+>(
+    data: T[],
+    columns: ColumnDefinition<T>[],
+    format: 'csv' | 'xlsx',
+    fileName: string,
+    options: DataTableExportValueOptions<T> = {}
+): Promise<void> => {
+    if (format === 'csv') {
+        downloadBlob(
+            new Blob([await generateDataTableCSV(data, columns, options)], {
+                type: 'text/csv;charset=utf-8;',
+            }),
+            getExportFileName(fileName, format)
+        )
+        return
+    }
+
+    const { default: writeXlsxFile } = await import('write-excel-file/browser')
+    const workbookBlob = await writeXlsxFile(
+        await getDataTableExportMatrix(data, columns, options),
+        { sheet: 'Data' }
+    ).toBlob()
+
+    downloadBlob(workbookBlob, getExportFileName(fileName, format))
 }
 
 export const generateCSVContent = <T extends Record<string, unknown>>(

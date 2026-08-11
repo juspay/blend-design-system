@@ -6,10 +6,12 @@ import {
     forwardRef,
     type ReactNode,
 } from 'react'
+import styled from 'styled-components'
 import Block from '../../Primitives/Block/Block'
 import type { SidebarMobileNavigationProps } from '../types'
 import { FOUNDATION_THEME } from '../../../tokens'
-import { getMobileNavigationTokens } from './mobile.tokens'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import type { MobileNavigationTokenType } from './mobile.tokens'
 import {
     getMobileNavigationLayout,
     getMobileNavigationSecondaryRows,
@@ -21,45 +23,44 @@ import { useOrderedItems, useItemSelection } from './hooks'
 import MobileNavigationItem from './MobileNavigationItem'
 import PrimaryActionButton from './PrimaryActionButton'
 import MoreButton from './MoreButton'
-import styled from 'styled-components'
+
+type FloatingNavBoxProps = {
+    $tokens: MobileNavigationTokenType
+    $backgroundColor: string
+    $background?: string
+}
 
 const PRIMARY_VISIBLE_LIMIT = 5
 const SAFE_AREA_OFFSET = Number.parseFloat(String(FOUNDATION_THEME.unit[8]))
 const VIEWPORT_HEIGHT_MULTIPLIER = 0.85
 const FLOATING_PADDING = FOUNDATION_THEME.unit[16]
 
-// Styled container for Apple Glass UI effect
-const FloatingNavContainer = styled(Block)`
+const FloatingNavContainer = styled(Block)<FloatingNavBoxProps>`
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    z-index: 1050;
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    background-color: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 24px;
-    transition:
-        transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-        max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: ${({ $tokens }) => String($tokens?.container?.zIndex ?? 1050)};
+    backdrop-filter: ${({ $tokens }) =>
+        String($tokens?.container?.backdropFilter ?? 'blur(20px)')};
+    -webkit-backdrop-filter: ${({ $tokens }) =>
+        String($tokens?.container?.backdropFilter ?? 'blur(20px)')};
+    background-color: ${({ $backgroundColor }) => $backgroundColor};
+    border: ${({ $tokens }) => String($tokens?.container?.border ?? 'none')};
+    border-radius: ${({ $tokens }) =>
+        String($tokens?.container?.borderRadius ?? '24px')};
+    transition: ${({ $tokens }) =>
+        String($tokens?.container?.transition ?? 'all 0.3s ease')};
     overflow: hidden;
     will-change: transform, max-height;
     display: flex;
     flex-direction: column;
 
-    @supports (backdrop-filter: blur(20px)) {
-        background-color: rgba(255, 255, 255, 0.7);
-    }
-
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-        background-color: rgba(0, 0, 0, 0.72);
-        border-top-color: rgba(255, 255, 255, 0.1);
-
-        @supports (backdrop-filter: blur(20px)) {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
+    @supports (
+        (-webkit-backdrop-filter: blur(20px)) or (backdrop-filter: blur(20px))
+    ) {
+        ${({ $background }) =>
+            $background ? `background: ${$background};` : ''}
     }
 `
 
@@ -90,10 +91,8 @@ const SidebarMobileNavigation = forwardRef<
         },
         ref
     ) => {
-        const tokens = useMemo(
-            () => getMobileNavigationTokens(FOUNDATION_THEME).sm,
-            []
-        )
+        const tokens =
+            useResponsiveTokens<MobileNavigationTokenType>('MOBILE_NAVIGATION')
 
         // Track viewport height for layout calculations
         const [viewportHeight, setViewportHeight] = useState<
@@ -301,8 +300,15 @@ const SidebarMobileNavigation = forwardRef<
         return (
             <FloatingNavContainer
                 ref={ref}
-                maxHeight={navigationHeight}
+                $tokens={tokens}
+                $backgroundColor={String(tokens.container.backgroundColor)}
+                $background={
+                    tokens.container.background
+                        ? String(tokens.container.background)
+                        : undefined
+                }
                 style={{
+                    maxHeight: navigationHeight,
                     marginBottom: `calc(${SAFE_AREA_OFFSET}px + ${FLOATING_PADDING})`,
                     marginLeft: FLOATING_PADDING,
                     marginRight: FLOATING_PADDING,

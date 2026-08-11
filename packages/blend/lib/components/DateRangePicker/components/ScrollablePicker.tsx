@@ -12,11 +12,11 @@ import {
     calculateScrollPosition,
     calculateIndexFromScroll,
 } from '../utils'
-import { FOUNDATION_THEME } from '../../../tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import type { ScrollablePickerProps } from '../types'
 import { getMobileToken } from './mobile.tokens'
+import { useTheme } from '../../../context'
 
 const { ITEM_HEIGHT, VISIBLE_ITEMS } = MOBILE_PICKER_CONSTANTS
 const CONTAINER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS
@@ -30,7 +30,8 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
         columnId,
         isDisabled = false,
     }) => {
-        const tokens = getMobileToken(FOUNDATION_THEME).sm
+        const { foundationTokens, theme } = useTheme()
+        const tokens = getMobileToken(foundationTokens, theme).sm
         const scrollRef = useRef<HTMLDivElement>(null)
         const isScrollingRef = useRef(false)
         const isProgrammaticScrollRef = useRef(false)
@@ -237,8 +238,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                     right="0"
                     height={`${ITEM_HEIGHT}px`}
                     style={{
-                        background:
-                            'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)',
+                        background: tokens.picker.title.fade.top,
                         pointerEvents: 'none',
                         zIndex: 3,
                     }}
@@ -251,8 +251,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                     right="0"
                     height={`${ITEM_HEIGHT}px`}
                     style={{
-                        background:
-                            'linear-gradient(to top, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.2) 80%, transparent 100%)',
+                        background: tokens.picker.title.fade.bottom,
                         pointerEvents: 'none',
                         zIndex: 3,
                     }}
@@ -283,8 +282,17 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                                 gradientUnits="userSpaceOnUse"
                                 gradientTransform="translate(35 1) rotate(90) scale(0.5 34.875)"
                             >
-                                <stop stopColor="#777777" />
-                                <stop offset="1" stopColor="white" />
+                                <stop
+                                    stopColor={String(
+                                        tokens.picker.divider.strokeColor
+                                    )}
+                                />
+                                <stop
+                                    offset="1"
+                                    stopColor={String(
+                                        tokens.picker.divider.strokeColorEnd
+                                    )}
+                                />
                             </radialGradient>
                         </defs>
                     </svg>
@@ -315,8 +323,17 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                                 gradientUnits="userSpaceOnUse"
                                 gradientTransform="translate(35 1) rotate(90) scale(0.5 34.875)"
                             >
-                                <stop stopColor="#777777" />
-                                <stop offset="1" stopColor="white" />
+                                <stop
+                                    stopColor={String(
+                                        tokens.picker.divider.strokeColor
+                                    )}
+                                />
+                                <stop
+                                    offset="1"
+                                    stopColor={String(
+                                        tokens.picker.divider.strokeColorEnd
+                                    )}
+                                />
                             </radialGradient>
                         </defs>
                     </svg>
@@ -401,7 +418,7 @@ const ScrollablePicker = React.memo<ScrollablePickerProps>(
                                     fontSize: '16px',
                                     fontWeight: 600,
                                     color: String(
-                                        FOUNDATION_THEME.colors.gray[900]
+                                        tokens.picker.text.selected.color
                                     ),
                                     position: 'relative',
                                     zIndex: 10,

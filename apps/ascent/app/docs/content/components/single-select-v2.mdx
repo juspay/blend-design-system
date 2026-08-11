@@ -53,6 +53,45 @@ function MyComponent() {
 }
 ```
 
+## Server-side search
+
+Put `searchText` in the `search` config to make search controlled. The component
+renders that value, calls `onSearchChange` for every input change, and does not
+filter `items`; the consumer supplies already-filtered API results.
+
+```tsx
+<SingleSelectV2
+    label="Find a person"
+    placeholder="Select a person"
+    items={apiResults}
+    selected={selected}
+    onSelect={setSelected}
+    search={{
+        searchText: query,
+        onSearchChange: setQuery,
+        isSearchLoading: isSearching,
+        emptyStateText: query ? 'No people found' : 'Start typing to search',
+    }}
+/>
+```
+
+Controlled mode is selected by the presence of `search.searchText`, including an
+empty string. Omitting `onSearchChange` creates a read-only search input.
+`show: false` hides the input but still disables internal filtering. Debouncing,
+request cancellation, caching, and errors remain consumer responsibilities;
+search loading is independent from pagination via `hasMore`/`loadingComponent`.
+
+The controlled query persists when the menu closes and reopens. Clear it in
+your own lifecycle handler only when that is the experience you want, for
+example with `onOpenChange={(open) => !open && setQuery('')}`.
+
+| `SingleSelectV2` search field | Legacy `SingleSelect` equivalent |
+| ----------------------------- | -------------------------------- |
+| `search.searchText`           | `searchText`                     |
+| `search.onSearchChange`       | `onSearchChange`                 |
+| `search.isSearchLoading`      | `isSearchLoading`                |
+| `search.emptyStateText`       | `emptyStateText`                 |
+
 ## API Reference
 
 <DocsTypeTable
@@ -187,8 +226,9 @@ function MyComponent() {
                 hintText: 'Configuration for search functionality in dropdown.',
             },
             {
-                content: 'SingleSelectV2SearchConfig',
-                hintText: 'Object with show and placeholder',
+                content: 'SelectV2SearchConfig',
+                hintText:
+                    'Object with show, placeholder, searchText, onSearchChange, isSearchLoading, and emptyStateText.',
             },
             { content: '' },
         ],

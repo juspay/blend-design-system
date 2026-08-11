@@ -1,0 +1,159 @@
+---
+title: Tooltip v1 to v2
+description: Migrate Tooltip to TooltipV2, including enum names, controlled visibility, sizing, trigger refs, and token changes.
+---
+
+## Overview
+
+`Tooltip` is deprecated in favor of `TooltipV2`. Content, trigger children,
+side/alignment, arrows, icon slots, delay, offset, width constraints,
+full-width triggers, and hoverable-content behavior continue to work.
+
+V2 renames the component and enums, adds a medium size and an
+`onOpenChange` callback, forwards a ref to the trigger, and moves overlay
+stacking from a hard-coded value into tokens. It also makes the arrow use the
+same offset passed to the tooltip content, which can slightly change placement.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Tooltip,
+    TooltipAlign,
+    TooltipSide,
+    TooltipSize,
+    TooltipSlotDirection,
+} from '@juspay/blend-design-system'
+;<Tooltip
+    content="More details"
+    side={TooltipSide.BOTTOM}
+    align={TooltipAlign.START}
+    size={TooltipSize.LARGE}
+    slot={<InfoIcon />}
+    slotDirection={TooltipSlotDirection.LEFT}
+    delayDuration={300}
+    offset={8}
+>
+    <button type="button">Details</button>
+</Tooltip>
+```
+
+```tsx
+// v2
+import {
+    TooltipV2,
+    TooltipV2Align,
+    TooltipV2Side,
+    TooltipV2Size,
+    TooltipV2SlotDirection,
+} from '@juspay/blend-design-system'
+;<TooltipV2
+    content="More details"
+    side={TooltipV2Side.BOTTOM}
+    align={TooltipV2Align.START}
+    size={TooltipV2Size.LG}
+    slot={<InfoIcon />}
+    slotDirection={TooltipV2SlotDirection.LEFT}
+    delayDuration={300}
+    offset={8}
+>
+    <button type="button">Details</button>
+</TooltipV2>
+```
+
+## Breaking changes
+
+### Rename the component and enum imports
+
+**v1:** `Tooltip`, `TooltipSide`, `TooltipAlign`, `TooltipSlotDirection`, and
+`TooltipSize`.
+
+**v2:** `TooltipV2`, `TooltipV2Side`, `TooltipV2Align`,
+`TooltipV2SlotDirection`, and `TooltipV2Size`.
+
+Side, alignment, and slot-direction values are unchanged. For size, map
+`TooltipSize.SMALL` to `TooltipV2Size.SM` and `TooltipSize.LARGE` to
+`TooltipV2Size.LG`. V2 additionally offers `TooltipV2Size.MD`; the default
+remains small.
+
+### Use `onOpenChange` when the application controls visibility
+
+**v1:** `open` can force the tooltip open or closed, but there is no callback
+for user-driven visibility changes.
+
+**v2:** `onOpenChange` reports each requested visibility change and pairs with
+`open` for a controlled tooltip.
+
+```tsx
+const [open, setOpen] = useState(false)
+
+;<TooltipV2 content="More details" open={open} onOpenChange={setOpen}>
+    <button type="button">Details</button>
+</TooltipV2>
+```
+
+Existing uncontrolled tooltips need no new state: omit both props. When `open`
+is supplied, update it from `onOpenChange` so hover, focus, Escape, and pointer
+interactions can close the tooltip as expected.
+
+### Review arrow offset placement
+
+**v1:** `offset` controls the content's distance from the trigger, but the
+arrow always uses an internal offset of `8`.
+
+**v2:** both the content and arrow use the `offset` prop.
+
+The default offset remains `5`, but any call site using a custom offset can
+render with a visibly different arrow attachment. Review tooltips near narrow
+triggers, viewport edges, and other overlays; adjust `offset` if the arrow no
+longer has the intended spacing.
+
+### Use the forwarded trigger ref when needed
+
+**v1:** `Tooltip` does not forward a ref.
+
+**v2:** `TooltipV2` forwards a ref to its trigger wrapper, or to a native
+element trigger when it can compose the ref safely.
+
+No migration is required for ordinary triggers. Use the V2 ref only for
+application-owned focus or measurement behavior, and verify the target when a
+custom component is wrapped: non-native triggers still receive a span wrapper.
+
+### Review overlay stacking with the V2 token
+
+**v1:** tooltip content has a hard-coded `z-index: 9999`.
+
+**v2:** tooltip content reads `TOOLTIPV2.zIndex`.
+
+If a v1 tooltip deliberately appeared above application dialogs, menus, or
+custom portals, establish that layering through the V2 token contract and test
+it with the relevant overlays. This makes stacking themeable but can expose an
+old assumption about the global z-index value.
+
+### Update custom tokens
+
+**v1:** the component reads `TOOLTIP` tokens for small and large sizes.
+
+**v2:** it reads `TOOLTIPV2`, adds medium-size entries, and introduces the
+`zIndex` token.
+
+Rebuild overrides against `TOOLTIPV2` rather than copying paths. Add values for
+`SM`, `MD`, and `LG`, including border radius, maximum width, padding, gap, and
+text typography. Set `zIndex` deliberately for the application's overlay
+stack.
+
+## What continues to work
+
+`children`, `content`, `side`, `align`, `showArrow`, `slot`,
+`slotDirection`, `delayDuration`, `offset`, `maxWidth`, `fullWidth`, and
+`disableInteractive` retain their purpose and defaults. Slots still accept
+React content and are rendered as decorative leading or trailing content;
+tooltips still format line breaks in their content and wrap text to avoid
+overflow.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/tooltip#component-tokens) with the [V2 component token reference](/docs/components/tooltip-v2#component-tokens).

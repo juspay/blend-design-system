@@ -34,6 +34,7 @@ import {
     FilterType,
     ColumnType,
     RowActionsConfig,
+    DataTableExportFormat,
 } from './types'
 import { TableTokenType } from './dataTable.tokens'
 import {
@@ -46,6 +47,9 @@ import {
     createSearchConfig,
     clearAllFiltersAndSearch,
     getColumnStyles,
+    haveSameFilterOptions,
+    getDataTableBodyState,
+    downloadDataTableExport,
 } from './utils'
 import DataTableHeader from './DataTableHeader'
 import TableHeader from './TableHeader'
@@ -54,8 +58,10 @@ import TableFooter from './TableFooter'
 import BulkActionBar from './TableBody/BulkActionBar'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'
+import { Spinner } from '../Spinner'
+import { EmptyState } from '../EmptyState'
 import { ButtonSize, ButtonType } from '../Button/types'
-import { Settings, Check, Loader2 } from 'lucide-react'
+import { Settings, Check, CircleAlert, Download } from 'lucide-react'
 import Menu from '../Menu/Menu'
 import { MenuGroupType, MenuAlignment } from '../Menu/types'
 
@@ -65,6 +71,7 @@ import MobileColumnDrawer from './MobileColumnDrawer'
 import PivotTableModal from './PivotTableModal'
 import type { PivotTableConfig } from './PivotTableModal/types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTheme } from '../../context/ThemeContext'
 import styled from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 
@@ -82,6 +89,69 @@ const ScrollableContainer = styled(Block)`
     -ms-overflow-style: none;
     scrollbar-width: none;
 `
+
+const DefaultTableState = ({
+    onRetry,
+    tableToken,
+    isDarkTheme,
+}: {
+    onRetry?: () => void
+    tableToken: TableTokenType
+    isDarkTheme: boolean
+}) => {
+    const stateTextColor = tableToken.dataTable.table.body.cell.color
+    const iconBackground = isDarkTheme
+        ? FOUNDATION_THEME.colors.red[900]
+        : FOUNDATION_THEME.colors.red[50]
+    const iconColor = isDarkTheme
+        ? FOUNDATION_THEME.colors.red[400]
+        : FOUNDATION_THEME.colors.red[600]
+
+    return (
+        <Block
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            gap={FOUNDATION_THEME.unit[12]}
+        >
+            <Block
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                style={{
+                    width: FOUNDATION_THEME.unit[40],
+                    height: FOUNDATION_THEME.unit[40],
+                    borderRadius: '50%',
+                    backgroundColor: iconBackground,
+                    color: iconColor,
+                }}
+            >
+                <CircleAlert
+                    size={FOUNDATION_THEME.unit[20]}
+                    aria-hidden="true"
+                />
+            </Block>
+            <PrimitiveText
+                style={{
+                    color: stateTextColor,
+                    fontSize: FOUNDATION_THEME.font.size.body.md.fontSize,
+                    fontWeight: FOUNDATION_THEME.font.weight[500],
+                }}
+            >
+                Unable to load data
+            </PrimitiveText>
+            {onRetry && (
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    size={ButtonSize.SMALL}
+                    onClick={onRetry}
+                    text="Retry"
+                />
+            )}
+        </Block>
+    )
+}
 
 const DataTable = forwardRef(
     <T extends Record<string, unknown>>(
@@ -105,6 +175,11 @@ const DataTable = forwardRef(
             serverSideFiltering = false,
             serverSidePagination = false,
             isLoading = false,
+            error = false,
+            renderErrorState,
+            onRetry,
+            showEmptyState = false,
+            renderEmptyState,
             enableColumnManager = true,
             enableColumnReordering = false,
             onColumnReorder,
@@ -149,6 +224,7 @@ const DataTable = forwardRef(
             headerSlot1,
             headerSlot2,
             bulkActions,
+            exportConfig,
             rowActions,
             onOperations,
             onInsertLeft,
@@ -167,6 +243,8 @@ const DataTable = forwardRef(
         ref: React.Ref<HTMLDivElement>
     ) => {
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+        const { theme } = useTheme()
+        const isDarkTheme = theme === 'dark'
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
         const scrollContainerRef = useRef<HTMLDivElement>(null)
         const tableContainerRef = useRef<HTMLDivElement>(null)
@@ -226,11 +304,10 @@ const DataTable = forwardRef(
 
                 if (matchingColumn) {
                     if (matchingColumn.isVisible !== false) {
-                        const updatedColumn = {
-                            ...col,
-                            ...matchingColumn,
-                        } as ColumnDefinition<T>
-                        updatedVisibleColumns.push(updatedColumn)
+                        // Take the incoming column as-is so props the consumer
+                        // removed (filterType, filterOptions) revert instead of
+                        // surviving from the previous state.
+                        updatedVisibleColumns.push(matchingColumn)
                     }
                 }
             })
@@ -263,6 +340,12 @@ const DataTable = forwardRef(
                         updatedCol.headerSubtext !==
                             originalCol.headerSubtext ||
                         updatedCol.header !== originalCol.header ||
+                        updatedCol.type !== originalCol.type ||
+                        updatedCol.filterType !== originalCol.filterType ||
+                        !haveSameFilterOptions(
+                            updatedCol.filterOptions,
+                            originalCol.filterOptions
+                        ) ||
                         (updatedCol.type === ColumnType.CUSTOM &&
                             updatedCol.renderCell !== originalCol.renderCell)
                     )
@@ -332,6 +415,7 @@ const DataTable = forwardRef(
             useState<number>(-1)
 
         const [internalLoading, setInternalLoading] = useState<boolean>(false)
+        const [isExporting, setIsExporting] = useState<boolean>(false)
 
         useEffect(() => {
             if (serverSidePagination && !isLoading && internalLoading) {
@@ -469,15 +553,11 @@ const DataTable = forwardRef(
             ? mobileVisibleColumns
             : visibleColumns
 
-        // Calculate minimum height for empty state based on page size
-        // This ensures consistent height whether data is present or not
-        const emptyStateMinHeight = useMemo(() => {
-            if (tableBodyHeight) {
-                return '400px'
+        const stateAreaHeight = useMemo(() => {
+            if (tableBodyHeight !== undefined) {
+                return tableBodyHeight
             }
-            // Use fixed heights based on page size ranges
-            // 5 rows/page → 300px
-            // 10+ rows/page → 600px
+
             return pageSize <= 5 ? '300px' : '600px'
         }, [pageSize, tableBodyHeight])
 
@@ -660,6 +740,106 @@ const DataTable = forwardRef(
             pagination?.currentPage,
             pagination?.pageSize,
         ])
+        const isTableLoading =
+            isLoading || (serverSidePagination && internalLoading)
+        const bodyState = getDataTableBodyState({
+            isLoading: isTableLoading,
+            error,
+            hasRows: currentData.length > 0,
+        })
+        const isErrorState = bodyState === 'error'
+        const shouldRenderRows = bodyState === 'rows'
+
+        const exportFormats = useMemo<DataTableExportFormat[]>(() => {
+            const configuredFormats = exportConfig?.formats?.filter(
+                (format): format is DataTableExportFormat =>
+                    format === 'csv' || format === 'xlsx'
+            )
+
+            return configuredFormats && configuredFormats.length > 0
+                ? [...new Set(configuredFormats)]
+                : ['csv']
+        }, [exportConfig?.formats])
+
+        const handleTableExport = async (format: DataTableExportFormat) => {
+            if (!exportConfig?.enabled || isExporting) return
+
+            setIsExporting(true)
+            try {
+                const scope = exportConfig.scope || 'currentPage'
+                let rows = scope === 'allLoaded' ? processedData : currentData
+
+                if (exportConfig.onExport) {
+                    const suppliedRows = await exportConfig.onExport({
+                        visibleColumns,
+                        filters: columnFilters,
+                        advancedFilters,
+                        search: searchConfig,
+                        sort: sortConfig,
+                        scope,
+                    })
+
+                    if (suppliedRows === undefined) return
+                    rows = suppliedRows
+                }
+
+                const defaultFileName = `${title || 'data'}-export-${new Date().toISOString().split('T')[0]}`
+                await downloadDataTableExport(
+                    rows,
+                    visibleColumns,
+                    format,
+                    exportConfig.fileName || defaultFileName,
+                    { getDisplayValue, dateLabel }
+                )
+            } catch (error) {
+                alert(error instanceof Error ? error.message : 'Export failed')
+            } finally {
+                setIsExporting(false)
+            }
+        }
+
+        const exportButton = exportConfig?.enabled ? (
+            exportFormats.length === 1 ? (
+                <Button
+                    data-element="table-export-button"
+                    buttonType={ButtonType.SECONDARY}
+                    leadingIcon={<Download aria-hidden="true" />}
+                    size={ButtonSize.SMALL}
+                    loading={isExporting}
+                    disabled={isExporting}
+                    aria-label={`Export ${exportFormats[0].toUpperCase()}`}
+                    onClick={() => void handleTableExport(exportFormats[0])}
+                >
+                    Export
+                </Button>
+            ) : (
+                <Menu
+                    items={[
+                        {
+                            items: exportFormats.map((format) => ({
+                                label: format.toUpperCase(),
+                                onClick: () => void handleTableExport(format),
+                            })),
+                            showSeparator: false,
+                        },
+                    ]}
+                    alignment={MenuAlignment.END}
+                    trigger={
+                        <Button
+                            data-element="table-export-button"
+                            buttonType={ButtonType.SECONDARY}
+                            leadingIcon={<Download aria-hidden="true" />}
+                            size={ButtonSize.SMALL}
+                            loading={isExporting}
+                            disabled={isExporting}
+                            aria-label="Export table"
+                        >
+                            Export
+                        </Button>
+                    }
+                />
+            )
+        ) : null
 
         // Stable row ID list for the current page. Used for selection state and
         // as a cheap signal to remount the tbody when results change (e.g. server-side search).
@@ -1549,26 +1729,37 @@ const DataTable = forwardRef(
                     onSearch={handleSearch}
                     onAdvancedFiltersChange={onAdvancedFiltersChange}
                     onClearAllFilters={clearAllFilters}
+                    mobileToolbarSlot={exportButton}
                     headerSlot1={
-                        showSettings ? (
-                            <>
-                                <Menu
-                                    items={formatOptions}
-                                    alignment={MenuAlignment.END}
-                                    sideOffset={8}
-                                    alignOffset={-20}
-                                    trigger={
-                                        <Button
-                                            buttonType={ButtonType.SECONDARY}
-                                            leadingIcon={<Settings />}
-                                            size={ButtonSize.SMALL}
-                                            aria-label="Table settings"
-                                        >
-                                            Settings
-                                        </Button>
-                                    }
-                                />
-                            </>
+                        showSettings ||
+                        (!mobileConfig.isMobile && exportButton) ? (
+                            <Block
+                                display="flex"
+                                alignItems="center"
+                                gap={FOUNDATION_THEME.unit[8]}
+                            >
+                                {showSettings && (
+                                    <Menu
+                                        items={formatOptions}
+                                        alignment={MenuAlignment.END}
+                                        sideOffset={8}
+                                        alignOffset={-20}
+                                        trigger={
+                                            <Button
+                                                buttonType={
+                                                    ButtonType.SECONDARY
+                                                }
+                                                leadingIcon={<Settings />}
+                                                size={ButtonSize.SMALL}
+                                                aria-label="Table settings"
+                                            >
+                                                Settings
+                                            </Button>
+                                        }
+                                    />
+                                )}
+                                {!mobileConfig.isMobile && exportButton}
+                            </Block>
                         ) : null
                     }
                     headerSlot2={effectiveHeaderSlot1}
@@ -1586,7 +1777,7 @@ const DataTable = forwardRef(
                         overflow: 'auto',
                     }}
                 >
-                    {showBulkActionBar && (
+                    {showBulkActionBar && !isErrorState && (
                         <BulkActionBar
                             selectedCount={selectedCount}
                             onExport={exportToCSV}
@@ -1612,11 +1803,13 @@ const DataTable = forwardRef(
                             borderWidth: 0,
                         }}
                     >
-                        {isLoading
+                        {isTableLoading
                             ? 'Loading table data'
-                            : currentData.length === 0
-                              ? 'No data available'
-                              : `Showing ${currentData.length} of ${totalRows} rows`}
+                            : error
+                              ? 'Failed to load table data'
+                              : currentData.length === 0
+                                ? 'No data available'
+                                : `Showing ${currentData.length} of ${totalRows} rows`}
                     </Block>
 
                     <Block
@@ -1711,6 +1904,14 @@ const DataTable = forwardRef(
                                             }
                                             selectAll={selectAll}
                                             sortConfig={sortConfig}
+                                            // serverSideFiltering filters via
+                                            // onFilterChange without needing
+                                            // enableFiltering, so it also
+                                            // counts as filtering being on.
+                                            enableFiltering={
+                                                enableFiltering ||
+                                                serverSideFiltering
+                                            }
                                             enableInlineEdit={enableInlineEdit}
                                             showActionsColumn={
                                                 showActionsColumn
@@ -1722,7 +1923,7 @@ const DataTable = forwardRef(
                                                 enableColumnReordering
                                             }
                                             showSkeleton={showSkeleton}
-                                            isLoading={isLoading}
+                                            isLoading={isTableLoading}
                                             onColumnReorder={(columns) => {
                                                 setVisibleColumns(
                                                     columns as ColumnDefinition<T>[]
@@ -1750,7 +1951,8 @@ const DataTable = forwardRef(
                                                 enableRowExpansion
                                             }
                                             enableRowSelection={
-                                                enableRowSelection
+                                                enableRowSelection &&
+                                                !isErrorState
                                             }
                                             rowActions={
                                                 rowActions as
@@ -1812,7 +2014,7 @@ const DataTable = forwardRef(
                                                 setMeasuredFrozenWidths
                                             }
                                         />
-                                        {currentData.length > 0 && (
+                                        {shouldRenderRows && (
                                             <TableBodyComponent
                                                 currentData={currentData}
                                                 dataVersion={tbodyDataVersion}
@@ -1979,11 +2181,7 @@ const DataTable = forwardRef(
                                                         | undefined
                                                 }
                                                 dateLabel={dateLabel}
-                                                isLoading={
-                                                    isLoading ||
-                                                    (serverSidePagination &&
-                                                        internalLoading)
-                                                }
+                                                isLoading={isTableLoading}
                                                 showSkeleton={showSkeleton}
                                                 skeletonVariant={
                                                     skeletonVariant
@@ -2015,9 +2213,11 @@ const DataTable = forwardRef(
                                     <Block
                                         style={{
                                             backgroundColor:
-                                                FOUNDATION_THEME.colors
-                                                    .gray[100],
-                                            border: `1px solid ${FOUNDATION_THEME.colors.gray[300]}`,
+                                                tableToken.dataTable.table.body
+                                                    .row['&:hover']
+                                                    .backgroundColor,
+                                            border: tableToken.dataTable.table
+                                                .body.cell.borderTop,
                                             borderRadius:
                                                 FOUNDATION_THEME.unit[4],
                                             boxShadow:
@@ -2038,8 +2238,8 @@ const DataTable = forwardRef(
                                                     FOUNDATION_THEME.font.size
                                                         .body.sm.fontSize,
                                                 fontWeight: 600,
-                                                color: FOUNDATION_THEME.colors
-                                                    .gray[500],
+                                                color: tableToken.dataTable
+                                                    .table.body.cell.color,
                                                 whiteSpace: 'nowrap',
                                                 overflow: 'hidden',
                                                 textOverflow: 'ellipsis',
@@ -2059,39 +2259,48 @@ const DataTable = forwardRef(
                             </DragOverlay>
                         </DndContext>
 
-                        {currentData.length === 0 && (
+                        {bodyState !== 'rows' && (
                             <Block
                                 display="flex"
                                 alignItems="center"
                                 justifyContent="center"
+                                data-table-body-state={bodyState}
                                 style={{
-                                    minHeight: emptyStateMinHeight,
+                                    minHeight: stateAreaHeight,
+                                    height:
+                                        tableBodyHeight !== undefined
+                                            ? stateAreaHeight
+                                            : undefined,
                                     backgroundColor:
-                                        FOUNDATION_THEME.colors.gray[0],
+                                        tableToken.dataTable.table.body
+                                            .backgroundColor,
                                     color: tableToken.dataTable.table.body.cell
                                         .color,
                                     fontSize:
                                         tableToken.dataTable.table.body.cell
                                             .fontSize,
+                                    overflow: 'auto',
                                 }}
                             >
-                                {isLoading ? (
-                                    <Block
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        gap={FOUNDATION_THEME.unit[8]}
-                                    >
-                                        <Loader2
-                                            size={FOUNDATION_THEME.unit[20]}
-                                            className="animate-spin"
-                                            style={{
-                                                animation:
-                                                    'spin 1s linear infinite',
-                                            }}
+                                {bodyState === 'loading' ? (
+                                    <Spinner
+                                        size="md"
+                                        label="Loading data..."
+                                    />
+                                ) : bodyState === 'error' ? (
+                                    renderErrorState ? (
+                                        renderErrorState(onRetry)
+                                    ) : (
+                                        <DefaultTableState
+                                            onRetry={onRetry}
+                                            tableToken={tableToken}
+                                            isDarkTheme={isDarkTheme}
                                         />
-                                        <span>Loading data...</span>
-                                    </Block>
+                                    )
+                                ) : renderEmptyState ? (
+                                    renderEmptyState()
+                                ) : showEmptyState ? (
+                                    <EmptyState title="No data" size="sm" />
                                 ) : (
                                     <span>No data available</span>
                                 )}
@@ -2106,7 +2315,7 @@ const DataTable = forwardRef(
                             pageSize={pageSize}
                             totalRows={totalRows}
                             visibleRows={currentData.length}
-                            isLoading={isLoading}
+                            isLoading={isTableLoading}
                             showSkeleton={showSkeleton}
                             hasData={currentData.length > 0}
                             isNarrowContainer={isNarrowContainer}

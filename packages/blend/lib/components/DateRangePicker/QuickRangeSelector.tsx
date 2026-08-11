@@ -12,12 +12,12 @@ import {
 } from './utils'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
-import SingleSelect from '../SingleSelect/SingleSelect'
 import {
-    SelectMenuGroupType,
-    SelectMenuSize,
-    SelectMenuVariant,
-} from '../SingleSelect/types'
+    SingleSelectV2,
+    SingleSelectV2Size,
+    SingleSelectV2Variant,
+} from '../SingleSelectV2'
+import type { SingleSelectV2GroupType } from '../SingleSelectV2'
 
 type QuickRangeSelectorProps = {
     isOpen: boolean
@@ -69,7 +69,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
             ? filteredPresets.filter((p) => p !== DateRangePreset.CUSTOM)
             : filteredPresets
 
-        const selectItems: SelectMenuGroupType[] = [
+        const selectItems: SingleSelectV2GroupType[] = [
             {
                 items: presetsToShow.map((preset) => ({
                     label: getPresetLabelWithCustom(preset, presetConfigs),
@@ -86,15 +86,15 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
 
         const getSelectSize = (
             pickerSize: DateRangePickerSize
-        ): SelectMenuSize => {
+        ): SingleSelectV2Size => {
             switch (pickerSize) {
                 case DateRangePickerSize.SMALL:
-                    return SelectMenuSize.SMALL
+                    return SingleSelectV2Size.SM
                 case DateRangePickerSize.LARGE:
-                    return SelectMenuSize.LARGE
+                    return SingleSelectV2Size.LG
                 case DateRangePickerSize.MEDIUM:
                 default:
-                    return SelectMenuSize.MEDIUM
+                    return SingleSelectV2Size.MD
             }
         }
 
@@ -152,15 +152,15 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                 className={className}
                 style={getContainerStyle()}
             >
-                <SingleSelect
+                <SingleSelectV2
                     placeholder={getPresetLabel(activePreset)}
                     items={selectItems}
                     selected={activePreset}
                     onSelect={handlePresetSelect}
                     disabled={isDisabled}
                     size={getSelectSize(size)}
-                    variant={SelectMenuVariant.NO_CONTAINER}
-                    useDrawerOnMobile={false}
+                    variant={SingleSelectV2Variant.NO_CONTAINER}
+                    usePanelOnMobile={false}
                     customTrigger={
                         <Block
                             data-element="single-select-button"
@@ -227,9 +227,11 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             />
                         </Block>
                     }
-                    maxMenuHeight={maxMenuHeight}
-                    minMenuWidth={150}
-                    maxMenuWidth={200}
+                    menuDimensions={{
+                        maxHeight: maxMenuHeight,
+                        minWidth: 150,
+                        maxWidth: 200,
+                    }}
                 />
             </Block>
         )

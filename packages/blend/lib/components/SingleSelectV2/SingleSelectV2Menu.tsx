@@ -12,12 +12,17 @@ import {
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { usePreventParentScroll, useScrollLock } from '../../hooks'
+import {
+    usePreventParentScroll,
+    useScrollLock,
+    useShadowRoot,
+} from '../../hooks'
 import { SingleSelectV2TokensType } from './singleSelectV2.tokens'
 import SingleSelectV2Skeleton from './SingleSelectV2Skeleton'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
 import {
     flattenGroups,
@@ -36,7 +41,13 @@ import { useSelectV2MenuBehavior } from '../SelectV2/useSelectV2MenuBehavior'
 import {
     getBaseVirtualViewportHeight,
     getAdjustedVirtualViewportHeight,
+    VIRTUAL_DEFAULT_VIEWPORT,
 } from '../common/virtualViewport'
+import { useSelectSearchController } from '../Select/useSelectSearchController'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../Select/SelectSearchStatus'
+import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
@@ -98,8 +109,8 @@ const SingleSelectV2Menu = ({
 }: SingleSelectV2MenuProps) => {
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
+    const { target: portalContainer } = useShadowRoot()
 
-    const enableSearch = search?.show
     const searchPlaceholder = search?.placeholder ?? 'Search options...'
     const maxMenuHeight = menuDimensions?.maxHeight as number | undefined
     const alignment = menuPosition?.alignment ?? SingleSelectV2Alignment.START
@@ -107,31 +118,51 @@ const SingleSelectV2Menu = ({
     const sideOffset = menuPosition?.sideOffset ?? 8
     const alignOffset = menuPosition?.alignOffset ?? 0
 
-    const [searchText, setSearchText] = useState('')
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: search?.searchText,
+        onValueChange: search?.onSearchChange,
+        explicitShow: search?.show,
+        existingSurfaceDefault: false,
+    })
     const searchInputRef = useRef<HTMLInputElement>(null)
     const searchContainerRef = useRef<HTMLDivElement>(null)
     const contentRef = useRef<HTMLDivElement>(null)
     const virtualScrollRef = useRef<HTMLDivElement>(null)
     const [virtualReady, setVirtualReady] = useState(false)
+    const handleSearchFocusRecovery = useSelectSearchFocusRecovery({
+        enabled: isSearchControlled && isSearchEnabled,
+        open,
+        items,
+        searchInputRef,
+    })
 
     usePreventParentScroll(open, contentRef, [...MENU_SCROLL_SELECTORS])
     useScrollLock(open)
 
     const hasMatch = useMemo(
-        () => checkExactMatch(searchText, items),
-        [searchText, items]
+        () => checkExactMatch(valueForSearchBehavior, items),
+        [valueForSearchBehavior, items]
     )
 
     const filteredItems = useMemo(() => {
-        const base = searchText
-            ? filterSingleSelectV2MenuGroups(items, searchText)
-            : items
+        const base =
+            shouldFilterInternally && searchText
+                ? filterSingleSelectV2MenuGroups(items, searchText)
+                : items
         return getFilteredItemsWithCustomValue(
             base,
             searchText,
             hasMatch,
             allowCustomValue ?? false,
-            enableSearch ?? false,
+            isSearchEnabled && !search?.isSearchLoading,
             customValueLabel
         )
     }, [
@@ -139,9 +170,17 @@ const SingleSelectV2Menu = ({
         searchText,
         allowCustomValue,
         hasMatch,
-        enableSearch,
+        isSearchEnabled,
+        search?.isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
 
     const flattenedItems = useMemo(
         () => flattenGroups(filteredItems),
@@ -177,7 +216,7 @@ const SingleSelectV2Menu = ({
 
     const { searchHeight } = useSelectV2MenuBehavior({
         open,
-        enableSearch,
+        enableSearch: isSearchEnabled,
         searchText,
         searchInputRef,
         searchContainerRef,
@@ -191,25 +230,41 @@ const SingleSelectV2Menu = ({
         endReachedThreshold,
     })
 
-    const adjustedVirtualViewportHeight = getAdjustedVirtualViewportHeight(
-        maxMenuHeight,
-        enableSearch ? searchHeight : 0
-    )
+    const searchStatusHeight =
+        isSearchEnabled && search?.isSearchLoading && hasRenderableItems
+            ? SELECT_SEARCH_STATUS_HEIGHT
+            : 0
+    const reservedVirtualViewportHeight =
+        (isSearchEnabled ? searchHeight : 0) + searchStatusHeight
+    const adjustedVirtualViewportHeight =
+        searchStatusHeight > 0
+            ? Math.max(
+                  (maxMenuHeight ?? VIRTUAL_DEFAULT_VIEWPORT) -
+                      reservedVirtualViewportHeight,
+                  0
+              )
+            : getAdjustedVirtualViewportHeight(
+                  maxMenuHeight,
+                  reservedVirtualViewportHeight
+              )
 
     const handleOpenChange = (newOpen: boolean) => {
         if (disabled && newOpen) return
-        if (newOpen && enableSearch) setSearchText('')
+        if (newOpen && isSearchEnabled) resetUncontrolled()
         onOpenChange(newOpen)
     }
 
     const menuContent = singleSelectTokens.menu.content
     const menuItem = singleSelectTokens.menu.item
 
-    const showEmptyState =
-        items.length === 0 ||
-        (filteredItems.length === 0 && searchText.length > 0)
-    const emptyMessage =
-        items.length === 0 ? 'No items available' : 'No results found'
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
+    const isActiveSearchLoading =
+        isSearchEnabled && Boolean(search?.isSearchLoading)
+    const emptyMessage = !hasSourceItems
+        ? 'No items available'
+        : 'No results found'
 
     const showVirtualList =
         enableVirtualization &&
@@ -227,7 +282,7 @@ const SingleSelectV2Menu = ({
             <RadixMenu.Trigger asChild disabled={disabled}>
                 {trigger}
             </RadixMenu.Trigger>
-            <RadixMenu.Portal>
+            <RadixMenu.Portal container={portalContainer ?? undefined}>
                 <Content
                     id={menuId}
                     ref={contentRef}
@@ -251,7 +306,7 @@ const SingleSelectV2Menu = ({
                             'var(--radix-dropdown-menu-trigger-width)',
                     }}
                     onKeyDown={(e) => {
-                        if (!enableSearch || !searchInputRef.current) return
+                        if (!isSearchEnabled || !searchInputRef.current) return
                         const targetIsSearch =
                             e.target === searchInputRef.current ||
                             searchInputRef.current.contains(e.target as Node)
@@ -265,7 +320,7 @@ const SingleSelectV2Menu = ({
 
                         if (e.key === 'Backspace') {
                             e.preventDefault()
-                            setSearchText((prev) =>
+                            dispatchUserValue((prev) =>
                                 prev.length > 0 ? prev.slice(0, -1) : prev
                             )
                             searchInputRef.current.focus()
@@ -282,6 +337,7 @@ const SingleSelectV2Menu = ({
                             searchInputRef.current.focus()
                         }
                     }}
+                    onFocusCapture={handleSearchFocusRecovery}
                 >
                     {skeleton.show ? (
                         <SingleSelectV2Skeleton
@@ -291,20 +347,33 @@ const SingleSelectV2Menu = ({
                     ) : (
                         <>
                             <SingleSelectV2Search
-                                enabled={enableSearch}
-                                hasItems={items.length > 0}
+                                enabled={isSearchEnabled}
+                                hasItems={
+                                    isSearchControlled || items.length > 0
+                                }
                                 backgroundColor={
                                     menuContent.backgroundColor as string
                                 }
                                 searchPlaceholder={searchPlaceholder}
                                 searchText={searchText}
-                                onSearchTextChange={setSearchText}
+                                onSearchTextChange={dispatchUserValue}
                                 searchInputRef={searchInputRef}
                                 containerRef={searchContainerRef}
                             />
 
                             <ScrollableContent>
-                                {showEmptyState ? (
+                                <SelectSearchStatus
+                                    isControlled={
+                                        isSearchControlled && isSearchEnabled
+                                    }
+                                    isLoading={isActiveSearchLoading}
+                                    isEmpty={!hasRenderableItems}
+                                    emptyStateText={
+                                        search?.emptyStateText || emptyMessage
+                                    }
+                                />
+                                {isActiveSearchLoading &&
+                                !hasRenderableItems ? null : showEmptyState ? (
                                     <Block
                                         display="flex"
                                         justifyContent="center"
@@ -332,7 +401,8 @@ const SingleSelectV2Menu = ({
                                             }
                                             textAlign="center"
                                         >
-                                            {emptyMessage}
+                                            {search?.emptyStateText ||
+                                                emptyMessage}
                                         </Text>
                                     </Block>
                                 ) : showVirtualList ? (
@@ -354,6 +424,9 @@ const SingleSelectV2Menu = ({
                                         loadingComponent={loadingComponent}
                                         hasMore={hasMore}
                                         virtualScrollRef={virtualScrollRef}
+                                        focusIdentityEnabled={
+                                            isSearchControlled
+                                        }
                                     />
                                 ) : (
                                     <SingleSelectV2List
@@ -363,7 +436,10 @@ const SingleSelectV2Menu = ({
                                         singleSelectTokens={singleSelectTokens}
                                         size={size}
                                         variant={variant}
-                                        enableSearch={enableSearch}
+                                        enableSearch={isSearchEnabled}
+                                        focusIdentityEnabled={
+                                            isSearchControlled
+                                        }
                                     />
                                 )}
                             </ScrollableContent>

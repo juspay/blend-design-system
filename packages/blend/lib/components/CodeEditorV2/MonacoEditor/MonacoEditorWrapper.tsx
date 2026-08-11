@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Editor, { DiffEditor, OnMount, DiffOnMount } from '@monaco-editor/react'
+import Editor, {
+    DiffEditor,
+    loader,
+    OnMount,
+    DiffOnMount,
+} from '@monaco-editor/react'
 import type * as Monaco from 'monaco-editor'
 import Block from '../../Primitives/Block/Block'
 import type { CodeEditorV2Tokens } from '../codeEditorV2.tokens'
@@ -124,6 +129,24 @@ export function MonacoEditorWrapper({
     const readOnlyRef = useRef(readOnly)
     const disabledRef = useRef(disabled)
     const [isEditorReady, setIsEditorReady] = useState(false)
+    const [isMonacoLoaded, setIsMonacoLoaded] = useState(false)
+
+    useEffect(() => {
+        let cancelled = false
+
+        import(
+            // @ts-expect-error Monaco does not publish types for this ESM entry.
+            'monaco-editor/esm/vs/editor/editor.main.js'
+        ).then((monaco: typeof Monaco) => {
+            if (cancelled) return
+            loader.config({ monaco })
+            setIsMonacoLoaded(true)
+        })
+
+        return () => {
+            cancelled = true
+        }
+    }, [])
 
     onChangeRef.current = onChange
     readOnlyRef.current = readOnly
@@ -348,7 +371,9 @@ export function MonacoEditorWrapper({
             style={{ ...containerStyle, overflow: 'visible' }}
             onKeyDown={handleKeyDown}
         >
-            {diff ? (
+            {!isMonacoLoaded ? (
+                <EditorLoading minHeight={minHeight} tokens={tokens} />
+            ) : diff ? (
                 <div ref={diffContainerRef}>
                     <DiffEditor
                         original={originalValue}
