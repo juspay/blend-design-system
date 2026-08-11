@@ -1,4 +1,4 @@
-import withMDX from '@next/mdx'
+import { createMDX } from 'fumadocs-mdx/next'
 
 const nextConfig = {
     output: 'export',
@@ -8,9 +8,4 @@ const nextConfig = {
     },
 }
 
-export default withMDX({
-    extension: /\.mdx?$/,
-    options: {
-        remarkPlugins: [],
-    },
-})(nextConfig)
+export default createMDX()(nextConfig)

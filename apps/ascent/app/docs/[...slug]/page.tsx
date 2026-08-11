@@ -1,16 +1,13 @@
-import fs from 'fs'
 import path from 'path'
-import { compileMDX } from 'next-mdx-remote/rsc'
 import { useMDXComponents } from '@/mdx-components'
-import { cache } from 'react'
 import React from 'react'
 import { PageMetadata } from '../utils/getFileContent'
-import { extractHeadings } from '../utils/toc'
 import { generateBreadcrumbItems } from '../utils/generateBreadcrumbs'
 import { Metadata } from 'next'
 import TableOfContents from '@/components/Navigation/TableOfContents'
 import { DocsPage } from '@/components/docs'
 import { MobileSidebarTrigger } from './PageClient'
+import { docsSource, getDoc } from '@/lib/docs-source'
 import {
     scanDirectory,
     buildSidebarItemsWithCategories,
@@ -38,59 +35,8 @@ const findDocItemBySlug = (
     }
 }
 
-const getCompiledMDX = cache(async (filePath: string) => {
-    const fileContent = fs.readFileSync(filePath, 'utf8')
-    const { content, frontmatter } = await compileMDX({
-        source: fileContent,
-        options: {
-            parseFrontmatter: true,
-            mdxOptions: { remarkPlugins: [], rehypePlugins: [] },
-        },
-        components: useMDXComponents(),
-    })
-    return { content, frontmatter, fileContent }
-})
-
-function resolveFilePath(slugArray: string[]): string | null {
-    const basePath = path.join(process.cwd(), 'app', 'docs', 'content')
-
-    const directPath =
-        path.join(
-            basePath,
-            Array.isArray(slugArray) ? slugArray.join('/') : slugArray
-        ) + '.mdx'
-
-    if (fs.existsSync(directPath)) return directPath
-
-    const indexPath = path.join(basePath, ...slugArray, 'page.mdx')
-    if (fs.existsSync(indexPath)) return indexPath
-
-    return null
-}
-
 export async function generateStaticParams() {
-    const contentDir = path.join(process.cwd(), 'app', 'docs', 'content')
-    const paths: { slug: string[] }[] = []
-
-    const scanDir = (dir: string, basePath: string[] = []) => {
-        const entries = fs.readdirSync(dir, { withFileTypes: true })
-        for (const entry of entries) {
-            const fullPath = path.join(dir, entry.name)
-            if (entry.isDirectory()) {
-                scanDir(fullPath, [...basePath, entry.name])
-            } else if (entry.name.endsWith('.mdx')) {
-                if (entry.name === 'page.mdx') {
-                    paths.push({ slug: basePath })
-                } else {
-                    const fileName = entry.name.replace('.mdx', '')
-                    paths.push({ slug: [...basePath, fileName] })
-                }
-            }
-        }
-    }
-
-    scanDir(contentDir)
-    return paths
+    return docsSource.generateParams('slug').map(({ slug }) => ({ slug }))
 }
 
 export async function generateMetadata({
@@ -99,17 +45,16 @@ export async function generateMetadata({
     params: Promise<{ slug: string[] }>
 }): Promise<Metadata> {
     const { slug } = await params
-    const filePath = resolveFilePath(slug || [])
+    const page = getDoc(slug || [])
 
-    if (!filePath) {
+    if (!page) {
         return {
             title: 'Page Not Found',
             description: 'The requested page could not be found.',
         }
     }
 
-    const { frontmatter } = await getCompiledMDX(filePath)
-    const metadata = frontmatter as PageMetadata
+    const metadata = page.data as PageMetadata
 
     return {
         title: metadata?.title || 'Untitled',
@@ -120,23 +65,28 @@ export async function generateMetadata({
 const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
     const { slug } = await params
     const slugArray = slug || []
-    const filePath = resolveFilePath(slugArray)
+    const doc = getDoc(slugArray)
 
-    if (!filePath) {
+    if (!doc) {
         return <div>not found</div>
     }
 
-    const { content, frontmatter, fileContent } = await getCompiledMDX(filePath)
-
-    const headings = extractHeadings(fileContent)
-
     const metadata: PageMetadata = {
-        title: (frontmatter as PageMetadata)?.title || 'Untitled',
-        description: (frontmatter as PageMetadata)?.description || '',
-        category: (frontmatter as PageMetadata)?.category || '',
-        tags: (frontmatter as PageMetadata)?.tags || [],
-        ...(frontmatter as PageMetadata),
+        title: (doc.data as PageMetadata)?.title || 'Untitled',
+        description: (doc.data as PageMetadata)?.description || '',
+        category: (doc.data as PageMetadata)?.category || '',
+        tags: (doc.data as PageMetadata)?.tags || [],
+        ...(doc.data as PageMetadata),
     }
+    const rawMarkdown = await doc.data.getText('raw')
+    const headings = doc.data.toc
+        .filter((item) => item.depth <= 2 && typeof item.title === 'string')
+        .map((item) => ({
+            id: item.url.replace(/^#/, ''),
+            text: String(item.title),
+            level: item.depth,
+        }))
+    const MDX = doc.data.body
 
     const breadcrumbItems = generateBreadcrumbItems(
         slugArray,
@@ -172,9 +122,9 @@ const page = async ({ params }: { params: Promise<{ slug: string[] }> }) => {
             <div className="flex-1 min-w-0">
                 <DocsPage
                     metadata={metadata}
-                    content={content}
+                    content={<MDX components={useMDXComponents()} />}
                     breadcrumbItems={breadcrumbItems}
-                    rawMarkdown={fileContent}
+                    rawMarkdown={rawMarkdown}
                     v1Warning={v1Warning}
                     mobileTrigger={
                         <MobileSidebarTrigger sidebarItems={sidebarItems} />

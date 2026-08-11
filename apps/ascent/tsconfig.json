@@ -35,9 +35,16 @@
             "@/blog/*": ["./app/blog/*"],
             "@/changelog": ["./app/changelog"],
             "@/changelog/*": ["./app/changelog/*"],
-            "@/mdx-components": ["./mdx-components"]
+            "@/mdx-components": ["./mdx-components"],
+            "collections/*": ["./.source/*"]
         }
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+    "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        ".next/types/**/*.ts",
+        ".source/**/*.ts"
+    ],
     "exclude": ["node_modules"]
 }
