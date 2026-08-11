@@ -47,6 +47,7 @@ const DropdownInput = ({
     dropdownPosition = DropdownPosition.RIGHT,
     placeholder,
     dropDownValue,
+    dropDownPlaceholder,
     onDropDownChange,
     dropDownItems,
     dropdownName,
@@ -162,7 +163,7 @@ const DropdownInput = ({
         } else {
             setDropdownWidth(0)
         }
-    }, [slot, dropDownValue])
+    }, [slot, dropDownValue, dropDownPlaceholder, placeholder])
 
     return (
         <Block
@@ -253,7 +254,9 @@ const DropdownInput = ({
                             }
                             variant={SingleSelectV2Variant.NO_CONTAINER}
                             size={SingleSelectV2Size.SM}
-                            placeholder={placeholder || ''}
+                            placeholder={
+                                dropDownPlaceholder ?? placeholder ?? ''
+                            }
                             menuDimensions={{
                                 maxHeight: maxMenuHeight ?? 400,
                                 minWidth: minMenuWidth,
@@ -397,7 +400,9 @@ const DropdownInput = ({
                             }
                             variant={SingleSelectV2Variant.NO_CONTAINER}
                             size={SingleSelectV2Size.SM}
-                            placeholder={placeholder || ''}
+                            placeholder={
+                                dropDownPlaceholder ?? placeholder ?? ''
+                            }
                             menuDimensions={{
                                 maxHeight: maxMenuHeight ?? 400,
                                 minWidth: minMenuWidth,

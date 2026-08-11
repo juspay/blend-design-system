@@ -261,6 +261,15 @@ pnpm test DropdownInput.accessibility
                 category: 'Content',
             },
         },
+        dropDownPlaceholder: {
+            control: { type: 'text' },
+            description:
+                'Placeholder shown in the dropdown when nothing is selected. Falls back to `placeholder`.',
+            table: {
+                type: { summary: 'string' },
+                category: 'Content',
+            },
+        },
         dropdownName: {
             control: { type: 'text' },
             description: 'Name attribute for the dropdown',
@@ -397,6 +406,36 @@ export const PhoneNumberInput: Story = {
         docs: {
             description: {
                 story: 'DropdownInput configured for phone number entry with country code selection.',
+            },
+        },
+    },
+}
+
+// Separate placeholder for the dropdown half
+export const SeparateDropdownPlaceholder: Story = {
+    render: () => {
+        const [phoneNumber, setPhoneNumber] = useState('')
+        const [countryCode, setCountryCode] = useState('')
+
+        return (
+            <DropdownInput
+                label="Phone Number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                dropDownValue={countryCode}
+                onDropDownChange={setCountryCode}
+                dropDownItems={phoneCodeData}
+                dropdownPosition={DropdownPosition.LEFT}
+                placeholder="Enter your mobile number"
+                dropDownPlaceholder="Code"
+                type="tel"
+            />
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'With no `dropDownValue` selected, both halves would otherwise render the same `placeholder` string. `dropDownPlaceholder` gives the select its own short hint while the input keeps the longer one.',
             },
         },
     },
