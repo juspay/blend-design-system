@@ -1,4 +1,7 @@
 import React from 'react'
+import { vi } from 'vitest'
+
+export const loader = { config: vi.fn() }
 
 /**
  * Lightweight stand-in for @monaco-editor/react in jsdom tests.
