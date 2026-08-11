@@ -4,6 +4,27 @@ import { type BreakpointType } from '../../breakpoints/breakPoints'
 export type DirectoryState = 'default' | 'hover' | 'active'
 
 /**
+ * Extra tiers used only when `highlightActivePath` is enabled:
+ * - `activePath` — an ancestor of the selected item
+ * - `muted` — a row on neither the selection nor its ancestor path
+ *
+ * Optional so existing whole-slot DIRECTORY token overrides keep type-checking;
+ * both fall back to an existing tier at runtime (see `resolveItemColors`).
+ */
+export type DirectoryPathState = 'activePath' | 'muted'
+
+/**
+ * The resolved visual tier of a single directory row. `default`, `active` and
+ * the hover treatment are the pre-existing behaviour; the other two only ever
+ * occur when `highlightActivePath` is on and something is selected.
+ */
+export type DirectoryItemVisualState =
+    | 'default'
+    | 'active'
+    | 'activePath'
+    | 'muted'
+
+/**
  * Directory Tokens following the pattern: [target].CSSProp.[state]
  *
  * Hierarchical Structure:
@@ -74,11 +95,15 @@ export type DirectoryTokenType = {
                 // Item background color for different states
                 backgroundColor: {
                     [key in DirectoryState]: CSSObject['backgroundColor']
+                } & {
+                    [key in DirectoryPathState]?: CSSObject['backgroundColor']
                 }
 
                 // Item text color for different states
                 color: {
                     [key in DirectoryState]: CSSObject['color']
+                } & {
+                    [key in DirectoryPathState]?: CSSObject['color']
                 }
 
                 // Icon/leftSlot styling

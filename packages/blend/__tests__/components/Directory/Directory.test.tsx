@@ -425,3 +425,152 @@ describe('Directory', () => {
         await waitForAnimationFrame()
     })
 })
+
+describe('Directory active-path highlighting', () => {
+    const hierarchyData: DirectoryData[] = [
+        {
+            label: 'Entities',
+            isCollapsible: false,
+            items: [
+                {
+                    label: 'Acme Commerce Group',
+                    items: [
+                        {
+                            label: 'Helix Network',
+                            items: [
+                                { label: 'Orbit Pharma' },
+                                { label: 'Orion Pharma' },
+                            ],
+                        },
+                        { label: 'Quanta Network' },
+                    ],
+                },
+                { label: 'Nimbus Ventures' },
+            ],
+        },
+    ]
+
+    const expanded = [
+        'Acme Commerce Group',
+        'Acme Commerce Group/Helix Network',
+    ]
+    const deepSelection = 'Acme Commerce Group/Helix Network/Orion Pharma'
+
+    const pathStateOf = (name: RegExp) =>
+        screen.getByRole('button', { name }).getAttribute('data-path-state')
+
+    it.each([
+        ['non-virtualized', false],
+        ['virtualized', true],
+    ])(
+        'marks ancestors as activePath and everything else as muted (%s)',
+        (_label, enableVirtualization) => {
+            render(
+                <Directory
+                    directoryData={hierarchyData}
+                    defaultExpandedItems={expanded}
+                    activeItem={deepSelection}
+                    highlightActivePath
+                    enableVirtualization={enableVirtualization}
+                    virtualization={{
+                        threshold: 0,
+                        rowHeight: 32,
+                        viewportHeight: 512,
+                        overscan: 4,
+                    }}
+                />
+            )
+
+            expect(pathStateOf(/acme commerce group/i)).toBe('activePath')
+            expect(pathStateOf(/helix network/i)).toBe('activePath')
+            expect(pathStateOf(/orion pharma/i)).toBe('active')
+            expect(pathStateOf(/orbit pharma/i)).toBe('muted')
+            expect(pathStateOf(/quanta network/i)).toBe('muted')
+            expect(pathStateOf(/nimbus ventures/i)).toBe('muted')
+        }
+    )
+
+    it('leaves every row in the default tier when the flag is off', () => {
+        render(
+            <Directory
+                directoryData={hierarchyData}
+                defaultExpandedItems={expanded}
+                activeItem={deepSelection}
+            />
+        )
+
+        expect(pathStateOf(/acme commerce group/i)).toBe('default')
+        expect(pathStateOf(/helix network/i)).toBe('default')
+        expect(pathStateOf(/orbit pharma/i)).toBe('default')
+        expect(pathStateOf(/nimbus ventures/i)).toBe('default')
+        // the selection itself is unaffected by the flag
+        expect(pathStateOf(/orion pharma/i)).toBe('active')
+    })
+
+    it('does not dim anything while nothing is selected', () => {
+        render(
+            <Directory
+                directoryData={hierarchyData}
+                defaultExpandedItems={expanded}
+                highlightActivePath
+            />
+        )
+
+        for (const name of [
+            /acme commerce group/i,
+            /helix network/i,
+            /orbit pharma/i,
+            /orion pharma/i,
+            /nimbus ventures/i,
+        ]) {
+            expect(pathStateOf(name)).toBe('default')
+        }
+    })
+
+    it('degrades to selected-only highlighting for a bare-label activeItem', () => {
+        // a bare label is not a path, so no row can be resolved as its ancestor
+        render(
+            <Directory
+                directoryData={hierarchyData}
+                defaultExpandedItems={expanded}
+                activeItem="Nimbus Ventures"
+                highlightActivePath
+            />
+        )
+
+        expect(pathStateOf(/nimbus ventures/i)).toBe('active')
+        expect(pathStateOf(/acme commerce group/i)).toBe('muted')
+        expect(pathStateOf(/helix network/i)).toBe('muted')
+    })
+
+    it('does not treat a sibling with a shared name prefix as an ancestor', () => {
+        // "Helix" must not match "Helix Network/..." — the separator matters
+        const prefixData: DirectoryData[] = [
+            {
+                label: 'Entities',
+                isCollapsible: false,
+                items: [
+                    { id: 'helix', label: 'Helix' },
+                    {
+                        id: 'helix-network',
+                        label: 'Helix Network',
+                        items: [{ id: 'orion', label: 'Orion Pharma' }],
+                    },
+                ],
+            },
+        ]
+
+        render(
+            <Directory
+                directoryData={prefixData}
+                defaultExpandedItems={['helix-network']}
+                activeItem="helix-network/orion"
+                highlightActivePath
+            />
+        )
+
+        expect(pathStateOf(/^helix$/i)).toBe('muted')
+        expect(pathStateOf(/^helix network$/i)).toBe('activePath')
+        expect(pathStateOf(/orion pharma/i)).toBe('active')
+    })
+})
