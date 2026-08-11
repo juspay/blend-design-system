@@ -59,6 +59,7 @@ const Section = ({
     showHierarchyLines = false,
     hierarchyLineBorderRadius = 0,
     enableParentSelection = false,
+    highlightActivePath = false,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const sectionStateContext = useSectionState()
@@ -271,6 +272,7 @@ const Section = ({
                                 itemIdx === (section.items?.length || 0) - 1
                             }
                             enableParentSelection={enableParentSelection}
+                            highlightActivePath={highlightActivePath}
                             onNavigate={handleItemNavigation}
                         />
                     ))}

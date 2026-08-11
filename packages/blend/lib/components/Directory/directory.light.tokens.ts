@@ -53,12 +53,23 @@ export const getDirectoryLightTokens = (
                             default: 'transparent',
                             hover: foundationToken.colors.gray[50],
                             active: foundationToken.colors.gray[150],
+                            // the fill is what marks the selection itself, so
+                            // the path tiers stay unfilled and differ by text
+                            activePath: 'transparent',
+                            muted: 'transparent',
                         },
 
                         color: {
                             default: foundationToken.colors.gray[600],
                             hover: foundationToken.colors.gray[600],
                             active: foundationToken.colors.gray[1000],
+                            // 13.22:1 on white — clearly on-path, still below
+                            // the selected row which also carries a fill
+                            activePath: foundationToken.colors.gray[700],
+                            // 4.49:1 on white. Just under the 4.5:1 AA floor —
+                            // see the note in DirectoryProps.highlightActivePath.
+                            // Muted rows lift to `hover` on hover/focus-visible.
+                            muted: foundationToken.colors.gray[500],
                         },
 
                         icon: {
@@ -140,12 +151,23 @@ export const getDirectoryLightTokens = (
                             default: 'transparent',
                             hover: foundationToken.colors.gray[50],
                             active: foundationToken.colors.gray[150],
+                            // the fill is what marks the selection itself, so
+                            // the path tiers stay unfilled and differ by text
+                            activePath: 'transparent',
+                            muted: 'transparent',
                         },
 
                         color: {
                             default: foundationToken.colors.gray[600],
                             hover: foundationToken.colors.gray[600],
                             active: foundationToken.colors.gray[1000],
+                            // 13.22:1 on white — clearly on-path, still below
+                            // the selected row which also carries a fill
+                            activePath: foundationToken.colors.gray[700],
+                            // 4.49:1 on white. Just under the 4.5:1 AA floor —
+                            // see the note in DirectoryProps.highlightActivePath.
+                            // Muted rows lift to `hover` on hover/focus-visible.
+                            muted: foundationToken.colors.gray[500],
                         },
 
                         icon: {

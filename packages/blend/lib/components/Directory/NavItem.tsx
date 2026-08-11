@@ -15,9 +15,12 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import {
     getItemPathSegment,
+    getItemVisualState,
     handleKeyDown,
     normalizeExpandedItems,
+    resolveItemColors,
 } from './utils'
+import type { DirectoryItemVisualState } from './directory.tokens.types'
 import { TooltipV2 } from '../TooltipV2/TooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
@@ -26,15 +29,13 @@ import { addPxToValue } from '../../global-utils/GlobalUtils'
 
 const StyledElement = styled(Block)<{
     $isLink?: boolean
-    $isActive?: boolean
+    $visualState: DirectoryItemVisualState
     $tokens: DirectoryTokenType
     $iconOnlyMode?: boolean
     $hasHierarchyLineInset?: boolean
 }>`
-    background-color: ${({ $isActive, $tokens }) =>
-        $isActive
-            ? $tokens.section.itemList.item.backgroundColor.active
-            : $tokens.section.itemList.item.backgroundColor.default};
+    background-color: ${({ $visualState, $tokens }) =>
+        resolveItemColors($tokens, $visualState).backgroundColor};
     border: none;
     width: ${({ $hasHierarchyLineInset, $tokens }) =>
         $hasHierarchyLineInset
@@ -61,10 +62,8 @@ const StyledElement = styled(Block)<{
                             .itemPaddingLeft
                       : $tokens.section.itemList.item.padding.x
               }`};
-    color: ${({ $isActive, $tokens }) =>
-        $isActive
-            ? $tokens.section.itemList.item.color.active
-            : $tokens.section.itemList.item.color.default};
+    color: ${({ $visualState, $tokens }) =>
+        resolveItemColors($tokens, $visualState).color};
     font-weight: ${({ $tokens }) => $tokens.section.itemList.item.fontWeight};
     font-size: ${({ $tokens }) =>
         addPxToValue($tokens.section.itemList.item.fontSize)};
@@ -76,14 +75,16 @@ const StyledElement = styled(Block)<{
     cursor: pointer;
     overflow: hidden;
 
+    /* muted rows lift to the hover tier here, so a de-emphasised row regains
+       full contrast the moment it is hovered or keyboard-focused */
     &:hover,
     &:focus-visible {
-        background-color: ${({ $isActive, $tokens }) =>
-            $isActive
+        background-color: ${({ $visualState, $tokens }) =>
+            $visualState === 'active'
                 ? $tokens.section.itemList.item.backgroundColor.active
                 : $tokens.section.itemList.item.backgroundColor.hover};
-        color: ${({ $isActive, $tokens }) =>
-            $isActive
+        color: ${({ $visualState, $tokens }) =>
+            $visualState === 'active'
                 ? $tokens.section.itemList.item.color.active
                 : $tokens.section.itemList.item.color.hover};
         outline: none;
@@ -388,6 +389,7 @@ const NavItem = ({
     isLast = false,
     isNested = false,
     enableParentSelection = false,
+    highlightActivePath = false,
 }: NavItemProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const { isItemExpanded, setItemExpanded } = useExpandedItemsContext()
@@ -405,6 +407,14 @@ const NavItem = ({
             : isSelectable &&
               (activeItem === itemPath ||
                   (!item.id && activeItem === item.label))
+
+    const visualState = getItemVisualState({
+        isActive,
+        itemPath,
+        activeItem,
+        highlightActivePath,
+    })
+    const itemColors = resolveItemColors(tokens, visualState)
 
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
     const nestedListRef = useRef<HTMLUListElement>(null)
@@ -473,13 +483,7 @@ const NavItem = ({
                     <Block
                         width={tokens.section.itemList.item.icon.width}
                         height={tokens.section.itemList.item.icon.width}
-                        backgroundColor={
-                            isActive
-                                ? tokens.section.itemList.item.backgroundColor
-                                      .active
-                                : tokens.section.itemList.item.backgroundColor
-                                      .default
-                        }
+                        backgroundColor={itemColors.backgroundColor}
                         borderRadius={tokens.section.itemList.item.borderRadius}
                         style={{
                             opacity: 0.3,
@@ -496,12 +500,7 @@ const NavItem = ({
                                     size?: number
                                 }
                             >,
-                            {
-                                color: isActive
-                                    ? tokens.section.itemList.item.color.active
-                                    : tokens.section.itemList.item.color
-                                          .default,
-                            }
+                            { color: itemColors.color }
                         )}
                     </IconWrapper>
                 )
@@ -527,13 +526,7 @@ const NavItem = ({
                                         size?: number
                                     }
                                 >,
-                                {
-                                    color: isActive
-                                        ? tokens.section.itemList.item.color
-                                              .active
-                                        : tokens.section.itemList.item.color
-                                              .default,
-                                }
+                                { color: itemColors.color }
                             )}
                         </IconWrapper>
                     )}
@@ -575,7 +568,7 @@ const NavItem = ({
         <StyledElement
             as={Element}
             $isLink={!!item.href}
-            $isActive={isActive}
+            $visualState={visualState}
             $tokens={tokens}
             $iconOnlyMode={iconOnlyMode}
             $hasHierarchyLineInset={showHierarchyLines && isNested}
@@ -607,6 +600,7 @@ const NavItem = ({
             data-element="sidebar-sub-section"
             data-id={getItemPathSegment(item)}
             data-status={isActive ? 'selected' : 'not selected'}
+            data-path-state={visualState}
         >
             {renderContent()}
         </StyledElement>
@@ -665,6 +659,7 @@ const NavItem = ({
                                     enableParentSelection={
                                         enableParentSelection
                                     }
+                                    highlightActivePath={highlightActivePath}
                                     onNavigate={(direction, currentIndex) => {
                                         if (
                                             direction === 'up' &&

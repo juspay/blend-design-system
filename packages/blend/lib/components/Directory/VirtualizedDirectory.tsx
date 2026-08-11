@@ -13,12 +13,15 @@ import {
     DEFAULT_END_REACHED_THRESHOLD,
     flattenDirectoryData,
     getItemPathSegment,
+    getItemVisualState,
     handleKeyDown,
     normalizeExpandedItems,
     normalizeDirectoryData,
+    resolveItemColors,
     useDirectoryEndReached,
 } from './utils'
 import type { DirectoryFlatRow, DirectoryProps, NavbarItem } from './types'
+import type { DirectoryItemVisualState } from './directory.tokens.types'
 
 const DEFAULT_ROW_HEIGHT = 36
 const DEFAULT_SECTION_HEIGHT = 28
@@ -52,7 +55,6 @@ const SectionRow = styled.div<{
 
 const ItemRow = styled.div<{
     $tokens: DirectoryTokenType
-    $isActive: boolean
     $depth: number
 }>`
     width: 100%;
@@ -108,7 +110,7 @@ const ConnectorElbow = styled.span<{
 
 const ItemButton = styled(Block)<{
     $tokens: DirectoryTokenType
-    $isActive: boolean
+    $visualState: DirectoryItemVisualState
     $showHierarchyLines: boolean
 }>`
     width: ${({ $tokens, $showHierarchyLines }) =>
@@ -123,14 +125,10 @@ const ItemButton = styled(Block)<{
     border: none;
     border-radius: ${({ $tokens }) =>
         $tokens.section.itemList.item.borderRadius};
-    background-color: ${({ $tokens, $isActive }) =>
-        $isActive
-            ? $tokens.section.itemList.item.backgroundColor.active
-            : $tokens.section.itemList.item.backgroundColor.default};
-    color: ${({ $tokens, $isActive }) =>
-        $isActive
-            ? $tokens.section.itemList.item.color.active
-            : $tokens.section.itemList.item.color.default};
+    background-color: ${({ $tokens, $visualState }) =>
+        resolveItemColors($tokens, $visualState).backgroundColor};
+    color: ${({ $tokens, $visualState }) =>
+        resolveItemColors($tokens, $visualState).color};
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -150,14 +148,16 @@ const ItemButton = styled(Block)<{
     text-decoration: none;
     transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
 
+    /* muted rows lift to the hover tier here, so a de-emphasised row regains
+       full contrast the moment it is hovered or keyboard-focused */
     &:hover,
     &:focus-visible {
-        background-color: ${({ $tokens, $isActive }) =>
-            $isActive
+        background-color: ${({ $tokens, $visualState }) =>
+            $visualState === 'active'
                 ? $tokens.section.itemList.item.backgroundColor.active
                 : $tokens.section.itemList.item.backgroundColor.hover};
-        color: ${({ $tokens, $isActive }) =>
-            $isActive
+        color: ${({ $tokens, $visualState }) =>
+            $visualState === 'active'
                 ? $tokens.section.itemList.item.color.active
                 : $tokens.section.itemList.item.color.hover};
         outline: none;
@@ -249,6 +249,7 @@ const VirtualizedDirectory = ({
     onEndReached,
     endReachedThreshold = DEFAULT_END_REACHED_THRESHOLD,
     enableParentSelection = false,
+    highlightActivePath = false,
     virtualization,
 }: DirectoryProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
@@ -469,6 +470,14 @@ const VirtualizedDirectory = ({
                   (activeItem === row.itemPath ||
                       (!row.item.id && activeItem === row.item.label))
 
+        const visualState = getItemVisualState({
+            isActive,
+            itemPath: row.itemPath,
+            activeItem,
+            highlightActivePath,
+        })
+        const itemColors = resolveItemColors(tokens, visualState)
+
         const Element = row.item.href ? 'a' : 'button'
         const elementProps = row.item.href
             ? { href: row.item.href }
@@ -499,7 +508,6 @@ const VirtualizedDirectory = ({
         return (
             <ItemRow
                 $tokens={tokens}
-                $isActive={isActive}
                 $depth={row.depth}
                 data-directory-hierarchy-item={
                     showItemHierarchyLines ? 'true' : undefined
@@ -533,13 +541,14 @@ const VirtualizedDirectory = ({
                     as={Element}
                     {...elementProps}
                     $tokens={tokens}
-                    $isActive={isActive}
+                    $visualState={visualState}
                     $showHierarchyLines={showItemHierarchyLines}
                     aria-expanded={hasChildren ? isExpanded : undefined}
                     aria-label={row.item.label}
                     data-element="sidebar-sub-section"
                     data-id={getItemPathSegment(row.item)}
                     data-status={isActive ? 'selected' : 'not selected'}
+                    data-path-state={visualState}
                     data-directory-row-index={rowIndex}
                     onClick={(event: React.MouseEvent<HTMLElement>) => {
                         if (
@@ -577,13 +586,7 @@ const VirtualizedDirectory = ({
                                             size?: number
                                         }
                                     >,
-                                    {
-                                        color: isActive
-                                            ? tokens.section.itemList.item.color
-                                                  .active
-                                            : tokens.section.itemList.item.color
-                                                  .default,
-                                    }
+                                    { color: itemColors.color }
                                 )}
                             </IconWrapper>
                         )}
