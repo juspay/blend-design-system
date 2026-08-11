@@ -1,0 +1,69 @@
+---
+title: Radio v1 to v2
+description: Migrate Radio to RadioV2 with native change events and structured selector content.
+---
+
+## Radio v1 to v2
+
+`RadioV2` keeps native radio semantics and moves visible content into the shared v2 selector API.
+
+### Quick migration
+
+```tsx
+// v1
+import { Radio, RadioSize } from '@juspay/blend-design-system'
+;<Radio
+    name="plan"
+    value="pro"
+    checked={plan === 'pro'}
+    onChange={(event) => setPlan(event.target.value)}
+    size={RadioSize.MEDIUM}
+    subtext="For growing teams"
+>
+    Pro
+</Radio>
+
+// v2
+import { RadioV2, SelectorV2Size } from '@juspay/blend-design-system'
+;<RadioV2
+    name="plan"
+    value="pro"
+    checked={plan === 'pro'}
+    onCheckedChange={(event) => setPlan(event.target.value)}
+    size={SelectorV2Size.MD}
+    label="Pro"
+    subLabel="For growing teams"
+/>
+```
+
+## Breaking changes
+
+### Rename the component, size enum, and change callback
+
+Replace `Radio` with `RadioV2`, `RadioSize` with `SelectorV2Size`, and `onChange` with `onCheckedChange`. The v2 callback receives the native input change event, so use `event.target.value` for a radio group value.
+
+### Replace children and `subtext`
+
+Move the v1 label from `children` to `label`, and rename `subtext` to `subLabel`. Also rename `maxLength.subtext` to `maxLength.subLabel`.
+
+### Remove uncontrolled defaults
+
+`defaultChecked` is not supported by `RadioV2`. Keep the selected value in parent state and derive each radio's `checked` prop from it.
+
+### Wrap slots
+
+Change `slot={<Icon />}` to `slot={{ slot: <Icon /> }}`. Add `maxHeight` only when the default v2 slot limit is unsuitable.
+
+### Update theme overrides
+
+Move custom token overrides from `RADIO` to `RADIOV2`; v2 has separate indicator, content, label, sub-label, and slot tokens.
+
+## What continues to work
+
+`id`, `name`, `value`, `checked`, `disabled`, `required`, `error`, native radio attributes, and the medium default size continue to work.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/radio#component-tokens) with the [V2 component token reference](/docs/components/radio-v2#component-tokens).

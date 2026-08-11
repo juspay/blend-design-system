@@ -1,0 +1,143 @@
+---
+title: Key Value Pair v1 to v2
+description: Migrate KeyValuePair to KeyValuePairV2, including enum, slot, and token changes.
+---
+
+## Overview
+
+`KeyValuePair` is deprecated in favor of `KeyValuePairV2`. The core display
+model is unchanged: provide a key, an optional value, choose a vertical or
+horizontal layout, and control overflow. V2 mainly makes the API consistent
+with other v2 components by prefixing exports, grouping related slots, and
+using a dedicated token contract with light and dark theme values.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    KeyValuePair,
+    KeyValuePairSize,
+    KeyValuePairStateType,
+} from '@juspay/blend-design-system'
+;<KeyValuePair
+    keyString="Payment status"
+    value="Paid"
+    size={KeyValuePairSize.MEDIUM}
+    keyValuePairState={KeyValuePairStateType.horizontal}
+    keySlot={<InfoIcon aria-label="Payment status information" />}
+    valueLeftSlot={<CheckCircleIcon aria-hidden="true" />}
+    valueRightSlot={<ChevronRightIcon aria-hidden="true" />}
+/>
+```
+
+```tsx
+// v2
+import {
+    KeyValuePairV2,
+    KeyValuePairV2Size,
+    KeyValuePairV2StateType,
+} from '@juspay/blend-design-system'
+;<KeyValuePairV2
+    keyString="Payment status"
+    value="Paid"
+    size={KeyValuePairV2Size.MD}
+    keyValuePairState={KeyValuePairV2StateType.horizontal}
+    slots={{
+        key: <InfoIcon aria-label="Payment status information" />,
+        value: {
+            left: <CheckCircleIcon aria-hidden="true" />,
+            right: <ChevronRightIcon aria-hidden="true" />,
+        },
+    }}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and its enums
+
+**v1:** `KeyValuePair`, `KeyValuePairSize`, and `KeyValuePairStateType`.
+
+**v2:** `KeyValuePairV2`, `KeyValuePairV2Size`, and
+`KeyValuePairV2StateType`.
+
+Rename the component and both enum imports together. The v2 prefix allows the
+two implementations to coexist during an incremental rollout without
+ambiguous imports.
+
+### Use the shortened size enum members
+
+**v1:** `KeyValuePairSize.SMALL`, `KeyValuePairSize.MEDIUM`, and
+`KeyValuePairSize.LARGE`.
+
+**v2:** `KeyValuePairV2Size.SM`, `KeyValuePairV2Size.MD`, and
+`KeyValuePairV2Size.LG`.
+
+The underlying values stay `sm`, `md`, and `lg`; only the TypeScript enum
+member names change. Replace `SMALL` with `SM`, `MEDIUM` with `MD`, and `LARGE`
+with `LG`. The default remains the small size.
+
+### Consolidate slot props under `slots`
+
+**v1:** `keySlot`, `valueLeftSlot`, and `valueRightSlot` are separate props.
+
+**v2:** `slots` groups them as `key`, `value.left`, and `value.right`.
+
+Move each existing node without changing its position:
+
+```tsx
+// v1
+<KeyValuePair
+    keySlot={<HelpIcon />}
+    valueLeftSlot={<StatusIcon />}
+    valueRightSlot={<ChevronRight />}
+    {...props}
+/>
+
+// v2
+<KeyValuePairV2
+    slots={{
+        key: <HelpIcon />,
+        value: {
+            left: <StatusIcon />,
+            right: <ChevronRight />,
+        },
+    }}
+    {...props}
+/>
+```
+
+The grouped shape keeps all supplementary content in one predictable place and
+leaves room for future slot extensions. Omit unused keys; there is no need to
+pass `null` placeholders.
+
+### Update custom theme overrides
+
+**v1:** the component reads the `KEYVALUEPAIR` token contract.
+
+**v2:** it reads `KEYVALUEPAIRV2`, with separate light and dark token sources.
+
+Rebuild custom overrides against `KEYVALUEPAIRV2`. The token shape remains
+familiar—layout gaps plus key and value color, typography, and gaps—but size
+keys follow the renamed `SM`, `MD`, and `LG` enum members. Review both color
+schemes rather than copying only the v1 light values.
+
+## What continues to work
+
+`keyString`, `value`, `keyValuePairState`, `maxWidth`, `textOverflow`,
+`maxLines`, and `showTooltipOnTruncate` keep their purpose and defaults.
+`vertical` and `horizontal` remain the state enum values, while `truncate`,
+`wrap`, and `wrap-clamp` remain the overflow modes. Truncated values still show
+their full content in a tooltip by default.
+
+V2 also preserves the key-before-value reading order and the `term` and
+`definition` roles on the text elements. Keep decorative slot icons hidden
+from assistive technology and give interactive slots an accessible name, as in
+v1.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/keyvaluepair#component-tokens) with the [V2 component token reference](/docs/components/key-value-pair-v2#component-tokens).

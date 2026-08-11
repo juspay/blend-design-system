@@ -1,0 +1,225 @@
+---
+title: Drawer v1 to v2
+description: Migrate Drawer to DrawerV2, including the new headless layout and the replacement paths for specialized drawers.
+---
+
+## Overview
+
+`Drawer` is deprecated in favor of `DrawerV2`. Both versions use the Vaul
+drawer primitive, so controlled open state, direction, modal behavior, and
+snap points can carry over. The important difference is that v1 supplied the
+panel’s visual layout, spacing, handle, responsive offsets, and token-driven
+styling. `DrawerV2` deliberately forwards the underlying primitives instead.
+
+As a result, this is more than an import rename: build the overlay, panel
+position, padding, header, scroll area, and footer styling at each v2 call
+site (or in a reusable app-level drawer composition).
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Drawer,
+    DrawerTrigger,
+    DrawerPortal,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerDescription,
+    DrawerBody,
+    DrawerFooter,
+    DrawerClose,
+    Button,
+    ButtonType,
+} from '@juspay/blend-design-system'
+;<Drawer open={isOpen} onOpenChange={setIsOpen} direction="right">
+    <DrawerTrigger>
+        <Button text="Edit profile" buttonType={ButtonType.PRIMARY} />
+    </DrawerTrigger>
+    <DrawerPortal>
+        <DrawerOverlay />
+        <DrawerContent direction="right" width="400px">
+            <DrawerHeader>
+                <DrawerTitle>Edit profile</DrawerTitle>
+                <DrawerDescription>Update your details.</DrawerDescription>
+            </DrawerHeader>
+            <DrawerBody hasFooter>{form}</DrawerBody>
+            <DrawerFooter>
+                <DrawerClose>
+                    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                </DrawerClose>
+                <Button text="Save" buttonType={ButtonType.PRIMARY} />
+            </DrawerFooter>
+        </DrawerContent>
+    </DrawerPortal>
+</Drawer>
+```
+
+```tsx
+// v2
+import {
+    DrawerV2,
+    DrawerV2Trigger,
+    DrawerV2Portal,
+    DrawerV2Overlay,
+    DrawerV2Content,
+    DrawerV2Header,
+    DrawerV2Title,
+    DrawerV2Description,
+    DrawerV2Body,
+    DrawerV2Footer,
+    DrawerV2Close,
+    ButtonV2,
+    ButtonV2Type,
+} from '@juspay/blend-design-system'
+;<DrawerV2 open={isOpen} onOpenChange={setIsOpen} direction="right">
+    <DrawerV2Trigger asChild>
+        <ButtonV2 text="Edit profile" buttonType={ButtonV2Type.PRIMARY} />
+    </DrawerV2Trigger>
+    <DrawerV2Portal>
+        <DrawerV2Overlay className="fixed inset-0 z-50 bg-black/40" />
+        <DrawerV2Content className="fixed inset-y-0 right-0 z-50 flex w-[400px] max-w-full flex-col bg-white">
+            <DrawerV2Header className="p-5">
+                <DrawerV2Title className="text-lg font-semibold">
+                    Edit profile
+                </DrawerV2Title>
+                <DrawerV2Description className="mt-1 text-sm text-gray-600">
+                    Update your details.
+                </DrawerV2Description>
+            </DrawerV2Header>
+            <DrawerV2Body className="min-h-0 flex-1 overflow-y-auto p-5">
+                {form}
+            </DrawerV2Body>
+            <DrawerV2Footer className="flex justify-end gap-3 p-5">
+                <DrawerV2Close asChild>
+                    <ButtonV2
+                        text="Cancel"
+                        buttonType={ButtonV2Type.SECONDARY}
+                    />
+                </DrawerV2Close>
+                <ButtonV2 text="Save" buttonType={ButtonV2Type.PRIMARY} />
+            </DrawerV2Footer>
+        </DrawerV2Content>
+    </DrawerV2Portal>
+</DrawerV2>
+```
+
+## Breaking changes
+
+### Rename every primitive
+
+**v1:** `Drawer`, `DrawerTrigger`, `DrawerPortal`, `DrawerOverlay`,
+`DrawerContent`, `DrawerHeader`, `DrawerTitle`, `DrawerDescription`,
+`DrawerBody`, `DrawerFooter`, and `DrawerClose`.
+
+**v2:** the same primitives use the `DrawerV2` prefix: for example,
+`DrawerContent` becomes `DrawerV2Content`.
+
+The prefix lets v1 and v2 coexist during an incremental rollout without
+ambiguous imports. Rename the complete drawer tree together. Also migrate
+buttons within that tree to `ButtonV2` as shown above.
+
+### Opt in to `asChild` on trigger and close
+
+**v1:** `DrawerTrigger` always renders as a child, so a `Button` can be passed
+directly. `DrawerClose` is commonly used around a button.
+
+**v2:** `DrawerV2Trigger` and `DrawerV2Close` expose Vaul’s `asChild` prop.
+
+Wrap an existing button with `asChild` on both primitives. Without it, the
+primitive renders its own button element, which can create invalid nested
+buttons and change layout or keyboard behavior.
+
+### Move direction to the root and rebuild panel layout
+
+**v1:** `Drawer` controls the Vaul direction while `DrawerContent` also accepts
+`direction`, `width`, `maxWidth`, `offSet`, `mobileOffset`, and `fullScreen` to
+apply Blend’s responsive panel layout.
+
+**v2:** pass `direction` to `DrawerV2`. `DrawerV2Content` is a direct Vaul
+content primitive; it does not recreate v1’s panel sizing, offsets, border
+radius, background, z-index, or fullscreen behavior.
+
+Put the panel’s `position`, edges, width or height, maximum size, background,
+radius, and stacking order in `className` or `style`. For a full-screen
+drawer, apply `fixed inset-0 h-full w-full` to `DrawerV2Content`. Do not carry
+over the v1-only content props or assume that a `size` value will rebuild that
+layout.
+
+### Recreate the handle and structural spacing
+
+**v1:** top and bottom `DrawerContent` instances render a default drag handle
+unless `showHandle={false}`; `handle` replaces it. `DrawerHeader`,
+`DrawerBody`, and `DrawerFooter` also supply token-based background, padding,
+scrolling, radii, and footer alignment.
+
+**v2:** no handle or structural styling is provided. `DrawerV2Header`,
+`DrawerV2Body`, and `DrawerV2Footer` are plain `div` wrappers.
+
+Add a handle, padding, scroll behavior, and action alignment in your
+composition. If a gesture must be restricted to the handle, use the Vaul
+`handleOnly` root prop and mark the element you create with `data-vaul-handle`.
+Test the resulting touch behavior, since v2 does not render a handle for you.
+
+### Update nested and snap-point props
+
+**v1:** set `nested` on `Drawer` and use `onSnapPointChange` to receive
+snap-point updates. `disableDrag` is implemented by passing Vaul’s
+`handleOnly` prop internally.
+
+**v2:** use `DrawerV2NestedRoot` for a nested drawer. The raw Vaul root uses
+`setActiveSnapPoint` rather than `onSnapPointChange`, and it exposes
+`handleOnly` directly.
+
+Replace `nested` with the nested root component. Rename
+`onSnapPointChange={setSnapPoint}` to `setActiveSnapPoint={setSnapPoint}`.
+For an existing `disableDrag` call site, use `handleOnly={disableDrag}` to
+preserve v1’s implemented behavior, then verify drag behavior with the custom
+handle described above.
+
+### Reapply theme styling outside the component
+
+**v1:** the drawer consumes the `DRAWER` token contract for the overlay,
+content background, padding, offsets, and handle.
+
+**v2:** `DrawerV2` does not consume a Blend drawer token contract; its overlay
+and content are forwarded Vaul primitives.
+
+Existing `DRAWER` token overrides do not style v2. Move those values into your
+application styles or a reusable v2 composition, and apply them to
+`DrawerV2Overlay`, `DrawerV2Content`, and the header/body/footer wrappers.
+This separation is why v2 can support product-specific drawer layouts without
+component-owned styling getting in the way.
+
+### Replace specialized drawer composites
+
+**v1:** `StatusDrawer`, `MultiSelectDrawer`, `SingleSelectDrawer`,
+`NestedMultiSelectDrawer`, and `NestedSingleSelectDrawer` are exported beside
+the base drawer.
+
+**v2:** there is no `StatusDrawerV2`. `MultiSelectListV2` and `SelectListV2`
+replace the non-nested selection lists, but they are inline lists rather than
+drawers. The nested select drawers have no direct v2 replacement yet.
+
+Compose a status drawer from the v2 primitives, title/description, status slot,
+and `ButtonV2` actions. Render `MultiSelectListV2` or `SelectListV2` inside
+your own `DrawerV2` when an overlay is required; keep pending selection and
+Confirm/Cancel behavior in the parent because the v2 lists apply selection
+immediately. Keep nested select drawer call sites on v1 until the needed
+nested list behavior is available.
+
+## What continues to work
+
+`open`, `onOpenChange`, `direction`, `modal`, `dismissible`, `snapPoints`,
+`activeSnapPoint`, `fadeFromIndex`, and `snapToSequentialPoint` retain their
+Vaul purpose. The title, description, portal, overlay, content, and close
+primitives remain available, so preserve the same semantic structure and
+accessible title/description when rebuilding the visual layout.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/drawer#component-tokens) with the [V2 component token reference](/docs/components/drawer-v2#component-tokens).

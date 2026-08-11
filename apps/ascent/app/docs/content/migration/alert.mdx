@@ -1,0 +1,145 @@
+---
+title: Alert v1 to v2
+description: Migrate the Alert component from v1 to AlertV2, including actions, close behavior, layout, and accessibility changes.
+---
+
+## Overview
+
+`Alert` is deprecated in favor of `AlertV2`. The v2 API groups related
+configuration together, making actions, dismiss behavior, and custom icons
+more explicit. Most migrations are mechanical, but review close-button and
+action-placement defaults because they change how an alert appears and behaves.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Alert,
+    AlertActionPlacement,
+    AlertStyle,
+    AlertVariant,
+} from '@juspay/blend-design-system'
+;<Alert
+    heading="Update available"
+    description="A new version is ready to install."
+    variant={AlertVariant.PRIMARY}
+    style={AlertStyle.SUBTLE}
+    icon={<DownloadIcon />}
+    primaryAction={{ label: 'Update now', onClick: handleUpdate }}
+    secondaryAction={{ label: 'Later', onClick: handleLater }}
+    actionPlacement={AlertActionPlacement.RIGHT}
+    onClose={handleClose}
+/>
+```
+
+```tsx
+// v2
+import {
+    AlertV2,
+    AlertV2ActionPosition,
+    AlertV2SubType,
+    AlertV2Type,
+} from '@juspay/blend-design-system'
+;<AlertV2
+    heading="Update available"
+    description="A new version is ready to install."
+    type={AlertV2Type.PRIMARY}
+    subType={AlertV2SubType.SUBTLE}
+    slot={{ slot: <DownloadIcon /> }}
+    actions={{
+        position: AlertV2ActionPosition.RIGHT,
+        primaryAction: { text: 'Update now', onClick: handleUpdate },
+        secondaryAction: { text: 'Later', onClick: handleLater },
+    }}
+    closeButton={{ show: true, onClick: handleClose }}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and visual props
+
+**v1:** `Alert`, `AlertVariant`, `AlertStyle`, `variant`, and `style`
+
+**v2:** `AlertV2`, `AlertV2Type`, `AlertV2SubType`, `type`, and `subType`
+
+The renamed exports let v1 and v2 coexist during an incremental rollout. Map
+`variant` to `type` and `style` to `subType`. Their values and defaults are
+unchanged: primary and subtle remain the defaults.
+
+### Replace `icon` with `slot`
+
+**v1:** `icon` accepts any `ReactNode`.
+
+**v2:** `slot` accepts `{ slot: ReactElement; maxHeight?: CSSObject['maxHeight'] }`.
+
+The structured slot makes icon sizing explicit. Wrap an existing icon as
+`slot={{ slot: <Icon /> }}`. Because v2 requires a React element, replace a
+text or other non-element v1 icon with an element before passing it to `slot`.
+
+### Group and rename actions
+
+**v1:** `primaryAction`, `secondaryAction`, and `actionPlacement`. Each action
+uses `{ label, onClick }`.
+
+**v2:** `actions={{ position, primaryAction, secondaryAction }}`. Each action
+uses `{ text, onClick }`.
+
+V2 groups all action configuration in one prop. Move the placement into
+`actions.position`, rename action `label` to `text`, and move both actions
+inside `actions`. V2 action handlers receive the click event; existing
+zero-argument callbacks can still be passed directly in TypeScript.
+
+### Preserve the action layout
+
+**v1 default:** actions are placed on the right.
+
+**v2 default:** actions are placed at the bottom.
+
+Set `actions.position={AlertV2ActionPosition.RIGHT}` when an existing alert
+uses the v1 default right-aligned action layout. Leave it unset only when the
+new bottom placement is intended.
+
+### Replace `onClose` and review its default
+
+**v1:** `onClose` both enables the close button and supplies its callback.
+Without it, no close button is shown.
+
+**v2:** `closeButton={{ show, onClick }}` controls visibility and the callback.
+The close button is shown by default, even when no callback is supplied.
+
+For a dismissible v1 alert, use
+`closeButton={{ show: true, onClick: handleClose }}`. To preserve a v1 alert
+without `onClose`, explicitly set `closeButton={{ show: false }}`.
+
+### Update custom Alert tokens
+
+**v1:** `ALERT` token contract
+
+**v2:** `ALERTV2` token contract
+
+V2 supports separate padding directions and reorganizes text, action, slot,
+and close-button tokens beneath `mainContainer`. Update custom overrides to
+target `ALERTV2`; `background` becomes `backgroundColor`, and action styles
+move from `button` to `mainContainer.content.actionContainer`.
+
+## Accessibility changes
+
+V1 gives warning and error alerts `role="alert"`, while other variants use
+`role="status"`. V2 gives every alert `role="alert"` with an assertive live
+region. Review informational or success messages in context to ensure the
+stronger announcement behavior is appropriate for your product.
+
+## What continues to work
+
+The same visual types are available: primary, success, warning, error, purple,
+orange, and neutral. `heading`, `description`, `width`, `maxWidth`, and
+`minWidth` remain supported. V2 also accepts standard HTML div attributes,
+and its dimension props accept the corresponding CSS values.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/alert#component-tokens) with the [V2 component token reference](/docs/components/alert-v2#component-tokens).

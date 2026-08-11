@@ -1,0 +1,226 @@
+---
+title: Tabs v1 to v2
+description: Migrate Tabs to TabsV2, including the compound API, controlled state, disabled tabs, closable tabs, and tokens.
+---
+
+## Overview
+
+`Tabs` is deprecated in favor of `TabsV2`. The four visual variants, three
+sizes, Radix tab values, controlled and uncontrolled selection, slots,
+skeletons, sticky headers, horizontal overflow, and keyboard tab behavior
+remain available.
+
+The key migration is from v1's optional `items` shortcut to V2's compound
+components: `TabsV2List`, `TabsV2Trigger`, and `TabsV2Content`. V2 makes the
+application responsible for dynamic tab creation, closing, ordering, content,
+and any dropdown navigation.
+
+## Quick migration
+
+```tsx
+// v1
+import { Tabs, TabsSize, TabsVariant } from '@juspay/blend-design-system'
+;<Tabs
+    items={[
+        {
+            value: 'overview',
+            label: 'Overview',
+            content: <Overview />,
+            leftSlot: <ChartIcon />,
+        },
+        {
+            value: 'draft',
+            label: 'Draft',
+            content: <Draft />,
+            newItem: true,
+        },
+    ]}
+    defaultValue="overview"
+    variant={TabsVariant.BOXED}
+    size={TabsSize.MD}
+    showDropdown
+    showAddButton
+    onTabClose={removeTab}
+    onTabAdd={addTab}
+/>
+```
+
+```tsx
+// v2
+import {
+    TabsV2,
+    TabsV2Content,
+    TabsV2List,
+    TabsV2Size,
+    TabsV2Trigger,
+    TabsV2Variant,
+} from '@juspay/blend-design-system'
+;<TabsV2
+    defaultValue="overview"
+    variant={TabsV2Variant.BOXED}
+    size={TabsV2Size.MD}
+>
+    <TabsV2List>
+        <TabsV2Trigger value="overview" leftSlot={<ChartIcon />}>
+            Overview
+        </TabsV2Trigger>
+        <TabsV2Trigger
+            value="draft"
+            closable
+            onClose={() => removeTab('draft')}
+        >
+            Draft
+        </TabsV2Trigger>
+    </TabsV2List>
+    <TabsV2Content value="overview">
+        <Overview />
+    </TabsV2Content>
+    <TabsV2Content value="draft">
+        <Draft />
+    </TabsV2Content>
+</TabsV2>
+```
+
+## Breaking changes
+
+### Rename the components and enums
+
+**v1:** `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent`, `TabsVariant`, and
+`TabsSize`.
+
+**v2:** `TabsV2`, `TabsV2List`, `TabsV2Trigger`, `TabsV2Content`,
+`TabsV2Variant`, and `TabsV2Size`.
+
+Rename all compound-component and enum imports together. Variant values
+(`BOXED`, `FLOATING`, `UNDERLINE`, and `PILLS`) and size values (`SM`, `MD`, and
+`LG`) do not change. The V2 defaults remain underline and medium.
+
+### Replace `items` with explicit triggers and content
+
+**v1:** `items` accepts `label`, `value`, `content`, slots, loading settings,
+and `newItem`. The component creates the list and panels for you.
+
+**v2:** `TabsV2Props` has no `items` prop. Render a `TabsV2Trigger` and
+matching `TabsV2Content` for every item yourself.
+
+```tsx
+{
+    tabItems.map((item) => (
+        <TabsV2Trigger
+            key={item.value}
+            value={item.value}
+            leftSlot={item.leftSlot}
+            rightSlot={item.rightSlot}
+            disabled={item.disable}
+        >
+            {item.label}
+        </TabsV2Trigger>
+    ))
+}
+
+{
+    tabItems.map((item) => (
+        <TabsV2Content key={item.value} value={item.value}>
+            {item.content}
+        </TabsV2Content>
+    ))
+}
+```
+
+Keep both maps inside the same `TabsV2` root and ensure each trigger and panel
+uses exactly the same value. V2 continues to scroll an active trigger into
+view, but it no longer manages the v1 item collection for you.
+
+### Own dynamic tabs, closing, add controls, and dropdown navigation
+
+**v1:** `newItem`, `onTabClose`, `onTabAdd`, `showAddButton`, `showDropdown`,
+`dropdownTooltip`, and `addButtonTooltip` provide an item-driven dynamic-tabs
+workflow. V1 also picks a neighboring tab when it closes the active item.
+
+**v2:** these root/list props are removed. `TabsV2Trigger` still supports
+`closable` and `onClose`, but V2 does not remove the tab or choose the next
+active value for you.
+
+Store the tab array and selected value in application state. In a close handler,
+remove the tab, decide the next active value, and update controlled `value` if
+needed. Render your own add button and, for overflow navigation, compose a
+supported select/menu beside `TabsV2List`.
+
+```tsx
+<TabsV2Trigger
+    value={item.value}
+    closable={item.isTemporary}
+    onClose={() => closeTab(item.value)}
+>
+    {item.label}
+</TabsV2Trigger>
+```
+
+### Rename `disable` to `disabled`
+
+**v1:** root and item/trigger state use `disable`.
+
+**v2:** use `disabled` on `TabsV2`, `TabsV2List`, and `TabsV2Trigger`.
+
+Map a v1 item’s `disable` to its trigger's `disabled` prop. A disabled V2 root
+still propagates disabled state to triggers, while a trigger can opt into the
+state individually.
+
+### Make controlled selection fully application-owned
+
+**v1:** supplying `value` updates the displayed tab, but user interaction also
+updates the component's internal active state before the parent responds.
+
+**v2:** when `value` is present, the component does not change its own active
+state after an interaction; it calls `onValueChange` and waits for the parent to
+pass the next `value`.
+
+```tsx
+const [activeTab, setActiveTab] = useState('overview')
+
+;<TabsV2 value={activeTab} onValueChange={setActiveTab}>
+    {/* list and content */}
+</TabsV2>
+```
+
+This prevents temporary disagreement between UI and application state, but a
+controlled V2 tab will appear unchanged if `onValueChange` does not update
+`value`. Use `defaultValue` instead when selection should be uncontrolled.
+
+### Move item-level props to `TabsV2Trigger`
+
+`leftSlot`, `rightSlot`, `showSkeleton`, and `skeletonVariant` remain supported
+on `TabsV2Trigger`. Place the values there after replacing the `items` array.
+`content` moves to the matching `TabsV2Content`. The V2 close affordance uses a
+dedicated close-button token contract and remains keyboard accessible.
+
+`expanded`, `fitContent`, `stickyHeader`, and `offsetTop` remain available at
+the root or list. Keep `expanded` and `fitContent` choices explicit when moving
+the list so the tab distribution does not change unexpectedly.
+
+### Update custom tokens
+
+**v1:** the component reads `TABS` tokens, with root-level `container`,
+`trigger`, and indicator paths.
+
+**v2:** it reads `TABSV2`, grouping list, trigger, sticky-header, active
+indicator, icon, and close-button tokens under `tabList`.
+
+Rebuild overrides against `TABSV2`; do not copy v1 paths directly. V2 adds
+root width and outline tokens, close-button styling, sticky-header shadow and
+z-index tokens, plus per-side list and trigger padding entries. Review all
+sizes, variants, states, and both themes.
+
+## What continues to work
+
+The Radix `value`, `defaultValue`, and `onValueChange` contract continues to
+select tab panels by their string value. `className`, slots, trigger `closable`
+and `onClose`, skeleton settings, sticky headers, offset, overflow scrolling,
+and the standard keyboard interaction model remain supported. Individual tab
+content may still contain any React node.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/tabs#component-tokens) with the [V2 component token reference](/docs/components/tabs-v2#component-tokens).
