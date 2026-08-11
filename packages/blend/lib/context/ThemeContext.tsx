@@ -174,6 +174,10 @@ import {
     ResponsiveChartV2Tokens,
 } from '../components/ChartsV2/chartV2.tokens'
 import {
+    getChartV3Tokens,
+    ResponsiveChartV3Tokens,
+} from '../components/ChartsV3/chartV3.tokens'
+import {
     getTimelineTokens,
     ResponsiveTimelineTokens,
 } from '../components/Timeline/timeline.token'
@@ -337,6 +341,7 @@ export type ComponentTokenType = {
     AVATARV2?: ResponsiveAvatarV2Tokens
     TEXT_INPUTV2?: ResponsiveTextInputV2Tokens
     CHARTSV2?: ResponsiveChartV2Tokens
+    CHARTSV3?: ResponsiveChartV3Tokens
     CHECKBOXV2?: ResponsiveCheckboxV2Tokens
     KEYVALUEPAIRV2?: ResponsiveKeyValuePairV2Tokens
     STATCARDV2?: ResponsiveStatCardV2Tokens
@@ -438,6 +443,7 @@ const ThemeContext = createContext<ThemeContextType>({
         TEXT_INPUTV2: getTextInputV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TEXT_AREA_V2: getTextAreaV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CHARTSV2: getChartV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        CHARTSV3: getChartV3Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TIMELINE: getTimelineTokens(FOUNDATION_THEME, Theme.LIGHT),
         SINGLE_SELECT_V2: getSingleSelectV2Tokens(
             FOUNDATION_THEME,
