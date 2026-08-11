@@ -1,0 +1,197 @@
+---
+title: Sidebar v1 to v2
+description: Migrate Sidebar to SidebarV2, including the secondary rail, mobile actions, layout height, and token changes.
+---
+
+## Overview
+
+`Sidebar` is deprecated in favor of `SidebarV2`. The primary directory model,
+controlled expansion, active item state, keyboard collapse shortcut, topbar
+controls, footer, responsive mobile navigation, hierarchy settings, and
+directory virtualization remain available.
+
+The main change is the v1 tenant/left panel becoming an explicit secondary
+sidebar rail. V2 also gives the layout a viewport-height default, renames the
+mobile primary-action props, and uses the V2 sidebar, mobile-navigation, and
+topbar token contracts.
+
+## Quick migration
+
+```tsx
+// v1
+import { Sidebar } from '@juspay/blend-design-system'
+;<Sidebar
+    data={directoryData}
+    leftPanel={{
+        items: tenants,
+        selected: selectedTenant,
+        onSelect: setSelectedTenant,
+        tenantSlot1: <HelpButton />,
+        tenantFooter: <ProfileButton />,
+    }}
+    showLeftPanel
+    showPrimaryActionButton
+    primaryActionButtonProps={{ children: 'Create', onClick: createItem }}
+    topbar={<PageTopbar />}
+>
+    <PageContent />
+</Sidebar>
+```
+
+```tsx
+// v2
+import { SidebarV2 } from '@juspay/blend-design-system'
+;<SidebarV2
+    data={directoryData}
+    secondarySidebar={{
+        items: tenants.map(({ label, value, icon, badge }) => ({
+            label,
+            value: value ?? label,
+            icon,
+            badge,
+        })),
+        selected: selectedTenant,
+        onSelect: setSelectedTenant,
+        footerSlot: (
+            <>
+                <HelpButton />
+                <ProfileButton />
+            </>
+        ),
+    }}
+    showMobilePrimaryActionButton
+    mobilePrimaryActionButtonProps={{ children: 'Create', onClick: createItem }}
+    topbar={<PageTopbar />}
+>
+    <PageContent />
+</SidebarV2>
+```
+
+## Breaking changes
+
+### Rename the component and state enum
+
+**v1:** `Sidebar` and the string union `SidebarStateChangeType`.
+
+**v2:** `SidebarV2`, `SidebarV2StateChangeType`, and the optional
+`SidebarV2StateChange` enum.
+
+`onSidebarStateChange` still reports `collapsed`, `expanded`, and
+`intermediate`. Rename types and imports when they appear in application code;
+the callback values themselves do not change.
+
+### Replace `leftPanel` with `secondarySidebar`
+
+**v1:** `leftPanel` is a tenant panel. Its item `value` is optional;
+`onSelect` receives the tenant **label**. V1 can hide overflow items behind a
+More menu and separately exposes `tenantSlot1`, `tenantSlot2`, and
+`tenantFooter`.
+
+**v2:** `secondarySidebar` is a persistent, scrollable icon rail. Every item
+needs a `value`, and `onSelect` receives that **value**. Its only dedicated
+bottom-content slot is `footerSlot`.
+
+```tsx
+// v1
+leftPanel={{
+    items: [{ label: 'Acme', value: 'acme', icon: <AcmeIcon /> }],
+    selected: selectedTenant,
+    onSelect: setSelectedTenant,
+    tenantSlot1: <HelpButton />,
+    tenantFooter: <ProfileButton />,
+}}
+
+// v2
+secondarySidebar={{
+    items: [{ label: 'Acme', value: 'acme', icon: <AcmeIcon /> }],
+    selected: selectedTenant,
+    onSelect: setSelectedTenant,
+    footerSlot: (
+        <>
+            <HelpButton />
+            <ProfileButton />
+        </>
+    ),
+}}
+```
+
+If v1 relies on `onSelect` receiving labels, either make each `value` equal to
+its label or translate the selected value in the callback. Move both tenant
+slots and the tenant footer into `footerSlot` in the order you want them shown.
+The V2 rail scrolls its items rather than providing v1's overflow selector, so
+test long tenant lists and their ordering.
+
+### Remove `showLeftPanel`
+
+**v1:** `showLeftPanel` conditionally displays `leftPanel`.
+
+**v2:** the rail is displayed when `secondarySidebar.items` is non-empty and
+the sidebar is expanded. There is no equivalent visibility prop.
+
+Conditionally pass `secondarySidebar` when the rail should be absent. In a
+collapsed sidebar, the rail is included in the hover preview rather than shown
+as a permanently separate control.
+
+### Rename mobile primary-action props
+
+**v1:** `showPrimaryActionButton` and `primaryActionButtonProps` configure the
+mobile navigation action.
+
+**v2:** use `showMobilePrimaryActionButton` and
+`mobilePrimaryActionButtonProps`.
+
+The button attribute shape is otherwise the same. Rename both props together
+and test the small-screen navigation after migration.
+
+### Remove v1-only panel and icon-mode options
+
+`panelOnlyMode`, `disableIntermediateState`, `iconOnlyMode`, and
+`hideOnIconOnlyToggle` are not V2 props. V2 retains its standard collapsed,
+expanded, and hover-preview behavior, but it does not offer those v1
+configuration switches.
+
+Remove these props. If an application depended on a specialized panel-only or
+hide-on-toggle experience, compose that layout outside `SidebarV2` and retain
+the component's supported expansion state rather than relying on unsupported
+props.
+
+### Review layout height and empty navigation behavior
+
+**v1:** the layout container always uses `height="100%"`; `children`, `data`,
+and `topbar` are required by the public type.
+
+**v2:** `height` is new and defaults to `100dvh`; `children`, `data`, and
+`topbar` are optional. V2 does not render the primary panel when `data` is
+empty.
+
+Pass `height="100%"` when the sidebar must fill a parent-managed layout rather
+than the viewport. Test pages without directory data and pages nested inside a
+scroll container, since their rendered rail and height can differ from v1.
+
+### Update custom tokens
+
+**v1:** Sidebar consumes `SIDEBAR` and `MOBILE_NAVIGATION` tokens.
+
+**v2:** it consumes `SIDEBARV2`, `MOBILE_NAVIGATION_V2`, and `TOPBARV2`.
+
+Rebuild overrides against all three V2 contracts. `SIDEBARV2` separates the
+container, primary sidebar, secondary sidebar, hover preview, and per-side
+spacing. Do not copy v1 `leftPanel` or `padding.x`/`padding.y` paths directly;
+the V2 rail uses `secondarySidebar` and explicit top/right/bottom/left padding
+entries. Review the topbar and mobile action styles as part of the migration.
+
+## What continues to work
+
+`data` continues to use `DirectoryData`, including nested items. `topbar`,
+`footer`, `sidebarTopSlot`, `sidebarCollapseKey`, `merchantInfo`,
+`rightActions`, topbar auto-hide and controlled visibility, controlled and
+uncontrolled expansion, active-item state, hierarchy-line controls,
+`expandedItems`, directory callbacks, and directory virtualization retain their
+purpose. Both versions default to an expanded sidebar, show the mobile
+navigation at the small breakpoint, and support a forwarded container ref.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/sidebar#component-tokens) with the [V2 component token reference](/docs/components/sidebar-v2#component-tokens).

@@ -1,0 +1,197 @@
+---
+title: Snackbar v1 to v2
+description: Migrate Snackbar to SnackbarV2, including toast helpers, custom slots, sizing, accessibility, and layout changes.
+---
+
+## Overview
+
+`Snackbar` is deprecated in favor of `SnackbarV2`. It remains a mounted toast
+container paired with an imperative helper. Positions, severity variants,
+duration, click-away dismissal, the close callback, and the single action
+button keep their purpose.
+
+V2 renames the public component, helper, and enums. It adds a custom icon slot,
+per-toast dimensions, stack and keyboard-region controls, and a redesigned
+toast layout. Review long headers in particular: V1 can wrap them, whereas V2
+always truncates them to one line.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Snackbar,
+    SnackbarPosition,
+    SnackbarVariant,
+    addSnackbar,
+} from '@juspay/blend-design-system'
+;<Snackbar position={SnackbarPosition.TOP_RIGHT} dismissOnClickAway />
+
+addSnackbar({
+    header: 'Changes saved',
+    description: 'Your profile is up to date.',
+    variant: SnackbarVariant.SUCCESS,
+    position: SnackbarPosition.TOP_RIGHT,
+    wrap: true,
+    actionButton: { label: 'Undo', onClick: undo },
+})
+```
+
+```tsx
+// v2
+import {
+    SnackbarV2,
+    SnackbarV2Position,
+    SnackbarV2Variant,
+    addSnackbarV2,
+} from '@juspay/blend-design-system'
+;<SnackbarV2
+    position={SnackbarV2Position.TOP_RIGHT}
+    dismissOnClickAway
+    visibleToasts={3}
+    containerAriaLabel="Notifications"
+/>
+
+addSnackbarV2({
+    header: 'Changes saved',
+    description: 'Your profile is up to date.',
+    variant: SnackbarV2Variant.SUCCESS,
+    position: SnackbarV2Position.TOP_RIGHT,
+    actionButton: { label: 'Undo', onClick: undo },
+    maxWidth: 420,
+})
+```
+
+## Breaking changes
+
+### Rename the component, helper, and enums
+
+**v1:** `Snackbar`, `addSnackbar`, `SnackbarVariant`, and
+`SnackbarPosition`.
+
+**v2:** `SnackbarV2`, `addSnackbarV2`, `SnackbarV2Variant`, and
+`SnackbarV2Position`.
+
+Rename the container and every related import together. The variant members
+(`INFO`, `SUCCESS`, `WARNING`, and `ERROR`) and position members retain the
+same values, so their visual intent and defaults move across directly.
+
+### Remove `wrap` and review long headers
+
+**v1:** `addSnackbar` accepts `wrap`. With `wrap={true}`, the header can wrap
+onto multiple lines.
+
+**v2:** `wrap` is removed. Toast headers always use a single line with an
+ellipsis when space is limited.
+
+Remove `wrap` and shorten or reword important headers so their essential text
+appears before the truncation point. Put supporting detail in `description`.
+Test localized messages and narrow viewports, especially when an action button
+also appears in the toast.
+
+### Use `slot` for a custom leading element
+
+**v1:** the severity variant always supplies the leading icon; there is no
+custom icon prop.
+
+**v2:** `slot` can replace that icon with one `ReactElement`.
+
+```tsx
+addSnackbarV2({
+    header: 'Export ready',
+    description: 'The CSV file can now be downloaded.',
+    variant: SnackbarV2Variant.SUCCESS,
+    slot: <DownloadIcon aria-hidden="true" />,
+})
+```
+
+The slot is decorative in the toast's accessibility tree, so keep the header
+meaningful without depending on the icon alone.
+
+### Move sizing to individual toast options
+
+**v1:** a toast uses the `SNACKBAR` token's maximum width; individual calls
+cannot configure width constraints.
+
+**v2:** `addSnackbarV2` accepts `width`, `minWidth`, and `maxWidth`.
+
+```tsx
+addSnackbarV2({
+    header: 'Bulk import complete',
+    variant: SnackbarV2Variant.INFO,
+    width: 'min(480px, calc(100vw - 32px))',
+    minWidth: 280,
+    maxWidth: 480,
+})
+```
+
+Use these values only for the toast that needs them. Although `SnackbarV2Props`
+currently declares a container-level `maxWidth`, the V2 container does not pass
+that prop to its toaster; set `maxWidth` in each `addSnackbarV2` call to ensure
+it takes effect.
+
+### Configure the visible stack and accessible region when needed
+
+**v1:** the visible stack uses the shared default of three toasts; there is no
+public container configuration for the stack or its keyboard region.
+
+**v2:** `visibleToasts`, `containerAriaLabel`, and `hotkey` are available on
+the container. Their defaults are `3`, `Notifications`, and `['altKey',
+'KeyT']` (Alt+T).
+
+Add these props when you need a different stack size, localization, or keyboard
+shortcut. Values below one fall back to the default. Persistent toasts are kept
+visible even when the requested stack limit would otherwise hide them.
+
+### Persistent and action-dismiss semantics remain explicit
+
+Both versions use `duration: Infinity` for a persistent toast; `duration: 0`
+still falls through to the normal 4000ms default. `actionButton.autoDismiss`
+still defaults to dismissing the toast after the action runs.
+
+For a persistent action such as Retry, keep both choices explicit:
+
+```tsx
+addSnackbarV2({
+    header: 'Upload failed',
+    variant: SnackbarV2Variant.ERROR,
+    duration: Infinity,
+    actionButton: {
+        label: 'Retry',
+        onClick: retryUpload,
+        autoDismiss: false,
+    },
+})
+```
+
+A persistent toast remains exempt from `dismissOnClickAway` and from being
+pushed out of the visible stack. It still has a close button, so use an inline
+alert or modal instead when the user must act before continuing.
+
+### Update custom tokens
+
+**v1:** the component reads `SNACKBAR` tokens, including `infoIcon`,
+`content`, and `actions`.
+
+**v2:** it reads `SNACKBARV2`, with separate light and dark token sets and a
+`slot` plus `mainContainer` contract.
+
+Rebuild overrides against `SNACKBARV2` rather than copying paths. V2 adds base
+`width` and `minWidth` tokens, line-height tokens for text and action content,
+and groups the close button under `mainContainer.closeButton`. Review every
+variant in both themes.
+
+## What continues to work
+
+`header`, `description`, `variant`, `onClose`, `actionButton`, `duration`, and
+per-toast `position` retain their meaning. The action still supports one label
+and callback, and `autoDismiss: false` still keeps its toast open after the
+callback. Containers still default to `BOTTOM_RIGHT`, `dismissOnClickAway`
+still defaults to `false`, and warning/error toasts use an assertive role while
+info/success toasts use a status role.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/snackbar#component-tokens) with the [V2 component token reference](/docs/components/snackbar-v2#component-tokens).

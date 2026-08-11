@@ -1,0 +1,60 @@
+---
+title: Button Group v1 to v2
+description: Migrate ButtonGroup to ButtonGroupV2 and control spacing with the v2 layout API.
+---
+
+## Button Group v1 to v2
+
+`ButtonGroupV2` groups v2 Buttons using the shared `Group` layout primitive. It can also contain legacy `Button` children during an incremental migration.
+
+### Quick migration
+
+```tsx
+// v1
+import { Button, ButtonGroup } from '@juspay/blend-design-system'
+;<ButtonGroup stacked>
+    <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+    <Button text="Save" />
+</ButtonGroup>
+
+// v2
+import { ButtonGroupV2, ButtonV2 } from '@juspay/blend-design-system'
+;<ButtonGroupV2 stacked gap="8px">
+    <ButtonV2 text="Cancel" buttonType={ButtonV2Type.SECONDARY} />
+    <ButtonV2 text="Save" />
+</ButtonGroupV2>
+```
+
+## Breaking changes
+
+### Rename the group
+
+Replace `ButtonGroup` with `ButtonGroupV2`. Its `children` may be `ButtonV2` or legacy `Button` elements, which allows a group to migrate before every child is converted.
+
+### Use `gap` for explicit spacing
+
+v1 derives spacing from the `BUTTON_GROUP` tokens. v2 adds `gap`, accepting a CSS value or pixel number:
+
+```tsx
+<ButtonGroupV2 gap={8}>{children}</ButtonGroupV2>
+```
+
+Use this prop for call-site spacing instead of relying on a v1 group token override.
+
+### Review grouped-button borders
+
+When `stacked` is enabled, v1 inserts separators and assigns positions to child buttons. v2 delegates the layout and `buttonGroupPosition` assignment to `Group`, so verify shared borders, radii, and adjacent-button spacing after converting children to `ButtonV2`.
+
+### Update theme overrides
+
+`ButtonGroupV2` does not have a replacement `BUTTON_GROUP` token contract. Move visual overrides to the child `BUTTONV2` tokens or use the `gap` layout prop; use a wrapper for other group-level layout needs.
+
+## What continues to work
+
+`stacked` remains optional and defaults to `false`. The group still exposes `data-button-group`, child count, and child position behavior for styling and test selectors.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/button-group#component-tokens) with the [V2 component token reference](/docs/components/button-group-v2#component-tokens).
