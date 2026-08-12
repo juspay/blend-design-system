@@ -60,8 +60,9 @@ export type ButtonBaseProps = {
     state?: ButtonV2State
 }
 
-export type ButtonV2Props = ButtonBaseProps &
-    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>
+export type ButtonV2Props = ButtonBaseProps & {
+    justifyContent?: React.CSSProperties['justifyContent']
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>
 
 export type LinkButtonProps = ButtonBaseProps & {
     href: string

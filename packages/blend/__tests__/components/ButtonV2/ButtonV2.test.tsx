@@ -1191,6 +1191,20 @@ describe('ButtonV2', () => {
                 transition: 'transform 0.15s ease-in-out',
             })
         })
+
+        it('centers content when justifyContent is omitted', () => {
+            render(<ButtonV2 text="Centered" />)
+            expect(screen.getByRole('button')).toHaveStyle({
+                justifyContent: 'center',
+            })
+        })
+
+        it('applies a custom justifyContent value', () => {
+            render(<ButtonV2 text="Left Aligned" justifyContent="flex-start" />)
+            expect(screen.getByRole('button')).toHaveStyle({
+                justifyContent: 'flex-start',
+            })
+        })
     })
 
     describe('Component Metadata', () => {

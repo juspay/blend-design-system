@@ -180,6 +180,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
             width,
             minWidth,
             maxWidth,
+            justifyContent = 'center',
             state = ButtonV2State.DEFAULT,
             disabled,
             onClick,
@@ -244,7 +245,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
                 onClick={handleClick}
                 display="flex"
                 alignItems="center"
-                justifyContent="center"
+                justifyContent={justifyContent}
                 width={width ?? 'fit-content'}
                 minWidth={minWidth}
                 maxWidth={maxWidth}

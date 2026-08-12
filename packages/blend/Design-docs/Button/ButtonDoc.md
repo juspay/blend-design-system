@@ -85,8 +85,9 @@ export type ButtonBaseProps = {
     state?: ButtonV2State
 }
 
-export type ButtonV2Props = ButtonBaseProps &
-    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>
+export type ButtonV2Props = ButtonBaseProps & {
+    justifyContent?: React.CSSProperties['justifyContent']
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>
 ```
 
 _Note_: `LinkButtonProps` extend the same base props for anchor-based buttons and are documented in code.
