@@ -16,6 +16,7 @@ import {
     ButtonV2Size,
     ButtonV2SubType,
     ButtonV2State,
+    PaddingDirection,
 } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -292,6 +293,95 @@ describe('ButtonV2', () => {
                     .getByRole('button', { name: 'Tokenized Icon' })
                     .querySelector('[data-element="leading-icon"]')
             ).toHaveStyle({ maxHeight: customMaxHeight })
+        })
+    })
+
+    describe('Padding', () => {
+        it('applies left and right padding token overrides independently', () => {
+            const tokens = getButtonV2LightTokens(FOUNDATION_THEME)
+            const leftPadding = '11px'
+            const rightPadding = '29px'
+            const customTokens = {
+                sm: {
+                    ...tokens.sm,
+                    padding: {
+                        ...tokens.sm.padding,
+                        [PaddingDirection.LEFT]: {
+                            ...tokens.sm.padding[PaddingDirection.LEFT],
+                            [ButtonV2Size.SMALL]: {
+                                ...tokens.sm.padding[PaddingDirection.LEFT][
+                                    ButtonV2Size.SMALL
+                                ],
+                                [ButtonV2Type.PRIMARY]: {
+                                    ...tokens.sm.padding[PaddingDirection.LEFT][
+                                        ButtonV2Size.SMALL
+                                    ][ButtonV2Type.PRIMARY],
+                                    [ButtonV2SubType.DEFAULT]: leftPadding,
+                                },
+                            },
+                        },
+                        [PaddingDirection.RIGHT]: {
+                            ...tokens.sm.padding[PaddingDirection.RIGHT],
+                            [ButtonV2Size.SMALL]: {
+                                ...tokens.sm.padding[PaddingDirection.RIGHT][
+                                    ButtonV2Size.SMALL
+                                ],
+                                [ButtonV2Type.PRIMARY]: {
+                                    ...tokens.sm.padding[
+                                        PaddingDirection.RIGHT
+                                    ][ButtonV2Size.SMALL][ButtonV2Type.PRIMARY],
+                                    [ButtonV2SubType.DEFAULT]: rightPadding,
+                                },
+                            },
+                        },
+                    },
+                },
+                lg: {
+                    ...tokens.lg,
+                    padding: {
+                        ...tokens.lg.padding,
+                        [PaddingDirection.LEFT]: {
+                            ...tokens.lg.padding[PaddingDirection.LEFT],
+                            [ButtonV2Size.SMALL]: {
+                                ...tokens.lg.padding[PaddingDirection.LEFT][
+                                    ButtonV2Size.SMALL
+                                ],
+                                [ButtonV2Type.PRIMARY]: {
+                                    ...tokens.lg.padding[PaddingDirection.LEFT][
+                                        ButtonV2Size.SMALL
+                                    ][ButtonV2Type.PRIMARY],
+                                    [ButtonV2SubType.DEFAULT]: leftPadding,
+                                },
+                            },
+                        },
+                        [PaddingDirection.RIGHT]: {
+                            ...tokens.lg.padding[PaddingDirection.RIGHT],
+                            [ButtonV2Size.SMALL]: {
+                                ...tokens.lg.padding[PaddingDirection.RIGHT][
+                                    ButtonV2Size.SMALL
+                                ],
+                                [ButtonV2Type.PRIMARY]: {
+                                    ...tokens.lg.padding[
+                                        PaddingDirection.RIGHT
+                                    ][ButtonV2Size.SMALL][ButtonV2Type.PRIMARY],
+                                    [ButtonV2SubType.DEFAULT]: rightPadding,
+                                },
+                            },
+                        },
+                    },
+                },
+            }
+
+            render(
+                <ThemeProvider componentTokens={{ BUTTONV2: customTokens }}>
+                    <ButtonV2 text="Padded" />
+                </ThemeProvider>
+            )
+
+            expect(screen.getByRole('button', { name: 'Padded' })).toHaveStyle({
+                paddingLeft: leftPadding,
+                paddingRight: rightPadding,
+            })
         })
     })
 

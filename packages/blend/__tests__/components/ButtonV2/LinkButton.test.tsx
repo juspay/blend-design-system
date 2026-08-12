@@ -3,10 +3,14 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { LinkButton } from '../../../lib/components/ButtonV2'
+import ThemeProvider from '../../../lib/context/ThemeProvider'
+import { getButtonV2LightTokens } from '../../../lib/components/ButtonV2/buttonV2.light.tokens'
+import { FOUNDATION_THEME } from '../../../lib/tokens'
 import {
     ButtonV2Type,
     ButtonV2Size,
     ButtonV2SubType,
+    PaddingDirection,
 } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -89,6 +93,36 @@ describe('LinkButton', () => {
             render(<LinkButton href="/" text="Custom Width" width="200px" />)
             const link = screen.getByRole('link')
             expect(link).toHaveStyle({ width: '200px' })
+        })
+
+        it('applies left and right padding token overrides independently', () => {
+            const leftPadding = '11px'
+            const rightPadding = '29px'
+            const customTokens = structuredClone(
+                getButtonV2LightTokens(FOUNDATION_THEME)
+            )
+
+            for (const breakpoint of ['sm', 'lg'] as const) {
+                customTokens[breakpoint].padding[PaddingDirection.LEFT][
+                    ButtonV2Size.SMALL
+                ][ButtonV2Type.PRIMARY][ButtonV2SubType.DEFAULT] = leftPadding
+                customTokens[breakpoint].padding[PaddingDirection.RIGHT][
+                    ButtonV2Size.SMALL
+                ][ButtonV2Type.PRIMARY][ButtonV2SubType.DEFAULT] = rightPadding
+            }
+
+            render(
+                <ThemeProvider componentTokens={{ BUTTONV2: customTokens }}>
+                    <LinkButton href="/" text="Padded Link" />
+                </ThemeProvider>
+            )
+
+            expect(
+                screen.getByRole('link', { name: 'Padded Link' })
+            ).toHaveStyle({
+                paddingLeft: leftPadding,
+                paddingRight: rightPadding,
+            })
         })
     })
 
