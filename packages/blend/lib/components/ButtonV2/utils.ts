@@ -8,7 +8,6 @@ import {
     PaddingDirection,
 } from './buttonV2.types'
 import type { ButtonV2TokensType } from './buttonV2.tokens'
-import { FOUNDATION_THEME } from '../../tokens'
 
 export function getButtonV2BorderRadius(
     size: ButtonV2Size,
@@ -256,7 +255,7 @@ export function getButtonStyles(
                           tokens.border[buttonType][subType].default
                       ),
                   }),
-                  boxShadow: `0 0 0 3px ${FOUNDATION_THEME.colors.primary[200]}`,
+                  boxShadow: tokens.focusRing[buttonType][subType],
               },
         _disabled: isSkeleton
             ? {

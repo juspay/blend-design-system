@@ -8,6 +8,9 @@ import {
 } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { ButtonV2 } from '../../../lib/components/ButtonV2'
+import ThemeProvider from '../../../lib/context/ThemeProvider'
+import { getButtonV2LightTokens } from '../../../lib/components/ButtonV2/buttonV2.light.tokens'
+import { FOUNDATION_THEME } from '../../../lib/tokens'
 import {
     ButtonV2Type,
     ButtonV2Size,
@@ -165,6 +168,71 @@ describe('ButtonV2', () => {
             render(<ButtonV2 text="Custom Width" width="200px" />)
             const button = screen.getByRole('button')
             expect(button).toHaveStyle({ width: '200px' })
+        })
+    })
+
+    describe('Focus Ring', () => {
+        it('uses a type-specific focus ring', () => {
+            render(
+                <>
+                    <ButtonV2 text="Primary" />
+                    <ButtonV2 text="Danger" buttonType={ButtonV2Type.DANGER} />
+                </>
+            )
+
+            expect(
+                screen.getByRole('button', { name: 'Primary' })
+            ).toHaveStyleRule(
+                'box-shadow',
+                `0 0 0 3px ${FOUNDATION_THEME.colors.primary[200]}`,
+                { modifier: ':focus-visible' }
+            )
+            expect(
+                screen.getByRole('button', { name: 'Danger' })
+            ).toHaveStyleRule(
+                'box-shadow',
+                `0 0 0 3px ${FOUNDATION_THEME.colors.red[200]}`,
+                { modifier: ':focus-visible' }
+            )
+        })
+
+        it('applies a consumer focus ring token override', () => {
+            const tokens = getButtonV2LightTokens(FOUNDATION_THEME)
+            const customFocusRing = '0 0 0 4px rgb(1, 2, 3)'
+            const customTokens = {
+                sm: {
+                    ...tokens.sm,
+                    focusRing: {
+                        ...tokens.sm.focusRing,
+                        [ButtonV2Type.PRIMARY]: {
+                            ...tokens.sm.focusRing.primary,
+                            [ButtonV2SubType.DEFAULT]: customFocusRing,
+                        },
+                    },
+                },
+                lg: {
+                    ...tokens.lg,
+                    focusRing: {
+                        ...tokens.lg.focusRing,
+                        [ButtonV2Type.PRIMARY]: {
+                            ...tokens.lg.focusRing.primary,
+                            [ButtonV2SubType.DEFAULT]: customFocusRing,
+                        },
+                    },
+                },
+            }
+
+            render(
+                <ThemeProvider componentTokens={{ BUTTONV2: customTokens }}>
+                    <ButtonV2 text="Custom Focus" />
+                </ThemeProvider>
+            )
+
+            expect(
+                screen.getByRole('button', { name: 'Custom Focus' })
+            ).toHaveStyleRule('box-shadow', customFocusRing, {
+                modifier: ':focus-visible',
+            })
         })
     })
 

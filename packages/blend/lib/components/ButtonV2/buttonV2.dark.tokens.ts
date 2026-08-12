@@ -1,12 +1,36 @@
 import { FoundationTokenType } from '../../tokens/theme.token'
 import type { ResponsiveButtonV2Tokens } from './buttonV2.tokens.types'
 
+const getFocusRingTokens = (foundationToken: FoundationTokenType) => ({
+    primary: {
+        default: `0 0 0 3px ${foundationToken.colors.primary[200]}`,
+        iconOnly: `0 0 0 3px ${foundationToken.colors.primary[200]}`,
+        inline: `0 0 0 3px ${foundationToken.colors.primary[200]}`,
+    },
+    secondary: {
+        default: `0 0 0 3px ${foundationToken.colors.gray[100]}`,
+        iconOnly: `0 0 0 3px ${foundationToken.colors.gray[100]}`,
+        inline: `0 0 0 3px ${foundationToken.colors.gray[100]}`,
+    },
+    danger: {
+        default: `0 0 0 3px ${foundationToken.colors.red[200]}`,
+        iconOnly: `0 0 0 3px ${foundationToken.colors.red[200]}`,
+        inline: `0 0 0 3px ${foundationToken.colors.red[200]}`,
+    },
+    success: {
+        default: `0 0 0 3px ${foundationToken.colors.green[200]}`,
+        iconOnly: `0 0 0 3px ${foundationToken.colors.green[200]}`,
+        inline: `0 0 0 3px ${foundationToken.colors.green[200]}`,
+    },
+})
+
 export const getButtonV2DarkTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveButtonV2Tokens => {
     return {
         sm: {
             gap: foundationToken.unit[10],
+            focusRing: getFocusRingTokens(foundationToken),
             // Pattern: backgroundColor.[variant].[subType].[state]
             // Example: backgroundColor.primary.default.hover
             backgroundColor: {
@@ -707,6 +731,7 @@ export const getButtonV2DarkTokens = (
         },
         lg: {
             gap: foundationToken.unit[20],
+            focusRing: getFocusRingTokens(foundationToken),
             backgroundColor: {
                 primary: {
                     default: {
