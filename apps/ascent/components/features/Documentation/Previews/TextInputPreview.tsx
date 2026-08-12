@@ -1,10 +1,10 @@
 'use client'
-import { TextInput } from '@juspay/blend-design-system'
+import { TextInput } from '@juspay/blend-design-system/deprecated/text-input'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const TextInputPreview = () => {
-    const tsCode = `import { TextInput } from "@juspay/blend-design-system";
+    const tsCode = `import { TextInput } from "@juspay/blend-design-system/deprecated/text-input";
 
 function MyComponent() {
   const [value, setValue] = useState('');

@@ -3,13 +3,13 @@ import {
     StatCard,
     StatCardVariant,
     ChangeType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/stat-card'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 import { CurrencyDollarIcon } from '@phosphor-icons/react/dist/ssr'
 
 const StatCardPreview = () => {
-    const tsCode = `import { StatCard, StatCardVariant, ChangeType } from "@juspay/blend-design-system";
+    const tsCode = `import { StatCard, StatCardVariant, ChangeType } from "@juspay/blend-design-system/deprecated/stat-card";
 import { DollarSign } from "lucide-react";
 
 function MyComponent() {
@@ -108,7 +108,7 @@ let make = () => {
   </div>
 }`
 
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system/deprecated/stat-card") @react.component
 external make: (
   ~title: string,
   ~value: string,

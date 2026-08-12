@@ -1,12 +1,14 @@
 import React from 'react'
+import { ThemeProvider } from '@juspay/blend-design-system'
 import {
-    ThemeProvider,
     Button,
     ButtonType,
     ButtonSize,
+} from '@juspay/blend-design-system/deprecated/button'
+import {
     Alert,
     AlertVariant,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/alert'
 
 interface ComponentShowcaseProps {
     componentTokens: Record<string, unknown> | null

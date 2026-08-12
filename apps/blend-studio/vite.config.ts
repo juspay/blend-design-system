@@ -12,21 +12,37 @@ export default defineConfig(({ mode }) => ({
         react(),
     ],
     resolve: {
-        alias: {
-            '@': path.resolve(__dirname, './src'),
-            '@juspay/blend-design-system/node': path.resolve(
-                __dirname,
-                '../../packages/blend/lib/node.ts'
-            ),
-            '@juspay/blend-design-system/tokens': path.resolve(
-                __dirname,
-                '../../packages/token-engine/src/index.ts'
-            ),
-            '@juspay/blend-design-system': path.resolve(
-                __dirname,
-                '../../packages/blend/lib/main.ts'
-            ),
-        },
+        alias: [
+            {
+                find: /^@juspay\/blend-design-system\/deprecated\/(.+)$/,
+                replacement: path.resolve(
+                    __dirname,
+                    '../../packages/blend/lib/deprecated/$1/index.ts'
+                ),
+            },
+            { find: '@', replacement: path.resolve(__dirname, './src') },
+            {
+                find: '@juspay/blend-design-system/node',
+                replacement: path.resolve(
+                    __dirname,
+                    '../../packages/blend/lib/node.ts'
+                ),
+            },
+            {
+                find: '@juspay/blend-design-system/tokens',
+                replacement: path.resolve(
+                    __dirname,
+                    '../../packages/token-engine/src/index.ts'
+                ),
+            },
+            {
+                find: '@juspay/blend-design-system',
+                replacement: path.resolve(
+                    __dirname,
+                    '../../packages/blend/lib/main.ts'
+                ),
+            },
+        ],
     },
     base: mode === 'production' ? '/studio/' : '/',
     server: {

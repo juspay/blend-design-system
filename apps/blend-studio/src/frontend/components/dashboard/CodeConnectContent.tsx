@@ -5,21 +5,25 @@ import {
     useComponents,
     useCategoryCoverage,
 } from '../../hooks/usePostgreSQLData'
+import { Skeleton } from '@juspay/blend-design-system'
+import { Button } from '@juspay/blend-design-system/deprecated/button'
 import {
-    Button,
     Tag,
-    Charts,
-    ChartType,
     TagVariant,
     TagColor,
     TagSize,
+} from '@juspay/blend-design-system/deprecated/tag'
+import {
+    Charts,
+    ChartType,
+} from '@juspay/blend-design-system/deprecated/charts'
+import {
     Tabs,
     TabsList,
     TabsTrigger,
     TabsContent,
     TabsVariant,
-    Skeleton,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tabs'
 import {
     PackageIcon,
     CheckIcon,

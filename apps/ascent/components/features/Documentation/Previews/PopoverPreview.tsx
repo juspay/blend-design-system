@@ -2,16 +2,18 @@
 import {
     Popover,
     PopoverSize,
+} from '@juspay/blend-design-system/deprecated/popover'
+import {
     Button,
     ButtonType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const PopoverPreview = () => {
     const [open, setOpen] = useState(false)
 
-    const tsCode = `import { Popover, PopoverSize, Button, ButtonType, ButtonSize } from "@juspay/blend-design-system";
+    const tsCode = `import { Popover, PopoverSize, Button, ButtonType, ButtonSize } from "@juspay/blend-design-system/deprecated/popover";
 
 function MyComponent() {
   const [open, setOpen] = useState(false);

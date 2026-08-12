@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 import {
-    Modal,
     ButtonV2,
     ButtonV2Type,
     ButtonV2Size,
 } from '@juspay/blend-design-system'
+import { Modal } from '@juspay/blend-design-system/deprecated/modal'
 
 interface BranchModalProps {
     isOpen: boolean

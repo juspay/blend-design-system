@@ -1,10 +1,14 @@
 'use client'
-import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system'
+import {
+    Alert,
+    AlertVariant,
+    AlertStyle,
+} from '@juspay/blend-design-system/deprecated/alert'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const AlertPreview = () => {
-    const tsCode = `import { Alert, AlertVariant, AlertStyle, AlertActionPlacement } from '@juspay/blend-design-system'
+    const tsCode = `import { Alert, AlertVariant, AlertStyle, AlertActionPlacement } from '@juspay/blend-design-system/deprecated/alert'
 
 function MyComponent() {
     return (
@@ -59,7 +63,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system/deprecated/alert") @react.component
 external make: (
   ~heading: string,
   ~description: string,

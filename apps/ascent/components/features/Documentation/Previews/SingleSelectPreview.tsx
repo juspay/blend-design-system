@@ -3,14 +3,14 @@ import {
     SingleSelect,
     SelectMenuSize,
     SelectMenuVariant,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/single-select'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SingleSelectPreview = () => {
     const [selectedUser, setSelectedUser] = useState('')
 
-    const tsCode = `import { SingleSelect, SelectMenuSize, SelectMenuVariant } from "@juspay/blend-design-system";
+    const tsCode = `import { SingleSelect, SelectMenuSize, SelectMenuVariant } from "@juspay/blend-design-system/deprecated/single-select";
 import { useState } from "react";
 
 function MyComponent() {
@@ -102,7 +102,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system/deprecated/single-select") @react.component
 external make: (
   ~label: string=?,
   ~subLabel: string=?,

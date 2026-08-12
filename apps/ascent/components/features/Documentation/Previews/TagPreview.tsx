@@ -1,10 +1,15 @@
 'use client'
-import { Tag, TagVariant, TagColor, TagSize } from '@juspay/blend-design-system'
+import {
+    Tag,
+    TagVariant,
+    TagColor,
+    TagSize,
+} from '@juspay/blend-design-system/deprecated/tag'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const TagPreview = () => {
-    const tsCode = `import { Tag, TagVariant, TagColor, TagSize } from "@juspay/blend-design-system";
+    const tsCode = `import { Tag, TagVariant, TagColor, TagSize } from "@juspay/blend-design-system/deprecated/tag";
 
 function MyComponent() {
   return (

@@ -1,10 +1,10 @@
 'use client'
-import { TextArea } from '@juspay/blend-design-system'
+import { TextArea } from '@juspay/blend-design-system/deprecated/text-area'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const TextareaPreview = () => {
-    const tsCode = `import { TextArea } from "@juspay/blend-design-system";
+    const tsCode = `import { TextArea } from "@juspay/blend-design-system/deprecated/text-area";
 
 function MyComponent() {
   const [description, setDescription] = useState('');

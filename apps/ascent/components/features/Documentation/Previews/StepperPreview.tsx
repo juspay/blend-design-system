@@ -1,10 +1,14 @@
 'use client'
-import { Stepper, StepperType, StepState } from '@juspay/blend-design-system'
+import {
+    Stepper,
+    StepperType,
+    StepState,
+} from '@juspay/blend-design-system/deprecated/stepper'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const StepperPreview = () => {
-    const tsCode = `import { Stepper, StepperType, StepState } from '@juspay/blend-design-system'
+    const tsCode = `import { Stepper, StepperType, StepState } from '@juspay/blend-design-system/deprecated/stepper'
 
 function MyComponent() {
     const steps = [

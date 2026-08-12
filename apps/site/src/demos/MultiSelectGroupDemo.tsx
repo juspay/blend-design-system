@@ -7,7 +7,7 @@ import {
 } from '../../../../packages/blend/lib/components/SingleSelect'
 import { Switch } from '../../../../packages/blend/lib/components/Switch'
 import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Select'
-import { MultiSelect } from '../../../../packages/blend/lib/main'
+import { MultiSelect } from '../../../../packages/blend/lib/deprecated/multi-select'
 import {
     MultiSelectMenuSize,
     MultiSelectVariant,

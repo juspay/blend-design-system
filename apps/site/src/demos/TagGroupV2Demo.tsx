@@ -1,4 +1,7 @@
-import { addSnackbar, TextInput } from '../../../../packages/blend/lib/main'
+import {
+    addSnackbarV2 as addSnackbar,
+    TextInput,
+} from '../../../../packages/blend/lib/main'
 import {
     TagV2Type,
     TagV2Size,

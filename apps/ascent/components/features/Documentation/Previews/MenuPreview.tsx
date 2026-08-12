@@ -5,15 +5,18 @@ import {
     MenuSide,
     MenuItemVariant,
     MenuItemActionType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/menu'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
-import { Button, ButtonType } from '@juspay/blend-design-system'
+import {
+    Button,
+    ButtonType,
+} from '@juspay/blend-design-system/deprecated/button'
 import { Settings, User, LogOut, ChevronDown } from 'lucide-react'
 
 const MenuPreview = () => {
-    const tsCode = `import { Menu, MenuAlignment, MenuSide, MenuItemVariant, MenuItemActionType } from "@juspay/blend-design-system";
-import { Button, ButtonType } from "@juspay/blend-design-system";
+    const tsCode = `import { Menu, MenuAlignment, MenuSide, MenuItemVariant, MenuItemActionType } from "@juspay/blend-design-system/deprecated/menu";
+import { Button, ButtonType } from "@juspay/blend-design-system/deprecated/menu";
 import { Settings, User, LogOut, ChevronDown } from "lucide-react";
 
 function MyComponent() {

@@ -1,14 +1,15 @@
 'use client'
+import { AvatarGroup } from '@juspay/blend-design-system'
 import {
-    AvatarGroup,
     AvatarSize,
     AvatarShape,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/avatar'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const AvatarGroupPreview = () => {
-    const tsCode = `import { AvatarGroup, AvatarSize, AvatarShape } from "@juspay/blend-design-system";
+    const tsCode = `import { AvatarGroup } from "@juspay/blend-design-system";
+import { AvatarSize, AvatarShape } from "@juspay/blend-design-system/deprecated/avatar";
 
 function MyComponent() {
   const avatars = [
@@ -60,7 +61,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system/deprecated/avatar/deprecated/avatar") @react.component
 external make: (
   ~avatars: array<{
     "id": string,

@@ -28,10 +28,9 @@ import {
     ButtonV2Size,
     ButtonV2SubType,
     ButtonV2Type,
-    Card,
-    CardVariant,
     RadioV2,
 } from '@juspay/blend-design-system'
+import { Card, CardVariant } from '@juspay/blend-design-system/deprecated/card'
 
 // ---------------------------------------------------------------------------
 // Types

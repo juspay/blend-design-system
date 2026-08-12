@@ -1,10 +1,10 @@
 'use client'
-import { MultiValueInput } from '@juspay/blend-design-system'
+import { MultiValueInput } from '@juspay/blend-design-system/deprecated/multi-value-input'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const MultiValueInputPreview = () => {
-    const tsCode = `import { MultiValueInput } from "@juspay/blend-design-system";
+    const tsCode = `import { MultiValueInput } from "@juspay/blend-design-system/deprecated/multi-value-input";
 
 function MyComponent() {
   const [tags, setTags] = useState(['react', 'typescript']);

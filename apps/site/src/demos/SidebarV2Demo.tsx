@@ -99,15 +99,13 @@ import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
 import CardV2Demo from './CardV2Demo'
 import {
-    TextInput,
+    ButtonV2Type as ButtonType,
+    ButtonV2Size as ButtonSize,
     Button,
     BadgeColor,
     BadgeSize,
 } from '../../../../packages/blend/lib/main'
-import {
-    ButtonType,
-    ButtonSize,
-} from '../../../../packages/blend/lib/components/Button/types'
+import { TextInput } from '../../../../packages/blend/lib/deprecated/text-input'
 import StepperDemo from './StepperDemo'
 import KeyValuePairDemo from './KeyValuePairDemo'
 import AllComponentsDemo from './AllComponentsDemo'

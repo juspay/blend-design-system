@@ -1,8 +1,8 @@
 'use client'
 import {
     SnackbarV2,
-    Button,
-    ButtonType,
+    ButtonV2 as Button,
+    ButtonV2Type as ButtonType,
     addSnackbarV2,
 } from '@juspay/blend-design-system'
 import React from 'react'

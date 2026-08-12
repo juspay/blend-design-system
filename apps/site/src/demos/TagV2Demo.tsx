@@ -1,5 +1,5 @@
 import {
-    addSnackbar,
+    addSnackbarV2 as addSnackbar,
     SkeletonVariant,
     TextInput,
 } from '../../../../packages/blend/lib/main'

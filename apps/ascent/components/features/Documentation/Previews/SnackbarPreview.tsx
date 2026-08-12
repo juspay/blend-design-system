@@ -2,14 +2,16 @@
 import {
     addSnackbar,
     SnackbarVariant,
+} from '@juspay/blend-design-system/deprecated/snackbar'
+import {
     Button,
     ButtonType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SnackbarPreview = () => {
-    const tsCode = `import { addSnackbar, SnackbarVariant, Button, ButtonType } from "@juspay/blend-design-system";
+    const tsCode = `import { addSnackbar, SnackbarVariant, Button, ButtonType } from "@juspay/blend-design-system/deprecated/snackbar";
 
 function MyComponent() {
   const showSuccessSnackbar = () => {
@@ -61,10 +63,10 @@ let addSnackbar = (
   )
 }`
 
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system/deprecated/snackbar") @react.component
 external make: unit => React.element = "Snackbar"
 
-@module("@juspay/blend-design-system")
+@module("@juspay/blend-design-system/deprecated/snackbar")
 external addSnackbar: (
   ~header: string,
   ~description: string=?,

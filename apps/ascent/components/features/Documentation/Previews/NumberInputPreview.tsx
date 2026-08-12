@@ -1,10 +1,10 @@
 'use client'
-import { NumberInput } from '@juspay/blend-design-system'
+import { NumberInput } from '@juspay/blend-design-system/deprecated/number-input'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const NumberInputPreview = () => {
-    const tsCode = `import { NumberInput } from "@juspay/blend-design-system";
+    const tsCode = `import { NumberInput } from "@juspay/blend-design-system/deprecated/number-input";
 
 function MyComponent() {
   const [quantity, setQuantity] = useState<number | null>(1);

@@ -3,12 +3,12 @@ import {
     Accordion,
     AccordionItem,
     AccordionType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/accordion'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const AccordionPreview = () => {
-    const tsCode = `import { Accordion, AccordionItem, AccordionType, AccordionChevronPosition } from "@juspay/blend-design-system";
+    const tsCode = `import { Accordion, AccordionItem, AccordionType, AccordionChevronPosition } from "@juspay/blend-design-system/deprecated/accordion";
 
 function MyComponent() {
   return (

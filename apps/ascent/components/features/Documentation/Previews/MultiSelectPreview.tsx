@@ -4,14 +4,14 @@ import {
     MultiSelectMenuSize,
     MultiSelectVariant,
     MultiSelectSelectionTagType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/multi-select'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const MultiSelectPreview = () => {
     const [selectedSkills, setSelectedSkills] = useState<string[]>([])
 
-    const tsCode = `import { MultiSelect, MultiSelectMenuSize, MultiSelectVariant, MultiSelectSelectionTagType } from "@juspay/blend-design-system";
+    const tsCode = `import { MultiSelect, MultiSelectMenuSize, MultiSelectVariant, MultiSelectSelectionTagType } from "@juspay/blend-design-system/deprecated/multi-select";
 import { useState } from "react";
 
 function MyComponent() {

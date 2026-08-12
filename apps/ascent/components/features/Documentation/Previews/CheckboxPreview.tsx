@@ -1,12 +1,15 @@
 'use client'
-import { Checkbox, CheckboxSize } from '@juspay/blend-design-system'
+import {
+    Checkbox,
+    CheckboxSize,
+} from '@juspay/blend-design-system/deprecated/checkbox'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const CheckboxPreview = () => {
     const [checked, setChecked] = useState(false)
 
-    const tsCode = `import { Checkbox, CheckboxSize } from "@juspay/blend-design-system";
+    const tsCode = `import { Checkbox, CheckboxSize } from "@juspay/blend-design-system/deprecated/checkbox";
 
 function MyComponent() {
   const [checked, setChecked] = useState(false);

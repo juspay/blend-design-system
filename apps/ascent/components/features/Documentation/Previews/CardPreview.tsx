@@ -1,10 +1,11 @@
 'use client'
-import { Card, ButtonType } from '@juspay/blend-design-system'
+import { Card } from '@juspay/blend-design-system/deprecated/card'
+import { ButtonType } from '@juspay/blend-design-system/deprecated/button'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const CardPreview = () => {
-    const tsCode = `import { Card, CardVariant, Button, ButtonType } from '@juspay/blend-design-system'
+    const tsCode = `import { Card, CardVariant, Button, ButtonType } from '@juspay/blend-design-system/deprecated/card'
 
 function MyComponent() {
     return (

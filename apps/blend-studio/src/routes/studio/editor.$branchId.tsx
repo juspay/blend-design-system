@@ -19,12 +19,6 @@ import {
     MenuV2Alignment,
     MenuV2ItemActionType,
     MenuV2Side,
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsSize,
-    TabsTrigger,
-    TabsVariant,
     TagV2,
     TagV2Color,
     TagV2Size,
@@ -32,6 +26,14 @@ import {
     TooltipV2,
     CodeEditorV2,
 } from '@juspay/blend-design-system'
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsSize,
+    TabsTrigger,
+    TabsVariant,
+} from '@juspay/blend-design-system/deprecated/tabs'
 import {
     Panel,
     Group,
