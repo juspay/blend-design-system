@@ -273,9 +273,13 @@ if (isSkeleton) {
 
 ### 6. Accessibility-First API
 
-**Decision**: Use `getButtonAriaAttributes` and `createButtonKeyboardHandler` to handle ARIA attributes and keyboard interactions.
+**Decision**: Use `getButtonAriaAttributes` for ARIA attributes. Rely on native
+`<button>` activation for `ButtonV2`; use `createButtonKeyboardHandler` only for
+anchor-based `LinkButton` elements.
 
-**Rationale**: Centralizes accessibility concerns, ensures consistent disabled/loading semantics, and keeps the component implementation clean.
+**Rationale**: Active native buttons already produce genuine click events for
+Enter and Space and preserve native form submission. Anchor-based buttons need
+explicit Enter and Space handling to provide the same activation behavior.
 
 ```tsx
 const ariaAttrs = getButtonAriaAttributes({
@@ -284,9 +288,14 @@ const ariaAttrs = getButtonAriaAttributes({
     ariaLabel,
 })
 
-const keyboardHandler = createButtonKeyboardHandler(() => {
-    if (!isDisabled && !isLoading && onClick) {
-        onClick(syntheticEvent)
-    }
-}, isDisabled)
+// ButtonV2 does not need a custom keyboard handler.
+// LinkButton uses this helper because anchors do not activate on Space.
+const keyboardHandler = createButtonKeyboardHandler<HTMLAnchorElement>(
+    (event) => {
+        if (!isDisabled && !isLoading) {
+            event.currentTarget.click()
+        }
+    },
+    isDisabled
+)
 ```

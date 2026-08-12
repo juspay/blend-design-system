@@ -443,26 +443,51 @@ describe('ButtonV2', () => {
             expect(document.activeElement).toBe(button)
         })
 
-        it('can be activated with Enter key', async () => {
-            const handleClick = vi.fn()
-            const { user } = render(
-                <ButtonV2 text="Enter Key" onClick={handleClick} />
-            )
+        it.each([
+            ['Enter', '{Enter}'],
+            ['Space', ' '],
+        ])(
+            'can be activated with %s key using a real click event',
+            async (_, key) => {
+                const handleClick = vi.fn(
+                    (event: React.MouseEvent<HTMLButtonElement>) => {
+                        expect(event.currentTarget).toBe(button)
+                        expect(event.target).toBe(button)
+                        expect(event.nativeEvent).toBeInstanceOf(MouseEvent)
+                    }
+                )
+                const { user } = render(
+                    <ButtonV2 text="Keyboard Button" onClick={handleClick} />
+                )
+                const button = screen.getByRole('button', {
+                    name: 'Keyboard Button',
+                })
 
-            await user.tab()
+                button.focus()
+                await user.keyboard(key)
+
+                expect(handleClick).toHaveBeenCalledTimes(1)
+            }
+        )
+
+        it('runs a consumer onKeyDown and keeps native activation', async () => {
+            const handleClick = vi.fn()
+            const handleKeyDown = vi.fn()
+            const { user } = render(
+                <ButtonV2
+                    text="Keyboard Button"
+                    onClick={handleClick}
+                    onKeyDown={handleKeyDown}
+                />
+            )
+            const button = screen.getByRole('button', {
+                name: 'Keyboard Button',
+            })
+
+            button.focus()
             await user.keyboard('{Enter}')
 
-            expect(handleClick).toHaveBeenCalledTimes(1)
-        })
-
-        it('can be activated with Space key', async () => {
-            const handleClick = vi.fn()
-            const { user } = render(
-                <ButtonV2 text="Space Key" onClick={handleClick} />
-            )
-            await user.tab()
-            await user.keyboard(' ')
-
+            expect(handleKeyDown).toHaveBeenCalledTimes(1)
             expect(handleClick).toHaveBeenCalledTimes(1)
         })
 
@@ -767,6 +792,38 @@ describe('ButtonV2', () => {
             await user.click(button)
 
             expect(handleSubmit).toHaveBeenCalledTimes(1)
+        })
+
+        it('submits form with keyboard Enter when type="submit"', async () => {
+            const handleSubmit = vi.fn((event) => event.preventDefault())
+            const { user } = render(
+                <form onSubmit={handleSubmit}>
+                    <ButtonV2 text="Submit" type="submit" />
+                </form>
+            )
+
+            const button = screen.getByRole('button', { name: 'Submit' })
+            button.focus()
+            await user.keyboard('{Enter}')
+
+            expect(handleSubmit).toHaveBeenCalledTimes(1)
+        })
+
+        it('does not submit a form with keyboard Enter while loading', async () => {
+            const handleSubmit = vi.fn()
+            const { user } = render(
+                <form onSubmit={handleSubmit}>
+                    <ButtonV2 text="Submit" type="submit" loading />
+                </form>
+            )
+
+            const button = screen.getByRole('button', {
+                name: 'Loading, please wait',
+            })
+            button.focus()
+            await user.keyboard('{Enter}')
+
+            expect(handleSubmit).not.toHaveBeenCalled()
         })
 
         it('does not submit form when type="button"', async () => {

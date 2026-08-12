@@ -336,6 +336,79 @@ describe('LinkButton', () => {
         })
     })
 
+    describe('Keyboard Navigation', () => {
+        it.each([
+            ['Enter', '{Enter}'],
+            ['Space', ' '],
+        ])('activates with %s key', async (_, key) => {
+            const handleClick = vi.fn(
+                (event: React.MouseEvent<HTMLAnchorElement>) => {
+                    expect(event.currentTarget).toBe(link)
+                    event.preventDefault()
+                }
+            )
+            const { user } = render(
+                <LinkButton
+                    href="#keyboard-link"
+                    text="Keyboard Link"
+                    onClick={handleClick}
+                />
+            )
+            const link = screen.getByRole('link', { name: 'Keyboard Link' })
+
+            link.focus()
+            await user.keyboard(key)
+
+            expect(handleClick).toHaveBeenCalledTimes(1)
+        })
+
+        it('runs a consumer onKeyDown and keeps anchor activation', async () => {
+            const handleClick = vi.fn(
+                (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    event.preventDefault()
+            )
+            const handleKeyDown = vi.fn()
+            const { user } = render(
+                <LinkButton
+                    href="#keyboard-link"
+                    text="Keyboard Link"
+                    onClick={handleClick}
+                    onKeyDown={handleKeyDown}
+                />
+            )
+            const link = screen.getByRole('link', { name: 'Keyboard Link' })
+
+            link.focus()
+            await user.keyboard(' ')
+
+            expect(handleKeyDown).toHaveBeenCalledTimes(1)
+            expect(handleClick).toHaveBeenCalledTimes(1)
+        })
+
+        it('respects a consumer onKeyDown that prevents default', async () => {
+            const handleClick = vi.fn()
+            const handleKeyDown = vi.fn(
+                (event: React.KeyboardEvent<HTMLAnchorElement>) =>
+                    event.preventDefault()
+            )
+            const { user } = render(
+                <LinkButton
+                    href="#keyboard-link"
+                    text="Keyboard Link"
+                    onClick={handleClick}
+                    onKeyDown={handleKeyDown}
+                />
+            )
+            const link = screen.getByRole('link', { name: 'Keyboard Link' })
+
+            link.focus()
+            await user.keyboard('{Enter}')
+
+            expect(handleKeyDown).toHaveBeenCalledTimes(1)
+            expect(handleClick).not.toHaveBeenCalled()
+        })
+    })
+
     describe('Link Attributes', () => {
         it('sets target attribute correctly', () => {
             render(<LinkButton href="/home" text="External" target="_blank" />)

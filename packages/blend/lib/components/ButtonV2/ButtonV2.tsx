@@ -28,10 +28,7 @@ import {
     getButtonPadding,
     getButtonLineHeight,
 } from './utils'
-import {
-    getButtonAriaAttributes,
-    createButtonKeyboardHandler,
-} from '../../utils/accessibility'
+import { getButtonAriaAttributes } from '../../utils/accessibility'
 
 type RenderButtonContentProps = {
     isLoading: boolean
@@ -186,6 +183,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
             state = ButtonV2State.DEFAULT,
             disabled,
             onClick,
+            onKeyDown,
             ...restHtmlProps
         },
         ref
@@ -204,7 +202,10 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
         const buttonStatus = getButtonStatus(isLoading, isDisabled)
 
         const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-            if (isSkeleton || isDisabled || isLoading) return
+            if (isSkeleton || isDisabled || isLoading) {
+                event.preventDefault()
+                return
+            }
             onClick?.(event)
         }
 
@@ -228,16 +229,6 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
             ariaLabel,
         })
 
-        const keyboardHandler = createButtonKeyboardHandler(() => {
-            if (!isDisabled && !isLoading && onClick) {
-                const syntheticEvent = {
-                    preventDefault: () => {},
-                    stopPropagation: () => {},
-                } as MouseEvent<HTMLButtonElement>
-                onClick(syntheticEvent)
-            }
-        }, isDisabled)
-
         const buttonStyles = getButtonStyles(
             isSkeleton,
             isDisabled,
@@ -251,7 +242,6 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
             <PrimitiveButton
                 ref={ref}
                 onClick={handleClick}
-                {...keyboardHandler}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
@@ -282,6 +272,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
                 data-button={text}
                 data-status={buttonStatus}
                 {...restHtmlProps}
+                onKeyDown={onKeyDown}
             >
                 {renderButtonContent({
                     isLoading,
