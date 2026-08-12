@@ -5,7 +5,7 @@ import type { TimeValue } from '@juspay/blend-design-system'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
-} from '../../../../.storybook/a11y.config'
+} from '../../../.storybook/a11y.config'
 
 const meta: Meta<typeof TimePicker> = {
     title: 'Components/TimePicker',
