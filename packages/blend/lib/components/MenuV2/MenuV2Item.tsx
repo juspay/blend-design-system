@@ -18,6 +18,7 @@ import {
 import type { MenuV2TokensType } from './menuV2.tokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { useMenuV2Selection } from './MenuV2SelectionContext'
+import { resolveMenuSelection } from '../Menu/selection'
 
 type MenuV2ItemProps = {
     item: MenuV2ItemType
@@ -116,16 +117,19 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
             closeOnSelect,
         } = useMenuV2Selection()
 
-        const isSelectable = typeof item.selected === 'boolean'
-        const isSelected = item.selected === true
-        const effectiveSelectionStyle: MenuV2SelectionStyle | undefined =
-            isSelectable
-                ? (groupSelectionStyle ?? menuSelectionStyle ?? 'checkmark')
-                : undefined
-        const effectiveSelectionMode: MenuV2SelectionMode | undefined =
-            isSelectable
-                ? (groupSelectionMode ?? menuSelectionMode ?? 'single')
-                : undefined
+        const {
+            isSelectable,
+            isSelected,
+            selectionStyle: effectiveSelectionStyle,
+            selectionMode: effectiveSelectionMode,
+            selectionRole,
+        } = resolveMenuSelection({
+            selected: item.selected,
+            groupSelectionStyle,
+            groupSelectionMode,
+            menuSelectionStyle,
+            menuSelectionMode,
+        })
         const useHighlight =
             effectiveSelectionStyle === 'highlight' && isSelected
         const showCheckmark =
@@ -136,13 +140,6 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
             showCheckmark && checkmarkPosition === 'leading'
         const showTrailingCheck =
             showCheckmark && checkmarkPosition === 'trailing'
-
-        const selectionRole =
-            effectiveSelectionMode === 'single'
-                ? 'menuitemradio'
-                : effectiveSelectionMode === 'multiple'
-                  ? 'menuitemcheckbox'
-                  : undefined
 
         const [slot] = getItemSlots(item)
         const itemStyle = {

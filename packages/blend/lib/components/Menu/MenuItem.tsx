@@ -1,13 +1,24 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import React from 'react'
+import { Check } from 'lucide-react'
 import { MenuItemActionType, type MenuItemType, MenuItemVariant } from './types'
 // eslint-disable-next-line import-x/no-cycle -- intentional recursion: MenuItem renders SubMenu which renders MenuItem
 import { SubMenu } from './SubMenu'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
-import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
+import {
+    getMenuItemStateToken,
+    type MenuItemSelectionStates,
+    type MenuTokensType,
+} from './menu.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { Tooltip } from '../Tooltip'
+import {
+    resolveMenuSelection,
+    useMenuSelection,
+    type MenuSelectionMode,
+    type MenuSelectionStyle,
+} from './selection'
 
 const MenuSlot = ({
     slot,
@@ -34,8 +45,41 @@ const MenuSlot = ({
     )
 }
 
+const CheckmarkIndicator = ({
+    menuTokens,
+    disabled,
+}: {
+    menuTokens: MenuTokensType
+    disabled?: boolean
+}) => {
+    const checkmark = menuTokens.item.checkmark
+    const position = checkmark?.position ?? 'trailing'
+    const width = checkmark?.width ?? 16
+
+    return (
+        <Block
+            data-element="menu-item-checkmark"
+            data-position={position}
+            flexShrink={0}
+            display="flex"
+            alignItems="center"
+            contentCentered
+            maxWidth={width}
+            maxHeight={width}
+            aria-hidden="true"
+        >
+            <Check
+                size={typeof width === 'number' ? width : 16}
+                color={checkmark?.color}
+                data-state="selected"
+                data-status={disabled ? 'disabled' : 'enabled'}
+            />
+        </Block>
+    )
+}
+
 const getBgColor = (
-    state: MenuItemStates,
+    state: MenuItemSelectionStates,
     menuTokens: MenuTokensType,
     item: MenuItemType
 ) => {
@@ -44,9 +88,9 @@ const getBgColor = (
     // check for variant
     if (item.variant === MenuItemVariant.DEFAULT) {
         if (!item.disabled) {
-            return bg.default.enabled[state]
+            return getMenuItemStateToken(bg.default.enabled, state)
         } else {
-            return bg.default.disabled[state]
+            return getMenuItemStateToken(bg.default.disabled, state)
         }
     } else {
         // check for action type
@@ -55,22 +99,22 @@ const getBgColor = (
         }
         if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
-                return bg.action.primary.enabled[state]
+                return getMenuItemStateToken(bg.action.primary.enabled, state)
             } else {
-                return bg.action.primary.disabled[state]
+                return getMenuItemStateToken(bg.action.primary.disabled, state)
             }
         } else {
             if (!item.disabled) {
-                return bg.action.danger.enabled[state]
+                return getMenuItemStateToken(bg.action.danger.enabled, state)
             } else {
-                return bg.action.danger.disabled[state]
+                return getMenuItemStateToken(bg.action.danger.disabled, state)
             }
         }
     }
 }
 
 const getColor = (
-    state: MenuItemStates,
+    state: MenuItemSelectionStates,
     menuTokens: MenuTokensType,
     item: MenuItemType
 ) => {
@@ -79,9 +123,9 @@ const getColor = (
     // check for variant
     if (item.variant === MenuItemVariant.DEFAULT) {
         if (!item.disabled) {
-            return bg.default.enabled[state]
+            return getMenuItemStateToken(bg.default.enabled, state)
         } else {
-            return bg.default.disabled[state]
+            return getMenuItemStateToken(bg.default.disabled, state)
         }
     } else {
         // check for action type
@@ -90,15 +134,15 @@ const getColor = (
         }
         if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
-                return bg.action.primary.enabled[state]
+                return getMenuItemStateToken(bg.action.primary.enabled, state)
             } else {
-                return bg.action.primary.disabled[state]
+                return getMenuItemStateToken(bg.action.primary.disabled, state)
             }
         } else {
             if (!item.disabled) {
-                return bg.action.danger.enabled[state]
+                return getMenuItemStateToken(bg.action.danger.enabled, state)
             } else {
-                return bg.action.danger.disabled[state]
+                return getMenuItemStateToken(bg.action.danger.disabled, state)
             }
         }
     }
@@ -108,43 +152,104 @@ const MenuItem = ({
     item,
     idx,
     maxHeight,
+    selectionStyle: groupSelectionStyle,
+    selectionMode: groupSelectionMode,
 }: {
     item: MenuItemType
     idx: number
     maxHeight?: number
+    selectionStyle?: MenuSelectionStyle
+    selectionMode?: MenuSelectionMode
 }) => {
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
-    if (item.subMenu) {
-        return <SubMenu item={item} idx={idx} maxHeight={maxHeight} />
+    const {
+        selectionStyle: menuSelectionStyle,
+        selectionMode: menuSelectionMode,
+        closeOnSelect,
+    } = useMenuSelection()
+
+    const isSubMenu =
+        item.subMenu &&
+        (item.subMenu.length > 0 || typeof item.selected !== 'boolean')
+
+    if (isSubMenu) {
+        return (
+            <SubMenu
+                item={item}
+                idx={idx}
+                maxHeight={maxHeight}
+                selectionStyle={groupSelectionStyle}
+                selectionMode={groupSelectionMode}
+            />
+        )
     }
     if (item.variant === undefined) {
         item.variant = MenuItemVariant.DEFAULT
+    }
+
+    const selection = resolveMenuSelection({
+        selected: item.selected,
+        groupSelectionStyle,
+        groupSelectionMode,
+        menuSelectionStyle,
+        menuSelectionMode,
+    })
+    const useHighlight =
+        selection.selectionStyle === 'highlight' && selection.isSelected
+    const showCheckmark =
+        selection.selectionStyle === 'checkmark' && selection.isSelected
+    const checkmarkPosition = menuTokens.item.checkmark?.position ?? 'trailing'
+    const showLeadingCheck = showCheckmark && checkmarkPosition === 'leading'
+    const showTrailingCheck = showCheckmark && checkmarkPosition === 'trailing'
+    const defaultState: MenuItemSelectionStates = useHighlight
+        ? 'selected'
+        : 'default'
+
+    const handleSelect = (event: Event) => {
+        if (item.disabled) return
+        if (!closeOnSelect) {
+            event.preventDefault()
+        }
+        item.onClick?.()
     }
 
     const menuItemContent = (
         <RadixMenu.Item
             asChild
             disabled={item.disabled}
+            onSelect={item.disabled ? undefined : handleSelect}
             style={{ outline: 'none', border: 'none', userSelect: 'none' }}
         >
             <Block
                 key={idx}
+                {...(selection.selectionRole
+                    ? { role: selection.selectionRole }
+                    : {})}
+                {...(selection.isSelectable
+                    ? { 'aria-checked': selection.isSelected }
+                    : {})}
                 data-element="select-item"
                 data-status={item.disabled ? 'disabled' : 'enabled'}
                 data-numeric={idx + 1}
                 data-id={item.label}
+                {...(selection.isSelected ? { 'data-state': 'selected' } : {})}
+                {...(selection.selectionStyle
+                    ? { 'data-selection-style': selection.selectionStyle }
+                    : {})}
+                {...(selection.selectionMode
+                    ? { 'data-selection-mode': selection.selectionMode }
+                    : {})}
                 display="flex"
                 paddingX={menuTokens.item.padding.x}
                 paddingY={menuTokens.item.padding.y}
                 marginY={menuTokens.item.margin.y}
                 marginX={menuTokens.item.margin.x}
                 borderRadius={menuTokens.item.borderRadius}
-                onClick={item.disabled ? undefined : item.onClick}
                 cursor={item.disabled ? 'not-allowed' : 'pointer'}
                 flexDirection="column"
                 gap={menuTokens.item.gap}
-                backgroundColor={getBgColor('default', menuTokens, item)}
-                color={getColor('default', menuTokens, item)}
+                backgroundColor={getBgColor(defaultState, menuTokens, item)}
+                color={getColor(defaultState, menuTokens, item)}
                 _hover={{
                     backgroundColor: getBgColor('hover', menuTokens, item),
                 }}
@@ -169,6 +274,12 @@ const MenuItem = ({
                     width="100%"
                     overflow="hidden"
                 >
+                    {showLeadingCheck && (
+                        <CheckmarkIndicator
+                            menuTokens={menuTokens}
+                            disabled={item.disabled}
+                        />
+                    )}
                     {item.slot1 && (
                         <Block data-element="slot-1">
                             <MenuSlot slot={item.slot1} isDecorative={true} />
@@ -185,7 +296,7 @@ const MenuItem = ({
                     >
                         <Text
                             data-text={item.label}
-                            color={getColor('default', menuTokens, item)}
+                            color={getColor(defaultState, menuTokens, item)}
                             fontWeight={menuTokens.item.option.fontWeight}
                             fontSize={menuTokens.item.option.fontSize}
                             truncate
@@ -208,6 +319,12 @@ const MenuItem = ({
                             <MenuSlot slot={item.slot4} isDecorative={true} />
                         </Block>
                     )}
+                    {showTrailingCheck && (
+                        <CheckmarkIndicator
+                            menuTokens={menuTokens}
+                            disabled={item.disabled}
+                        />
+                    )}
                 </Block>
                 {item.subLabel && (
                     <Block
@@ -218,7 +335,7 @@ const MenuItem = ({
                         width="100%"
                     >
                         <Text
-                            color={getColor('default', menuTokens, item)}
+                            color={getColor(defaultState, menuTokens, item)}
                             fontWeight={menuTokens.item.description.fontWeight}
                             fontSize={menuTokens.item.description.fontSize}
                         >

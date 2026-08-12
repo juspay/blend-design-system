@@ -52,16 +52,16 @@
     --code-highlight: oklch(0.96 0 0);
     --code-number: oklch(0.56 0 0);
 
-    --sh-keyword: #9810fa; /* function, const, if, return */
-    --sh-string: #00a63e; /* 'strings' */
-    --sh-string-expression: #00a63e; /* template literals */
-    --sh-jsxliterals: #10c6ad;
-    --sh-class: #0561e2;
+    --sh-keyword: #6d28d9; /* function, const, if, return */
+    --sh-string: #047857; /* 'strings' */
+    --sh-string-expression: #047857; /* template literals */
+    --sh-jsxliterals: #0f766e;
+    --sh-class: #7c3aed;
     --sh-comment: #9ca3af;
-    --sh-property: #984af7; /* .push, .length */
-    --sh-entity: #222530;
-    --sh-sign: #222530; /* = && ? : */
-    --sh-identifier: #c125e0;
+    --sh-property: #4b5563; /* .push, .length */
+    --sh-entity: #111827;
+    --sh-sign: #111827; /* = && ? : */
+    --sh-identifier: #374151;
     --code-background: #fcfcfd;
     --code-border: #e0e0e0;
     --card-stroke: #99a0ae;
@@ -116,16 +116,16 @@
     --code-border: oklch(0.25 0 0);
 
     /* Syntax highlighting - dark mode */
-    --sh-keyword: #c084fc;
-    --sh-string: #4ade80;
-    --sh-string-expression: #4ade80;
-    --sh-jsxliterals: #2dd4bf;
-    --sh-class: #60a5fa;
+    --sh-keyword: #c4b5fd;
+    --sh-string: #86efac;
+    --sh-string-expression: #86efac;
+    --sh-jsxliterals: #5eead4;
+    --sh-class: #ddd6fe;
     --sh-comment: #6b7280;
-    --sh-property: #a78bfa;
-    --sh-entity: #e5e7eb;
+    --sh-property: #cbd5e1;
+    --sh-entity: #f8fafc;
     --sh-sign: #e5e7eb;
-    --sh-identifier: #f472b6;
+    --sh-identifier: #e5e7eb;
 
     /* Landing page dark mode */
     --landing-background:

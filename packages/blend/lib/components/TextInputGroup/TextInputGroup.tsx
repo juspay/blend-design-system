@@ -29,6 +29,7 @@ const TextInputGroup = forwardRef<HTMLDivElement, TextInputGroupProps>(
     }
 )
 
+/** TextInputGroup owns layout/position composition only; it has no component-local color, border, background, or theme tokens, so it is excluded from the per-component dark-theme retrofit. */
 TextInputGroup.displayName = 'TextInputGroup'
 
 export default TextInputGroup

@@ -1,0 +1,236 @@
+---
+title: Select v1 to v2
+description: Migrate SingleSelect to SingleSelectV2, including search, sizing, validation, and selection behavior.
+---
+
+## Overview
+
+`SingleSelect` is deprecated in favor of `SingleSelectV2`. The controlled
+single-value model is unchanged: keep the selected string in application state,
+pass it as `selected`, and update it from `onSelect`. Groups, labels, item
+values, item slots, submenus, custom values, pagination, skeleton loading, and
+keyboard navigation continue to be supported.
+
+V2 groups related configuration into `search`, `triggerDimensions`,
+`menuDimensions`, `menuPosition`, and `error`. It also removes v1's built-in
+deselection behavior, so account for that before replacing the component.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    SingleSelect,
+    SelectMenuAlignment,
+    SelectMenuSize,
+    SelectMenuVariant,
+} from '@juspay/blend-design-system'
+;<SingleSelect
+    label="Assignee"
+    placeholder="Select a person"
+    selected={assignee}
+    onSelect={setAssignee}
+    items={people}
+    size={SelectMenuSize.MEDIUM}
+    variant={SelectMenuVariant.CONTAINER}
+    enableSearch
+    searchPlaceholder="Search people"
+    minTriggerWidth={280}
+    maxMenuHeight={360}
+    alignment={SelectMenuAlignment.START}
+    error={hasError}
+    errorMessage="Choose an assignee"
+    fullWidth
+/>
+```
+
+```tsx
+// v2
+import {
+    SingleSelectV2,
+    SingleSelectV2Alignment,
+    SingleSelectV2Size,
+    SingleSelectV2Variant,
+} from '@juspay/blend-design-system'
+;<SingleSelectV2
+    label="Assignee"
+    placeholder="Select a person"
+    selected={assignee}
+    onSelect={setAssignee}
+    items={people}
+    size={SingleSelectV2Size.MD}
+    variant={SingleSelectV2Variant.CONTAINER}
+    search={{ show: true, placeholder: 'Search people' }}
+    triggerDimensions={{ width: '100%', minWidth: 280, maxWidth: '100%' }}
+    menuDimensions={{ maxHeight: 360 }}
+    menuPosition={{ alignment: SingleSelectV2Alignment.START }}
+    error={{ show: hasError, message: 'Choose an assignee' }}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and select enums
+
+**v1:** `SingleSelect`, `SelectMenuSize`, `SelectMenuVariant`,
+`SelectMenuAlignment`, and `SelectMenuSide`.
+
+**v2:** `SingleSelectV2`, `SingleSelectV2Size`, `SingleSelectV2Variant`,
+`SingleSelectV2Alignment`, and `SingleSelectV2Side`.
+
+Rename imports and type annotations together. Variant, alignment, and side
+values are unchanged. Size enum members are shorter: map `SMALL` to `SM`,
+`MEDIUM` to `MD`, and `LARGE` to `LG`. Their underlying `sm`, `md`, and `lg`
+values and the medium default remain the same.
+
+### Move search options into `search`
+
+**v1:** `enableSearch`, `searchPlaceholder`, `searchText`, `onSearchChange`,
+`isSearchLoading`, and `emptyStateText` are top-level props.
+
+**v2:** use one `search` object.
+
+```tsx
+<SingleSelectV2
+    search={{
+        show: true,
+        placeholder: 'Search people',
+        searchText: query,
+        onSearchChange: setQuery,
+        isSearchLoading: isSearching,
+        emptyStateText: 'No people found',
+    }}
+    {...props}
+/>
+```
+
+Map `enableSearch` to `search.show` and `searchPlaceholder` to
+`search.placeholder`. Both versions hide search when this configuration is
+omitted. As in v1, providing `searchText`, including an empty string, makes
+search controlled: provide already-filtered `items` after `onSearchChange`; the
+component does not filter those results again.
+
+### Group trigger, menu, and position configuration
+
+**v1:** dimensions and placement are top-level props: `minTriggerWidth`,
+`maxTriggerWidth`, `minMenuWidth`, `maxMenuWidth`, `maxMenuHeight`,
+`alignment`, `side`, `sideOffset`, and `alignOffset`.
+
+**v2:** use `triggerDimensions`, `menuDimensions`, and `menuPosition`.
+
+```tsx
+<SingleSelectV2
+    triggerDimensions={{ width: '100%', minWidth: 280, maxWidth: 480 }}
+    menuDimensions={{ minWidth: 280, maxWidth: 480, maxHeight: 360 }}
+    menuPosition={{
+        alignment: SingleSelectV2Alignment.START,
+        side: SingleSelectV2Side.BOTTOM,
+        sideOffset: 8,
+        alignOffset: 0,
+    }}
+    {...props}
+/>
+```
+
+`fullWidth` is removed. Replace it with
+`triggerDimensions={{ width: '100%', maxWidth: '100%' }}` when the field should
+fill its container. If a v1 menu relied on its default 400px height limit, set
+`menuDimensions={{ maxHeight: 400 }}` explicitly: V2 does not apply that limit
+by default.
+
+### Replace the boolean error state with an object
+
+**v1:** `error` is a boolean and `errorMessage` is a separate string.
+
+**v2:** use `error={{ show, message }}`.
+
+Move both values into this object. V2 uses the same configuration for the error
+message, error animation, and ARIA invalid state, keeping validation state
+together.
+
+### Rename the mobile presentation option
+
+**v1:** `useDrawerOnMobile` controls the mobile drawer.
+
+**v2:** `usePanelOnMobile` controls the mobile selection panel.
+
+Rename the prop. It still defaults to `true` below the `lg` breakpoint (1024px).
+Verify long-list scrolling, keyboard focus, and your mobile selection flow after
+migrating.
+
+### Restore deselection in application state when needed
+
+**v1:** `allowDeselect` can clear the value when a user chooses the already
+selected item.
+
+**v2:** there is no `allowDeselect` prop. `onSelect` always receives the chosen
+value and the menu closes.
+
+If clicking an active item should clear the field, implement that policy in the
+controlled callback:
+
+```tsx
+<SingleSelectV2
+    selected={assignee}
+    onSelect={(nextValue) =>
+        setAssignee(nextValue === assignee ? '' : nextValue)
+    }
+    {...props}
+/>
+```
+
+Test this interaction with keyboard selection as well as pointer input.
+
+### Custom triggers must be one element
+
+**v1:** `customTrigger` accepts any `ReactNode`.
+
+**v2:** `customTrigger` must be one `ReactElement`, because it is used directly
+as the dropdown trigger.
+
+Wrap text, fragments, or multiple siblings in one button or element. V2 also
+does not accept root `className` or `style` overrides; move visual styling onto
+that custom trigger or an enclosing element.
+
+### Use controlled open state when the application owns it
+
+**v1:** open state is internal; `onOpenChange` only observes it.
+
+**v2:** `open` and `onOpenChange` form an optional controlled pair.
+
+Existing observation-only callbacks can remain. When a form, dialog, or other
+external event must close the menu, hold `open` in state and pass both props.
+
+### Update custom tokens
+
+**v1:** the component consumes `SINGLE_SELECT` tokens.
+
+**v2:** it consumes `SINGLE_SELECT_V2`, with separate light and dark token sets
+and granular menu, submenu, footer, mobile-panel, and slot entries.
+
+Rebuild overrides against `SINGLE_SELECT_V2` rather than copying v1 paths.
+Padding is now defined per side (`top`, `right`, `bottom`, and `left`) instead
+of `x` and `y`; V2 also moves menu surface styles under `menu.content` and adds
+dedicated submenu and footer contracts.
+
+## What continues to work
+
+`label`, `subLabel`, `hintText`, `helpIconText`, `required`, `placeholder`,
+`selected`, `onSelect`, `items`, `slot`, `disabled`, `name`, `inline`, custom
+values, skeleton loading, infinite scrolling, `menuFooter`, group position,
+and button attributes such as `aria-*`, `id`, focus, and blur handlers retain
+their purpose. The grouped item shape also remains compatible: `groupLabel`,
+`items`, `showSeparator`, and item `label`, `value`, `checked`, `subLabel`,
+`slot1` through `slot4`, `disabled`, `onClick`, `subMenu`, tooltip props, and
+`disableTruncation` can move across unchanged.
+
+V2 keeps the automatic virtualization behavior: when `enableVirtualization` is
+omitted, it enables virtualization for more than 20 top-level groups. Keep an
+explicit setting where rendering performance is important, then verify variable
+height item and submenu behavior.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/single-select#component-tokens) with the [V2 component token reference](/docs/components/single-select-v2#component-tokens).

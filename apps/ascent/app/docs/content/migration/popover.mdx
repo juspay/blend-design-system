@@ -1,0 +1,170 @@
+---
+title: Popover v1 to v2
+description: Migrate Popover to PopoverV2, including renamed size and positioning enums, token-managed stacking, and action layout changes.
+---
+
+## Overview
+
+`Popover` is deprecated in favor of `PopoverV2`. The component keeps its
+trigger/content model, controlled open state, modal mode, header, description,
+close button, positioning values, responsive mobile drawer, skeleton state,
+and top-level dimensions. The migration is primarily an import and enum update,
+with a few important visual and layout differences to review.
+
+Unlike most v2 composites, `PopoverV2` action objects still use the existing
+`Button` API. Do not rename action button props or enums to `ButtonV2` as part
+of this migration.
+
+## Quick migration
+
+```tsx
+// v1
+import { ButtonType, Popover, PopoverSize } from '@juspay/blend-design-system'
+;<Popover
+    heading="Share project"
+    description="Invite your team to collaborate."
+    trigger={<Button text="Share" buttonType={ButtonType.SECONDARY} />}
+    size={PopoverSize.MEDIUM}
+    side="bottom"
+    align="end"
+    minWidth={320}
+    primaryAction={{
+        text: 'Copy link',
+        buttonType: ButtonType.PRIMARY,
+        onClick: copyLink,
+    }}
+    secondaryAction={{
+        text: 'Cancel',
+        buttonType: ButtonType.SECONDARY,
+        onClick: close,
+    }}
+>
+    <InviteForm />
+</Popover>
+```
+
+```tsx
+// v2
+import {
+    ButtonType,
+    PopoverV2,
+    PopoverV2Align,
+    PopoverV2Side,
+    PopoverV2Size,
+} from '@juspay/blend-design-system'
+;<PopoverV2
+    heading="Share project"
+    description="Invite your team to collaborate."
+    trigger={<Button text="Share" buttonType={ButtonType.SECONDARY} />}
+    size={PopoverV2Size.MD}
+    side={PopoverV2Side.BOTTOM}
+    align={PopoverV2Align.END}
+    minWidth={320}
+    primaryAction={{
+        text: 'Copy link',
+        buttonType: ButtonType.PRIMARY,
+        onClick: copyLink,
+    }}
+    secondaryAction={{
+        text: 'Cancel',
+        buttonType: ButtonType.SECONDARY,
+        onClick: close,
+    }}
+>
+    <InviteForm />
+</PopoverV2>
+```
+
+## Breaking changes
+
+### Rename the component and positioning enums
+
+**v1:** `Popover` and `PopoverSize`. Positioning accepts string unions.
+
+**v2:** `PopoverV2`, `PopoverV2Size`, `PopoverV2Side`, and
+`PopoverV2Align`.
+
+Rename the component import. String positioning values still work, but use the
+new side and align enums when the call site uses typed configuration. Their
+values are unchanged: `top`, `right`, `bottom`, `left`, and `start`, `center`,
+`end`.
+
+### Map the size values, including the new large size
+
+**v1:** `PopoverSize.SMALL` has the runtime value `small`, and
+`PopoverSize.MEDIUM` has `medium`.
+
+**v2:** use `PopoverV2Size.SM` (`sm`) and `PopoverV2Size.MD` (`md`). V2 also
+adds `PopoverV2Size.LG`.
+
+Replace the enum member rather than casting the old value—the runtime values
+changed. The default maps from v1 `MEDIUM` to v2 `MD`. Review spacing and
+typography when moving to v2, since the token lookups are keyed by the new
+values.
+
+### Keep action objects on the existing Button API
+
+**v1 and v2:** `primaryAction` and `secondaryAction` are based on `ButtonProps`
+and render `Button`, not `ButtonV2`.
+
+Keep `ButtonType`, `ButtonSize`, `leadingIcon`, and `trailingIcon` conventions
+within these action objects. `subType` is still owned by the popover footer and
+renders as inline, so it is not an action prop.
+This avoids accidentally mixing unsupported ButtonV2 slot props into
+`PopoverV2` actions.
+
+### Review action alignment and mobile order
+
+**v1:** desktop actions are right-aligned. On mobile, the footer renders the
+secondary action before the primary action.
+
+**v2:** desktop footer actions are left-aligned. Both desktop and mobile render
+the primary action before the secondary action.
+
+This is a visual and tab-order change even though the action prop names are the
+same. Verify confirmation and destructive flows, particularly any layout that
+depends on the Cancel action being first on mobile. Use the normal action
+objects; there is no prop to restore the legacy footer alignment or order.
+
+### Remove per-instance `zIndex`
+
+**v1:** `zIndex` sets the popover content stacking level, defaulting to 101.
+
+**v2:** `zIndex` is not a public prop. PopoverV2 reads its stack level from the
+`POPOVERV2` token contract.
+
+Remove `zIndex` from component calls. If the popover must participate in a
+different application layer, update the appropriate v2 token or resolve the
+overlay stacking context at the application level instead of relying on an
+unsupported per-instance override.
+
+### Update custom tokens
+
+**v1:** the component consumes `POPOVER` tokens keyed by `small` and `medium`.
+
+**v2:** it consumes `POPOVERV2`, keyed by `sm`, `md`, and `lg`, with dedicated
+top-container and bottom-container token groups plus light and dark values.
+
+Rebuild custom overrides against `POPOVERV2`. Map the old header paths to the
+new top-container contract and footer paths to the bottom-container contract;
+also review the new heading icon-size token and token-managed z-index.
+
+## What continues to work
+
+`heading`, `description`, `trigger`, `children`, `showCloseButton`, `open`,
+`onOpenChange`, `asModal`, `primaryAction`, `secondaryAction`, `sideOffset`,
+`side`, `align`, `alignOffset`, `width`, `minWidth`, `maxWidth`, `height`,
+`minHeight`, `maxHeight`, `onClose`, `shadow`, `useDrawerOnMobile`,
+`avoidCollisions`, and `skeleton` retain their purpose and defaults. Dimensions
+remain top-level props in v2; do not wrap them in a `dimensions` object.
+
+The mobile drawer presentation remains enabled by default below 1024px, and
+the skeleton object retains its `show`, `variant`, and `bodySkeletonProps`
+shape. V2 also keeps the responsive popover flow accessible, while using an
+`h2` for a generated heading rather than v1’s non-heading text element.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/popover#component-tokens) with the [V2 component token reference](/docs/components/popover-v2#component-tokens).

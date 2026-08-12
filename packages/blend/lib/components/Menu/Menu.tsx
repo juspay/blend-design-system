@@ -7,6 +7,12 @@ import {
     MenuSide,
     type MenuItemType,
 } from './types'
+import {
+    MenuSelectionProvider,
+    type MenuSelectionContextValue,
+    type MenuSelectionMode,
+    type MenuSelectionStyle,
+} from './selection'
 import React, { useState, useRef, useMemo, useCallback, useEffect } from 'react'
 import { filterMenuGroups, defaultSearchSortFn } from './utils'
 import MenuItem from './MenuItem'
@@ -50,6 +56,20 @@ const Content = styled(RadixMenu.Content)`
     ${menuContentAnimations}
 `
 
+type SelectionContentProps = React.ComponentProps<typeof Content> & {
+    selectionContextValue: MenuSelectionContextValue
+}
+
+const SelectionContent = ({
+    selectionContextValue,
+    children,
+    ...props
+}: SelectionContentProps) => (
+    <MenuSelectionProvider value={selectionContextValue}>
+        <Content {...props}>{children}</Content>
+    </MenuSelectionProvider>
+)
+
 const Menu = ({
     trigger,
     items = [],
@@ -68,6 +88,9 @@ const Menu = ({
     maxWidth,
     open,
     onOpenChange,
+    selectionStyle,
+    selectionMode,
+    closeOnSelect = true,
     enableVirtualScrolling = false,
     virtualItemHeight = 40,
     virtualOverscan = 5,
@@ -86,6 +109,11 @@ const Menu = ({
     const filteredItems = filterMenuGroups(items, searchText, searchSortFn)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
     const { target: portalContainer } = useShadowRoot()
+
+    const selectionContextValue = useMemo(
+        () => ({ selectionStyle, selectionMode, closeOnSelect }),
+        [selectionStyle, selectionMode, closeOnSelect]
+    )
 
     const menuIsOpen = open ?? isOpen
     useDropdownInteractionLock(asModal && menuIsOpen)
@@ -156,6 +184,8 @@ const Menu = ({
                         originalItem: item,
                         groupId,
                         itemIndex,
+                        selectionStyle: group.selectionStyle,
+                        selectionMode: group.selectionMode,
                     },
                 })
             })
@@ -186,12 +216,22 @@ const Menu = ({
     const renderVirtualItem = useCallback(
         ({ item }: { item: VirtualListItem; index: number }) => {
             const data = item.data || {}
-            const { type, label, originalItem, groupId, itemIndex } = data as {
+            const {
+                type,
+                label,
+                originalItem,
+                groupId,
+                itemIndex,
+                selectionStyle,
+                selectionMode,
+            } = data as {
                 type?: string
                 label?: string
                 originalItem?: unknown
                 groupId?: number
                 itemIndex?: number
+                selectionStyle?: MenuSelectionStyle
+                selectionMode?: MenuSelectionMode
             }
 
             if (type === 'label') {
@@ -235,6 +275,8 @@ const Menu = ({
                         item={originalItem as MenuItemType}
                         idx={itemIndex || 0}
                         maxHeight={maxHeight}
+                        selectionStyle={selectionStyle}
+                        selectionMode={selectionMode}
                     />
                 )
             }
@@ -253,7 +295,8 @@ const Menu = ({
         >
             <RadixMenu.Trigger asChild>{trigger}</RadixMenu.Trigger>
             <RadixMenu.Portal container={portalContainer ?? undefined}>
-                <Content
+                <SelectionContent
+                    selectionContextValue={selectionContextValue}
                     data-menu="menu"
                     data-dropdown="dropdown"
                     sideOffset={sideOffset}
@@ -311,19 +354,19 @@ const Menu = ({
                             flexDirection="column"
                             gap={menuTokens.item.gap}
                         >
-                            {Array.from({ length: skeleton.count || 3 }).map(
-                                (_, index) => (
-                                    <Skeleton
-                                        key={index}
-                                        width="100%"
-                                        height="33px"
-                                        variant={
-                                            (skeleton.variant as SkeletonVariant) ||
-                                            'pulse'
-                                        }
-                                    />
-                                )
-                            )}
+                            {Array.from({
+                                length: skeleton.count || 3,
+                            }).map((_, index) => (
+                                <Skeleton
+                                    key={index}
+                                    width="100%"
+                                    height="33px"
+                                    variant={
+                                        (skeleton.variant as SkeletonVariant) ||
+                                        'pulse'
+                                    }
+                                />
+                            ))}
                         </Block>
                     ) : (
                         <>
@@ -467,6 +510,12 @@ const Menu = ({
                                                             maxHeight={
                                                                 maxHeight
                                                             }
+                                                            selectionStyle={
+                                                                group.selectionStyle
+                                                            }
+                                                            selectionMode={
+                                                                group.selectionMode
+                                                            }
                                                         />
                                                     )
                                                 )}
@@ -515,7 +564,7 @@ const Menu = ({
                             )}
                         </>
                     )}
-                </Content>
+                </SelectionContent>
             </RadixMenu.Portal>
         </RadixMenu.Root>
     )

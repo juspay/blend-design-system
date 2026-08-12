@@ -39,7 +39,7 @@ function DocsPage({
                     </div>
                     <div className="py-8 px-6 md:px-10">
                         <div className="flex flex-col gap-2">
-                            <p className="text-foreground text-base md:text-justify md:leading-9 tracking-[-0.32px]">
+                            <p className="text-foreground text-base md:text-justify md:leading-8 tracking-[-0.32px]">
                                 {metadata.description}
                             </p>
 

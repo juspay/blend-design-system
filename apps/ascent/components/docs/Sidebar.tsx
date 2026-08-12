@@ -1,6 +1,8 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
+import { ChevronDown } from 'lucide-react'
+import { usePathname } from 'next/navigation'
 import { DocItem } from '@/docs/utils'
 import { cn } from '@/lib/utils/cn'
 import { SidebarItem } from './SidebarItem'
@@ -17,6 +19,18 @@ interface SectionItem extends DocItem {
 }
 
 const VERSION_NUM: Record<Version, number> = { '1': 1, '2': 2 }
+
+const normalizePath = (path: string) =>
+    path.endsWith('/') && path !== '/' ? path.slice(0, -1) : path
+
+const sectionContainsPath = (
+    pathname: string,
+    baseRoute: string,
+    sectionPath: string
+) =>
+    normalizePath(pathname).startsWith(
+        normalizePath(`${baseRoute}/${sectionPath}`)
+    )
 
 //Filtering
 function filterByVersion(
@@ -67,39 +81,65 @@ const SidebarSection = ({
     baseRoute: string
     onLinkClick?: () => void
     isNested?: boolean
-}) => (
-    <div className={isNested ? 'mt-6' : ''}>
-        <div
-            className={cn(
-                'flex items-center px-3 text-xs uppercase text-nav-section-text-foreground select-none tracking-wider font-medium',
-                isNested ? 'my-3' : 'my-6'
-            )}
-        >
-            {item.name}
-        </div>
+}) => {
+    const pathname = usePathname()
+    const isCurrentSection = sectionContainsPath(pathname, baseRoute, item.path)
+    const [isOpen, setIsOpen] = useState(
+        item.slug === 'components' || isNested || isCurrentSection
+    )
+    const sectionId = `sidebar-section-${item.path.replace(/[^a-zA-Z0-9]/g, '-')}`
 
-        <div className="space-y-1">
-            {item.children.map((child) =>
-                child.children?.length ? (
-                    <SidebarSection
-                        key={child.slug}
-                        item={child as SectionItem}
-                        baseRoute={baseRoute}
-                        onLinkClick={onLinkClick}
-                        isNested
-                    />
-                ) : (
-                    <SidebarItem
-                        key={child.slug}
-                        item={child}
-                        baseRoute={baseRoute}
-                        onLinkClick={onLinkClick}
-                    />
-                )
+    useEffect(() => {
+        if (isCurrentSection) setIsOpen(true)
+    }, [isCurrentSection])
+
+    return (
+        <div className={isNested ? 'mt-6' : ''}>
+            <button
+                type="button"
+                aria-expanded={isOpen}
+                aria-controls={sectionId}
+                onClick={() => setIsOpen((open) => !open)}
+                className={cn(
+                    'flex w-full items-center justify-between px-3 text-xs uppercase text-nav-section-text-foreground select-none tracking-wider font-medium cursor-pointer',
+                    isNested ? 'my-3' : 'my-6'
+                )}
+            >
+                {item.name}
+                <ChevronDown
+                    aria-hidden="true"
+                    size={14}
+                    className={cn(
+                        'transition-transform duration-150',
+                        isOpen ? 'rotate-0' : '-rotate-90'
+                    )}
+                />
+            </button>
+            {isOpen && (
+                <div id={sectionId} className="space-y-1">
+                    {item.children.map((child) =>
+                        child.children?.length ? (
+                            <SidebarSection
+                                key={child.slug}
+                                item={child as SectionItem}
+                                baseRoute={baseRoute}
+                                onLinkClick={onLinkClick}
+                                isNested
+                            />
+                        ) : (
+                            <SidebarItem
+                                key={child.slug}
+                                item={child}
+                                baseRoute={baseRoute}
+                                onLinkClick={onLinkClick}
+                            />
+                        )
+                    )}
+                </div>
             )}
         </div>
-    </div>
-)
+    )
+}
 
 //Sidebar
 

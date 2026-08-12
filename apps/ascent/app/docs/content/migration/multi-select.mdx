@@ -1,0 +1,235 @@
+---
+title: Multi Select v1 to v2
+description: Migrate MultiSelect to MultiSelectV2, including grouped search, layout, error, and mobile configuration.
+---
+
+## Overview
+
+`MultiSelect` is deprecated in favor of `MultiSelectV2`. It remains a
+controlled multi-value field: keep `selectedValues` in application state and
+pass the next array from `onSelectionChange` back to the component. Option
+groups, item values and labels, all four item slots, select-all, submenus,
+custom values, actions, pagination, and skeleton loading continue to be
+available.
+
+V2 consolidates related props into `search`, `triggerDimensions`,
+`menuDimensions`, `menuPosition`, and `error`. It also renames select enums and
+changes the default virtualization behavior, so migrate those configurations
+explicitly rather than relying on defaults.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    MultiSelect,
+    MultiSelectMenuAlignment,
+    MultiSelectMenuSize,
+    MultiSelectVariant,
+} from '@juspay/blend-design-system'
+;<MultiSelect
+    label="Skills"
+    sublabel="Choose every technology you use"
+    helpIconHintText="Selections are saved to your profile"
+    placeholder="Select skills"
+    selectedValues={skills}
+    onSelectionChange={setSkills}
+    items={skillGroups}
+    size={MultiSelectMenuSize.MEDIUM}
+    variant={MultiSelectVariant.CONTAINER}
+    enableSearch
+    searchPlaceholder="Search skills"
+    minTriggerWidth={280}
+    maxMenuHeight={360}
+    alignment={MultiSelectMenuAlignment.START}
+    error={hasError}
+    errorMessage="Select at least one skill"
+    fullWidth
+/>
+```
+
+```tsx
+// v2
+import {
+    MultiSelectV2,
+    MultiSelectV2Alignment,
+    MultiSelectV2Size,
+    MultiSelectV2Variant,
+} from '@juspay/blend-design-system'
+;<MultiSelectV2
+    label="Skills"
+    subLabel="Choose every technology you use"
+    helpIconText="Selections are saved to your profile"
+    placeholder="Select skills"
+    selectedValues={skills}
+    onSelectionChange={setSkills}
+    items={skillGroups}
+    size={MultiSelectV2Size.MD}
+    variant={MultiSelectV2Variant.CONTAINER}
+    search={{ show: true, placeholder: 'Search skills' }}
+    triggerDimensions={{ width: '100%', minWidth: 280 }}
+    menuDimensions={{ maxHeight: 360 }}
+    menuPosition={{ alignment: MultiSelectV2Alignment.START }}
+    error={{ show: hasError, message: 'Select at least one skill' }}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and select enums
+
+**v1:** `MultiSelect`, `MultiSelectMenuSize`, `MultiSelectVariant`,
+`MultiSelectMenuAlignment`, and `MultiSelectMenuSide`.
+
+**v2:** `MultiSelectV2`, `MultiSelectV2Size`, `MultiSelectV2Variant`,
+`MultiSelectV2Alignment`, and `MultiSelectV2Side`.
+
+Rename the component, imports, and type annotations together. Enum values for
+variant, alignment, and side are unchanged. Size enum members are shortened:
+map `SMALL` to `SM`, `MEDIUM` to `MD`, and `LARGE` to `LG`; their `sm`, `md`,
+and `lg` values and the medium default remain the same.
+
+### Rename field-label props
+
+**v1:** use `sublabel` and `helpIconHintText`.
+
+**v2:** use `subLabel` and `helpIconText`.
+
+This is a naming cleanup only. Move the existing strings directly; label,
+placeholder, hint text, required state, `name`, disabled state, and the
+trigger’s standard button attributes keep their purpose.
+
+### Move search into `search`
+
+**v1:** `enableSearch`, `searchPlaceholder`, `searchText`, `onSearchChange`,
+`isSearchLoading`, and `emptyStateText` are top-level props.
+
+**v2:** use one `search` object.
+
+```tsx
+<MultiSelectV2
+    search={{
+        show: true,
+        placeholder: 'Search people',
+        searchText: query,
+        onSearchChange: setQuery,
+        isSearchLoading: isSearching,
+        emptyStateText: 'No people found',
+    }}
+    {...props}
+/>
+```
+
+Map `enableSearch` to `search.show` and `searchPlaceholder` to
+`search.placeholder`. A `searchText` value, including an empty string, still
+makes search controlled: supply already-filtered items in response to
+`onSearchChange`; the component does not also filter them locally. Omitting
+`search` preserves the v2 default visible search field.
+
+### Group trigger, menu, and position configuration
+
+**v1:** trigger and menu sizes plus position are individual top-level props:
+`minTriggerWidth`, `maxTriggerWidth`, `minMenuWidth`, `maxMenuWidth`,
+`maxMenuHeight`, `alignment`, `side`, `sideOffset`, and `alignOffset`.
+
+**v2:** use `triggerDimensions`, `menuDimensions`, and `menuPosition`.
+
+```tsx
+<MultiSelectV2
+    triggerDimensions={{ width: '100%', minWidth: 280, maxWidth: 480 }}
+    menuDimensions={{ minWidth: 280, maxWidth: 480, maxHeight: 360 }}
+    menuPosition={{
+        alignment: MultiSelectV2Alignment.START,
+        side: MultiSelectV2Side.BOTTOM,
+        sideOffset: 8,
+        alignOffset: 0,
+    }}
+    {...props}
+/>
+```
+
+`fullWidth` is removed. Replace it with `triggerDimensions={{ width: '100%',
+maxWidth: '100%' }}` when the field should fill its container. V1’s standalone
+`height` prop has no v2 counterpart; size tokens own the trigger height.
+
+### Replace the boolean error state with an object
+
+**v1:** `error` is a boolean and `errorMessage` is a separate string.
+
+**v2:** use `error={{ show, message }}`.
+
+Move the values into that object. V2 uses the same error state to drive the
+visible message, ARIA invalid state, and error animation, keeping related
+validation data together.
+
+### Rename the mobile presentation option
+
+**v1:** `useDrawerOnMobile` controls the mobile drawer.
+
+**v2:** `usePanelOnMobile` controls the mobile selection panel.
+
+Rename the prop; it still defaults to `true` and is used below the `lg`
+breakpoint (1024px). Verify the mobile select’s drawer-like panel, keyboard
+focus, action buttons, and long-list scrolling during migration.
+
+### Enable virtualization explicitly
+
+**v1:** virtualization defaults to enabled when `items.length > 20`.
+
+**v2:** `enableVirtualization` defaults to `false`; it virtualizes only when
+explicitly enabled and there are more than 20 top-level groups.
+
+Add `enableVirtualization` at large-list call sites to retain v1’s behavior.
+`virtualListItemHeight` and `virtualListOverscan` continue to work. The
+`itemsToRender` prop has no supported v2 rendering equivalent, so remove it
+and validate scroll performance with the v2 virtualizer.
+
+### Use `onSelectionChange` for form state
+
+**v1 and v2:** `onSelectionChange` receives the full next `string[]` once per
+accepted user gesture. It is the recommended callback.
+
+`onChange` remains for legacy per-item toggle handling, but V2 also allows an
+array payload and calls it with `[]` when its built-in clear button clears the
+field. Do not use it as the source of truth; update form state from
+`onSelectionChange` instead.
+
+### Custom triggers must be elements
+
+**v1:** `customTrigger` accepts any `ReactNode`.
+
+**v2:** `customTrigger` must be one `ReactElement`, because the menu uses it as
+the dropdown trigger.
+
+Wrap text, fragments, or multiple siblings in one button or element. Keep the
+custom trigger responsible for its visual class and style; v2 does not accept
+root `className` or `style` overrides.
+
+### Update custom tokens
+
+**v1:** the component consumes `MULTI_SELECT` tokens.
+
+**v2:** it consumes `MULTI_SELECT_V2`, with dedicated light and dark token
+sets and more granular trigger, menu, item, search, select-all, and clear
+button entries.
+
+Rebuild overrides against `MULTI_SELECT_V2` rather than copying v1 paths.
+Check each size and variant, as well as error, focus, disabled, open, selected,
+and mobile states.
+
+## What continues to work
+
+The grouped item model is compatible: `groupLabel`, `items`, `showSeparator`,
+and each item’s `label`, `value`, `checked`, `subLabel`, `slot1` through
+`slot4`, `disabled`, `alwaysSelected`, `onClick`, `subMenu`, tooltip props, and
+`disableTruncation` keep the same role. `selectionTagType`, select-all,
+`maxSelections`, custom values, clear behavior, action buttons, dividers,
+header border, infinite scrolling, loading component, skeleton, group
+position, menu footer, open-state callback, `inline`, and focus/blur behavior
+also continue to work.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/multi-select#component-tokens) with the [V2 component token reference](/docs/components/multi-select-v2#component-tokens).

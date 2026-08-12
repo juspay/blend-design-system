@@ -17,6 +17,8 @@ import {
     buildVersionPeerMap,
     type DocItem,
 } from '../utils'
+import { remarkMigrationCodeDiff } from '../utils/remarkMigrationCodeDiff'
+import { getMigrationTokenDiff } from '../utils/getMigrationTokenDiff'
 
 const fileBasedItems = scanDirectory(
     path.join(process.cwd(), 'app', 'docs', 'content')
@@ -40,11 +42,18 @@ const findDocItemBySlug = (
 
 const getCompiledMDX = cache(async (filePath: string) => {
     const fileContent = fs.readFileSync(filePath, 'utf8')
+    const isMigrationDoc = filePath.includes(`${path.sep}migration${path.sep}`)
+    const tokenDiff = isMigrationDoc ? getMigrationTokenDiff(filePath) : null
     const { content, frontmatter } = await compileMDX({
         source: fileContent,
         options: {
             parseFrontmatter: true,
-            mdxOptions: { remarkPlugins: [], rehypePlugins: [] },
+            mdxOptions: {
+                remarkPlugins: isMigrationDoc
+                    ? [[remarkMigrationCodeDiff, { tokenDiff }]]
+                    : [],
+                rehypePlugins: [],
+            },
         },
         components: useMDXComponents(),
     })

@@ -107,7 +107,7 @@ const buildSearchIndex = (
                             sections: extractSections(content),
                         }
 
-                        index[slug] = searchResult
+                        index[docPath] = searchResult
                     } catch (error) {
                         console.error(`Error reading file ${fullPath}:`, error)
                     }

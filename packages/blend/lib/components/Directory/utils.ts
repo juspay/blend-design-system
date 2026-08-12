@@ -6,6 +6,12 @@ import type {
     DirectoryFlatRow,
     NavbarItem,
 } from './types'
+// leaf types module, not ./directory.tokens — keeps this file out of the
+// token factory's import graph (see RFC 0007 / check:circular)
+import type {
+    DirectoryItemVisualState,
+    DirectoryTokenType,
+} from './directory.tokens.types'
 
 export const DEFAULT_END_REACHED_THRESHOLD = 200
 
@@ -70,6 +76,80 @@ export const normalizeExpandedItems = (
 // silently producing colliding empty path segments
 export const getItemPathSegment = (item: NavbarItem): string =>
     item.id || item.label
+
+/**
+ * True when `itemPath` is a strict ancestor of the selected item.
+ *
+ * itemPath segments are "/"-joined and ids may not contain "/", so ancestry is
+ * a prefix test rather than a tree walk. A bare-label activeItem (the
+ * backward-compat match for id-less items) is not a path, so it resolves no
+ * ancestors — the tree then degrades to selected-only highlighting.
+ */
+export const isActiveAncestorPath = (
+    itemPath: string,
+    activeItem: string | null | undefined
+): boolean =>
+    !!activeItem &&
+    activeItem !== itemPath &&
+    activeItem.startsWith(`${itemPath}/`)
+
+/**
+ * Resolves the visual tier of a row. Returns `default` for every row unless
+ * active-path highlighting is on AND something is selected, so the opt-out
+ * path is byte-identical to the pre-existing two-state behaviour.
+ */
+export const getItemVisualState = ({
+    isActive,
+    itemPath,
+    activeItem,
+    highlightActivePath,
+}: {
+    isActive: boolean
+    itemPath: string
+    activeItem: string | null | undefined
+    highlightActivePath: boolean
+}): DirectoryItemVisualState => {
+    if (isActive) return 'active'
+    if (!highlightActivePath || !activeItem) return 'default'
+    return isActiveAncestorPath(itemPath, activeItem) ? 'activePath' : 'muted'
+}
+
+/**
+ * Background/text colours for a visual tier. The two path tiers fall back to
+ * pre-existing tiers when a consumer's whole-slot DIRECTORY override predates
+ * them, so a partial override degrades instead of resolving to undefined.
+ */
+export const resolveItemColors = (
+    tokens: DirectoryTokenType,
+    state: DirectoryItemVisualState
+) => {
+    const { backgroundColor, color } = tokens.section.itemList.item
+
+    switch (state) {
+        case 'active':
+            return {
+                backgroundColor: backgroundColor.active,
+                color: color.active,
+            }
+        case 'activePath':
+            return {
+                backgroundColor:
+                    backgroundColor.activePath ?? backgroundColor.default,
+                color: color.activePath ?? color.active,
+            }
+        case 'muted':
+            return {
+                backgroundColor:
+                    backgroundColor.muted ?? backgroundColor.default,
+                color: color.muted ?? color.default,
+            }
+        default:
+            return {
+                backgroundColor: backgroundColor.default,
+                color: color.default,
+            }
+    }
+}
 
 const countItems = (items: NavbarItem[] | undefined): number =>
     (items ?? []).reduce((total, item) => total + 1 + countItems(item.items), 0)

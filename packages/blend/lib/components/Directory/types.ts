@@ -48,6 +48,24 @@ export type DirectoryProps = {
      * @default false
      */
     enableParentSelection?: boolean
+    /**
+     * When true, selecting an item also styles its ancestor chain as
+     * `activePath` and every unrelated row as `muted`, so the branch you are
+     * in reads at a glance. With nothing selected the tree renders exactly as
+     * it does with this off.
+     *
+     * Requires a path-valued `activeItem` — a bare label (the backward-compat
+     * match for id-less items) resolves no ancestors and degrades to
+     * selected-only highlighting.
+     *
+     * Note: the default `muted` text colour is 4.49:1 (light) / 4.17:1 (dark),
+     * just under the 4.5:1 WCAG AA floor; muted rows lift to the `hover` tier
+     * on hover and focus-visible. Override `DIRECTORY` component tokens if
+     * your product needs muted rows to clear AA at rest.
+     *
+     * @default false
+     */
+    highlightActivePath?: boolean
     enableVirtualization?: boolean
     virtualization?: DirectoryVirtualizationConfig
 }
@@ -96,6 +114,7 @@ export type SectionProps = {
     showHierarchyLines?: boolean
     hierarchyLineBorderRadius?: CSSObject['borderRadius']
     enableParentSelection?: boolean
+    highlightActivePath?: boolean
 }
 
 export type NavItemProps = {
@@ -109,6 +128,7 @@ export type NavItemProps = {
     isLast?: boolean
     isNested?: boolean
     enableParentSelection?: boolean
+    highlightActivePath?: boolean
 }
 
 export type DirectoryFlatRow =

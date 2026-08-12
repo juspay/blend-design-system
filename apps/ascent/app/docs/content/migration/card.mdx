@@ -1,0 +1,171 @@
+---
+title: Card v1 to v2
+description: Migrate the Card component from v1 to CardV2, including its new surface variants and composition model.
+---
+
+## Overview
+
+`Card` is deprecated in favor of `CardV2`. This is a structural migration:
+v1 uses layout variants and fixed slot props, while v2 separates surface style
+from content composition. Use the prop-driven API for straightforward cards and
+compound sections for layouts that need precise control.
+
+## Quick migration
+
+```tsx
+// v1
+import { ButtonType, Card, CardVariant } from '@juspay/blend-design-system'
+;<Card
+    variant={CardVariant.DEFAULT}
+    headerTitle="Order summary"
+    subHeader="Updated just now"
+    bodyTitle="Total"
+    content="$128.00"
+    actionButton={{
+        buttonType: ButtonType.PRIMARY,
+        text: 'View order',
+        onClick: handleOpen,
+    }}
+/>
+```
+
+```tsx
+// v2
+import {
+    ButtonV2Type,
+    CardV2,
+    CardV2ActionPlacement,
+    CardV2Variant,
+} from '@juspay/blend-design-system'
+;<CardV2
+    variant={CardV2Variant.OUTLINED}
+    title="Order summary"
+    subtitle="Updated just now"
+    description="$128.00"
+    actions={{
+        buttonType: ButtonV2Type.PRIMARY,
+        text: 'View order',
+        onClick: handleOpen,
+    }}
+    actionPlacement={CardV2ActionPlacement.BODY}
+/>
+```
+
+## Breaking changes
+
+### Replace layout variants with surface variants and composition
+
+**v1:** `CardVariant.DEFAULT`, `ALIGNED`, and `CUSTOM` choose the card layout.
+
+**v2:** `CardV2Variant.OUTLINED`, `ELEVATED`, and `GHOST` choose the surface
+style. Content is supplied through v2 props, `children`, or compound sections.
+
+There is no direct enum mapping. Choose `OUTLINED` for the standard bordered
+card appearance, `ELEVATED` when the card needs elevation, or `GHOST` for an
+uncontained surface. Recreate the v1 layout with the v2 content APIs below;
+do not substitute v1 variant values for v2 values.
+
+### Rename and regroup standard content props
+
+**v1:** `headerTitle`, `subHeader`, `content`, `headerSlot1`, and
+`headerSlot2`.
+
+**v2:** `title`, `subtitle`, `description`, `leadingSlot`, and
+`trailingSlot`.
+
+These v2 props express the common header and body structure directly. Map
+`headerTitle` to `title`, `subHeader` to `subtitle`, `content` to
+`description`, `headerSlot1` to `leadingSlot`, and `headerSlot2` to
+`trailingSlot`.
+
+### Place header tags intentionally
+
+V1 provides `headerTag` beside the header title. V2 has no equivalent inline
+header-tag prop. Use `eyebrow` when the tag is secondary metadata that can sit
+above the title. When it must remain inline with the title, compose the header
+layout explicitly with v2 sections and your own content rather than expecting
+`headerTag` to transfer automatically.
+
+### Compose body-specific content
+
+V1 exposes `bodyTitle`, `bodySlot1`, and `bodySlot2` as individual props. V2
+has no direct equivalents for those arbitrary body positions. Use the compound
+API to place custom body content deliberately:
+
+```tsx
+<CardV2>
+    <CardV2.Header title="Order summary" />
+    <CardV2.Body description="Total">
+        <CardV2.Content>
+            <TotalAmount />
+        </CardV2.Content>
+    </CardV2.Body>
+</CardV2>
+```
+
+This replaces the fixed slot sequence with an explicit composition model, so
+cards can support more layouts without adding a prop for every position.
+
+### Replace aligned-card props with media and orientation
+
+**v1:** `alignment`, `centerAlign`, and `cardSlot` are used with
+`CardVariant.ALIGNED`.
+
+**v2:** `orientation`, `centered`, and `media` describe the same broad layout
+intent.
+
+Map vertical and horizontal `CardAlignment` values to `CardV2Orientation`,
+map `centerAlign` to `centered`, and move `cardSlot` to `media`. Use
+`mediaWidth`, `mediaHeight`, and `mediaMinHeight` when the old aligned slot had
+specific dimensions.
+
+### Replace `actionButton` with `actions`
+
+**v1:** `actionButton` accepts `ButtonProps` for the v1 Button component.
+
+**v2:** `actions` accepts one or more `ButtonV2Props`, and
+`actionPlacement` selects `BODY` or `FOOTER`.
+
+Rename `actionButton` to `actions` and migrate its configuration to ButtonV2
+at the same time. A single object stays a single action; pass an array for
+multiple actions. The default v2 placement is `BODY`; use `FOOTER` when the
+action should appear in a separate footer section.
+
+### Use `children` without a custom variant
+
+V1 requires `variant={CardVariant.CUSTOM}` when rendering arbitrary children.
+V2 accepts `children` directly. Replace a custom v1 card with `CardV2` and
+its children, or use `CardV2.Header`, `Body`, `Media`, and `Footer` when those
+sections add useful semantics and spacing.
+
+### Update custom Card tokens
+
+**v1:** `CARD` token contract
+
+**v2:** `CARDV2` token contract
+
+V2 tokenizes surface variants, stateful interactive styles, padding presets,
+layout, media, and compound sections. The v1 token shape does not map
+one-to-one; rebuild custom overrides against `CARDV2` rather than copying
+`CARD` paths.
+
+## Sizing and skeleton changes
+
+V2 retains `maxWidth`, `minHeight`, `maxHeight`, and the `skeleton` object;
+the skeleton variant is now optional. It also adds `width`, `minWidth`, and
+`height`, and accepts corresponding CSS values rather than only strings. V2
+automatically enables scrollable body content when `maxHeight` is supplied;
+set `scrollable` explicitly when you need to override that behavior.
+
+## What else is new
+
+`interactive` provides hover and focus affordances for clickable cards, and
+`selected` provides a selected state. V2 also forwards standard div attributes
+such as event handlers and ARIA attributes, which v1 Card does not expose as
+part of its public props.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/card#component-tokens) with the [V2 component token reference](/docs/components/card-v2#component-tokens).

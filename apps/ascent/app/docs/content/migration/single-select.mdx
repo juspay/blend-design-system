@@ -1,0 +1,114 @@
+---
+title: Single Select v1 to v2
+description: Migrate SingleSelect to SingleSelectV2 with grouped configuration for search, menu layout, dimensions, and errors.
+---
+
+## Single Select v1 to v2
+
+`SingleSelectV2` retains the controlled selection model, item shape, custom trigger, virtualization, infinite scrolling, and custom values. It groups related configuration to make the select API easier to extend.
+
+### Quick migration
+
+```tsx
+// v1
+import {
+    SelectMenuAlignment,
+    SelectMenuSize,
+    SingleSelect,
+} from '@juspay/blend-design-system'
+;<SingleSelect
+    placeholder="Select country"
+    size={SelectMenuSize.MEDIUM}
+    items={countries}
+    selected={country}
+    onSelect={setCountry}
+    enableSearch
+    searchPlaceholder="Search countries"
+    alignment={SelectMenuAlignment.START}
+    maxMenuHeight={320}
+    error={hasError}
+    errorMessage="Select a country"
+/>
+
+// v2
+import {
+    SingleSelectV2,
+    SingleSelectV2Alignment,
+    SingleSelectV2Size,
+} from '@juspay/blend-design-system'
+;<SingleSelectV2
+    placeholder="Select country"
+    size={SingleSelectV2Size.MD}
+    items={countries}
+    selected={country}
+    onSelect={setCountry}
+    search={{ show: true, placeholder: 'Search countries' }}
+    menuPosition={{ alignment: SingleSelectV2Alignment.START }}
+    menuDimensions={{ maxHeight: 320 }}
+    error={{ show: hasError, message: 'Select a country' }}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and enums
+
+Replace `SingleSelect` with `SingleSelectV2`. Map `SelectMenuSize`, `SelectMenuVariant`, `SelectMenuAlignment`, and `SelectMenuSide` to their `SingleSelectV2*` exports. Their values are unchanged: `SM`/`MD`/`LG`, `CONTAINER`/`NO_CONTAINER`, and the same alignment and side values.
+
+### Group search configuration
+
+Replace `enableSearch` and `searchPlaceholder` with `search`:
+
+```tsx
+// v1
+enableSearch searchPlaceholder="Search countries"
+
+// v2
+search={{ show: true, placeholder: 'Search countries' }}
+```
+
+The existing search-control props from `SelectSearchControlProps` move into this object as well.
+
+### Group placement and sizing configuration
+
+Replace `alignment`, `side`, `sideOffset`, and `alignOffset` with `menuPosition`. Replace `minMenuWidth`, `maxMenuWidth`, and `maxMenuHeight` with `menuDimensions`; replace `minTriggerWidth`, `maxTriggerWidth`, and `fullWidth` with `triggerDimensions`.
+
+```tsx
+menuPosition={{ alignment: SingleSelectV2Alignment.END, side: SingleSelectV2Side.BOTTOM }}
+menuDimensions={{ minWidth: 240, maxHeight: 320 }}
+triggerDimensions={{ width: '100%' }}
+```
+
+### Move errors into an object
+
+Replace `error` and `errorMessage` with `error={{ show, message }}`.
+
+### Rename mobile behavior and use controlled open state when needed
+
+Replace `useDrawerOnMobile` with `usePanelOnMobile`. v2 also adds `open` and `onOpenChange` for controlled menu visibility.
+
+### Tighten custom trigger typing
+
+`customTrigger` must be a React element in v2, not an arbitrary `ReactNode`. Wrap text or fragments in an element before passing them.
+
+### Replace deselection behavior in the parent
+
+`allowDeselect` is not available in v2. When selecting the current value should clear the field, implement that rule in the parent callback:
+
+```tsx
+onSelect={(nextValue) => setValue(nextValue === value ? '' : nextValue)}
+```
+
+### Update theme overrides
+
+Move token overrides from `SINGLE_SELECT` to `SINGLE_SELECT_V2`. Rebuild them against the separate v2 trigger, menu, search, item, footer, and responsive panel contracts.
+
+## What continues to work
+
+`label`, `subLabel`, `hintText`, `required`, `helpIconText`, `placeholder`, `items`, `selected`, `onSelect`, `variant`, `slot`, `disabled`, `inline`, virtualization, infinite scrolling, `skeleton`, custom values, `singleSelectGroupPosition`, and `menuFooter` continue to work. Item `slot1` through `slot4` and other item fields are unchanged.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/single-select#component-tokens) with the [V2 component token reference](/docs/components/single-select-v2#component-tokens).

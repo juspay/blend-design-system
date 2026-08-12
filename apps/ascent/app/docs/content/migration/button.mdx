@@ -1,0 +1,158 @@
+---
+title: Button v1 to v2
+description: Migrate the Button component from v1 to ButtonV2 with a clear mapping for every breaking change.
+---
+
+## Overview
+
+`Button` is deprecated in favor of `ButtonV2`. The core button variants,
+sizes, subtypes, native button attributes, and interaction callbacks are still
+available, so most migrations are mechanical. Start by updating the imports,
+then replace the changed props below.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Button,
+    ButtonSize,
+    ButtonSubType,
+    ButtonType,
+} from '@juspay/blend-design-system'
+;<Button
+    buttonType={ButtonType.PRIMARY}
+    size={ButtonSize.MEDIUM}
+    subType={ButtonSubType.DEFAULT}
+    text="Upload file"
+    leadingIcon={<UploadIcon />}
+    trailingIcon={<ArrowRightIcon />}
+    fullWidth
+    showSkeleton={isLoadingInitialData}
+    skeletonVariant="shimmer"
+    onClick={handleUpload}
+/>
+```
+
+```tsx
+// v2
+import {
+    ButtonV2,
+    ButtonV2Size,
+    ButtonV2SubType,
+    ButtonV2Type,
+} from '@juspay/blend-design-system'
+;<ButtonV2
+    buttonType={ButtonV2Type.PRIMARY}
+    size={ButtonV2Size.MEDIUM}
+    subType={ButtonV2SubType.DEFAULT}
+    text="Upload file"
+    leftSlot={{ slot: <UploadIcon /> }}
+    rightSlot={{ slot: <ArrowRightIcon /> }}
+    width="100%"
+    skeleton={{
+        showSkeleton: isLoadingInitialData,
+        skeletonVariant: 'shimmer',
+    }}
+    onClick={handleUpload}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and its enums
+
+**v1:** `Button`, `ButtonType`, `ButtonSize`, `ButtonSubType`, and
+`ButtonState`
+
+**v2:** `ButtonV2`, `ButtonV2Type`, `ButtonV2Size`, `ButtonV2SubType`, and
+`ButtonV2State`
+
+This lets v1 and v2 coexist during an incremental rollout without ambiguous
+imports. Rename the component and every Button enum in the import and JSX.
+Enum values and defaults are unchanged.
+
+### Replace icon props with slots
+
+**v1:** `leadingIcon` and `trailingIcon` accept a `ReactNode`.
+
+**v2:** `leftSlot` and `rightSlot` accept
+`{ slot: ReactNode; maxHeight?: string | number }`.
+
+Slots make icon sizing explicit and leave room for richer leading and trailing
+content. Wrap the existing icon: `leadingIcon={<Icon />}` becomes
+`leftSlot={{ slot: <Icon /> }}`. Add `maxHeight` only when the default
+size-based limit is not appropriate.
+
+<MigrationCodeDiff
+    v1={`<Button
+    leadingIcon={<UploadIcon />}
+    trailingIcon={<ArrowRightIcon />}
+/>`}
+    v2={`<ButtonV2
+    leftSlot={{ slot: <UploadIcon /> }}
+    rightSlot={{ slot: <ArrowRightIcon /> }}
+/>`}
+    v1Label="Button"
+    v2Label="ButtonV2"
+/>
+
+### Group skeleton props
+
+**v1:** `showSkeleton` and `skeletonVariant` are top-level props.
+
+**v2:** `skeleton={{ showSkeleton, skeletonVariant }}`.
+
+Grouping placeholder configuration avoids expanding the Button prop surface.
+Move both values into `skeleton`; omitting `skeletonVariant` still uses
+`pulse`.
+
+### Replace `fullWidth`
+
+**v1:** `fullWidth`
+
+**v2:** `width="100%"`
+
+V2 expresses width through one sizing API and adds `minWidth` and `maxWidth`.
+Replace `fullWidth` with `width="100%"`; retain an existing `width` value
+unchanged.
+
+### Remove `justifyContent`
+
+V2 has no `justifyContent` prop. It standardizes button content alignment to
+the center so variants stay visually consistent. Remove this prop. If a button
+needs start- or end-aligned content, keep that call site on v1 until the needed
+v2 alignment API is available; do not rely on unsupported style or class
+overrides.
+
+### Update custom Button tokens
+
+**v1:** `BUTTON` token contract
+
+**v2:** `BUTTONV2` token contract
+
+V2 separates padding by side and includes line-height tokens for more precise,
+responsive button styling. Update custom theme overrides to target `BUTTONV2`.
+Review the token shape: `padding.x`/`padding.y` become top/right/bottom/left
+entries, `slotMaxHeight` and `outline` are removed, and `text.lineHeight` is
+added.
+
+`buttonType`, `size`, `subType`, `text`, `disabled`, `loading`, `width`,
+`buttonGroupPosition`, `state`, `onClick`, and standard HTML button attributes
+continue to work. The default values also remain primary, small, and default
+subtype.
+
+## What else changes visually?
+
+V2 uses the new `BUTTONV2` tokens, size-specific icon limits, and a
+standardized focus treatment. Its active state also applies a subtle scale
+feedback effect. These changes are intentional: they give buttons more
+consistent spacing, feedback, and keyboard focus across the design system.
+Treat visual review as part of the migration when your product supplies custom
+tokens or depends on pixel-specific layouts.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/button#component-tokens) with the [V2 component token reference](/docs/components/button-v2#component-tokens).
