@@ -105,7 +105,8 @@ size-based limit is not appropriate.
 
 Grouping placeholder configuration avoids expanding the Button prop surface.
 Move both values into `skeleton`; omitting `skeletonVariant` still uses
-`pulse`.
+`pulse`. A visible skeleton also sets `aria-busy="true"` and blocks button
+interaction.
 
 ### Replace `fullWidth`
 
@@ -158,8 +159,12 @@ When using an older V2 token object, rebuild it against the current
 `buttonGroupPosition`, `state`, `justifyContent`, and standard HTML button
 attributes continue to work. The `onClick` prop remains optional, but its
 handler receives a required `React.MouseEvent<HTMLButtonElement>` argument;
-this is different from V1's zero-argument callback type. The default values
-also remain primary, small, and default subtype.
+V1 allowed the event parameter to be omitted. The default values also remain
+primary, small, and default subtype.
+
+When supplying custom `BUTTONV2` tokens, partial overrides are merged on top of
+the active light or dark defaults. Unchanged token paths continue to follow the
+selected theme.
 
 ## What else changes visually?
 

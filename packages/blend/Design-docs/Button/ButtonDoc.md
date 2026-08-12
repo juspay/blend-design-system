@@ -23,7 +23,7 @@ Create a scalable Button component that can:
 └───────────────────────────────────────────────┘
 ```
 
-- **Container**: `PrimitiveButton` with tokens for background, border, radius, shadow, outline
+- **Container**: `PrimitiveButton` with tokens for background, border, radius, shadow, and focus ring
 - **Left Slot**: optional icon/content before text
 - **Text**: main label, token-driven typography
 - **Right Slot**: optional icon/content after text
@@ -163,7 +163,10 @@ export type ButtonV2TokensType = Readonly<{
 }>
 ```
 
-**Token Pattern**: `component.[target].CSSProp.[size].[type].[subType].[state].value`
+**Token Pattern**: State-keyed slots use
+`component.[target].CSSProp.[type].[subType].[state].value`. Size-keyed slots
+use `component.[target].CSSProp.[size].value`; `focusRing` is keyed by type and
+subtype, and `slotMaxHeight` is keyed by size.
 
 ## Design Decisions
 
@@ -294,6 +297,7 @@ explicit Enter and Space handling to provide the same activation behavior.
 const ariaAttrs = getButtonAriaAttributes({
     disabled: isDisabled,
     loading: isLoading,
+    skeleton: isSkeleton,
     ariaLabel,
 })
 

@@ -243,9 +243,16 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+When `skeleton.showSkeleton` is true, ButtonV2 sets `aria-busy="true"` and
+blocks interaction while the placeholder is displayed.
+
 ## Component Tokens
 
 You can style the ButtonV2 component using the following tokens:
+
+Partial `BUTTONV2` overrides are merged on top of the active light or dark
+defaults. Unchanged token paths therefore keep the correct values when the
+theme changes.
 
 ```tsx
 export type ButtonV2TokensType = {
