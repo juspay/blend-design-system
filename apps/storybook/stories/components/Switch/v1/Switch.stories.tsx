@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system'
+import {
+    Switch,
+    SwitchGroup,
+    SwitchSize,
+} from '@juspay/blend-design-system/deprecated/switch'
 import {
     Settings,
     Wifi,
@@ -64,7 +68,7 @@ const meta: Meta<typeof Switch> = {
 ## Usage
 
 \`\`\`tsx
-import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system';
+import { Switch, SwitchGroup, SwitchSize } from '@juspay/blend-design-system/deprecated/switch';
 
 <Switch 
   size={SwitchSize.MEDIUM}

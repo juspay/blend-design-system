@@ -6,7 +6,7 @@ import {
     StatCardDirection,
     ChangeType,
     ChartDataPoint,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/stat-card'
 import {
     TrendingUp,
     Users,
@@ -51,7 +51,7 @@ const meta: Meta<typeof StatCard> = {
 ## Usage
 
 \`\`\`tsx
-import { StatCard, StatCardVariant, ChangeType } from '@juspay/blend-design-system';
+import { StatCard, StatCardVariant, ChangeType } from '@juspay/blend-design-system/deprecated/stat-card';
 
 <StatCard
   title="Total Revenue"

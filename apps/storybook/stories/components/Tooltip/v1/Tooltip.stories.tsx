@@ -6,9 +6,11 @@ import {
     TooltipAlign,
     TooltipSize,
     TooltipSlotDirection,
+} from '@juspay/blend-design-system/deprecated/tooltip'
+import {
     Button,
     ButtonType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 import {
     Info,
     HelpCircle,
@@ -41,7 +43,7 @@ const meta: Meta<typeof Tooltip> = {
 ## Usage
 
 \`\`\`tsx
-import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '@juspay/blend-design-system';
+import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '@juspay/blend-design-system/deprecated/tooltip';
 
 <Tooltip 
   content="This is a helpful tooltip"

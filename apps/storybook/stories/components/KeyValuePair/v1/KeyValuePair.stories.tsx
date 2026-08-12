@@ -4,7 +4,7 @@ import {
     KeyValuePair,
     KeyValuePairSize,
     KeyValuePairStateType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/key-value-pair'
 import { Info, Star, CheckCircle, ArrowRight, Eye, Bell } from 'lucide-react'
 import {
     CHROMATIC_CONFIG,
@@ -32,7 +32,7 @@ const meta: Meta<typeof KeyValuePair> = {
 ## Usage
 
 \`\`\`tsx
-import { KeyValuePair, KeyValuePairSize, KeyValuePairStateType } from '@juspay/blend-design-system';
+import { KeyValuePair, KeyValuePairSize, KeyValuePairStateType } from '@juspay/blend-design-system/deprecated/key-value-pair';
 
 <KeyValuePair
   keyString="Name"

@@ -1,6 +1,6 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Radio, RadioSize } from '@juspay/blend-design-system'
+import { Radio, RadioSize } from '@juspay/blend-design-system/deprecated/radio'
 
 /**
  * FIGMA CODE CONNECT FOR RADIO COMPONENT
@@ -86,7 +86,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { Radio } from '@juspay/blend-design-system'"],
+        imports: [
+            "import { Radio } from '@juspay/blend-design-system/deprecated/radio'",
+        ],
 
         links: [
             {

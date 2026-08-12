@@ -5,7 +5,7 @@ import {
     AvatarSize,
     AvatarShape,
     AvatarOnlinePosition,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/avatar'
 import { Crown, Star, CheckCircle, Settings, User } from 'lucide-react'
 import {
     getA11yConfig,
@@ -27,7 +27,7 @@ const meta: Meta<typeof Avatar> = {
 ## Usage
 
 \`\`\`tsx
-import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system';
+import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system/deprecated/avatar';
 
 <Avatar 
   src="/user-profile.jpg" 

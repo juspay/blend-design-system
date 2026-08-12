@@ -6,7 +6,7 @@ import {
     TagColor,
     TagSize,
     TagShape,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tag'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -55,7 +55,7 @@ const meta: Meta<typeof Tag> = {
 ## Usage
 
 \`\`\`tsx
-import { Tag, TagVariant, TagColor, TagSize } from '@juspay/blend-design-system';
+import { Tag, TagVariant, TagColor, TagSize } from '@juspay/blend-design-system/deprecated/tag';
 
 <Tag
   text="New Feature"

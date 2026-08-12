@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import {
     NumberInput,
     NumberInputSize,
-    ThemeProvider,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/number-input'
+import { ThemeProvider } from '@juspay/blend-design-system'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -55,7 +55,7 @@ Legacy numeric input (v1) with validation, step controls, and min/max constraint
 ## Usage
 
 \`\`\`tsx
-import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
+import { NumberInput, NumberInputSize } from '@juspay/blend-design-system/deprecated/number-input';
 
 <NumberInput
   label="Age"
@@ -109,7 +109,7 @@ import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
 ## Usage
 
 \`\`\`tsx
-import { NumberInput, NumberInputSize } from '@juspay/blend-design-system';
+import { NumberInput, NumberInputSize } from '@juspay/blend-design-system/deprecated/number-input';
 
 const [age, setAge] = useState<number | null>(null);
 

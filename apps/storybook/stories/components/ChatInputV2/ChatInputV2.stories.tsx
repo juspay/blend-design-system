@@ -10,8 +10,8 @@ import { ThemeProvider } from '@juspay/blend-design-system'
 import { Theme } from '../../../../../packages/blend/lib/context/theme.enum'
 import {
     ChatInputV2,
-    type AttachedFile,
-    type TopQuery,
+    type ChatInputV2AttachedFile as AttachedFile,
+    type ChatInputV2TopQuery as TopQuery,
 } from '../../../../../packages/blend/lib/components/InputsV2/ChatInputV2'
 import Block from '../../../../../packages/blend/lib/components/Primitives/Block/Block'
 import { FOUNDATION_THEME } from '@juspay/blend-design-system'

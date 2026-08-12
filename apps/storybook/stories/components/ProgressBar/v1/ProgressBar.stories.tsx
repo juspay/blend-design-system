@@ -5,7 +5,7 @@ import {
     ProgressBarSize,
     ProgressBarVariant,
     ProgressBarType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/progress-bar'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -30,7 +30,7 @@ const meta: Meta<typeof ProgressBar> = {
 ## Usage
 
 \`\`\`tsx
-import { ProgressBar, ProgressBarVariant, ProgressBarSize } from '@juspay/blend-design-system';
+import { ProgressBar, ProgressBarVariant, ProgressBarSize } from '@juspay/blend-design-system/deprecated/progress-bar';
 
 // Basic usage
 <ProgressBar value={50} />

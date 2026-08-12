@@ -3,11 +3,13 @@ import React, { useState } from 'react'
 import { userEvent, within } from '@storybook/test'
 import {
     DateRangePicker,
-    Button,
-    ButtonType,
     Theme,
     ThemeProvider,
 } from '@juspay/blend-design-system'
+import {
+    Button,
+    ButtonType,
+} from '@juspay/blend-design-system/deprecated/button'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,

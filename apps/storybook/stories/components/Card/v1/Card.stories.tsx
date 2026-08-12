@@ -4,17 +4,20 @@ import {
     Card,
     CardVariant,
     CardAlignment,
+} from '@juspay/blend-design-system/deprecated/card'
+import {
     Tag,
     TagColor,
     TagVariant,
     TagSize,
+} from '@juspay/blend-design-system/deprecated/tag'
+import {
     Button,
     ButtonType,
     ButtonSize,
     ButtonSubType,
-    Theme,
-    ThemeProvider,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
+import { Theme, ThemeProvider } from '@juspay/blend-design-system'
 import {
     Star,
     Settings,
@@ -43,7 +46,7 @@ const meta: Meta<typeof Card> = {
                 component: `
 ## Usage 
 \`\`\`tsx
-import { Card, ButtonType, ButtonSize } from '@juspay/blend-design-system';
+import { Card, ButtonType, ButtonSize } from '@juspay/blend-design-system/deprecated/card';
 
 <Card
   headerTitle="Analytics Dashboard"
@@ -145,7 +148,7 @@ The Custom Card provides complete creative control with minimal constraints - ju
 
 ### Aligned Card with Profile Layout
 \`\`\`tsx
-import { Card, CardVariant, CardAlignment } from '@juspay/blend-design-system';
+import { Card, CardVariant, CardAlignment } from '@juspay/blend-design-system/deprecated/card';
 
 <Card
   variant={CardVariant.ALIGNED}
@@ -165,7 +168,7 @@ import { Card, CardVariant, CardAlignment } from '@juspay/blend-design-system';
 
 ### Custom Dashboard Card
 \`\`\`tsx
-import { Card, CardVariant, Button } from '@juspay/blend-design-system';
+import { Card, CardVariant, Button } from '@juspay/blend-design-system/deprecated/card';
 
 <Card variant={CardVariant.CUSTOM}>
   <div className="flex flex-col gap-4">

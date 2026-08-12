@@ -2,13 +2,15 @@ import React from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import {
     ThemeProvider,
-    Button,
-    ButtonType,
-    ButtonSize,
     FOUNDATION_THEME,
     type ComponentTokenType,
     type ThemeType,
 } from '@juspay/blend-design-system'
+import {
+    Button,
+    ButtonType,
+    ButtonSize,
+} from '@juspay/blend-design-system/deprecated/button'
 
 const meta: Meta<typeof ThemeProvider> = {
     title: 'Foundations/Theme Provider',

@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
+import { Skeleton, ThemeProvider } from '@juspay/blend-design-system'
 import {
-    Skeleton,
-    ThemeProvider,
     Button,
     ButtonType,
     ButtonSize,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 import { Theme } from '../../../../../../packages/blend/lib/context/theme.enum'
 import {
     getA11yConfig,

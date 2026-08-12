@@ -1,13 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { Modal } from '@juspay/blend-design-system/deprecated/modal'
 import {
-    Modal,
     Button,
     ButtonType,
     ButtonSize,
-    Theme,
-    ThemeProvider,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
+import { Theme, ThemeProvider } from '@juspay/blend-design-system'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -45,7 +44,7 @@ const meta: Meta<typeof Modal> = {
 ## Usage
 
 \`\`\`tsx
-import { Modal, Button, ButtonType } from '@juspay/blend-design-system';
+import { Modal, Button, ButtonType } from '@juspay/blend-design-system/deprecated/modal';
 
 <Modal
   isOpen={isOpen}

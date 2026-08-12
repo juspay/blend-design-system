@@ -7,10 +7,12 @@ import {
     MenuItemVariant,
     MenuItemActionType,
     MenuGroupType,
+} from '@juspay/blend-design-system/deprecated/menu'
+import {
     Button,
     ButtonType,
     ButtonSize,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 import {
     ChevronDown,
     TrendingUp,
@@ -73,7 +75,7 @@ const meta: Meta<typeof Menu> = {
 ## Usage
 
 \`\`\`tsx
-import { Menu, MenuAlignment, MenuSide, MenuItemVariant, MenuItemActionType } from '@juspay/blend-design-system';
+import { Menu, MenuAlignment, MenuSide, MenuItemVariant, MenuItemActionType } from '@juspay/blend-design-system/deprecated/menu';
 
 <Menu
   trigger={<Button text="Open Menu" />}

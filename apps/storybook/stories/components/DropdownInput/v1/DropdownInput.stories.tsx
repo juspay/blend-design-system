@@ -3,10 +3,10 @@ import React, { useState } from 'react'
 import {
     DropdownInput,
     DropdownPosition,
-    TextInputSize,
     ThemeProvider,
     Theme,
 } from '@juspay/blend-design-system'
+import { TextInputSize } from '@juspay/blend-design-system/deprecated/text-input'
 import { Globe, MapPin, Phone } from 'lucide-react'
 import {
     getA11yConfig,

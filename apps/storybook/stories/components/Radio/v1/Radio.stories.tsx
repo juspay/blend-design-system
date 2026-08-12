@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system'
+import {
+    Radio,
+    RadioGroup,
+    RadioSize,
+} from '@juspay/blend-design-system/deprecated/radio'
 import {
     CreditCard,
     DollarSign,
@@ -63,7 +67,7 @@ const meta: Meta<typeof Radio> = {
 ## Usage
 
 \`\`\`tsx
-import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system';
+import { Radio, RadioGroup, RadioSize } from '@juspay/blend-design-system/deprecated/radio';
 
 <RadioGroup name="plan" label="Select Plan">
   <Radio value="basic" size={RadioSize.MEDIUM}>

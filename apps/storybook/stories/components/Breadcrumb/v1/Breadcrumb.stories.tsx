@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { Breadcrumb } from '@juspay/blend-design-system'
-import type { BreadcrumbItemType } from '@juspay/blend-design-system'
+import { Breadcrumb } from '@juspay/blend-design-system/deprecated/breadcrumb'
+import type { BreadcrumbItemType } from '@juspay/blend-design-system/deprecated/breadcrumb'
 import {
     Home,
     Users,
@@ -37,7 +37,7 @@ const meta: Meta<typeof Breadcrumb> = {
 ## Usage
 
 \`\`\`tsx
-import { Breadcrumb, BreadcrumbItemType } from '@juspay/blend-design-system';
+import { Breadcrumb, BreadcrumbItemType } from '@juspay/blend-design-system/deprecated/breadcrumb';
 
 const breadcrumbItems: BreadcrumbItemType[] = [
   { label: "Home", href: "/" },

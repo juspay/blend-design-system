@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
+import { SplitTag } from '@juspay/blend-design-system'
 import {
-    SplitTag,
     TagColor,
     TagSize,
     TagShape,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tag'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,

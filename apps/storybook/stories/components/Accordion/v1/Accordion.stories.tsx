@@ -5,8 +5,8 @@ import {
     AccordionItem,
     AccordionType,
     AccordionChevronPosition,
-} from '@juspay/blend-design-system'
-import type { AccordionProps } from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/accordion'
+import type { AccordionProps } from '@juspay/blend-design-system/deprecated/accordion'
 import {
     User,
     Shield,
@@ -20,8 +20,8 @@ import {
     Check,
     X,
 } from 'lucide-react'
-import { Checkbox } from '@juspay/blend-design-system'
-import { Switch } from '@juspay/blend-design-system'
+import { Checkbox } from '@juspay/blend-design-system/deprecated/checkbox'
+import { Switch } from '@juspay/blend-design-system/deprecated/switch'
 import {
     CHROMATIC_CONFIG,
     getA11yConfig,
@@ -68,7 +68,7 @@ const meta: Meta<typeof AccordionStory> = {
 ## Usage
 
 \`\`\`tsx
-import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-system';
+import { Accordion, AccordionItem, AccordionType } from '@juspay/blend-design-system/deprecated/accordion';
 
 <Accordion accordionType={AccordionType.BORDER}>
   <AccordionItem value="item-1" title="Section 1">

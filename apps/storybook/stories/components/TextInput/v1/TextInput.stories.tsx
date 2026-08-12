@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { TextInput, TextInputSize } from '@juspay/blend-design-system'
+import {
+    TextInput,
+    TextInputSize,
+} from '@juspay/blend-design-system/deprecated/text-input'
 import { User, Mail, Lock, Eye, EyeOff, AlertCircle, Check } from 'lucide-react'
 import {
     getA11yConfig,
@@ -25,7 +28,7 @@ const meta: Meta<typeof TextInput> = {
 ## Usage
 
 \`\`\`tsx
-import { TextInput, TextInputSize } from '@juspay/blend-design-system';
+import { TextInput, TextInputSize } from '@juspay/blend-design-system/deprecated/text-input';
 
 <TextInput
   label="Email Address"

@@ -1,13 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
+import { ButtonGroup } from '@juspay/blend-design-system/deprecated/button-group'
 import {
-    ButtonGroup,
     Button,
     ButtonType,
     ButtonSize,
     ButtonSubType,
-    ThemeProvider,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
+import { ThemeProvider } from '@juspay/blend-design-system'
 import {
     Plus,
     Download,
@@ -35,7 +35,7 @@ const meta: Meta<typeof ButtonGroup> = {
 ## Usage
 
 \`\`\`tsx
-import { ButtonGroup, Button, ButtonType } from '@juspay/blend-design-system';
+import { ButtonGroup, Button, ButtonType } from '@juspay/blend-design-system/deprecated/button-group';
 
 <ButtonGroup stacked={true}>
   <Button text="Save" buttonType={ButtonType.PRIMARY} />

@@ -29,7 +29,7 @@ const meta: Meta<typeof CodeBlock> = {
 ## Usage
 
 \`\`\`tsx
-import { CodeBlock, CodeBlockVariant } from '@juspay/blend-design-system';
+import { CodeBlock, CodeBlockVariant } from '@juspay/blend-design-system/deprecated/code-editor';
 
 function MyCodeBlock() {
   return (

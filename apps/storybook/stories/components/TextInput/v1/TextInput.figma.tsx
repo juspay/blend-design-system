@@ -1,6 +1,9 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { TextInput, TextInputSize } from '@juspay/blend-design-system'
+import {
+    TextInput,
+    TextInputSize,
+} from '@juspay/blend-design-system/deprecated/text-input'
 
 /**
  * FIGMA CODE CONNECT FOR TEXTINPUT COMPONENT
@@ -118,7 +121,7 @@ figma.connect(
         ),
 
         imports: [
-            "import { TextInput, TextInputSize } from '@juspay/blend-design-system'",
+            "import { TextInput, TextInputSize } from '@juspay/blend-design-system/deprecated/text-input'",
         ],
 
         links: [

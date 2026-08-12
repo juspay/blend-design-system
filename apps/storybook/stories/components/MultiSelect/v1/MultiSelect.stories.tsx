@@ -5,7 +5,7 @@ import {
     MultiSelectSelectionTagType,
     MultiSelectVariant,
     MultiSelectMenuSize,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/multi-select'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -89,7 +89,7 @@ import {
   MultiSelectSelectionTagType, 
   MultiSelectVariant,
   MultiSelectMenuSize 
-} from '@juspay/blend-design-system';
+} from '@juspay/blend-design-system/deprecated/multi-select';
 
 const [selectedValues, setSelectedValues] = useState<string[]>([]);
 

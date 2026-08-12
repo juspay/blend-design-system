@@ -5,15 +5,17 @@ import {
     PopoverV2Align,
     PopoverV2Side,
     PopoverV2Size,
-    Button,
-    ButtonType,
-    ButtonSize,
     TextInput,
     TextArea,
     Checkbox,
     Radio,
     SingleSelect,
 } from '@juspay/blend-design-system'
+import {
+    Button,
+    ButtonType,
+    ButtonSize,
+} from '@juspay/blend-design-system/deprecated/button'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,

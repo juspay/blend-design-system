@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { OTPInput } from '@juspay/blend-design-system'
+import { OTPInput } from '@juspay/blend-design-system/deprecated/otp-input'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -24,7 +24,7 @@ const meta: Meta<typeof OTPInput> = {
 ## Usage
 
 \`\`\`tsx
-import { OTPInput } from '@juspay/blend-design-system';
+import { OTPInput } from '@juspay/blend-design-system/deprecated/otp-input';
 
 <OTPInput
   label="Verification Code"
