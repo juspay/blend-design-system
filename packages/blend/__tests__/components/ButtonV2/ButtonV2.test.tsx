@@ -517,6 +517,7 @@ describe('ButtonV2', () => {
             const button = screen.getByRole('button')
             expect(button).toBeDisabled()
             expect(button).toHaveAttribute('aria-disabled', 'true')
+            expect(button).toHaveAttribute('aria-busy', 'true')
             expect(button).toHaveAttribute('tabIndex', '-1')
             expect(button).toHaveAttribute('aria-label', 'Skeleton')
 

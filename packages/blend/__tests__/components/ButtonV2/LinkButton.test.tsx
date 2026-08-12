@@ -221,6 +221,21 @@ describe('LinkButton', () => {
             expect(await axe(container)).toHaveNoViolations()
         })
 
+        it('renders skeleton state as busy', () => {
+            const { container } = render(
+                <LinkButton
+                    href="/"
+                    text="Skeleton"
+                    skeleton={{ showSkeleton: true }}
+                />
+            )
+
+            expect(container.querySelector('a')).toHaveAttribute(
+                'aria-busy',
+                'true'
+            )
+        })
+
         it('prevents navigation when loading', () => {
             const handleClick = vi.fn()
             render(

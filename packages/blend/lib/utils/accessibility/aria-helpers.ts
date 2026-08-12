@@ -47,6 +47,7 @@ export type AriaAttributes = {
 export function getButtonAriaAttributes(props: {
     disabled?: boolean
     loading?: boolean
+    skeleton?: boolean
     ariaLabel?: string
     ariaLabelledBy?: string
 }): AriaAttributes {
@@ -56,7 +57,7 @@ export function getButtonAriaAttributes(props: {
         attrs['aria-disabled'] = true
     }
 
-    if (props.loading) {
+    if (props.loading || props.skeleton) {
         attrs['aria-busy'] = true
     }
 

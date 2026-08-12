@@ -227,6 +227,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
         const ariaAttrs = getButtonAriaAttributes({
             disabled: isDisabled,
             loading: isLoading,
+            skeleton: isSkeleton,
             ariaLabel,
         })
 

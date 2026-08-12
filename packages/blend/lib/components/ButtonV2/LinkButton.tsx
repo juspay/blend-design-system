@@ -77,6 +77,7 @@ const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
         const ariaAttrs = getButtonAriaAttributes({
             disabled: isDisabled,
             loading: isLoading,
+            skeleton: isSkeleton,
             ariaLabel,
         })
 
