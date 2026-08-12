@@ -12,7 +12,7 @@ import type {
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
-} from '../../../../.storybook/a11y.config'
+} from '../../../.storybook/a11y.config'
 import { Calendar } from 'lucide-react'
 
 const meta: Meta<typeof SingleDatePicker> = {
