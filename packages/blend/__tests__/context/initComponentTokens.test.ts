@@ -1,10 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import initTokens from '../../lib/context/initComponentTokens'
-import type { ComponentTokenType } from '../../lib/context/ThemeContext'
+import type { ComponentTokenOverrides } from '../../lib/context/ThemeContext'
 import { Theme } from '../../lib/context/theme.enum'
 import { FOUNDATION_THEME } from '../../lib/tokens'
 
-const EMPTY: ComponentTokenType = {}
+const EMPTY: ComponentTokenOverrides = {}
 
 describe('initTokens memoisation', () => {
     it('returns the same object for identical inputs', () => {
@@ -44,12 +44,18 @@ describe('initTokens memoisation', () => {
             FOUNDATION_THEME.colors.gray[900]
         )
 
-        const modalOverride = { sm: {}, lg: {} } as ComponentTokenType['MODAL']
-        const cardOverride = { sm: {}, lg: {} } as ComponentTokenType['CARD']
+        const modalOverride: ComponentTokenOverrides['MODAL'] = {
+            sm: {},
+            lg: {},
+        }
+        const cardOverride: ComponentTokenOverrides['CARD'] = {
+            sm: {},
+            lg: {},
+        }
         const uploadOverride = {
             sm: {},
             lg: {},
-        } as ComponentTokenType['UPLOAD']
+        } satisfies ComponentTokenOverrides['UPLOAD']
         const overridden = initTokens(
             {
                 MODAL: modalOverride,
@@ -59,9 +65,46 @@ describe('initTokens memoisation', () => {
             FOUNDATION_THEME,
             Theme.DARK
         )
-        expect(overridden.MODAL).toBe(modalOverride)
-        expect(overridden.CARD).toBe(cardOverride)
-        expect(overridden.UPLOAD).toBe(uploadOverride)
+        expect(overridden.MODAL).not.toBe(modalOverride)
+        expect(overridden.CARD).not.toBe(cardOverride)
+        expect(overridden.UPLOAD).not.toBe(uploadOverride)
+        expect(overridden.MODAL.sm.body.backgroundColor).toBe(
+            FOUNDATION_THEME.colors.gray[700]
+        )
+        expect(overridden.CARD.sm.backgroundColor).toBe(
+            FOUNDATION_THEME.colors.gray[900]
+        )
+        expect(overridden.UPLOAD.sm.container.backgroundColor.idle).toBe(
+            FOUNDATION_THEME.colors.gray[900]
+        )
+    })
+
+    it('merges partial ButtonV2 overrides onto dark defaults', () => {
+        const dark = initTokens(EMPTY, FOUNDATION_THEME, Theme.DARK)
+        const customFocusRing = '0 0 0 4px rgb(1, 2, 3)'
+        const overrides: ComponentTokenOverrides = {
+            BUTTONV2: {
+                sm: {
+                    focusRing: {
+                        primary: { default: customFocusRing },
+                    },
+                },
+                lg: {
+                    focusRing: {
+                        primary: { default: customFocusRing },
+                    },
+                },
+            },
+        }
+
+        const resolved = initTokens(overrides, FOUNDATION_THEME, Theme.DARK)
+
+        expect(resolved.BUTTONV2.lg.focusRing.primary.default).toBe(
+            customFocusRing
+        )
+        expect(
+            resolved.BUTTONV2.lg.backgroundColor.primary.default.default
+        ).toBe(dark.BUTTONV2.lg.backgroundColor.primary.default.default)
     })
 
     it('dispatches the calendar token slice for the active theme', () => {
@@ -79,19 +122,19 @@ describe('initTokens memoisation', () => {
     })
 
     it('returns a different object for a different componentTokens reference', () => {
-        const overrideA: ComponentTokenType = {
-            BUTTONV2: { sm: {}, lg: {} } as ComponentTokenType['BUTTONV2'],
+        const overrideA: ComponentTokenOverrides = {
+            BUTTONV2: { sm: {}, lg: {} },
         }
-        const overrideB: ComponentTokenType = {
-            BUTTONV2: { sm: {}, lg: {} } as ComponentTokenType['BUTTONV2'],
+        const overrideB: ComponentTokenOverrides = {
+            BUTTONV2: { sm: {}, lg: {} },
         }
 
         const a = initTokens(overrideA, FOUNDATION_THEME, Theme.LIGHT)
         const b = initTokens(overrideB, FOUNDATION_THEME, Theme.LIGHT)
 
         expect(a).not.toBe(b)
-        expect(a.BUTTONV2).toBe(overrideA.BUTTONV2)
-        expect(b.BUTTONV2).toBe(overrideB.BUTTONV2)
+        expect(a.BUTTONV2).not.toBe(overrideA.BUTTONV2)
+        expect(b.BUTTONV2).not.toBe(overrideB.BUTTONV2)
         expect(initTokens(overrideA, FOUNDATION_THEME, Theme.LIGHT)).toBe(a)
     })
 
@@ -105,12 +148,12 @@ describe('initTokens memoisation', () => {
 
     it('treats a missing componentTokens argument as an empty override', () => {
         const first = initTokens(
-            undefined as unknown as ComponentTokenType,
+            undefined as unknown as ComponentTokenOverrides,
             FOUNDATION_THEME,
             Theme.LIGHT
         )
         const second = initTokens(
-            undefined as unknown as ComponentTokenType,
+            undefined as unknown as ComponentTokenOverrides,
             FOUNDATION_THEME,
             Theme.LIGHT
         )

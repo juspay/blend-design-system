@@ -9,7 +9,9 @@ import {
 import { axe } from 'jest-axe'
 import { ButtonV2 } from '../../../lib/components/ButtonV2'
 import ThemeProvider from '../../../lib/context/ThemeProvider'
+import { Theme } from '../../../lib/context/theme.enum'
 import { getButtonV2LightTokens } from '../../../lib/components/ButtonV2/buttonV2.light.tokens'
+import { getButtonV2DarkTokens } from '../../../lib/components/ButtonV2/buttonV2.dark.tokens'
 import { FOUNDATION_THEME } from '../../../lib/tokens'
 import {
     ButtonV2Type,
@@ -234,6 +236,43 @@ describe('ButtonV2', () => {
             ).toHaveStyleRule('box-shadow', customFocusRing, {
                 modifier: ':focus-visible',
             })
+        })
+
+        it('keeps dark defaults for un-overridden token paths', () => {
+            const customFocusRing = '0 0 0 4px rgb(1, 2, 3)'
+            const darkTokens = getButtonV2DarkTokens(FOUNDATION_THEME)
+
+            render(
+                <ThemeProvider
+                    theme={Theme.DARK}
+                    componentTokens={{
+                        BUTTONV2: {
+                            sm: {
+                                focusRing: {
+                                    primary: { default: customFocusRing },
+                                },
+                            },
+                            lg: {
+                                focusRing: {
+                                    primary: { default: customFocusRing },
+                                },
+                            },
+                        },
+                    }}
+                >
+                    <ButtonV2 text="Dark custom" />
+                </ThemeProvider>
+            )
+
+            const button = screen.getByRole('button', { name: 'Dark custom' })
+
+            expect(button).toHaveStyleRule('box-shadow', customFocusRing, {
+                modifier: ':focus-visible',
+            })
+            expect(button).toHaveStyleRule(
+                'background',
+                darkTokens.lg.backgroundColor.primary.default.default
+            )
         })
     })
 
