@@ -96,6 +96,9 @@ _Note_: `LinkButtonProps` extend the same base props for anchor-based buttons an
 ```typescript
 export type ButtonV2TokensType = Readonly<{
     gap: CSSObject['gap']
+    slotMaxHeight: {
+        [size in ButtonV2Size]: CSSObject['maxHeight']
+    }
     focusRing: {
         [type in ButtonV2Type]: {
             [subType in ButtonV2SubType]: CSSObject['boxShadow']

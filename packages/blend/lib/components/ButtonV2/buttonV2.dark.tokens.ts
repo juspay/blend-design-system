@@ -24,12 +24,19 @@ const getFocusRingTokens = (foundationToken: FoundationTokenType) => ({
     },
 })
 
+const getSlotMaxHeightTokens = (foundationToken: FoundationTokenType) => ({
+    sm: String(foundationToken.unit[16] ?? '16px'),
+    md: String(foundationToken.unit[18] ?? '18px'),
+    lg: String(foundationToken.unit[20] ?? '20px'),
+})
+
 export const getButtonV2DarkTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveButtonV2Tokens => {
     return {
         sm: {
             gap: foundationToken.unit[10],
+            slotMaxHeight: getSlotMaxHeightTokens(foundationToken),
             focusRing: getFocusRingTokens(foundationToken),
             // Pattern: backgroundColor.[variant].[subType].[state]
             // Example: backgroundColor.primary.default.hover
@@ -731,6 +738,7 @@ export const getButtonV2DarkTokens = (
         },
         lg: {
             gap: foundationToken.unit[20],
+            slotMaxHeight: getSlotMaxHeightTokens(foundationToken),
             focusRing: getFocusRingTokens(foundationToken),
             backgroundColor: {
                 primary: {

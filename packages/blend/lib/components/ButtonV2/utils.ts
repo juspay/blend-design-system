@@ -58,19 +58,15 @@ export function getIconMaxHeight(
     subType: ButtonV2SubType,
     leftSlotMaxHeight: string | number | undefined,
     rightSlotMaxHeight: string | number | undefined,
-    size: ButtonV2Size
-): string {
+    defaultMaxHeight: string | number
+): { left: string; right: string } {
     if (subType === ButtonV2SubType.INLINE) {
-        return '100%'
+        return { left: '100%', right: '100%' }
     }
-    // Default max height based on button size
-    const defaultMaxHeightMap: Record<ButtonV2Size, string> = {
-        [ButtonV2Size.SMALL]: '16px',
-        [ButtonV2Size.MEDIUM]: '18px',
-        [ButtonV2Size.LARGE]: '20px',
+    return {
+        left: String(leftSlotMaxHeight ?? defaultMaxHeight),
+        right: String(rightSlotMaxHeight ?? defaultMaxHeight),
     }
-    const defaultMaxHeight = defaultMaxHeightMap[size] || '16px'
-    return String(leftSlotMaxHeight ?? rightSlotMaxHeight ?? defaultMaxHeight)
 }
 
 export function getButtonStatus(

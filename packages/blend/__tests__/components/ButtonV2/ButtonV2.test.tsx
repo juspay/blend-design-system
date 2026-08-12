@@ -236,6 +236,65 @@ describe('ButtonV2', () => {
         })
     })
 
+    describe('Slot Sizing', () => {
+        it('applies left and right slot maxHeight independently', () => {
+            render(
+                <ButtonV2
+                    text="Actions"
+                    leftSlot={{ slot: <MockIcon />, maxHeight: '12px' }}
+                    rightSlot={{ slot: <MockIcon />, maxHeight: '24px' }}
+                />
+            )
+
+            expect(
+                screen
+                    .getByRole('button', { name: 'Actions' })
+                    .querySelector('[data-element="leading-icon"]')
+            ).toHaveStyle({ maxHeight: '12px' })
+            expect(
+                screen
+                    .getByRole('button', { name: 'Actions' })
+                    .querySelector('[data-element="trailing-icon"]')
+            ).toHaveStyle({ maxHeight: '24px' })
+        })
+
+        it('uses the slotMaxHeight token for default icon sizing', () => {
+            const tokens = getButtonV2LightTokens(FOUNDATION_THEME)
+            const customMaxHeight = '22px'
+            const customTokens = {
+                sm: {
+                    ...tokens.sm,
+                    slotMaxHeight: {
+                        ...tokens.sm.slotMaxHeight,
+                        [ButtonV2Size.SMALL]: customMaxHeight,
+                    },
+                },
+                lg: {
+                    ...tokens.lg,
+                    slotMaxHeight: {
+                        ...tokens.lg.slotMaxHeight,
+                        [ButtonV2Size.SMALL]: customMaxHeight,
+                    },
+                },
+            }
+
+            render(
+                <ThemeProvider componentTokens={{ BUTTONV2: customTokens }}>
+                    <ButtonV2
+                        text="Tokenized Icon"
+                        leftSlot={{ slot: <MockIcon /> }}
+                    />
+                </ThemeProvider>
+            )
+
+            expect(
+                screen
+                    .getByRole('button', { name: 'Tokenized Icon' })
+                    .querySelector('[data-element="leading-icon"]')
+            ).toHaveStyle({ maxHeight: customMaxHeight })
+        })
+    })
+
     describe('Button Types', () => {
         it.each([
             [ButtonV2Type.PRIMARY, 'primary'],

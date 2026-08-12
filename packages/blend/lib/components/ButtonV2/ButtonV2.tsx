@@ -63,11 +63,11 @@ export function renderButtonContent({
     rightSlot,
     tokens,
 }: RenderButtonContentProps) {
-    const iconMaxHeight = getIconMaxHeight(
+    const iconMaxHeights = getIconMaxHeight(
         subType,
         leftSlot?.maxHeight,
         rightSlot?.maxHeight,
-        size
+        tokens.slotMaxHeight[size]
     )
     const iconColor = getIconColor(
         isSkeleton,
@@ -120,7 +120,7 @@ export function renderButtonContent({
                     data-element="leading-icon"
                     aria-hidden={text ? 'true' : undefined}
                     opacity={isSkeleton ? 0 : 1}
-                    maxHeight={iconMaxHeight}
+                    maxHeight={iconMaxHeights.left}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -151,7 +151,7 @@ export function renderButtonContent({
                     data-element="trailing-icon"
                     aria-hidden={text ? 'true' : undefined}
                     opacity={isSkeleton ? 0 : 1}
-                    maxHeight={iconMaxHeight}
+                    maxHeight={iconMaxHeights.right}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"

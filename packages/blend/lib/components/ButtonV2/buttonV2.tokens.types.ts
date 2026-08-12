@@ -10,6 +10,9 @@ import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type ButtonV2TokensType = Readonly<{
     gap: CSSProperties['gap']
+    slotMaxHeight: {
+        [key in ButtonV2Size]: NonNullable<CSSProperties['maxHeight']>
+    }
     focusRing: {
         [key in ButtonV2Type]: {
             [key in ButtonV2SubType]: CSSProperties['boxShadow']
