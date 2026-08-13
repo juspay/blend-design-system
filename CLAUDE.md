@@ -81,7 +81,7 @@ Three layers, and the middle one is where mistakes happen.
     - A component that reuses another component's slot ships no factory of its own — `SingleDatePicker` styles itself from `CALENDAR` and `TIME_PICKER`.
 3. **Consumption** — components call `useResponsiveTokens<XTokensType>('BUTTONV2')`, which resolves the slot and returns the values already flattened for the current breakpoint. It **throws** on an unknown slot.
 
-`ThemeProvider` accepts `{ foundationTokens?, componentTokens?, breakpoints?, theme?, target? }`. Token overrides are **whole-slot replacement, not a deep merge** — passing a partial `BUTTONV2` object replaces the entire responsive tree. Passing `target` enables Shadow DOM support via `ShadowAware`.
+`ThemeProvider` accepts `{ foundationTokens?, componentTokens?, breakpoints?, theme?, target? }`. Component token overrides are **deep-merged on top of the active theme defaults** — consumers can provide only the token paths they want to change, and unmodified paths keep the light or dark theme values. Passing `target` enables Shadow DOM support via `ShadowAware`.
 
 Components also work without a `ThemeProvider`; `ThemeContext.tsx` builds a full default token set at module scope.
 

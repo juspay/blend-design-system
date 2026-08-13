@@ -7,35 +7,35 @@ import type { KeyboardEvent } from 'react'
  * WCAG 2.2 Level AA standards and ARIA Authoring Practices Guide.
  */
 
-export type KeyboardHandler = {
-    onKeyDown: (e: KeyboardEvent<HTMLElement>) => void
+export type KeyboardHandler<T extends HTMLElement = HTMLElement> = {
+    onKeyDown: (e: KeyboardEvent<T>) => void
 }
 
 /**
- * Create keyboard handler for button-like elements
+ * Create keyboard handler for button-like elements without native button behavior
  * Supports Enter and Space keys for activation
  *
  * @example
  * ```tsx
- * const keyboardHandler = createButtonKeyboardHandler(
- *     () => handleClick(),
+ * const keyboardHandler = createButtonKeyboardHandler<HTMLAnchorElement>(
+ *     (event) => event.currentTarget.click(),
  *     false // disabled
  * )
- * <button {...keyboardHandler}>Click me</button>
+ * <a {...keyboardHandler}>Click me</a>
  * ```
  */
-export function createButtonKeyboardHandler(
-    onClick: () => void,
+export function createButtonKeyboardHandler<T extends HTMLElement>(
+    onClick: (event: KeyboardEvent<T>) => void,
     disabled?: boolean
-): KeyboardHandler {
+): KeyboardHandler<T> {
     return {
-        onKeyDown: (e: KeyboardEvent<HTMLElement>) => {
+        onKeyDown: (e: KeyboardEvent<T>) => {
             if (disabled) return
 
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault()
                 e.stopPropagation()
-                onClick()
+                onClick(e)
             }
         },
     }

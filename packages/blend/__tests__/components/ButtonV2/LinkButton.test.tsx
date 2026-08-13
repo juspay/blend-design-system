@@ -3,10 +3,14 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { LinkButton } from '../../../lib/components/ButtonV2'
+import ThemeProvider from '../../../lib/context/ThemeProvider'
+import { getButtonV2LightTokens } from '../../../lib/components/ButtonV2/buttonV2.light.tokens'
+import { FOUNDATION_THEME } from '../../../lib/tokens'
 import {
     ButtonV2Type,
     ButtonV2Size,
     ButtonV2SubType,
+    PaddingDirection,
 } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -89,6 +93,36 @@ describe('LinkButton', () => {
             render(<LinkButton href="/" text="Custom Width" width="200px" />)
             const link = screen.getByRole('link')
             expect(link).toHaveStyle({ width: '200px' })
+        })
+
+        it('applies left and right padding token overrides independently', () => {
+            const leftPadding = '11px'
+            const rightPadding = '29px'
+            const customTokens = structuredClone(
+                getButtonV2LightTokens(FOUNDATION_THEME)
+            )
+
+            for (const breakpoint of ['sm', 'lg'] as const) {
+                customTokens[breakpoint].padding[PaddingDirection.LEFT][
+                    ButtonV2Size.SMALL
+                ][ButtonV2Type.PRIMARY][ButtonV2SubType.DEFAULT] = leftPadding
+                customTokens[breakpoint].padding[PaddingDirection.RIGHT][
+                    ButtonV2Size.SMALL
+                ][ButtonV2Type.PRIMARY][ButtonV2SubType.DEFAULT] = rightPadding
+            }
+
+            render(
+                <ThemeProvider componentTokens={{ BUTTONV2: customTokens }}>
+                    <LinkButton href="/" text="Padded Link" />
+                </ThemeProvider>
+            )
+
+            expect(
+                screen.getByRole('link', { name: 'Padded Link' })
+            ).toHaveStyle({
+                paddingLeft: leftPadding,
+                paddingRight: rightPadding,
+            })
         })
     })
 
@@ -185,6 +219,21 @@ describe('LinkButton', () => {
             const link = screen.getByRole('link')
             expect(link).toHaveAttribute('aria-busy', 'true')
             expect(await axe(container)).toHaveNoViolations()
+        })
+
+        it('renders skeleton state as busy', () => {
+            const { container } = render(
+                <LinkButton
+                    href="/"
+                    text="Skeleton"
+                    skeleton={{ showSkeleton: true }}
+                />
+            )
+
+            expect(container.querySelector('a')).toHaveAttribute(
+                'aria-busy',
+                'true'
+            )
         })
 
         it('prevents navigation when loading', () => {
@@ -333,6 +382,79 @@ describe('LinkButton', () => {
             render(<LinkButton ref={ref} href="/" text="With Ref" />)
             expect(ref.current).toBeInstanceOf(HTMLAnchorElement)
             expect(ref.current?.tagName).toBe('A')
+        })
+    })
+
+    describe('Keyboard Navigation', () => {
+        it.each([
+            ['Enter', '{Enter}'],
+            ['Space', ' '],
+        ])('activates with %s key', async (_, key) => {
+            const handleClick = vi.fn(
+                (event: React.MouseEvent<HTMLAnchorElement>) => {
+                    expect(event.currentTarget).toBe(link)
+                    event.preventDefault()
+                }
+            )
+            const { user } = render(
+                <LinkButton
+                    href="#keyboard-link"
+                    text="Keyboard Link"
+                    onClick={handleClick}
+                />
+            )
+            const link = screen.getByRole('link', { name: 'Keyboard Link' })
+
+            link.focus()
+            await user.keyboard(key)
+
+            expect(handleClick).toHaveBeenCalledTimes(1)
+        })
+
+        it('runs a consumer onKeyDown and keeps anchor activation', async () => {
+            const handleClick = vi.fn(
+                (event: React.MouseEvent<HTMLAnchorElement>) =>
+                    event.preventDefault()
+            )
+            const handleKeyDown = vi.fn()
+            const { user } = render(
+                <LinkButton
+                    href="#keyboard-link"
+                    text="Keyboard Link"
+                    onClick={handleClick}
+                    onKeyDown={handleKeyDown}
+                />
+            )
+            const link = screen.getByRole('link', { name: 'Keyboard Link' })
+
+            link.focus()
+            await user.keyboard(' ')
+
+            expect(handleKeyDown).toHaveBeenCalledTimes(1)
+            expect(handleClick).toHaveBeenCalledTimes(1)
+        })
+
+        it('respects a consumer onKeyDown that prevents default', async () => {
+            const handleClick = vi.fn()
+            const handleKeyDown = vi.fn(
+                (event: React.KeyboardEvent<HTMLAnchorElement>) =>
+                    event.preventDefault()
+            )
+            const { user } = render(
+                <LinkButton
+                    href="#keyboard-link"
+                    text="Keyboard Link"
+                    onClick={handleClick}
+                    onKeyDown={handleKeyDown}
+                />
+            )
+            const link = screen.getByRole('link', { name: 'Keyboard Link' })
+
+            link.focus()
+            await user.keyboard('{Enter}')
+
+            expect(handleKeyDown).toHaveBeenCalledTimes(1)
+            expect(handleClick).not.toHaveBeenCalled()
         })
     })
 

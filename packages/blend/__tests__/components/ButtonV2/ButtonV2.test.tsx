@@ -8,11 +8,17 @@ import {
 } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { ButtonV2 } from '../../../lib/components/ButtonV2'
+import ThemeProvider from '../../../lib/context/ThemeProvider'
+import { Theme } from '../../../lib/context/theme.enum'
+import { getButtonV2LightTokens } from '../../../lib/components/ButtonV2/buttonV2.light.tokens'
+import { getButtonV2DarkTokens } from '../../../lib/components/ButtonV2/buttonV2.dark.tokens'
+import { FOUNDATION_THEME } from '../../../lib/tokens'
 import {
     ButtonV2Type,
     ButtonV2Size,
     ButtonV2SubType,
     ButtonV2State,
+    PaddingDirection,
 } from '../../../lib/components/ButtonV2/buttonV2.types'
 import { MockIcon } from '../../test-utils'
 
@@ -168,6 +174,256 @@ describe('ButtonV2', () => {
         })
     })
 
+    describe('Focus Ring', () => {
+        it('uses a type-specific focus ring', () => {
+            render(
+                <>
+                    <ButtonV2 text="Primary" />
+                    <ButtonV2 text="Danger" buttonType={ButtonV2Type.DANGER} />
+                </>
+            )
+
+            expect(
+                screen.getByRole('button', { name: 'Primary' })
+            ).toHaveStyleRule(
+                'box-shadow',
+                `0 0 0 3px ${FOUNDATION_THEME.colors.primary[200]}`,
+                { modifier: ':focus-visible' }
+            )
+            expect(
+                screen.getByRole('button', { name: 'Danger' })
+            ).toHaveStyleRule(
+                'box-shadow',
+                `0 0 0 3px ${FOUNDATION_THEME.colors.red[200]}`,
+                { modifier: ':focus-visible' }
+            )
+        })
+
+        it('applies a consumer focus ring token override', () => {
+            const tokens = getButtonV2LightTokens(FOUNDATION_THEME)
+            const customFocusRing = '0 0 0 4px rgb(1, 2, 3)'
+            const customTokens = {
+                sm: {
+                    ...tokens.sm,
+                    focusRing: {
+                        ...tokens.sm.focusRing,
+                        [ButtonV2Type.PRIMARY]: {
+                            ...tokens.sm.focusRing.primary,
+                            [ButtonV2SubType.DEFAULT]: customFocusRing,
+                        },
+                    },
+                },
+                lg: {
+                    ...tokens.lg,
+                    focusRing: {
+                        ...tokens.lg.focusRing,
+                        [ButtonV2Type.PRIMARY]: {
+                            ...tokens.lg.focusRing.primary,
+                            [ButtonV2SubType.DEFAULT]: customFocusRing,
+                        },
+                    },
+                },
+            }
+
+            render(
+                <ThemeProvider componentTokens={{ BUTTONV2: customTokens }}>
+                    <ButtonV2 text="Custom Focus" />
+                </ThemeProvider>
+            )
+
+            expect(
+                screen.getByRole('button', { name: 'Custom Focus' })
+            ).toHaveStyleRule('box-shadow', customFocusRing, {
+                modifier: ':focus-visible',
+            })
+        })
+
+        it('keeps dark defaults for un-overridden token paths', () => {
+            const customFocusRing = '0 0 0 4px rgb(1, 2, 3)'
+            const darkTokens = getButtonV2DarkTokens(FOUNDATION_THEME)
+
+            render(
+                <ThemeProvider
+                    theme={Theme.DARK}
+                    componentTokens={{
+                        BUTTONV2: {
+                            sm: {
+                                focusRing: {
+                                    primary: { default: customFocusRing },
+                                },
+                            },
+                            lg: {
+                                focusRing: {
+                                    primary: { default: customFocusRing },
+                                },
+                            },
+                        },
+                    }}
+                >
+                    <ButtonV2 text="Dark custom" />
+                </ThemeProvider>
+            )
+
+            const button = screen.getByRole('button', { name: 'Dark custom' })
+
+            expect(button).toHaveStyleRule('box-shadow', customFocusRing, {
+                modifier: ':focus-visible',
+            })
+            expect(button).toHaveStyleRule(
+                'background',
+                darkTokens.lg.backgroundColor.primary.default.default
+            )
+        })
+    })
+
+    describe('Slot Sizing', () => {
+        it('applies left and right slot maxHeight independently', () => {
+            render(
+                <ButtonV2
+                    text="Actions"
+                    leftSlot={{ slot: <MockIcon />, maxHeight: '12px' }}
+                    rightSlot={{ slot: <MockIcon />, maxHeight: '24px' }}
+                />
+            )
+
+            expect(
+                screen
+                    .getByRole('button', { name: 'Actions' })
+                    .querySelector('[data-element="leading-icon"]')
+            ).toHaveStyle({ maxHeight: '12px' })
+            expect(
+                screen
+                    .getByRole('button', { name: 'Actions' })
+                    .querySelector('[data-element="trailing-icon"]')
+            ).toHaveStyle({ maxHeight: '24px' })
+        })
+
+        it('uses the slotMaxHeight token for default icon sizing', () => {
+            const tokens = getButtonV2LightTokens(FOUNDATION_THEME)
+            const customMaxHeight = '22px'
+            const customTokens = {
+                sm: {
+                    ...tokens.sm,
+                    slotMaxHeight: {
+                        ...tokens.sm.slotMaxHeight,
+                        [ButtonV2Size.SMALL]: customMaxHeight,
+                    },
+                },
+                lg: {
+                    ...tokens.lg,
+                    slotMaxHeight: {
+                        ...tokens.lg.slotMaxHeight,
+                        [ButtonV2Size.SMALL]: customMaxHeight,
+                    },
+                },
+            }
+
+            render(
+                <ThemeProvider componentTokens={{ BUTTONV2: customTokens }}>
+                    <ButtonV2
+                        text="Tokenized Icon"
+                        leftSlot={{ slot: <MockIcon /> }}
+                    />
+                </ThemeProvider>
+            )
+
+            expect(
+                screen
+                    .getByRole('button', { name: 'Tokenized Icon' })
+                    .querySelector('[data-element="leading-icon"]')
+            ).toHaveStyle({ maxHeight: customMaxHeight })
+        })
+    })
+
+    describe('Padding', () => {
+        it('applies left and right padding token overrides independently', () => {
+            const tokens = getButtonV2LightTokens(FOUNDATION_THEME)
+            const leftPadding = '11px'
+            const rightPadding = '29px'
+            const customTokens = {
+                sm: {
+                    ...tokens.sm,
+                    padding: {
+                        ...tokens.sm.padding,
+                        [PaddingDirection.LEFT]: {
+                            ...tokens.sm.padding[PaddingDirection.LEFT],
+                            [ButtonV2Size.SMALL]: {
+                                ...tokens.sm.padding[PaddingDirection.LEFT][
+                                    ButtonV2Size.SMALL
+                                ],
+                                [ButtonV2Type.PRIMARY]: {
+                                    ...tokens.sm.padding[PaddingDirection.LEFT][
+                                        ButtonV2Size.SMALL
+                                    ][ButtonV2Type.PRIMARY],
+                                    [ButtonV2SubType.DEFAULT]: leftPadding,
+                                },
+                            },
+                        },
+                        [PaddingDirection.RIGHT]: {
+                            ...tokens.sm.padding[PaddingDirection.RIGHT],
+                            [ButtonV2Size.SMALL]: {
+                                ...tokens.sm.padding[PaddingDirection.RIGHT][
+                                    ButtonV2Size.SMALL
+                                ],
+                                [ButtonV2Type.PRIMARY]: {
+                                    ...tokens.sm.padding[
+                                        PaddingDirection.RIGHT
+                                    ][ButtonV2Size.SMALL][ButtonV2Type.PRIMARY],
+                                    [ButtonV2SubType.DEFAULT]: rightPadding,
+                                },
+                            },
+                        },
+                    },
+                },
+                lg: {
+                    ...tokens.lg,
+                    padding: {
+                        ...tokens.lg.padding,
+                        [PaddingDirection.LEFT]: {
+                            ...tokens.lg.padding[PaddingDirection.LEFT],
+                            [ButtonV2Size.SMALL]: {
+                                ...tokens.lg.padding[PaddingDirection.LEFT][
+                                    ButtonV2Size.SMALL
+                                ],
+                                [ButtonV2Type.PRIMARY]: {
+                                    ...tokens.lg.padding[PaddingDirection.LEFT][
+                                        ButtonV2Size.SMALL
+                                    ][ButtonV2Type.PRIMARY],
+                                    [ButtonV2SubType.DEFAULT]: leftPadding,
+                                },
+                            },
+                        },
+                        [PaddingDirection.RIGHT]: {
+                            ...tokens.lg.padding[PaddingDirection.RIGHT],
+                            [ButtonV2Size.SMALL]: {
+                                ...tokens.lg.padding[PaddingDirection.RIGHT][
+                                    ButtonV2Size.SMALL
+                                ],
+                                [ButtonV2Type.PRIMARY]: {
+                                    ...tokens.lg.padding[
+                                        PaddingDirection.RIGHT
+                                    ][ButtonV2Size.SMALL][ButtonV2Type.PRIMARY],
+                                    [ButtonV2SubType.DEFAULT]: rightPadding,
+                                },
+                            },
+                        },
+                    },
+                },
+            }
+
+            render(
+                <ThemeProvider componentTokens={{ BUTTONV2: customTokens }}>
+                    <ButtonV2 text="Padded" />
+                </ThemeProvider>
+            )
+
+            expect(screen.getByRole('button', { name: 'Padded' })).toHaveStyle({
+                paddingLeft: leftPadding,
+                paddingRight: rightPadding,
+            })
+        })
+    })
+
     describe('Button Types', () => {
         it.each([
             [ButtonV2Type.PRIMARY, 'primary'],
@@ -300,6 +556,7 @@ describe('ButtonV2', () => {
             const button = screen.getByRole('button')
             expect(button).toBeDisabled()
             expect(button).toHaveAttribute('aria-disabled', 'true')
+            expect(button).toHaveAttribute('aria-busy', 'true')
             expect(button).toHaveAttribute('tabIndex', '-1')
             expect(button).toHaveAttribute('aria-label', 'Skeleton')
 
@@ -443,26 +700,51 @@ describe('ButtonV2', () => {
             expect(document.activeElement).toBe(button)
         })
 
-        it('can be activated with Enter key', async () => {
-            const handleClick = vi.fn()
-            const { user } = render(
-                <ButtonV2 text="Enter Key" onClick={handleClick} />
-            )
+        it.each([
+            ['Enter', '{Enter}'],
+            ['Space', ' '],
+        ])(
+            'can be activated with %s key using a real click event',
+            async (_, key) => {
+                const handleClick = vi.fn(
+                    (event: React.MouseEvent<HTMLButtonElement>) => {
+                        expect(event.currentTarget).toBe(button)
+                        expect(event.target).toBe(button)
+                        expect(event.nativeEvent).toBeInstanceOf(MouseEvent)
+                    }
+                )
+                const { user } = render(
+                    <ButtonV2 text="Keyboard Button" onClick={handleClick} />
+                )
+                const button = screen.getByRole('button', {
+                    name: 'Keyboard Button',
+                })
 
-            await user.tab()
+                button.focus()
+                await user.keyboard(key)
+
+                expect(handleClick).toHaveBeenCalledTimes(1)
+            }
+        )
+
+        it('runs a consumer onKeyDown and keeps native activation', async () => {
+            const handleClick = vi.fn()
+            const handleKeyDown = vi.fn()
+            const { user } = render(
+                <ButtonV2
+                    text="Keyboard Button"
+                    onClick={handleClick}
+                    onKeyDown={handleKeyDown}
+                />
+            )
+            const button = screen.getByRole('button', {
+                name: 'Keyboard Button',
+            })
+
+            button.focus()
             await user.keyboard('{Enter}')
 
-            expect(handleClick).toHaveBeenCalledTimes(1)
-        })
-
-        it('can be activated with Space key', async () => {
-            const handleClick = vi.fn()
-            const { user } = render(
-                <ButtonV2 text="Space Key" onClick={handleClick} />
-            )
-            await user.tab()
-            await user.keyboard(' ')
-
+            expect(handleKeyDown).toHaveBeenCalledTimes(1)
             expect(handleClick).toHaveBeenCalledTimes(1)
         })
 
@@ -769,6 +1051,38 @@ describe('ButtonV2', () => {
             expect(handleSubmit).toHaveBeenCalledTimes(1)
         })
 
+        it('submits form with keyboard Enter when type="submit"', async () => {
+            const handleSubmit = vi.fn((event) => event.preventDefault())
+            const { user } = render(
+                <form onSubmit={handleSubmit}>
+                    <ButtonV2 text="Submit" type="submit" />
+                </form>
+            )
+
+            const button = screen.getByRole('button', { name: 'Submit' })
+            button.focus()
+            await user.keyboard('{Enter}')
+
+            expect(handleSubmit).toHaveBeenCalledTimes(1)
+        })
+
+        it('does not submit a form with keyboard Enter while loading', async () => {
+            const handleSubmit = vi.fn()
+            const { user } = render(
+                <form onSubmit={handleSubmit}>
+                    <ButtonV2 text="Submit" type="submit" loading />
+                </form>
+            )
+
+            const button = screen.getByRole('button', {
+                name: 'Loading, please wait',
+            })
+            button.focus()
+            await user.keyboard('{Enter}')
+
+            expect(handleSubmit).not.toHaveBeenCalled()
+        })
+
         it('does not submit form when type="button"', async () => {
             const handleSubmit = vi.fn()
             const { user } = render(
@@ -915,6 +1229,20 @@ describe('ButtonV2', () => {
             const button = screen.getByRole('button')
             expect(button).toHaveStyle({
                 transition: 'transform 0.15s ease-in-out',
+            })
+        })
+
+        it('centers content when justifyContent is omitted', () => {
+            render(<ButtonV2 text="Centered" />)
+            expect(screen.getByRole('button')).toHaveStyle({
+                justifyContent: 'center',
+            })
+        })
+
+        it('applies a custom justifyContent value', () => {
+            render(<ButtonV2 text="Left Aligned" justifyContent="flex-start" />)
+            expect(screen.getByRole('button')).toHaveStyle({
+                justifyContent: 'flex-start',
             })
         })
     })

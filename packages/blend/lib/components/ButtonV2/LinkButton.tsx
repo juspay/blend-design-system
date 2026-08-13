@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, type KeyboardEvent, type MouseEvent } from 'react'
 import PrimitiveLink from '../Primitives/PrimitiveLink'
 import {
     ButtonV2Size,
@@ -20,7 +20,10 @@ import {
     getButtonStyles,
     getButtonPadding,
 } from './utils'
-import { getButtonAriaAttributes } from '../../utils/accessibility'
+import {
+    createButtonKeyboardHandler,
+    getButtonAriaAttributes,
+} from '../../utils/accessibility'
 
 const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
     (
@@ -42,6 +45,7 @@ const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
             rel,
             disabled,
             onClick,
+            onKeyDown: consumerOnKeyDown,
             ...restHtmlProps
         },
         ref
@@ -73,15 +77,31 @@ const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
         const ariaAttrs = getButtonAriaAttributes({
             disabled: isDisabled,
             loading: isLoading,
+            skeleton: isSkeleton,
             ariaLabel,
         })
 
-        const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+        const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
             if (isSkeleton || isDisabled || isLoading) {
                 event.preventDefault()
                 return
             }
             onClick?.(event)
+        }
+
+        const keyboardHandler = createButtonKeyboardHandler<HTMLAnchorElement>(
+            (event) => {
+                if (!isDisabled && !isLoading) {
+                    event.currentTarget.click()
+                }
+            },
+            isDisabled
+        )
+
+        const handleKeyDown = (event: KeyboardEvent<HTMLAnchorElement>) => {
+            consumerOnKeyDown?.(event)
+            if (event.defaultPrevented) return
+            keyboardHandler.onKeyDown(event)
         }
 
         const buttonStyles = getButtonStyles(
@@ -113,7 +133,8 @@ const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
             border: buttonStyles.border,
             transition: 'transform 0.15s ease-in-out',
             paddingTop: paddingTokens.top,
-            paddingX: paddingTokens.right,
+            paddingLeft: paddingTokens.left,
+            paddingRight: paddingTokens.right,
             paddingBottom: paddingTokens.bottom,
             ...ariaAttrs,
             _active: buttonStyles._active,
@@ -123,6 +144,7 @@ const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
             'data-button': text,
             'data-status': buttonStatus,
             ...restHtmlProps,
+            onKeyDown: handleKeyDown,
         }
 
         const linkElement = (

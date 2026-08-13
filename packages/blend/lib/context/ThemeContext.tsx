@@ -361,6 +361,14 @@ export type ComponentTokenType = {
     SELECT?: ResponsiveSelectTokens
 }
 
+export type DeepPartial<T> = T extends readonly unknown[]
+    ? T
+    : T extends object
+      ? { [key in keyof T]?: DeepPartial<T[key]> }
+      : T
+
+export type ComponentTokenOverrides = DeepPartial<ComponentTokenType>
+
 type ThemeContextType = {
     foundationTokens: ThemeType
     componentTokens: Required<ComponentTokenType>

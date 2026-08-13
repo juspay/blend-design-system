@@ -105,7 +105,8 @@ size-based limit is not appropriate.
 
 Grouping placeholder configuration avoids expanding the Button prop surface.
 Move both values into `skeleton`; omitting `skeletonVariant` still uses
-`pulse`.
+`pulse`. A visible skeleton also sets `aria-busy="true"` and blocks button
+interaction.
 
 ### Replace `fullWidth`
 
@@ -117,13 +118,16 @@ V2 expresses width through one sizing API and adds `minWidth` and `maxWidth`.
 Replace `fullWidth` with `width="100%"`; retain an existing `width` value
 unchanged.
 
-### Remove `justifyContent`
+### Review `justifyContent`
 
-V2 has no `justifyContent` prop. It standardizes button content alignment to
-the center so variants stay visually consistent. Remove this prop. If a button
-needs start- or end-aligned content, keep that call site on v1 until the needed
-v2 alignment API is available; do not rely on unsupported style or class
-overrides.
+Some early V2 builds removed `justifyContent` and forced centered content.
+Current `ButtonV2` restores the prop with the same `center` default as V1, so
+keep an existing value such as `flex-start` when migrating. If the consumer is
+still on an older V2 package, upgrade before relying on this prop.
+
+```tsx
+<ButtonV2 text="View details" width="100%" justifyContent="flex-start" />
+```
 
 ### Update custom Button tokens
 
@@ -133,14 +137,34 @@ overrides.
 
 V2 separates padding by side and includes line-height tokens for more precise,
 responsive button styling. Update custom theme overrides to target `BUTTONV2`.
-Review the token shape: `padding.x`/`padding.y` become top/right/bottom/left
-entries, `slotMaxHeight` and `outline` are removed, and `text.lineHeight` is
-added.
+Review the token shape:
+
+The initial V2 token draft removed V1's `outline` and `slotMaxHeight` slots.
+The current contract restores the sizing slot and replaces the focus outline
+with the themeable `focusRing` slot, so use the current shape below.
+
+- `padding` gains a direction level: `top`, `right`, `bottom`, and `left`.
+- `borderRadius` loses V1's state level and is keyed by size, type, and subtype.
+- V1's state-keyed `outline` slot is not a V2 key. Use the V2 `focusRing` slot,
+  keyed by type and subtype.
+- Current V2 exposes `slotMaxHeight` by size for the default left and right
+  slot limits. Some early V2 drafts removed it; keep it when building a
+  current override.
+- `text.lineHeight` is added to the V2 text tokens.
+
+When using an older V2 token object, rebuild it against the current
+`ButtonV2TokensType` instead of copying the old shape.
 
 `buttonType`, `size`, `subType`, `text`, `disabled`, `loading`, `width`,
-`buttonGroupPosition`, `state`, `onClick`, and standard HTML button attributes
-continue to work. The default values also remain primary, small, and default
-subtype.
+`buttonGroupPosition`, `state`, `justifyContent`, and standard HTML button
+attributes continue to work. The `onClick` prop remains optional, but its
+handler receives a required `React.MouseEvent<HTMLButtonElement>` argument;
+V1 allowed the event parameter to be omitted. The default values also remain
+primary, small, and default subtype.
+
+When supplying custom `BUTTONV2` tokens, partial overrides are merged on top of
+the active light or dark defaults. Unchanged token paths continue to follow the
+selected theme.
 
 ## What else changes visually?
 
