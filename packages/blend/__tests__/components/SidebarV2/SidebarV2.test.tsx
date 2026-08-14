@@ -543,8 +543,36 @@ describe('SidebarV2 Collapsed Behavior', () => {
             await user.hover(directoryContainer)
         }
 
-        // Hovering must not open a preview sidebar.
+        // The hover preview is disabled by default.
         expect(directoryContainer).toBeInTheDocument()
+        expect(
+            document.querySelectorAll('[data-directory-container]')
+        ).toHaveLength(1)
+    })
+
+    it('opens the hover preview only when intermediate state is enabled', async () => {
+        const user = userEvent.setup()
+        const onSidebarStateChange = vi.fn()
+
+        render(
+            <SidebarV2
+                data={createMockDirectoryData()}
+                defaultIsExpanded={false}
+                enableIntermediateState
+                onSidebarStateChange={onSidebarStateChange}
+            >
+                <div>Content</div>
+            </SidebarV2>
+        )
+
+        const directoryContainer = document.querySelector(
+            '[data-directory-container]'
+        )
+        if (directoryContainer) {
+            await user.hover(directoryContainer)
+        }
+
+        expect(onSidebarStateChange).toHaveBeenLastCalledWith('intermediate')
     })
 
     it('keeps the secondary rail mounted but visually collapsed', () => {

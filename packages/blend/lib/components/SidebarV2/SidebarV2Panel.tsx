@@ -48,6 +48,7 @@ export type SidebarV2PanelProps = {
     iconOnlyMode?: boolean
     hideToggleButton?: boolean
     footer?: ReactNode
+    setIsHovering?: (isHovering: boolean) => void
     sidebarState?: SidebarV2StateChangeType
     tokens: SidebarV2TokensType
     showHierarchyLines?: DirectoryProps['showHierarchyLines']
@@ -76,6 +77,7 @@ const SidebarV2Panel = ({
     iconOnlyMode = false,
     hideToggleButton = false,
     footer,
+    setIsHovering,
     sidebarState = 'expanded',
     tokens,
     showHierarchyLines = false,
@@ -124,6 +126,9 @@ const SidebarV2Panel = ({
                 id={sidebarNavId}
                 role="region"
                 aria-label="Navigation menu"
+                onMouseEnter={
+                    setIsHovering ? () => setIsHovering(true) : undefined
+                }
             >
                 <Directory
                     directoryData={directoryData}

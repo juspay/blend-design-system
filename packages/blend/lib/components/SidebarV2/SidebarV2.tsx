@@ -71,6 +71,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             onActiveItemChange,
             defaultActiveItem,
             onSidebarStateChange,
+            enableIntermediateState = false,
             showHierarchyLines = false,
             hierarchyLineBorderRadius = 0,
             expandedItems,
@@ -102,6 +103,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             useState<boolean>(defaultIsExpanded)
         const [showToggleButton, setShowToggleButton] = useState<boolean>(true)
         const [isScrolled, setIsScrolled] = useState<boolean>(false)
+        const [isHovering, setIsHovering] = useState<boolean>(false)
         const [mobileNavigationHeight, setMobileNavigationHeight] =
             useState<string>()
 
@@ -147,7 +149,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             return `Sidebar navigation, ${state}`
         }, [isExpanded])
 
-        const sidebarStatus = getSidebarV2Status(isExpanded)
+        const sidebarStatus = getSidebarV2Status(isExpanded, isHovering)
 
         const shouldRenderMobileNavigation =
             isSmallScreen && mobileNavigationItems.length > 0
@@ -157,6 +159,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             if (!isControlled) {
                 setInternalExpanded(next)
             }
+            setIsHovering(false)
             onExpandedChange?.(next)
         }, [isExpanded, isControlled, onExpandedChange])
 
@@ -325,6 +328,11 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 defaultActiveItem={defaultActiveItem}
                                 iconOnlyMode={iconOnlyMode}
                                 footer={footer}
+                                setIsHovering={
+                                    enableIntermediateState
+                                        ? setIsHovering
+                                        : undefined
+                                }
                                 sidebarState={sidebarStatus}
                                 tokens={tokens}
                                 showHierarchyLines={showHierarchyLines}
@@ -338,6 +346,83 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 enableVirtualization={enableVirtualization}
                                 virtualization={virtualization}
                             />
+                        )}
+
+                        {enableIntermediateState && !isExpanded && (
+                            <Block
+                                position="absolute"
+                                display="flex"
+                                top={0}
+                                left={0}
+                                width={
+                                    isHovering
+                                        ? hasSecondarySidebarItems
+                                            ? `calc(${tokens.secondarySidebar.width} + ${tokens.primarySidebar.width})`
+                                            : tokens.primarySidebar.width
+                                        : 0
+                                }
+                                minWidth={0}
+                                height="100%"
+                                overflow="hidden"
+                                zIndex={tokens.container.zIndex}
+                                aria-hidden="true"
+                                backgroundColor={
+                                    tokens.container.backgroundColor
+                                }
+                                borderRight={
+                                    isHovering
+                                        ? tokens.container.borderRight
+                                        : 'none'
+                                }
+                                boxShadow={
+                                    isHovering
+                                        ? tokens.container.hoverPreview
+                                              .boxShadow
+                                        : 'none'
+                                }
+                                transition="width 0.2s cubic-bezier(0.2, 0, 0, 1), border 0.2s ease-in-out"
+                                pointerEvents={isHovering ? 'auto' : 'none'}
+                                onMouseLeave={() => setIsHovering(false)}
+                            >
+                                {hasSecondarySidebarItems && (
+                                    <SecondarySidebar
+                                        id={`${secondarySidebarId}-intermediate`}
+                                        secondarySidebar={secondarySidebar}
+                                        isExpanded
+                                        tokens={tokens}
+                                    />
+                                )}
+                                <SidebarV2Panel
+                                    sidebarTopSlot={sidebarTopSlot}
+                                    merchantInfo={merchantInfo}
+                                    isExpanded={isExpanded}
+                                    isScrolled={isScrolled}
+                                    sidebarCollapseKey={sidebarCollapseKey}
+                                    onToggle={toggleSidebar}
+                                    sidebarNavId={sidebarNavId}
+                                    data={safeDirectory}
+                                    idPrefix={`${baseId}-`}
+                                    activeItem={activeItem}
+                                    onActiveItemChange={onActiveItemChange}
+                                    defaultActiveItem={defaultActiveItem}
+                                    iconOnlyMode={false}
+                                    footer={footer}
+                                    sidebarState={sidebarStatus}
+                                    tokens={tokens}
+                                    showHierarchyLines={showHierarchyLines}
+                                    hierarchyLineBorderRadius={
+                                        hierarchyLineBorderRadius
+                                    }
+                                    expandedItems={expandedItems}
+                                    defaultExpandedItems={defaultExpandedItems}
+                                    onExpandedItemsChange={
+                                        onExpandedItemsChange
+                                    }
+                                    onItemExpand={onItemExpand}
+                                    enableVirtualization={enableVirtualization}
+                                    virtualization={virtualization}
+                                />
+                            </Block>
                         )}
                     </Block>
 

@@ -10,6 +10,9 @@ const mockTokens: SidebarV2TokensType = {
         zIndex: 10,
         backgroundColor: '#ffffff',
         borderRight: '1px solid #e0e0e0',
+        hoverPreview: {
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+        },
         maxWidth: {
             withLeftPanel: '280px',
             withoutLeftPanel: '240px',

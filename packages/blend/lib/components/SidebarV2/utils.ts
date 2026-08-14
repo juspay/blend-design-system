@@ -11,8 +11,10 @@ export const isControlledSidebarV2 = (
 ): boolean => isExpanded !== undefined
 
 export const getSidebarV2Status = (
-    isExpanded: boolean
+    isExpanded: boolean,
+    isHovering: boolean
 ): SidebarV2StateChangeType => {
+    if (isHovering) return SidebarV2StateChange.INTERMEDIATE
     return isExpanded
         ? SidebarV2StateChange.EXPANDED
         : SidebarV2StateChange.COLLAPSED
