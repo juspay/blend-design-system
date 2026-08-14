@@ -1,11 +1,11 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
+import { SplitTag } from '@juspay/blend-design-system'
 import {
-    SplitTag,
     TagSize,
     TagShape,
     TagColor,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tag'
 
 /**
  * FIGMA CODE CONNECT FOR SPLITTAG COMPONENT

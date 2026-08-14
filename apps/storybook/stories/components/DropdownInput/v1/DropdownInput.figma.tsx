@@ -1,5 +1,6 @@
 import { figma } from '@figma/code-connect'
-import { DropdownInput, TextInputSize } from '@juspay/blend-design-system'
+import { DropdownInput } from '@juspay/blend-design-system'
+import { TextInputSize } from '@juspay/blend-design-system/deprecated/text-input'
 
 /**
  * FIGMA CODE CONNECT FOR DROPDOWNINPUT COMPONENT

@@ -1,7 +1,11 @@
 'use client'
 
 import React from 'react'
-import { PopoverV2, Button, ButtonType } from '@juspay/blend-design-system'
+import {
+    PopoverV2,
+    ButtonV2 as Button,
+    ButtonV2Type as ButtonType,
+} from '@juspay/blend-design-system'
 
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 

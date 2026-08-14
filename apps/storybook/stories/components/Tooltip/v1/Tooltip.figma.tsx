@@ -6,9 +6,11 @@ import {
     TooltipSide,
     TooltipAlign,
     TooltipSlotDirection,
+} from '@juspay/blend-design-system/deprecated/tooltip'
+import {
     Button,
     ButtonSize,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 
 /**
  * FIGMA CODE CONNECT FOR TOOLTIP COMPONENT
@@ -147,7 +149,7 @@ figma.connect(
         },
 
         imports: [
-            "import { Tooltip, Button } from '@juspay/blend-design-system'",
+            "import { Tooltip, Button } from '@juspay/blend-design-system/deprecated/tooltip'",
         ],
 
         links: [

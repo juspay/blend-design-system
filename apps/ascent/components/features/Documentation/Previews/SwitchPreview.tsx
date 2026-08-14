@@ -1,12 +1,15 @@
 'use client'
-import { Switch, SwitchSize } from '@juspay/blend-design-system'
+import {
+    Switch,
+    SwitchSize,
+} from '@juspay/blend-design-system/deprecated/switch'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SwitchPreview = () => {
     const [isEnabled, setIsEnabled] = useState(false)
 
-    const tsCode = `import { Switch, SwitchGroup, SwitchSize } from "@juspay/blend-design-system";
+    const tsCode = `import { Switch, SwitchGroup, SwitchSize } from "@juspay/blend-design-system/deprecated/switch";
 
 function MyComponent() {
   const [isEnabled, setIsEnabled] = useState(false);

@@ -3,7 +3,7 @@ import {
     ProgressBar,
     ProgressBarVariant,
     ProgressBarSize,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/progress-bar'
 import React, { useState, useEffect } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
@@ -27,7 +27,7 @@ const ProgressBarPreview = () => {
   ProgressBarVariant, 
   ProgressBarSize, 
   ProgressBarType 
-} from "@juspay/blend-design-system";
+} from "@juspay/blend-design-system/deprecated/progress-bar";
 import { useState } from "react";
 
 function MyComponent() {
@@ -89,7 +89,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system/deprecated/progress-bar") @react.component
 external make: (
   ~value: float,
   ~variant: [#solid | #segmented | #circular]=?,

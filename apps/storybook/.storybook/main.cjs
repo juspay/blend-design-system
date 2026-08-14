@@ -33,13 +33,29 @@ const config = {
     },
     viteFinal: async (config) => {
         if (config.resolve) {
-            config.resolve.alias = {
-                ...config.resolve.alias,
-                '@juspay/blend-design-system': path.resolve(
-                    __dirname,
-                    '../../../packages/blend/lib/main.ts'
-                ),
-            }
+            const existingAliases = Array.isArray(config.resolve.alias)
+                ? config.resolve.alias
+                : Object.entries(config.resolve.alias || {}).map(
+                      ([find, replacement]) => ({ find, replacement })
+                  )
+
+            config.resolve.alias = [
+                {
+                    find: /^@juspay\/blend-design-system\/deprecated\/(.+)$/,
+                    replacement: path.resolve(
+                        __dirname,
+                        '../../../packages/blend/lib/deprecated/$1/index.ts'
+                    ),
+                },
+                {
+                    find: '@juspay/blend-design-system',
+                    replacement: path.resolve(
+                        __dirname,
+                        '../../../packages/blend/lib/main.ts'
+                    ),
+                },
+                ...existingAliases,
+            ]
         }
         return config
     },

@@ -18,7 +18,7 @@ import {
 import { type LeftPanelInfo } from '../../../../packages/blend/lib/components/Sidebar/types'
 import { FOUNDATION_THEME } from '../../../../packages/blend/lib/tokens'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
-import { TextInput } from '../../../../packages/blend/lib/main'
+import { TextInput } from '../../../../packages/blend/lib/deprecated/text-input'
 import {
     Button,
     ButtonType,

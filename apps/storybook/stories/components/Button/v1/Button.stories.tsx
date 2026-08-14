@@ -6,8 +6,8 @@ import {
     ButtonSize,
     ButtonSubType,
     ButtonState,
-    ThemeProvider,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
+import { ThemeProvider } from '@juspay/blend-design-system'
 import {
     Plus,
     Download,
@@ -45,7 +45,7 @@ const meta: Meta<typeof Button> = {
 ## Usage
 
 \`\`\`tsx
-import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system';
+import { Button, ButtonType, ButtonSize } from '@juspay/blend-design-system/deprecated/button';
 
 <Button
   buttonType={ButtonType.PRIMARY}

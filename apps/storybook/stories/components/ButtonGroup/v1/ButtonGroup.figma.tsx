@@ -1,5 +1,9 @@
 import React from 'react'
-import { ButtonGroup, Button, ButtonSize } from '@juspay/blend-design-system'
+import { ButtonGroup } from '@juspay/blend-design-system/deprecated/button-group'
+import {
+    Button,
+    ButtonSize,
+} from '@juspay/blend-design-system/deprecated/button'
 import { figma } from '@figma/code-connect'
 
 /**
@@ -284,7 +288,7 @@ figma.connect(
         ),
 
         imports: [
-            "import { ButtonGroup, Button, ButtonSize } from '@juspay/blend-design-system'",
+            "import { ButtonGroup, Button, ButtonSize } from '@juspay/blend-design-system/deprecated/button-group'",
         ],
 
         links: [

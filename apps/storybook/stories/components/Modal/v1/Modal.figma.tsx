@@ -1,6 +1,6 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Modal } from '@juspay/blend-design-system'
+import { Modal } from '@juspay/blend-design-system/deprecated/modal'
 
 /**
  * FIGMA CODE CONNECT FOR MODAL COMPONENT
@@ -120,7 +120,9 @@ figma.connect(
             </Modal>
         ),
 
-        imports: ["import { Modal } from '@juspay/blend-design-system'"],
+        imports: [
+            "import { Modal } from '@juspay/blend-design-system/deprecated/modal'",
+        ],
 
         links: [
             {

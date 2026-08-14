@@ -6,12 +6,12 @@ import {
     TabsContent,
     TabsVariant,
     TabsSize,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tabs'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const TabsPreview = () => {
-    const tsCode = `import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant, TabsSize } from "@juspay/blend-design-system";
+    const tsCode = `import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant, TabsSize } from "@juspay/blend-design-system/deprecated/tabs";
 
 function MyComponent() {
   return (

@@ -5,7 +5,7 @@ import {
     StatCard,
     StatCardVariant,
     ChangeType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/stat-card'
 
 interface MetricCardProps {
     title: string

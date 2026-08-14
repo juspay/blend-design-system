@@ -6,7 +6,11 @@
  */
 
 import { useState } from 'react'
-import { Tabs, TabsVariant, type TabItem } from '@juspay/blend-design-system'
+import {
+    Tabs,
+    TabsVariant,
+    type TabItem,
+} from '@juspay/blend-design-system/deprecated/tabs'
 import { ColorPaletteGenerator } from '@/components/studio/ColorPaletteGenerator'
 import { COLOR_GROUPS, type EditorTabProps, type ColorGroupKey } from './types'
 import type { BrandConfig } from '@juspay/blend-design-system/tokens'

@@ -3,15 +3,17 @@ import React, { useState } from 'react'
 import {
     Popover,
     PopoverSize,
+} from '@juspay/blend-design-system/deprecated/popover'
+import {
     Button,
     ButtonType,
     ButtonSize,
-    TextInput,
-    TextArea,
-    Checkbox,
-    Radio,
-    SingleSelect,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
+import { TextInput } from '@juspay/blend-design-system/deprecated/text-input'
+import { TextArea } from '@juspay/blend-design-system/deprecated/text-area'
+import { Checkbox } from '@juspay/blend-design-system/deprecated/checkbox'
+import { Radio } from '@juspay/blend-design-system/deprecated/radio'
+import { SingleSelect } from '@juspay/blend-design-system/deprecated/single-select'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -56,7 +58,7 @@ const meta: Meta<typeof Popover> = {
 ## Usage
 
 \`\`\`tsx
-import { Popover, PopoverSize, Button } from '@juspay/blend-design-system';
+import { Popover, PopoverSize, Button } from '@juspay/blend-design-system/deprecated/popover';
 
 <Popover
   trigger={<Button>Open Settings</Button>}

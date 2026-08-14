@@ -1,6 +1,10 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { TabsTrigger, TabsVariant, TabsSize } from '@juspay/blend-design-system'
+import {
+    TabsTrigger,
+    TabsVariant,
+    TabsSize,
+} from '@juspay/blend-design-system/deprecated/tabs'
 
 /**
  * FIGMA CODE CONNECT FOR TABS COMPONENT (TabsTrigger)
@@ -62,7 +66,9 @@ figma.connect(
             </TabsTrigger>
         ),
 
-        imports: ["import { TabsTrigger } from '@juspay/blend-design-system'"],
+        imports: [
+            "import { TabsTrigger } from '@juspay/blend-design-system/deprecated/tabs'",
+        ],
 
         links: [
             {
@@ -109,7 +115,11 @@ figma.connect(
  * Developers should adjust the number of tabs based on their needs.
  */
 
-import { Tabs, TabsList, TabsContent } from '@juspay/blend-design-system'
+import {
+    Tabs,
+    TabsList,
+    TabsContent,
+} from '@juspay/blend-design-system/deprecated/tabs'
 
 // TabSets - connection for TabsList component
 figma.connect(
@@ -162,7 +172,7 @@ figma.connect(
             )
         },
         imports: [
-            "import { Tabs, TabsList, TabsTrigger, TabsContent } from '@juspay/blend-design-system'",
+            "import { Tabs, TabsList, TabsTrigger, TabsContent } from '@juspay/blend-design-system/deprecated/tabs'",
         ],
         links: [
             {

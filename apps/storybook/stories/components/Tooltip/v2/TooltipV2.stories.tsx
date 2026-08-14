@@ -7,7 +7,10 @@ import {
     TooltipV2Size,
     TooltipV2SlotDirection,
 } from '../../../../../../packages/blend/lib/components/TooltipV2'
-import { Button, ButtonType } from '@juspay/blend-design-system'
+import {
+    Button,
+    ButtonType,
+} from '@juspay/blend-design-system/deprecated/button'
 import {
     Info,
     HelpCircle,

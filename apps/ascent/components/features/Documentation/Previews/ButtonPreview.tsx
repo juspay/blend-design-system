@@ -1,10 +1,13 @@
 'use client'
-import { ButtonType, Button } from '@juspay/blend-design-system'
+import {
+    ButtonType,
+    Button,
+} from '@juspay/blend-design-system/deprecated/button'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const ButtonPreview = () => {
-    const tsCode = `import { Button, ButtonVariant, ButtonSize } from "@juspay/blend-design-system";
+    const tsCode = `import { Button, ButtonVariant, ButtonSize } from "@juspay/blend-design-system/deprecated/button";
 
 function MyComponent() {
   return (
@@ -74,7 +77,7 @@ let make = (
     />
   </div>
 }`
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system/deprecated/button") @react.component
 external make: (
   ~buttonType: [#primary | #secondary | #danger | #success]=?,
   ~size: [#sm | #md | #lg]=?,

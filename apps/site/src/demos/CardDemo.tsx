@@ -3,17 +3,21 @@ import {
     Card,
     CardVariant,
     CardAlignment,
+} from '../../../../packages/blend/lib/deprecated/card'
+import {
     Tag,
     TagColor,
     TagVariant,
     TagSize,
-    SingleSelect,
+} from '../../../../packages/blend/lib/deprecated/tag'
+import {
     Button,
     ButtonType,
     ButtonSize,
     ButtonSubType,
-    Switch,
-} from '../../../../packages/blend/lib/main'
+} from '../../../../packages/blend/lib/deprecated/button'
+import { SingleSelect } from '../../../../packages/blend/lib/deprecated/single-select'
+import { Switch } from '../../../../packages/blend/lib/deprecated/switch'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 import {
     Star,

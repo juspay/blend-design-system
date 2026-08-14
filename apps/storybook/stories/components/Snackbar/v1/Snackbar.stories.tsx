@@ -4,8 +4,8 @@ import {
     Snackbar,
     addSnackbar,
     SnackbarVariant,
-} from '@juspay/blend-design-system'
-import { Button } from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/snackbar'
+import { Button } from '@juspay/blend-design-system/deprecated/button'
 import {
     Info,
     CheckCircle,
@@ -40,7 +40,7 @@ const meta: Meta<typeof Snackbar> = {
 ## Usage
 
 \`\`\`tsx
-import { Snackbar, addSnackbar, SnackbarVariant } from '@juspay/blend-design-system';
+import { Snackbar, addSnackbar, SnackbarVariant } from '@juspay/blend-design-system/deprecated/snackbar';
 
 // First, add the Snackbar component to your app root
 <Snackbar />

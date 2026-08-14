@@ -1,10 +1,14 @@
 'use client'
-import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system'
+import {
+    Avatar,
+    AvatarSize,
+    AvatarShape,
+} from '@juspay/blend-design-system/deprecated/avatar'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const AvatarPreview = () => {
-    const tsCode = `import { Avatar, AvatarSize, AvatarShape } from "@juspay/blend-design-system";
+    const tsCode = `import { Avatar, AvatarSize, AvatarShape } from "@juspay/blend-design-system/deprecated/avatar";
 
 function MyComponent() {
   return (
@@ -46,7 +50,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system/deprecated/avatar") @react.component
 external make: (
   ~src: string=?,
   ~alt: string=?,

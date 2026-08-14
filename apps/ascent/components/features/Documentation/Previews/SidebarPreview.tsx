@@ -1,10 +1,10 @@
 'use client'
-import { Sidebar } from '@juspay/blend-design-system'
+import { Sidebar } from '@juspay/blend-design-system/deprecated/sidebar'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const SidebarPreview = () => {
-    const tsCode = `import { Sidebar } from "@juspay/blend-design-system";
+    const tsCode = `import { Sidebar } from "@juspay/blend-design-system/deprecated/sidebar";
 
 function MyComponent() {
   const directoryData = [
@@ -97,7 +97,7 @@ let make = (
   />
 }`
 
-    const bindingCode = `@module("@juspay/blend-design-system") @react.component
+    const bindingCode = `@module("@juspay/blend-design-system/deprecated/sidebar") @react.component
 external make: (
   ~children: React.element,
   ~data: array<{

@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { AvatarGroup, ThemeProvider } from '@juspay/blend-design-system'
 import {
-    AvatarGroup,
     AvatarSize,
     AvatarShape,
-    ThemeProvider,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/avatar'
 import { User, Star, Crown, Shield, Heart, Zap } from 'lucide-react'
 import {
     getA11yConfig,

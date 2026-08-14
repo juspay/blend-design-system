@@ -14,14 +14,16 @@ import { useBackendAuth } from '@/contexts/BackendAuthContext'
 import { usePermissions } from '@/frontend/components/auth/PermissionGuard'
 import { fetchWithCsrf } from '@/lib/csrf'
 import {
-    Modal,
     ButtonV2,
     ButtonV2Type,
     ButtonV2Size,
     ButtonV2SubType,
+} from '@juspay/blend-design-system'
+import {
     ButtonType,
     ButtonSubType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
+import { Modal } from '@juspay/blend-design-system/deprecated/modal'
 
 const API_URL = import.meta.env.VITE_API_BASE_URL || ''
 

@@ -12,9 +12,11 @@ import {
     DrawerBody,
     DrawerFooter,
     DrawerClose,
+} from '@juspay/blend-design-system/deprecated/drawer'
+import {
     Button,
     ButtonType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -26,7 +28,7 @@ import {
     SingleSelectDrawer,
     NestedMultiSelectDrawer,
     NestedSingleSelectDrawer,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/drawer'
 
 const meta: Meta<typeof Drawer> = {
     title: 'Components/Drawer',
@@ -45,7 +47,7 @@ const meta: Meta<typeof Drawer> = {
 ## Usage
 
 \`\`\`tsx
-import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerBody, DrawerFooter, DrawerClose } from '@juspay/blend-design-system';
+import { Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerTitle, DrawerBody, DrawerFooter, DrawerClose } from '@juspay/blend-design-system/deprecated/drawer';
 
 function MyDrawer() {
   const [open, setOpen] = useState(false);
@@ -129,7 +131,7 @@ function MyDrawer() {
 You can add custom close icons and primary CTAs by using \`DrawerClose\` component and managing state yourself:
 
 \`\`\`tsx
-import { DrawerClose } from '@juspay/blend-design-system';
+import { DrawerClose } from '@juspay/blend-design-system/deprecated/drawer';
 import { X } from 'lucide-react';
 
 function CustomDrawer() {

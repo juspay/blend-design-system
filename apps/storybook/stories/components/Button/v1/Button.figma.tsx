@@ -5,7 +5,7 @@ import {
     ButtonType,
     ButtonSize,
     ButtonSubType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 
 /**
  * FIGMA CODE CONNECT FOR BUTTONV2 COMPONENT
@@ -120,7 +120,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { Button } from '@juspay/blend-design-system'"],
+        imports: [
+            "import { Button } from '@juspay/blend-design-system/deprecated/button'",
+        ],
 
         links: [
             {

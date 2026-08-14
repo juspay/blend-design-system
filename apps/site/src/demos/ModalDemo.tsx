@@ -5,12 +5,10 @@ import {
     ButtonSize,
 } from '../../../../packages/blend/lib/components/Button'
 import { useState } from 'react'
-import {
-    Menu,
-    MultiSelect,
-    Popover,
-    SingleSelect,
-} from '../../../../packages/blend/lib/main'
+import { Menu } from '../../../../packages/blend/lib/deprecated/menu'
+import { MultiSelect } from '../../../../packages/blend/lib/deprecated/multi-select'
+import { Popover } from '../../../../packages/blend/lib/deprecated/popover'
+import { SingleSelect } from '../../../../packages/blend/lib/deprecated/single-select'
 import { LogOut, Settings, User } from 'lucide-react'
 import Text from '../../../../packages/blend/lib/components/Text/Text'
 

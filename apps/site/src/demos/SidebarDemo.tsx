@@ -100,7 +100,8 @@ import TopbarDemo from './TopbarDemo'
 import OTPInputDemo from './OTPInputDemo'
 import CardDemo from './CardDemo'
 import CardV2Demo from './CardV2Demo'
-import { TextInput, Button } from '../../../../packages/blend/lib/main'
+import { TextInput } from '../../../../packages/blend/lib/deprecated/text-input'
+import { Button } from '../../../../packages/blend/lib/deprecated/button'
 import {
     ButtonType,
     ButtonSize,

@@ -4,7 +4,7 @@ import {
     SingleSelect,
     SelectMenuSize,
     SelectMenuVariant,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/single-select'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -83,7 +83,7 @@ import {
   SingleSelect, 
   SelectMenuSize, 
   SelectMenuVariant 
-} from '@juspay/blend-design-system';
+} from '@juspay/blend-design-system/deprecated/single-select';
 
 const [selected, setSelected] = useState<string>('');
 

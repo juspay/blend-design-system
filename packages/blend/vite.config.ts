@@ -1,7 +1,25 @@
 import { defineConfig } from 'vite'
+import { readFileSync } from 'node:fs'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
+
+const deprecatedDirectory = resolve(__dirname, 'lib/deprecated')
+const packageManifest = JSON.parse(
+    readFileSync(resolve(__dirname, 'package.json'), 'utf8')
+) as { exports: Record<string, unknown> }
+const packageExports = packageManifest.exports
+const deprecatedEntries = Object.fromEntries(
+    Object.keys(packageExports)
+        .filter((exportPath) => exportPath.startsWith('./deprecated/'))
+        .map((exportPath) => {
+            const componentName = exportPath.replace('./deprecated/', '')
+            return [
+                `deprecated/${componentName}`,
+                resolve(deprecatedDirectory, componentName, 'index.ts'),
+            ]
+        })
+)
 
 export default defineConfig({
     plugins: [
@@ -31,6 +49,10 @@ export default defineConfig({
                 replacement: resolve(__dirname, 'lib/node.ts'),
             },
             {
+                find: /^@juspay\/blend-design-system\/deprecated\/(.+)$/,
+                replacement: `${deprecatedDirectory}/$1/index.ts`,
+            },
+            {
                 find: '@juspay/blend-design-system',
                 replacement: resolve(__dirname, 'lib/main.ts'),
             },
@@ -42,6 +64,7 @@ export default defineConfig({
             entry: {
                 main: resolve(__dirname, 'lib/main.ts'),
                 node: resolve(__dirname, 'lib/node.ts'),
+                ...deprecatedEntries,
                 // IMPORTANT: this entry must NOT be named `tokens` — that would
                 // emit `dist/tokens.js` / `dist/tokens.d.ts` next to the
                 // `dist/tokens/` directory (built from `lib/tokens/`), and in

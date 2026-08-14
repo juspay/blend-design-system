@@ -5,7 +5,7 @@ import {
     AlertVariant,
     AlertStyle,
     AlertActionPlacement,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/alert'
 import {
     AlertTriangle,
     CheckCircle,
@@ -33,7 +33,7 @@ const meta: Meta<typeof Alert> = {
 ## Usage
 
 \`\`\`tsx
-import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system';
+import { Alert, AlertVariant, AlertStyle } from '@juspay/blend-design-system/deprecated/alert';
 
 <Alert
   heading="Success!"

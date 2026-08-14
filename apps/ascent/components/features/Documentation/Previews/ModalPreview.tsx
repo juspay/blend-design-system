@@ -1,12 +1,16 @@
 'use client'
-import { Modal, ButtonType, Button } from '@juspay/blend-design-system'
+import { Modal } from '@juspay/blend-design-system/deprecated/modal'
+import {
+    Button,
+    ButtonType,
+} from '@juspay/blend-design-system/deprecated/button'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const ModalPreview = () => {
     const [isOpen, setIsOpen] = useState(false)
 
-    const tsCode = `import { Modal, ButtonType, Button } from "@juspay/blend-design-system";
+    const tsCode = `import { Modal, ButtonType, Button } from "@juspay/blend-design-system/deprecated/modal";
 import { useState } from "react";
 
 function MyComponent() {

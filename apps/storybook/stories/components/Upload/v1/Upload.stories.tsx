@@ -1,11 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
 import {
-    Theme,
-    ThemeProvider,
     Upload,
     UploadState,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/upload'
+import { Theme, ThemeProvider } from '@juspay/blend-design-system'
 import { FileText } from 'lucide-react'
 import {
     getA11yConfig,
@@ -63,7 +62,7 @@ const meta: Meta<typeof Upload> = {
 ## Usage
 
 \`\`\`tsx
-import { Upload } from '@juspay/blend-design-system';
+import { Upload } from '@juspay/blend-design-system/deprecated/upload';
 
 <Upload
   label="Upload Document"

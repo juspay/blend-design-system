@@ -3,7 +3,7 @@ import {
     Charts,
     ChartType,
     ChartLegendPosition,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/charts'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
@@ -39,7 +39,7 @@ const ChartPreview = () => {
         },
     ]
 
-    const tsCode = `import { Charts, ChartType, ChartLegendPosition } from "@juspay/blend-design-system";
+    const tsCode = `import { Charts, ChartType, ChartLegendPosition } from "@juspay/blend-design-system/deprecated/charts";
 
 function MyComponent() {
   const data = [

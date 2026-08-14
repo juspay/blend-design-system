@@ -14,13 +14,13 @@ import {
     ChartLegends,
     ChartType,
     ChartLegendPosition,
-    Menu,
     NewNestedDataPoint,
-    SingleSelect,
-    FOUNDATION_THEME,
     ChartHeader,
-    Switch,
-} from '../../../../packages/blend/lib/main'
+} from '../../../../packages/blend/lib/deprecated/charts'
+import { FOUNDATION_THEME } from '../../../../packages/blend/lib/main'
+import { Menu } from '../../../../packages/blend/lib/deprecated/menu'
+import { SingleSelect } from '../../../../packages/blend/lib/deprecated/single-select'
+import { Switch } from '../../../../packages/blend/lib/deprecated/switch'
 import React from 'react'
 import { useState } from 'react'
 import { SelectMenuVariant } from '../../../../packages/blend/lib/components/Select'

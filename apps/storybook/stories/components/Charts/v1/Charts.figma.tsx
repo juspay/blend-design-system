@@ -3,7 +3,7 @@ import {
     Charts,
     ChartType,
     ChartLegendPosition,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/charts'
 
 /**
  * FIGMA CODE CONNECT FOR CHARTS COMPONENT
@@ -91,7 +91,7 @@ figma.connect(
         ),
 
         imports: [
-            "import { Charts, ChartType, ChartLegendPosition } from '@juspay/blend-design-system'",
+            "import { Charts, ChartType, ChartLegendPosition } from '@juspay/blend-design-system/deprecated/charts'",
         ],
 
         links: [

@@ -2,11 +2,13 @@ import {
     BlendChart,
     BlendChartContainer,
     BlendChartHeader,
-    FOUNDATION_THEME,
+} from '../../../../packages/blend/lib/deprecated/charts'
+import { FOUNDATION_THEME } from '../../../../packages/blend/lib/main'
+import {
     SelectMenuSize,
     SelectMenuVariant,
     SingleSelect,
-} from '../../../../packages/blend/lib/main'
+} from '../../../../packages/blend/lib/deprecated/single-select'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import { EllipsisVerticalIcon } from 'lucide-react'
 import {

@@ -6,7 +6,7 @@ import {
     ChartLegendPosition,
     NewNestedDataPoint,
     AxisType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/charts'
 import {
     TrendingUp,
     Calendar,
@@ -117,7 +117,7 @@ const meta: Meta<typeof Charts> = {
                 component: `
  ## Usage
 \`\`\`tsx
-import { Charts, ChartType, ChartLegendPosition } from '@juspay/blend-design-system';
+import { Charts, ChartType, ChartLegendPosition } from '@juspay/blend-design-system/deprecated/charts';
 
 const data = [
   {

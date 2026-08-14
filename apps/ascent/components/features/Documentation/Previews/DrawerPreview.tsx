@@ -11,9 +11,11 @@ import {
     DrawerBody,
     DrawerFooter,
     DrawerClose,
+} from '@juspay/blend-design-system/deprecated/drawer'
+import {
     Button,
     ButtonType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 import React, { useState } from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
@@ -34,7 +36,7 @@ const DrawerPreview = () => {
   DrawerClose, 
   Button, 
   ButtonType 
-} from "@juspay/blend-design-system";
+} from "@juspay/blend-design-system/deprecated/drawer";
 import { useState } from "react";
 
 function MyComponent() {

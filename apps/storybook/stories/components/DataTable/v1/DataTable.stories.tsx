@@ -11,15 +11,19 @@ import {
     SearchConfig,
     AvatarData,
     TagData,
+    Theme,
+    ThemeProvider,
+} from '@juspay/blend-design-system'
+import {
     Button,
     ButtonType,
     ButtonSize,
-    Theme,
-    ThemeProvider,
+} from '@juspay/blend-design-system/deprecated/button'
+import {
     TooltipSide,
     TooltipAlign,
     TooltipSize,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tooltip'
 import {
     Download,
     Filter,

@@ -1,11 +1,11 @@
 'use client'
+import { SplitTag } from '@juspay/blend-design-system'
 import {
-    SplitTag,
     TagColor,
     TagSize,
     TagShape,
     TagVariant,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tag'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 

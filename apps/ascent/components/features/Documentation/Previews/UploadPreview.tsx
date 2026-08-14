@@ -1,10 +1,10 @@
 'use client'
-import { Upload } from '@juspay/blend-design-system'
+import { Upload } from '@juspay/blend-design-system/deprecated/upload'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const UploadPreview = () => {
-    const tsCode = `import { Upload, UploadState } from '@juspay/blend-design-system'
+    const tsCode = `import { Upload, UploadState } from '@juspay/blend-design-system/deprecated/upload'
 
 function MyComponent() {
     const handleDrop = (acceptedFiles: File[], fileRejections: FileRejection[]) => {

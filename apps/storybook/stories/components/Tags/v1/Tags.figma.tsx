@@ -6,7 +6,7 @@ import {
     TagColor,
     TagSize,
     TagShape,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tag'
 
 /**
  * FIGMA CODE CONNECT FOR TAGS COMPONENT
@@ -108,7 +108,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { Tag } from '@juspay/blend-design-system'"],
+        imports: [
+            "import { Tag } from '@juspay/blend-design-system/deprecated/tag'",
+        ],
 
         links: [
             {

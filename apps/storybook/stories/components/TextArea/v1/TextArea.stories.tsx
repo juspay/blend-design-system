@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { TextArea } from '@juspay/blend-design-system'
+import { TextArea } from '@juspay/blend-design-system/deprecated/text-area'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -23,7 +23,7 @@ const meta: Meta<typeof TextArea> = {
 ## Usage
 
 \`\`\`tsx
-import { TextArea } from '@juspay/blend-design-system';
+import { TextArea } from '@juspay/blend-design-system/deprecated/text-area';
 
 <TextArea
   label="Description"

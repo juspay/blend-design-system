@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { SearchInput } from '@juspay/blend-design-system'
+import { SearchInput } from '@juspay/blend-design-system/deprecated/search-input'
 import { Search, X, Filter, MapPin, Calendar } from 'lucide-react'
 import {
     getA11yConfig,
@@ -25,7 +25,7 @@ const meta: Meta<typeof SearchInput> = {
 ## Usage
 
 \`\`\`tsx
-import { SearchInput } from '@juspay/blend-design-system';
+import { SearchInput } from '@juspay/blend-design-system/deprecated/search-input';
 
 <SearchInput
   placeholder="Search products..."

@@ -3,14 +3,16 @@ import {
     Tooltip,
     TooltipSide,
     TooltipSize,
+} from '@juspay/blend-design-system/deprecated/tooltip'
+import {
     Button,
     ButtonType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const TooltipPreview = () => {
-    const tsCode = `import { Tooltip, TooltipSide, TooltipSize, Button, ButtonType } from "@juspay/blend-design-system";
+    const tsCode = `import { Tooltip, TooltipSide, TooltipSize, Button, ButtonType } from "@juspay/blend-design-system/deprecated/tooltip";
 
 function MyComponent() {
   return (

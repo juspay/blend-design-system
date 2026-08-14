@@ -4,7 +4,7 @@ import {
     StatCard,
     StatCardVariant,
     ChangeType,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/stat-card'
 
 /**
  * FIGMA CODE CONNECT FOR STATCARD COMPONENT
@@ -126,7 +126,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { StatCard } from '@juspay/blend-design-system'"],
+        imports: [
+            "import { StatCard } from '@juspay/blend-design-system/deprecated/stat-card'",
+        ],
 
         links: [
             {

@@ -1,5 +1,9 @@
 'use client'
-import { MenuV2, Button, ButtonType } from '@juspay/blend-design-system'
+import {
+    MenuV2,
+    ButtonV2 as Button,
+    ButtonV2Type as ButtonType,
+} from '@juspay/blend-design-system'
 import { Gear, SignOut, User } from '@phosphor-icons/react'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'

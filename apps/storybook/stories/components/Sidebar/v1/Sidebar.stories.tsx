@@ -1,14 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { Sidebar } from '@juspay/blend-design-system/deprecated/sidebar'
 import {
-    Sidebar,
     Button,
     ButtonType,
     ButtonSize,
+} from '@juspay/blend-design-system/deprecated/button'
+import {
     Avatar,
     AvatarSize,
     AvatarShape,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/avatar'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -65,7 +67,7 @@ const meta: Meta<typeof Sidebar> = {
 ### Basic Usage
 
 \`\`\`tsx
-import { Sidebar } from '@juspay/blend-design-system';
+import { Sidebar } from '@juspay/blend-design-system/deprecated/sidebar';
 import { Home, Users, Settings } from 'lucide-react';
 
 function App() {

@@ -6,12 +6,10 @@ import {
 } from '../../../../packages/blend/lib/components/ButtonV2'
 import { useState } from 'react'
 import type { ChangeEvent, ReactNode } from 'react'
-import {
-    Menu,
-    MultiSelect,
-    Popover,
-    SingleSelect,
-} from '../../../../packages/blend/lib/main'
+import { Menu } from '../../../../packages/blend/lib/deprecated/menu'
+import { MultiSelect } from '../../../../packages/blend/lib/deprecated/multi-select'
+import { Popover } from '../../../../packages/blend/lib/deprecated/popover'
+import { SingleSelect } from '../../../../packages/blend/lib/deprecated/single-select'
 import {
     AlertTriangle,
     CheckCircle2,

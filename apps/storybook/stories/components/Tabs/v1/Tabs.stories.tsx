@@ -8,8 +8,8 @@ import {
     TabsVariant,
     TabsSize,
     TabItem,
-} from '@juspay/blend-design-system'
-import { MultiSelect } from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tabs'
+import { MultiSelect } from '@juspay/blend-design-system/deprecated/multi-select'
 import {
     Settings,
     User,
@@ -45,7 +45,7 @@ const meta: Meta<typeof Tabs> = {
 ## Usage
 
 \`\`\`tsx
-import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/blend-design-system';
+import { Tabs, TabsList, TabsTrigger, TabsContent, TabsVariant } from '@juspay/blend-design-system/deprecated/tabs';
 
 <Tabs defaultValue="tab1" variant={TabsVariant.BOXED}>
   <TabsList>

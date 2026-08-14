@@ -18,11 +18,10 @@ import {
     ButtonV2Size,
     ButtonV2SubType,
     ButtonV2Type,
-    Card,
-    CardVariant,
     NumberInputV2,
     RadioV2,
 } from '@juspay/blend-design-system'
+import { Card, CardVariant } from '@juspay/blend-design-system/deprecated/card'
 import { CaretDownIcon, CaretUpIcon, XIcon } from '@phosphor-icons/react'
 import { TemplatesIcon } from '@/components/svg/Templates'
 

@@ -1,6 +1,10 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { Avatar, AvatarSize, AvatarShape } from '@juspay/blend-design-system'
+import {
+    Avatar,
+    AvatarSize,
+    AvatarShape,
+} from '@juspay/blend-design-system/deprecated/avatar'
 
 /**
  * FIGMA CODE CONNECT FOR AVATAR COMPONENT
@@ -75,7 +79,9 @@ figma.connect(
             return <Avatar {...avatarProps} />
         },
 
-        imports: ["import { Avatar } from '@juspay/blend-design-system'"],
+        imports: [
+            "import { Avatar } from '@juspay/blend-design-system/deprecated/avatar'",
+        ],
 
         links: [
             {

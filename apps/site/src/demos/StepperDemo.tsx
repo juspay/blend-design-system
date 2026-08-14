@@ -4,8 +4,8 @@ import {
     Stepper,
     StepperType,
     StepState,
-    Checkbox,
-} from '../../../../packages/blend/lib/main'
+} from '../../../../packages/blend/lib/deprecated/stepper'
+import { Checkbox } from '../../../../packages/blend/lib/main'
 
 const DemoCheckbox = () => {
     const [checked, setChecked] = useState(false)

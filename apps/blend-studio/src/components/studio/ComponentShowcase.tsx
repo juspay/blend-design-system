@@ -13,16 +13,17 @@ import {
     ButtonV2,
     ButtonV2Size,
     ButtonV2Type,
+    TagV2,
+    TagV2Color,
+    TagV2Type,
+} from '@juspay/blend-design-system'
+import {
     StatCard,
     StatCardVariant,
     ChangeType,
     StatCardArrowDirection,
-    TagV2,
-    TagV2Color,
-    TagV2Type,
-    Card,
-    CardVariant,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/stat-card'
+import { Card, CardVariant } from '@juspay/blend-design-system/deprecated/card'
 import {
     BellSlashIcon,
     ArrowCircleDownIcon,

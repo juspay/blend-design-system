@@ -3,10 +3,12 @@ import { figma } from '@figma/code-connect'
 import {
     Popover,
     PopoverSize,
+} from '@juspay/blend-design-system/deprecated/popover'
+import {
     Button,
     ButtonType,
     ButtonSize,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/button'
 
 /**
  * FIGMA CODE CONNECT FOR POPOVER COMPONENT
@@ -97,7 +99,7 @@ figma.connect(
         },
 
         imports: [
-            "import { Popover, Button } from '@juspay/blend-design-system'",
+            "import { Popover, Button } from '@juspay/blend-design-system/deprecated/popover'",
         ],
 
         links: [

@@ -1,10 +1,13 @@
 'use client'
 
-import { Breadcrumb, BreadcrumbItemType } from '@juspay/blend-design-system'
+import {
+    Breadcrumb,
+    BreadcrumbItemType,
+} from '@juspay/blend-design-system/deprecated/breadcrumb'
 import { HomeIcon, FolderIcon } from 'lucide-react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
-const tsCode = `import { Breadcrumb, BreadcrumbItemType } from '@juspay/blend-design-system'
+const tsCode = `import { Breadcrumb, BreadcrumbItemType } from '@juspay/blend-design-system/deprecated/breadcrumb'
 import { HomeIcon, FolderIcon } from 'lucide-react'
 
 function MyComponent() {

@@ -5,7 +5,7 @@ import {
     AlertVariant,
     AlertStyle,
     AlertActionPlacement,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/alert'
 
 /**
  * FIGMA CODE CONNECT FOR ALERT COMPONENT
@@ -145,7 +145,9 @@ figma.connect(
             />
         ),
 
-        imports: ["import { Alert } from '@juspay/blend-design-system'"],
+        imports: [
+            "import { Alert } from '@juspay/blend-design-system/deprecated/alert'",
+        ],
 
         links: [
             {

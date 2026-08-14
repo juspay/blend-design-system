@@ -1,8 +1,8 @@
 'use client'
 import {
     TooltipV2,
-    Button,
-    ButtonType,
+    ButtonV2 as Button,
+    ButtonV2Type as ButtonType,
     TooltipV2Side,
     TooltipV2Align,
     TooltipV2Size,

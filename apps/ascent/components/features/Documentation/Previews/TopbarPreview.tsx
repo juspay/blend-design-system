@@ -1,10 +1,11 @@
 'use client'
-import { Button, Topbar } from '@juspay/blend-design-system'
+import { Topbar } from '@juspay/blend-design-system/deprecated/topbar'
+import { Button } from '@juspay/blend-design-system/deprecated/button'
 import React from 'react'
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
 const TopbarPreview = () => {
-    const tsCode = `import { Button, Topbar } from '@juspay/blend-design-system'
+    const tsCode = `import { Button, Topbar } from '@juspay/blend-design-system/deprecated/topbar'
 
 function MyComponent() {
     return (

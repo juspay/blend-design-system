@@ -26,7 +26,7 @@ import {
     Info,
     EllipsisVertical,
 } from 'lucide-react'
-import { Popover } from '../../../../packages/blend/lib/main'
+import { Popover } from '../../../../packages/blend/lib/deprecated/popover'
 
 const StatCardDemo = () => {
     // Playground state

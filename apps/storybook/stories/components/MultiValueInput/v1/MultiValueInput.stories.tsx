@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { MultiValueInput, TextInputSize } from '@juspay/blend-design-system'
+import { MultiValueInput } from '@juspay/blend-design-system/deprecated/multi-value-input'
+import { TextInputSize } from '@juspay/blend-design-system/deprecated/text-input'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -24,7 +25,7 @@ const meta: Meta<typeof MultiValueInput> = {
 ## Usage
 
 \`\`\`tsx
-import { MultiValueInput } from '@juspay/blend-design-system';
+import { MultiValueInput } from '@juspay/blend-design-system/deprecated/multi-value-input';
 
 <MultiValueInput
   label="Keywords"

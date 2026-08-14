@@ -5,7 +5,7 @@ import {
     StepperType,
     StepState,
     type Step,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/stepper'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
@@ -29,7 +29,7 @@ const meta: Meta<typeof Stepper> = {
 ## Usage
 
 \`\`\`tsx
-import { Stepper, StepperType, StepState } from '@juspay/blend-design-system';
+import { Stepper, StepperType, StepState } from '@juspay/blend-design-system/deprecated/stepper';
 
 const steps = [
   { id: 1, title: 'Step 1', status: StepState.COMPLETED },

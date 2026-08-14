@@ -14,20 +14,21 @@ import {
     TrashIcon,
 } from '@phosphor-icons/react'
 import {
-    ButtonSize,
-    ButtonType,
     ButtonV2,
     ButtonV2Size,
     ButtonV2SubType,
     ButtonV2Type,
-    Card,
-    CardVariant,
-    Modal,
     RadioV2,
     TagV2,
     TagV2Color,
     TagV2Type,
 } from '@juspay/blend-design-system'
+import {
+    ButtonSize,
+    ButtonType,
+} from '@juspay/blend-design-system/deprecated/button'
+import { Card, CardVariant } from '@juspay/blend-design-system/deprecated/card'
+import { Modal } from '@juspay/blend-design-system/deprecated/modal'
 import {
     getFontFamilyStyle,
     loadTypographyPreviewFonts,

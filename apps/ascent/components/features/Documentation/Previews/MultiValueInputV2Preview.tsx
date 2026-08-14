@@ -1,13 +1,12 @@
 'use client'
 
 import React, { useState } from 'react'
+import { MultiValueInputV2, InputSizeV2 } from '@juspay/blend-design-system'
 import {
-    MultiValueInputV2,
-    InputSizeV2,
     TagSize,
     TagShape,
     TagVariant,
-} from '@juspay/blend-design-system'
+} from '@juspay/blend-design-system/deprecated/tag'
 
 import ComponentPreview from '@/components/features/Documentation/Previews/ComponentPreview'
 
