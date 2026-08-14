@@ -26,6 +26,12 @@ import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
 import { useSectionScroll } from '../../hooks/useSectionScroll'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
+import { MenuV2 } from '../MenuV2'
+import {
+    MenuV2Alignment,
+    MenuV2Side,
+    type MenuV2ItemType,
+} from '../MenuV2/menuV2.types'
 
 const StyledElement = styled(Block)<{
     $isLink?: boolean
@@ -398,6 +404,7 @@ const NavItem = ({
         setItemExpanded(item, itemPath, value)
     const { activeItem, setActiveItem } = useActiveItemContext()
     const hasChildren = item.items && item.items.length > 0
+    const isIconOnlyMenuTrigger = iconOnlyMode && hasChildren
     const isSelectable = enableParentSelection || !hasChildren
     // bare-label matching is a backward-compat fallback for id-less items
     // only, so a label-valued activeItem can't co-select id'd duplicates
@@ -441,6 +448,10 @@ const NavItem = ({
     }, [isExpanded, iconOnlyMode, scrollIntoView])
 
     const activateItem = () => {
+        if (isIconOnlyMenuTrigger) {
+            return
+        }
+
         if (hasChildren && !iconOnlyMode) {
             setIsExpanded(!isExpanded)
             if (enableParentSelection) {
@@ -473,8 +484,58 @@ const NavItem = ({
         activateItem()
     }
 
-    const Element = item.href ? 'a' : 'button'
-    const elementProps = item.href ? { href: item.href } : {}
+    const Element = item.href && !isIconOnlyMenuTrigger ? 'a' : 'button'
+    const elementProps =
+        item.href && !isIconOnlyMenuTrigger ? { href: item.href } : {}
+
+    const iconOnlyMenuItems = useMemo((): MenuV2ItemType[] => {
+        const toMenuItems = (
+            items: NavbarItem[],
+            parentPath: string
+        ): MenuV2ItemType[] =>
+            items.map((nestedItem) => {
+                const nestedItemPath = `${parentPath}/${getItemPathSegment(nestedItem)}`
+                const nestedHasChildren = !!nestedItem.items?.length
+                const nestedIsSelectable =
+                    enableParentSelection || !nestedHasChildren
+                const nestedIsSelected =
+                    nestedItem.isSelected !== undefined
+                        ? nestedItem.isSelected && nestedIsSelectable
+                        : nestedIsSelectable &&
+                          (activeItem === nestedItemPath ||
+                              (!nestedItem.id &&
+                                  activeItem === nestedItem.label))
+
+                return {
+                    id: nestedItemPath,
+                    label: {
+                        text: nestedItem.label,
+                        leftSlot: React.isValidElement(nestedItem.leftSlot)
+                            ? nestedItem.leftSlot
+                            : undefined,
+                    },
+                    selected: nestedIsSelected,
+                    onClick: () => {
+                        if (nestedIsSelectable) {
+                            setActiveItem(nestedItemPath)
+                        }
+                        nestedItem.onClick?.()
+                    },
+                    subMenu: nestedHasChildren
+                        ? toMenuItems(nestedItem.items!, nestedItemPath)
+                        : undefined,
+                }
+            })
+
+        return hasChildren ? toMenuItems(item.items!, itemPath) : []
+    }, [
+        activeItem,
+        enableParentSelection,
+        hasChildren,
+        item.items,
+        itemPath,
+        setActiveItem,
+    ])
 
     const renderContent = () => {
         if (iconOnlyMode) {
@@ -575,15 +636,18 @@ const NavItem = ({
             {...elementProps}
             ref={refCallback}
             onClick={handleClick}
-            onKeyDown={(e: React.KeyboardEvent) =>
-                handleKeyDown(e, {
-                    hasChildren,
-                    isExpanded,
-                    setIsExpanded,
-                    handleClick: activateItem,
-                    index,
-                    onNavigate,
-                })
+            onKeyDown={
+                isIconOnlyMenuTrigger
+                    ? undefined
+                    : (e: React.KeyboardEvent) =>
+                          handleKeyDown(e, {
+                              hasChildren,
+                              isExpanded,
+                              setIsExpanded,
+                              handleClick: activateItem,
+                              index,
+                              onNavigate,
+                          })
             }
             aria-expanded={
                 hasChildren && !iconOnlyMode
@@ -617,7 +681,20 @@ const NavItem = ({
             }
         >
             <NavItemContentFrame $showHierarchyLines={showHierarchyLines}>
-                {iconOnlyMode && item.leftSlot ? (
+                {isIconOnlyMenuTrigger ? (
+                    <MenuV2
+                        trigger={itemElement}
+                        items={[{ items: iconOnlyMenuItems }]}
+                        alignment={MenuV2Alignment.START}
+                        side={MenuV2Side.RIGHT}
+                        sideOffset={8}
+                        dimensions={{ minWidth: 200 }}
+                        triggerProps={{
+                            'aria-haspopup': 'menu',
+                            'aria-label': `${item.label} menu`,
+                        }}
+                    />
+                ) : iconOnlyMode && item.leftSlot ? (
                     <TooltipV2 content={item.label} side={TooltipV2Side.RIGHT}>
                         {itemElement}
                     </TooltipV2>

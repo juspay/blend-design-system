@@ -21,6 +21,7 @@ const ScrollableContainer = styled(Block)`
 type Props = {
     id: string
     secondarySidebar?: SecondarySidebarInfo
+    isExpanded?: boolean
     tokens: SidebarV2TokensType
 }
 
@@ -100,7 +101,12 @@ function SecondarySidebarItemButton({
     )
 }
 
-export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
+export function SecondarySidebar({
+    id,
+    secondarySidebar,
+    isExpanded = true,
+    tokens,
+}: Props) {
     if (!secondarySidebar || (secondarySidebar?.items?.length ?? 0) === 0) {
         return null
     }
@@ -113,9 +119,14 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
         <Block
             id={id}
             data-element="secondary-sidebar"
-            width={tokens.secondarySidebar.width}
+            width={isExpanded ? tokens.secondarySidebar.width : 0}
+            minWidth={0}
             height="100%"
-            borderRight={tokens.secondarySidebar.borderRight}
+            overflow="hidden"
+            flexShrink={0}
+            borderRight={
+                isExpanded ? tokens.secondarySidebar.borderRight : 'none'
+            }
             backgroundColor={tokens.secondarySidebar.backgroundColor}
             display="flex"
             flexDirection="column"
@@ -123,8 +134,15 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
             alignItems="center"
             paddingTop={tokens.secondarySidebar.paddingTop}
             paddingBottom={tokens.secondarySidebar.paddingBottom}
-            paddingLeft={tokens.secondarySidebar.paddingLeft}
-            paddingRight={tokens.secondarySidebar.paddingRight}
+            opacity={isExpanded ? 1 : 0}
+            pointerEvents={isExpanded ? 'auto' : 'none'}
+            aria-hidden={!isExpanded}
+            inert={!isExpanded}
+            transition={
+                isExpanded
+                    ? 'width 0.2s cubic-bezier(0.2, 0, 0, 1), opacity 0.1s ease-out 0.1s, border 0.2s cubic-bezier(0.2, 0, 0, 1)'
+                    : 'width 0.2s cubic-bezier(0.2, 0, 0, 1), opacity 0.08s ease-in, border 0.2s cubic-bezier(0.2, 0, 0, 1)'
+            }
         >
             <ScrollableContainer
                 data-element="secondary-sidebar-items"
@@ -133,8 +151,11 @@ export function SecondarySidebar({ id, secondarySidebar, tokens }: Props) {
                 gap={tokens.secondarySidebar.gap}
                 alignItems="center"
                 flexGrow={1}
+                width="100%"
+                paddingLeft={tokens.secondarySidebar.paddingLeft}
+                paddingRight={tokens.secondarySidebar.paddingRight}
                 overflowY="auto"
-                style={{ minHeight: 0 }}
+                style={{ minHeight: 0, boxSizing: 'border-box' }}
             >
                 {items?.map((item) => (
                     <SecondarySidebarItemButton

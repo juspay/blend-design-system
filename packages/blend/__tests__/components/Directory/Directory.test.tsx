@@ -144,6 +144,52 @@ describe('Directory', () => {
         expect(onActiveItemChange).toHaveBeenCalledWith('mid_001/sub_1')
     })
 
+    it('opens nested items in a MenuV2 flyout in icon-only mode', async () => {
+        const onNestedItemClick = vi.fn()
+        const { user } = render(
+            <Directory
+                iconOnlyMode
+                directoryData={[
+                    {
+                        label: 'Organizations',
+                        items: [
+                            {
+                                label: 'Acme Commerce Group',
+                                leftSlot: <span>AC</span>,
+                                items: [
+                                    {
+                                        label: 'Helix Network',
+                                        items: [
+                                            {
+                                                label: 'Orbit Pharma',
+                                                onClick: onNestedItemClick,
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        label: 'Leaf item',
+                                        onClick: onNestedItemClick,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', {
+                name: 'Acme Commerce Group menu',
+            })
+        )
+
+        const nestedItem = await screen.findByText('Leaf item')
+        await user.click(nestedItem)
+
+        expect(onNestedItemClick).toHaveBeenCalledTimes(1)
+    })
+
     it('does not co-select id-having duplicates via a bare-label activeItem', () => {
         const duplicateLabelData: DirectoryData[] = [
             {

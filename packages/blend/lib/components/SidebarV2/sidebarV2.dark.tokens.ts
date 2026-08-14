@@ -10,9 +10,6 @@ export const getSidebarV2DarkTokens = (
                 zIndex: foundationToken.zIndex[99],
                 backgroundColor: foundationToken.colors.gray[900],
                 borderRight: `1px solid ${foundationToken.colors.gray[800]}`,
-                hoverPreview: {
-                    boxShadow: foundationToken.shadows['lg'],
-                },
                 maxWidth: {
                     withLeftPanel: '300px',
                     withoutLeftPanel: '250px',
@@ -117,9 +114,6 @@ export const getSidebarV2DarkTokens = (
                 zIndex: foundationToken.zIndex[99],
                 backgroundColor: foundationToken.colors.gray[900],
                 borderRight: `1px solid ${foundationToken.colors.gray[800]}`,
-                hoverPreview: {
-                    boxShadow: foundationToken.shadows['lg'],
-                },
                 maxWidth: {
                     withLeftPanel: '320px',
                     withoutLeftPanel: '270px',

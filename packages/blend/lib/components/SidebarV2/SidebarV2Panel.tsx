@@ -24,10 +24,6 @@ const DirectoryContainer = styled(Block)`
     scrollbar-color: transparent transparent;
 `
 
-const shouldTrackHover = (
-    setIsHovering: ((isHovering: boolean) => void) | undefined
-): boolean => !!setIsHovering
-
 export type SidebarV2PanelProps = {
     sidebarTopSlot?: ReactNode
     merchantInfo?: {
@@ -52,7 +48,6 @@ export type SidebarV2PanelProps = {
     iconOnlyMode?: boolean
     hideToggleButton?: boolean
     footer?: ReactNode
-    setIsHovering?: (isHovering: boolean) => void
     sidebarState?: SidebarV2StateChangeType
     tokens: SidebarV2TokensType
     showHierarchyLines?: DirectoryProps['showHierarchyLines']
@@ -81,7 +76,6 @@ const SidebarV2Panel = ({
     iconOnlyMode = false,
     hideToggleButton = false,
     footer,
-    setIsHovering,
     sidebarState = 'expanded',
     tokens,
     showHierarchyLines = false,
@@ -93,7 +87,6 @@ const SidebarV2Panel = ({
     enableVirtualization = false,
     virtualization,
 }: SidebarV2PanelProps) => {
-    const trackHover = shouldTrackHover(setIsHovering)
     const directoryData = normalizeDirectoryData(data)
 
     return (
@@ -111,7 +104,7 @@ const SidebarV2Panel = ({
             minWidth={0}
             flexShrink={0}
             overflow="hidden"
-            transition="width 0.25s ease-in-out"
+            transition="width 0.2s cubic-bezier(0.2, 0, 0, 1)"
         >
             <SidebarV2Header
                 sidebarTopSlot={sidebarTopSlot}
@@ -131,9 +124,6 @@ const SidebarV2Panel = ({
                 id={sidebarNavId}
                 role="region"
                 aria-label="Navigation menu"
-                onMouseEnter={
-                    trackHover ? () => setIsHovering?.(true) : undefined
-                }
             >
                 <Directory
                     directoryData={directoryData}

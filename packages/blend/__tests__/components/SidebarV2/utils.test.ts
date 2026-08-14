@@ -23,23 +23,12 @@ describe('SidebarV2 Utils', () => {
     })
 
     describe('getSidebarV2Status', () => {
-        it('returns INTERMEDIATE when hovering', () => {
-            expect(getSidebarV2Status(true, true)).toBe(
-                SidebarV2StateChange.INTERMEDIATE
-            )
-            expect(getSidebarV2Status(false, true)).toBe(
-                SidebarV2StateChange.INTERMEDIATE
-            )
+        it('returns EXPANDED when expanded', () => {
+            expect(getSidebarV2Status(true)).toBe(SidebarV2StateChange.EXPANDED)
         })
 
-        it('returns EXPANDED when expanded and not hovering', () => {
-            expect(getSidebarV2Status(true, false)).toBe(
-                SidebarV2StateChange.EXPANDED
-            )
-        })
-
-        it('returns COLLAPSED when not expanded and not hovering', () => {
-            expect(getSidebarV2Status(false, false)).toBe(
+        it('returns COLLAPSED when not expanded', () => {
+            expect(getSidebarV2Status(false)).toBe(
                 SidebarV2StateChange.COLLAPSED
             )
         })

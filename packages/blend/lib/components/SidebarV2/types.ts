@@ -8,7 +8,6 @@ export type { TenantBadge } from '../Sidebar/types'
 export enum SidebarV2StateChange {
     COLLAPSED = 'collapsed',
     EXPANDED = 'expanded',
-    INTERMEDIATE = 'intermediate',
 }
 
 export type SidebarV2StateChangeType = `${SidebarV2StateChange}`

@@ -514,7 +514,7 @@ describe('SidebarV2 Keyboard Navigation', () => {
     })
 })
 
-describe('SidebarV2 Hover Behavior', () => {
+describe('SidebarV2 Collapsed Behavior', () => {
     beforeEach(() => {
         global.ResizeObserver = class ResizeObserver {
             observe() {}
@@ -523,7 +523,7 @@ describe('SidebarV2 Hover Behavior', () => {
         } as unknown as typeof ResizeObserver
     })
 
-    it('shows hover overlay when collapsed and mouse enters directory', async () => {
+    it('keeps the sidebar collapsed when the directory is hovered', async () => {
         const user = userEvent.setup()
 
         render(
@@ -543,11 +543,11 @@ describe('SidebarV2 Hover Behavior', () => {
             await user.hover(directoryContainer)
         }
 
-        // The hover effect should be triggered
+        // Hovering must not open a preview sidebar.
         expect(directoryContainer).toBeInTheDocument()
     })
 
-    it('renders hover overlay with secondary sidebar offset', () => {
+    it('keeps the secondary rail mounted but visually collapsed', () => {
         const secondarySidebar = createMockSecondarySidebar()
 
         const { container } = render(
@@ -560,9 +560,15 @@ describe('SidebarV2 Hover Behavior', () => {
             </SidebarV2>
         )
 
-        // Should have the hover overlay
-        const sidebar = container.querySelector('[data-sidebar="sidebar"]')
-        expect(sidebar).toBeInTheDocument()
+        const secondaryRail = container.querySelector(
+            '[data-element="secondary-sidebar"]'
+        )
+        expect(secondaryRail).toHaveAttribute('aria-hidden', 'true')
+        expect(secondaryRail).toHaveAttribute('inert')
+        expect(secondaryRail).toHaveStyle({
+            width: '0px',
+            overflow: 'hidden',
+        })
     })
 })
 
