@@ -329,6 +329,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         maxWidth={maxWidth}
                         maxHeight={maxHeight}
                         borderRadius={modalTokens.borderRadius}
+                        // Clip children (opaque header/footer) to the container
+                        // radius — otherwise their square corners paint over the
+                        // rounded top/bottom of the dialog (issue #1687).
+                        overflow="hidden"
                         boxShadow={modalTokens.boxShadow}
                         role="dialog"
                         aria-modal="true"
