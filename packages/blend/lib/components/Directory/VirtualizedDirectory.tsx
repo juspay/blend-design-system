@@ -494,15 +494,26 @@ const VirtualizedDirectory = ({
         const currentLineColumn = row.depth - 1
         const activateItem = () => {
             if (hasChildren) {
-                setExpanded(row.item, row.itemPath, !isExpanded)
                 if (enableParentSelection) {
                     setActiveItem(row.itemPath)
+                    if (!isExpanded) {
+                        setExpanded(row.item, row.itemPath, true)
+                    }
+                } else {
+                    setExpanded(row.item, row.itemPath, !isExpanded)
                 }
                 row.item.onClick?.()
             } else {
                 setActiveItem(row.itemPath)
                 row.item.onClick?.()
             }
+        }
+
+        // Chevron toggles disclosure only; stop the row click from also selecting.
+        const toggleExpanded = (event: React.MouseEvent<HTMLElement>) => {
+            event.stopPropagation()
+            event.preventDefault()
+            setExpanded(row.item, row.itemPath, !isExpanded)
         }
 
         return (
@@ -606,6 +617,9 @@ const VirtualizedDirectory = ({
                         <ChevronWrapper
                             $tokens={tokens}
                             $isExpanded={isExpanded}
+                            onClick={toggleExpanded}
+                            aria-hidden="true"
+                            style={{ cursor: 'pointer' }}
                         >
                             <ChevronDown
                                 color={

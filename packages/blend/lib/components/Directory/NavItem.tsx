@@ -442,15 +442,24 @@ const NavItem = ({
 
     const activateItem = () => {
         if (hasChildren && !iconOnlyMode) {
-            setIsExpanded(!isExpanded)
             if (enableParentSelection) {
                 setActiveItem(itemPath)
+                if (!isExpanded) setIsExpanded(true)
+            } else {
+                setIsExpanded(!isExpanded)
             }
             item.onClick?.()
         } else {
             setActiveItem(itemPath)
             item.onClick?.()
         }
+    }
+
+    // Chevron toggles disclosure only; stop the row click from also selecting.
+    const toggleExpanded = (event: React.MouseEvent<HTMLElement>) => {
+        event.stopPropagation()
+        event.preventDefault()
+        setIsExpanded(!isExpanded)
     }
 
     const handleClick = (
@@ -553,7 +562,9 @@ const NavItem = ({
                     <ChevronWrapper
                         $isExpanded={isExpanded}
                         $tokens={tokens}
+                        onClick={toggleExpanded}
                         aria-hidden="true"
+                        style={{ cursor: 'pointer' }}
                     >
                         <ChevronDown
                             color={tokens.section.itemList.item.chevron.color}
