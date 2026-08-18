@@ -117,6 +117,52 @@ describe('MultiSelectV2', () => {
         })
     })
 
+    it('updates controlled selection through onSelectionChange', async () => {
+        const user = userEvent.setup()
+        const onSelectionChange = vi.fn()
+
+        const ControlledMultiSelect = () => {
+            const [selectedValues, setSelectedValues] = React.useState<
+                string[]
+            >([])
+
+            return (
+                <MultiSelectV2
+                    label="Select fruit"
+                    placeholder="Select fruit"
+                    items={createBasicItems()}
+                    selectedValues={selectedValues}
+                    onSelectionChange={(values) => {
+                        onSelectionChange(values)
+                        setSelectedValues(values)
+                    }}
+                />
+            )
+        }
+
+        render(<ControlledMultiSelect />)
+
+        await user.click(
+            screen.getByRole('combobox', { name: /select fruit/i })
+        )
+        await user.click(await screen.findByRole('option', { name: /apple/i }))
+        await user.click(await screen.findByRole('option', { name: /banana/i }))
+
+        expect(onSelectionChange).toHaveBeenNthCalledWith(1, ['apple'])
+        expect(onSelectionChange).toHaveBeenNthCalledWith(2, [
+            'apple',
+            'banana',
+        ])
+        expect(screen.getByRole('option', { name: /apple/i })).toHaveAttribute(
+            'aria-selected',
+            'true'
+        )
+        expect(screen.getByRole('option', { name: /banana/i })).toHaveAttribute(
+            'aria-selected',
+            'true'
+        )
+    })
+
     it('calls onChange with array when clear button is clicked', async () => {
         const user = userEvent.setup()
         const onChange = vi.fn()
