@@ -23,7 +23,7 @@ Create a scalable Button component that can:
 └───────────────────────────────────────────────┘
 ```
 
-- **Container**: `PrimitiveButton` with tokens for background, border, radius, shadow, outline
+- **Container**: `PrimitiveButton` with tokens for background, border, radius, shadow, and focus ring
 - **Left Slot**: optional icon/content before text
 - **Text**: main label, token-driven typography
 - **Right Slot**: optional icon/content after text
@@ -85,8 +85,9 @@ export type ButtonBaseProps = {
     state?: ButtonV2State
 }
 
-export type ButtonV2Props = ButtonBaseProps &
-    Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>
+export type ButtonV2Props = ButtonBaseProps & {
+    justifyContent?: React.CSSProperties['justifyContent']
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'style' | 'className'>
 ```
 
 _Note_: `LinkButtonProps` extend the same base props for anchor-based buttons and are documented in code.
@@ -96,6 +97,14 @@ _Note_: `LinkButtonProps` extend the same base props for anchor-based buttons an
 ```typescript
 export type ButtonV2TokensType = Readonly<{
     gap: CSSObject['gap']
+    slotMaxHeight: {
+        [size in ButtonV2Size]: CSSObject['maxHeight']
+    }
+    focusRing: {
+        [type in ButtonV2Type]: {
+            [subType in ButtonV2SubType]: CSSObject['boxShadow']
+        }
+    }
     backgroundColor: {
         [type in ButtonV2Type]: {
             [subType in ButtonV2SubType]: {
@@ -154,7 +163,10 @@ export type ButtonV2TokensType = Readonly<{
 }>
 ```
 
-**Token Pattern**: `component.[target].CSSProp.[size].[type].[subType].[state].value`
+**Token Pattern**: State-keyed slots use
+`component.[target].CSSProp.[type].[subType].[state].value`. Size-keyed slots
+use `component.[target].CSSProp.[size].value`; `focusRing` is keyed by type and
+subtype, and `slotMaxHeight` is keyed by size.
 
 ## Design Decisions
 
@@ -273,20 +285,30 @@ if (isSkeleton) {
 
 ### 6. Accessibility-First API
 
-**Decision**: Use `getButtonAriaAttributes` and `createButtonKeyboardHandler` to handle ARIA attributes and keyboard interactions.
+**Decision**: Use `getButtonAriaAttributes` for ARIA attributes. Rely on native
+`<button>` activation for `ButtonV2`; use `createButtonKeyboardHandler` only for
+anchor-based `LinkButton` elements.
 
-**Rationale**: Centralizes accessibility concerns, ensures consistent disabled/loading semantics, and keeps the component implementation clean.
+**Rationale**: Active native buttons already produce genuine click events for
+Enter and Space and preserve native form submission. Anchor-based buttons need
+explicit Enter and Space handling to provide the same activation behavior.
 
 ```tsx
 const ariaAttrs = getButtonAriaAttributes({
     disabled: isDisabled,
     loading: isLoading,
+    skeleton: isSkeleton,
     ariaLabel,
 })
 
-const keyboardHandler = createButtonKeyboardHandler(() => {
-    if (!isDisabled && !isLoading && onClick) {
-        onClick(syntheticEvent)
-    }
-}, isDisabled)
+// ButtonV2 does not need a custom keyboard handler.
+// LinkButton uses this helper because anchors do not activate on Space.
+const keyboardHandler = createButtonKeyboardHandler<HTMLAnchorElement>(
+    (event) => {
+        if (!isDisabled && !isLoading) {
+            event.currentTarget.click()
+        }
+    },
+    isDisabled
+)
 ```

@@ -28,10 +28,7 @@ import {
     getButtonPadding,
     getButtonLineHeight,
 } from './utils'
-import {
-    getButtonAriaAttributes,
-    createButtonKeyboardHandler,
-} from '../../utils/accessibility'
+import { getButtonAriaAttributes } from '../../utils/accessibility'
 
 type RenderButtonContentProps = {
     isLoading: boolean
@@ -66,11 +63,11 @@ export function renderButtonContent({
     rightSlot,
     tokens,
 }: RenderButtonContentProps) {
-    const iconMaxHeight = getIconMaxHeight(
+    const iconMaxHeights = getIconMaxHeight(
         subType,
         leftSlot?.maxHeight,
         rightSlot?.maxHeight,
-        size
+        tokens.slotMaxHeight[size]
     )
     const iconColor = getIconColor(
         isSkeleton,
@@ -123,7 +120,7 @@ export function renderButtonContent({
                     data-element="leading-icon"
                     aria-hidden={text ? 'true' : undefined}
                     opacity={isSkeleton ? 0 : 1}
-                    maxHeight={iconMaxHeight}
+                    maxHeight={iconMaxHeights.left}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -154,7 +151,7 @@ export function renderButtonContent({
                     data-element="trailing-icon"
                     aria-hidden={text ? 'true' : undefined}
                     opacity={isSkeleton ? 0 : 1}
-                    maxHeight={iconMaxHeight}
+                    maxHeight={iconMaxHeights.right}
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
@@ -183,9 +180,11 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
             width,
             minWidth,
             maxWidth,
+            justifyContent = 'center',
             state = ButtonV2State.DEFAULT,
             disabled,
             onClick,
+            onKeyDown,
             ...restHtmlProps
         },
         ref
@@ -204,7 +203,10 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
         const buttonStatus = getButtonStatus(isLoading, isDisabled)
 
         const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-            if (isSkeleton || isDisabled || isLoading) return
+            if (isSkeleton || isDisabled || isLoading) {
+                event.preventDefault()
+                return
+            }
             onClick?.(event)
         }
 
@@ -225,18 +227,9 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
         const ariaAttrs = getButtonAriaAttributes({
             disabled: isDisabled,
             loading: isLoading,
+            skeleton: isSkeleton,
             ariaLabel,
         })
-
-        const keyboardHandler = createButtonKeyboardHandler(() => {
-            if (!isDisabled && !isLoading && onClick) {
-                const syntheticEvent = {
-                    preventDefault: () => {},
-                    stopPropagation: () => {},
-                } as MouseEvent<HTMLButtonElement>
-                onClick(syntheticEvent)
-            }
-        }, isDisabled)
 
         const buttonStyles = getButtonStyles(
             isSkeleton,
@@ -251,10 +244,9 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
             <PrimitiveButton
                 ref={ref}
                 onClick={handleClick}
-                {...keyboardHandler}
                 display="flex"
                 alignItems="center"
-                justifyContent="center"
+                justifyContent={justifyContent}
                 width={width ?? 'fit-content'}
                 minWidth={minWidth}
                 maxWidth={maxWidth}
@@ -277,11 +269,13 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
                 _focusVisible={buttonStyles._focusVisible}
                 _disabled={buttonStyles._disabled}
                 paddingTop={paddingTokens.top}
-                paddingX={paddingTokens.right}
+                paddingLeft={paddingTokens.left}
+                paddingRight={paddingTokens.right}
                 paddingBottom={paddingTokens.bottom}
                 data-button={text}
                 data-status={buttonStatus}
                 {...restHtmlProps}
+                onKeyDown={onKeyDown}
             >
                 {renderButtonContent({
                     isLoading,

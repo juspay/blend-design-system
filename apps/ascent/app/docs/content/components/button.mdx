@@ -10,10 +10,14 @@ tags:
     - action
     - primary
 RepoFolderName: Button
-StorybookLink: components-button-buttonv2--docs
+StorybookLink: components-button--docs
 ---
 
 <ButtonPreview />
+
+> ⚠️ **Deprecated:** `Button` is deprecated. Use [`ButtonV2`](/docs/components/button-v2)
+> for new work. See the [Button to ButtonV2 migration guide](/docs/migration/button)
+> for the complete prop and token mapping.
 
 ## Usage
 
@@ -135,11 +139,13 @@ function MyComponent() {
             {
                 content: 'onClick',
                 hintText:
-                    "Optional callback function invoked when the button is clicked. Receives no parameters and should handle the button's primary action. The button will be disabled during loading state.",
+                    "Optional callback function invoked when the button is clicked. It may receive the native mouse event and should handle the button's primary action. The button will be disabled during loading state.",
             },
             {
-                content: '() => void',
-                hintText: 'Function called when the user clicks the button',
+                content:
+                    '(event?: React.MouseEvent<HTMLButtonElement>) => void',
+                hintText:
+                    'Function called when the user clicks the button, with an optional native mouse event',
             },
             { content: '' },
         ],
