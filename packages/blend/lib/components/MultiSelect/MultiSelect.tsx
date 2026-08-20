@@ -814,7 +814,11 @@ const MultiSelect = ({
                                     multiSelectTokens
                                 ).borderRadius
                             }
-                            backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                            backgroundColor={
+                                multiSelectTokens.trigger.backgroundColor[
+                                    variant
+                                ][error ? 'error' : 'closed']
+                            }
                             contentCentered
                             height={'100%'}
                             style={{
@@ -844,11 +848,15 @@ const MultiSelect = ({
                             borderLeft={'0px solid !important'}
                             _hover={{
                                 backgroundColor:
-                                    FOUNDATION_THEME.colors.gray[25],
+                                    multiSelectTokens.trigger.backgroundColor[
+                                        variant
+                                    ].hover,
                             }}
                             _focus={{
                                 backgroundColor:
-                                    FOUNDATION_THEME.colors.gray[25],
+                                    multiSelectTokens.trigger.backgroundColor[
+                                        variant
+                                    ].focus,
                                 border: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
                             }}
                             color={

@@ -1,6 +1,6 @@
 const OthersPreview = () => (
     <div className="flex items-center justify-center w-full max-w-56">
-        <div className="relative w-full flex items-center px-1 py-2 bg-background rounded-full border border-border shadow-[0_2px_8px_rgb(0,0,0,0.06)]">
+        <div className="relative w-full flex items-center px-1 py-2 bg-background rounded-full border border-border shadow-card">
             {/* Track - filled left part */}
             <div className="absolute left-1 h-2.5 w-1/2 bg-primary rounded-full" />
             {/* Track - empty right part */}

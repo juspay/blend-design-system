@@ -63,8 +63,8 @@ function MyComponent() {
             <div className="space-y-4">
               <p>This is the main content area of the drawer.</p>
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 bg-gray-100 rounded">Item 1</div>
-                <div className="p-3 bg-gray-100 rounded">Item 2</div>
+                <div className="p-3 bg-muted rounded">Item 1</div>
+                <div className="p-3 bg-muted rounded">Item 2</div>
               </div>
             </div>
           </DrawerBody>

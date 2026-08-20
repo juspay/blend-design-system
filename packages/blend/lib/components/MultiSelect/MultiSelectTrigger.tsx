@@ -284,7 +284,11 @@ const MultiSelectTrigger = ({
                         <PrimitiveButton
                             type="button"
                             borderRadius={`0 ${borderRadius} ${borderRadius} 0`}
-                            backgroundColor={FOUNDATION_THEME.colors.gray[0]}
+                            backgroundColor={
+                                multiSelectTokens.trigger.backgroundColor[
+                                    variant
+                                ][error ? 'error' : 'closed']
+                            }
                             contentCentered
                             height={'100%'}
                             style={{ aspectRatio: 1 }}
@@ -301,11 +305,15 @@ const MultiSelectTrigger = ({
                             }
                             _hover={{
                                 backgroundColor:
-                                    FOUNDATION_THEME.colors.gray[25],
+                                    multiSelectTokens.trigger.backgroundColor[
+                                        variant
+                                    ].hover,
                             }}
                             _focus={{
                                 backgroundColor:
-                                    FOUNDATION_THEME.colors.gray[25],
+                                    multiSelectTokens.trigger.backgroundColor[
+                                        variant
+                                    ].focus,
                                 outline: `1px solid ${FOUNDATION_THEME.colors.gray[400]} !important`,
                             }}
                         >

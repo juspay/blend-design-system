@@ -61,13 +61,13 @@ const Content = styled(RadixMenu.Content)`
     ${dropdownContentAnimations}
 `
 
-const StickyHeader = styled(Block)(() => ({
+const StickyHeader = styled(Block)<{ $surface?: string }>(({ $surface }) => ({
     position: 'sticky',
     top: 0,
     left: 0,
     right: 0,
     zIndex: 50,
-    backgroundColor: FOUNDATION_THEME.colors.gray[0],
+    backgroundColor: $surface ?? FOUNDATION_THEME.colors.gray[0],
 }))
 
 const ScrollableContent = styled(Block)(() => ({
@@ -88,7 +88,6 @@ const FixedActionButtons = styled(Block)(() => ({
     gap: FOUNDATION_THEME.unit[8],
     justifyContent: 'flex-end',
     margin: '0',
-    backgroundColor: FOUNDATION_THEME.colors.gray[0],
     flexShrink: 0,
 }))
 
@@ -449,6 +448,8 @@ const MultiSelectMenu = ({
                     role="listbox"
                     aria-multiselectable="true"
                     style={{
+                        backgroundColor: multiSelectTokens.menu.backgroundColor,
+                        border: multiSelectTokens.menu.border,
                         minWidth: minMenuWidth || 250,
                         width: 'max(var(--radix-dropdown-menu-trigger-width))',
                         maxWidth:
@@ -467,7 +468,12 @@ const MultiSelectMenu = ({
                         />
                     ) : (
                         <>
-                            <StickyHeader>
+                            <StickyHeader
+                                $surface={
+                                    multiSelectTokens.menu
+                                        .backgroundColor as string
+                                }
+                            >
                                 {shouldRenderSearch && (
                                     <Block>
                                         <SearchInput
@@ -911,7 +917,12 @@ const MultiSelectMenu = ({
                                 !(
                                     !hasRenderableItems && searchText.length > 0
                                 ) && (
-                                    <FixedActionButtons>
+                                    <FixedActionButtons
+                                        backgroundColor={
+                                            multiSelectTokens.menu
+                                                .backgroundColor as string
+                                        }
+                                    >
                                         {secondaryAction && (
                                             <Button
                                                 data-button-for={

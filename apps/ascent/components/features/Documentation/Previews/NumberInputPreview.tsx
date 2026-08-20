@@ -45,20 +45,10 @@ function MyComponent() {
                     padding: '24px',
                     width: '100%',
                     maxWidth: '400px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--surface)',
                     borderRadius: '8px',
                 }}
             >
-                <style>
-                    {`
-                    .number-input-preview input {
-                        color: #374151 !important;
-                    }
-                    .number-input-preview input::placeholder {
-                        color: #9CA3AF !important;
-                    }
-                `}
-                </style>
                 <div className="number-input-preview">
                     <NumberInput
                         label="Quantity"

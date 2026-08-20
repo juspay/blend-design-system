@@ -1,3 +1,5 @@
+import { useTheme } from '../../../context/ThemeContext'
+import FOUNDATION_THEME from '../../../tokens/theme.token'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveTextarea from '../../Primitives/PrimitiveTextArea'
 import InputLabels from '../utils/InputLabels/InputLabels'
@@ -45,6 +47,12 @@ const TextArea = ({
     ...rest
 }: TextAreaProps) => {
     const textAreaTokens = useResponsiveTokens<TextAreaTokensType>('TEXT_AREA')
+    const { theme: blendTheme } = useTheme()
+    // primary[50] reads as a near-white halo on a dark surface
+    const focusRingColor =
+        blendTheme === 'dark'
+            ? FOUNDATION_THEME.colors.primary[800]
+            : FOUNDATION_THEME.colors.primary[50]
     const [isFocused, setIsFocused] = useState(false)
     const shouldShake = useErrorShake(error || false)
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -198,7 +206,7 @@ const TextArea = ({
                         border: textAreaTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
-                        boxShadow: '0 0 0 3px #EFF6FF',
+                        boxShadow: `0 0 0 3px ${focusRingColor}`,
                         backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     disabled={disabled}

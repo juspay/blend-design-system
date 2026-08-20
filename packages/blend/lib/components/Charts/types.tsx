@@ -1,3 +1,4 @@
+import type { ChartTokensType } from './chart.tokens'
 import { ReactNode } from 'react'
 import { TooltipProps } from 'recharts'
 import {
@@ -175,6 +176,10 @@ export type RenderChartProps = {
     CustomizedDot?: (props: DotItemDotProps) => React.ReactElement<SVGElement>
     lineSeriesKeys?: string[]
     onKeyClick?: (key: string) => void
+    /** Resolved CHARTS tokens. renderChart is a plain function, not a
+     *  component, so it cannot read them itself; without these the axis falls
+     *  back to theme-neutral foundation greys and draws white rules on dark. */
+    chartTokens?: ChartTokensType
 }
 
 export type CoreChartProps = {

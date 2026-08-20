@@ -431,6 +431,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={250}
                                               >
                                                   {renderChart({
+                                                      chartTokens,
                                                       CustomizedDot,
                                                       flattenedData,
                                                       chartType,
@@ -504,6 +505,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={300}
                                               >
                                                   {renderChart({
+                                                      chartTokens,
                                                       CustomizedDot,
                                                       flattenedData,
                                                       chartType,
@@ -750,6 +752,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   //   height={'auto'}
                                               >
                                                   {renderChart({
+                                                      chartTokens,
                                                       CustomizedDot,
                                                       chartName,
                                                       flattenedData,
@@ -934,6 +937,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={'100%'}
                                               >
                                                   {renderChart({
+                                                      chartTokens,
                                                       CustomizedDot,
                                                       flattenedData,
                                                       chartType,
