@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Blend">
+    <defs>
+        <linearGradient id="blendMark" x1="96" y1="32" x2="416" y2="480" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#4FA0FF" />
+            <stop offset="1" stop-color="#0A6BE6" />
+        </linearGradient>
+    </defs>
+    <rect width="512" height="512" rx="112" fill="url(#blendMark)" />
+    <path
+        fill="#FFFFFF"
+        fill-rule="evenodd"
+        d="M160 100 H258 A69 69 0 0 1 258 238 H266 A87 87 0 0 1 266 412 H160 Z
+           M214 152 H245 A30 30 0 0 1 245 212 H214 Z
+           M214 264 H253 A48 48 0 0 1 253 360 H214 Z"
+    />
+</svg>
