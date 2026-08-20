@@ -79,7 +79,7 @@ const ComponentPreview = ({
                                     value={tab.id}
                                     className="px-2 sm:px-3 h-7 rounded-lg cursor-pointer text-sm font-medium shrink-0 snap-start
         data-[state=active]:bg-background data-[state=active]:text-foreground
-        data-[state=inactive]:text-gray-500 data-[state=inactive]:hover:text-gray-700
+        data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:text-foreground
         focus:outline-none transition-colors whitespace-nowrap"
                                     data-nav-content
                                 >

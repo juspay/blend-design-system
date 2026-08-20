@@ -32,7 +32,7 @@ function MyComponent() {
                 chart: { type: 'area' },
                 series: [{
                     data: [10, 25, 18, 35, 42, 38, 55],
-                    color: '#3b82f6',
+                    color: 'var(--accent)',
                 }],
             }}
         />
@@ -99,7 +99,7 @@ external make: (
                             {
                                 type: 'area',
                                 data: [10, 25, 18, 35, 42, 38, 55, 48, 62, 58],
-                                color: '#3b82f6',
+                                color: 'var(--accent)',
                                 fillColor: {
                                     linearGradient: {
                                         x1: 0,

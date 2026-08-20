@@ -45,7 +45,7 @@ function MyComponent() {
                             <h3 className="text-lg font-semibold mb-2">
                                 Account Information
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-muted-foreground">
                                 Manage your account settings and preferences.
                             </p>
                         </div>
@@ -55,7 +55,7 @@ function MyComponent() {
                             <h3 className="text-lg font-semibold mb-2">
                                 Password Settings
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-muted-foreground">
                                 Update your password and security settings.
                             </p>
                         </div>
@@ -65,7 +65,7 @@ function MyComponent() {
                             <h3 className="text-lg font-semibold mb-2">
                                 General Settings
                             </h3>
-                            <p className="text-gray-600">
+                            <p className="text-muted-foreground">
                                 Configure your application preferences.
                             </p>
                         </div>
