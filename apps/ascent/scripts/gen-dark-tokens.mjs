@@ -114,6 +114,64 @@ const recolor = (value, replacements, colorPattern) => {
  * the brand accent. These are MECHANICAL and want a design review -- correct
  * individual values in darkOverrides.manual.ts rather than editing this map.
  */
+/**
+ * Blend's foundation gray is cool-tinted at the dark end (gray[900] is #181B25 --
+ * blue channel 13 points above red), while the docs page background is pure
+ * neutral. Left alone, every component reads blue against the page.
+ *
+ * These two knobs pull the gray axis back to neutral and deepen the dark end.
+ * They apply ONLY to the gray family; semantic families keep their hue so alert
+ * and status colours stay legible as colours.
+ */
+const GRAY_NEUTRALIZE = 1 // 0 = keep the library's blue cast, 1 = fully neutral
+const GRAY_DARKEN = 0.18 // extra darkening applied to the dark end of the ramp
+
+const hexToRgb = (hex) => {
+    const value = hex.replace('#', '')
+    const full =
+        value.length === 3
+            ? value
+                  .split('')
+                  .map((c) => c + c)
+                  .join('')
+            : value
+    return [
+        parseInt(full.slice(0, 2), 16),
+        parseInt(full.slice(2, 4), 16),
+        parseInt(full.slice(4, 6), 16),
+    ]
+}
+
+const rgbToHex = ([r, g, b]) =>
+    '#' +
+    [r, g, b]
+        .map((c) =>
+            Math.max(0, Math.min(255, Math.round(c)))
+                .toString(16)
+                .padStart(2, '0')
+                .toUpperCase()
+        )
+        .join('')
+
+/**
+ * Collapses a colour toward its own perceived brightness (removing hue cast),
+ * then optionally darkens it. Darkening is weighted by how dark the colour
+ * already is, so surfaces deepen while light text is left alone.
+ */
+const neutralizeGray = (hex) => {
+    if (!/^#[0-9A-Fa-f]{3,6}$/.test(hex)) return hex
+    const [r, g, b] = hexToRgb(hex)
+    const luma = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    let next = [
+        r + (luma - r) * GRAY_NEUTRALIZE,
+        g + (luma - g) * GRAY_NEUTRALIZE,
+        b + (luma - b) * GRAY_NEUTRALIZE,
+    ]
+    const darkness = 1 - luma / 255
+    next = next.map((c) => c * (1 - GRAY_DARKEN * darkness))
+    return rgbToHex(next)
+}
+
 const GRAY_MAP = {
     0: 900,
     25: 800,
@@ -157,18 +215,18 @@ const SEMANTIC_FAMILIES = [
 
 const buildReplacements = (foundation) => {
     const pairs = []
-    const addFamily = (family, map) => {
+    const addFamily = (family, map, transform) => {
         const scale = foundation.colors[family]
         if (!scale) return
         for (const [from, to] of Object.entries(map)) {
             const light = scale[from]
             const dark = scale[to]
             if (typeof light === 'string' && typeof dark === 'string') {
-                pairs.push([light, dark])
+                pairs.push([light, transform ? transform(dark) : dark])
             }
         }
     }
-    addFamily('gray', GRAY_MAP)
+    addFamily('gray', GRAY_MAP, neutralizeGray)
     SEMANTIC_FAMILIES.forEach((family) => addFamily(family, SEMANTIC_MAP))
 
     const replacements = pairs.filter(

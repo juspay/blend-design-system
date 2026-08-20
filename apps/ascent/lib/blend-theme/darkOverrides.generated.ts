@@ -13,23 +13,28 @@ export const generatedDarkOverrides = {
         sm: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -41,23 +46,26 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 borderBottom: {
-                    default: '1px solid #2B303B !important',
+                    default: '1px solid #292929 !important',
+                    hover: '1px solid #959595 !important',
                     focus: '1px solid #51A2FF !important',
                     error: '1px solid #FF6467 !important',
-                    disabled: '1px solid #2B303B !important',
+                    disabled: '1px solid #292929 !important',
                 },
                 color: {
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#6B6B6B',
                     error: '#FFC9C9',
                 },
             },
             icon: {
                 color: {
-                    hover: '#E1E4EA',
+                    default: '#959595',
+                    hover: '#DFDFDF',
                     focus: '#51A2FF',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                     error: '#FF6467',
                 },
             },
@@ -65,23 +73,28 @@ export const generatedDarkOverrides = {
         lg: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -93,23 +106,26 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 borderBottom: {
-                    default: '1px solid #2B303B !important',
+                    default: '1px solid #292929 !important',
+                    hover: '1px solid #959595 !important',
                     focus: '1px solid #51A2FF !important',
                     error: '1px solid #FF6467 !important',
-                    disabled: '1px solid #2B303B !important',
+                    disabled: '1px solid #292929 !important',
                 },
                 color: {
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#6B6B6B',
                     error: '#FFC9C9',
                 },
             },
             icon: {
                 color: {
-                    hover: '#E1E4EA',
+                    default: '#959595',
+                    hover: '#DFDFDF',
                     focus: '#51A2FF',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                     error: '#FF6467',
                 },
             },
@@ -117,30 +133,42 @@ export const generatedDarkOverrides = {
     },
     TEXT_AREA: {
         sm: {
+            placeholder: {
+                color: '#959595',
+            },
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -152,52 +180,65 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
+                    hover: '1px solid #959595',
                     focus: '1px solid #51A2FF',
                     error: '1px solid #FF6467',
-                    disabled: '1px solid #2B303B',
+                    disabled: '1px solid #292929',
                 },
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
                     error: '#FFA2A2',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                 },
                 backgroundColor: {
-                    default: '#181B25',
-                    hover: '#181B25',
-                    focus: '#181B25',
-                    error: '#181B25',
-                    disabled: '#2B303B',
+                    default: '#171717',
+                    hover: '#171717',
+                    focus: '#171717',
+                    error: '#171717',
+                    disabled: '#292929',
                 },
             },
         },
         lg: {
+            placeholder: {
+                color: '#959595',
+            },
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -209,24 +250,25 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
+                    hover: '1px solid #959595',
                     focus: '1px solid #51A2FF',
                     error: '1px solid #FF6467',
-                    disabled: '1px solid #2B303B',
+                    disabled: '1px solid #292929',
                 },
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
                     error: '#FFA2A2',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                 },
                 backgroundColor: {
-                    default: '#181B25',
-                    hover: '#181B25',
-                    focus: '#181B25',
-                    error: '#181B25',
-                    disabled: '#2B303B',
+                    default: '#171717',
+                    hover: '#171717',
+                    focus: '#171717',
+                    error: '#171717',
+                    disabled: '#292929',
                 },
             },
         },
@@ -236,14 +278,15 @@ export const generatedDarkOverrides = {
             indicator: {
                 inactive: {
                     backgroundColor: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        disabled: '#525866',
+                        default: '#171717',
+                        hover: '#292929',
+                        disabled: '#4D4D4D',
                         error: '#FB2C36',
                     },
                     borderColor: {
-                        default: '#717784',
-                        disabled: '#2B303B',
+                        default: '#6B6B6B',
+                        hover: '#959595',
+                        disabled: '#292929',
                         error: '#FB2C36',
                     },
                 },
@@ -251,7 +294,7 @@ export const generatedDarkOverrides = {
                     backgroundColor: {
                         default: '#1C398E',
                         hover: '#1C398E',
-                        disabled: '#2B303B',
+                        disabled: '#292929',
                         error: '#FB2C36',
                     },
                     borderColor: {
@@ -273,15 +316,17 @@ export const generatedDarkOverrides = {
             content: {
                 label: {
                     color: {
-                        default: '#F2F4F8',
-                        hover: '#F2F4F8',
-                        disabled: '#717784',
+                        default: '#F2F2F2',
+                        hover: '#F2F2F2',
+                        disabled: '#6B6B6B',
                         error: '#FB2C36',
                     },
                 },
                 sublabel: {
                     color: {
-                        disabled: '#2B303B',
+                        default: '#959595',
+                        hover: '#959595',
+                        disabled: '#292929',
                         error: '#FB2C36',
                     },
                 },
@@ -294,14 +339,15 @@ export const generatedDarkOverrides = {
             indicator: {
                 inactive: {
                     backgroundColor: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        disabled: '#525866',
+                        default: '#171717',
+                        hover: '#292929',
+                        disabled: '#4D4D4D',
                         error: '#FB2C36',
                     },
                     borderColor: {
-                        default: '#717784',
-                        disabled: '#2B303B',
+                        default: '#6B6B6B',
+                        hover: '#959595',
+                        disabled: '#292929',
                         error: '#FB2C36',
                     },
                 },
@@ -309,7 +355,7 @@ export const generatedDarkOverrides = {
                     backgroundColor: {
                         default: '#1C398E',
                         hover: '#1C398E',
-                        disabled: '#2B303B',
+                        disabled: '#292929',
                         error: '#FB2C36',
                     },
                     borderColor: {
@@ -331,15 +377,17 @@ export const generatedDarkOverrides = {
             content: {
                 label: {
                     color: {
-                        default: '#F2F4F8',
-                        hover: '#F2F4F8',
-                        disabled: '#717784',
+                        default: '#F2F2F2',
+                        hover: '#F2F2F2',
+                        disabled: '#6B6B6B',
                         error: '#FB2C36',
                     },
                 },
                 sublabel: {
                     color: {
-                        disabled: '#2B303B',
+                        default: '#959595',
+                        hover: '#959595',
+                        disabled: '#292929',
                         error: '#FB2C36',
                     },
                 },
@@ -360,16 +408,16 @@ export const generatedDarkOverrides = {
                         error: '#FF6467',
                     },
                     inactive: {
-                        default: '#2B303B',
-                        hover: '#717784',
-                        disabled: '#525866',
-                        error: '#2B303B',
+                        default: '#292929',
+                        hover: '#6B6B6B',
+                        disabled: '#4D4D4D',
+                        error: '#292929',
                     },
                 },
                 thumb: {
-                    backgroundColor: '#181B25',
+                    backgroundColor: '#171717',
                     border: {
-                        color: '#2B303B',
+                        color: '#292929',
                     },
                     outline: '1px solid #193CB8',
                     boxShadow: '0 0 0 2px #1C398E',
@@ -378,16 +426,17 @@ export const generatedDarkOverrides = {
             content: {
                 label: {
                     color: {
-                        default: '#F2F4F8',
-                        hover: '#F5F7FA',
-                        disabled: '#717784',
+                        default: '#F2F2F2',
+                        hover: '#F5F5F5',
+                        disabled: '#6B6B6B',
                         error: '#FB2C36',
                     },
                 },
                 subtext: {
                     color: {
-                        hover: '#CACFD8',
-                        disabled: '#2B303B',
+                        default: '#959595',
+                        hover: '#C8C8C8',
+                        disabled: '#292929',
                         error: '#FF6467',
                     },
                 },
@@ -406,16 +455,16 @@ export const generatedDarkOverrides = {
                         error: '#FF6467',
                     },
                     inactive: {
-                        default: '#2B303B',
-                        hover: '#717784',
-                        disabled: '#525866',
-                        error: '#2B303B',
+                        default: '#292929',
+                        hover: '#6B6B6B',
+                        disabled: '#4D4D4D',
+                        error: '#292929',
                     },
                 },
                 thumb: {
-                    backgroundColor: '#181B25',
+                    backgroundColor: '#171717',
                     border: {
-                        color: '#2B303B',
+                        color: '#292929',
                     },
                     outline: '1px solid #193CB8',
                     boxShadow: '0 0 0 2px #1C398E',
@@ -424,16 +473,17 @@ export const generatedDarkOverrides = {
             content: {
                 label: {
                     color: {
-                        default: '#F2F4F8',
-                        hover: '#F5F7FA',
-                        disabled: '#717784',
+                        default: '#F2F2F2',
+                        hover: '#F5F5F5',
+                        disabled: '#6B6B6B',
                         error: '#FB2C36',
                     },
                 },
                 subtext: {
                     color: {
-                        hover: '#CACFD8',
-                        disabled: '#2B303B',
+                        default: '#959595',
+                        hover: '#C8C8C8',
+                        disabled: '#292929',
                         error: '#FF6467',
                     },
                 },
@@ -445,30 +495,42 @@ export const generatedDarkOverrides = {
     },
     TEXT_INPUT: {
         sm: {
+            placeholder: {
+                color: '#959595',
+            },
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -480,52 +542,65 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
                     error: '#FFC9C9',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                 },
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
+                    hover: '1px solid #959595',
                     focus: '1px solid #51A2FF',
                     error: '1px solid #FF6467',
-                    disabled: '1px solid #2B303B',
+                    disabled: '1px solid #292929',
                 },
                 backgroundColor: {
-                    default: '#181B25',
-                    disabled: '#2B303B',
-                    hover: '#181B25',
-                    focus: '#181B25',
-                    error: '#181B25',
+                    default: '#171717',
+                    disabled: '#292929',
+                    hover: '#171717',
+                    focus: '#171717',
+                    error: '#171717',
                 },
             },
         },
         lg: {
+            placeholder: {
+                color: '#959595',
+            },
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -537,24 +612,25 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
                     error: '#FFC9C9',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                 },
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
+                    hover: '1px solid #959595',
                     focus: '1px solid #51A2FF',
                     error: '1px solid #FF6467',
-                    disabled: '1px solid #2B303B',
+                    disabled: '1px solid #292929',
                 },
                 backgroundColor: {
-                    default: '#181B25',
-                    disabled: '#2B303B',
-                    hover: '#181B25',
-                    focus: '#181B25',
-                    error: '#181B25',
+                    default: '#171717',
+                    disabled: '#292929',
+                    hover: '#171717',
+                    focus: '#171717',
+                    error: '#171717',
                 },
             },
         },
@@ -563,28 +639,37 @@ export const generatedDarkOverrides = {
         sm: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -596,36 +681,41 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
                     error: '#FFC9C9',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                 },
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
+                    hover: '1px solid #959595',
                     focus: '1px solid #51A2FF',
                     error: '1px solid #FF6467',
-                    disabled: '1px solid #2B303B',
+                    disabled: '1px solid #292929',
                 },
                 backgroundColor: {
-                    default: '#181B25',
-                    disabled: '#2B303B',
-                    hover: '#181B25',
-                    focus: '#181B25',
-                    error: '#181B25',
+                    default: '#171717',
+                    disabled: '#292929',
+                    hover: '#171717',
+                    focus: '#171717',
+                    error: '#171717',
                 },
                 stepperButton: {
                     backgroundColor: {
-                        default: '#181B25',
-                        disabled: '#2B303B',
-                        hover: '#525866',
-                        focus: '#525866',
-                        error: '#181B25',
+                        default: '#171717',
+                        disabled: '#292929',
+                        hover: '#4D4D4D',
+                        focus: '#4D4D4D',
+                        error: '#171717',
                     },
                     icon: {
                         color: {
-                            disabled: '#717784',
+                            default: '#959595',
+                            disabled: '#6B6B6B',
+                            hover: '#959595',
+                            focus: '#959595',
+                            error: '#959595',
                         },
                     },
                 },
@@ -634,28 +724,37 @@ export const generatedDarkOverrides = {
         lg: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -667,36 +766,41 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
                     error: '#FFC9C9',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                 },
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
+                    hover: '1px solid #959595',
                     focus: '1px solid #51A2FF',
                     error: '1px solid #FF6467',
-                    disabled: '1px solid #2B303B',
+                    disabled: '1px solid #292929',
                 },
                 backgroundColor: {
-                    default: '#181B25',
-                    disabled: '#2B303B',
-                    hover: '#181B25',
-                    focus: '#181B25',
-                    error: '#181B25',
+                    default: '#171717',
+                    disabled: '#292929',
+                    hover: '#171717',
+                    focus: '#171717',
+                    error: '#171717',
                 },
                 stepperButton: {
                     backgroundColor: {
-                        default: '#181B25',
-                        disabled: '#2B303B',
-                        hover: '#525866',
-                        focus: '#525866',
-                        error: '#181B25',
+                        default: '#171717',
+                        disabled: '#292929',
+                        hover: '#4D4D4D',
+                        focus: '#4D4D4D',
+                        error: '#171717',
                     },
                     icon: {
                         color: {
-                            disabled: '#717784',
+                            default: '#959595',
+                            disabled: '#6B6B6B',
+                            hover: '#959595',
+                            focus: '#959595',
+                            error: '#959595',
                         },
                     },
                 },
@@ -708,31 +812,31 @@ export const generatedDarkOverrides = {
             background: {
                 primary: {
                     subtle: '#162456',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 warning: {
                     subtle: '#432004',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 success: {
                     subtle: '#052E16',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 purple: {
                     subtle: '#3C0366',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 neutral: {
-                    subtle: '#2B303B',
-                    noFill: '#181B25',
+                    subtle: '#292929',
+                    noFill: '#171717',
                 },
                 error: {
                     subtle: '#460809',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 orange: {
                     subtle: '#441306',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
             },
             border: {
@@ -753,8 +857,8 @@ export const generatedDarkOverrides = {
                     noFill: '1px solid #C27AFF',
                 },
                 neutral: {
-                    subtle: '1px solid #CACFD8',
-                    noFill: '1px solid #CACFD8',
+                    subtle: '1px solid #C8C8C8',
+                    noFill: '1px solid #C8C8C8',
                 },
                 error: {
                     subtle: '1px solid #FF6467',
@@ -768,24 +872,24 @@ export const generatedDarkOverrides = {
             text: {
                 heading: {
                     color: {
-                        primary: '#F2F4F8',
-                        warning: '#F2F4F8',
-                        success: '#F2F4F8',
-                        purple: '#F2F4F8',
-                        neutral: '#F2F4F8',
-                        error: '#F2F4F8',
-                        orange: '#F2F4F8',
+                        primary: '#F2F2F2',
+                        warning: '#F2F2F2',
+                        success: '#F2F2F2',
+                        purple: '#F2F2F2',
+                        neutral: '#F2F2F2',
+                        error: '#F2F2F2',
+                        orange: '#F2F2F2',
                     },
                 },
                 description: {
                     color: {
-                        primary: '#E1E4EA',
-                        warning: '#E1E4EA',
-                        success: '#E1E4EA',
-                        purple: '#E1E4EA',
-                        neutral: '#E1E4EA',
-                        error: '#E1E4EA',
-                        orange: '#E1E4EA',
+                        primary: '#DFDFDF',
+                        warning: '#DFDFDF',
+                        success: '#DFDFDF',
+                        purple: '#DFDFDF',
+                        neutral: '#DFDFDF',
+                        error: '#DFDFDF',
+                        orange: '#DFDFDF',
                     },
                 },
             },
@@ -796,7 +900,7 @@ export const generatedDarkOverrides = {
                         warning: '#FFDF20',
                         success: '#7BF1A8',
                         purple: '#DAB2FF',
-                        neutral: '#F2F4F8',
+                        neutral: '#F2F2F2',
                         error: '#FFA2A2',
                         orange: '#FFB86A',
                     },
@@ -807,7 +911,7 @@ export const generatedDarkOverrides = {
                         warning: '#FFDF20',
                         success: '#7BF1A8',
                         purple: '#DAB2FF',
-                        neutral: '#F2F4F8',
+                        neutral: '#F2F2F2',
                         error: '#FFA2A2',
                         orange: '#FFB86A',
                     },
@@ -818,7 +922,7 @@ export const generatedDarkOverrides = {
                         warning: '#FFDF20',
                         success: '#7BF1A8',
                         purple: '#DAB2FF',
-                        neutral: '#F2F4F8',
+                        neutral: '#F2F2F2',
                         error: '#FFA2A2',
                         orange: '#FFB86A',
                     },
@@ -829,31 +933,31 @@ export const generatedDarkOverrides = {
             background: {
                 primary: {
                     subtle: '#162456',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 warning: {
                     subtle: '#432004',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 success: {
                     subtle: '#052E16',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 purple: {
                     subtle: '#3C0366',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 neutral: {
-                    subtle: '#2B303B',
-                    noFill: '#181B25',
+                    subtle: '#292929',
+                    noFill: '#171717',
                 },
                 error: {
                     subtle: '#460809',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
                 orange: {
                     subtle: '#441306',
-                    noFill: '#181B25',
+                    noFill: '#171717',
                 },
             },
             border: {
@@ -874,8 +978,8 @@ export const generatedDarkOverrides = {
                     noFill: '1px solid #C27AFF',
                 },
                 neutral: {
-                    subtle: '1px solid #CACFD8',
-                    noFill: '1px solid #CACFD8',
+                    subtle: '1px solid #C8C8C8',
+                    noFill: '1px solid #C8C8C8',
                 },
                 error: {
                     subtle: '1px solid #FF6467',
@@ -889,24 +993,24 @@ export const generatedDarkOverrides = {
             text: {
                 heading: {
                     color: {
-                        primary: '#F2F4F8',
-                        warning: '#F2F4F8',
-                        success: '#F2F4F8',
-                        purple: '#F2F4F8',
-                        neutral: '#F2F4F8',
-                        error: '#F2F4F8',
-                        orange: '#F2F4F8',
+                        primary: '#F2F2F2',
+                        warning: '#F2F2F2',
+                        success: '#F2F2F2',
+                        purple: '#F2F2F2',
+                        neutral: '#F2F2F2',
+                        error: '#F2F2F2',
+                        orange: '#F2F2F2',
                     },
                 },
                 description: {
                     color: {
-                        primary: '#E1E4EA',
-                        warning: '#E1E4EA',
-                        success: '#E1E4EA',
-                        purple: '#E1E4EA',
-                        neutral: '#E1E4EA',
-                        error: '#E1E4EA',
-                        orange: '#E1E4EA',
+                        primary: '#DFDFDF',
+                        warning: '#DFDFDF',
+                        success: '#DFDFDF',
+                        purple: '#DFDFDF',
+                        neutral: '#DFDFDF',
+                        error: '#DFDFDF',
+                        orange: '#DFDFDF',
                     },
                 },
             },
@@ -917,7 +1021,7 @@ export const generatedDarkOverrides = {
                         warning: '#FFDF20',
                         success: '#7BF1A8',
                         purple: '#DAB2FF',
-                        neutral: '#F2F4F8',
+                        neutral: '#F2F2F2',
                         error: '#FFA2A2',
                         orange: '#FFB86A',
                     },
@@ -928,7 +1032,7 @@ export const generatedDarkOverrides = {
                         warning: '#FFDF20',
                         success: '#7BF1A8',
                         purple: '#DAB2FF',
-                        neutral: '#F2F4F8',
+                        neutral: '#F2F2F2',
                         error: '#FFA2A2',
                         orange: '#FFB86A',
                     },
@@ -939,7 +1043,7 @@ export const generatedDarkOverrides = {
                         warning: '#FFDF20',
                         success: '#7BF1A8',
                         purple: '#DAB2FF',
-                        neutral: '#F2F4F8',
+                        neutral: '#F2F2F2',
                         error: '#FFA2A2',
                         orange: '#FFB86A',
                     },
@@ -951,28 +1055,37 @@ export const generatedDarkOverrides = {
         sm: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -985,24 +1098,25 @@ export const generatedDarkOverrides = {
             inputContainer: {
                 input: {
                     border: {
-                        default: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #959595',
                         focus: '1px solid #51A2FF',
                         error: '1px solid #FF6467',
-                        disabled: '1px solid #2B303B',
+                        disabled: '1px solid #292929',
                     },
                     backgroundColor: {
-                        default: '#181B25',
-                        disabled: '#2B303B',
-                        hover: '#181B25',
-                        focus: '#181B25',
-                        error: '#181B25',
+                        default: '#171717',
+                        disabled: '#292929',
+                        hover: '#171717',
+                        focus: '#171717',
+                        error: '#171717',
                     },
                     color: {
-                        default: '#F2F4F8',
-                        hover: '#F2F4F8',
-                        focus: '#F2F4F8',
+                        default: '#F2F2F2',
+                        hover: '#F2F2F2',
+                        focus: '#F2F2F2',
                         error: '#FFC9C9',
-                        disabled: '#717784',
+                        disabled: '#6B6B6B',
                     },
                 },
             },
@@ -1010,28 +1124,37 @@ export const generatedDarkOverrides = {
         lg: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -1044,24 +1167,25 @@ export const generatedDarkOverrides = {
             inputContainer: {
                 input: {
                     border: {
-                        default: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #959595',
                         focus: '1px solid #51A2FF',
                         error: '1px solid #FF6467',
-                        disabled: '1px solid #2B303B',
+                        disabled: '1px solid #292929',
                     },
                     backgroundColor: {
-                        default: '#181B25',
-                        disabled: '#2B303B',
-                        hover: '#181B25',
-                        focus: '#181B25',
-                        error: '#181B25',
+                        default: '#171717',
+                        disabled: '#292929',
+                        hover: '#171717',
+                        focus: '#171717',
+                        error: '#171717',
                     },
                     color: {
-                        default: '#F5F7FA',
-                        hover: '#F5F7FA',
-                        focus: '#F5F7FA',
+                        default: '#F5F5F5',
+                        hover: '#F5F5F5',
+                        focus: '#F5F5F5',
                         error: '#FFC9C9',
-                        disabled: '#717784',
+                        disabled: '#6B6B6B',
                     },
                 },
             },
@@ -1071,13 +1195,13 @@ export const generatedDarkOverrides = {
         sm: {
             background: '#FFFFFF',
             text: {
-                color: '#181B25',
+                color: '#171717',
             },
         },
         lg: {
             background: '#FFFFFF',
             text: {
-                color: '#181B25',
+                color: '#171717',
             },
         },
     },
@@ -1085,28 +1209,37 @@ export const generatedDarkOverrides = {
         sm: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -1118,24 +1251,25 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
+                    hover: '1px solid #959595',
                     focus: '1px solid #51A2FF',
                     error: '1px solid #FF6467',
-                    disabled: '1px solid #2B303B',
+                    disabled: '1px solid #292929',
                 },
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
                     error: '#FFC9C9',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                 },
                 backgroundColor: {
-                    default: '#181B25',
-                    disabled: '#2B303B',
-                    hover: '#181B25',
-                    focus: '#181B25',
-                    error: '#181B25',
+                    default: '#171717',
+                    disabled: '#292929',
+                    hover: '#171717',
+                    focus: '#171717',
+                    error: '#171717',
                 },
                 boxShadow: {
                     focus: '0px 0px 0px 3px #162456',
@@ -1146,28 +1280,37 @@ export const generatedDarkOverrides = {
         lg: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             helpIcon: {
                 color: {
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -1179,24 +1322,25 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
+                    hover: '1px solid #959595',
                     focus: '1px solid #51A2FF',
                     error: '1px solid #FF6467',
-                    disabled: '1px solid #2B303B',
+                    disabled: '1px solid #292929',
                 },
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
                     error: '#FFC9C9',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                 },
                 backgroundColor: {
-                    default: '#181B25',
-                    disabled: '#2B303B',
-                    hover: '#181B25',
-                    focus: '#181B25',
-                    error: '#181B25',
+                    default: '#171717',
+                    disabled: '#292929',
+                    hover: '#171717',
+                    focus: '#171717',
+                    error: '#171717',
                 },
                 boxShadow: {
                     focus: '0px 0px 0px 3px #162456',
@@ -1210,10 +1354,10 @@ export const generatedDarkOverrides = {
             indicator: {
                 backgroundColor: {
                     unchecked: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        disabled: '#525866',
-                        error: '#181B25',
+                        default: '#171717',
+                        hover: '#292929',
+                        disabled: '#4D4D4D',
+                        error: '#171717',
                     },
                     checked: {
                         default: '#2B7FFF',
@@ -1230,8 +1374,9 @@ export const generatedDarkOverrides = {
                 },
                 border: {
                     unchecked: {
-                        default: '1px solid #717784',
-                        disabled: '1px solid #2B303B',
+                        default: '1px solid #6B6B6B',
+                        hover: '1px solid #959595',
+                        disabled: '1px solid #292929',
                         error: '1px solid #FF6467',
                     },
                     checked: {
@@ -1246,12 +1391,12 @@ export const generatedDarkOverrides = {
                 icon: {
                     color: {
                         checked: {
-                            default: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            disabled: '#171717',
                         },
                         indeterminate: {
-                            default: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            disabled: '#171717',
                         },
                     },
                 },
@@ -1259,16 +1404,18 @@ export const generatedDarkOverrides = {
             content: {
                 label: {
                     color: {
-                        default: '#F2F4F8',
-                        hover: '#F2F4F8',
-                        disabled: '#717784',
+                        default: '#F2F2F2',
+                        hover: '#F2F2F2',
+                        disabled: '#6B6B6B',
                         error: '#FB2C36',
                     },
                 },
                 subtext: {
                     color: {
-                        disabled: '#2B303B',
+                        default: '#959595',
+                        disabled: '#292929',
                         error: '#FF6467',
+                        hover: '#959595',
                     },
                 },
             },
@@ -1280,10 +1427,10 @@ export const generatedDarkOverrides = {
             indicator: {
                 backgroundColor: {
                     unchecked: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        disabled: '#525866',
-                        error: '#181B25',
+                        default: '#171717',
+                        hover: '#292929',
+                        disabled: '#4D4D4D',
+                        error: '#171717',
                     },
                     checked: {
                         default: '#2B7FFF',
@@ -1300,8 +1447,9 @@ export const generatedDarkOverrides = {
                 },
                 border: {
                     unchecked: {
-                        default: '1px solid #717784',
-                        disabled: '1px solid #2B303B',
+                        default: '1px solid #6B6B6B',
+                        hover: '1px solid #959595',
+                        disabled: '1px solid #292929',
                         error: '1px solid #FF6467',
                     },
                     checked: {
@@ -1316,12 +1464,12 @@ export const generatedDarkOverrides = {
                 icon: {
                     color: {
                         checked: {
-                            default: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            disabled: '#171717',
                         },
                         indeterminate: {
-                            default: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            disabled: '#171717',
                         },
                     },
                 },
@@ -1329,16 +1477,18 @@ export const generatedDarkOverrides = {
             content: {
                 label: {
                     color: {
-                        default: '#F2F4F8',
-                        disabled: '#717784',
+                        default: '#F2F2F2',
+                        disabled: '#6B6B6B',
                         error: '#FB2C36',
-                        hover: '#F2F4F8',
+                        hover: '#F2F2F2',
                     },
                 },
                 subtext: {
                     color: {
-                        disabled: '#2B303B',
+                        default: '#959595',
+                        disabled: '#292929',
                         error: '#FF6467',
+                        hover: '#959595',
                     },
                 },
             },
@@ -1351,54 +1501,58 @@ export const generatedDarkOverrides = {
         sm: {
             backgroundColor: {
                 boxed: {
-                    hover: '#181B25',
-                    active: '#181B25',
+                    hover: '#171717',
+                    active: '#171717',
                 },
                 floating: {
-                    hover: '#2B303B',
-                    active: '#525866',
+                    hover: '#292929',
+                    active: '#4D4D4D',
                 },
                 pills: {
-                    hover: '#2B303B',
-                    active: '#525866',
+                    hover: '#292929',
+                    active: '#4D4D4D',
                 },
             },
             border: {
-                pills: '1px solid #2B303B',
+                pills: '1px solid #292929',
             },
             borderBottom: {
-                underline: '1px solid #2B303B',
+                underline: '1px solid #292929',
             },
             container: {
                 backgroundColor: {
-                    boxed: '#2B303B',
+                    boxed: '#292929',
                 },
             },
             trigger: {
                 activeIndicator: {
-                    color: '#F2F4F8',
+                    color: '#F2F2F2',
                 },
                 text: {
                     color: {
                         underline: {
-                            default: '#CACFD8',
-                            hover: '#CACFD8',
-                            active: '#F2F4F8',
+                            default: '#C8C8C8',
+                            hover: '#C8C8C8',
+                            active: '#F2F2F2',
+                            disabled: '#959595',
                         },
                         boxed: {
-                            default: '#CACFD8',
-                            hover: '#CACFD8',
-                            active: '#F2F4F8',
+                            default: '#C8C8C8',
+                            hover: '#C8C8C8',
+                            active: '#F2F2F2',
+                            disabled: '#959595',
                         },
                         floating: {
-                            default: '#CACFD8',
-                            hover: '#F2F4F8',
-                            active: '#F2F4F8',
+                            default: '#C8C8C8',
+                            hover: '#F2F2F2',
+                            active: '#F2F2F2',
+                            disabled: '#959595',
                         },
                         pills: {
-                            default: '#CACFD8',
-                            hover: '#F2F4F8',
-                            active: '#F2F4F8',
+                            default: '#C8C8C8',
+                            hover: '#F2F2F2',
+                            active: '#F2F2F2',
+                            disabled: '#959595',
                         },
                     },
                 },
@@ -1407,54 +1561,58 @@ export const generatedDarkOverrides = {
         lg: {
             backgroundColor: {
                 boxed: {
-                    hover: '#181B25',
-                    active: '#181B25',
+                    hover: '#171717',
+                    active: '#171717',
                 },
                 floating: {
-                    hover: '#2B303B',
-                    active: '#525866',
+                    hover: '#292929',
+                    active: '#4D4D4D',
                 },
                 pills: {
-                    hover: '#2B303B',
-                    active: '#525866',
+                    hover: '#292929',
+                    active: '#4D4D4D',
                 },
             },
             border: {
-                pills: '1px solid #2B303B',
+                pills: '1px solid #292929',
             },
             borderBottom: {
-                underline: '1px solid #2B303B',
+                underline: '1px solid #292929',
             },
             container: {
                 backgroundColor: {
-                    boxed: '#2B303B',
+                    boxed: '#292929',
                 },
             },
             trigger: {
                 activeIndicator: {
-                    color: '#F2F4F8',
+                    color: '#F2F2F2',
                 },
                 text: {
                     color: {
                         underline: {
-                            default: '#CACFD8',
-                            hover: '#CACFD8',
-                            active: '#F2F4F8',
+                            default: '#C8C8C8',
+                            hover: '#C8C8C8',
+                            active: '#F2F2F2',
+                            disabled: '#959595',
                         },
                         boxed: {
-                            default: '#CACFD8',
-                            hover: '#CACFD8',
-                            active: '#F2F4F8',
+                            default: '#C8C8C8',
+                            hover: '#C8C8C8',
+                            active: '#F2F2F2',
+                            disabled: '#959595',
                         },
                         floating: {
-                            default: '#CACFD8',
-                            hover: '#F2F4F8',
-                            active: '#F2F4F8',
+                            default: '#C8C8C8',
+                            hover: '#F2F2F2',
+                            active: '#F2F2F2',
+                            disabled: '#959595',
                         },
                         pills: {
-                            default: '#CACFD8',
-                            hover: '#F2F4F8',
-                            active: '#F2F4F8',
+                            default: '#C8C8C8',
+                            hover: '#F2F2F2',
+                            active: '#F2F2F2',
+                            disabled: '#959595',
                         },
                     },
                 },
@@ -1482,16 +1640,16 @@ export const generatedDarkOverrides = {
                 },
                 secondary: {
                     default: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        active: '#181B25',
-                        disabled: '#2B303B',
+                        default: '#171717',
+                        hover: '#292929',
+                        active: '#171717',
+                        disabled: '#292929',
                     },
                     iconOnly: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        active: '#181B25',
-                        disabled: '#2B303B',
+                        default: '#171717',
+                        hover: '#292929',
+                        active: '#171717',
+                        disabled: '#292929',
                     },
                 },
                 danger: {
@@ -1544,16 +1702,16 @@ export const generatedDarkOverrides = {
                 },
                 secondary: {
                     default: {
-                        default: '1px solid #2B303B',
-                        hover: '1px solid #2B303B',
-                        active: '1px solid #2B303B',
-                        disabled: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #292929',
+                        active: '1px solid #292929',
+                        disabled: '1px solid #292929',
                     },
                     iconOnly: {
-                        default: '1px solid #2B303B',
-                        hover: '1px solid #2B303B',
-                        active: '1px solid #2B303B',
-                        disabled: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #292929',
+                        active: '1px solid #292929',
+                        disabled: '1px solid #292929',
                     },
                 },
                 danger: {
@@ -1609,13 +1767,13 @@ export const generatedDarkOverrides = {
                 },
                 secondary: {
                     default: {
-                        active: '3px solid #525866',
+                        active: '3px solid #4D4D4D',
                     },
                     iconOnly: {
-                        active: '3px solid #525866',
+                        active: '3px solid #4D4D4D',
                     },
                     inline: {
-                        active: '3px solid #525866',
+                        active: '3px solid #4D4D4D',
                     },
                 },
                 danger: {
@@ -1645,54 +1803,56 @@ export const generatedDarkOverrides = {
                 color: {
                     primary: {
                         default: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         iconOnly: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         inline: {
                             default: '#2B7FFF',
                             hover: '#2B7FFF',
-                            active: '#181B25',
+                            active: '#171717',
                             disabled: '#1447E6',
                         },
                     },
                     secondary: {
                         default: {
-                            default: '#E1E4EA',
-                            hover: '#E1E4EA',
-                            active: '#E1E4EA',
-                            disabled: '#717784',
+                            default: '#DFDFDF',
+                            hover: '#DFDFDF',
+                            active: '#DFDFDF',
+                            disabled: '#6B6B6B',
                         },
                         iconOnly: {
-                            default: '#E1E4EA',
-                            hover: '#E1E4EA',
-                            active: '#E1E4EA',
+                            default: '#DFDFDF',
+                            hover: '#DFDFDF',
+                            active: '#DFDFDF',
+                            disabled: '#959595',
                         },
                         inline: {
-                            default: '#E1E4EA',
-                            hover: '#E1E4EA',
-                            active: '#E1E4EA',
+                            default: '#DFDFDF',
+                            hover: '#DFDFDF',
+                            active: '#DFDFDF',
+                            disabled: '#959595',
                         },
                     },
                     danger: {
                         default: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         iconOnly: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         inline: {
                             default: '#FB2C36',
@@ -1702,16 +1862,16 @@ export const generatedDarkOverrides = {
                     },
                     success: {
                         default: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         iconOnly: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         inline: {
                             default: '#00C951',
@@ -1742,16 +1902,16 @@ export const generatedDarkOverrides = {
                 },
                 secondary: {
                     default: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        active: '#181B25',
-                        disabled: '#2B303B',
+                        default: '#171717',
+                        hover: '#292929',
+                        active: '#171717',
+                        disabled: '#292929',
                     },
                     iconOnly: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        active: '#181B25',
-                        disabled: '#2B303B',
+                        default: '#171717',
+                        hover: '#292929',
+                        active: '#171717',
+                        disabled: '#292929',
                     },
                 },
                 danger: {
@@ -1804,16 +1964,16 @@ export const generatedDarkOverrides = {
                 },
                 secondary: {
                     default: {
-                        default: '1px solid #2B303B',
-                        hover: '1px solid #2B303B',
-                        active: '1px solid #2B303B',
-                        disabled: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #292929',
+                        active: '1px solid #292929',
+                        disabled: '1px solid #292929',
                     },
                     iconOnly: {
-                        default: '1px solid #2B303B',
-                        hover: '1px solid #2B303B',
-                        active: '1px solid #2B303B',
-                        disabled: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #292929',
+                        active: '1px solid #292929',
+                        disabled: '1px solid #292929',
                     },
                 },
                 danger: {
@@ -1869,13 +2029,13 @@ export const generatedDarkOverrides = {
                 },
                 secondary: {
                     default: {
-                        active: '3px solid #525866',
+                        active: '3px solid #4D4D4D',
                     },
                     iconOnly: {
-                        active: '3px solid #525866',
+                        active: '3px solid #4D4D4D',
                     },
                     inline: {
-                        active: '3px solid #525866',
+                        active: '3px solid #4D4D4D',
                     },
                 },
                 danger: {
@@ -1905,54 +2065,56 @@ export const generatedDarkOverrides = {
                 color: {
                     primary: {
                         default: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         iconOnly: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         inline: {
                             default: '#2B7FFF',
                             hover: '#2B7FFF',
-                            active: '#181B25',
+                            active: '#171717',
                             disabled: '#1447E6',
                         },
                     },
                     secondary: {
                         default: {
-                            default: '#F2F4F8',
-                            hover: '#E1E4EA',
-                            active: '#E1E4EA',
-                            disabled: '#717784',
+                            default: '#F2F2F2',
+                            hover: '#DFDFDF',
+                            active: '#DFDFDF',
+                            disabled: '#6B6B6B',
                         },
                         iconOnly: {
-                            default: '#E1E4EA',
-                            hover: '#E1E4EA',
-                            active: '#E1E4EA',
+                            default: '#DFDFDF',
+                            hover: '#DFDFDF',
+                            active: '#DFDFDF',
+                            disabled: '#959595',
                         },
                         inline: {
-                            default: '#E1E4EA',
-                            hover: '#E1E4EA',
-                            active: '#E1E4EA',
+                            default: '#DFDFDF',
+                            hover: '#DFDFDF',
+                            active: '#DFDFDF',
+                            disabled: '#959595',
                         },
                     },
                     danger: {
                         default: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         iconOnly: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         inline: {
                             default: '#FB2C36',
@@ -1962,16 +2124,16 @@ export const generatedDarkOverrides = {
                     },
                     success: {
                         default: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         iconOnly: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            disabled: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            disabled: '#171717',
                         },
                         inline: {
                             default: '#00C951',
@@ -1986,18 +2148,18 @@ export const generatedDarkOverrides = {
     KEYVALUEPAIR: {
         sm: {
             key: {
-                color: '#CACFD8',
+                color: '#C8C8C8',
             },
             value: {
-                color: '#F2F4F8',
+                color: '#F2F2F2',
             },
         },
         lg: {
             key: {
-                color: '#CACFD8',
+                color: '#C8C8C8',
             },
             value: {
-                color: '#F2F4F8',
+                color: '#F2F2F2',
             },
         },
     },
@@ -2006,8 +2168,9 @@ export const generatedDarkOverrides = {
             item: {
                 text: {
                     color: {
+                        default: '#959595',
                         hover: '#FFFFFF',
-                        active: '#F2F4F8',
+                        active: '#F2F2F2',
                     },
                 },
             },
@@ -2016,8 +2179,9 @@ export const generatedDarkOverrides = {
             item: {
                 text: {
                     color: {
+                        default: '#959595',
                         hover: '#FFFFFF',
-                        active: '#F2F4F8',
+                        active: '#F2F2F2',
                     },
                 },
             },
@@ -2025,7 +2189,7 @@ export const generatedDarkOverrides = {
     },
     POPOVER: {
         sm: {
-            background: '#181B25',
+            background: '#171717',
             shadow: {
                 focusPrimary: '0px 0px 0px 3px #162456',
                 focusError: '0px 0px 0px 3px #9F0712',
@@ -2035,12 +2199,12 @@ export const generatedDarkOverrides = {
                     color: '#FFFFFF',
                 },
                 description: {
-                    color: '#CACFD8',
+                    color: '#C8C8C8',
                 },
             },
         },
         lg: {
-            background: '#181B25',
+            background: '#171717',
             shadow: {
                 focusPrimary: '0px 0px 0px 3px #162456',
                 focusError: '0px 0px 0px 3px #9F0712',
@@ -2050,35 +2214,35 @@ export const generatedDarkOverrides = {
                     color: '#FFFFFF',
                 },
                 description: {
-                    color: '#CACFD8',
+                    color: '#C8C8C8',
                 },
             },
         },
     },
     MENU: {
         sm: {
-            backgroundColor: '#181B25',
-            border: '1px solid #2B303B',
+            backgroundColor: '#171717',
+            border: '1px solid #292929',
             item: {
                 backgroundColor: {
                     default: {
                         enabled: {
-                            default: '#181B25',
-                            hover: '#2B303B',
-                            active: '#2B303B',
-                            focus: '#2B303B',
-                            focusVisible: '#2B303B',
-                            disabled: '#181B25',
-                            selected: '#2B303B',
+                            default: '#171717',
+                            hover: '#292929',
+                            active: '#292929',
+                            focus: '#292929',
+                            focusVisible: '#292929',
+                            disabled: '#171717',
+                            selected: '#292929',
                         },
                         disabled: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            focus: '#181B25',
-                            focusVisible: '#181B25',
-                            disabled: '#181B25',
-                            selected: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            focus: '#171717',
+                            focusVisible: '#171717',
+                            disabled: '#171717',
+                            selected: '#171717',
                         },
                     },
                     action: {
@@ -2088,17 +2252,17 @@ export const generatedDarkOverrides = {
                                 active: '#162456',
                                 focus: '#162456',
                                 focusVisible: '#162456',
-                                disabled: '#181B25',
+                                disabled: '#171717',
                                 selected: '#162456',
                             },
                             disabled: {
-                                default: '#181B25',
-                                hover: '#181B25',
-                                active: '#181B25',
-                                focus: '#181B25',
-                                focusVisible: '#181B25',
-                                disabled: '#181B25',
-                                selected: '#181B25',
+                                default: '#171717',
+                                hover: '#171717',
+                                active: '#171717',
+                                focus: '#171717',
+                                focusVisible: '#171717',
+                                disabled: '#171717',
+                                selected: '#171717',
                             },
                         },
                         danger: {
@@ -2107,31 +2271,44 @@ export const generatedDarkOverrides = {
                                 active: '#460809',
                                 focus: '#460809',
                                 focusVisible: '#460809',
-                                disabled: '#181B25',
+                                disabled: '#171717',
                                 selected: '#460809',
                             },
                             disabled: {
-                                default: '#181B25',
-                                hover: '#181B25',
-                                active: '#181B25',
-                                focus: '#181B25',
-                                focusVisible: '#181B25',
-                                disabled: '#181B25',
-                                selected: '#181B25',
+                                default: '#171717',
+                                hover: '#171717',
+                                active: '#171717',
+                                focus: '#171717',
+                                focusVisible: '#171717',
+                                disabled: '#171717',
+                                selected: '#171717',
                             },
                         },
                     },
+                },
+                optionsLabel: {
+                    color: '#959595',
                 },
                 option: {
                     color: {
                         default: {
                             enabled: {
-                                default: '#E1E4EA',
-                                hover: '#E1E4EA',
-                                active: '#E1E4EA',
-                                focus: '#E1E4EA',
-                                focusVisible: '#E1E4EA',
-                                selected: '#E1E4EA',
+                                default: '#DFDFDF',
+                                hover: '#DFDFDF',
+                                active: '#DFDFDF',
+                                focus: '#DFDFDF',
+                                focusVisible: '#DFDFDF',
+                                disabled: '#959595',
+                                selected: '#DFDFDF',
+                            },
+                            disabled: {
+                                default: '#959595',
+                                hover: '#959595',
+                                active: '#959595',
+                                focus: '#959595',
+                                focusVisible: '#959595',
+                                disabled: '#959595',
+                                selected: '#959595',
                             },
                         },
                         action: {
@@ -2142,6 +2319,7 @@ export const generatedDarkOverrides = {
                                     active: '#2B7FFF',
                                     focus: '#2B7FFF',
                                     focusVisible: '#2B7FFF',
+                                    disabled: '#959595',
                                     selected: '#2B7FFF',
                                 },
                             },
@@ -2158,37 +2336,68 @@ export const generatedDarkOverrides = {
                         },
                     },
                 },
+                description: {
+                    color: {
+                        default: {
+                            enabled: {
+                                default: '#959595',
+                                hover: '#959595',
+                                active: '#959595',
+                                focus: '#959595',
+                                focusVisible: '#959595',
+                                disabled: '#959595',
+                                selected: '#959595',
+                            },
+                            disabled: {
+                                default: '#959595',
+                                hover: '#959595',
+                                active: '#959595',
+                                focus: '#959595',
+                                focusVisible: '#959595',
+                                disabled: '#959595',
+                                selected: '#959595',
+                            },
+                        },
+                        action: {
+                            primary: {
+                                enabled: {
+                                    disabled: '#959595',
+                                },
+                            },
+                        },
+                    },
+                },
                 seperator: {
-                    color: '#2B303B',
+                    color: '#292929',
                 },
                 checkmark: {
-                    color: '#E1E4EA',
+                    color: '#DFDFDF',
                 },
             },
         },
         lg: {
-            backgroundColor: '#181B25',
-            border: '1px solid #2B303B',
+            backgroundColor: '#171717',
+            border: '1px solid #292929',
             item: {
                 backgroundColor: {
                     default: {
                         enabled: {
-                            default: '#181B25',
-                            hover: '#2B303B',
-                            active: '#2B303B',
-                            focus: '#2B303B',
-                            focusVisible: '#2B303B',
-                            disabled: '#181B25',
-                            selected: '#2B303B',
+                            default: '#171717',
+                            hover: '#292929',
+                            active: '#292929',
+                            focus: '#292929',
+                            focusVisible: '#292929',
+                            disabled: '#171717',
+                            selected: '#292929',
                         },
                         disabled: {
-                            default: '#181B25',
-                            hover: '#181B25',
-                            active: '#181B25',
-                            focus: '#181B25',
-                            focusVisible: '#181B25',
-                            disabled: '#181B25',
-                            selected: '#181B25',
+                            default: '#171717',
+                            hover: '#171717',
+                            active: '#171717',
+                            focus: '#171717',
+                            focusVisible: '#171717',
+                            disabled: '#171717',
+                            selected: '#171717',
                         },
                     },
                     action: {
@@ -2198,17 +2407,17 @@ export const generatedDarkOverrides = {
                                 active: '#162456',
                                 focus: '#162456',
                                 focusVisible: '#162456',
-                                disabled: '#181B25',
+                                disabled: '#171717',
                                 selected: '#162456',
                             },
                             disabled: {
-                                default: '#181B25',
-                                hover: '#181B25',
-                                active: '#181B25',
-                                focus: '#181B25',
-                                focusVisible: '#181B25',
-                                disabled: '#181B25',
-                                selected: '#181B25',
+                                default: '#171717',
+                                hover: '#171717',
+                                active: '#171717',
+                                focus: '#171717',
+                                focusVisible: '#171717',
+                                disabled: '#171717',
+                                selected: '#171717',
                             },
                         },
                         danger: {
@@ -2217,31 +2426,44 @@ export const generatedDarkOverrides = {
                                 active: '#460809',
                                 focus: '#460809',
                                 focusVisible: '#460809',
-                                disabled: '#181B25',
+                                disabled: '#171717',
                                 selected: '#460809',
                             },
                             disabled: {
-                                default: '#181B25',
-                                hover: '#181B25',
-                                active: '#181B25',
-                                focus: '#181B25',
-                                focusVisible: '#181B25',
-                                disabled: '#181B25',
-                                selected: '#181B25',
+                                default: '#171717',
+                                hover: '#171717',
+                                active: '#171717',
+                                focus: '#171717',
+                                focusVisible: '#171717',
+                                disabled: '#171717',
+                                selected: '#171717',
                             },
                         },
                     },
+                },
+                optionsLabel: {
+                    color: '#959595',
                 },
                 option: {
                     color: {
                         default: {
                             enabled: {
-                                default: '#E1E4EA',
-                                hover: '#E1E4EA',
-                                active: '#E1E4EA',
-                                focus: '#E1E4EA',
-                                focusVisible: '#E1E4EA',
-                                selected: '#E1E4EA',
+                                default: '#DFDFDF',
+                                hover: '#DFDFDF',
+                                active: '#DFDFDF',
+                                focus: '#DFDFDF',
+                                focusVisible: '#DFDFDF',
+                                disabled: '#959595',
+                                selected: '#DFDFDF',
+                            },
+                            disabled: {
+                                default: '#959595',
+                                hover: '#959595',
+                                active: '#959595',
+                                focus: '#959595',
+                                focusVisible: '#959595',
+                                disabled: '#959595',
+                                selected: '#959595',
                             },
                         },
                         action: {
@@ -2252,6 +2474,7 @@ export const generatedDarkOverrides = {
                                     active: '#2B7FFF',
                                     focus: '#2B7FFF',
                                     focusVisible: '#2B7FFF',
+                                    disabled: '#959595',
                                     selected: '#2B7FFF',
                                 },
                             },
@@ -2268,11 +2491,42 @@ export const generatedDarkOverrides = {
                         },
                     },
                 },
+                description: {
+                    color: {
+                        default: {
+                            enabled: {
+                                default: '#959595',
+                                hover: '#959595',
+                                active: '#959595',
+                                focus: '#959595',
+                                focusVisible: '#959595',
+                                disabled: '#959595',
+                                selected: '#959595',
+                            },
+                            disabled: {
+                                default: '#959595',
+                                hover: '#959595',
+                                active: '#959595',
+                                focus: '#959595',
+                                focusVisible: '#959595',
+                                disabled: '#959595',
+                                selected: '#959595',
+                            },
+                        },
+                        action: {
+                            primary: {
+                                enabled: {
+                                    disabled: '#959595',
+                                },
+                            },
+                        },
+                    },
+                },
                 seperator: {
-                    color: '#2B303B',
+                    color: '#292929',
                 },
                 checkmark: {
-                    color: '#E1E4EA',
+                    color: '#DFDFDF',
                 },
             },
         },
@@ -2281,28 +2535,35 @@ export const generatedDarkOverrides = {
         sm: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    active: '#F2F4F8',
-                    focus: '#F2F4F8',
-                    focusVisible: '#F2F4F8',
-                    disabled: '#717784',
-                    selected: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    active: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    focusVisible: '#F2F2F2',
+                    disabled: '#6B6B6B',
+                    selected: '#F2F2F2',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    active: '#959595',
+                    focus: '#959595',
+                    focusVisible: '#959595',
+                    disabled: '#6B6B6B',
+                    selected: '#959595',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    active: '#CACFD8',
-                    focus: '#CACFD8',
-                    focusVisible: '#CACFD8',
-                    selected: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    active: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    focusVisible: '#C8C8C8',
+                    disabled: '#959595',
+                    selected: '#C8C8C8',
                 },
             },
             errorMessage: {
@@ -2314,114 +2575,142 @@ export const generatedDarkOverrides = {
             trigger: {
                 backgroundColor: {
                     container: {
-                        open: '#222530',
-                        closed: '#181B25',
-                        hover: '#2B303B',
-                        focus: '#2B303B',
-                        error: '#181B25',
+                        open: '#1F1F1F',
+                        closed: '#171717',
+                        hover: '#292929',
+                        focus: '#292929',
+                        error: '#171717',
                     },
                     'no-container': {
-                        hover: '#2B303B',
-                        focus: '#2B303B',
+                        hover: '#292929',
+                        focus: '#292929',
                     },
                 },
                 outline: {
                     container: {
-                        open: '1px solid #2B303B !important',
-                        closed: '1px solid #2B303B !important',
-                        hover: '1px solid #2B303B !important',
-                        focus: '1px solid #2B303B !important',
+                        open: '1px solid #292929 !important',
+                        closed: '1px solid #292929 !important',
+                        hover: '1px solid #292929 !important',
+                        focus: '1px solid #292929 !important',
                         error: '1px solid #FB2C36 !important',
                     },
                 },
                 selectionTag: {
                     container: {
                         text: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         count: {
-                            color: '#181B25',
+                            color: '#171717',
                             backgroundColor: '#2B7FFF',
                         },
                     },
                     'no-container': {
                         text: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         count: {
-                            color: '#181B25',
+                            color: '#171717',
                             backgroundColor: '#2B7FFF',
                         },
                     },
                 },
+                placeholder: {
+                    color: '#959595',
+                },
                 selectedValue: {
-                    color: '#F5F7FA',
+                    color: '#F5F5F5',
                 },
             },
             menu: {
-                backgroundColor: '#181B25',
-                border: '#2B303B',
+                backgroundColor: '#171717',
+                border: '#292929',
                 item: {
                     backgroundColor: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        active: '#525866',
-                        focus: '#525866',
-                        focusVisible: '#525866',
-                        disabled: '#2B303B',
-                        selected: '#2B303B',
+                        default: '#171717',
+                        hover: '#292929',
+                        active: '#4D4D4D',
+                        focus: '#4D4D4D',
+                        focusVisible: '#4D4D4D',
+                        disabled: '#292929',
+                        selected: '#292929',
+                    },
+                    optionsLabel: {
+                        color: {
+                            default: '#959595',
+                            hover: '#959595',
+                            active: '#959595',
+                            focus: '#959595',
+                            focusVisible: '#959595',
+                            disabled: '#959595',
+                            selected: '#959595',
+                        },
                     },
                     option: {
                         color: {
-                            default: '#E1E4EA',
-                            hover: '#F2F4F8',
-                            active: '#F2F4F8',
-                            focus: '#F2F4F8',
-                            focusVisible: '#F2F4F8',
-                            selected: '#F2F4F8',
+                            default: '#DFDFDF',
+                            hover: '#F2F2F2',
+                            active: '#F2F2F2',
+                            focus: '#F2F2F2',
+                            focusVisible: '#F2F2F2',
+                            disabled: '#959595',
+                            selected: '#F2F2F2',
                         },
                     },
                     description: {
                         color: {
-                            disabled: '#525866',
+                            default: '#959595',
+                            hover: '#959595',
+                            active: '#959595',
+                            focus: '#959595',
+                            focusVisible: '#959595',
+                            disabled: '#4D4D4D',
+                            selected: '#959595',
                         },
                     },
                     seperator: {
-                        color: '#2B303B',
+                        color: '#292929',
                     },
                 },
             },
             drawer: {
                 header: {
-                    borderBottom: '1px solid #2B303B',
+                    borderBottom: '1px solid #292929',
                 },
             },
         },
         lg: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    active: '#F2F4F8',
-                    focus: '#F2F4F8',
-                    focusVisible: '#F2F4F8',
-                    disabled: '#717784',
-                    selected: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    active: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    focusVisible: '#F2F2F2',
+                    disabled: '#6B6B6B',
+                    selected: '#F2F2F2',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    active: '#959595',
+                    focus: '#959595',
+                    focusVisible: '#959595',
+                    disabled: '#6B6B6B',
+                    selected: '#959595',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    active: '#CACFD8',
-                    focus: '#CACFD8',
-                    focusVisible: '#CACFD8',
-                    selected: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    active: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    focusVisible: '#C8C8C8',
+                    disabled: '#959595',
+                    selected: '#C8C8C8',
                 },
             },
             errorMessage: {
@@ -2433,86 +2722,107 @@ export const generatedDarkOverrides = {
             trigger: {
                 backgroundColor: {
                     container: {
-                        open: '#222530',
-                        closed: '#181B25',
-                        hover: '#2B303B',
-                        focus: '#2B303B',
-                        error: '#181B25',
+                        open: '#1F1F1F',
+                        closed: '#171717',
+                        hover: '#292929',
+                        focus: '#292929',
+                        error: '#171717',
                     },
                     'no-container': {
-                        hover: '#2B303B',
-                        focus: '#2B303B',
+                        hover: '#292929',
+                        focus: '#292929',
                     },
                 },
                 outline: {
                     container: {
-                        open: '1px solid #2B303B !important',
-                        closed: '1px solid #2B303B !important',
-                        hover: '1px solid #2B303B !important',
-                        focus: '1px solid #2B303B !important',
+                        open: '1px solid #292929 !important',
+                        closed: '1px solid #292929 !important',
+                        hover: '1px solid #292929 !important',
+                        focus: '1px solid #292929 !important',
                         error: '1px solid #FB2C36 !important',
                     },
                 },
                 selectionTag: {
                     container: {
                         text: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         count: {
-                            color: '#181B25',
+                            color: '#171717',
                             backgroundColor: '#2B7FFF',
                         },
                     },
                     'no-container': {
                         text: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         count: {
-                            color: '#181B25',
+                            color: '#171717',
                             backgroundColor: '#2B7FFF',
                         },
                     },
                 },
+                placeholder: {
+                    color: '#959595',
+                },
                 selectedValue: {
-                    color: '#F5F7FA',
+                    color: '#F5F5F5',
                 },
             },
             menu: {
-                backgroundColor: '#181B25',
-                border: '#2B303B',
+                backgroundColor: '#171717',
+                border: '#292929',
                 item: {
                     backgroundColor: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        active: '#525866',
-                        focus: '#525866',
-                        focusVisible: '#525866',
-                        disabled: '#2B303B',
-                        selected: '#2B303B',
+                        default: '#171717',
+                        hover: '#292929',
+                        active: '#4D4D4D',
+                        focus: '#4D4D4D',
+                        focusVisible: '#4D4D4D',
+                        disabled: '#292929',
+                        selected: '#292929',
+                    },
+                    optionsLabel: {
+                        color: {
+                            default: '#959595',
+                            hover: '#959595',
+                            active: '#959595',
+                            focus: '#959595',
+                            focusVisible: '#959595',
+                            disabled: '#959595',
+                            selected: '#959595',
+                        },
                     },
                     option: {
                         color: {
-                            default: '#E1E4EA',
-                            hover: '#F2F4F8',
-                            active: '#F2F4F8',
-                            focus: '#F2F4F8',
-                            focusVisible: '#F2F4F8',
-                            selected: '#F2F4F8',
+                            default: '#DFDFDF',
+                            hover: '#F2F2F2',
+                            active: '#F2F2F2',
+                            focus: '#F2F2F2',
+                            focusVisible: '#F2F2F2',
+                            disabled: '#959595',
+                            selected: '#F2F2F2',
                         },
                     },
                     description: {
                         color: {
-                            disabled: '#525866',
+                            default: '#959595',
+                            hover: '#959595',
+                            active: '#959595',
+                            focus: '#959595',
+                            focusVisible: '#959595',
+                            disabled: '#4D4D4D',
+                            selected: '#959595',
                         },
                     },
                     seperator: {
-                        color: '#2B303B',
+                        color: '#292929',
                     },
                 },
             },
             drawer: {
                 header: {
-                    borderBottom: '1px solid #2B303B',
+                    borderBottom: '1px solid #292929',
                 },
             },
         },
@@ -2521,27 +2831,35 @@ export const generatedDarkOverrides = {
         sm: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    active: '#F2F4F8',
-                    focus: '#F2F4F8',
-                    focusVisible: '#F2F4F8',
-                    selected: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    active: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    focusVisible: '#F2F2F2',
+                    disabled: '#959595',
+                    selected: '#F2F2F2',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    active: '#959595',
+                    focus: '#959595',
+                    focusVisible: '#959595',
+                    disabled: '#6B6B6B',
+                    selected: '#959595',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    active: '#CACFD8',
-                    focus: '#CACFD8',
-                    focusVisible: '#CACFD8',
-                    selected: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    active: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    focusVisible: '#C8C8C8',
+                    disabled: '#959595',
+                    selected: '#C8C8C8',
                 },
             },
             errorMessage: {
@@ -2553,93 +2871,122 @@ export const generatedDarkOverrides = {
             trigger: {
                 backgroundColor: {
                     container: {
-                        open: '#222530',
-                        closed: '#181B25',
-                        hover: '#2B303B',
-                        focus: '#2B303B',
-                        error: '#181B25',
+                        open: '#1F1F1F',
+                        closed: '#171717',
+                        hover: '#292929',
+                        focus: '#292929',
+                        error: '#171717',
                     },
                     'no-container': {
-                        hover: '#2B303B',
-                        focus: '#2B303B',
+                        hover: '#292929',
+                        focus: '#292929',
                     },
                 },
                 outline: {
                     container: {
-                        open: '1px solid #2B303B !important',
-                        closed: '1px solid #2B303B !important',
-                        hover: '1px solid #2B303B !important',
-                        focus: '1px solid #2B303B !important',
+                        open: '1px solid #292929 !important',
+                        closed: '1px solid #292929 !important',
+                        hover: '1px solid #292929 !important',
+                        focus: '1px solid #292929 !important',
                         error: '1px solid #FB2C36 !important',
                     },
                 },
+                placeholder: {
+                    color: '#959595',
+                },
                 selectedValue: {
-                    color: '#F2F4F8',
+                    color: '#F2F2F2',
                 },
             },
             menu: {
-                backgroundColor: '#181B25',
-                border: '#2B303B',
+                backgroundColor: '#171717',
+                border: '#292929',
                 item: {
                     backgroundColor: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        active: '#525866',
-                        focus: '#525866',
-                        focusVisible: '#525866',
-                        disabled: '#2B303B',
-                        selected: '#2B303B',
+                        default: '#171717',
+                        hover: '#292929',
+                        active: '#4D4D4D',
+                        focus: '#4D4D4D',
+                        focusVisible: '#4D4D4D',
+                        disabled: '#292929',
+                        selected: '#292929',
+                    },
+                    optionsLabel: {
+                        color: {
+                            default: '#959595',
+                            hover: '#959595',
+                            active: '#959595',
+                            focus: '#959595',
+                            focusVisible: '#959595',
+                            disabled: '#959595',
+                            selected: '#959595',
+                        },
                     },
                     option: {
                         color: {
-                            default: '#E1E4EA',
-                            hover: '#F2F4F8',
-                            active: '#F2F4F8',
-                            focus: '#F2F4F8',
-                            focusVisible: '#F2F4F8',
-                            selected: '#F2F4F8',
+                            default: '#DFDFDF',
+                            hover: '#F2F2F2',
+                            active: '#F2F2F2',
+                            focus: '#F2F2F2',
+                            focusVisible: '#F2F2F2',
+                            disabled: '#959595',
+                            selected: '#F2F2F2',
                         },
                     },
                     description: {
                         color: {
-                            disabled: '#525866',
+                            default: '#959595',
+                            hover: '#959595',
+                            active: '#959595',
+                            focus: '#959595',
+                            focusVisible: '#959595',
+                            disabled: '#4D4D4D',
+                            selected: '#959595',
                         },
                     },
                     seperator: {
-                        color: '#2B303B',
+                        color: '#292929',
                     },
                 },
             },
             drawer: {
                 header: {
-                    borderBottom: '1px solid #2B303B',
+                    borderBottom: '1px solid #292929',
                 },
             },
         },
         lg: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    active: '#F2F4F8',
-                    focus: '#F2F4F8',
-                    focusVisible: '#F2F4F8',
-                    selected: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    active: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    focusVisible: '#F2F2F2',
+                    disabled: '#959595',
+                    selected: '#F2F2F2',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    active: '#959595',
+                    focus: '#959595',
+                    focusVisible: '#959595',
+                    disabled: '#6B6B6B',
+                    selected: '#959595',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    active: '#CACFD8',
-                    focus: '#CACFD8',
-                    focusVisible: '#CACFD8',
-                    selected: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    active: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    focusVisible: '#C8C8C8',
+                    disabled: '#959595',
+                    selected: '#C8C8C8',
                 },
             },
             errorMessage: {
@@ -2651,66 +2998,87 @@ export const generatedDarkOverrides = {
             trigger: {
                 backgroundColor: {
                     container: {
-                        open: '#222530',
-                        closed: '#181B25',
-                        hover: '#2B303B',
-                        focus: '#2B303B',
-                        error: '#181B25',
+                        open: '#1F1F1F',
+                        closed: '#171717',
+                        hover: '#292929',
+                        focus: '#292929',
+                        error: '#171717',
                     },
                     'no-container': {
-                        hover: '#2B303B',
-                        focus: '#2B303B',
+                        hover: '#292929',
+                        focus: '#292929',
                     },
                 },
                 outline: {
                     container: {
-                        open: '1px solid #2B303B !important',
-                        closed: '1px solid #2B303B !important',
-                        hover: '1px solid #2B303B !important',
-                        focus: '1px solid #2B303B !important',
+                        open: '1px solid #292929 !important',
+                        closed: '1px solid #292929 !important',
+                        hover: '1px solid #292929 !important',
+                        focus: '1px solid #292929 !important',
                         error: '1px solid #FB2C36 !important',
                     },
                 },
+                placeholder: {
+                    color: '#959595',
+                },
                 selectedValue: {
-                    color: '#F2F4F8',
+                    color: '#F2F2F2',
                 },
             },
             menu: {
-                backgroundColor: '#181B25',
-                border: '#2B303B',
+                backgroundColor: '#171717',
+                border: '#292929',
                 item: {
                     backgroundColor: {
-                        default: '#181B25',
-                        hover: '#2B303B',
-                        active: '#525866',
-                        focus: '#525866',
-                        focusVisible: '#525866',
-                        disabled: '#2B303B',
-                        selected: '#2B303B',
+                        default: '#171717',
+                        hover: '#292929',
+                        active: '#4D4D4D',
+                        focus: '#4D4D4D',
+                        focusVisible: '#4D4D4D',
+                        disabled: '#292929',
+                        selected: '#292929',
+                    },
+                    optionsLabel: {
+                        color: {
+                            default: '#959595',
+                            hover: '#959595',
+                            active: '#959595',
+                            focus: '#959595',
+                            focusVisible: '#959595',
+                            disabled: '#959595',
+                            selected: '#959595',
+                        },
                     },
                     option: {
                         color: {
-                            default: '#E1E4EA',
-                            hover: '#F2F4F8',
-                            active: '#F2F4F8',
-                            focus: '#F2F4F8',
-                            focusVisible: '#F2F4F8',
-                            selected: '#F2F4F8',
+                            default: '#DFDFDF',
+                            hover: '#F2F2F2',
+                            active: '#F2F2F2',
+                            focus: '#F2F2F2',
+                            focusVisible: '#F2F2F2',
+                            disabled: '#959595',
+                            selected: '#F2F2F2',
                         },
                     },
                     description: {
                         color: {
-                            disabled: '#525866',
+                            default: '#959595',
+                            hover: '#959595',
+                            active: '#959595',
+                            focus: '#959595',
+                            focusVisible: '#959595',
+                            disabled: '#4D4D4D',
+                            selected: '#959595',
                         },
                     },
                     seperator: {
-                        color: '#2B303B',
+                        color: '#292929',
                     },
                 },
             },
             drawer: {
                 header: {
-                    borderBottom: '1px solid #2B303B',
+                    borderBottom: '1px solid #292929',
                 },
             },
         },
@@ -2720,58 +3088,58 @@ export const generatedDarkOverrides = {
             trigger: {
                 backgroundColor: {
                     border: {
-                        hover: '#2B303B',
-                        active: '#2B303B',
-                        disabled: '#2B303B',
-                        open: '#2B303B',
+                        hover: '#292929',
+                        active: '#292929',
+                        disabled: '#292929',
+                        open: '#292929',
                     },
                     noBorder: {
-                        hover: '#2B303B',
-                        active: '#2B303B',
-                        disabled: '#2B303B',
+                        hover: '#292929',
+                        active: '#292929',
+                        disabled: '#292929',
                     },
                 },
                 border: {
                     border: {
-                        default: '1px solid #2B303B',
-                        hover: '1px solid #2B303B',
-                        active: '1px solid #2B303B',
-                        disabled: '1px solid #2B303B',
-                        open: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #292929',
+                        active: '1px solid #292929',
+                        disabled: '1px solid #292929',
+                        open: '1px solid #292929',
                     },
                     noBorder: {
-                        default: '1px solid #2B303B',
-                        hover: '1px solid #2B303B',
-                        active: '1px solid #2B303B',
-                        disabled: '1px solid #2B303B',
-                        open: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #292929',
+                        active: '1px solid #292929',
+                        disabled: '1px solid #292929',
+                        open: '1px solid #292929',
                     },
                 },
                 text: {
                     title: {
                         color: {
-                            default: '#F5F7FA',
-                            hover: '#F5F7FA',
-                            active: '#F5F7FA',
-                            disabled: '#CACFD8',
-                            open: '#F5F7FA',
+                            default: '#F5F5F5',
+                            hover: '#F5F5F5',
+                            active: '#F5F5F5',
+                            disabled: '#C8C8C8',
+                            open: '#F5F5F5',
                         },
                     },
                     subtext: {
                         color: {
-                            default: '#E1E4EA',
-                            hover: '#E1E4EA',
-                            active: '#E1E4EA',
-                            disabled: '#717784',
-                            open: '#E1E4EA',
+                            default: '#DFDFDF',
+                            hover: '#DFDFDF',
+                            active: '#DFDFDF',
+                            disabled: '#6B6B6B',
+                            open: '#DFDFDF',
                         },
                     },
                 },
             },
             separator: {
                 color: {
-                    border: '#2B303B',
-                    noBorder: '#2B303B',
+                    border: '#292929',
+                    noBorder: '#292929',
                 },
             },
         },
@@ -2779,74 +3147,85 @@ export const generatedDarkOverrides = {
             trigger: {
                 backgroundColor: {
                     border: {
-                        hover: '#2B303B',
-                        active: '#2B303B',
-                        disabled: '#2B303B',
-                        open: '#2B303B',
+                        hover: '#292929',
+                        active: '#292929',
+                        disabled: '#292929',
+                        open: '#292929',
                     },
                     noBorder: {
-                        hover: '#2B303B',
-                        active: '#2B303B',
-                        disabled: '#2B303B',
+                        hover: '#292929',
+                        active: '#292929',
+                        disabled: '#292929',
                     },
                 },
                 border: {
                     border: {
-                        default: '1px solid #2B303B',
-                        hover: '1px solid #2B303B',
-                        active: '1px solid #2B303B',
-                        disabled: '1px solid #2B303B',
-                        open: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #292929',
+                        active: '1px solid #292929',
+                        disabled: '1px solid #292929',
+                        open: '1px solid #292929',
                     },
                 },
                 text: {
                     title: {
                         color: {
-                            default: '#F5F7FA',
-                            hover: '#F5F7FA',
-                            active: '#F5F7FA',
-                            disabled: '#CACFD8',
-                            open: '#F5F7FA',
+                            default: '#F5F5F5',
+                            hover: '#F5F5F5',
+                            active: '#F5F5F5',
+                            disabled: '#C8C8C8',
+                            open: '#F5F5F5',
                         },
                     },
                     subtext: {
                         color: {
-                            default: '#E1E4EA',
-                            hover: '#E1E4EA',
-                            active: '#E1E4EA',
-                            disabled: '#717784',
-                            open: '#E1E4EA',
+                            default: '#DFDFDF',
+                            hover: '#DFDFDF',
+                            active: '#DFDFDF',
+                            disabled: '#6B6B6B',
+                            open: '#DFDFDF',
                         },
                     },
                 },
             },
             separator: {
                 color: {
-                    border: '#2B303B',
-                    noBorder: '#2B303B',
+                    border: '#292929',
+                    noBorder: '#292929',
                 },
             },
         },
     },
     STAT_CARD: {
         sm: {
-            border: '1px solid #2B303B',
-            backgroundColor: '#181B25',
+            border: '1px solid #292929',
+            backgroundColor: '#171717',
             textContainer: {
+                header: {
+                    title: {
+                        color: '#959595',
+                    },
+                    helpIcon: {
+                        color: {
+                            default: '#959595',
+                            hover: '#959595',
+                        },
+                    },
+                },
                 stats: {
                     title: {
                         value: {
                             number: {
-                                color: '#F5F7FA',
+                                color: '#F5F5F5',
                             },
                             line: {
-                                color: '#F5F7FA',
+                                color: '#F5F5F5',
                             },
                             bar: {
-                                color: '#F5F7FA',
+                                color: '#F5F5F5',
                             },
                             progress: {
-                                color: '#F5F7FA',
+                                color: '#F5F5F5',
                             },
                         },
                         change: {
@@ -2857,6 +3236,9 @@ export const generatedDarkOverrides = {
                                 },
                             },
                         },
+                    },
+                    subtitle: {
+                        color: '#959595',
                     },
                 },
             },
@@ -2871,12 +3253,12 @@ export const generatedDarkOverrides = {
                         decrease: '#FF6467',
                     },
                     gradient: {
-                        end: '#181B25',
+                        end: '#171717',
                     },
                 },
                 line: {
                     activeDot: {
-                        fill: '#181B25',
+                        fill: '#171717',
                     },
                 },
                 bar: {
@@ -2888,39 +3270,50 @@ export const generatedDarkOverrides = {
                 progressBar: {
                     background: {
                         fill: '#51A2FF',
-                        empty: '#181B25',
+                        empty: '#171717',
                         pattern: {
-                            color: '#2B303B',
+                            color: '#292929',
                         },
                     },
                     label: {
-                        color: '#F2F4F8',
+                        color: '#F2F2F2',
                     },
                 },
                 tooltip: {
                     backgroundColor: '#FFFFFF',
-                    color: '#181B25',
+                    color: '#171717',
                 },
             },
         },
         lg: {
-            border: '1px solid #2B303B',
-            backgroundColor: '#181B25',
+            border: '1px solid #292929',
+            backgroundColor: '#171717',
             textContainer: {
+                header: {
+                    title: {
+                        color: '#959595',
+                    },
+                    helpIcon: {
+                        color: {
+                            default: '#959595',
+                            hover: '#959595',
+                        },
+                    },
+                },
                 stats: {
                     title: {
                         value: {
                             number: {
-                                color: '#F5F7FA',
+                                color: '#F5F5F5',
                             },
                             line: {
-                                color: '#F5F7FA',
+                                color: '#F5F5F5',
                             },
                             bar: {
-                                color: '#F5F7FA',
+                                color: '#F5F5F5',
                             },
                             progress: {
-                                color: '#F5F7FA',
+                                color: '#F5F5F5',
                             },
                         },
                         change: {
@@ -2931,6 +3324,9 @@ export const generatedDarkOverrides = {
                                 },
                             },
                         },
+                    },
+                    subtitle: {
+                        color: '#959595',
                     },
                 },
             },
@@ -2945,12 +3341,12 @@ export const generatedDarkOverrides = {
                         decrease: '#FF6467',
                     },
                     gradient: {
-                        end: '#181B25',
+                        end: '#171717',
                     },
                 },
                 line: {
                     activeDot: {
-                        fill: '#181B25',
+                        fill: '#171717',
                     },
                 },
                 bar: {
@@ -2962,18 +3358,18 @@ export const generatedDarkOverrides = {
                 progressBar: {
                     background: {
                         fill: '#51A2FF',
-                        empty: '#181B25',
+                        empty: '#171717',
                         pattern: {
-                            color: '#2B303B',
+                            color: '#292929',
                         },
                     },
                     label: {
-                        color: '#F2F4F8',
+                        color: '#F2F2F2',
                     },
                 },
                 tooltip: {
                     backgroundColor: '#FFFFFF',
-                    color: '#181B25',
+                    color: '#171717',
                 },
             },
         },
@@ -2989,11 +3385,11 @@ export const generatedDarkOverrides = {
                 },
                 empty: {
                     backgroundColor: {
-                        solid: '#2B303B',
+                        solid: '#292929',
                     },
                     backgroundImage: {
                         segmented:
-                            'repeating-linear-gradient(\n                    to right,\n                    #525866,\n                    #525866 2px,\n                    transparent 2px,\n                    transparent 8px\n                )',
+                            'repeating-linear-gradient(\n                    to right,\n                    #4D4D4D,\n                    #4D4D4D 2px,\n                    transparent 2px,\n                    transparent 8px\n                )',
                     },
                 },
             },
@@ -3003,12 +3399,12 @@ export const generatedDarkOverrides = {
                     segmented: '#2B7FFF',
                 },
                 background: {
-                    solid: '#2B303B',
-                    segmented: '#2B303B',
+                    solid: '#292929',
+                    segmented: '#292929',
                 },
             },
             label: {
-                color: '#E1E4EA',
+                color: '#DFDFDF',
             },
         },
         lg: {
@@ -3021,11 +3417,11 @@ export const generatedDarkOverrides = {
                 },
                 empty: {
                     backgroundColor: {
-                        solid: '#2B303B',
+                        solid: '#292929',
                     },
                     backgroundImage: {
                         segmented:
-                            'repeating-linear-gradient(\n                    to right,\n                    #525866,\n                    #525866 2px,\n                    transparent 2px,\n                    transparent 8px\n                )',
+                            'repeating-linear-gradient(\n                    to right,\n                    #4D4D4D,\n                    #4D4D4D 2px,\n                    transparent 2px,\n                    transparent 8px\n                )',
                     },
                 },
             },
@@ -3035,72 +3431,72 @@ export const generatedDarkOverrides = {
                     segmented: '#2B7FFF',
                 },
                 background: {
-                    solid: '#2B303B',
-                    segmented: '#2B303B',
+                    solid: '#292929',
+                    segmented: '#292929',
                 },
             },
             label: {
-                color: '#E1E4EA',
+                color: '#DFDFDF',
             },
         },
     },
     DRAWER: {
         sm: {
             content: {
-                backgroundColor: '#181B25',
+                backgroundColor: '#171717',
                 handle: {
-                    backgroundColor: '#717784',
+                    backgroundColor: '#6B6B6B',
                 },
             },
         },
         lg: {
             content: {
-                backgroundColor: '#181B25',
+                backgroundColor: '#171717',
                 handle: {
-                    backgroundColor: '#717784',
+                    backgroundColor: '#6B6B6B',
                 },
             },
         },
     },
     CHARTS: {
         sm: {
-            border: '1px solid #2B303B',
+            border: '1px solid #292929',
             header: {
-                backgroundColor: '#222530',
-                borderBottom: '1px solid #2B303B',
+                backgroundColor: '#1F1F1F',
+                borderBottom: '1px solid #292929',
             },
             content: {
                 legend: {
                     item: {
                         color: {
-                            default: '#F2F4F8',
-                            hover: '#F2F4F8',
-                            active: '#F5F7FA',
-                            total: '#CACFD8',
+                            default: '#F2F2F2',
+                            hover: '#F2F2F2',
+                            active: '#F5F5F5',
+                            total: '#C8C8C8',
                         },
                     },
                 },
-                backgroundColor: '#181B25',
+                backgroundColor: '#171717',
             },
         },
         lg: {
-            border: '1px solid #2B303B',
+            border: '1px solid #292929',
             header: {
-                backgroundColor: '#222530',
-                borderBottom: '1px solid #2B303B',
+                backgroundColor: '#1F1F1F',
+                borderBottom: '1px solid #292929',
             },
             content: {
                 legend: {
                     item: {
                         color: {
-                            default: '#F2F4F8',
-                            hover: '#F2F4F8',
-                            active: '#F5F7FA',
-                            total: '#CACFD8',
+                            default: '#F2F2F2',
+                            hover: '#F2F2F2',
+                            active: '#F5F5F5',
+                            total: '#C8C8C8',
                         },
                     },
                 },
-                backgroundColor: '#181B25',
+                backgroundColor: '#171717',
             },
         },
     },
@@ -3119,18 +3515,18 @@ export const generatedDarkOverrides = {
                 textContainer: {
                     header: {
                         color: {
-                            info: '#222530',
-                            success: '#222530',
-                            warning: '#222530',
-                            error: '#222530',
+                            info: '#1F1F1F',
+                            success: '#1F1F1F',
+                            warning: '#1F1F1F',
+                            error: '#1F1F1F',
                         },
                     },
                     description: {
                         color: {
-                            info: '#717784',
-                            success: '#717784',
-                            warning: '#717784',
-                            error: '#717784',
+                            info: '#6B6B6B',
+                            success: '#6B6B6B',
+                            warning: '#6B6B6B',
+                            error: '#6B6B6B',
                         },
                     },
                 },
@@ -3138,10 +3534,10 @@ export const generatedDarkOverrides = {
             actions: {
                 closeButton: {
                     color: {
-                        info: '#181B25',
-                        success: '#181B25',
-                        warning: '#181B25',
-                        error: '#181B25',
+                        info: '#171717',
+                        success: '#171717',
+                        warning: '#171717',
+                        error: '#171717',
                     },
                 },
             },
@@ -3160,18 +3556,18 @@ export const generatedDarkOverrides = {
                 textContainer: {
                     header: {
                         color: {
-                            info: '#222530',
-                            success: '#222530',
-                            warning: '#222530',
-                            error: '#222530',
+                            info: '#1F1F1F',
+                            success: '#1F1F1F',
+                            warning: '#1F1F1F',
+                            error: '#1F1F1F',
                         },
                     },
                     description: {
                         color: {
-                            info: '#717784',
-                            success: '#717784',
-                            warning: '#717784',
-                            error: '#717784',
+                            info: '#6B6B6B',
+                            success: '#6B6B6B',
+                            warning: '#6B6B6B',
+                            error: '#6B6B6B',
                         },
                     },
                 },
@@ -3179,10 +3575,10 @@ export const generatedDarkOverrides = {
             actions: {
                 closeButton: {
                     color: {
-                        info: '#181B25',
-                        success: '#181B25',
-                        warning: '#181B25',
-                        error: '#181B25',
+                        info: '#171717',
+                        success: '#171717',
+                        warning: '#171717',
+                        error: '#171717',
                     },
                 },
             },
@@ -3194,150 +3590,168 @@ export const generatedDarkOverrides = {
                 circle: {
                     completed: {
                         default: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
+                            outline: '2px solid #959595',
                         },
                         disabled: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                     },
                     current: {
                         default: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
+                            outline: '2px solid #959595',
                         },
                         disabled: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                     },
                     pending: {
                         default: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#525866',
-                            borderColor: '#717784',
+                            backgroundColor: '#4D4D4D',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
+                            outline: '2px solid #959595',
                         },
                         disabled: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                     },
                     disabled: {
                         default: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                         disabled: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                     },
                     skipped: {
                         default: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
+                            outline: '2px solid #959595',
                         },
                         disabled: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                     },
                 },
                 icon: {
                     completed: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                     },
                     current: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
+                        },
+                    },
+                    pending: {
+                        default: {
+                            color: '#959595',
+                        },
+                        hover: {
+                            color: '#959595',
+                        },
+                        focus: {
+                            color: '#959595',
+                        },
+                        disabled: {
+                            color: '#959595',
                         },
                     },
                     disabled: {
                         default: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         hover: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         focus: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         disabled: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                     },
                     skipped: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                     },
                 },
@@ -3346,12 +3760,12 @@ export const generatedDarkOverrides = {
                 line: {
                     active: {
                         default: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                     },
                     inactive: {
                         default: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                     },
                 },
@@ -3360,58 +3774,72 @@ export const generatedDarkOverrides = {
                 text: {
                     completed: {
                         default: {
-                            color: '#F5F7FA',
+                            color: '#F5F5F5',
                         },
                         hover: {
-                            color: '#F5F7FA',
+                            color: '#F5F5F5',
                         },
                         focus: {
-                            color: '#F5F7FA',
+                            color: '#F5F5F5',
                         },
                         disabled: {
-                            color: '#F5F7FA',
+                            color: '#F5F5F5',
                         },
                     },
                     current: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
+                        },
+                    },
+                    pending: {
+                        default: {
+                            color: '#959595',
+                        },
+                        hover: {
+                            color: '#959595',
+                        },
+                        focus: {
+                            color: '#959595',
+                        },
+                        disabled: {
+                            color: '#959595',
                         },
                     },
                     disabled: {
                         default: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         hover: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         focus: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         disabled: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                     },
                     skipped: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                     },
                 },
@@ -3422,150 +3850,168 @@ export const generatedDarkOverrides = {
                 circle: {
                     completed: {
                         default: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
+                            outline: '2px solid #959595',
                         },
                         disabled: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                     },
                     current: {
                         default: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
+                            outline: '2px solid #959595',
                         },
                         disabled: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                     },
                     pending: {
                         default: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#525866',
-                            borderColor: '#717784',
+                            backgroundColor: '#4D4D4D',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
+                            outline: '2px solid #959595',
                         },
                         disabled: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                     },
                     disabled: {
                         default: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                         disabled: {
-                            backgroundColor: '#181B25',
-                            borderColor: '#717784',
+                            backgroundColor: '#171717',
+                            borderColor: '#6B6B6B',
                         },
                     },
                     skipped: {
                         default: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         hover: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                         focus: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
+                            outline: '2px solid #959595',
                         },
                         disabled: {
-                            backgroundColor: '#2B303B',
-                            borderColor: '#717784',
+                            backgroundColor: '#292929',
+                            borderColor: '#6B6B6B',
                         },
                     },
                 },
                 icon: {
                     completed: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                     },
                     current: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
+                        },
+                    },
+                    pending: {
+                        default: {
+                            color: '#959595',
+                        },
+                        hover: {
+                            color: '#959595',
+                        },
+                        focus: {
+                            color: '#959595',
+                        },
+                        disabled: {
+                            color: '#959595',
                         },
                     },
                     disabled: {
                         default: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         hover: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         focus: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         disabled: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                     },
                     skipped: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                     },
                 },
@@ -3574,12 +4020,12 @@ export const generatedDarkOverrides = {
                 line: {
                     active: {
                         default: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                     },
                     inactive: {
                         default: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                     },
                 },
@@ -3588,58 +4034,72 @@ export const generatedDarkOverrides = {
                 text: {
                     completed: {
                         default: {
-                            color: '#F5F7FA',
+                            color: '#F5F5F5',
                         },
                         hover: {
-                            color: '#F5F7FA',
+                            color: '#F5F5F5',
                         },
                         focus: {
-                            color: '#F5F7FA',
+                            color: '#F5F5F5',
                         },
                         disabled: {
-                            color: '#F5F7FA',
+                            color: '#F5F5F5',
                         },
                     },
                     current: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
+                        },
+                    },
+                    pending: {
+                        default: {
+                            color: '#959595',
+                        },
+                        hover: {
+                            color: '#959595',
+                        },
+                        focus: {
+                            color: '#959595',
+                        },
+                        disabled: {
+                            color: '#959595',
                         },
                     },
                     disabled: {
                         default: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         hover: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         focus: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                         disabled: {
-                            color: '#717784',
+                            color: '#6B6B6B',
                         },
                     },
                     skipped: {
                         default: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         hover: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         focus: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                         disabled: {
-                            color: '#E1E4EA',
+                            color: '#DFDFDF',
                         },
                     },
                 },
@@ -3648,72 +4108,82 @@ export const generatedDarkOverrides = {
     },
     TOPBAR: {
         sm: {
-            borderBottom: '1px solid #2B303B',
+            borderBottom: '1px solid #292929',
             toggleButton: {
                 backgroundColor: {
-                    hover: '#525866',
-                    active: '#2B303B',
+                    hover: '#4D4D4D',
+                    active: '#292929',
                 },
                 icon: {
-                    color: '#E1E4EA',
+                    color: '#DFDFDF',
                 },
             },
             actionButton: {
                 backgroundColor: {
-                    hover: '#525866',
-                    active: '#2B303B',
+                    hover: '#4D4D4D',
+                    active: '#292929',
                 },
                 icon: {
-                    color: '#E1E4EA',
+                    color: '#DFDFDF',
                 },
             },
             tenantIconButton: {
                 backgroundColor: {
-                    hover: '#525866',
-                    active: '#2B303B',
+                    hover: '#4D4D4D',
+                    active: '#292929',
                 },
             },
             merchantSelectTrigger: {
                 icon: {
-                    color: '#E1E4EA',
+                    color: '#DFDFDF',
                 },
                 text: {
-                    color: '#F5F7FA',
+                    color: '#F5F5F5',
+                },
+            },
+            leftSection: {
+                divider: {
+                    color: '#959595',
                 },
             },
         },
         lg: {
-            borderBottom: '1px solid #2B303B',
+            borderBottom: '1px solid #292929',
             toggleButton: {
                 backgroundColor: {
-                    hover: '#525866',
-                    active: '#2B303B',
+                    hover: '#4D4D4D',
+                    active: '#292929',
                 },
                 icon: {
-                    color: '#E1E4EA',
+                    color: '#DFDFDF',
                 },
             },
             actionButton: {
                 backgroundColor: {
-                    hover: '#525866',
-                    active: '#2B303B',
+                    hover: '#4D4D4D',
+                    active: '#292929',
                 },
                 icon: {
-                    color: '#E1E4EA',
+                    color: '#DFDFDF',
                 },
             },
             tenantIconButton: {
                 backgroundColor: {
-                    hover: '#525866',
-                    active: '#2B303B',
+                    hover: '#4D4D4D',
+                    active: '#292929',
                 },
             },
             merchantSelectTrigger: {
                 icon: {
-                    color: '#E1E4EA',
+                    color: '#DFDFDF',
                 },
                 text: {
-                    color: '#F5F7FA',
+                    color: '#F5F5F5',
+                },
+            },
+            leftSection: {
+                divider: {
+                    color: '#959595',
                 },
             },
         },
@@ -3723,18 +4193,18 @@ export const generatedDarkOverrides = {
             container: {
                 backgroundColor: {
                     withoutImage: {
-                        default: '#525866',
-                        online: '#525866',
+                        default: '#4D4D4D',
+                        online: '#4D4D4D',
                     },
                 },
                 border: {
                     withImage: {
-                        default: '1px solid #181B25',
-                        online: '1px solid #181B25',
+                        default: '1px solid #171717',
+                        online: '1px solid #171717',
                     },
                     withoutImage: {
-                        default: '1px solid #2B303B',
-                        online: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        online: '1px solid #292929',
                     },
                 },
             },
@@ -3746,55 +4216,55 @@ export const generatedDarkOverrides = {
             },
             indicator: {
                 backgroundColor: {
-                    default: '#717784',
+                    default: '#6B6B6B',
                 },
                 border: {
                     sm: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                     regular: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                     md: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                     lg: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                     xl: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                 },
             },
             slot: {
                 color: {
-                    default: '#F2F4F8',
-                    online: '#F2F4F8',
+                    default: '#F2F2F2',
+                    online: '#F2F2F2',
                 },
             },
         },
@@ -3802,18 +4272,18 @@ export const generatedDarkOverrides = {
             container: {
                 backgroundColor: {
                     withoutImage: {
-                        default: '#525866',
-                        online: '#525866',
+                        default: '#4D4D4D',
+                        online: '#4D4D4D',
                     },
                 },
                 border: {
                     withImage: {
-                        default: '1px solid #181B25',
-                        online: '1px solid #181B25',
+                        default: '1px solid #171717',
+                        online: '1px solid #171717',
                     },
                     withoutImage: {
-                        default: '1px solid #2B303B',
-                        online: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        online: '1px solid #292929',
                     },
                 },
             },
@@ -3825,274 +4295,286 @@ export const generatedDarkOverrides = {
             },
             indicator: {
                 backgroundColor: {
-                    default: '#717784',
+                    default: '#6B6B6B',
                 },
                 border: {
                     sm: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                     regular: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                     md: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                     lg: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                     xl: {
                         default: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                         online: {
-                            color: '#181B25',
+                            color: '#171717',
                         },
                     },
                 },
             },
             slot: {
                 color: {
-                    default: '#F2F4F8',
-                    online: '#F2F4F8',
+                    default: '#F2F2F2',
+                    online: '#F2F2F2',
                 },
             },
         },
     },
     SIDEBAR: {
         sm: {
-            backgroundColor: '#222530',
-            borderRight: '1px solid #2B303B',
+            backgroundColor: '#1F1F1F',
+            borderRight: '1px solid #292929',
             leftPanel: {
-                backgroundColor: '#222530',
-                borderRight: '1px solid #2B303B',
+                backgroundColor: '#1F1F1F',
+                borderRight: '1px solid #292929',
                 item: {
                     border: {
-                        default: '1px solid #2B303B',
-                        hover: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #292929',
                         active: '1px solid #51A2FF',
                     },
                     backgroundColor: {
-                        hover: '#2B303B',
+                        hover: '#292929',
                     },
                 },
             },
             header: {
-                backgroundColor: '#222530',
-                borderBottom: '1px solid #2B303B',
+                backgroundColor: '#1F1F1F',
+                borderBottom: '1px solid #292929',
                 toggleButton: {
                     backgroundColor: {
-                        hover: '#525866',
-                        active: '#525866',
+                        hover: '#4D4D4D',
+                        active: '#4D4D4D',
                     },
                 },
             },
             footer: {
-                backgroundColor: '#222530',
-                borderTop: '1px solid #2B303B',
+                backgroundColor: '#1F1F1F',
+                borderTop: '1px solid #292929',
             },
         },
         lg: {
-            backgroundColor: '#222530',
-            borderRight: '1px solid #2B303B',
+            backgroundColor: '#1F1F1F',
+            borderRight: '1px solid #292929',
             leftPanel: {
-                backgroundColor: '#222530',
-                borderRight: '1px solid #2B303B',
+                backgroundColor: '#1F1F1F',
+                borderRight: '1px solid #292929',
                 item: {
                     border: {
-                        default: '1px solid #2B303B',
-                        hover: '1px solid #2B303B',
+                        default: '1px solid #292929',
+                        hover: '1px solid #292929',
                         active: '1px solid #51A2FF',
                     },
                     backgroundColor: {
-                        hover: '#2B303B',
+                        hover: '#292929',
                     },
                 },
             },
             header: {
-                backgroundColor: '#222530',
-                borderBottom: '1px solid #2B303B',
+                backgroundColor: '#1F1F1F',
+                borderBottom: '1px solid #292929',
                 toggleButton: {
                     backgroundColor: {
-                        hover: '#525866',
-                        active: '#525866',
+                        hover: '#4D4D4D',
+                        active: '#4D4D4D',
                     },
                 },
             },
             footer: {
-                backgroundColor: '#222530',
-                borderTop: '1px solid #2B303B',
+                backgroundColor: '#1F1F1F',
+                borderTop: '1px solid #292929',
             },
         },
     },
     CHAT_INPUT: {
         sm: {
             backgroundColor: {
-                default: '#181B25',
-                hover: '#222530',
-                disabled: '#181B25',
+                default: '#171717',
+                hover: '#1F1F1F',
+                disabled: '#171717',
             },
             border: {
-                default: '1px solid #2B303B',
+                default: '1px solid #292929',
                 focus: '1px solid #51A2FF',
             },
             text: {
                 color: {
-                    default: '#E1E4EA',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#DFDFDF',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                 },
             },
             container: {
                 backgroundColor: {
-                    default: '#181B25',
-                    hover: '#222530',
-                    disabled: '#181B25',
+                    default: '#171717',
+                    hover: '#1F1F1F',
+                    disabled: '#171717',
                 },
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
                     focus: '1px solid #51A2FF',
                 },
                 boxShadow: {
-                    default: 'inset 0 0 0 3px #2B303B',
-                    hover: 'inset 0 0 0 3px #2B303B',
+                    default: 'inset 0 0 0 3px #292929',
+                    hover: 'inset 0 0 0 3px #292929',
                     focus: '0 2px 8px 0 #162456, 0 0 0 3px #162456',
                 },
             },
             attachmentContainer: {
-                backgroundColor: '#181B25',
+                backgroundColor: '#171717',
             },
             textarea: {
-                color: '#E1E4EA',
+                color: '#DFDFDF',
+                placeholder: {
+                    color: '#959595',
+                },
             },
             overflowTag: {
                 backgroundColor: {
-                    default: '#525866',
-                    hover: '#2B303B',
-                    active: '#717784',
+                    default: '#4D4D4D',
+                    hover: '#292929',
+                    active: '#6B6B6B',
                 },
                 color: {
-                    default: '#E1E4EA',
-                    hover: '#F2F4F8',
-                    active: '#F2F4F8',
+                    default: '#DFDFDF',
+                    hover: '#F2F2F2',
+                    active: '#F2F2F2',
                 },
-                border: '1px solid #2B303B',
+                border: '1px solid #292929',
             },
             topQueries: {
                 container: {
-                    borderTop: '1px solid #2B303B',
+                    borderTop: '1px solid #292929',
                 },
                 header: {
-                    backgroundColor: '#181B25',
+                    color: '#959595',
+                    backgroundColor: '#171717',
                 },
                 scrollContainer: {
-                    backgroundColor: '#181B25',
-                    scrollbarColor: '#717784 #2B303B',
+                    backgroundColor: '#171717',
+                    scrollbarColor: '#6B6B6B #292929',
                 },
                 item: {
                     backgroundColor: {
-                        hover: '#2B303B',
-                        active: '#525866',
+                        hover: '#292929',
+                        active: '#4D4D4D',
                     },
                     color: {
-                        default: '#E1E4EA',
-                        hover: '#F2F4F8',
-                        active: '#F2F4F8',
+                        default: '#DFDFDF',
+                        hover: '#F2F2F2',
+                        active: '#F2F2F2',
+                        disabled: '#959595',
                     },
                 },
             },
         },
         lg: {
             backgroundColor: {
-                default: '#181B25',
-                hover: '#222530',
-                disabled: '#181B25',
+                default: '#171717',
+                hover: '#1F1F1F',
+                disabled: '#171717',
             },
             border: {
-                default: '1px solid #2B303B',
+                default: '1px solid #292929',
                 focus: '1px solid #51A2FF',
             },
             text: {
                 color: {
-                    default: '#E1E4EA',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#DFDFDF',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                 },
             },
             container: {
                 backgroundColor: {
-                    default: '#181B25',
-                    hover: '#222530',
-                    disabled: '#181B25',
+                    default: '#171717',
+                    hover: '#1F1F1F',
+                    disabled: '#171717',
                 },
                 border: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
                     focus: '1px solid #51A2FF',
                 },
                 boxShadow: {
-                    default: 'inset 0 0 0 3px #2B303B',
-                    hover: 'inset 0 0 0 3px #2B303B',
+                    default: 'inset 0 0 0 3px #292929',
+                    hover: 'inset 0 0 0 3px #292929',
                     focus: '0 2px 8px 0 #162456, 0 0 0 3px #162456',
                 },
             },
             attachmentContainer: {
-                backgroundColor: '#181B25',
+                backgroundColor: '#171717',
             },
             textarea: {
-                color: '#E1E4EA',
+                color: '#DFDFDF',
+                placeholder: {
+                    color: '#959595',
+                },
             },
             overflowTag: {
                 backgroundColor: {
-                    default: '#525866',
-                    hover: '#2B303B',
-                    active: '#717784',
+                    default: '#4D4D4D',
+                    hover: '#292929',
+                    active: '#6B6B6B',
                 },
                 color: {
-                    default: '#E1E4EA',
-                    hover: '#F2F4F8',
-                    active: '#F2F4F8',
+                    default: '#DFDFDF',
+                    hover: '#F2F2F2',
+                    active: '#F2F2F2',
                 },
-                border: '1px solid #2B303B',
+                border: '1px solid #292929',
             },
             topQueries: {
                 container: {
-                    borderTop: '1px solid #2B303B',
+                    borderTop: '1px solid #292929',
                 },
                 header: {
-                    backgroundColor: '#181B25',
+                    color: '#959595',
+                    backgroundColor: '#171717',
                 },
                 scrollContainer: {
-                    backgroundColor: '#181B25',
-                    scrollbarColor: '#717784 #2B303B',
+                    backgroundColor: '#171717',
+                    scrollbarColor: '#6B6B6B #292929',
                 },
                 item: {
                     backgroundColor: {
-                        hover: '#2B303B',
-                        active: '#525866',
+                        hover: '#292929',
+                        active: '#4D4D4D',
                     },
                     color: {
-                        default: '#E1E4EA',
-                        hover: '#F2F4F8',
-                        active: '#F2F4F8',
+                        default: '#DFDFDF',
+                        hover: '#F2F2F2',
+                        active: '#F2F2F2',
+                        disabled: '#959595',
                     },
                 },
             },
@@ -4101,16 +4583,16 @@ export const generatedDarkOverrides = {
     KEYVALUEPAIRV2: {
         sm: {
             key: {
-                color: '#CACFD8',
+                color: '#C8C8C8',
             },
             value: {
-                color: '#F2F4F8',
+                color: '#F2F2F2',
             },
         },
     },
     POPOVERV2: {
         sm: {
-            background: '#181B25',
+            background: '#171717',
             shadow: {
                 focusPrimary: '0px 0px 0px 3px #162456',
                 focusError: '0px 0px 0px 3px #9F0712',
@@ -4120,7 +4602,7 @@ export const generatedDarkOverrides = {
                     color: '#FFFFFF',
                 },
                 description: {
-                    color: '#CACFD8',
+                    color: '#C8C8C8',
                 },
             },
         },
@@ -4129,23 +4611,28 @@ export const generatedDarkOverrides = {
         sm: {
             label: {
                 color: {
-                    default: '#F2F4F8',
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
             subLabel: {
                 color: {
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#959595',
+                    focus: '#959595',
+                    disabled: '#6B6B6B',
                     error: '#FB2C36',
                 },
             },
             hintText: {
                 color: {
-                    default: '#CACFD8',
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
+                    default: '#C8C8C8',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#959595',
                     error: '#FB2C36',
                 },
             },
@@ -4157,37 +4644,42 @@ export const generatedDarkOverrides = {
             },
             inputContainer: {
                 placeholderColor: {
-                    hover: '#CACFD8',
-                    focus: '#CACFD8',
-                    disabled: '#CACFD8',
-                    error: '#CACFD8',
+                    default: '#959595',
+                    hover: '#C8C8C8',
+                    focus: '#C8C8C8',
+                    disabled: '#C8C8C8',
+                    error: '#C8C8C8',
                 },
                 borderBottom: {
-                    default: '1px solid #2B303B',
+                    default: '1px solid #292929',
+                    hover: '1px solid #959595',
                     focus: '1px solid #51A2FF',
                     error: '1px solid #FF6467',
-                    disabled: '1px solid #2B303B',
+                    disabled: '1px solid #292929',
                 },
                 color: {
-                    hover: '#F2F4F8',
-                    focus: '#F2F4F8',
-                    disabled: '#717784',
+                    default: '#959595',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    disabled: '#6B6B6B',
                     error: '#FFC9C9',
                 },
                 slot: {
                     color: {
-                        hover: '#E1E4EA',
+                        default: '#959595',
+                        hover: '#DFDFDF',
                         focus: '#51A2FF',
-                        disabled: '#717784',
+                        disabled: '#6B6B6B',
                         error: '#FF6467',
                     },
                 },
             },
             icon: {
                 color: {
-                    hover: '#E1E4EA',
+                    default: '#959595',
+                    hover: '#DFDFDF',
                     focus: '#51A2FF',
-                    disabled: '#717784',
+                    disabled: '#6B6B6B',
                     error: '#FF6467',
                 },
             },
