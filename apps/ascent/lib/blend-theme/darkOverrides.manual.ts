@@ -2,8 +2,13 @@ import type { BlendTokenOverrides } from './types'
 
 const WHITE = '#FFFFFF'
 
-/** Neutralised gray[600] -- one step up from the standard border tone. */
-const DIVIDER_LIGHT = '#4D4D4D'
+/**
+ * ChartsV2's dark tokens, after neutralisation: gray[800] for rules and
+ * borders, gray[400] for axis labels. V1 is pinned to the same values so the
+ * two generations read identically in the docs.
+ */
+const CHART_RULE = '#1F1F1F'
+const CHART_LABEL = '#959595'
 
 /**
  * Hand-authored corrections merged OVER darkOverrides.generated.ts.
@@ -37,14 +42,19 @@ const radioDot = {
 }
 
 /**
- * Chart dividers derive from gray[200], which the border ramp maps to #292929.
- * That is right for a card outline but too faint for a chart, where the rules
- * carry meaning and have to be legible against the plot area.
+ * V1's axis colours were hardcoded foundation greys until they were tokenised;
+ * the inversion would otherwise land them on #292929, which does not match V2.
+ * Both the rules and the surrounding chrome are pinned to V2's resolved values.
  */
 const chartDividers = {
-    border: `1px solid ${DIVIDER_LIGHT}`,
+    border: `1px solid ${CHART_RULE}`,
     header: {
-        borderBottom: `1px solid ${DIVIDER_LIGHT}`,
+        borderBottom: `1px solid ${CHART_RULE}`,
+    },
+    axis: {
+        lineColor: CHART_RULE,
+        gridLineColor: CHART_RULE,
+        labelColor: CHART_LABEL,
     },
 }
 

@@ -4053,6 +4053,11 @@ export const generatedDarkOverrides = {
     CHARTS: {
         sm: {
             border: '1px solid #292929',
+            axis: {
+                lineColor: '#292929',
+                gridLineColor: '#292929',
+                labelColor: '#959595',
+            },
             header: {
                 backgroundColor: '#1F1F1F',
                 borderBottom: '1px solid #292929',
@@ -4073,6 +4078,11 @@ export const generatedDarkOverrides = {
         },
         lg: {
             border: '1px solid #292929',
+            axis: {
+                lineColor: '#292929',
+                gridLineColor: '#292929',
+                labelColor: '#959595',
+            },
             header: {
                 backgroundColor: '#1F1F1F',
                 borderBottom: '1px solid #292929',
