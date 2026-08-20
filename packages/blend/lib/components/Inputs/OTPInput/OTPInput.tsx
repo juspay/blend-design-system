@@ -1,3 +1,5 @@
+import { useTheme } from '../../../context/ThemeContext'
+import FOUNDATION_THEME from '../../../tokens/theme.token'
 import React, {
     type ChangeEvent,
     type KeyboardEvent,
@@ -45,6 +47,12 @@ const OTPInput = ({
     ...rest
 }: OTPProps) => {
     const otpInputTokens = useResponsiveTokens<OTPInputTokensType>('OTP_INPUT')
+    const { theme: blendTheme } = useTheme()
+    // primary[50] reads as a near-white halo on a dark surface
+    const focusRingColor =
+        blendTheme === 'dark'
+            ? FOUNDATION_THEME.colors.primary[800]
+            : FOUNDATION_THEME.colors.primary[50]
     const [otp, setOtp] = useState<string[]>(() => {
         const initial = (value || '').split('').slice(0, length)
         return [
@@ -294,7 +302,7 @@ const OTPInput = ({
                                 _focus={{
                                     border: otpInputTokens.inputContainer.input
                                         .border[error ? 'error' : 'focus'],
-                                    boxShadow: '0 0 0 3px #EFF6FF',
+                                    boxShadow: `0 0 0 3px ${focusRingColor}`,
                                     backgroundColor:
                                         'rgba(239, 246, 255, 0.15)',
                                 }}
