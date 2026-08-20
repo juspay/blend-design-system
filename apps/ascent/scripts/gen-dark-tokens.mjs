@@ -79,41 +79,32 @@ const readSlotRegistry = () => {
 // Recolor helpers, ported from DataTable/table.dark.tokens.ts
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-const recolor = (value, replacements, colorPattern) => {
+const recolor = (value, sets, path = '') => {
     if (typeof value === 'string') {
+        if (isFilledText(path)) return value // white-on-fill stays white
+        const set = BORDER_KEY.test(path) ? sets.border : sets.surface
+        if (!set.colorPattern.source) return value
         return value.replace(
-            colorPattern,
+            set.colorPattern,
             (color) =>
-                replacements.find(([light]) => light === color)?.[1] ?? color
+                set.replacements.find(([light]) => light === color)?.[1] ??
+                color
         )
     }
     if (Array.isArray(value)) {
-        return value.map((item) => recolor(item, replacements, colorPattern))
+        return value.map((item) => recolor(item, sets, path))
     }
     if (value !== null && typeof value === 'object') {
         return Object.fromEntries(
             Object.entries(value).map(([key, child]) => [
                 key,
-                recolor(child, replacements, colorPattern),
+                recolor(child, sets, path ? `${path}.${key}` : key),
             ])
         )
     }
     return value
 }
 
-/**
- * Dark values are derived by inverting each foundation colour scale.
- *
- * Gray is a full inversion (light surfaces become dark, dark text becomes
- * light). The library's own DataTable recolor covers only gray 0-900; gray 950
- * and 1000 are added here because several components (Breadcrumb, Menu) use
- * them for primary text, which would otherwise stay near-black on a dark page.
- *
- * Semantic families (primary/red/green/yellow/orange/purple) invert their tint
- * rungs so pastel backgrounds become deep ones, while the mid rungs stay near
- * the brand accent. These are MECHANICAL and want a design review -- correct
- * individual values in darkOverrides.manual.ts rather than editing this map.
- */
 /**
  * Blend's foundation gray is cool-tinted at the dark end (gray[900] is #181B25 --
  * blue channel 13 points above red), while the docs page background is pure
@@ -190,6 +181,45 @@ const GRAY_MAP = {
     1000: 0,
 }
 
+/**
+ * Borders, outlines and shadows need a gentler inversion than surfaces.
+ * A full flip sends the focus border gray[700] -> gray[100] (#F2F2F2), which
+ * reads as a glaring near-white ring. These land on a mid grey instead:
+ * clearly visible against a dark surface without glowing.
+ */
+const GRAY_BORDER_MAP = {
+    0: 900,
+    25: 800,
+    50: 800,
+    100: 700,
+    150: 700,
+    200: 700,
+    300: 600,
+    400: 500,
+    500: 500,
+    600: 500,
+    700: 400,
+    800: 300,
+    900: 300,
+    950: 300,
+    1000: 200,
+}
+
+/** Keys whose values are borders/outlines/shadows rather than fills. */
+const BORDER_KEY = /border|outline|shadow|divider|stroke/i
+
+/**
+ * Foreground colours sitting on a SEMANTIC fill must not invert -- white text
+ * on a blue button has to stay white in dark mode. Matched against the dotted
+ * token path, e.g. `BUTTON.lg.text.color.primary.default.hover`.
+ */
+const FILLED_TEXT_PATHS = [
+    /\btext\.color\.(primary|danger|success|error|warning)\b/i,
+    /\bcolor\.(primary|danger|success|error|warning)\b.*\b(default|hover|active)\b/i,
+]
+
+const isFilledText = (path) => FILLED_TEXT_PATHS.some((re) => re.test(path))
+
 const SEMANTIC_MAP = {
     50: 950,
     100: 900,
@@ -213,35 +243,72 @@ const SEMANTIC_FAMILIES = [
     'purple',
 ]
 
-const buildReplacements = (foundation) => {
-    const pairs = []
-    const addFamily = (family, map, transform) => {
-        const scale = foundation.colors[family]
-        if (!scale) return
-        for (const [from, to] of Object.entries(map)) {
-            const light = scale[from]
-            const dark = scale[to]
-            if (typeof light === 'string' && typeof dark === 'string') {
-                pairs.push([light, transform ? transform(dark) : dark])
-            }
-        }
-    }
-    addFamily('gray', GRAY_MAP, neutralizeGray)
-    SEMANTIC_FAMILIES.forEach((family) => addFamily(family, SEMANTIC_MAP))
-
+const compile = (pairs) => {
     const replacements = pairs.filter(
         ([light, dark], index) =>
             light !== dark &&
             pairs.findIndex(([candidate]) => candidate === light) === index
     )
-    const colorPattern = new RegExp(
-        replacements
-            .map(([light]) => escapeRegExp(light))
-            .sort((a, b) => b.length - a.length)
-            .join('|'),
-        'g'
+    return {
+        replacements,
+        colorPattern: new RegExp(
+            replacements
+                .map(([light]) => escapeRegExp(light))
+                .sort((a, b) => b.length - a.length)
+                .join('|'),
+            'g'
+        ),
+    }
+}
+
+const familyPairs = (foundation, family, map, transform) => {
+    const scale = foundation.colors[family]
+    if (!scale) return []
+    const out = []
+    for (const [from, to] of Object.entries(map)) {
+        const light = scale[from]
+        const dark = scale[to]
+        if (typeof light === 'string' && typeof dark === 'string') {
+            out.push([light, transform ? transform(dark) : dark])
+        }
+    }
+    return out
+}
+
+/**
+ * Inversion sets, for slots with no dark tokens at all: light values are
+ * flipped across the ramp and neutralised.
+ */
+const buildInvertSets = (foundation) => {
+    const semantic = SEMANTIC_FAMILIES.flatMap((family) =>
+        familyPairs(foundation, family, SEMANTIC_MAP)
     )
-    return { replacements, colorPattern }
+    return {
+        surface: compile([
+            ...familyPairs(foundation, 'gray', GRAY_MAP, neutralizeGray),
+            ...semantic,
+        ]),
+        // Semantic accents are deliberately left alone on borders/outlines:
+        // mapping primary[500] -> primary[400] made focus rings BRIGHTER than
+        // in light mode, which is the opposite of what dark mode wants.
+        border: compile(
+            familyPairs(foundation, 'gray', GRAY_BORDER_MAP, neutralizeGray)
+        ),
+    }
+}
+
+/**
+ * Neutralise-only set, for slots that DO have library dark tokens. Those are
+ * already dark -- they just carry the foundation's blue cast, so each grey maps
+ * to its own neutral equivalent and nothing is inverted.
+ */
+const buildNeutraliseSets = (foundation) => {
+    const scale = foundation.colors.gray || {}
+    const pairs = Object.values(scale)
+        .filter((hex) => typeof hex === 'string')
+        .map((hex) => [hex, neutralizeGray(hex)])
+    const set = compile(pairs)
+    return { surface: set, border: set }
 }
 
 /**
@@ -295,7 +362,8 @@ const identicalBreakpoints = (light, dark) => {
 async function main() {
     const themeMod = await jiti.import(`${LIB}/tokens/theme.token`)
     const FOUNDATION = themeMod.default ?? themeMod.FOUNDATION_THEME
-    const { replacements, colorPattern } = buildReplacements(FOUNDATION)
+    const invertSets = buildInvertSets(FOUNDATION)
+    const neutraliseSets = buildNeutraliseSets(FOUNDATION)
 
     const registry = readSlotRegistry()
     const overrides = {}
@@ -303,6 +371,7 @@ async function main() {
     const skipped = []
     const partial = []
     let lightOnlyCount = 0
+    let neutralisedCount = 0
     let totalLeaves = 0
 
     for (const entry of registry) {
@@ -322,34 +391,36 @@ async function main() {
             }
 
             const light = fn(FOUNDATION, 'light')
+            let recoloured
             let source
 
             if (!themeAware) {
-                // No dark leaf at all -- recolor the whole tree.
+                // No dark tokens at all -- invert the whole light tree.
                 source = light
+                recoloured = recolor(light, invertSets)
                 lightOnlyCount += 1
             } else {
-                // Has dark tokens, but some breakpoints may be unfinished.
                 const dark = fn(FOUNDATION, 'dark')
                 const gaps = identicalBreakpoints(light, dark)
-                if (!gaps.length) continue
-                source = Object.fromEntries(gaps.map((bp) => [bp, light[bp]]))
-                partial.push(`${slot} (${gaps.join(', ')})`)
+                // Already dark, but carrying the foundation's blue cast.
+                source = dark
+                recoloured = recolor(dark, neutraliseSets)
+                neutralisedCount += 1
+                // Any breakpoint the library never finished still needs the
+                // full inversion, since its "dark" values are really light.
+                for (const bp of gaps) {
+                    recoloured[bp] = recolor(light[bp], invertSets)
+                }
+                if (gaps.length) partial.push(`${slot} (${gaps.join(', ')})`)
             }
 
-            const recolored = recolor(source, replacements, colorPattern)
-            const pruned = pruneUnchanged(recolored, source)
-            if (!pruned) {
-                failures.push(`${slot}: recolor produced no changes`)
-                continue
-            }
+            const pruned = pruneUnchanged(recoloured, source)
+            if (!pruned) continue
             overrides[slot] = pruned
             totalLeaves += countLeaves(pruned)
         } catch (error) {
             const reason = String(error.message).split('\n')[0]
             if (themeAware) {
-                // Not loadable here, but it has its own dark tokens already;
-                // we only lose the ability to gap-check it.
                 skipped.push(`${slot}: ${reason}`)
             } else {
                 failures.push(`${slot}: ${reason}`)
@@ -377,8 +448,9 @@ async function main() {
     )
 
     console.log(`registry slots scanned: ${registry.length}`)
-    console.log(`  light-only slots recoloured : ${lightOnlyCount}`)
-    console.log(`  partial-dark slots patched  : ${partial.length}`)
+    console.log(`  light-only slots inverted        : ${lightOnlyCount}`)
+    console.log(`  library-dark slots neutralised   : ${neutralisedCount}`)
+    console.log(`  unfinished breakpoints inverted  : ${partial.length}`)
     partial.forEach((p) => console.log(`      ${p}`))
     console.log(
         `\n${Object.keys(overrides).length} slots, ${totalLeaves} values`
