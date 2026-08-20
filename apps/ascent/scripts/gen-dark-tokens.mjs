@@ -26,86 +26,55 @@ const jiti = createJiti(__filename)
 
 const LIB = '@juspay/blend-design-system/lib'
 
+const REGISTRY = path.join(
+    __dirname,
+    '../node_modules/@juspay/blend-design-system/lib/context/initComponentTokens.ts'
+)
+
 /**
- * Slots that `initComponentTokens.ts` resolves WITHOUT a theme argument.
- * `export: null` means the factory is the module's default export.
+ * Reads Blend's own slot registry rather than hardcoding a list, so new or
+ * renamed components are picked up automatically instead of silently drifting.
+ *
+ * Returns one entry per slot: which factory backs it, where that factory lives,
+ * and whether the registry passes `theme` (i.e. whether the slot is even
+ * capable of resolving dark values).
  */
-const SLOTS = [
-    [
-        'SEARCH_INPUT',
-        'components/Inputs/SearchInput/searchInput.tokens',
-        'getSearchInputTokens',
-    ],
-    [
-        'TEXT_AREA',
-        'components/Inputs/TextArea/textarea.token',
-        'getTextAreaTokens',
-    ],
-    ['RADIO', 'components/Radio/radio.token', 'getRadioTokens'],
-    ['SWITCH', 'components/Switch/switch.token', 'getSwitchTokens'],
-    [
-        'TEXT_INPUT',
-        'components/Inputs/TextInput/textInput.tokens',
-        'getTextInputTokens',
-    ],
-    [
-        'NUMBER_INPUT',
-        'components/Inputs/NumberInput/numberInput.tokens',
-        'getNumberInputTokens',
-    ],
-    ['ALERT', 'components/Alert/alert.tokens', 'getAlertTokens'],
-    [
-        'OTP_INPUT',
-        'components/Inputs/OTPInput/otpInput.tokens',
-        'getOTPInputTokens',
-    ],
-    ['TOOLTIP', 'components/Tooltip/tooltip.tokens', 'getTooltipTokens'],
-    [
-        'MULTI_VALUE_INPUT',
-        'components/Inputs/MultiValueInput/multiValueInput.tokens',
-        'getMultiValueInputTokens',
-    ],
-    ['CHECKBOX', 'components/Checkbox/checkbox.token', 'getCheckboxTokens'],
-    ['TABS', 'components/Tabs/tabs.token', 'getTabsTokens'],
-    ['BUTTON', 'components/Button/button.tokens', 'getButtonTokens'],
-    [
-        'KEYVALUEPAIR',
-        'components/KeyValuePair/KeyValuePair.tokens',
-        'getKeyValuePairTokens',
-    ],
-    [
-        'BREADCRUMB',
-        'components/Breadcrumb/breadcrumb.tokens',
-        'getBreadcrumbTokens',
-    ],
-    ['POPOVER', 'components/Popover/popover.tokens', 'getPopoverTokens'],
-    ['MENU', 'components/Menu/menu.tokens', 'getMenuTokens'],
-    [
-        'MULTI_SELECT',
-        'components/MultiSelect/multiSelect.tokens',
-        'getMultiSelectTokens',
-    ],
-    [
-        'SINGLE_SELECT',
-        'components/SingleSelect/singleSelect.tokens',
-        'getSingleSelectTokens',
-    ],
-    ['ACCORDION', 'components/Accordion/accordion.tokens', 'getAccordionToken'],
-    ['STAT_CARD', 'components/StatCard/statcard.tokens', 'getStatCardToken'],
-    [
-        'PROGRESS_BAR',
-        'components/ProgressBar/progressbar.tokens',
-        'getProgressBarTokens',
-    ],
-    ['DRAWER', 'components/Drawer/drawer.tokens', 'getDrawerComponentTokens'],
-    ['CHARTS', 'components/Charts/chart.tokens', 'getChartTokens'],
-    ['SNACKBAR', 'components/Snackbar/snackbar.tokens', 'getSnackbarTokens'],
-    ['STEPPER', 'components/Stepper/stepper.tokens', 'getStepperTokens'],
-    ['TOPBAR', 'components/Topbar/topbar.tokens', 'getTopbarTokens'],
-    ['AVATAR', 'components/Avatar/avatar.tokens', 'getAvatarTokens'],
-    ['SIDEBAR', 'components/Sidebar/sidebar.tokens', 'getSidebarTokens'],
-    ['CHAT_INPUT', 'components/ChatInput/chatInput.tokens', null],
-]
+const readSlotRegistry = () => {
+    const src = fs.readFileSync(REGISTRY, 'utf8')
+
+    const modules = new Map()
+    const defaults = new Set()
+    const importRe =
+        /import\s+(?:\{\s*([\w\s,]+?)\s*\}|(\w+))\s+from\s+'(\.\.\/components\/[^']+)'/g
+    for (const m of src.matchAll(importRe)) {
+        const [, named, defaultName, modulePath] = m
+        if (defaultName) {
+            modules.set(defaultName, modulePath)
+            defaults.add(defaultName)
+        } else {
+            for (const name of named.split(',')) {
+                const clean = name.trim()
+                if (clean) modules.set(clean, modulePath)
+            }
+        }
+    }
+
+    const slots = []
+    const callRe = /(\w+):\s*mergeTokens\(\s*(get\w+)\(([^)]*)\)/g
+    for (const m of src.matchAll(callRe)) {
+        const [, slot, factory, args] = m
+        const modulePath = modules.get(factory)
+        if (!modulePath) continue
+        slots.push({
+            slot,
+            factory,
+            module: modulePath.replace('../', ''),
+            isDefault: defaults.has(factory),
+            themeAware: args.includes('theme'),
+        })
+    }
+    return slots
+}
 
 // Recolor helpers, ported from DataTable/table.dark.tokens.ts
 const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -245,38 +214,88 @@ const countLeaves = (node) => {
     return Object.values(node).reduce((n, child) => n + countLeaves(child), 0)
 }
 
+const BREAKPOINTS = ['sm', 'lg']
+
+/**
+ * Per-breakpoint gap: a breakpoint whose dark output equals its light output.
+ *
+ * Only responsive `{ sm, lg }` token sets are considered. A few factories
+ * (CHAT_INPUTV2_MOBILE) return a flat object, where every key would look like
+ * an unfinished breakpoint.
+ */
+const identicalBreakpoints = (light, dark) => {
+    if (!light || typeof light !== 'object') return []
+    const keys = Object.keys(light)
+    if (!keys.length || !keys.every((key) => BREAKPOINTS.includes(key))) {
+        return []
+    }
+    return keys.filter(
+        (bp) => JSON.stringify(light[bp]) === JSON.stringify(dark?.[bp])
+    )
+}
+
 async function main() {
     const themeMod = await jiti.import(`${LIB}/tokens/theme.token`)
     const FOUNDATION = themeMod.default ?? themeMod.FOUNDATION_THEME
     const { replacements, colorPattern } = buildReplacements(FOUNDATION)
 
+    const registry = readSlotRegistry()
     const overrides = {}
     const failures = []
+    const skipped = []
+    const partial = []
+    let lightOnlyCount = 0
     let totalLeaves = 0
 
-    for (const [slot, modulePath, exportName] of SLOTS) {
+    for (const entry of registry) {
+        const {
+            slot,
+            factory,
+            module: modulePath,
+            isDefault,
+            themeAware,
+        } = entry
         try {
             const mod = await jiti.import(`${LIB}/${modulePath}`)
-            const factory = exportName ? mod[exportName] : mod.default
-            if (typeof factory !== 'function') {
-                failures.push(
-                    `${slot}: ${exportName ?? 'default'} is not a function`
-                )
+            const fn = isDefault ? mod.default : mod[factory]
+            if (typeof fn !== 'function') {
+                failures.push(`${slot}: ${factory} is not a function`)
                 continue
             }
-            const light = factory(FOUNDATION)
-            const dark = recolor(light, replacements, colorPattern)
-            const pruned = pruneUnchanged(dark, light)
+
+            const light = fn(FOUNDATION, 'light')
+            let source
+
+            if (!themeAware) {
+                // No dark leaf at all -- recolor the whole tree.
+                source = light
+                lightOnlyCount += 1
+            } else {
+                // Has dark tokens, but some breakpoints may be unfinished.
+                const dark = fn(FOUNDATION, 'dark')
+                const gaps = identicalBreakpoints(light, dark)
+                if (!gaps.length) continue
+                source = Object.fromEntries(gaps.map((bp) => [bp, light[bp]]))
+                partial.push(`${slot} (${gaps.join(', ')})`)
+            }
+
+            const recolored = recolor(source, replacements, colorPattern)
+            const pruned = pruneUnchanged(recolored, source)
             if (!pruned) {
                 failures.push(`${slot}: recolor produced no changes`)
                 continue
             }
             overrides[slot] = pruned
-            const leaves = countLeaves(pruned)
-            totalLeaves += leaves
-            console.log(`  ${slot.padEnd(20)} ${leaves} value(s)`)
+            totalLeaves += countLeaves(pruned)
         } catch (error) {
-            failures.push(`${slot}: ${error.message}`)
+            const reason = String(error.message).split('\n')[0]
+            if (themeAware) {
+                // Not loadable here, but it has its own dark tokens already;
+                // we only lose the ability to gap-check it.
+                skipped.push(`${slot}: ${reason}`)
+            } else {
+                failures.push(`${slot}: ${reason}`)
+            }
         }
     }
 
@@ -290,23 +309,34 @@ async function main() {
         `// GENERATED by scripts/gen-dark-tokens.mjs -- do not edit by hand.\n` +
             `// Regenerate with: pnpm --filter ascent gen:dark-tokens\n` +
             `//\n` +
-            `// Dark values for the Blend slots whose library tokens are light-only.\n` +
-            `// Derived from each slot's light tokens by inverting foundation colour scales,\n` +
-            `// then pruned to only the values that changed. Hand-tuned corrections belong\n` +
-            `// in darkOverrides.manual.ts, which is merged over this file.\n` +
+            `// Dark values for Blend slots the library resolves as light.\n` +
+            `// Covers slots with no dark tokens at all, plus slots whose dark tokens\n` +
+            `// are unfinished at some breakpoint. Derived by inverting the foundation\n` +
+            `// colour scales, pruned to only the values that changed. Hand-tuned\n` +
+            `// corrections belong in darkOverrides.manual.ts, merged over this file.\n` +
             `import type { BlendTokenOverrides } from './types'\n\n` +
             `export const generatedDarkOverrides = ${JSON.stringify(overrides, null, 4)} as unknown as BlendTokenOverrides\n`
     )
 
+    console.log(`registry slots scanned: ${registry.length}`)
+    console.log(`  light-only slots recoloured : ${lightOnlyCount}`)
+    console.log(`  partial-dark slots patched  : ${partial.length}`)
+    partial.forEach((p) => console.log(`      ${p}`))
     console.log(
-        `\n${Object.keys(overrides).length}/${SLOTS.length} slots, ${totalLeaves} values`
+        `\n${Object.keys(overrides).length} slots, ${totalLeaves} values`
     )
     console.log(`written: ${path.relative(process.cwd(), outPath)}`)
+    if (skipped.length) {
+        console.log(
+            `\n${skipped.length} theme-aware slot(s) not gap-checked (they keep their library dark tokens):`
+        )
+        skipped.forEach((entry) => console.log(`  ${entry}`))
+    }
     if (failures.length) {
         console.log(
-            `\n${failures.length} failure(s) -- hand-author these in darkOverrides.manual.ts:`
+            `\n${failures.length} light-only slot(s) FAILED -- hand-author these in darkOverrides.manual.ts:`
         )
-        failures.forEach((f) => console.log(`  ${f}`))
+        failures.forEach((entry) => console.log(`  ${entry}`))
     }
 }
 
