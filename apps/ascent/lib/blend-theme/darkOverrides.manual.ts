@@ -2,6 +2,9 @@ import type { BlendTokenOverrides } from './types'
 
 const WHITE = '#FFFFFF'
 
+/** Neutralised gray[600] -- one step up from the standard border tone. */
+const DIVIDER_LIGHT = '#4D4D4D'
+
 /**
  * Hand-authored corrections merged OVER darkOverrides.generated.ts.
  *
@@ -33,9 +36,25 @@ const radioDot = {
     },
 }
 
+/**
+ * Chart dividers derive from gray[200], which the border ramp maps to #292929.
+ * That is right for a card outline but too faint for a chart, where the rules
+ * carry meaning and have to be legible against the plot area.
+ */
+const chartDividers = {
+    border: `1px solid ${DIVIDER_LIGHT}`,
+    header: {
+        borderBottom: `1px solid ${DIVIDER_LIGHT}`,
+    },
+}
+
 export const manualDarkOverrides: BlendTokenOverrides = {
     RADIO: {
         sm: radioDot,
         lg: radioDot,
+    },
+    CHARTS: {
+        sm: chartDividers,
+        lg: chartDividers,
     },
 } as unknown as BlendTokenOverrides
