@@ -45,7 +45,9 @@ const readSlotRegistry = () => {
     const modules = new Map()
     const defaults = new Set()
     const importRe =
-        /import\s+(?:\{\s*([\w\s,]+?)\s*\}|(\w+))\s+from\s+'(\.\.\/components\/[^']+)'/g
+        // `../` is matched but deliberately left out of the capture, so the path
+        // comes back already relative to the package root and needs no rewriting.
+        /import\s+(?:\{\s*([\w\s,]+?)\s*\}|(\w+))\s+from\s+'\.\.\/(components\/[^']+)'/g
     for (const m of src.matchAll(importRe)) {
         const [, named, defaultName, modulePath] = m
         if (defaultName) {
@@ -68,7 +70,7 @@ const readSlotRegistry = () => {
         slots.push({
             slot,
             factory,
-            module: modulePath.replace('../', ''),
+            module: modulePath,
             isDefault: defaults.has(factory),
             themeAware: args.includes('theme'),
         })
