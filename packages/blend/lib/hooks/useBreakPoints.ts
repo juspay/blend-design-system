@@ -15,8 +15,13 @@ export function useBreakpoints(breakpoints = BREAKPOINTS) {
             const root =
                 window.top && window.top !== window ? window.top : window
             void root.innerWidth
+            if (typeof root.addEventListener !== 'function') return null
             return root
         } catch {
+            const candidate = window as unknown as {
+                addEventListener?: unknown
+            }
+            if (typeof candidate.addEventListener !== 'function') return null
             return window
         }
     }
