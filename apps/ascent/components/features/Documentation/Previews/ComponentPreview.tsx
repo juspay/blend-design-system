@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { highlight } from 'sugar-high'
+import BlendThemeProvider from '@/components/providers/BlendThemeProvider'
 
 type ComponentPreviewProps = {
     ts: string
@@ -50,7 +51,7 @@ const ComponentPreview = ({
         return (
             <div className="w-full min-h-80 border-code-border border rounded-md my-4 flex flex-col items-center justify-center">
                 <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 p-6">
-                    {children}
+                    <BlendThemeProvider>{children}</BlendThemeProvider>
                 </div>
             </div>
         )
@@ -62,7 +63,7 @@ const ComponentPreview = ({
             className="w-full min-h-80 border-code-border border rounded-2xl my-10 flex flex-col items-center justify-center overflow-clip"
         >
             <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 bg-background p-6">
-                {children}
+                <BlendThemeProvider>{children}</BlendThemeProvider>
             </div>
             <div className="w-full border-t border-code-border bg-code-background">
                 <Tabs.Root
