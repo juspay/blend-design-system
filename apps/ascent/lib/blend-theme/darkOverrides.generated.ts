@@ -489,7 +489,6 @@ export const generatedDarkOverrides = {
                     },
                 },
                 thumb: {
-                    backgroundColor: '#171717',
                     border: {
                         color: '#292929',
                     },
@@ -534,7 +533,6 @@ export const generatedDarkOverrides = {
                     },
                 },
                 thumb: {
-                    backgroundColor: '#171717',
                     border: {
                         color: '#292929',
                     },
@@ -1647,18 +1645,6 @@ export const generatedDarkOverrides = {
                         disabled: '1px solid #292929',
                     },
                 },
-                icon: {
-                    color: {
-                        checked: {
-                            default: '#171717',
-                            disabled: '#171717',
-                        },
-                        indeterminate: {
-                            default: '#171717',
-                            disabled: '#171717',
-                        },
-                    },
-                },
             },
             content: {
                 label: {
@@ -1709,18 +1695,6 @@ export const generatedDarkOverrides = {
                         default: '1px solid #4D4D4D',
                         hover: '1px solid #6B6B6B',
                         disabled: '1px solid #292929',
-                    },
-                },
-                icon: {
-                    color: {
-                        checked: {
-                            default: '#171717',
-                            disabled: '#171717',
-                        },
-                        indeterminate: {
-                            default: '#171717',
-                            disabled: '#171717',
-                        },
                     },
                 },
             },

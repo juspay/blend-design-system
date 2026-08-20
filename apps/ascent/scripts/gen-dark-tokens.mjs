@@ -216,6 +216,10 @@ const BORDER_KEY = /border|outline|shadow|divider|stroke/i
 const FILLED_TEXT_PATHS = [
     /\btext\.color\.(primary|danger|success|error|warning)\b/i,
     /\bcolor\.(primary|danger|success|error|warning)\b.*\b(default|hover|active)\b/i,
+    // Marks that sit on an accent fill: the checkbox tick, the switch thumb.
+    // These are gray[0] in light mode and must stay white, not invert to dark.
+    /\bindicator\.icon\.color\b/i,
+    /\bthumb\.backgroundColor\b/i,
 ]
 
 const isFilledText = (path) => FILLED_TEXT_PATHS.some((re) => re.test(path))
