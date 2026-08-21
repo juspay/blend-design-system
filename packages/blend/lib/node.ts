@@ -10,7 +10,14 @@ export { Theme } from './context/theme.enum'
 export { default as FOUNDATION_THEME } from './tokens/theme.token'
 export type { FoundationTokenType } from './tokens/theme.token'
 
+// Breakpoint shape — needed by native consumers to index responsive tokens.
+export type { BreakpointType } from './breakpoints/breakPoints'
+
 export { getButtonV2Tokens } from './components/ButtonV2/buttonV2.tokens'
+export type {
+    ButtonV2TokensType,
+    ResponsiveButtonV2Tokens,
+} from './components/ButtonV2/buttonV2.tokens'
 export { getAccordionV2Tokens } from './components/AccordionV2/accordionV2.tokens'
 export { getAlertV2Tokens } from './components/AlertV2/alertV2.tokens'
 export { getAvatarV2Tokens } from './components/AvatarV2/avatarV2.tokens'
@@ -43,3 +50,16 @@ export { getMobileNavigationTokens } from './components/Sidebar/SidebarMobile/mo
 export { getTooltipV2Tokens } from './components/TooltipV2/tooltipV2.tokens'
 export { getTimePickerTokens } from './components/TimePicker/timePicker.tokens'
 export { getCalendarToken } from './components/DateRangePicker/dateRangePicker.tokens'
+
+// Component enums and base prop types — needed by react-native consumers
+// (`@juspay/blend-native`) that re-use the web token system via this entry.
+// These are pure string constants / type-only exports, so they add zero
+// runtime weight and no new dependencies.
+export {
+    ButtonV2Type,
+    ButtonV2Size,
+    ButtonV2SubType,
+    ButtonV2State,
+    PaddingDirection,
+} from './components/ButtonV2/buttonV2.types'
+export type { ButtonBaseProps } from './components/ButtonV2/buttonV2.types'
