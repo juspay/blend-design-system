@@ -10,6 +10,7 @@ import {
     GitDiffIcon,
 } from '@phosphor-icons/react/dist/ssr'
 import { cn } from '@/lib/utils/cn'
+import { useCommandSearch } from './SearchContext'
 import { HEADER_NAV_LINKS, ROUTES } from '@/lib/constants'
 import { showcaseData } from '@/lib/showcase-data'
 import searchIndex from '@/public/search-index.json'
@@ -211,22 +212,32 @@ const componentItemClassName = cn(
 )
 
 export function CommandSearch() {
-    const [open, setOpen] = useState(false)
+    const { closeSearch } = useCommandSearch()
     const [query, setQuery] = useState('')
     const listRef = useRef<HTMLDivElement>(null)
+    const inputRef = useRef<HTMLInputElement>(null)
     const router = useRouter()
     const normalizedQuery = query.trim()
 
     useEffect(() => {
-        const down = (e: KeyboardEvent) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
                 e.preventDefault()
-                setOpen((o) => !o)
+                closeSearch()
+                return
+            }
+
+            // The command input is the only focusable element in the dialog, so
+            // trapping focus is just keeping Tab from moving it back out.
+            if (e.key === 'Tab') {
+                e.preventDefault()
+                inputRef.current?.focus()
             }
         }
-        document.addEventListener('keydown', down)
-        return () => document.removeEventListener('keydown', down)
-    }, [])
+
+        document.addEventListener('keydown', onKeyDown)
+        return () => document.removeEventListener('keydown', onKeyDown)
+    }, [closeSearch])
 
     useEffect(() => {
         requestAnimationFrame(() => {
@@ -236,8 +247,7 @@ export function CommandSearch() {
 
     const go = (path: string) => {
         router.push(path)
-        setOpen(false)
-        setQuery('')
+        closeSearch()
     }
 
     const filteredComponents = normalizedQuery
@@ -267,25 +277,24 @@ export function CommandSearch() {
         filteredChangelogEntries.length > 0 ||
         filteredShowcaseItems.length > 0
 
-    if (!open) return null
-
     return (
-        <div
-            data-cmd-open
-            className="fixed inset-0 z-150"
-            onKeyDown={(e) => e.key === 'Escape' && setOpen(false)}
-        >
+        <div data-cmd-open className="fixed inset-0 z-150">
             <div
+                aria-hidden="true"
                 className="absolute inset-0 bg-black/50"
-                onClick={() => setOpen(false)}
+                onClick={closeSearch}
             />
             <Command
+                role="dialog"
+                aria-modal="true"
+                aria-label="Search documentation"
                 shouldFilter={false}
                 className="absolute left-1/2 top-1/2 w-full max-w-2xl -translate-1/2 bg-background border border-border shadow-2xl overflow-hidden rounded-xl"
             >
                 <div className="flex items-center border-b border-border px-4">
                     <MagnifyingGlassIcon className="w-4 h-4 text-muted-foreground mr-3" />
                     <Command.Input
+                        ref={inputRef}
                         value={query}
                         onValueChange={setQuery}
                         placeholder="Search..."

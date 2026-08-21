@@ -14,6 +14,7 @@ import {
 import { cn } from '@/lib/utils/cn'
 import ThemeToggle from '../ui/ThemeToggle/ThemeToggle'
 import VersionToggle from '../ui/VersionToggle'
+import SearchTrigger from '../ui/SearchTrigger'
 
 const PRIMARY_NAV_LABELS = ['Docs', 'Storybook']
 const MORE_NAV_LABELS = ['Blogs', 'Changelog', 'Showcase']
@@ -287,12 +288,14 @@ export default function Navbar() {
                     </nav>
 
                     <IconBar />
+                    <SearchTrigger />
                     <ThemeToggle />
                 </div>
 
                 {/* Mobile */}
                 <div className="flex md:hidden items-center gap-2">
                     <IconBar />
+                    <SearchTrigger />
                     <ThemeToggle />
 
                     <Drawer.Root
