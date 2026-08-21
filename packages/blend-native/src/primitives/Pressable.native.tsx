@@ -102,7 +102,7 @@ function resolveWidthLike(
     const trimmed = String(v).trim()
     if (trimmed === 'fit-content' || trimmed === 'auto') return 'auto'
     // Percentage widths
-    const pctMatch = trimmed.match(/^(-?\d*\.?\d+)%$/)
+    const pctMatch = trimmed.match(/^(-?\d+(?:\.\d+)?|-?\.\d+)%$/)
     if (pctMatch) return `${parseFloat(pctMatch[1])}%`
     const n = parseFloat(trimmed)
     return Number.isNaN(n) ? undefined : n
