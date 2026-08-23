@@ -49,7 +49,11 @@ describe('resolveBreakpoint', () => {
 
 describe('nativeTokenRegistry', () => {
     it('registers every currently-shipped component', () => {
-        expect(NATIVE_TOKEN_SLOTS.sort()).toEqual(['BUTTONV2', 'TAGV2'])
+        expect(NATIVE_TOKEN_SLOTS.slice().sort()).toEqual([
+            'ALERTV2',
+            'BUTTONV2',
+            'TAGV2',
+        ])
     })
 
     it('maps each slot to a callable token factory', () => {
