@@ -188,3 +188,7 @@ routeTree.gen.ts
 
 # builder-bob output
 packages/blend-native/lib/
+
+# Expo prebuild output — generated native projects, never committed
+apps/*/android/
+apps/*/ios/
