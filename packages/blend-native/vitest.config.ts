@@ -9,14 +9,17 @@ import { defineConfig } from 'vitest/config'
  * `react-native` import in those modules is type-only and therefore erased —
  * so they run under plain vitest with no native mocking.
  *
- * Component render tests (`@testing-library/react-native`) are tracked
- * separately; they need a Jest + RN preset, which is a different toolchain
- * from the vitest setup the rest of this monorepo uses.
+ * Component render tests live in `*.render.test.tsx` and run under Jest
+ * instead — mounting a component needs React Native's own babel transform,
+ * which vitest cannot provide. See `jest.config.cjs`.
  */
 export default defineConfig({
     test: {
         environment: 'node',
         include: ['__tests__/**/*.test.ts', '__tests__/**/*.test.tsx'],
+        // `*.render.test.tsx` belongs to Jest — those mount components and
+        // need the React Native babel transform, which vitest cannot provide.
+        exclude: ['**/node_modules/**', '__tests__/**/*.render.test.tsx'],
         testTimeout: 15000,
         hookTimeout: 10000,
     },
