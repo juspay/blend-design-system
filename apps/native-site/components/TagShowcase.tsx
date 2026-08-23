@@ -1,4 +1,5 @@
 import { View, Text as RNText, StyleSheet } from 'react-native'
+import { Circle } from 'lucide-react-native'
 import {
     Tag,
     TagColor,
@@ -40,18 +41,15 @@ function Section({
     )
 }
 
-/** A tiny square standing in for an icon, to verify slot tinting. */
+/**
+ * Real icon, to verify slot tinting end to end.
+ *
+ * Lucide is stroke-based with `fill="none"`, which is exactly the case that
+ * broke when `tintSlot` used to set `fill` alongside `color` — the glyph
+ * rendered as a solid block. If these render as outlines, the fix holds.
+ */
 function Dot({ color }: { color?: string }) {
-    return (
-        <View
-            style={{
-                width: 8,
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: color ?? '#000',
-            }}
-        />
-    )
+    return <Circle size={12} color={color} />
 }
 
 export default function TagShowcase() {

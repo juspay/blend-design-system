@@ -11,12 +11,13 @@ import {
 import { BlendNativeProvider, Theme } from '@juspay/blend-native'
 import ButtonShowcase from './components/ButtonShowcase'
 import TagShowcase from './components/TagShowcase'
+import AlertShowcase from './components/AlertShowcase'
 
-type Tab = 'button' | 'tag'
+type Tab = 'alert' | 'tag' | 'button'
 
 export default function App() {
     const [theme, setTheme] = useState<Theme>(Theme.LIGHT)
-    const [tab, setTab] = useState<Tab>('tag')
+    const [tab, setTab] = useState<Tab>('alert')
 
     const isDark = theme === Theme.DARK
     const palette = isDark
@@ -40,7 +41,7 @@ export default function App() {
                     </RNText>
 
                     <View style={styles.controls}>
-                        {(['tag', 'button'] as Tab[]).map((value) => (
+                        {(['alert', 'tag', 'button'] as Tab[]).map((value) => (
                             <Pressable
                                 key={value}
                                 onPress={() => setTab(value)}
@@ -55,7 +56,7 @@ export default function App() {
                                 ]}
                             >
                                 <RNText style={{ color: palette.fg }}>
-                                    {value === 'tag' ? 'Tag' : 'Button'}
+                                    {value[0].toUpperCase() + value.slice(1)}
                                 </RNText>
                             </Pressable>
                         ))}
@@ -75,7 +76,9 @@ export default function App() {
                         </Pressable>
                     </View>
 
-                    {tab === 'tag' ? <TagShowcase /> : <ButtonShowcase />}
+                    {tab === 'alert' ? <AlertShowcase /> : null}
+                    {tab === 'tag' ? <TagShowcase /> : null}
+                    {tab === 'button' ? <ButtonShowcase /> : null}
                 </ScrollView>
             </SafeAreaView>
         </BlendNativeProvider>
