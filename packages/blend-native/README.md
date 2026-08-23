@@ -248,12 +248,15 @@ The suites cover the package's **pure** layer — adapters, surface resolution, 
 
 Component render tests are not wired up yet: `@testing-library/react-native` needs a Jest + RN preset, a different toolchain from the vitest setup the rest of the monorepo uses.
 
-**Verify visually on a simulator, not just the browser.** Several bugs in this package were invisible under `react-native-web` and only appeared on iOS — RN and CSS differ on clipping, `lineHeight`, and overflow:
+**Verify visually on a simulator or device, not just the browser.** Several
+bugs here were invisible under `react-native-web` and only appeared on a real
+device — RN and CSS differ on clipping, `lineHeight`, overflow, and the default
+value of `flexShrink`.
 
-```bash
-pnpm --filter native-site start   # then press `i` for iOS
-xcrun simctl io booted screenshot out.png
-```
+`apps/native-site` is the verification vehicle. Its
+[README](../../apps/native-site/README.md) is the runbook: running on
+simulators and physical devices for both platforms, capturing screenshots,
+capturing pressed states, and the Expo Go SDK ceiling on Android.
 
 ## Adding a new component
 
