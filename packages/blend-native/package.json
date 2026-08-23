@@ -3,20 +3,28 @@
     "version": "0.0.1-beta.0",
     "description": "React Native components for Blend Design System",
     "type": "module",
-    "main": "./src/index.ts",
-    "types": "./src/index.ts",
+    "main": "./lib/module/index.js",
+    "types": "./lib/typescript/index.d.ts",
     "files": [
-        "src"
+        "lib",
+        "src",
+        "!**/__tests__",
+        "!**/*.test.*"
     ],
     "sideEffects": false,
     "exports": {
         ".": {
-            "types": "./src/index.ts",
-            "import": "./src/index.ts"
+            "react-native": "./src/index.ts",
+            "source": "./src/index.ts",
+            "types": "./lib/typescript/index.d.ts",
+            "default": "./lib/module/index.js"
         }
     },
     "scripts": {
+        "build": "bob build",
+        "clean": "rm -rf lib",
         "lint": "eslint .",
+        "prepublishOnly": "bob build",
         "test": "vitest run && jest",
         "test:render": "jest",
         "test:unit": "vitest run",
@@ -53,6 +61,7 @@
         "lucide-react-native": "^1.33.0",
         "react": "19.2.3",
         "react-native": "0.85.3",
+        "react-native-builder-bob": "^0.43.0",
         "react-native-svg": "15.15.5",
         "react-test-renderer": "19.2.3",
         "test-renderer": "^1.2.0",
@@ -80,5 +89,25 @@
     "publishConfig": {
         "access": "public"
     },
-    "packageManager": "pnpm@10.21.0"
+    "packageManager": "pnpm@10.21.0",
+    "module": "./lib/module/index.js",
+    "source": "./src/index.ts",
+    "react-native-builder-bob": {
+        "source": "src",
+        "output": "lib",
+        "targets": [
+            [
+                "module",
+                {
+                    "esm": true
+                }
+            ],
+            [
+                "typescript",
+                {
+                    "project": "tsconfig.build.json"
+                }
+            ]
+        ]
+    }
 }
