@@ -28,6 +28,10 @@ export type {
 } from './components/ButtonV2/buttonV2.tokens'
 export { getAccordionV2Tokens } from './components/AccordionV2/accordionV2.tokens'
 export { getAlertV2Tokens } from './components/AlertV2/alertV2.tokens'
+export type {
+    AlertV2TokensType,
+    ResponsiveAlertV2Tokens,
+} from './components/AlertV2/alertV2.tokens'
 export { getAvatarV2Tokens } from './components/AvatarV2/avatarV2.tokens'
 export { getBreadcrumbV2Tokens } from './components/BreadcrumbV2/breadcrumbV2.tokens'
 export { getChartV2Tokens } from './components/ChartsV2/chartV2.tokens'
@@ -75,6 +79,13 @@ export {
     PaddingDirection,
 } from './components/ButtonV2/buttonV2.types'
 export type { ButtonBaseProps } from './components/ButtonV2/buttonV2.types'
+
+export {
+    AlertV2Type,
+    AlertV2SubType,
+    AlertV2ActionPosition,
+    AlertV2PaddingDirection,
+} from './components/AlertV2/alertV2.types'
 
 export {
     TagV2Type,
