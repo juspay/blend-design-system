@@ -92,28 +92,7 @@ import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/C
 import { getUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
 import { getSliderTokens } from '../components/Slider/slider.tokens'
 import { getSelectTokens } from '../components/Select/select.tokens'
-
-type TokenRecord = Record<string, unknown>
-
-const isTokenRecord = (value: unknown): value is TokenRecord =>
-    typeof value === 'object' && value !== null && !Array.isArray(value)
-
-const mergeTokenTree = (defaults: unknown, overrides: unknown): unknown => {
-    if (overrides === undefined) return defaults
-    if (!isTokenRecord(defaults) || !isTokenRecord(overrides)) {
-        return overrides
-    }
-
-    const merged: TokenRecord = { ...defaults }
-    for (const key of Object.keys(overrides)) {
-        const overrideValue = overrides[key]
-        if (overrideValue === undefined) continue
-
-        merged[key] = mergeTokenTree(defaults[key], overrideValue)
-    }
-
-    return merged
-}
+import { mergeTokenTree } from './mergeTokenTree'
 
 const mergeTokens = <T>(defaults: T, overrides: unknown): T =>
     mergeTokenTree(defaults, overrides) as T
