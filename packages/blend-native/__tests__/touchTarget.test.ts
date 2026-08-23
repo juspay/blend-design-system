@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { MIN_TOUCH_TARGET, resolveHitSlop } from '../src/primitives/touchTarget'
+import {
+    MIN_TOUCH_TARGET,
+    resolveHitSlop,
+    sameHitSlop,
+} from '../src/primitives/touchTarget'
 
 describe('minimum touch target', () => {
     it('clears the Apple HIG minimum', () => {
@@ -31,5 +35,41 @@ describe('minimum touch target', () => {
 
     it('never returns negative slop for oversized controls', () => {
         expect(resolveHitSlop(400, 200)).toBeUndefined()
+    })
+})
+
+describe('sameHitSlop', () => {
+    // Backs the optimisation that keeps a compliant control from re-rendering:
+    // `Pressable` stores the resolved slop, not the measured box, and skips the
+    // state update when a re-measure yields the same result. A control that
+    // never needs slop resolves to `undefined` — identical to the initial
+    // state — so it never renders twice.
+    it('treats two undefined slops as equal', () => {
+        expect(sameHitSlop(undefined, undefined)).toBe(true)
+    })
+
+    it('treats a compliant re-measure as unchanged', () => {
+        const first = resolveHitSlop(120, 48)
+        const second = resolveHitSlop(130, 48)
+        expect(first).toBeUndefined()
+        expect(second).toBeUndefined()
+        expect(sameHitSlop(first, second)).toBe(true)
+    })
+
+    it('treats identical slop values as equal', () => {
+        expect(
+            sameHitSlop(resolveHitSlop(24, 24), resolveHitSlop(24, 24))
+        ).toBe(true)
+    })
+
+    it('detects a genuine change', () => {
+        expect(
+            sameHitSlop(resolveHitSlop(24, 24), resolveHitSlop(10, 10))
+        ).toBe(false)
+    })
+
+    it('detects appearing and disappearing slop', () => {
+        expect(sameHitSlop(undefined, resolveHitSlop(20, 20))).toBe(false)
+        expect(sameHitSlop(resolveHitSlop(20, 20), undefined)).toBe(false)
     })
 })

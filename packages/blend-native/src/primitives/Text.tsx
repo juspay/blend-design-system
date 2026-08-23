@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import {
     Text as RNText,
     StyleSheet,
@@ -49,7 +49,7 @@ function resolveFontWeight(
     return undefined
 }
 
-export function Text({
+function TextImpl({
     children,
     fontSize,
     fontWeight,
@@ -75,6 +75,8 @@ export function Text({
     )
 }
 
+/** Memoised — see the note on `Block`. */
+export const Text = memo(TextImpl)
 Text.displayName = 'Text'
 
 const baseStyle = StyleSheet.create({

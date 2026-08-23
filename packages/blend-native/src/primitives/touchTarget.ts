@@ -53,3 +53,20 @@ export function resolveHitSlop(
         right: horizontal,
     }
 }
+
+/**
+ * Whether two slop values are equivalent.
+ *
+ * Lets callers skip a state update when a re-measure produces the same result,
+ * which keeps a control that never needed slop from re-rendering at all.
+ */
+export function sameHitSlop(a?: HitSlop, b?: HitSlop): boolean {
+    if (a === b) return true
+    if (!a || !b) return false
+    return (
+        a.top === b.top &&
+        a.bottom === b.bottom &&
+        a.left === b.left &&
+        a.right === b.right
+    )
+}

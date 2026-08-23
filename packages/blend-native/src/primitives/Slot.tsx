@@ -1,4 +1,4 @@
-import React, { isValidElement, cloneElement } from 'react'
+import React, { isValidElement, cloneElement, memo } from 'react'
 import { View, StyleSheet, type ViewStyle } from 'react-native'
 import { parseSize } from '../adapters/cssStringAdapter'
 
@@ -73,7 +73,7 @@ export function tintSlot(
     return cloneElement(element, next)
 }
 
-export function Slot({
+function SlotImpl({
     children,
     color,
     maxHeight,
@@ -105,6 +105,8 @@ export function Slot({
     )
 }
 
+/** Memoised — see the note on `Block`. */
+export const Slot = memo(SlotImpl)
 Slot.displayName = 'Slot'
 
 const baseStyle = StyleSheet.create({

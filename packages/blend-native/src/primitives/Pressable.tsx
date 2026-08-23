@@ -1,5 +1,6 @@
 import React, {
     forwardRef,
+    memo,
     useCallback,
     useEffect,
     useMemo,
@@ -25,7 +26,12 @@ import {
     resolveSurfaceStyle,
     type SurfaceStyleProps,
 } from '../adapters/surfaceStyle'
-import { MIN_TOUCH_TARGET, resolveHitSlop } from './touchTarget'
+import {
+    MIN_TOUCH_TARGET,
+    resolveHitSlop,
+    sameHitSlop,
+    type HitSlop,
+} from './touchTarget'
 
 export { MIN_TOUCH_TARGET }
 
@@ -119,7 +125,7 @@ export type PrimitivePressableProps = SurfaceStyleProps & {
     style?: ViewStyle
 } & Omit<PressableProps, 'style' | 'onPress' | 'disabled' | 'children'>
 
-export const Pressable = forwardRef<RNView, PrimitivePressableProps>(
+const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
     function Pressable(
         {
             children,
@@ -341,33 +347,27 @@ export const Pressable = forwardRef<RNView, PrimitivePressableProps>(
             ]
         )
 
-        // Measure once laid out, then widen the tap target if the control is
-        // smaller than the minimum. `hitSlop` extends only the touch region,
-        // so layout and appearance are untouched.
-        const [measured, setMeasured] = useState<{
-            width: number
-            height: number
-        } | null>(null)
+        // Widen the tap target once laid out, if the control is smaller than
+        // the minimum. `hitSlop` extends only the touch region, so layout and
+        // appearance are untouched.
+        //
+        // The resolved slop is stored rather than the raw dimensions, and it
+        // starts as `undefined` — the same value a compliant control resolves
+        // to. A control already at or above the minimum therefore never
+        // changes state and never re-renders; only ones that actually need
+        // slop pay for a second pass. Storing `{ width, height }` instead made
+        // every Pressable on the screen re-render on mount.
+        const [hitSlop, setHitSlop] = useState<HitSlop | undefined>(undefined)
 
-        const handleLayout = useCallback((event: LayoutChangeEvent) => {
-            const { width, height } = event.nativeEvent.layout
-            setMeasured((previous) =>
-                previous?.width === width && previous?.height === height
-                    ? previous
-                    : { width, height }
-            )
-        }, [])
-
-        const hitSlop = useMemo(
-            () =>
-                measured
-                    ? resolveHitSlop(
-                          measured.width,
-                          measured.height,
-                          minTouchTarget
-                      )
-                    : undefined,
-            [minTouchTarget, measured]
+        const handleLayout = useCallback(
+            (event: LayoutChangeEvent) => {
+                const { width, height } = event.nativeEvent.layout
+                const next = resolveHitSlop(width, height, minTouchTarget)
+                setHitSlop((previous) =>
+                    sameHitSlop(previous, next) ? previous : next
+                )
+            },
+            [minTouchTarget]
         )
 
         const content = loading ? (
@@ -448,7 +448,7 @@ export const Pressable = forwardRef<RNView, PrimitivePressableProps>(
                     accessibilityRole={accessibilityRole}
                     accessible={accessible}
                     accessibilityState={accessibilityState}
-                    onLayout={handleLayout}
+                    onLayout={minTouchTarget ? handleLayout : undefined}
                     hitSlop={hitSlop}
                     style={({ pressed }) => [
                         frameStyle,
@@ -504,7 +504,7 @@ export const Pressable = forwardRef<RNView, PrimitivePressableProps>(
                 accessibilityRole={accessibilityRole}
                 accessible={accessible}
                 accessibilityState={accessibilityState}
-                onLayout={handleLayout}
+                onLayout={minTouchTarget ? handleLayout : undefined}
                 hitSlop={hitSlop}
                 style={({ pressed }) => [
                     surface,
@@ -520,6 +520,8 @@ export const Pressable = forwardRef<RNView, PrimitivePressableProps>(
     }
 )
 
+/** Memoised — see the note on `Block`. */
+export const Pressable = memo(PressableImpl)
 Pressable.displayName = 'Pressable'
 
 export default Pressable

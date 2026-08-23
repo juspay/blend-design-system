@@ -3,9 +3,18 @@
  *
  * Consumes Blend's token system via the React-free
  * `@juspay/blend-design-system/node` entry and translates CSS-string token
- * values into RN style objects (see `./adapters`).
+ * values into RN style objects.
  *
  * No `styled-components`, no DOM, no `window.addEventListener`.
+ *
+ * ---
+ *
+ * This barrel is the package's **public API**, and everything named here is a
+ * semver commitment. Low-level internals — the CSS-string parsers, the surface
+ * resolver, the token registry, the grouped-control helpers — are deliberately
+ * NOT exported: they exist to serve the primitives, their shapes will change as
+ * more components land, and `Block` / `Pressable` already expose everything a
+ * consumer needs to build a token-driven surface of their own.
  */
 
 // ---- Components ---------------------------------------------------------
@@ -27,16 +36,8 @@ export type {
 } from './theme/BlendNativeProvider'
 
 export { useNativeTokens } from './theme/useNativeTokens'
-export {
-    useNativeBreakpoint,
-    resolveBreakpoint,
-} from './theme/useNativeBreakpoint'
+export { useNativeBreakpoint } from './theme/useNativeBreakpoint'
 export type { NativeBreakpoint } from './theme/useNativeBreakpoint'
-export {
-    NATIVE_TOKEN_REGISTRY,
-    NATIVE_TOKEN_SLOTS,
-    isNativeTokenSlot,
-} from './theme/nativeTokenRegistry'
 export type {
     NativeTokenSlot,
     NativeComponentTokenOverrides,
@@ -47,27 +48,26 @@ export type {
 export { Block } from './primitives/Block'
 export { Pressable } from './primitives/Pressable'
 export { Text } from './primitives/Text'
-export { Slot, tintSlot } from './primitives/Slot'
-export { MIN_TOUCH_TARGET, resolveHitSlop } from './primitives/touchTarget'
-export type { HitSlop } from './primitives/touchTarget'
+export { Slot } from './primitives/Slot'
 
-// ---- Adapters -----------------------------------------------------------
-export {
-    parseDimension,
-    parseSize,
-    parseBorder,
-    parseBorderRadius,
-    parseBoxShadow,
-    parseBackground,
-} from './adapters/cssStringAdapter'
-export type { ParsedBackground, RNSize } from './adapters/cssStringAdapter'
-export { resolveSurfaceStyle, resolveBackground } from './adapters/surfaceStyle'
-export {
-    getGroupedBorderRadius,
-    getGroupedBorderWidths,
-} from './components/shared/group'
-export type { GroupPosition } from './components/shared/group'
+export type { BlockProps } from './primitives/Block'
+export type { PrimitivePressableProps } from './primitives/Pressable'
+export type { BlendTextProps } from './primitives/Text'
+export type { SlotProps } from './primitives/Slot'
+// The shared base both `Block` and `Pressable` accept — needed to type a
+// wrapper around either.
 export type { SurfaceStyleProps } from './adapters/surfaceStyle'
+export type { RNSize } from './adapters/cssStringAdapter'
+
+/**
+ * The minimum tap target `Pressable` enforces via `hitSlop`, in points.
+ * Exposed so consumers can reason about it; pass `minTouchTarget={0}` to opt
+ * a control out.
+ */
+export { MIN_TOUCH_TARGET } from './primitives/touchTarget'
+
+/** Position of a control within a button or tag group. */
+export type { GroupPosition } from './components/shared/group'
 
 // ---- Enums --------------------------------------------------------------
 // Re-exported with cleaner native names (no "V2" suffix). The underlying

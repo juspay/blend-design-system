@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef, memo } from 'react'
 import {
     View,
     StyleSheet,
@@ -35,7 +35,7 @@ export type BlockProps = SurfaceStyleProps & {
     style?: ViewStyle
 } & Omit<ViewProps, 'style'>
 
-export const Block = forwardRef<RNView, BlockProps>(function Block(
+const BlockImpl = forwardRef<RNView, BlockProps>(function Block(
     { children, style, ...rest },
     ref
 ) {
@@ -106,6 +106,12 @@ export const Block = forwardRef<RNView, BlockProps>(function Block(
     )
 })
 
+/**
+ * Memoised because primitives sit at the leaves of every component tree: a
+ * parent re-render should not walk the whole subtree when none of the
+ * token-derived props changed.
+ */
+export const Block = memo(BlockImpl)
 Block.displayName = 'Block'
 
 const baseStyle = StyleSheet.create({
