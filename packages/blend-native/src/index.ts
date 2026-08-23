@@ -18,9 +18,17 @@
  */
 
 // ---- Components ---------------------------------------------------------
+export { Alert } from './components/Alert'
 export { Button } from './components/Button'
 export { Tag } from './components/Tag'
 
+export type {
+    AlertNativeProps,
+    AlertSlot,
+    AlertAction,
+    AlertActions,
+    AlertCloseButton,
+} from './components/Alert'
 export type { ButtonNativeProps } from './components/Button'
 export type { TagNativeProps, TagSlot } from './components/Tag'
 
@@ -49,11 +57,13 @@ export { Block } from './primitives/Block'
 export { Pressable } from './primitives/Pressable'
 export { Text } from './primitives/Text'
 export { Slot } from './primitives/Slot'
+export { Separator } from './primitives/Separator'
 
 export type { BlockProps } from './primitives/Block'
 export type { PrimitivePressableProps } from './primitives/Pressable'
 export type { BlendTextProps } from './primitives/Text'
 export type { SlotProps } from './primitives/Slot'
+export type { SeparatorProps } from './primitives/Separator'
 // The shared base both `Block` and `Pressable` accept — needed to type a
 // wrapper around either.
 export type { SurfaceStyleProps } from './adapters/surfaceStyle'
@@ -73,7 +83,16 @@ export type { GroupPosition } from './components/shared/group'
 // Re-exported with cleaner native names (no "V2" suffix). The underlying
 // values are the same string constants, so they are interchangeable with the
 // web enums at runtime.
+/**
+ * Announce a status message to assistive tech. Exposed for consumers building
+ * their own status surfaces; `Alert` uses it internally.
+ */
+export { useLiveRegionAnnounce } from './a11y/useLiveRegion'
+
 export {
+    AlertV2Type as AlertType,
+    AlertV2SubType as AlertSubType,
+    AlertV2ActionPosition as AlertActionPosition,
     ButtonV2Type as ButtonType,
     ButtonV2Size as ButtonSize,
     ButtonV2SubType as ButtonSubType,

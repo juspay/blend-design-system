@@ -60,6 +60,7 @@ const INTERNAL = [
     'tintSlot',
     'getGroupedBorderRadius',
     'getGroupedBorderWidths',
+    'buildAnnouncement',
 ]
 
 describe('public API surface', () => {
@@ -70,7 +71,7 @@ describe('public API surface', () => {
     })
 
     it('exports the components', () => {
-        for (const name of ['Button', 'Tag']) {
+        for (const name of ['Alert', 'Button', 'Tag']) {
             expect(exported.has(name)).toBe(true)
         }
     })

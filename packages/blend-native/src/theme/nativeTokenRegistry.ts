@@ -1,6 +1,7 @@
 import {
     FOUNDATION_THEME,
     Theme,
+    getAlertV2Tokens,
     getButtonV2Tokens,
     getTagV2Tokens,
     type BreakpointType,
@@ -21,6 +22,7 @@ import {
  * entry, so registering one pulls in no UI code.
  */
 export const NATIVE_TOKEN_REGISTRY = {
+    ALERTV2: getAlertV2Tokens,
     BUTTONV2: getButtonV2Tokens,
     TAGV2: getTagV2Tokens,
 } as const
