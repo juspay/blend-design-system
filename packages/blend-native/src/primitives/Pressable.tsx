@@ -2,7 +2,6 @@ import React, {
     forwardRef,
     memo,
     useCallback,
-    useEffect,
     useMemo,
     useState,
 } from 'react'
@@ -10,7 +9,6 @@ import {
     Pressable as RNPressable,
     View,
     ActivityIndicator,
-    AccessibilityInfo,
     type GestureResponderEvent,
     type LayoutChangeEvent,
     type PressableProps,
@@ -32,6 +30,7 @@ import {
     sameHitSlop,
     type HitSlop,
 } from './touchTarget'
+import { useLiveRegionAnnounce } from '../a11y/useLiveRegion'
 
 export { MIN_TOUCH_TARGET }
 
@@ -287,13 +286,10 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
                   ? parsedDisabledBg.colors[0]
                   : undefined
 
-        useEffect(() => {
-            if (!loading) return
-            // RN's equivalent of web's `aria-live="polite"` announcement.
-            AccessibilityInfo.announceForAccessibility(
-                loadingAccessibilityLabel
-            )
-        }, [loading, loadingAccessibilityLabel])
+        // RN's equivalent of web's `aria-live="polite"` announcement. On
+        // Android `accessibilityState.busy` already conveys this, so the hook
+        // only speaks on iOS — see `a11y/useLiveRegion`.
+        useLiveRegionAnnounce(loadingAccessibilityLabel, loading)
 
         const handlePress = useCallback(
             (event: GestureResponderEvent) => {

@@ -1,6 +1,9 @@
-import React, { isValidElement, cloneElement, memo } from 'react'
+import React, { memo } from 'react'
 import { View, StyleSheet, type ViewStyle } from 'react-native'
 import { parseSize } from '../adapters/cssStringAdapter'
+import { tintSlot } from './tintSlot'
+
+export { tintSlot }
 
 /**
  * Leading / trailing icon slot.
@@ -41,36 +44,6 @@ export type SlotProps = {
     hidden?: boolean
     style?: ViewStyle
     testID?: string
-}
-
-/**
- * Props an icon element may accept for tinting. Most RN icon libraries
- * (`lucide-react-native`, `phosphor-react-native`, `react-native-svg`)
- * accept at least one of these.
- */
-type TintableProps = { color?: string; fill?: string }
-
-/**
- * Apply a tint to an icon element.
- *
- * Only overrides a channel the element has not already set explicitly — an
- * icon rendered with `<Icon color="red" />` keeps red. Non-element children
- * (a bare string, a number, `null`) are returned untouched.
- */
-export function tintSlot(
-    node: React.ReactNode,
-    color: string | undefined
-): React.ReactNode {
-    if (!color || !isValidElement(node)) return node
-
-    const element = node as React.ReactElement<TintableProps>
-    const next: TintableProps = {}
-
-    if (element.props.color === undefined) next.color = color
-    if (element.props.fill === undefined) next.fill = color
-
-    if (next.color === undefined && next.fill === undefined) return node
-    return cloneElement(element, next)
 }
 
 function SlotImpl({
