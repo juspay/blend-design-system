@@ -15,9 +15,11 @@
         "@juspay/blend-native": "workspace:*",
         "expo": "~56.0.12",
         "expo-linear-gradient": "~56.0.4",
+        "lucide-react-native": "^1.33.0",
         "react": "19.2.3",
         "react-dom": "19.2.3",
         "react-native": "0.85.3",
+        "react-native-svg": "15.15.5",
         "react-native-web": "~0.21.1"
     },
     "devDependencies": {
