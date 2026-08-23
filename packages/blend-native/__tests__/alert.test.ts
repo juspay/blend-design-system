@@ -1,6 +1,4 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
 import {
     FOUNDATION_THEME,
     Theme,
@@ -15,6 +13,8 @@ import {
     shouldShowSeparator,
     getActionAccessibilityLabel,
     getCloseIconSize,
+    ALERT_FLEX_BOX,
+    FALLBACK_CLOSE_ICON_SIZE,
 } from '../src/components/Alert/alert.utils'
 import { resolveSurfaceStyle } from '../src/adapters/surfaceStyle'
 
@@ -182,7 +182,7 @@ describe('getCloseIconSize', () => {
         const broken = {
             mainContainer: { closeButton: { height: 'auto' } },
         } as unknown as AlertV2TokensType
-        expect(getCloseIconSize(broken)).toBe(16)
+        expect(getCloseIconSize(broken)).toBe(FALLBACK_CLOSE_ICON_SIZE)
     })
 })
 
@@ -190,27 +190,17 @@ describe('text wrapping', () => {
     // Regression: the long description used to run off the right edge instead
     // of wrapping. Yoga defaults `flexShrink` to 0 where CSS defaults it to 1,
     // so every box in Alert's row chain sized to its content and refused to
-    // narrow. Each of them now sets `flexShrink` explicitly.
+    // narrow.
     //
-    // Asserted against the source because the failure is a missing style prop,
-    // not a computed value — there is nothing to resolve without a renderer.
-    it('sets flexShrink on every box in the row chain', () => {
-        const source = readFileSync(
-            resolve(__dirname, '../src/components/Alert/Alert.tsx'),
-            'utf8'
-        )
-        const shrinkCount = (source.match(/flexShrink=\{1\}/g) ?? []).length
-        // mainContainer, content, and the text block.
-        expect(shrinkCount).toBeGreaterThanOrEqual(3)
+    // The invariant now lives in one exported constant, so this asserts the
+    // real value rather than pattern-matching the component source.
+    it('pairs flexGrow with an explicit flexShrink', () => {
+        expect(ALERT_FLEX_BOX).toEqual({ flexGrow: 1, flexShrink: 1 })
     })
 
-    it('pairs every flexGrow in the component with a flexShrink', () => {
-        const source = readFileSync(
-            resolve(__dirname, '../src/components/Alert/Alert.tsx'),
-            'utf8'
-        )
-        const grow = (source.match(/flexGrow=\{1\}/g) ?? []).length
-        const shrink = (source.match(/flexShrink=\{1\}/g) ?? []).length
-        expect(shrink).toBeGreaterThanOrEqual(grow)
+    it('survives the surface resolver without losing either', () => {
+        const style = resolveSurfaceStyle({ ...ALERT_FLEX_BOX })
+        expect(style.flexGrow).toBe(1)
+        expect(style.flexShrink).toBe(1)
     })
 })

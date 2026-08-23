@@ -1,10 +1,4 @@
-import React, {
-    forwardRef,
-    memo,
-    useCallback,
-    useMemo,
-    useState,
-} from 'react'
+import React, { forwardRef, memo, useCallback, useMemo, useState } from 'react'
 import {
     Pressable as RNPressable,
     View,

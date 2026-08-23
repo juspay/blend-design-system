@@ -66,10 +66,13 @@ export type AlertNativeProps = {
     minWidth?: string | number
 
     /**
-     * Announce the alert to assistive tech when it appears. Web hard-codes
-     * `aria-live="assertive"`; native exposes it because an alert rendered
-     * statically on a screen (rather than appearing in response to an action)
-     * should not interrupt the user.
+     * Announce the alert to assistive tech when it appears. Defaults to `true`,
+     * matching web's hard-coded `aria-live="assertive"`.
+     *
+     * Pass `false` for alerts that are part of a screen's initial content
+     * rather than a response to something the user did. Several alerts mounting
+     * at once each queue an announcement, so a static list of them talks over
+     * itself — the showcase in `apps/native-site` disables it for that reason.
      */
     announce?: boolean
     accessibilityLabel?: string

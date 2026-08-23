@@ -13,3 +13,9 @@ export {
     getCloseIconSize,
 } from './alert.utils'
 export type { AlertLayout } from './alert.utils'
+export { ALERT_FLEX_BOX, FALLBACK_CLOSE_ICON_SIZE } from './alert.utils'
+export type {
+    AlertTextTokens,
+    AlertActionTokens,
+    AlertCloseTokens,
+} from './alert.tokens'

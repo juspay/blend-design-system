@@ -12,6 +12,24 @@ import type { ViewStyle } from 'react-native'
  * one prop reshapes four layout values at once.
  */
 
+/**
+ * Flex sizing shared by every box in Alert's row chain.
+ *
+ * `flexShrink` is explicit because **Yoga defaults it to 0 where CSS defaults
+ * it to 1**. Without it a flex child sizes to its content and refuses to
+ * narrow, so a long description runs off the right edge instead of wrapping.
+ *
+ * Exported as a constant rather than repeated inline so the invariant has one
+ * definition and can be asserted directly in tests.
+ */
+export const ALERT_FLEX_BOX = {
+    flexGrow: 1,
+    flexShrink: 1,
+} as const
+
+/** Fallback icon size when the close-button token cannot be parsed. */
+export const FALLBACK_CLOSE_ICON_SIZE = 16
+
 export type AlertLayout = {
     /** Direction the text block and actions flow in. */
     contentDirection: NonNullable<ViewStyle['flexDirection']>
@@ -70,5 +88,7 @@ export function getCloseIconSize(tokens: AlertV2TokensType): number {
     const raw = tokens.mainContainer.closeButton.height
     const parsed =
         typeof raw === 'number' ? raw : Number.parseFloat(String(raw))
-    return Number.isFinite(parsed) && parsed > 0 ? parsed : 16
+    return Number.isFinite(parsed) && parsed > 0
+        ? parsed
+        : FALLBACK_CLOSE_ICON_SIZE
 }

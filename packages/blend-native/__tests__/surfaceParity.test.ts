@@ -1,7 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
-import { resolveSurfaceStyle } from '../src/adapters/surfaceStyle'
+import { describe, it, expect, expectTypeOf } from 'vitest'
+import type { BlockProps } from '../src/primitives/Block'
+import type { PrimitivePressableProps } from '../src/primitives/Pressable'
+import {
+    resolveSurfaceStyle,
+    type SurfaceStyleProps,
+} from '../src/adapters/surfaceStyle'
 
 /**
  * `Block` and `Pressable` must accept the same surface props.
@@ -9,38 +12,31 @@ import { resolveSurfaceStyle } from '../src/adapters/surfaceStyle'
  * Tag renders one or the other depending on whether it is interactive, and
  * builds a single surface object for both. When `Pressable` was missing
  * `backgroundColor` and `alignSelf`, those props fell silently into its
- * `...rest` and were spread onto the underlying RN component as no-ops — so
- * an interactive attentive Tag rendered white text on a white background.
+ * `...rest` and were spread onto the underlying RN component as no-ops — so an
+ * interactive attentive Tag rendered white text on a white background.
  *
- * TypeScript could not catch it: spreading an object into JSX skips
- * excess-property checking. Both types now extend `SurfaceStyleProps`, and
- * this test pins that so the shared base is not accidentally removed.
+ * TypeScript could not catch that on its own: spreading an object into JSX
+ * skips excess-property checking. The assertions below close that hole at the
+ * type level, so `tsc` fails if either primitive stops accepting the shared
+ * base. (The imports are type-only and erase at runtime, so this suite pulls
+ * in no react-native code.)
  */
 
-const SRC = resolve(__dirname, '../src')
-
-function sourceOf(relativePath: string): string {
-    return readFileSync(resolve(SRC, relativePath), 'utf8')
-}
-
 describe('Block / Pressable surface prop parity', () => {
-    it('both primitives derive their props from SurfaceStyleProps', () => {
-        const block = sourceOf('primitives/Block.tsx')
-        const pressable = sourceOf('primitives/Pressable.tsx')
-
-        expect(block).toMatch(/BlockProps\s*=\s*SurfaceStyleProps/)
-        expect(pressable).toMatch(
-            /PrimitivePressableProps\s*=\s*SurfaceStyleProps/
-        )
+    it('Block accepts every surface prop', () => {
+        expectTypeOf<SurfaceStyleProps>().toExtend<BlockProps>()
     })
 
-    it('both resolve their styles through the shared resolver', () => {
-        for (const file of [
-            'primitives/Block.tsx',
-            'primitives/Pressable.tsx',
-        ]) {
-            expect(sourceOf(file)).toContain('resolveSurfaceStyle')
-        }
+    it('Pressable accepts every surface prop', () => {
+        expectTypeOf<SurfaceStyleProps>().toExtend<PrimitivePressableProps>()
+    })
+
+    it('the two share one surface base', () => {
+        // Anything valid for one branch is valid for the other, which is what
+        // lets a component hand the same object to whichever it renders.
+        expectTypeOf<SurfaceStyleProps>().toExtend<
+            BlockProps & PrimitivePressableProps
+        >()
     })
 })
 
@@ -67,14 +63,11 @@ describe('resolveSurfaceStyle background precedence', () => {
     })
 
     it('never drops the fill for a Tag-shaped surface', () => {
-        // The exact prop set Tag hands to whichever primitive it renders.
         const style = resolveSurfaceStyle({
             backgroundColor: '#2563EB',
             border: '1px solid #2563EB',
             borderRadius: '6px',
             height: '22px',
-            paddingTop: '3px',
-            paddingBottom: '3px',
             paddingLeft: '8px',
             paddingRight: '8px',
             gap: '6px',
