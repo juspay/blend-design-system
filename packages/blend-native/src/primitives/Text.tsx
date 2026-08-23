@@ -75,6 +75,8 @@ export function Text({
     )
 }
 
+Text.displayName = 'Text'
+
 const baseStyle = StyleSheet.create({
     text: {},
 })
