@@ -1,6 +1,7 @@
 import React, { forwardRef, memo, useCallback, useMemo, useState } from 'react'
 import {
     Pressable as RNPressable,
+    Platform,
     View,
     ActivityIndicator,
     type GestureResponderEvent,
@@ -60,6 +61,12 @@ type GradientComponent = React.ComponentType<{
     style?: ViewStyle
 }>
 
+/**
+ * Ripple colour used when neither the caller nor the active-state token
+ * supplies one. Low-alpha black is Android's own default for light surfaces.
+ */
+const DEFAULT_RIPPLE_COLOR = 'rgba(0, 0, 0, 0.12)'
+
 let LinearGradient: GradientComponent | null = null
 try {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -104,6 +111,19 @@ export type PrimitivePressableProps = SurfaceStyleProps & {
     loadingAccessibilityLabel?: string
     /** Pressed scale transform (web uses `scale(0.99)`). */
     pressedScale?: number
+    /**
+     * Colour of the Android ripple. Defaults to the active-state background
+     * token, so press feedback tracks the design system without callers
+     * having to supply anything.
+     *
+     * Ignored on every other platform — see the note on `pressFeedback`.
+     */
+    rippleColor?: string
+    /**
+     * Whether the ripple is drawn without bounds (a circle centred on the
+     * touch, used for icon-only controls). Mirrors RN's `android_ripple.borderless`.
+     */
+    rippleBorderless?: boolean
     /**
      * Minimum tappable size in points. When the rendered surface is smaller,
      * `hitSlop` expands the touch area without changing the visual box.
@@ -157,6 +177,8 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
             loaderSize = 'small',
             loadingAccessibilityLabel = 'Loading, please wait',
             pressedScale = 0.99,
+            rippleColor,
+            rippleBorderless = false,
             minTouchTarget = MIN_TOUCH_TARGET,
             onPress,
             style,
@@ -214,32 +236,35 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
 
         const surface = useMemo(
             () =>
-                resolveSurfaceStyle({
-                    background,
-                    backgroundColor,
-                    border,
-                    borderRadius,
-                    boxShadow,
-                    paddingTop,
-                    paddingRight,
-                    paddingBottom,
-                    paddingLeft,
-                    flexDirection,
-                    alignItems,
-                    justifyContent,
-                    alignSelf,
-                    gap,
-                    width,
-                    minWidth,
-                    maxWidth,
-                    height,
-                    minHeight,
-                    maxHeight,
-                    flexShrink,
-                    flexGrow,
-                    opacity,
-                    overflow,
-                }),
+                resolveSurfaceStyle(
+                    {
+                        background,
+                        backgroundColor,
+                        border,
+                        borderRadius,
+                        boxShadow,
+                        paddingTop,
+                        paddingRight,
+                        paddingBottom,
+                        paddingLeft,
+                        flexDirection,
+                        alignItems,
+                        justifyContent,
+                        alignSelf,
+                        gap,
+                        width,
+                        minWidth,
+                        maxWidth,
+                        height,
+                        minHeight,
+                        maxHeight,
+                        flexShrink,
+                        flexGrow,
+                        opacity,
+                        overflow,
+                    },
+                    Platform.OS
+                ),
             [
                 background,
                 backgroundColor,
@@ -298,10 +323,37 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
             [isInteractionBlocked, loading]
         )
 
+        /**
+         * Press feedback is platform-idiomatic, not uniform.
+         *
+         * Web scales the surface by `0.99`, and that reads correctly on iOS,
+         * where a subtle depress is the convention. Android users expect a
+         * **ripple** instead, and a scale transform there looks like a bug —
+         * which is what this primitive shipped with until now.
+         *
+         * So: ripple on Android, scale everywhere else. Applying both would
+         * double up the feedback.
+         */
+        const isAndroid = Platform.OS === 'android'
+
+        const androidRipple = useMemo(
+            () =>
+                isAndroid
+                    ? {
+                          color:
+                              rippleColor ??
+                              activeFlatBgColor ??
+                              DEFAULT_RIPPLE_COLOR,
+                          borderless: rippleBorderless,
+                      }
+                    : undefined,
+            [isAndroid, rippleColor, activeFlatBgColor, rippleBorderless]
+        )
+
         /** The press-down scale, matching web's `transform: scale(0.99)`. */
         const pressedTransform = useMemo<ViewStyle>(
-            () => ({ transform: [{ scale: pressedScale }] }),
-            [pressedScale]
+            () => (isAndroid ? {} : { transform: [{ scale: pressedScale }] }),
+            [isAndroid, pressedScale]
         )
 
         // Memoised so the `style` callback below composes stable references.
@@ -440,6 +492,7 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
                     accessibilityState={accessibilityState}
                     onLayout={minTouchTarget ? handleLayout : undefined}
                     hitSlop={hitSlop}
+                    android_ripple={androidRipple}
                     style={({ pressed }) => [
                         frameStyle,
                         pressed ? pressedTransform : undefined,
@@ -496,6 +549,7 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
                 accessibilityState={accessibilityState}
                 onLayout={minTouchTarget ? handleLayout : undefined}
                 hitSlop={hitSlop}
+                android_ripple={androidRipple}
                 style={({ pressed }) => [
                     surface,
                     disabledStyle,

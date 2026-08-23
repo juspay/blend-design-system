@@ -25,6 +25,16 @@ import {
  * never reaches RN's stylesheet.
  */
 
+/**
+ * Which platform's shadow model to emit.
+ *
+ * Passed in rather than read from `Platform.OS` so this module stays free of
+ * any `react-native` value import and remains unit-testable outside a
+ * renderer — the same constraint that shapes `theme/breakpoint.ts` and
+ * `primitives/touchTarget.ts`.
+ */
+export type SurfacePlatform = 'ios' | 'android' | 'web' | 'windows' | 'macos'
+
 export type SurfaceStyleProps = {
     /** CSS-string background token — flat colour, gradient, or `none`. */
     background?: string
@@ -99,12 +109,49 @@ export function resolveBackground(
 }
 
 /**
+ * Apply the shadow model the platform actually understands.
+ *
+ * The two are mutually exclusive in practice:
+ *
+ * - **iOS** renders `shadowColor` / `shadowOffset` / `shadowOpacity` /
+ *   `shadowRadius` and ignores `elevation` entirely.
+ * - **Android** renders only `elevation`, and before API 28 it ignores
+ *   `shadowColor` — so emitting the iOS keys alongside it is at best dead
+ *   weight and at worst misleading to anyone reading the resolved style.
+ * - **Web** (react-native-web) maps the iOS keys onto `box-shadow`, as do
+ *   RN-Windows and RN-macOS — so Android is the only platform that diverges.
+ *
+ * Emitting both unconditionally, as this used to, meant every surface carried
+ * four properties the running platform would never read.
+ */
+function applyShadow(
+    style: ViewStyle,
+    shadow: ReturnType<typeof parseBoxShadow>,
+    platform: SurfacePlatform
+): void {
+    if (!shadow) return
+
+    if (platform === 'android') {
+        put(style, 'elevation', shadow.elevation)
+        return
+    }
+
+    put(style, 'shadowColor', shadow.shadowColor)
+    put(style, 'shadowOffset', shadow.shadowOffset)
+    put(style, 'shadowOpacity', shadow.shadowOpacity)
+    put(style, 'shadowRadius', shadow.shadowRadius)
+}
+
+/**
  * Translate token-shaped surface props into a `ViewStyle`.
  *
  * Gradients are reported separately via `resolveBackground` — this function
  * emits only the flat-colour fallback, so it is safe for any `View`.
  */
-export function resolveSurfaceStyle(props: SurfaceStyleProps): ViewStyle {
+export function resolveSurfaceStyle(
+    props: SurfaceStyleProps,
+    platform: SurfacePlatform = 'ios'
+): ViewStyle {
     const style: ViewStyle = {}
 
     // ---- Background -----------------------------------------------------
@@ -131,14 +178,7 @@ export function resolveSurfaceStyle(props: SurfaceStyleProps): ViewStyle {
     }
 
     // ---- Shadow ---------------------------------------------------------
-    const shadow = parseBoxShadow(props.boxShadow)
-    if (shadow) {
-        put(style, 'shadowColor', shadow.shadowColor)
-        put(style, 'shadowOffset', shadow.shadowOffset)
-        put(style, 'shadowOpacity', shadow.shadowOpacity)
-        put(style, 'shadowRadius', shadow.shadowRadius)
-        put(style, 'elevation', shadow.elevation)
-    }
+    applyShadow(style, parseBoxShadow(props.boxShadow), platform)
 
     // ---- Spacing --------------------------------------------------------
     put(style, 'paddingTop', parseDimension(props.paddingTop))

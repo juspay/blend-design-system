@@ -1,6 +1,7 @@
 import React, { forwardRef, memo } from 'react'
 import {
     View,
+    Platform,
     StyleSheet,
     type View as RNView,
     type ViewProps,
@@ -68,32 +69,35 @@ const BlockImpl = forwardRef<RNView, BlockProps>(function Block(
         ...viewProps
     } = rest
 
-    const resolved = resolveSurfaceStyle({
-        background,
-        backgroundColor,
-        border,
-        borderRadius,
-        boxShadow,
-        paddingTop,
-        paddingRight,
-        paddingBottom,
-        paddingLeft,
-        width,
-        minWidth,
-        maxWidth,
-        height,
-        minHeight,
-        maxHeight,
-        flexDirection,
-        alignItems,
-        justifyContent,
-        alignSelf,
-        gap,
-        flexShrink,
-        flexGrow,
-        opacity,
-        overflow,
-    })
+    const resolved = resolveSurfaceStyle(
+        {
+            background,
+            backgroundColor,
+            border,
+            borderRadius,
+            boxShadow,
+            paddingTop,
+            paddingRight,
+            paddingBottom,
+            paddingLeft,
+            width,
+            minWidth,
+            maxWidth,
+            height,
+            minHeight,
+            maxHeight,
+            flexDirection,
+            alignItems,
+            justifyContent,
+            alignSelf,
+            gap,
+            flexShrink,
+            flexGrow,
+            opacity,
+            overflow,
+        },
+        Platform.OS
+    )
 
     return (
         <View
