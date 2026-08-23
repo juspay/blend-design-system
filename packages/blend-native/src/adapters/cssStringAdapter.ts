@@ -44,11 +44,68 @@ export function parseDimension(
     value: string | number | undefined
 ): number | undefined {
     if (value === undefined || value === null) return undefined
-    if (typeof value === 'number') return value
+    if (typeof value === 'number')
+        return Number.isFinite(value) ? value : undefined
     const match = value.trim().match(/^(-?\d*\.?\d+)\s*(px)?$/)
     if (!match) return undefined
     const n = parseFloat(match[1])
     return Number.isNaN(n) ? undefined : n
+}
+
+/**
+ * RN's type for anything that accepts a length or a percentage
+ * (`width`, `maxHeight`, `flexBasis`, ...).
+ */
+export type RNSize = number | `${number}%` | 'auto'
+
+/**
+ * Parse a CSS size value — `width`, `height`, `maxHeight`, `minWidth`, ... —
+ * into something RN's stylesheet actually understands.
+ *
+ * This is deliberately strict. `parseFloat` is NOT a safe fallback here: it
+ * turns `"100%"` into `100`, which RN renders as **100 pixels** rather than
+ * full width, and it silently accepts `"12abc"` (→ `12`) and `"50em"` (→ `50`).
+ * Anything not explicitly understood returns `undefined` so the caller skips
+ * the prop instead of laying out a wrong value.
+ *
+ * ```
+ * parseSize(24)            → 24
+ * parseSize('24px')        → 24
+ * parseSize('50%')         → '50%'
+ * parseSize('100%')        → '100%'
+ * parseSize('auto')        → 'auto'
+ * parseSize('fit-content') → 'auto'   // RN's nearest equivalent
+ * parseSize('min-content') → undefined
+ * parseSize('calc(1+2)')   → undefined
+ * parseSize('50em')        → undefined
+ * parseSize('12abc')       → undefined
+ * ```
+ */
+export function parseSize(
+    value: string | number | undefined
+): RNSize | undefined {
+    if (value === undefined || value === null) return undefined
+    if (typeof value === 'number') {
+        return Number.isFinite(value) ? value : undefined
+    }
+
+    const trimmed = value.trim()
+    if (trimmed === '') return undefined
+
+    // `fit-content` has no RN equivalent; `auto` is the closest behaviour
+    // (shrink-to-fit within the parent's constraints).
+    if (trimmed === 'auto' || trimmed === 'fit-content') return 'auto'
+
+    // Percentages. Single non-backtracking alternation — no nested quantifier
+    // ambiguity, so this cannot degrade on adversarial input.
+    const pct = trimmed.match(/^(-?(?:\d+\.?\d*|\.\d+))%$/)
+    if (pct) {
+        const n = parseFloat(pct[1])
+        return Number.isNaN(n) ? undefined : (`${n}%` as `${number}%`)
+    }
+
+    // Bare numbers and `px` lengths.
+    return parseDimension(trimmed)
 }
 
 /**
