@@ -455,6 +455,9 @@ importers:
             react:
                 specifier: 19.2.3
                 version: 19.2.3
+            react-device-frameset:
+                specifier: ^1.3.4
+                version: 1.3.4(react@19.2.3)
             react-dom:
                 specifier: 19.2.3
                 version: 19.2.3(react@19.2.3)
@@ -16502,6 +16505,14 @@ packages:
         peerDependencies:
             react: ^15.3.0 || 16 || 17 || 18
 
+    react-device-frameset@1.3.4:
+        resolution:
+            {
+                integrity: sha512-M9VUa2up9TFOgsELHBFRkZf8ER0AyOYF5+5qbtYseQCZfg6XUxuNDX5VsJNfMGu6Zz6x9Dgh4rfFDFONK9H7dg==,
+            }
+        peerDependencies:
+            react: ^16.8.0 || ^17.0.0 || ^18.0.0
+
     react-devtools-core@6.1.5:
         resolution:
             {
@@ -21486,7 +21497,7 @@ snapshots:
 
     '@expo/dom-webview@56.0.6(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)':
         dependencies:
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
             react: 19.2.3
             react-native: 0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3)
 
@@ -21601,7 +21612,7 @@ snapshots:
         dependencies:
             '@expo/dom-webview': 56.0.6(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)
             anser: 1.4.10
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
             react: 19.2.3
             react-native: 0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3)
             stacktrace-parser: 0.1.11
@@ -21642,7 +21653,7 @@ snapshots:
             postcss: 8.5.15
             resolve-from: 5.0.0
         optionalDependencies:
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.2.7)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
         transitivePeerDependencies:
             - bufferutil
             - supports-color
@@ -21697,7 +21708,7 @@ snapshots:
         dependencies:
             '@expo/log-box': 56.0.14(@expo/dom-webview@56.0.6)(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)
             anser: 1.4.10
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
             pretty-format: 29.7.0
             react: 19.2.3
             react-native: 0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3)
@@ -21815,7 +21826,7 @@ snapshots:
     '@expo/router-server@56.0.18(@expo/metro-runtime@56.0.20)(expo-constants@56.0.24(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3)))(expo-font@56.0.7(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3))(expo-server@56.0.6)(expo@56.0.20)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
         dependencies:
             debug: 4.4.3
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
             expo-constants: 56.0.24(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))
             expo-font: 56.0.7(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)
             expo-server: 56.0.6
@@ -25599,10 +25610,10 @@ snapshots:
         dependencies:
             '@types/yargs-parser': 21.0.3
 
-    '@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3))(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3)':
+    '@typescript-eslint/eslint-plugin@8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3)':
         dependencies:
             '@eslint-community/regexpp': 4.12.2
-            '@typescript-eslint/parser': 8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3)
+            '@typescript-eslint/parser': 8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@6.0.3)
             '@typescript-eslint/scope-manager': 8.50.0
             '@typescript-eslint/type-utils': 8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3)
             '@typescript-eslint/utils': 8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3)
@@ -26003,7 +26014,7 @@ snapshots:
             sirv: 3.0.2
             tinyglobby: 0.2.15
             tinyrainbow: 2.0.0
-            vitest: 3.2.4(@types/debug@4.1.12)(@types/node@22.19.3)(@vitest/ui@3.2.4)(jiti@2.7.0)(jsdom@26.1.0)(lightningcss@1.30.2)(terser@5.50.0)(tsx@4.21.0)(yaml@2.8.2)
+            vitest: 3.2.4(@types/debug@4.1.12)(@types/node@20.19.27)(@vitest/ui@3.2.4)(jiti@2.7.0)(jsdom@26.1.0)(lightningcss@1.30.2)(terser@5.50.0)(tsx@4.21.0)(yaml@2.8.2)
 
     '@vitest/utils@2.0.5':
         dependencies:
@@ -26521,7 +26532,7 @@ snapshots:
             react-refresh: 0.14.2
         optionalDependencies:
             '@babel/runtime': 7.28.4
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
         transitivePeerDependencies:
             - '@babel/core'
             - supports-color
@@ -28026,7 +28037,7 @@ snapshots:
     expo-constants@56.0.24(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3)):
         dependencies:
             '@expo/env': 2.3.1
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
             react-native: 0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3)
         transitivePeerDependencies:
             - supports-color
@@ -28042,7 +28053,7 @@ snapshots:
 
     expo-file-system@56.0.10(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3)):
         dependencies:
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
             react-native: 0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3)
 
     expo-file-system@56.0.10(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.2.7)(react@19.2.3)):
@@ -28053,7 +28064,7 @@ snapshots:
 
     expo-font@56.0.7(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3):
         dependencies:
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
             fontfaceobserver: 2.3.0
             react: 19.2.3
             react-native: 0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3)
@@ -28068,7 +28079,7 @@ snapshots:
 
     expo-keep-awake@56.0.3(expo@56.0.20)(react@19.2.3):
         dependencies:
-            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@5.8.3)
+            expo: 56.0.20(@babel/core@7.29.7)(@expo/dom-webview@56.0.6)(@expo/metro-runtime@56.0.20)(react-dom@19.2.3(react@19.2.3))(react-native-web@0.21.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3)(typescript@6.0.3)
             react: 19.2.3
 
     expo-linear-gradient@15.0.8(expo@56.0.20)(react-native@0.85.3(@babel/core@7.29.7)(@types/react@19.1.17)(react@19.2.3))(react@19.2.3):
@@ -32172,6 +32183,10 @@ snapshots:
             prop-types: 15.8.1
             react: 19.2.3
 
+    react-device-frameset@1.3.4(react@19.2.3):
+        dependencies:
+            react: 19.2.3
+
     react-devtools-core@6.1.5:
         dependencies:
             shell-quote: 1.8.3
@@ -33866,7 +33881,7 @@ snapshots:
 
     typescript-eslint@8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3):
         dependencies:
-            '@typescript-eslint/eslint-plugin': 8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3))(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3)
+            '@typescript-eslint/eslint-plugin': 8.50.0(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@6.0.3))(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3)
             '@typescript-eslint/parser': 8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3)
             '@typescript-eslint/typescript-estree': 8.50.0(typescript@5.8.3)
             '@typescript-eslint/utils': 8.50.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.8.3)

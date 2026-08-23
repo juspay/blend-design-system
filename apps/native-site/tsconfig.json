@@ -3,6 +3,7 @@
     "compilerOptions": {
         "strict": true,
         "baseUrl": ".",
+        "moduleSuffixes": ["", ".native"],
         "paths": {
             "@juspay/blend-native": [
                 "../../packages/blend-native/src/index.ts"
