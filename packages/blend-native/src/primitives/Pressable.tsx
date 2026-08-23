@@ -26,6 +26,7 @@ import {
     type HitSlop,
 } from './touchTarget'
 import { useLiveRegionAnnounce } from '../a11y/useLiveRegion'
+import { resolvePressFeedback } from './pressFeedback'
 
 export { MIN_TOUCH_TARGET }
 
@@ -60,12 +61,6 @@ type GradientComponent = React.ComponentType<{
     end?: { x: number; y: number }
     style?: ViewStyle
 }>
-
-/**
- * Ripple colour used when neither the caller nor the active-state token
- * supplies one. Low-alpha black is Android's own default for light surfaces.
- */
-const DEFAULT_RIPPLE_COLOR = 'rgba(0, 0, 0, 0.12)'
 
 let LinearGradient: GradientComponent | null = null
 try {
@@ -323,42 +318,18 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
             [isInteractionBlocked, loading]
         )
 
-        /**
-         * Press feedback is platform-idiomatic, not uniform.
-         *
-         * Web scales the surface by `0.99`, and that reads correctly on iOS,
-         * where a subtle depress is the convention. Android users expect a
-         * **ripple** instead, and a scale transform there looks like a bug —
-         * which is what this primitive shipped with until now.
-         *
-         * So: ripple on Android, scale everywhere else. Applying both would
-         * double up the feedback.
-         */
-        const isAndroid = Platform.OS === 'android'
-
-        const androidRipple = useMemo(
+        // Ripple on Android, scale elsewhere — see `./pressFeedback`.
+        const { androidRipple, pressedTransform } = useMemo(
             () =>
-                isAndroid
-                    ? {
-                          color:
-                              rippleColor ??
-                              activeFlatBgColor ??
-                              DEFAULT_RIPPLE_COLOR,
-                          borderless: rippleBorderless,
-                      }
-                    : undefined,
-            [isAndroid, rippleColor, activeFlatBgColor, rippleBorderless]
+                resolvePressFeedback(Platform.OS, {
+                    rippleColor,
+                    activeBackgroundColor: activeFlatBgColor,
+                    rippleBorderless,
+                    pressedScale,
+                }),
+            [rippleColor, activeFlatBgColor, rippleBorderless, pressedScale]
         )
 
-        /** The press-down scale, matching web's `transform: scale(0.99)`. */
-        const pressedTransform = useMemo<ViewStyle>(
-            () => (isAndroid ? {} : { transform: [{ scale: pressedScale }] }),
-            [isAndroid, pressedScale]
-        )
-
-        // Memoised so the `style` callback below composes stable references.
-        // RN re-invokes that callback on every press transition; rebuilding
-        // these objects each time would allocate on every touch.
         const disabledStyle = useMemo<ViewStyle | undefined>(
             () =>
                 usesDisabledChrome
