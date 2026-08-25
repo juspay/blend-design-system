@@ -85,6 +85,15 @@ export type { RNSize } from './adapters/cssStringAdapter'
  */
 export { MIN_TOUCH_TARGET } from './primitives/touchTarget'
 
+// ---- Overlay & motion ---------------------------------------------------
+// `Portal` renders content into the provider's overlay layer (above the
+// app), and `useReduceMotion` mirrors web's prefers-reduced-motion. The
+// positioning engine and motion presets stay internal until the overlay
+// components stabilise their shapes.
+export { Portal } from './overlay/portal'
+export type { PortalProps } from './overlay/portal'
+export { useReduceMotion } from './motion/useReduceMotion'
+
 /** Position of a control within a button or tag group. */
 export type { GroupPosition } from './components/shared/group'
 
