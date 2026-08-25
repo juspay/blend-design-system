@@ -143,17 +143,17 @@ jobs:
 
             - name: Lint and typecheck
               run: |
-                  pnpm --filter @juspay/blend-native lint
-                  pnpm --filter @juspay/blend-native typecheck
+                  pnpm --filter blend-native lint
+                  pnpm --filter blend-native typecheck
                   pnpm --filter native-site typecheck
 
             - name: Run tests (vitest + jest)
-              run: pnpm --filter @juspay/blend-native test
+              run: pnpm --filter blend-native test
               env:
                   CI: true
 
             - name: Build package
-              run: pnpm --filter @juspay/blend-native build
+              run: pnpm --filter blend-native build
 
     preview:
         name: Publish preview to pkg.pr.new
@@ -184,8 +184,8 @@ jobs:
 
             # pkg-pr-new packs without running prepublishOnly, so build
             # blend-native's lib/ output explicitly first.
-            - name: Build @juspay/blend-native
-              run: pnpm --filter @juspay/blend-native build
+            - name: Build blend-native
+              run: pnpm --filter blend-native build
 
             - name: Publish preview
               run: pnpm dlx pkg-pr-new publish --pnpm './packages/blend' './packages/blend-native'

@@ -8,7 +8,7 @@ import {
     Tag,
     TagColor,
     TagType,
-} from '@juspay/blend-native'
+} from 'blend-native'
 
 /**
  * Skeleton + toast verification. On device, check:

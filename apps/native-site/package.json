@@ -13,7 +13,7 @@
     "dependencies": {
         "@expo/metro-runtime": "~56.0.20",
         "@juspay/blend-design-system": "workspace:*",
-        "@juspay/blend-native": "workspace:*",
+        "blend-native": "workspace:*",
         "expo": "~56.0.12",
         "expo-linear-gradient": "~56.0.4",
         "lucide-react-native": "^1.33.0",

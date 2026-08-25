@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config'
 
 /**
- * Test config for `@juspay/blend-native`.
+ * Test config for `blend-native`.
  *
  * These suites cover the package's **pure** layer: the CSS-string adapters,
  * the surface-style resolver, the per-component style/utility functions, and

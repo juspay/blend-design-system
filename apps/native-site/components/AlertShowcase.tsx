@@ -4,7 +4,7 @@ import {
     AlertActionPosition,
     AlertSubType,
     AlertType,
-} from '@juspay/blend-native'
+} from 'blend-native'
 import { Info, TriangleAlert } from 'lucide-react-native'
 
 /**

@@ -1,12 +1,6 @@
 import { View, Text as RNText, StyleSheet } from 'react-native'
 import { Circle } from 'lucide-react-native'
-import {
-    Tag,
-    TagColor,
-    TagSize,
-    TagSubType,
-    TagType,
-} from '@juspay/blend-native'
+import { Tag, TagColor, TagSize, TagSubType, TagType } from 'blend-native'
 
 /**
  * Visual parity harness for the native `Tag`.

@@ -1,5 +1,5 @@
 /**
- * @juspay/blend-native — React Native components for Blend Design System.
+ * blend-native — React Native components for Blend Design System.
  *
  * Consumes Blend's token system via the React-free
  * `@juspay/blend-design-system/node` entry and translates CSS-string token
