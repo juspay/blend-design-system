@@ -57,6 +57,10 @@ export type {
     ResponsiveTagV2Tokens,
 } from './components/TagV2/tagV2.tokens'
 export { getTextInputV2Tokens } from './components/InputsV2/TextInputV2/TextInputV2.tokens'
+export type {
+    TextInputV2TokensType,
+    ResponsiveTextInputV2Tokens,
+} from './components/InputsV2/TextInputV2/TextInputV2.tokens.types'
 export { getUploadV2Tokens } from './components/InputsV2/UploadV2/UploadV2.tokens'
 
 export { getTimelineTokens } from './components/Timeline/timeline.token'
@@ -94,3 +98,5 @@ export {
     TagV2Color,
     TagV2PaddingDirection,
 } from './components/TagV2/TagV2.types'
+
+export { InputSizeV2, InputStateV2 } from './components/InputsV2/inputV2.types'

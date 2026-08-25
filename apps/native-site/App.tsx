@@ -14,9 +14,10 @@ import ButtonShowcase from './components/ButtonShowcase'
 import TagShowcase from './components/TagShowcase'
 import AlertShowcase from './components/AlertShowcase'
 import SheetShowcase from './components/SheetShowcase'
+import InputShowcase from './components/InputShowcase'
 import PlatformPreview from './components/PlatformPreview'
 
-type Tab = 'alert' | 'tag' | 'button' | 'sheet'
+type Tab = 'alert' | 'tag' | 'button' | 'sheet' | 'input'
 
 export default function App() {
     const [theme, setTheme] = useState<Theme>(Theme.LIGHT)
@@ -54,7 +55,13 @@ export default function App() {
 
                             <View style={styles.controls}>
                                 {(
-                                    ['alert', 'tag', 'button', 'sheet'] as Tab[]
+                                    [
+                                        'alert',
+                                        'tag',
+                                        'button',
+                                        'sheet',
+                                        'input',
+                                    ] as Tab[]
                                 ).map((value) => (
                                     <Pressable
                                         key={value}
@@ -97,6 +104,7 @@ export default function App() {
                             {tab === 'tag' ? <TagShowcase /> : null}
                             {tab === 'button' ? <ButtonShowcase /> : null}
                             {tab === 'sheet' ? <SheetShowcase /> : null}
+                            {tab === 'input' ? <InputShowcase /> : null}
                         </ScrollView>
                     </SafeAreaView>
                 </BlendNativeProvider>

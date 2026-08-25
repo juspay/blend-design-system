@@ -21,6 +21,11 @@
 export { Alert } from './components/Alert'
 export { Button } from './components/Button'
 export { Tag } from './components/Tag'
+export { TextInput } from './components/TextInput'
+export type {
+    TextInputNativeProps,
+    TextInputSlot,
+} from './components/TextInput'
 
 export type {
     AlertNativeProps,
@@ -67,6 +72,8 @@ export { Pressable } from './primitives/Pressable'
 export { Text } from './primitives/Text'
 export { Slot } from './primitives/Slot'
 export { Separator } from './primitives/Separator'
+export { PrimitiveInput } from './primitives/PrimitiveInput'
+export type { PrimitiveInputProps } from './primitives/PrimitiveInput'
 
 export type { BlockProps } from './primitives/Block'
 export type { PrimitivePressableProps } from './primitives/Pressable'
@@ -120,6 +127,8 @@ export {
     ButtonV2Size as ButtonSize,
     ButtonV2SubType as ButtonSubType,
     ButtonV2State as ButtonState,
+    InputSizeV2 as InputSize,
+    InputStateV2 as InputState,
     TagV2Type as TagType,
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,

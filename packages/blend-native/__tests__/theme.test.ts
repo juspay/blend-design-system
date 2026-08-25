@@ -53,6 +53,7 @@ describe('nativeTokenRegistry', () => {
             'ALERTV2',
             'BUTTONV2',
             'TAGV2',
+            'TEXT_INPUTV2',
         ])
     })
 

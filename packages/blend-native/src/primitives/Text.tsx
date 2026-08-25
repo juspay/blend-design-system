@@ -6,6 +6,7 @@ import {
     type TextStyle,
 } from 'react-native'
 import { parseDimension } from '../adapters/cssStringAdapter'
+import { resolveFontWeight } from './textStyle'
 import { BlendNativeThemeContext } from '../theme/BlendNativeProvider'
 import type { NativeFontRole } from '../theme/fonts'
 
@@ -52,22 +53,6 @@ export type BlendTextProps = {
 } & Omit<RNTextProps, 'style'> & {
         style?: TextStyle
     }
-
-/**
- * Resolve a CSS font-weight value to a RN-compatible `TextStyle['fontWeight']`.
- * RN accepts `'normal' | 'bold' | '100'..'900'` (as string or number).
- */
-function resolveFontWeight(
-    w: string | number | undefined
-): TextStyle['fontWeight'] {
-    if (w === undefined) return undefined
-    if (typeof w === 'number') return String(w) as TextStyle['fontWeight']
-    // Token values are numeric strings like `"500"`.
-    if (/^\d+$/.test(w)) return w as TextStyle['fontWeight']
-    const lower = w.toLowerCase()
-    if (lower === 'normal' || lower === 'bold') return lower
-    return undefined
-}
 
 function TextImpl({
     children,
