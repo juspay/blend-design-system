@@ -10,9 +10,9 @@ name: Create Stable Release (DEPRECATED)
 #
 # New Workflow:
 # 1. create-beta-release.yml: Create beta from staging
-# 2. publish-beta-npm.yml: Publish beta to NPM
+# 2. publish-npm.yml: Publish beta to NPM (run from staging)
 # 3. promote-to-stable.yml: Promote beta to stable (creates PR to main)
-# 4. publish-stable-npm.yml: Publish stable from main to NPM
+# 4. publish-npm.yml: Publish stable to NPM (run from main)
 #
 # See docs/RELEASE_WORKFLOW.md for complete documentation.
 
@@ -46,9 +46,9 @@ jobs:
                   echo ""
                   echo "New Workflow Flow:"
                   echo "  1. Create Beta Release (from staging)"
-                  echo "  2. Publish Beta to NPM"
+                  echo "  2. Publish to NPM (from staging → beta tag)"
                   echo "  3. Promote Beta to Stable (from staging → main PR)"
-                  echo "  4. Publish Stable to NPM (from main)"
+                  echo "  4. Publish to NPM (from main → latest tag)"
                   echo ""
                   echo "See docs/RELEASE_WORKFLOW.md for complete documentation."
 
