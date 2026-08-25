@@ -165,7 +165,7 @@ Commits are conventional and enforced by commitlint on `commit-msg`: types `buil
 
 CI (`.github/workflows/ci.yml`) runs on push and PR to `main` and `dev` only — not `staging`. Jobs: `format:check` → `check:circular` → `pnpm build`, then coverage and a11y in parallel, plus a `pkg-pr-new` preview publish. Note the root `pnpm lint` is not run directly; lint reaches CI only through `packages/blend`'s build script.
 
-Releases are manual `workflow_dispatch` runs with confirmation strings: `create-beta-release` + `publish-beta-npm` from `staging` (beta dist-tag), then `promote-to-stable` + `publish-stable-npm` from `main` (latest tag). Details in `docs/RELEASE_WORKFLOW.md`.
+Releases are manual `workflow_dispatch` runs with confirmation strings: `create-beta-release` + `publish-npm` from `staging` (beta dist-tag), then `promote-to-stable` + `publish-npm` from `main` (latest tag). `publish-npm.yml` authenticates via npm Trusted Publishing (OIDC), not `NPM_TOKEN` — the filename is registered with npm, so renaming it breaks publishing. Details in `docs/RELEASE_WORKFLOW.md`.
 
 ## Further reading
 
