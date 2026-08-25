@@ -63,6 +63,13 @@ export type {
 } from './components/InputsV2/TextInputV2/TextInputV2.tokens.types'
 export { getUploadV2Tokens } from './components/InputsV2/UploadV2/UploadV2.tokens'
 
+export { getSkeletonTokens } from './components/Skeleton/skeleton.tokens'
+export type {
+    SkeletonTokensType,
+    ResponsiveSkeletonTokens,
+    SkeletonVariant,
+    SkeletonShape,
+} from './components/Skeleton/skeleton.tokens.types'
 export { getTimelineTokens } from './components/Timeline/timeline.token'
 export { getTopbarTokens } from './components/Topbar/topbar.tokens'
 export { getSidebarTokens } from './components/Sidebar/sidebar.tokens'
