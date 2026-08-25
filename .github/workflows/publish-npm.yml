@@ -1,0 +1,382 @@
+name: Publish to NPM
+
+on:
+    workflow_dispatch:
+        inputs:
+            confirm_publish:
+                description: 'Type "PUBLISH" to confirm publishing to NPM'
+                required: true
+                type: string
+
+concurrency:
+    group: publish-npm-${{ github.ref }}
+    cancel-in-progress: true
+
+# Trusted Publishing (OIDC) — no NPM_TOKEN.
+# `id-token: write` mints the OIDC token npm exchanges for publish rights.
+# `contents: write` is needed by softprops/action-gh-release on the stable path.
+permissions:
+    id-token: write
+    contents: write
+
+jobs:
+    publish:
+        name: Publish to NPM
+        runs-on: ubuntu-latest
+        environment: npm
+        if: github.event.inputs.confirm_publish == 'PUBLISH' && (github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main')
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Determine Release Channel
+              id: channel
+              run: |
+                  if [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+                    echo "channel=beta" >> $GITHUB_OUTPUT
+                    echo "npm_tag=beta" >> $GITHUB_OUTPUT
+                    echo "📦 Channel: beta (staging) → npm dist-tag: beta"
+                  else
+                    echo "channel=stable" >> $GITHUB_OUTPUT
+                    echo "npm_tag=latest" >> $GITHUB_OUTPUT
+                    echo "📦 Channel: stable (main) → npm dist-tag: latest"
+                  fi
+
+            - name: Setup Node.js 24 and pnpm
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  registry-url: 'https://registry.npmjs.org'
+
+            - name: Ensure npm CLI supports Trusted Publishing
+              run: |
+                  echo "Node: $(node --version)"
+                  echo "npm (bundled): $(npm --version)"
+
+                  # Trusted publishing requires npm >= 11.5.1 and Node >= 22.14.0.
+                  # Node 24 already ships npm 11.x, but pin the newest CLI so the
+                  # OIDC exchange never depends on the runner image's npm version.
+                  npm install -g npm@latest
+                  echo "npm (in use): $(npm --version)"
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Verify Version Matches Channel
+              id: verify_version
+              run: |
+                  cd packages/blend
+                  CURRENT_VERSION=$(node -p "require('./package.json').version")
+                  CHANNEL="${{ steps.channel.outputs.channel }}"
+
+                  if [[ "$CHANNEL" == "beta" ]]; then
+                    # New format: X.Y.Z-beta.N
+                    if [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta\.([0-9]+)$ ]]; then
+                      BASE_VERSION="${BASH_REMATCH[1]}"
+                      BETA_NUMBER="${BASH_REMATCH[2]}"
+                      echo "Verified beta version: $CURRENT_VERSION (base: $BASE_VERSION, beta #$BETA_NUMBER)"
+                      echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+                      echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+                      echo "beta_number=$BETA_NUMBER" >> $GITHUB_OUTPUT
+                      echo "version_format=new" >> $GITHUB_OUTPUT
+                    # Old format: X.Y.Z-beta
+                    elif [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta$ ]]; then
+                      BASE_VERSION="${BASH_REMATCH[1]}"
+                      echo "Verified beta version (old format): $CURRENT_VERSION"
+                      echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+                      echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+                      echo "beta_number=0" >> $GITHUB_OUTPUT
+                      echo "version_format=old" >> $GITHUB_OUTPUT
+                    else
+                      echo "ERROR: Current version ($CURRENT_VERSION) is not a beta version!"
+                      echo "Expected format: X.Y.Z-beta.N (e.g., 1.0.0-beta.0) or X.Y.Z-beta"
+                      echo "Running from 'staging' publishes betas only."
+                      exit 1
+                    fi
+                  else
+                    if [[ "$CURRENT_VERSION" == *"-beta"* ]]; then
+                      echo "ERROR: Current version ($CURRENT_VERSION) is a beta version!"
+                      echo "Running from 'main' publishes stable versions only."
+                      echo "Please run the 'Promote Beta to Stable' workflow first."
+                      exit 1
+                    fi
+
+                    echo "Verified stable version: $CURRENT_VERSION"
+                    echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+                    echo "base_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+                  fi
+
+            - name: Build Package
+              run: pnpm --filter @juspay/blend-design-system build
+
+            - name: Check Package Existence and Version
+              id: check_published
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+
+                  echo "📦 Checking package: $PACKAGE_NAME"
+                  echo "📌 Checking version: $VERSION"
+
+                  # `npm view` is an unauthenticated read — works without a token.
+                  if npm view "$PACKAGE_NAME" name 2>/dev/null >/dev/null; then
+                    echo "✅ Package $PACKAGE_NAME exists in NPM registry"
+                    PACKAGE_EXISTS=true
+                  else
+                    echo "⚠️  Package $PACKAGE_NAME does not exist in NPM registry yet"
+                    echo "   This will be the first publish of this package"
+                    PACKAGE_EXISTS=false
+                  fi
+
+                  if npm view "$PACKAGE_NAME@$VERSION" version 2>/dev/null >/dev/null; then
+                    echo "already_published=true" >> $GITHUB_OUTPUT
+                    echo "package_exists=true" >> $GITHUB_OUTPUT
+                    echo "⚠️  Version $VERSION already exists on NPM"
+                  else
+                    echo "already_published=false" >> $GITHUB_OUTPUT
+                    if [[ "$PACKAGE_EXISTS" == "true" ]]; then
+                      echo "package_exists=true" >> $GITHUB_OUTPUT
+                    else
+                      echo "package_exists=false" >> $GITHUB_OUTPUT
+                    fi
+                    echo "✅ Version $VERSION is not yet published - ready to publish"
+                  fi
+
+            - name: Publish to NPM
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+                  NPM_TAG="${{ steps.channel.outputs.npm_tag }}"
+                  PACKAGE_EXISTS="${{ steps.check_published.outputs.package_exists }}"
+
+                  if [[ "$PACKAGE_EXISTS" == "false" ]]; then
+                    echo "📦 This is the first publish of this package"
+                    echo "   Creating new package: $PACKAGE_NAME"
+                  fi
+
+                  # Guard against a package.json / resolved-version drift.
+                  echo "📋 Verifying package.json configuration..."
+                  PACKAGE_JSON_VERSION=$(node -p "require('./package.json').version")
+
+                  if [[ "$PACKAGE_JSON_VERSION" != "$VERSION" ]]; then
+                    echo "❌ ERROR: Version mismatch!"
+                    echo "Expected: $VERSION"
+                    echo "Found in package.json: $PACKAGE_JSON_VERSION"
+                    exit 1
+                  fi
+
+                  echo "✅ Package.json configuration verified"
+
+                  # Authentication happens here, via OIDC. There is no token to
+                  # check up front — `npm whoami` does not reflect OIDC status.
+                  echo "📤 Publishing $PACKAGE_NAME@$VERSION to NPM with '$NPM_TAG' tag..."
+                  npm publish --access public --tag "$NPM_TAG"
+                  echo "✅ Successfully published $PACKAGE_NAME@$VERSION to NPM with '$NPM_TAG' tag"
+
+            - name: Verify NPM Package After Publish
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+                  NPM_TAG="${{ steps.channel.outputs.npm_tag }}"
+
+                  echo "Verifying published package..."
+                  sleep 10 # Wait for NPM to propagate
+
+                  PUBLISHED_VERSION=$(npm view "$PACKAGE_NAME@$NPM_TAG" version 2>/dev/null || echo "")
+                  if [[ "$PUBLISHED_VERSION" == "$VERSION" ]]; then
+                    echo "✅ Successfully verified: $PACKAGE_NAME@$VERSION is live on NPM with '$NPM_TAG' tag"
+                  else
+                    echo "⚠️  Warning: Expected $VERSION but NPM shows $PUBLISHED_VERSION for '$NPM_TAG' tag"
+                    echo "This might be due to NPM propagation delay"
+                  fi
+
+            - name: List All Beta Versions
+              if: steps.channel.outputs.channel == 'beta' && steps.check_published.outputs.already_published != 'true'
+              run: |
+                  cd packages/blend
+                  PACKAGE_NAME=$(node -p "require('./package.json').name")
+                  BASE_VERSION="${{ steps.verify_version.outputs.base_version }}"
+
+                  echo "📋 All beta versions for $BASE_VERSION:"
+                  npm view "$PACKAGE_NAME" versions --json 2>/dev/null | jq -r '.[]' | grep "$BASE_VERSION-beta" || echo "No previous betas found"
+
+            - name: Generate Enhanced Release Notes
+              if: steps.channel.outputs.channel == 'stable' && steps.check_published.outputs.already_published != 'true'
+              run: |
+                  VERSION="${{ steps.verify_version.outputs.version }}"
+
+                  cat > /tmp/release-notes.md << NOTES
+                  # 🎉 Stable Release v${VERSION}
+
+                  **This stable release is now published to NPM and ready for production use!**
+
+                  ## 📦 Installation
+
+                  \`\`\`bash
+                  # Install latest stable version
+                  npm install @juspay/blend-design-system@latest
+
+                  # Install specific version
+                  npm install @juspay/blend-design-system@${VERSION}
+
+                  # Yarn
+                  yarn add @juspay/blend-design-system@latest
+                  \`\`\`
+
+                  ## 📋 Package Information
+
+                  | Property | Value |
+                  |----------|-------|
+                  | **Package** | \`@juspay/blend-design-system\` |
+                  | **Version** | \`${VERSION}\` |
+                  | **NPM Tag** | \`latest\` |
+                  | **Published** | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |
+                  | **Node Compatibility** | >=18.0.0 |
+                  | **Provenance** | Signed via GitHub Actions OIDC |
+
+                  ## 🚀 What's Included
+
+                  This stable release includes all features and fixes from the corresponding beta version, thoroughly tested and ready for production environments.
+
+                  ## 📚 Documentation & Resources
+
+                  - [📖 Component Documentation](https://your-docs-url.com)
+                  - [🎨 Storybook](https://your-storybook-url.com)
+                  - [🔧 Migration Guide](https://github.com/juspay/blend-design-system/blob/main/MIGRATION.md)
+                  - [🐛 Report Issues](https://github.com/juspay/blend-design-system/issues/new)
+
+                  ## 🔗 Quick Links
+
+                  - [View on NPM](https://www.npmjs.com/package/@juspay/blend-design-system)
+                  - [Full Changelog](https://github.com/juspay/blend-design-system/blob/main/docs/CHANGELOG.md)
+                  - [Release Notes](https://github.com/juspay/blend-design-system/releases)
+
+                  ---
+
+                  **🙏 Thank you for using Blend Design System!**
+                  NOTES
+
+            - name: Update GitHub Release with Enhanced Notes
+              if: steps.channel.outputs.channel == 'stable' && steps.check_published.outputs.already_published != 'true'
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: v${{ steps.verify_version.outputs.version }}
+                  name: Release v${{ steps.verify_version.outputs.version }}
+                  body_path: /tmp/release-notes.md
+                  draft: false
+                  prerelease: false
+
+            - name: Create Beta Success Summary
+              if: steps.channel.outputs.channel == 'beta' && steps.check_published.outputs.already_published != 'true'
+              run: |
+                  echo "## 🎉 Beta Release Published Successfully!" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Package**: \`@juspay/blend-design-system\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**Version**: \`${{ steps.verify_version.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**Beta Number**: \`#${{ steps.verify_version.outputs.beta_number }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**NPM Tag**: \`beta\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**Auth**: Trusted Publishing (OIDC) — no token used" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Installation" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+                  echo "# Install latest beta" >> $GITHUB_STEP_SUMMARY
+                  echo "npm install @juspay/blend-design-system@beta" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "# Install specific beta version" >> $GITHUB_STEP_SUMMARY
+                  echo "npm install @juspay/blend-design-system@${{ steps.verify_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### 🔄 Beta Iteration Workflow" >> $GITHUB_STEP_SUMMARY
+                  echo "| Current | If Issues Found | When Stable |" >> $GITHUB_STEP_SUMMARY
+                  echo "|---------|-----------------|-------------|" >> $GITHUB_STEP_SUMMARY
+                  echo "| \`${{ steps.verify_version.outputs.version }}\` | Run 'Create Beta Release' with increment | Promote to \`${{ steps.verify_version.outputs.base_version }}\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ Beta version is now live on NPM" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ GitHub beta release is available" >> $GITHUB_STEP_SUMMARY
+                  echo "- 🧪 Test the beta version thoroughly" >> $GITHUB_STEP_SUMMARY
+                  echo "- 🔁 If issues found: Run 'Create Beta Release' workflow with 'Increment existing beta version' = true" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ When ready: Run 'Promote Beta to Stable' workflow to create stable release" >> $GITHUB_STEP_SUMMARY
+
+            - name: Create Stable Success Summary
+              if: steps.channel.outputs.channel == 'stable' && steps.check_published.outputs.already_published != 'true'
+              run: |
+                  echo "## 🎉 Stable Release Published Successfully!" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Package**: \`@juspay/blend-design-system\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**Version**: \`${{ steps.verify_version.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**NPM Tag**: \`latest\`" >> $GITHUB_STEP_SUMMARY
+                  echo "**Auth**: Trusted Publishing (OIDC) — no token used" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Installation" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+                  echo "npm install @juspay/blend-design-system@latest" >> $GITHUB_STEP_SUMMARY
+                  echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ Stable version is now live on NPM" >> $GITHUB_STEP_SUMMARY
+                  echo "- ✅ GitHub release updated with NPM info" >> $GITHUB_STEP_SUMMARY
+                  echo "- 🔄 Merge the auto-created backmerge PR to sync main → dev" >> $GITHUB_STEP_SUMMARY
+
+            - name: Skip Publishing (Already Published)
+              if: steps.check_published.outputs.already_published == 'true'
+              run: |
+                  echo "Version ${{ steps.verify_version.outputs.version }} is already published on NPM"
+                  echo "Skipping publish step"
+
+                  echo "## ⚠️ Version Already Published" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "Version \`${{ steps.verify_version.outputs.version }}\` is already on NPM." >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  if [[ "${{ steps.channel.outputs.channel }}" == "beta" ]]; then
+                    echo "To publish a new beta version:" >> $GITHUB_STEP_SUMMARY
+                    echo "1. Run 'Create Beta Release' workflow with 'Increment existing beta version' = true" >> $GITHUB_STEP_SUMMARY
+                    echo "2. Then run this workflow again from \`staging\`" >> $GITHUB_STEP_SUMMARY
+                  else
+                    echo "This stable version is already on NPM. Nothing to do." >> $GITHUB_STEP_SUMMARY
+                    echo "" >> $GITHUB_STEP_SUMMARY
+                    echo "To ship a new stable version, cut a new beta and run 'Promote Beta to Stable' again." >> $GITHUB_STEP_SUMMARY
+                  fi
+
+            - name: Troubleshooting Guide (On Failure)
+              if: failure()
+              run: |
+                  echo "## ❌ Publishing Failed - Troubleshooting Guide" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "This workflow publishes with **Trusted Publishing (OIDC)**. There is no NPM_TOKEN to rotate." >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### 🔴 \`Unable to authenticate\` / \`404 Not Found\` / \`ENEEDAUTH\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "The trusted publisher registration on npm must match this run **exactly**:" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "| Field | Required value |" >> $GITHUB_STEP_SUMMARY
+                  echo "|-------|----------------|" >> $GITHUB_STEP_SUMMARY
+                  echo "| Organization | \`juspay\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Repository | \`blend-design-system\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Workflow filename | \`publish-npm.yml\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Environment | \`npm\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "| Allowed actions | \`npm publish\` |" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "Check it at: https://www.npmjs.com/package/@juspay/blend-design-system/access" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "Renaming this file, or running the publish from a different workflow file, breaks OIDC." >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "### Other checks" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "- **npm CLI too old**: trusted publishing needs npm >= 11.5.1 and Node >= 22.14.0. See the 'Ensure npm CLI' step output." >> $GITHUB_STEP_SUMMARY
+                  echo "- **Missing OIDC permission**: the job needs \`permissions: id-token: write\`." >> $GITHUB_STEP_SUMMARY
+                  echo "- **Wrong branch**: beta publishes from \`staging\`, stable from \`main\`." >> $GITHUB_STEP_SUMMARY
+                  echo "- **Version already exists**: \`npm view @juspay/blend-design-system@VERSION\`. If it exists, run 'Create Beta Release' to increment." >> $GITHUB_STEP_SUMMARY
+                  echo "- **Version/channel mismatch**: \`staging\` requires \`X.Y.Z-beta.N\`; \`main\` requires a non-beta version." >> $GITHUB_STEP_SUMMARY
+                  echo "- **Self-hosted runners are not supported** by npm trusted publishing — this job must stay on \`ubuntu-latest\`." >> $GITHUB_STEP_SUMMARY

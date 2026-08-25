@@ -289,7 +289,7 @@ jobs:
                       ### Next Steps (IMPORTANT - Follow in Order)
                       1. **Review and merge this PR to `dev` branch** (auto-created)
                       2. **Manually create PR from `dev` → `staging`** and merge (syncs version back to staging)
-                      3. **Trigger "Publish Beta to NPM" workflow** from `staging` branch
+                      3. **Trigger "Publish to NPM" workflow** from `staging` branch (publishes with the `beta` tag)
                       4. **Test the beta version thoroughly** using `npm install @juspay/blend-design-system@beta`
                       5. **If issues found**: Fix in `dev`, merge to `staging`, then run "Create Beta Release" with "Increment existing beta version" = `true`
                       6. **When stable**: Run "Promote Beta to Stable" workflow from `staging` branch
@@ -344,7 +344,7 @@ jobs:
                   echo "   - This syncs the version back to staging branch" >> $GITHUB_STEP_SUMMARY
                   echo "   - Required before publishing to NPM" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
-                  echo "3. **Run 'Publish Beta to NPM' workflow** from \`staging\` branch" >> $GITHUB_STEP_SUMMARY
+                  echo "3. **Run 'Publish to NPM' workflow** from \`staging\` branch" >> $GITHUB_STEP_SUMMARY
                   echo "   - Type \"PUBLISH\" to confirm" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "4. **Test the beta version**:" >> $GITHUB_STEP_SUMMARY

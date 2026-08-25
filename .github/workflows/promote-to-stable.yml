@@ -236,7 +236,7 @@ jobs:
 
                       ### Next Steps (Follow in Order)
                       1. **Review and merge this PR to \`main\` branch** (auto-created from \`staging\`)
-                      2. **Run 'Publish Stable to NPM' workflow** from \`main\` branch
+                      2. **Run 'Publish to NPM' workflow** from \`main\` branch
                          - Type "PUBLISH" to confirm
                          - This publishes with \`latest\` tag on NPM
 
@@ -285,7 +285,7 @@ jobs:
                   echo "   - PR: \`staging\` → \`main\` (auto-created)" >> $GITHUB_STEP_SUMMARY
                   echo "   - Review changelog and version changes" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
-                  echo "2. **Run 'Publish Stable to NPM' workflow** from \`main\` branch" >> $GITHUB_STEP_SUMMARY
+                  echo "2. **Run 'Publish to NPM' workflow** from \`main\` branch" >> $GITHUB_STEP_SUMMARY
                   echo "   - Type \"PUBLISH\" to confirm" >> $GITHUB_STEP_SUMMARY
                   echo "   - This publishes with \`latest\` tag" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
