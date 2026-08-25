@@ -62,11 +62,25 @@ type GradientComponent = React.ComponentType<{
     style?: ViewStyle
 }>
 
+/**
+ * The probe must survive every build target this package ships:
+ *
+ * - **Metro (`react-native` condition, raw `src/`)** and the **CJS build**
+ *   (`require`/`default` conditions): `require` exists, the module loads when
+ *   installed, and the `catch` absorbs its absence.
+ * - **The ESM build** (`import` condition): there is no `require` in module
+ *   scope. The `typeof` guard makes the degradation explicit — gradients fall
+ *   back to the first-stop flat fill `resolveSurfaceStyle` already supplies —
+ *   instead of relying on a caught `ReferenceError`. Bundlers that polyfill
+ *   `require` in ESM (webpack) still resolve the real module.
+ */
 let LinearGradient: GradientComponent | null = null
 try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    LinearGradient = require('expo-linear-gradient')
-        .LinearGradient as GradientComponent
+    if (typeof require === 'function') {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        LinearGradient = require('expo-linear-gradient')
+            .LinearGradient as GradientComponent
+    }
 } catch {
     LinearGradient = null
 }
