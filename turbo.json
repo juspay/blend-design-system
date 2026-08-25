@@ -15,6 +15,10 @@
         "lint": {
             "dependsOn": ["^lint"]
         },
+        "typecheck": {},
+        "@juspay/blend-native#test": {
+            "dependsOn": ["@juspay/blend-design-system#build"]
+        },
         "dev": {
             "cache": false,
             "persistent": true
