@@ -19,6 +19,12 @@ on:
                     - beta
                     - latest
 
+# Only the checkout needs the GITHUB_TOKEN; publishing authenticates with
+# NPM_TOKEN instead, so the job runs read-only. Matches publish-cli.yml and
+# publish-blend-telemetry.yml.
+permissions:
+    contents: read
+
 concurrency:
     group: publish-native-npm-${{ github.ref }}
     cancel-in-progress: true
