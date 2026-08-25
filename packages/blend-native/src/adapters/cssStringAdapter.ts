@@ -15,6 +15,25 @@ import type { ViewStyle } from 'react-native'
  */
 
 /**
+ * A decimal number, in a form the regex engine cannot backtrack over.
+ *
+ * The obvious spellings — `\d*\.?\d+` and `\d+\.?\d*` — are **ambiguous**:
+ * with no `.` present, a run of digits can be divided between the two
+ * quantifiers in as many ways as there are digits, so a long non-matching
+ * input costs O(n^2). CodeQL flags both as `js/polynomial-redos`, correctly.
+ *
+ * Here the `.` inside the optional group is mandatory, so each digit run has
+ * exactly one valid division and matching stays linear.
+ */
+const NUMBER = String.raw`-?(?:\d+(?:\.\d+)?|\.\d+)`
+
+/** `"6px"`, `"1.5px"`, `"0"` — a length, with the unit optional. */
+const DIMENSION_RE = new RegExp(`^(${NUMBER})(?:px)?$`)
+
+/** `"50%"`, `"33.5%"`, `"-5%"` — a percentage. */
+const PERCENT_RE = new RegExp(`^(${NUMBER})%$`)
+
+/**
  * Result of parsing a background token.
  *
  * - `flat` — solid color, apply via `backgroundColor`.
@@ -44,11 +63,68 @@ export function parseDimension(
     value: string | number | undefined
 ): number | undefined {
     if (value === undefined || value === null) return undefined
-    if (typeof value === 'number') return value
-    const match = value.trim().match(/^(-?\d*\.?\d+)\s*(px)?$/)
+    if (typeof value === 'number')
+        return Number.isFinite(value) ? value : undefined
+    const match = value.trim().match(DIMENSION_RE)
     if (!match) return undefined
     const n = parseFloat(match[1])
     return Number.isNaN(n) ? undefined : n
+}
+
+/**
+ * RN's type for anything that accepts a length or a percentage
+ * (`width`, `maxHeight`, `flexBasis`, ...).
+ */
+export type RNSize = number | `${number}%` | 'auto'
+
+/**
+ * Parse a CSS size value — `width`, `height`, `maxHeight`, `minWidth`, ... —
+ * into something RN's stylesheet actually understands.
+ *
+ * This is deliberately strict. `parseFloat` is NOT a safe fallback here: it
+ * turns `"100%"` into `100`, which RN renders as **100 pixels** rather than
+ * full width, and it silently accepts `"12abc"` (→ `12`) and `"50em"` (→ `50`).
+ * Anything not explicitly understood returns `undefined` so the caller skips
+ * the prop instead of laying out a wrong value.
+ *
+ * ```
+ * parseSize(24)            → 24
+ * parseSize('24px')        → 24
+ * parseSize('50%')         → '50%'
+ * parseSize('100%')        → '100%'
+ * parseSize('auto')        → 'auto'
+ * parseSize('fit-content') → 'auto'   // RN's nearest equivalent
+ * parseSize('min-content') → undefined
+ * parseSize('calc(1+2)')   → undefined
+ * parseSize('50em')        → undefined
+ * parseSize('12abc')       → undefined
+ * ```
+ */
+export function parseSize(
+    value: string | number | undefined
+): RNSize | undefined {
+    if (value === undefined || value === null) return undefined
+    if (typeof value === 'number') {
+        return Number.isFinite(value) ? value : undefined
+    }
+
+    const trimmed = value.trim()
+    if (trimmed === '') return undefined
+
+    // `fit-content` has no RN equivalent; `auto` is the closest behaviour
+    // (shrink-to-fit within the parent's constraints).
+    if (trimmed === 'auto' || trimmed === 'fit-content') return 'auto'
+
+    // Percentages. See `NUMBER` — linear, so a long adversarial input cannot
+    // degrade this.
+    const pct = trimmed.match(PERCENT_RE)
+    if (pct) {
+        const n = parseFloat(pct[1])
+        return Number.isNaN(n) ? undefined : (`${n}%` as `${number}%`)
+    }
+
+    // Bare numbers and `px` lengths.
+    return parseDimension(trimmed)
 }
 
 /**

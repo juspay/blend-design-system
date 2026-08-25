@@ -5,7 +5,9 @@ import importX from 'eslint-plugin-import-x'
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript'
 
 export default tseslint.config(
-    { ignores: ['dist', 'node_modules'] },
+    // `lib` is builder-bob's generated output — linting it reports on code
+    // nobody wrote and that is not committed.
+    { ignores: ['dist', 'lib', 'node_modules'] },
     {
         extends: [js.configs.recommended, ...tseslint.configs.recommended],
         files: ['**/*.{ts,tsx}'],

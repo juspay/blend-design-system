@@ -10,8 +10,16 @@ export { Theme } from './context/theme.enum'
 export { default as FOUNDATION_THEME } from './tokens/theme.token'
 export type { FoundationTokenType } from './tokens/theme.token'
 
-// Breakpoint shape — needed by native consumers to index responsive tokens.
+// Breakpoint shape and thresholds — needed by native consumers to index
+// responsive tokens and to resolve the active breakpoint themselves.
 export type { BreakpointType } from './breakpoints/breakPoints'
+export { BREAKPOINTS } from './breakpoints/breakPoints'
+
+// Deep-merge for component token overrides. Native (`@juspay/blend-native`)
+// resolves tokens outside React and must apply overrides with exactly the
+// same semantics as `ThemeProvider` does on web. Imported from the leaf
+// module, not `initComponentTokens`, which barrel-imports React components.
+export { mergeTokenTree } from './context/mergeTokenTree'
 
 export { getButtonV2Tokens } from './components/ButtonV2/buttonV2.tokens'
 export type {
@@ -20,6 +28,10 @@ export type {
 } from './components/ButtonV2/buttonV2.tokens'
 export { getAccordionV2Tokens } from './components/AccordionV2/accordionV2.tokens'
 export { getAlertV2Tokens } from './components/AlertV2/alertV2.tokens'
+export type {
+    AlertV2TokensType,
+    ResponsiveAlertV2Tokens,
+} from './components/AlertV2/alertV2.tokens'
 export { getAvatarV2Tokens } from './components/AvatarV2/avatarV2.tokens'
 export { getBreadcrumbV2Tokens } from './components/BreadcrumbV2/breadcrumbV2.tokens'
 export { getChartV2Tokens } from './components/ChartsV2/chartV2.tokens'
@@ -40,6 +52,10 @@ export { getSnackbarV2Tokens } from './components/SnackbarV2/snackbarV2.tokens'
 export { getStatCardV2Tokens } from './components/StatCardV2/statcardV2.tokens'
 export { getTabsV2Tokens } from './components/TabsV2/tabsV2.tokens'
 export { getTagV2Tokens } from './components/TagV2/tagV2.tokens'
+export type {
+    TagV2TokensType,
+    ResponsiveTagV2Tokens,
+} from './components/TagV2/tagV2.tokens'
 export { getTextInputV2Tokens } from './components/InputsV2/TextInputV2/TextInputV2.tokens'
 export { getUploadV2Tokens } from './components/InputsV2/UploadV2/UploadV2.tokens'
 
@@ -63,3 +79,18 @@ export {
     PaddingDirection,
 } from './components/ButtonV2/buttonV2.types'
 export type { ButtonBaseProps } from './components/ButtonV2/buttonV2.types'
+
+export {
+    AlertV2Type,
+    AlertV2SubType,
+    AlertV2ActionPosition,
+    AlertV2PaddingDirection,
+} from './components/AlertV2/alertV2.types'
+
+export {
+    TagV2Type,
+    TagV2Size,
+    TagV2SubType,
+    TagV2Color,
+    TagV2PaddingDirection,
+} from './components/TagV2/TagV2.types'
