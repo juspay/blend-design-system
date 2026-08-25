@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { StyleSheet, Text as RNText, View } from 'react-native'
 import { Search, Eye } from 'lucide-react-native'
-import { InputSize, TextInput } from '@juspay/blend-native'
+import { InputSize, TextInput } from 'blend-native'
 
 /**
  * TextInput verification. On device, check:

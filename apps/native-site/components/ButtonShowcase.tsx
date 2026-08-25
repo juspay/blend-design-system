@@ -1,10 +1,5 @@
 import { View, StyleSheet, Text as RNText } from 'react-native'
-import {
-    Button,
-    ButtonType,
-    ButtonSize,
-    ButtonSubType,
-} from '@juspay/blend-native'
+import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-native'
 
 function Section({
     title,

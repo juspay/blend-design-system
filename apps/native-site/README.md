@@ -1,6 +1,6 @@
 # Blend Native Site
 
-Expo demo app for [`@juspay/blend-native`](../../packages/blend-native).
+Expo demo app for [`blend-native`](../../packages/blend-native).
 
 It renders every variant of every shipped native component so they can be
 checked against the web originals: **Alert**, **Tag** and **Button**, each with
@@ -21,7 +21,7 @@ cd apps/native-site
 pnpm start                  # then press i / a / w
 ```
 
-`pnpm build:blend` is not optional. `@juspay/blend-native` imports tokens from
+`pnpm build:blend` is not optional. `blend-native` imports tokens from
 `@juspay/blend-design-system/node`, which resolves to that package's **built**
 `dist/`. If you have just changed `packages/blend/lib/node.ts`, the new exports
 are missing until you rebuild, and the failure looks like an unrelated
@@ -128,7 +128,7 @@ these shipped green on the browser target and was broken on a device:
 
 The unit suites could not catch any of them: they verify a resolved style
 object, not what reached the screen. Render tests (`pnpm --filter
-@juspay/blend-native test:render`) now cover behaviour and accessibility, but
+blend-native test:render`) now cover behaviour and accessibility, but
 **visual correctness still needs eyes on a device.**
 
 ## Folder structure
@@ -166,7 +166,7 @@ exist.
 **`Project is incompatible with this version of Expo Go`**
 See [Android — Expo Go will probably not work](#android--expo-go-will-probably-not-work). Build with `npx expo run:android`.
 
-**Metro can't find `@juspay/blend-native`**
+**Metro can't find `blend-native`**
 Run `pnpm install` from the repo root to link workspace packages, then
 `pnpm start --clear` to drop Metro's cache.
 
@@ -188,6 +188,6 @@ gradients fall back to their first colour. Install it, and check
 `parseBackground` in `cssStringAdapter.ts` is parsing the token.
 
 **TypeScript errors in `blend-native` source**
-Type-check the package on its own: `pnpm --filter @juspay/blend-native typecheck`.
+Type-check the package on its own: `pnpm --filter blend-native typecheck`.
 This app's `tsconfig.json` extends `expo/tsconfig.base`, which has different
 strictness settings.

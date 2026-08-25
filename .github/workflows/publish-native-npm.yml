@@ -1,6 +1,6 @@
 name: Publish Native to NPM
 
-# Publishes @juspay/blend-native on its own version line, independent of
+# Publishes blend-native on its own version line, independent of
 # @juspay/blend-design-system (compatibility is declared through the peer
 # range instead). Beta publishes run from dev or staging; stable from main.
 
@@ -31,7 +31,7 @@ concurrency:
 
 jobs:
     publish-native:
-        name: Publish @juspay/blend-native
+        name: Publish blend-native
         runs-on: ubuntu-latest
         environment: npm
         if: github.event.inputs.confirm_publish == 'PUBLISH'
@@ -89,9 +89,9 @@ jobs:
               id: check_published
               run: |
                   VERSION="${{ steps.version.outputs.version }}"
-                  if npm view "@juspay/blend-native@$VERSION" version 2>/dev/null >/dev/null; then
+                  if npm view "blend-native@$VERSION" version 2>/dev/null >/dev/null; then
                     echo "already_published=true" >> $GITHUB_OUTPUT
-                    echo "⚠️ @juspay/blend-native@$VERSION already exists on NPM — skipping"
+                    echo "⚠️ blend-native@$VERSION already exists on NPM — skipping"
                   else
                     echo "already_published=false" >> $GITHUB_OUTPUT
                     echo "✅ Version $VERSION is not yet published"
@@ -108,9 +108,9 @@ jobs:
             - name: Lint, typecheck and test
               if: steps.check_published.outputs.already_published != 'true'
               run: |
-                  pnpm --filter @juspay/blend-native lint
-                  pnpm --filter @juspay/blend-native typecheck
-                  pnpm --filter @juspay/blend-native test
+                  pnpm --filter blend-native lint
+                  pnpm --filter blend-native typecheck
+                  pnpm --filter blend-native test
               env:
                   CI: true
 
@@ -121,11 +121,11 @@ jobs:
             # ship a package that crashes on first render.
             - name: Verify the peer floor exports what we import
               if: steps.check_published.outputs.already_published != 'true'
-              run: pnpm --filter @juspay/blend-native check:peer
+              run: pnpm --filter blend-native check:peer
 
-            - name: Build @juspay/blend-native
+            - name: Build blend-native
               if: steps.check_published.outputs.already_published != 'true'
-              run: pnpm --filter @juspay/blend-native build
+              run: pnpm --filter blend-native build
 
             - name: Publish to NPM
               if: steps.check_published.outputs.already_published != 'true'
@@ -141,16 +141,16 @@ jobs:
                   VERSION="${{ steps.version.outputs.version }}"
                   TAG="${{ github.event.inputs.dist_tag }}"
                   sleep 10  # NPM propagation
-                  PUBLISHED=$(npm view "@juspay/blend-native@$TAG" version 2>/dev/null || echo "")
+                  PUBLISHED=$(npm view "blend-native@$TAG" version 2>/dev/null || echo "")
                   if [[ "$PUBLISHED" == "$VERSION" ]]; then
-                    echo "✅ @juspay/blend-native@$VERSION is live under dist-tag $TAG"
+                    echo "✅ blend-native@$VERSION is live under dist-tag $TAG"
                   else
                     echo "⚠️ Expected $VERSION but NPM shows '$PUBLISHED' for tag $TAG (may be propagation delay)"
                   fi
-                  echo "## 🎉 @juspay/blend-native published" >> $GITHUB_STEP_SUMMARY
+                  echo "## 🎉 blend-native published" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo "**Version**: \`$VERSION\` · **Tag**: \`$TAG\`" >> $GITHUB_STEP_SUMMARY
                   echo "" >> $GITHUB_STEP_SUMMARY
                   echo '```bash' >> $GITHUB_STEP_SUMMARY
-                  echo "npm install @juspay/blend-native@$TAG" >> $GITHUB_STEP_SUMMARY
+                  echo "npm install blend-native@$TAG" >> $GITHUB_STEP_SUMMARY
                   echo '```' >> $GITHUB_STEP_SUMMARY

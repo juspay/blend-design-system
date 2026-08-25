@@ -7,7 +7,7 @@ import {
     Tag,
     TagColor,
     TagType,
-} from '@juspay/blend-native'
+} from 'blend-native'
 
 /**
  * BottomSheet verification: open/dismiss via drag, backdrop, and the

@@ -9,7 +9,7 @@ import {
     View,
 } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { BlendNativeProvider, Theme } from '@juspay/blend-native'
+import { BlendNativeProvider, Theme } from 'blend-native'
 import ButtonShowcase from './components/ButtonShowcase'
 import TagShowcase from './components/TagShowcase'
 import AlertShowcase from './components/AlertShowcase'

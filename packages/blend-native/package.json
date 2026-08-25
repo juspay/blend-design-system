@@ -1,5 +1,5 @@
 {
-    "name": "@juspay/blend-native",
+    "name": "blend-native",
     "version": "0.0.1-beta.0",
     "description": "React Native components for Blend Design System",
     "type": "module",

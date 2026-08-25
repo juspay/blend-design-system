@@ -1,4 +1,4 @@
-# @juspay/blend-native
+# blend-native
 
 React Native components for the [Blend Design System](https://github.com/juspay/blend-design-system).
 
@@ -69,7 +69,7 @@ RN Pressable (+ LinearGradient when the background is a gradient)
 Theme and per-slot token overrides come from context, mirroring web's `ThemeProvider`:
 
 ```tsx
-import { BlendNativeProvider, Theme } from '@juspay/blend-native'
+import { BlendNativeProvider, Theme } from 'blend-native'
 ;<BlendNativeProvider
     theme={Theme.DARK}
     componentTokens={{
@@ -181,7 +181,7 @@ Files are named plainly. `.native.tsx` / `.ios.tsx` / `.web.tsx` are Metro **res
 ## Installation
 
 ```bash
-pnpm add @juspay/blend-native @juspay/blend-design-system react react-native
+pnpm add blend-native @juspay/blend-design-system react react-native
 # only if you use gradient variants (Button primary):
 pnpm add expo-linear-gradient
 ```
@@ -205,7 +205,7 @@ import {
     Tag,
     TagType,
     TagColor,
-} from '@juspay/blend-native'
+} from 'blend-native'
 
 function Example() {
     return (
@@ -276,9 +276,9 @@ Plus any `PressableProps` (`onLongPress`, `onPressIn`, `hitSlop`, `accessibility
 ## Development
 
 ```bash
-pnpm --filter @juspay/blend-native typecheck
-pnpm --filter @juspay/blend-native lint
-pnpm --filter @juspay/blend-native test
+pnpm --filter blend-native typecheck
+pnpm --filter blend-native lint
+pnpm --filter blend-native test
 ```
 
 `@juspay/blend-design-system/node` resolves to the workspace package, which serves built `dist/`. Run `pnpm build:blend` after changing `packages/blend/lib/node.ts`, or the new exports will be missing at runtime.
@@ -308,12 +308,12 @@ receive. Before a release, smoke-test the publish artifact itself:
 
 ```bash
 # 1. Build and pack — the tarball is byte-for-byte what npm publish uploads
-pnpm --filter @juspay/blend-native build
-pnpm --filter @juspay/blend-native pack --pack-destination /tmp
+pnpm --filter blend-native build
+pnpm --filter blend-native pack --pack-destination /tmp
 
 # 2. Point native-site at the tarball instead of the workspace:
-#    - apps/native-site/package.json: "@juspay/blend-native": "file:/tmp/juspay-blend-native-<version>.tgz"
-#    - apps/native-site/tsconfig.json: REMOVE the "@juspay/blend-native" paths entry
+#    - apps/native-site/package.json: "blend-native": "file:/tmp/juspay-blend-native-<version>.tgz"
+#    - apps/native-site/tsconfig.json: REMOVE the "blend-native" paths entry
 pnpm install --filter native-site
 
 # 3. Consumer checks
@@ -330,7 +330,7 @@ module graph (Reanimated worklets, gesture handler, portals) compiles.
 
 ## Publishing
 
-`@juspay/blend-native` versions **independently** of
+`blend-native` versions **independently** of
 `@juspay/blend-design-system`; compatibility is declared through the peer
 range. Publishing runs through the **Publish Native to NPM** workflow
 (`.github/workflows/publish-native-npm.yml`), which gates on branch,
@@ -348,7 +348,7 @@ version containing it is on npm, publishing native ships a package that
 crashes on first render with an unrelated `undefined`.
 
 ```bash
-pnpm --filter @juspay/blend-native check:peer
+pnpm --filter blend-native check:peer
 ```
 
 resolves the floor version out of the declared peer range, fetches that
@@ -370,7 +370,7 @@ fails, the fix is always the same order:
    `dev`** (or `staging`), `dist_tag: beta`, type `PUBLISH` to confirm.
 3. The workflow refuses a non-beta version, an already-published version,
    or a red check; on success it verifies the tag on the registry.
-4. Consumers install with `npm install @juspay/blend-native@beta`.
+4. Consumers install with `npm install blend-native@beta`.
 
 ### Stable
 
@@ -378,7 +378,7 @@ fails, the fix is always the same order:
    `main` through the usual `dev → staging → main` train.
 2. Run the same workflow **from `main`**, `dist_tag: latest`, confirm
    `PUBLISH`. The workflow refuses `latest` from any other branch.
-3. Consumers on `npm install @juspay/blend-native` now get this version.
+3. Consumers on `npm install blend-native` now get this version.
 
 Iterating a beta: bump to `-beta.N+1`, merge, run the workflow again — the
 already-published gate makes re-running for a published version a no-op.

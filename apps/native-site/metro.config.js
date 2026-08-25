@@ -5,7 +5,7 @@ const path = require('path')
 const config = getDefaultConfig(__dirname)
 
 // pnpm uses symlinks for workspace dependencies. Metro needs to follow those
-// symlinks into the workspace packages so `@juspay/blend-native` and
+// symlinks into the workspace packages so `blend-native` and
 // `@juspay/blend-design-system` source is transpiled directly.
 config.watchFolders = [
     path.resolve(__dirname, '../../packages/blend-native'),
