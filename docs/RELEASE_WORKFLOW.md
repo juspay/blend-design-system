@@ -7,9 +7,9 @@ This document explains the improved release workflow for the Blend Design System
 ### Workflow Structure
 
 1. **Create Beta Release** (`create-beta-release.yml`) - Creates beta releases from `staging` branch with incremental versioning
-2. **Publish Beta to NPM** (`publish-beta-npm.yml`) - Publishes beta versions to NPM
+2. **Publish to NPM** (`publish-npm.yml`) - Run from `staging` to publish the beta with the `beta` dist-tag
 3. **Promote Beta to Stable** (`promote-to-stable.yml`) - Promotes tested beta to stable release
-4. **Publish Stable to NPM** (`publish-stable-npm.yml`) - Publishes stable versions to NPM
+4. **Publish to NPM** (`publish-npm.yml`) - Run from `main` to publish the stable with the `latest` dist-tag
 
 ### Key Features
 
@@ -17,9 +17,35 @@ This document explains the improved release workflow for the Blend Design System
 - ✅ **Enhanced Changelog Generation** - Categorized, descriptive changelogs with conventional commits
 - ✅ **Proper Branch Strategy** - Clear separation between dev, staging, and main branches
 - ✅ **Version Management** - Automatic beta/stable version handling
-- ✅ **NPM Publishing** - Separate workflows for beta and stable publishing
+- ✅ **NPM Publishing** - A single `Publish to NPM` workflow; the branch you run it from selects `beta` or `latest`
+- ✅ **Tokenless Publishing** - Authenticated with npm Trusted Publishing (OIDC), so there is no NPM token to rotate
 - ✅ **Validation & Safety** - Multiple checks to prevent publishing errors
 - ✅ **Detailed Release Notes** - Rich GitHub releases with installation instructions
+
+### Publishing Authentication (Trusted Publishing / OIDC)
+
+`publish-npm.yml` publishes with [npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers/). There is **no `NPM_TOKEN`** — GitHub mints a short-lived OIDC token at publish time and npm exchanges it for publish rights. Nothing expires, so there is nothing to rotate.
+
+This is a **one-time setup** on npmjs.com, under `@juspay/blend-design-system` → Settings → Trusted Publisher:
+
+| Field             | Value                 |
+| ----------------- | --------------------- |
+| Provider          | GitHub Actions        |
+| Organization      | `juspay`              |
+| Repository        | `blend-design-system` |
+| Workflow filename | `publish-npm.yml`     |
+| Environment       | `npm`                 |
+| Allowed actions   | `npm publish`         |
+
+Constraints that follow from this, and that are easy to break by accident:
+
+- **npm allows only one trusted publisher per package.** This is why beta and stable share one workflow file instead of having one each — a second publishing workflow for this package cannot authenticate.
+- **The workflow filename is part of the credential.** Renaming or moving `publish-npm.yml` breaks publishing until the registration is updated.
+- **The job must keep `permissions: id-token: write`** and must keep `environment: npm` to match the registration.
+- **Trusted publishing requires npm >= 11.5.1 and Node >= 22.14.0**, which is why the workflow pins Node 24 and installs the latest npm CLI before publishing.
+- **Self-hosted runners are not supported** — the job must stay on `ubuntu-latest`.
+- `npm whoami` does **not** reflect OIDC auth; authentication only happens during `npm publish` itself. Do not add token-verification steps back.
+- Publishes from a public repo are automatically signed with **provenance**, visible on the npm package page.
 
 ## 🔢 Beta Versioning System
 
@@ -98,7 +124,7 @@ The beta sub-version system (`beta.0`, `beta.1`, `beta.2`, etc.) allows you to:
 1. **Trigger**: From `staging` branch (after beta testing is complete)
 2. **Workflow**: `Promote Beta to Stable`
 3. **Action**: Converts `X.Y.Z-beta.N` to `X.Y.Z`, creates GitHub release
-4. **Next**: Merge PR to `main`, then trigger `Publish Stable to NPM`
+4. **Next**: Merge PR to `main`, then trigger `Publish to NPM`
 
 ## 📁 Branch Strategy
 
@@ -173,7 +199,7 @@ dev (development)
     - ⚠️ **Important**: This step is required before publishing to NPM
 
 5. **Publish to NPM**
-    - Go to Actions → "Publish Beta to NPM"
+    - Go to Actions → "Publish to NPM"
     - From `staging` branch, type "PUBLISH" to confirm
     - Click "Run workflow"
 
@@ -210,7 +236,7 @@ dev (development)
     - **Merge the PR to `staging` branch**
 
 6. **Publish and test again**
-    - Run "Publish Beta to NPM" workflow from `staging`
+    - Run "Publish to NPM" workflow from `staging`
     - Test the new beta version
     - Repeat steps 1-6 until no issues are found
 
@@ -239,7 +265,7 @@ dev (development)
     - **Merge the PR to `main` branch**
 
 4. **Publish to NPM**
-    - Go to Actions → "Publish Stable to NPM"
+    - Go to Actions → "Publish to NPM"
     - From `main` branch, type "PUBLISH" to confirm
     - Click "Run workflow"
     - This publishes with `latest` tag on NPM
@@ -359,10 +385,10 @@ chore(deps): update dependencies
 - **Cause**: Running beta workflow on stable version
 - **Solution**: Run `Create Beta Release` with `increment_beta=false` to create new beta
 
-#### "NPM authentication failed"
+#### "NPM authentication failed" / `ENEEDAUTH` / unexpected `404`
 
-- **Cause**: Invalid or missing NPM token
-- **Solution**: Check NPM_TOKEN secret in repository settings
+- **Cause**: The npm Trusted Publisher registration does not match the run. There is no NPM token involved.
+- **Solution**: On <https://www.npmjs.com/package//blend-design-system/access>, confirm the trusted publisher is `juspay` / `blend-design-system` / `publish-npm.yml` / environment `npm`. Renaming the workflow file breaks OIDC.
 
 ### Debug Steps
 
@@ -399,7 +425,7 @@ chore(deps): update dependencies
 # GitHub Actions: Create Beta Release (increment_beta=true)
 
 # Publish beta to NPM
-# GitHub Actions: Publish Beta to NPM
+# GitHub Actions: Publish to NPM
 
 # Install latest beta
 npm install @juspay/blend-design-system@beta
@@ -415,7 +441,7 @@ npm install @juspay/blend-design-system@1.0.0-beta.2
 # GitHub Actions: Promote Beta to Stable
 
 # Publish stable to NPM
-# GitHub Actions: Publish Stable to NPM
+# GitHub Actions: Publish to NPM
 
 # Install latest stable
 npm install @juspay/blend-design-system@latest
