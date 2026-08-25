@@ -141,23 +141,25 @@ const Tag = forwardRef<RNView, TagNativeProps>(function Tag(
             backgroundColor,
             border,
             borderRadius,
-            // `height` is the authority for the tag's box, exactly as on web.
+            // The height token is applied as `minHeight`, not `height`.
             //
-            // Vertical padding is deliberately NOT applied. The tokens define
-            // both a fixed height and vertical padding, and for every size the
-            // padding leaves a content box shorter than the text's own line
-            // height (sm: 14px box vs 18px line; md/lg: 14px vs 20px). On web
-            // that is harmless — the line box simply overflows the padding
-            // box, `overflow: visible` means nothing is cut, and
-            // `align-items: center` keeps it centred. React Native has no such
-            // affordance: the shorter content box clips the glyphs, which is
-            // why descenders ("p" in primary, "g" in warning) were sheared off
-            // on iOS while react-native-web rendered them correctly.
+            // At the default font scale the result is identical to web: the
+            // line height is shorter than the token height, so the box renders
+            // at exactly `minHeight` with the line centred. But RN respects OS
+            // font scaling (Dynamic Type), and a fixed `height` clips scaled
+            // text — the package policy is to let controls grow instead
+            // (see `primitives/Text.tsx`).
             //
-            // With a fixed height and a single centred line, vertical padding
-            // is visually inert on web anyway — so dropping it here reproduces
-            // web's result exactly rather than diverging from it.
-            height: tokens.height[size],
+            // Vertical padding is still deliberately NOT applied. The tokens
+            // define both a height and vertical padding, and the padding
+            // leaves a content box shorter than the text's own line height
+            // (sm: 14px box vs 18px line). On web that is harmless — the line
+            // box overflows the padding box and `overflow: visible` shows it.
+            // RN clips instead: descenders ("p" in primary, "g" in warning)
+            // were sheared off on iOS while react-native-web rendered fine.
+            // With a centred single line the padding is visually inert on web
+            // anyway, so dropping it reproduces web's result exactly.
+            minHeight: tokens.height[size],
             paddingLeft: tokens.padding.left[size],
             paddingRight: tokens.padding.right[size],
             gap: tokens.gap,

@@ -51,7 +51,10 @@ function resolveTagSurface(
             tagGroupPosition,
             tokens
         ),
-        height: tokens.height[size],
+        // The height token becomes `minHeight` so OS font scaling grows the
+        // control instead of clipping it; at scale 1 the box still renders at
+        // exactly this value.
+        minHeight: tokens.height[size],
         // Vertical padding is intentionally omitted, matching the component —
         // see the `text is never vertically clipped` suite below.
         paddingLeft: tokens.padding.left[size],
@@ -108,7 +111,7 @@ describe('Tag variant matrix', () => {
                 expect(typeof style.backgroundColor).toBe('string')
                 expect(style.borderWidth).toBeGreaterThan(0)
                 expect(typeof style.borderColor).toBe('string')
-                expect(style.height).toBeGreaterThan(0)
+                expect(style.minHeight).toBeGreaterThan(0)
             }
         )
     })
@@ -140,8 +143,9 @@ describe('text is never vertically clipped', () => {
     // descenders off "primary", "warning", "purple" and "lg" on iOS while
     // react-native-web rendered them correctly.
     //
-    // The component therefore treats `height` as authoritative and drops the
-    // (visually inert) vertical padding. These tests pin both halves.
+    // The component therefore sizes with the height token (as `minHeight`,
+    // so OS font scaling can grow the box) and drops the (visually inert)
+    // vertical padding. These tests pin both halves.
 
     const BORDER = 2 // 1px top + 1px bottom
 
