@@ -206,3 +206,48 @@ describe('parseBackground', () => {
         }
     )
 })
+
+describe('ReDoS resistance', () => {
+    // CodeQL flagged both parsers as js/polynomial-redos. The original
+    // patterns (`\d*\.?\d+` and `\d+\.?\d*`) were genuinely ambiguous: with no
+    // `.` present, a digit run can be divided between the two quantifiers in
+    // as many ways as there are digits, so a long non-matching input costs
+    // O(n^2). Both now share one pattern where the `.` inside the optional
+    // group is mandatory, giving each digit run exactly one valid division.
+    //
+    // These assert the *shape* of the fix by timing, which is the only way to
+    // observe backtracking from the outside.
+    const HOSTILE_LENGTH = 100_000
+
+    it.each([
+        ['parseDimension', parseDimension],
+        ['parseSize', parseSize],
+    ])('%s stays linear on a long digit run with no match', (_name, fn) => {
+        // Trailing junk forces the engine to exhaust every division.
+        const hostile = '9'.repeat(HOSTILE_LENGTH) + '!'
+        const start = Date.now()
+        expect(fn(hostile)).toBeUndefined()
+        expect(Date.now() - start).toBeLessThan(1000)
+    })
+
+    it.each([
+        ['parseDimension', parseDimension, 'px!'],
+        ['parseSize', parseSize, '%!'],
+    ])('%s stays linear with a near-miss unit', (_name, fn, suffix) => {
+        const hostile = '9'.repeat(HOSTILE_LENGTH) + suffix
+        const start = Date.now()
+        expect(fn(hostile)).toBeUndefined()
+        expect(Date.now() - start).toBeLessThan(1000)
+    })
+
+    it('still parses the values it is supposed to', () => {
+        // A linear rewrite is worthless if it changed behaviour.
+        expect(parseDimension('6px')).toBe(6)
+        expect(parseDimension('1.5px')).toBe(1.5)
+        expect(parseDimension('-4px')).toBe(-4)
+        expect(parseDimension('.5px')).toBe(0.5)
+        expect(parseSize('50%')).toBe('50%')
+        expect(parseSize('33.5%')).toBe('33.5%')
+        expect(parseSize('-5%')).toBe('-5%')
+    })
+})

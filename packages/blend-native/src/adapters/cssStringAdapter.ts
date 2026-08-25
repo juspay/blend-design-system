@@ -15,6 +15,25 @@ import type { ViewStyle } from 'react-native'
  */
 
 /**
+ * A decimal number, in a form the regex engine cannot backtrack over.
+ *
+ * The obvious spellings — `\d*\.?\d+` and `\d+\.?\d*` — are **ambiguous**:
+ * with no `.` present, a run of digits can be divided between the two
+ * quantifiers in as many ways as there are digits, so a long non-matching
+ * input costs O(n^2). CodeQL flags both as `js/polynomial-redos`, correctly.
+ *
+ * Here the `.` inside the optional group is mandatory, so each digit run has
+ * exactly one valid division and matching stays linear.
+ */
+const NUMBER = String.raw`-?(?:\d+(?:\.\d+)?|\.\d+)`
+
+/** `"6px"`, `"1.5px"`, `"0"` — a length, with the unit optional. */
+const DIMENSION_RE = new RegExp(`^(${NUMBER})(?:px)?$`)
+
+/** `"50%"`, `"33.5%"`, `"-5%"` — a percentage. */
+const PERCENT_RE = new RegExp(`^(${NUMBER})%$`)
+
+/**
  * Result of parsing a background token.
  *
  * - `flat` — solid color, apply via `backgroundColor`.
@@ -46,7 +65,7 @@ export function parseDimension(
     if (value === undefined || value === null) return undefined
     if (typeof value === 'number')
         return Number.isFinite(value) ? value : undefined
-    const match = value.trim().match(/^(-?\d*\.?\d+)\s*(px)?$/)
+    const match = value.trim().match(DIMENSION_RE)
     if (!match) return undefined
     const n = parseFloat(match[1])
     return Number.isNaN(n) ? undefined : n
@@ -96,9 +115,9 @@ export function parseSize(
     // (shrink-to-fit within the parent's constraints).
     if (trimmed === 'auto' || trimmed === 'fit-content') return 'auto'
 
-    // Percentages. Single non-backtracking alternation — no nested quantifier
-    // ambiguity, so this cannot degrade on adversarial input.
-    const pct = trimmed.match(/^(-?(?:\d+\.?\d*|\.\d+))%$/)
+    // Percentages. See `NUMBER` — linear, so a long adversarial input cannot
+    // degrade this.
+    const pct = trimmed.match(PERCENT_RE)
     if (pct) {
         const n = parseFloat(pct[1])
         return Number.isNaN(n) ? undefined : (`${n}%` as `${number}%`)
