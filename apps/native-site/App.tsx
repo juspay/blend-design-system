@@ -15,9 +15,10 @@ import TagShowcase from './components/TagShowcase'
 import AlertShowcase from './components/AlertShowcase'
 import SheetShowcase from './components/SheetShowcase'
 import InputShowcase from './components/InputShowcase'
+import LoadingShowcase from './components/LoadingShowcase'
 import PlatformPreview from './components/PlatformPreview'
 
-type Tab = 'alert' | 'tag' | 'button' | 'sheet' | 'input'
+type Tab = 'alert' | 'tag' | 'button' | 'sheet' | 'input' | 'loading'
 
 export default function App() {
     const [theme, setTheme] = useState<Theme>(Theme.LIGHT)
@@ -105,6 +106,7 @@ export default function App() {
                             {tab === 'button' ? <ButtonShowcase /> : null}
                             {tab === 'sheet' ? <SheetShowcase /> : null}
                             {tab === 'input' ? <InputShowcase /> : null}
+                            {tab === 'loading' ? <LoadingShowcase /> : null}
                         </ScrollView>
                     </SafeAreaView>
                 </BlendNativeProvider>
