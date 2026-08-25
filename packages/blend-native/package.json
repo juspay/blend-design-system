@@ -17,7 +17,9 @@
     },
     "scripts": {
         "lint": "eslint .",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest"
     },
     "peerDependencies": {
         "@juspay/blend-design-system": ">=0.0.37",
@@ -25,8 +27,14 @@
         "react": ">=18.2.0",
         "react-native": ">=0.74.0"
     },
+    "peerDependenciesMeta": {
+        "expo-linear-gradient": {
+            "optional": true
+        }
+    },
     "devDependencies": {
         "@eslint/js": "^9.25.0",
+        "@juspay/blend-design-system": "workspace:*",
         "@types/react": "^19.1.17",
         "eslint": "^9.25.0",
         "eslint-import-resolver-typescript": "^3.7.0",
@@ -36,7 +44,8 @@
         "react": "19.2.3",
         "react-native": "0.85.3",
         "typescript": "~5.8.3",
-        "typescript-eslint": "^8.30.1"
+        "typescript-eslint": "^8.30.1",
+        "vitest": "^3.2.4"
     },
     "keywords": [
         "react-native",
