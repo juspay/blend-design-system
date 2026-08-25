@@ -300,6 +300,89 @@ value of `flexShrink`.
 simulators and physical devices for both platforms, capturing screenshots,
 capturing pressed states, and the Expo Go SDK ceiling on Android.
 
+## Verifying as a consumer
+
+`apps/native-site` consumes this package through the workspace link (raw
+`src/`), which is right for development but is **not** what npm consumers
+receive. Before a release, smoke-test the publish artifact itself:
+
+```bash
+# 1. Build and pack — the tarball is byte-for-byte what npm publish uploads
+pnpm --filter @juspay/blend-native build
+pnpm --filter @juspay/blend-native pack --pack-destination /tmp
+
+# 2. Point native-site at the tarball instead of the workspace:
+#    - apps/native-site/package.json: "@juspay/blend-native": "file:/tmp/juspay-blend-native-<version>.tgz"
+#    - apps/native-site/tsconfig.json: REMOVE the "@juspay/blend-native" paths entry
+pnpm install --filter native-site
+
+# 3. Consumer checks
+pnpm --filter native-site typecheck        # published d.ts via the exports map
+cd apps/native-site && npx expo export --platform android   # full Metro bundle
+npx expo start                             # then verify on a simulator/device
+
+# 4. Revert package.json + tsconfig.json to the workspace state and reinstall
+```
+
+The typecheck proves the `types` conditions resolve; the export proves Metro
+resolves the `react-native` condition into the shipped `src/` and the whole
+module graph (Reanimated worklets, gesture handler, portals) compiles.
+
+## Publishing
+
+`@juspay/blend-native` versions **independently** of
+`@juspay/blend-design-system`; compatibility is declared through the peer
+range. Publishing runs through the **Publish Native to NPM** workflow
+(`.github/workflows/publish-native-npm.yml`), which gates on branch,
+version format, a green lint/typecheck/test/build, and the peer-export
+check below, before `npm publish`.
+
+### Publish the web package first — always
+
+This package imports its whole token system from
+`@juspay/blend-design-system/node`. The workspace build always has the
+newest exports, so **local checks and CI cannot tell you whether the
+version consumers will install has them**. A new native component almost
+always adds an export to `packages/blend/lib/node.ts`, and until a web
+version containing it is on npm, publishing native ships a package that
+crashes on first render with an unrelated `undefined`.
+
+```bash
+pnpm --filter @juspay/blend-native check:peer
+```
+
+resolves the floor version out of the declared peer range, fetches that
+exact version from the registry, and asserts every value import exists in
+it. Run it before any release; the publish workflow runs it too. When it
+fails, the fix is always the same order:
+
+1. Publish a `@juspay/blend-design-system` version whose `lib/node.ts`
+   carries the new exports (its own beta workflow runs from `staging`).
+2. Raise `peerDependencies["@juspay/blend-design-system"]` here to that
+   version.
+3. Re-run `check:peer` — then publish native.
+
+### Beta
+
+1. Bump `version` in `packages/blend-native/package.json` to `X.Y.Z-beta.N`
+   (e.g. `0.0.1-beta.1`) in a PR and merge it to `dev`.
+2. GitHub → Actions → **Publish Native to NPM** → Run workflow **from
+   `dev`** (or `staging`), `dist_tag: beta`, type `PUBLISH` to confirm.
+3. The workflow refuses a non-beta version, an already-published version,
+   or a red check; on success it verifies the tag on the registry.
+4. Consumers install with `npm install @juspay/blend-native@beta`.
+
+### Stable
+
+1. Bump `version` to plain `X.Y.Z` (drop the `-beta.N`) in a PR; land it on
+   `main` through the usual `dev → staging → main` train.
+2. Run the same workflow **from `main`**, `dist_tag: latest`, confirm
+   `PUBLISH`. The workflow refuses `latest` from any other branch.
+3. Consumers on `npm install @juspay/blend-native` now get this version.
+
+Iterating a beta: bump to `-beta.N+1`, merge, run the workflow again — the
+already-published gate makes re-running for a published version a no-op.
+
 ## Adding a new component
 
 1. Ensure the token factory, its types, and its enums are exported from `@juspay/blend-design-system/node` (edit `packages/blend/lib/node.ts`), then `pnpm build:blend`.

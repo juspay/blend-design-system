@@ -108,6 +108,15 @@ jobs:
               env:
                   CI: true
 
+            # The workspace build always has the newest /node exports, so CI
+            # stays green while the PUBLISHED version a consumer installs may
+            # predate them. This asserts the declared peer floor really
+            # exports everything blend-native imports — without it we can
+            # ship a package that crashes on first render.
+            - name: Verify the peer floor exports what we import
+              if: steps.check_published.outputs.already_published != 'true'
+              run: pnpm --filter @juspay/blend-native check:peer
+
             - name: Build @juspay/blend-native
               if: steps.check_published.outputs.already_published != 'true'
               run: pnpm --filter @juspay/blend-native build

@@ -96,7 +96,8 @@ describe('public API surface', () => {
         // A guard against drift, not a hard architectural limit — if this
         // trips, decide deliberately whether the additions are public API.
         // Raised from 30 when the overlay foundation (Portal, BottomSheet,
-        // useReduceMotion) became public.
-        expect(exported.size).toBeLessThanOrEqual(36)
+        // useReduceMotion) became public, then to 40 for the field layer
+        // (TextInput, PrimitiveInput, input enums) and the toast pair.
+        expect(exported.size).toBeLessThanOrEqual(40)
     })
 })
