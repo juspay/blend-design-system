@@ -12,6 +12,7 @@ import { BlendNativeProvider, Theme } from '@juspay/blend-native'
 import ButtonShowcase from './components/ButtonShowcase'
 import TagShowcase from './components/TagShowcase'
 import AlertShowcase from './components/AlertShowcase'
+import PlatformPreview from './components/PlatformPreview'
 
 type Tab = 'alert' | 'tag' | 'button'
 
@@ -25,63 +26,68 @@ export default function App() {
         : { bg: '#FFFFFF', fg: '#1A1C23', muted: '#F0F2F5' }
 
     return (
-        // A single provider themes every Blend component beneath it. Before
-        // this existed each component took its own `theme` prop, so an
-        // app-wide toggle like the one below was not expressible.
-        <BlendNativeProvider theme={theme}>
-            <SafeAreaView
-                style={[styles.container, { backgroundColor: palette.bg }]}
-            >
-                <StatusBar
-                    barStyle={isDark ? 'light-content' : 'dark-content'}
-                />
-                <ScrollView contentContainerStyle={styles.scroll}>
-                    <RNText style={[styles.header, { color: palette.fg }]}>
-                        Blend Native
-                    </RNText>
+        <PlatformPreview>
+            {/* A single provider themes every Blend component beneath it. Before
+                this existed each component took its own `theme` prop, so an
+                app-wide toggle like the one below was not expressible. */}
+            <BlendNativeProvider theme={theme}>
+                <SafeAreaView
+                    style={[styles.container, { backgroundColor: palette.bg }]}
+                >
+                    <StatusBar
+                        barStyle={isDark ? 'light-content' : 'dark-content'}
+                    />
+                    <ScrollView contentContainerStyle={styles.scroll}>
+                        <RNText style={[styles.header, { color: palette.fg }]}>
+                            Blend Native
+                        </RNText>
 
-                    <View style={styles.controls}>
-                        {(['alert', 'tag', 'button'] as Tab[]).map((value) => (
+                        <View style={styles.controls}>
+                            {(['alert', 'tag', 'button'] as Tab[]).map(
+                                (value) => (
+                                    <Pressable
+                                        key={value}
+                                        onPress={() => setTab(value)}
+                                        style={[
+                                            styles.control,
+                                            {
+                                                backgroundColor:
+                                                    tab === value
+                                                        ? palette.muted
+                                                        : 'transparent',
+                                            },
+                                        ]}
+                                    >
+                                        <RNText style={{ color: palette.fg }}>
+                                            {value[0].toUpperCase() +
+                                                value.slice(1)}
+                                        </RNText>
+                                    </Pressable>
+                                )
+                            )}
+
                             <Pressable
-                                key={value}
-                                onPress={() => setTab(value)}
+                                onPress={() =>
+                                    setTheme(isDark ? Theme.LIGHT : Theme.DARK)
+                                }
                                 style={[
                                     styles.control,
-                                    {
-                                        backgroundColor:
-                                            tab === value
-                                                ? palette.muted
-                                                : 'transparent',
-                                    },
+                                    { backgroundColor: palette.muted },
                                 ]}
                             >
                                 <RNText style={{ color: palette.fg }}>
-                                    {value[0].toUpperCase() + value.slice(1)}
+                                    {isDark ? '☾ Dark' : '☀ Light'}
                                 </RNText>
                             </Pressable>
-                        ))}
+                        </View>
 
-                        <Pressable
-                            onPress={() =>
-                                setTheme(isDark ? Theme.LIGHT : Theme.DARK)
-                            }
-                            style={[
-                                styles.control,
-                                { backgroundColor: palette.muted },
-                            ]}
-                        >
-                            <RNText style={{ color: palette.fg }}>
-                                {isDark ? '☾ Dark' : '☀ Light'}
-                            </RNText>
-                        </Pressable>
-                    </View>
-
-                    {tab === 'alert' ? <AlertShowcase /> : null}
-                    {tab === 'tag' ? <TagShowcase /> : null}
-                    {tab === 'button' ? <ButtonShowcase /> : null}
-                </ScrollView>
-            </SafeAreaView>
-        </BlendNativeProvider>
+                        {tab === 'alert' ? <AlertShowcase /> : null}
+                        {tab === 'tag' ? <TagShowcase /> : null}
+                        {tab === 'button' ? <ButtonShowcase /> : null}
+                    </ScrollView>
+                </SafeAreaView>
+            </BlendNativeProvider>
+        </PlatformPreview>
     )
 }
 

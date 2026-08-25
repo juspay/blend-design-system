@@ -45,7 +45,18 @@ Prettier config is unusual and non-negotiable: **4-space indent, no semicolons, 
 | `blend-telemetry`   | `blend-telemetry`             | Scans consumer repos for Blend component usage.                                                            |
 | `typescript-config` | `@repo/typescript-config`     | Shared tsconfig bases.                                                                                     |
 
-**`apps/`** — `ascent` (Next.js 15 docs site, MDX + `next-mdx-remote/rsc`), `storybook` (Storybook 8 + Chromatic), `blend-studio` (Vite token editor UI + its own Express API), `backend` (Express + Prisma API for Token Studio), `site` and `tokenizer-sandbox` (small consumer demos). All private.
+**`apps/`** — `ascent` (Next.js 15 docs site, MDX + `next-mdx-remote/rsc`), `storybook` (Storybook 8 + Chromatic), `blend-studio` (Vite token editor UI + its own Express API), `backend` (Express + Prisma API for Token Studio), `native-site` (Expo demo + verification vehicle for `blend-native`), `site` and `tokenizer-sandbox` (small consumer demos). All private.
+
+### React Native (`packages/blend-native`)
+
+A sibling package, not part of `blend`. It consumes tokens through the React-free `@juspay/blend-design-system/node` entry and translates CSS-string token values into RN styles — no `styled-components`, no DOM. Theme and per-slot overrides come from `BlendNativeProvider`; registering a component means one entry in `src/theme/nativeTokenRegistry.ts`.
+
+Two things that will bite otherwise:
+
+- **`pnpm build:blend` after touching `lib/node.ts`.** `./node` resolves to built `dist/`, so new exports are missing until you rebuild, and the failure surfaces as an unrelated runtime `undefined`.
+- **Verify on a simulator or device, not `react-native-web`.** RN and CSS disagree on clipping, `lineHeight`, overflow, and the default value of `flexShrink`; several bugs passed the browser target and the test suite while being broken on device.
+
+`apps/native-site/README.md` is the runbook — simulators, physical devices for both platforms, screenshots, capturing pressed states, and the Expo Go SDK ceiling on Android.
 
 ## The library: `packages/blend/lib`
 
