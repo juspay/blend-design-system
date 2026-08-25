@@ -68,10 +68,12 @@ function resolveResponsive(
 }
 
 export function useNativeTokens<T>(slot: NativeTokenSlot): T {
-    const { theme, componentTokens, foundationTokens } = useContext(
-        BlendNativeThemeContext
-    )
-    const breakpoint = useNativeBreakpoint()
+    const { theme, componentTokens, foundationTokens, breakpoints } =
+        useContext(BlendNativeThemeContext)
+    // The provider's `breakpoints` must reach the resolver — calling
+    // `useNativeBreakpoint()` bare silently ignores a consumer's override
+    // and resolves against the defaults.
+    const breakpoint = useNativeBreakpoint(breakpoints)
 
     if (!isNativeTokenSlot(slot)) {
         throw new Error(

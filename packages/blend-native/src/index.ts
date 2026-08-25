@@ -43,6 +43,15 @@ export type {
     BlendNativeThemeValue,
 } from './theme/BlendNativeProvider'
 
+/** Pass `theme={SYSTEM_THEME}` (or `theme="system"`) to follow the OS. */
+export { SYSTEM_THEME } from './theme/systemTheme'
+export type { NativeThemeSetting } from './theme/systemTheme'
+export type {
+    NativeFontRole,
+    NativeFontFamilies,
+    NativeFontFamilyOption,
+} from './theme/fonts'
+
 export { useNativeTokens } from './theme/useNativeTokens'
 export { useNativeBreakpoint } from './theme/useNativeBreakpoint'
 export type { NativeBreakpoint } from './theme/useNativeBreakpoint'
