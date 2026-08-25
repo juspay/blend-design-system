@@ -4,6 +4,7 @@ import {
     getAlertV2Tokens,
     getButtonV2Tokens,
     getTagV2Tokens,
+    getTextInputV2Tokens,
     type BreakpointType,
 } from '@juspay/blend-design-system/node'
 
@@ -25,6 +26,7 @@ export const NATIVE_TOKEN_REGISTRY = {
     ALERTV2: getAlertV2Tokens,
     BUTTONV2: getButtonV2Tokens,
     TAGV2: getTagV2Tokens,
+    TEXT_INPUTV2: getTextInputV2Tokens,
 } as const
 
 /** Every component slot native can resolve. Derived, never hand-written. */
