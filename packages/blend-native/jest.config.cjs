@@ -24,8 +24,14 @@ module.exports = {
     // name is not the first segment after `node_modules/`. The leading
     // `(.*[\\/])?` lets the allowlist match at any depth.
     transformIgnorePatterns: [
-        'node_modules/(?!(.*[\\\\/])?((jest-)?react-native|@react-native([-/][a-z-]+)?|react-native-svg|lucide-react-native)[\\\\/])',
+        'node_modules/(?!(.*[\\\\/])?((jest-)?react-native|@react-native([-/][a-z-]+)?|react-native-svg|react-native-reanimated|react-native-worklets|react-native-gesture-handler|react-native-safe-area-context|lucide-react-native)[\\\\/])',
     ],
+    // Gesture Handler's own jest mock makes GestureDetector render its child
+    // and gestures inert but constructible.
+    setupFiles: ['react-native-gesture-handler/jestSetup.js'],
+    // Worklets' resolver strips `.native` for its own modules so Reanimated's
+    // mock loads the JS fallbacks instead of demanding native init.
+    resolver: 'react-native-worklets/jest/resolver.js',
     moduleNameMapper: {
         // Jest replaces the preset's `moduleNameMapper` wholesale rather than
         // merging, so the preset's own react-native mapping has to be restored
@@ -41,6 +47,10 @@ module.exports = {
         // Optional peer — see the mock's own note.
         '^expo-linear-gradient$':
             '<rootDir>/__tests__/mocks/expo-linear-gradient.tsx',
+        // Reanimated's shipped mock resolves every animation synchronously
+        // (values jump to their target, callbacks fire immediately), so
+        // enter/exit flows assert without timer choreography.
+        '^react-native-reanimated$': 'react-native-reanimated/mock',
         // lucide's `react-native` export condition points at an `.mjs` bundle,
         // which babel-jest does not transform by default. Its CJS build is
         // identical in behaviour, so point Jest straight at it rather than

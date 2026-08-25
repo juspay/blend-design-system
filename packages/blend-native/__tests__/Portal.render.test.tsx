@@ -86,12 +86,20 @@ describe('Portal', () => {
         expect(screen.queryByText('overlay')).toBeNull()
     })
 
-    it('falls back to inline rendering with no provider', () => {
-        render(
-            <Portal>
-                <Text>inline</Text>
-            </Portal>
-        )
-        expect(screen.getByText('inline')).toBeTruthy()
+    it('falls back to inline rendering with no provider, warning once', () => {
+        const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
+        try {
+            render(
+                <Portal>
+                    <Text>inline</Text>
+                </Portal>
+            )
+            expect(screen.getByText('inline')).toBeTruthy()
+            expect(warn).toHaveBeenCalledWith(
+                expect.stringContaining('without BlendNativeProvider')
+            )
+        } finally {
+            warn.mockRestore()
+        }
     })
 })

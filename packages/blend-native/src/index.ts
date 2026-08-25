@@ -94,6 +94,11 @@ export { Portal } from './overlay/portal'
 export type { PortalProps } from './overlay/portal'
 export { useReduceMotion } from './motion/useReduceMotion'
 
+// The gesture-driven sheet foundation — DrawerV2 and the phone modes of
+// Select/Menu/Modal compose it; also public for consumer-built sheets.
+export { BottomSheet } from './overlay/sheet/BottomSheet'
+export type { BottomSheetProps } from './overlay/sheet/BottomSheet'
+
 /** Position of a control within a button or tag group. */
 export type { GroupPosition } from './components/shared/group'
 

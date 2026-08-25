@@ -8,13 +8,15 @@ import {
     Text as RNText,
     View,
 } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { BlendNativeProvider, Theme } from '@juspay/blend-native'
 import ButtonShowcase from './components/ButtonShowcase'
 import TagShowcase from './components/TagShowcase'
 import AlertShowcase from './components/AlertShowcase'
+import SheetShowcase from './components/SheetShowcase'
 import PlatformPreview from './components/PlatformPreview'
 
-type Tab = 'alert' | 'tag' | 'button'
+type Tab = 'alert' | 'tag' | 'button' | 'sheet'
 
 export default function App() {
     const [theme, setTheme] = useState<Theme>(Theme.LIGHT)
@@ -27,24 +29,33 @@ export default function App() {
 
     return (
         <PlatformPreview>
-            {/* A single provider themes every Blend component beneath it. Before
-                this existed each component took its own `theme` prop, so an
-                app-wide toggle like the one below was not expressible. */}
-            <BlendNativeProvider theme={theme}>
-                <SafeAreaView
-                    style={[styles.container, { backgroundColor: palette.bg }]}
-                >
-                    <StatusBar
-                        barStyle={isDark ? 'light-content' : 'dark-content'}
-                    />
-                    <ScrollView contentContainerStyle={styles.scroll}>
-                        <RNText style={[styles.header, { color: palette.fg }]}>
-                            Blend Native
-                        </RNText>
+            {/* GestureHandlerRootView is required for BottomSheet's pan
+                gesture; apps on react-navigation already have one. */}
+            <GestureHandlerRootView style={styles.container}>
+                {/* A single provider themes every Blend component beneath it.
+                    Before this existed each component took its own `theme`
+                    prop, so an app-wide toggle was not expressible. */}
+                <BlendNativeProvider theme={theme}>
+                    <SafeAreaView
+                        style={[
+                            styles.container,
+                            { backgroundColor: palette.bg },
+                        ]}
+                    >
+                        <StatusBar
+                            barStyle={isDark ? 'light-content' : 'dark-content'}
+                        />
+                        <ScrollView contentContainerStyle={styles.scroll}>
+                            <RNText
+                                style={[styles.header, { color: palette.fg }]}
+                            >
+                                Blend Native
+                            </RNText>
 
-                        <View style={styles.controls}>
-                            {(['alert', 'tag', 'button'] as Tab[]).map(
-                                (value) => (
+                            <View style={styles.controls}>
+                                {(
+                                    ['alert', 'tag', 'button', 'sheet'] as Tab[]
+                                ).map((value) => (
                                     <Pressable
                                         key={value}
                                         onPress={() => setTab(value)}
@@ -63,30 +74,33 @@ export default function App() {
                                                 value.slice(1)}
                                         </RNText>
                                     </Pressable>
-                                )
-                            )}
+                                ))}
 
-                            <Pressable
-                                onPress={() =>
-                                    setTheme(isDark ? Theme.LIGHT : Theme.DARK)
-                                }
-                                style={[
-                                    styles.control,
-                                    { backgroundColor: palette.muted },
-                                ]}
-                            >
-                                <RNText style={{ color: palette.fg }}>
-                                    {isDark ? '☾ Dark' : '☀ Light'}
-                                </RNText>
-                            </Pressable>
-                        </View>
+                                <Pressable
+                                    onPress={() =>
+                                        setTheme(
+                                            isDark ? Theme.LIGHT : Theme.DARK
+                                        )
+                                    }
+                                    style={[
+                                        styles.control,
+                                        { backgroundColor: palette.muted },
+                                    ]}
+                                >
+                                    <RNText style={{ color: palette.fg }}>
+                                        {isDark ? '☾ Dark' : '☀ Light'}
+                                    </RNText>
+                                </Pressable>
+                            </View>
 
-                        {tab === 'alert' ? <AlertShowcase /> : null}
-                        {tab === 'tag' ? <TagShowcase /> : null}
-                        {tab === 'button' ? <ButtonShowcase /> : null}
-                    </ScrollView>
-                </SafeAreaView>
-            </BlendNativeProvider>
+                            {tab === 'alert' ? <AlertShowcase /> : null}
+                            {tab === 'tag' ? <TagShowcase /> : null}
+                            {tab === 'button' ? <ButtonShowcase /> : null}
+                            {tab === 'sheet' ? <SheetShowcase /> : null}
+                        </ScrollView>
+                    </SafeAreaView>
+                </BlendNativeProvider>
+            </GestureHandlerRootView>
         </PlatformPreview>
     )
 }
@@ -95,6 +109,11 @@ const styles = StyleSheet.create({
     container: { flex: 1 },
     scroll: { padding: 16, gap: 8 },
     header: { fontSize: 22, fontWeight: '700', marginBottom: 12 },
-    controls: { flexDirection: 'row', gap: 8, marginBottom: 20 },
+    controls: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
+        marginBottom: 20,
+    },
     control: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8 },
 })

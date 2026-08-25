@@ -84,7 +84,7 @@ describe('theme="system"', () => {
     afterEach(() => mockColorScheme.mockReturnValue('light'))
 
     /** A leaf whose value differs between the light and dark factories. */
-    const probeTagBackground = (element: { props: { style: unknown } }) =>
+    const probeTagBackground = (element: { props: { style?: unknown } }) =>
         flatten(element.props.style).backgroundColor
 
     it('resolves dark tokens when the OS is dark', () => {

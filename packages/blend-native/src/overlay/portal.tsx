@@ -53,16 +53,21 @@ export function Portal({ children }: PortalProps) {
         return () => registry.unmount(key)
     }, [registry, key, children])
 
-    if (!registry) {
-        if (!warnedNoProvider && typeof __DEV__ !== 'undefined' && __DEV__) {
+    // In an effect, not during render — warning inline would be a
+    // render-phase side effect (breaks under StrictMode double-render, the
+    // same class of bug Pressable's parse memoisation fixed).
+    useEffect(() => {
+        if (registry || warnedNoProvider) return
+        if (typeof __DEV__ !== 'undefined' && __DEV__) {
             warnedNoProvider = true
             console.warn(
                 '[blend-native] <Portal> used without BlendNativeProvider — ' +
                     'rendering inline. Overlays will not layer above the app.'
             )
         }
-        return <>{children}</>
-    }
+    }, [registry])
+
+    if (!registry) return <>{children}</>
 
     return null
 }
