@@ -35,7 +35,6 @@ const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
 }
 
 const SubContent = styled(RadixMenu.SubContent)`
-    background-color: white;
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
     z-index: 101;
     overflow-y: auto;
@@ -44,7 +43,6 @@ const SubContent = styled(RadixMenu.SubContent)`
     scrollbar-color: transparent transparent;
     padding-bottom: 6px;
     border-radius: 8px;
-    border: 1px solid ${FOUNDATION_THEME.colors.gray[200]};
 
     ${submenuContentAnimations}
 `
@@ -353,6 +351,7 @@ export const SubMenu = ({
             <RadixMenu.Portal>
                 <SubContent
                     style={{
+                        backgroundColor: menuTokens.backgroundColor,
                         paddingTop: item.enableSubMenuSearch
                             ? 0
                             : menuTokens.padding.y,
@@ -390,7 +389,9 @@ export const SubMenu = ({
                             left={0}
                             right={0}
                             zIndex={101}
-                            backgroundColor="white"
+                            backgroundColor={
+                                menuTokens.backgroundColor as string
+                            }
                         >
                             <SearchInput
                                 ref={searchInputRef}

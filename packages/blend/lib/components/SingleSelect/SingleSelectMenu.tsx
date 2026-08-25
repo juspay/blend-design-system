@@ -135,7 +135,6 @@ const flattenGroups = (groups: SelectMenuGroupType[]): FlattenedItem[] => {
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
-    background-color: white;
     border-radius: 8px;
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
     z-index: 101;
@@ -199,13 +198,16 @@ const SubTrigger = styled(RadixMenu.SubTrigger)`
 const SubContent = styled(RadixMenu.SubContent)<{
     singleSelectTokens?: SingleSelectTokensType
 }>`
-    background-color: white;
+    background-color: ${({ singleSelectTokens }) =>
+        singleSelectTokens?.menu.backgroundColor ||
+        FOUNDATION_THEME.colors.gray[0]};
     border-radius: 8px;
     padding: 8px 0px;
     box-shadow: ${FOUNDATION_THEME.shadows.lg};
     border: ${({ singleSelectTokens }) =>
-        singleSelectTokens?.menu.border ||
-        `1px solid ${FOUNDATION_THEME.colors.gray[200]}`};
+        `1px solid ${
+            singleSelectTokens?.menu.border ?? FOUNDATION_THEME.colors.gray[200]
+        }`};
     z-index: 1000;
 
     ${submenuContentAnimations}
@@ -661,13 +663,15 @@ const SingleSelectMenu = ({
                     avoidCollisions
                     collisionBoundary={collisionBoundary}
                     style={{
+                        backgroundColor:
+                            singleSelectTokens.menu.backgroundColor,
                         maxHeight: maxMenuHeight,
                         minWidth: minMenuWidth || '250px',
                         width: 'max(var(--radix-dropdown-menu-trigger-width))',
                         maxWidth:
                             maxMenuWidth ||
                             'var(--radix-dropdown-menu-trigger-width)',
-                        border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
+                        border: `1px solid ${singleSelectTokens.menu.border}`,
                     }}
                     onKeyDown={(e) => {
                         if (isSearchEnabled && searchInputRef.current) {

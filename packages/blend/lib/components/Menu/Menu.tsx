@@ -42,7 +42,6 @@ export const contentBaseStyle: CSSObject = {
 }
 
 const Content = styled(RadixMenu.Content)`
-    background-color: white;
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
     z-index: 101;
     overflow-y: auto;
@@ -51,7 +50,6 @@ const Content = styled(RadixMenu.Content)`
     scrollbar-color: transparent transparent;
     padding-bottom: 6px;
     border-radius: 8px;
-    border: 1px solid ${FOUNDATION_THEME.colors.gray[200]};
 
     ${menuContentAnimations}
 `
@@ -314,6 +312,7 @@ const Menu = ({
                         maxWidth: maxWidth ? `${maxWidth}px` : '280px',
                         paddingTop: enableSearch ? 0 : menuTokens.padding.y,
 
+                        backgroundColor: menuTokens.backgroundColor,
                         border: menuTokens.border,
                     }}
                     onFocusCapture={(e) => {
@@ -378,7 +377,9 @@ const Menu = ({
                                     left={0}
                                     right={0}
                                     zIndex={101}
-                                    backgroundColor="white"
+                                    backgroundColor={
+                                        menuTokens.backgroundColor as string
+                                    }
                                     padding="0px"
                                     // paddingBottom="0px"
                                 >

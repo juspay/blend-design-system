@@ -34,7 +34,7 @@ export function useBreakpoints(breakpoints = BREAKPOINTS) {
 
     useEffect(() => {
         const root = getRootWindow()
-        if (!root) return
+        if (!root || typeof root.addEventListener !== 'function') return
 
         const handleResize = () => {
             const newWidth = root.innerWidth

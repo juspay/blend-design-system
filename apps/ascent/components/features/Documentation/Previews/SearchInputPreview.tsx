@@ -75,7 +75,7 @@ external make: (
             height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#6B7280"
+            stroke="var(--muted-foreground)"
             strokeWidth="2"
         >
             <circle cx="11" cy="11" r="8" />
@@ -89,7 +89,7 @@ external make: (
             height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#6B7280"
+            stroke="var(--muted-foreground)"
             strokeWidth="2"
         >
             <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46" />
@@ -110,28 +110,17 @@ external make: (
                     padding: '24px',
                     width: '100%',
                     maxWidth: '500px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--surface)',
                     borderRadius: '8px',
                 }}
             >
-                <style>
-                    {`
-                    .search-input-preview input {
-                        color: #374151 !important;
-                    }
-                    .search-input-preview input::placeholder {
-                        color: #9CA3AF !important;
-                    }
-                `}
-                </style>
-
                 <div className="search-input-preview">
                     <h4
                         style={{
                             margin: '0 0 8px',
                             fontSize: '14px',
                             fontWeight: '500',
-                            color: '#374151',
+                            color: 'var(--foreground)',
                         }}
                     >
                         Basic Search
@@ -150,7 +139,7 @@ external make: (
                             margin: '0 0 8px',
                             fontSize: '14px',
                             fontWeight: '500',
-                            color: '#374151',
+                            color: 'var(--foreground)',
                         }}
                     >
                         Search with Filter
@@ -168,11 +157,11 @@ external make: (
                     <div
                         style={{
                             padding: '12px',
-                            backgroundColor: '#f0fdf4',
-                            border: '1px solid #bbf7d0',
+                            backgroundColor: 'var(--success-bg)',
+                            border: '1px solid var(--success-border)',
                             borderRadius: '6px',
                             fontSize: '14px',
-                            color: '#166534',
+                            color: 'var(--success-foreground)',
                         }}
                     >
                         {searchValue && `Search: "${searchValue}"`}

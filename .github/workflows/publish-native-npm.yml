@@ -1,0 +1,156 @@
+name: Publish Native to NPM
+
+# Publishes @juspay/blend-native on its own version line, independent of
+# @juspay/blend-design-system (compatibility is declared through the peer
+# range instead). Beta publishes run from dev or staging; stable from main.
+
+on:
+    workflow_dispatch:
+        inputs:
+            confirm_publish:
+                description: 'Type "PUBLISH" to confirm publishing to NPM'
+                required: true
+                type: string
+            dist_tag:
+                description: 'NPM dist-tag to publish under'
+                required: true
+                type: choice
+                options:
+                    - beta
+                    - latest
+
+# Only the checkout needs the GITHUB_TOKEN; publishing authenticates with
+# NPM_TOKEN instead, so the job runs read-only. Matches publish-cli.yml and
+# publish-blend-telemetry.yml.
+permissions:
+    contents: read
+
+concurrency:
+    group: publish-native-npm-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    publish-native:
+        name: Publish @juspay/blend-native
+        runs-on: ubuntu-latest
+        environment: npm
+        if: github.event.inputs.confirm_publish == 'PUBLISH'
+
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v4
+
+            - name: Verify branch for dist-tag
+              run: |
+                  TAG="${{ github.event.inputs.dist_tag }}"
+                  REF="${{ github.ref }}"
+                  if [[ "$TAG" == "latest" && "$REF" != "refs/heads/main" ]]; then
+                    echo "❌ Stable (latest) publishes must run from main (got $REF)"
+                    exit 1
+                  fi
+                  if [[ "$TAG" == "beta" && "$REF" != "refs/heads/dev" && "$REF" != "refs/heads/staging" ]]; then
+                    echo "❌ Beta publishes must run from dev or staging (got $REF)"
+                    exit 1
+                  fi
+                  echo "✅ $TAG publish allowed from $REF"
+
+            - name: Setup Node.js 22 and pnpm
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  registry-url: 'https://registry.npmjs.org'
+                  scope: '@juspay'
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Enable corepack & install deps
+              run: |
+                  corepack enable
+                  pnpm install --frozen-lockfile
+
+            - name: Verify version matches dist-tag
+              id: version
+              run: |
+                  cd packages/blend-native
+                  VERSION=$(node -p "require('./package.json').version")
+                  TAG="${{ github.event.inputs.dist_tag }}"
+                  if [[ "$TAG" == "beta" && ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+$ ]]; then
+                    echo "❌ $VERSION is not a beta version (expected X.Y.Z-beta.N)"
+                    exit 1
+                  fi
+                  if [[ "$TAG" == "latest" && ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                    echo "❌ $VERSION is not a stable version (expected X.Y.Z)"
+                    exit 1
+                  fi
+                  echo "version=$VERSION" >> $GITHUB_OUTPUT
+                  echo "✅ Publishing $VERSION under dist-tag $TAG"
+
+            - name: Check version not already published
+              id: check_published
+              run: |
+                  VERSION="${{ steps.version.outputs.version }}"
+                  if npm view "@juspay/blend-native@$VERSION" version 2>/dev/null >/dev/null; then
+                    echo "already_published=true" >> $GITHUB_OUTPUT
+                    echo "⚠️ @juspay/blend-native@$VERSION already exists on NPM — skipping"
+                  else
+                    echo "already_published=false" >> $GITHUB_OUTPUT
+                    echo "✅ Version $VERSION is not yet published"
+                  fi
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            # bob's typescript target resolves @juspay/blend-design-system/node
+            # from the workspace package's built dist, so blend builds first.
+            - name: Build @juspay/blend-design-system
+              if: steps.check_published.outputs.already_published != 'true'
+              run: pnpm --filter @juspay/blend-design-system build
+
+            - name: Lint, typecheck and test
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  pnpm --filter @juspay/blend-native lint
+                  pnpm --filter @juspay/blend-native typecheck
+                  pnpm --filter @juspay/blend-native test
+              env:
+                  CI: true
+
+            # The workspace build always has the newest /node exports, so CI
+            # stays green while the PUBLISHED version a consumer installs may
+            # predate them. This asserts the declared peer floor really
+            # exports everything blend-native imports — without it we can
+            # ship a package that crashes on first render.
+            - name: Verify the peer floor exports what we import
+              if: steps.check_published.outputs.already_published != 'true'
+              run: pnpm --filter @juspay/blend-native check:peer
+
+            - name: Build @juspay/blend-native
+              if: steps.check_published.outputs.already_published != 'true'
+              run: pnpm --filter @juspay/blend-native build
+
+            - name: Publish to NPM
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  cd packages/blend-native
+                  npm publish --access public --tag "${{ github.event.inputs.dist_tag }}"
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Verify after publish
+              if: steps.check_published.outputs.already_published != 'true'
+              run: |
+                  VERSION="${{ steps.version.outputs.version }}"
+                  TAG="${{ github.event.inputs.dist_tag }}"
+                  sleep 10  # NPM propagation
+                  PUBLISHED=$(npm view "@juspay/blend-native@$TAG" version 2>/dev/null || echo "")
+                  if [[ "$PUBLISHED" == "$VERSION" ]]; then
+                    echo "✅ @juspay/blend-native@$VERSION is live under dist-tag $TAG"
+                  else
+                    echo "⚠️ Expected $VERSION but NPM shows '$PUBLISHED' for tag $TAG (may be propagation delay)"
+                  fi
+                  echo "## 🎉 @juspay/blend-native published" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo "**Version**: \`$VERSION\` · **Tag**: \`$TAG\`" >> $GITHUB_STEP_SUMMARY
+                  echo "" >> $GITHUB_STEP_SUMMARY
+                  echo '```bash' >> $GITHUB_STEP_SUMMARY
+                  echo "npm install @juspay/blend-native@$TAG" >> $GITHUB_STEP_SUMMARY
+                  echo '```' >> $GITHUB_STEP_SUMMARY

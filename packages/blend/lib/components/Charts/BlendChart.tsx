@@ -5,6 +5,8 @@ import Highcharts from 'highcharts'
 import 'highcharts/modules/xrange'
 import { forwardRef, useRef } from 'react'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import type { ChartTokensType } from './chart.tokens'
 import { BlendChartProps, BlendChartReactRefObject } from './BlendChart.types'
 
 // Polyfill CSS.supports for Highcharts compatibility
@@ -26,39 +28,42 @@ const BlendChart = forwardRef<BlendChartReactRefObject, BlendChartProps>(
         const { options } = props
         const { chart, title, subtitle, legend, xAxis, yAxis } = options
         const chartRef = useRef<BlendChartReactRefObject | null>(null)
+        // Axis colours were hardcoded to foundation greys, which are the same
+        // in both themes and so rendered a near-white rule on a dark chart.
+        const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
 
         const defaultXAxisTitleLabelStyle = {
             fontSize: FOUNDATION_THEME.font.size.body.sm.fontSize,
-            color: FOUNDATION_THEME.colors.gray[400],
+            color: chartTokens.axis.labelColor,
             fontFamily: FOUNDATION_THEME.font.family.body,
             fontWeight: FOUNDATION_THEME.font.weight[500],
         }
 
         const defaultYAxisTitleLabelStyle = {
             fontSize: FOUNDATION_THEME.font.size.body.sm.fontSize,
-            color: FOUNDATION_THEME.colors.gray[400],
+            color: chartTokens.axis.labelColor,
             fontFamily: FOUNDATION_THEME.font.family.body,
             fontWeight: FOUNDATION_THEME.font.weight[500],
         }
 
         const defaultXAxisLineStyle = {
             width: xAxis?.lineWidth ?? 1,
-            color: xAxis?.lineColor ?? FOUNDATION_THEME.colors.gray[150],
+            color: xAxis?.lineColor ?? chartTokens.axis.lineColor,
         }
 
         const defaultXAxisGridLineStyle = {
             width: xAxis?.gridLineWidth ?? 0,
-            color: xAxis?.gridLineColor ?? FOUNDATION_THEME.colors.gray[150],
+            color: xAxis?.gridLineColor ?? chartTokens.axis.gridLineColor,
         }
 
         const defaultYAxisLineStyle = {
             width: yAxis?.lineWidth ?? 0,
-            color: yAxis?.lineColor ?? FOUNDATION_THEME.colors.gray[150],
+            color: yAxis?.lineColor ?? chartTokens.axis.lineColor,
         }
 
         const defaultYAxisGridLineStyle = {
             width: yAxis?.gridLineWidth ?? 1,
-            color: yAxis?.gridLineColor ?? FOUNDATION_THEME.colors.gray[150],
+            color: yAxis?.gridLineColor ?? chartTokens.axis.gridLineColor,
         }
 
         const defaultChartsConfig = {

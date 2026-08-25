@@ -33,7 +33,7 @@ function DocsPage({
             <div className="flex-1 gap-2">
                 <article className="prose overflow-x-hidden">
                     <div className="py-11 px-6 md:px-10 border-b border-border">
-                        <h1 className="scroll-m-20 text-4xl md:text-5xl tracking-tight lg:text-7xl xl:text-[86px] font-manrope font-medium text-primary">
+                        <h1 className="scroll-m-20 text-2xl md:text-3xl tracking-tight lg:text-4xl xl:text-5xl font-manrope font-medium text-primary">
                             {metadata.title}
                         </h1>
                     </div>

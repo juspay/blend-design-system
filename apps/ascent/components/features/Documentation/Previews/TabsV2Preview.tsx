@@ -81,17 +81,17 @@ external make: (
                         <TabsV2Trigger value="tab3">Settings</TabsV2Trigger>
                     </TabsV2List>
                     <TabsV2Content value="tab1">
-                        <div className="p-4 text-sm text-gray-600">
+                        <div className="p-4 text-sm text-muted-foreground">
                             Overview content here
                         </div>
                     </TabsV2Content>
                     <TabsV2Content value="tab2">
-                        <div className="p-4 text-sm text-gray-600">
+                        <div className="p-4 text-sm text-muted-foreground">
                             Details content here
                         </div>
                     </TabsV2Content>
                     <TabsV2Content value="tab3">
-                        <div className="p-4 text-sm text-gray-600">
+                        <div className="p-4 text-sm text-muted-foreground">
                             Settings content here
                         </div>
                     </TabsV2Content>

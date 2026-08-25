@@ -1,0 +1,16 @@
+{
+    "extends": "expo/tsconfig.base",
+    "compilerOptions": {
+        "strict": true,
+        "moduleSuffixes": ["", ".native"],
+        "paths": {
+            "@juspay/blend-native": [
+                "../../packages/blend-native/src/index.ts"
+            ],
+            "@juspay/blend-design-system/node": [
+                "../../packages/blend/lib/node.ts"
+            ]
+        }
+    },
+    "include": ["**/*.ts", "**/*.tsx"]
+}

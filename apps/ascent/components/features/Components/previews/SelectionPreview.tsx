@@ -1,6 +1,6 @@
 const SelectionPreview = () => (
     <div className="flex flex-col justify-center items-center gap-2.5 w-full">
-        <div className="flex items-center gap-2 px-3 py-2.5 bg-background rounded-lg border border-border shadow-[0_2px_8px_rgb(0,0,0,0.06)] w-56">
+        <div className="flex items-center gap-2 px-3 py-2.5 bg-background rounded-lg border border-border shadow-card w-56">
             <div className="w-5 h-5 rounded-md bg-primary flex items-center justify-center">
                 <svg
                     width="12"
@@ -20,7 +20,7 @@ const SelectionPreview = () => (
             </div>
             <div className="flex-1 h-1.5 bg-border rounded-full" />
         </div>
-        <div className="flex items-center gap-2 px-3 py-2.5 bg-background rounded-lg border border-border shadow-[0_2px_8px_rgb(0,0,0,0.06)] w-46">
+        <div className="flex items-center gap-2 px-3 py-2.5 bg-background rounded-lg border border-border shadow-card w-46">
             <div className="w-5 h-5 rounded-md bg-primary flex items-center justify-center">
                 <svg
                     width="12"
@@ -40,7 +40,7 @@ const SelectionPreview = () => (
             </div>
             <div className="flex-1 h-2 bg-border rounded-full" />
         </div>
-        <div className="flex items-center gap-2 px-3 py-2.5 bg-background rounded-lg border border-border shadow-[0_2px_8px_rgb(0,0,0,0.06)] w-38">
+        <div className="flex items-center gap-2 px-3 py-2.5 bg-background rounded-lg border border-border shadow-card w-38">
             <div className="w-5 h-5 rounded-md bg-primary flex items-center justify-center">
                 <svg
                     width="12"

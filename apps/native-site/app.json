@@ -1,0 +1,17 @@
+{
+    "expo": {
+        "name": "Blend Native Site",
+        "slug": "native-site",
+        "version": "0.0.1",
+        "orientation": "portrait",
+        "userInterfaceStyle": "light",
+        "newArchEnabled": true,
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.juspay.blendnativesite"
+        },
+        "android": {
+            "package": "com.juspay.blendnativesite"
+        }
+    }
+}

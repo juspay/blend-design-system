@@ -3,11 +3,21 @@
     "tasks": {
         "build": {
             "inputs": ["$TURBO_DEFAULT$", ".env*"],
-            "outputs": ["dist/**", "storybook-static/**", ".next/**", "out/**"],
+            "outputs": [
+                "dist/**",
+                "lib/**",
+                "storybook-static/**",
+                ".next/**",
+                "out/**"
+            ],
             "dependsOn": ["^build"]
         },
         "lint": {
             "dependsOn": ["^lint"]
+        },
+        "typecheck": {},
+        "@juspay/blend-native#test": {
+            "dependsOn": ["@juspay/blend-design-system#build"]
         },
         "dev": {
             "cache": false,

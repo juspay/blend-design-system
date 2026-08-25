@@ -27,6 +27,7 @@ import { ColumnDefinition, PivotAggregationType, ColumnType } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
 import { downloadCSV } from '../utils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import { useTheme } from '../../../context/ThemeContext'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { PivotTableModalProps, PivotFieldConfig } from './types'
 import {
@@ -63,9 +64,10 @@ const PivotTableModal = forwardRef<
         ref
     ) => {
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
+        const { theme } = useTheme()
         const pivot = useMemo(
-            () => getPivotModalStyleTokens(FOUNDATION_THEME, tableToken),
-            [tableToken]
+            () => getPivotModalStyleTokens(FOUNDATION_THEME, tableToken, theme),
+            [tableToken, theme]
         )
 
         const removeButtonStyle = useMemo(

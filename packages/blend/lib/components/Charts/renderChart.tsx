@@ -65,6 +65,7 @@ export const renderChart = ({
     CustomizedDot,
     lineSeriesKeys,
     onKeyClick,
+    chartTokens,
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
@@ -154,15 +155,19 @@ export const renderChart = ({
     }
 
     const chartConfig = {
-        tickFill: FOUNDATION_THEME.colors.gray[400],
+        tickFill:
+            chartTokens?.axis.labelColor ?? FOUNDATION_THEME.colors.gray[400],
         tickFontSize: 14,
         tickFontWeight: FOUNDATION_THEME.font.weight[500],
         axisLine: false,
         tickLine: false,
-        labelFill: FOUNDATION_THEME.colors.gray[400],
+        labelFill:
+            chartTokens?.axis.labelColor ?? FOUNDATION_THEME.colors.gray[400],
         labelFontSize: 14,
         labelFontWeight: FOUNDATION_THEME.font.weight[500],
-        gridStroke: FOUNDATION_THEME.colors.gray[150],
+        gridStroke:
+            chartTokens?.axis.gridLineColor ??
+            FOUNDATION_THEME.colors.gray[150],
     }
 
     const processedData = isDateTimeAxis
@@ -517,7 +522,10 @@ export const renderChart = ({
                 >
                     <CartesianGrid
                         vertical={false}
-                        stroke={FOUNDATION_THEME.colors.gray[150]}
+                        stroke={
+                            chartTokens?.axis.lineColor ??
+                            FOUNDATION_THEME.colors.gray[150]
+                        }
                     />
                     <XAxis
                         data-element="chart-x-axis-labels"

@@ -34,6 +34,10 @@
     --sidebar-border: oklch(0.93 0.01 260);
     --sidebar-item-hover: oklch(0.96 0.01 260);
     --sidebar-item-active: oklch(0.9668 0.0058 264.53);
+    /* Success accent for docs preview status cards */
+    --success-bg: oklch(0.97 0.03 155);
+    --success-border: oklch(0.9 0.08 155);
+    --success-foreground: oklch(0.44 0.11 155);
 
     /* Accent colors */
     --accent: oklch(0.55 0.15 250);
@@ -98,6 +102,10 @@
     --sidebar-border: oklch(0.25 0 0);
     --sidebar-item-hover: oklch(0.25 0 0);
     --sidebar-item-active: oklch(0.2 0 0);
+    /* Success accent for docs preview status cards */
+    --success-bg: oklch(0.24 0.05 155);
+    --success-border: oklch(0.35 0.07 155);
+    --success-foreground: oklch(0.85 0.12 155);
 
     /* Accent colors */
     --accent-muted: oklch(0.5 0.1 250);
@@ -295,6 +303,8 @@
     --color-code-border: var(--code-border);
     --color-sidebar-item-hover: var(--sidebar-item-hover);
     --color-sidebar-item-active: var(--sidebar-item-active);
+    --shadow-card: var(--shadow-sm);
+    --shadow-card-md: var(--shadow-md);
     --color-nav-section-text: var(--nav-section-text);
     --color-nav-section-text-foreground: var(--nav-section-text-foreground);
     --font-sans: var(--font-geist-sans);
