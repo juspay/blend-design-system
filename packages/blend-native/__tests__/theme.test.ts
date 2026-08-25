@@ -52,6 +52,7 @@ describe('nativeTokenRegistry', () => {
         expect(NATIVE_TOKEN_SLOTS.slice().sort()).toEqual([
             'ALERTV2',
             'BUTTONV2',
+            'SKELETON',
             'TAGV2',
             'TEXT_INPUTV2',
         ])

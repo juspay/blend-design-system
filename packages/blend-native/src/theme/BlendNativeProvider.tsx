@@ -8,6 +8,7 @@ import {
 } from '@juspay/blend-design-system/node'
 import type { NativeComponentTokenOverrides } from './nativeTokenRegistry'
 import { PortalArea } from '../overlay/portal'
+import { ToastOutlet } from '../overlay/toast/ToastOutlet'
 import {
     resolveFontFamilies,
     type NativeFontFamilies,
@@ -128,8 +129,13 @@ export function BlendNativeProvider({
         <BlendNativeThemeContext.Provider value={value}>
             {/* Portal layers render after (above) the app's children — mount
                 the provider at a screen-filling root so overlays cover the
-                screen. See overlay/portal.tsx. */}
-            <PortalArea>{children}</PortalArea>
+                screen. See overlay/portal.tsx. The toast outlet subscribes
+                to the imperative showToast queue and renders nothing while
+                it is empty. */}
+            <PortalArea>
+                {children}
+                <ToastOutlet />
+            </PortalArea>
         </BlendNativeThemeContext.Provider>
     )
 }

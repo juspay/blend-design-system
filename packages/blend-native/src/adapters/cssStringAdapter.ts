@@ -128,6 +128,27 @@ export function parseSize(
 }
 
 /**
+ * Parse a CSS time value (`"1.5s"`, `"200ms"`, `1500`) into milliseconds.
+ * Returns `undefined` for unparseable input so callers fall back to their
+ * own default duration.
+ *
+ * `parseDuration('1.5s') → 1500`
+ * `parseDuration('200ms') → 200`
+ */
+export function parseDuration(
+    value: string | number | undefined
+): number | undefined {
+    if (value === undefined || value === null) return undefined
+    if (typeof value === 'number')
+        return Number.isFinite(value) ? value : undefined
+    const match = value.trim().match(new RegExp(`^(${NUMBER})(ms|s)$`))
+    if (!match) return undefined
+    const n = parseFloat(match[1])
+    if (Number.isNaN(n)) return undefined
+    return match[2] === 's' ? n * 1000 : n
+}
+
+/**
  * Parse a CSS `border` shorthand (`"1px solid #E1E4EA"`) into RN border props.
  * Returns `{ borderWidth, borderColor }` — the only two border properties RN
  * supports uniformly across iOS/Android.

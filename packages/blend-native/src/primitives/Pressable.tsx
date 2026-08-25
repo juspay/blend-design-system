@@ -20,6 +20,10 @@ import {
     type SurfaceStyleProps,
 } from '../adapters/surfaceStyle'
 import {
+    LinearGradient,
+    type GradientComponent,
+} from '../adapters/optionalGradient'
+import {
     MIN_TOUCH_TARGET,
     resolveHitSlop,
     sameHitSlop,
@@ -46,44 +50,12 @@ export { MIN_TOUCH_TARGET }
  */
 
 /**
- * `expo-linear-gradient` is an **optional** peer.
- *
- * Requiring it outright would mean every consumer must adopt Expo modules
- * just to render a gradient variant. When it is absent the surface falls back
- * to the gradient's first colour, which `resolveSurfaceStyle` already
- * supplies as `backgroundColor` — so a gradient button degrades to a solid
- * one rather than rendering transparent.
+ * `expo-linear-gradient` is an **optional** peer (probe shared with
+ * Skeleton in `adapters/optionalGradient`). When it is absent the surface
+ * falls back to the gradient's first colour, which `resolveSurfaceStyle`
+ * already supplies as `backgroundColor` — so a gradient button degrades to
+ * a solid one rather than rendering transparent.
  */
-type GradientComponent = React.ComponentType<{
-    colors: readonly string[]
-    locations?: readonly number[]
-    start?: { x: number; y: number }
-    end?: { x: number; y: number }
-    style?: ViewStyle
-}>
-
-/**
- * The probe must survive every build target this package ships:
- *
- * - **Metro (`react-native` condition, raw `src/`)** and the **CJS build**
- *   (`require`/`default` conditions): `require` exists, the module loads when
- *   installed, and the `catch` absorbs its absence.
- * - **The ESM build** (`import` condition): there is no `require` in module
- *   scope. The `typeof` guard makes the degradation explicit — gradients fall
- *   back to the first-stop flat fill `resolveSurfaceStyle` already supplies —
- *   instead of relying on a caught `ReferenceError`. Bundlers that polyfill
- *   `require` in ESM (webpack) still resolve the real module.
- */
-let LinearGradient: GradientComponent | null = null
-try {
-    if (typeof require === 'function') {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        LinearGradient = require('expo-linear-gradient')
-            .LinearGradient as GradientComponent
-    }
-} catch {
-    LinearGradient = null
-}
 
 /**
  * Note this extends `SurfaceStyleProps`, exactly as `BlockProps` does.

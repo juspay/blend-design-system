@@ -1,10 +1,4 @@
-import React, {
-    createContext,
-    useCallback,
-    useContext,
-    useEffect,
-    useState,
-} from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import {
     BackHandler,
     Pressable,
@@ -24,6 +18,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Portal } from '../portal'
+import { SafeAreaInsetsContext } from '../safeAreaInsets'
 import { MOTION_DURATION, MOTION_EASING } from '../../motion/motion'
 import { useReduceMotion } from '../../motion/useReduceMotion'
 import {
@@ -81,28 +76,6 @@ export type BottomSheetProps = {
     testID?: string
     /** Style escape hatch for the sheet surface. */
     style?: ViewStyle
-}
-
-// ---- Optional safe-area integration -------------------------------------
-// `useContext` needs *a* context unconditionally, so when the optional peer
-// is absent (or its provider is not mounted) a null-valued fallback stands
-// in. Same probe pattern as expo-linear-gradient in `Pressable`.
-type EdgeInsets = { top: number; bottom: number; left: number; right: number }
-const FallbackInsetsContext = createContext<EdgeInsets | null>(null)
-
-let SafeAreaInsetsContext: React.Context<EdgeInsets | null> =
-    FallbackInsetsContext
-try {
-    if (typeof require === 'function') {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const safeArea = require('react-native-safe-area-context') as {
-            SafeAreaInsetsContext?: React.Context<EdgeInsets | null>
-        }
-        SafeAreaInsetsContext =
-            safeArea.SafeAreaInsetsContext ?? FallbackInsetsContext
-    }
-} catch {
-    SafeAreaInsetsContext = FallbackInsetsContext
 }
 
 const ENTER = {
