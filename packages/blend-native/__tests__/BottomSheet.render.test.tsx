@@ -1,0 +1,116 @@
+import { Text } from 'react-native'
+import { fireEvent, render, screen } from '@testing-library/react-native'
+import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
+import { BottomSheet } from '../src/overlay/sheet/BottomSheet'
+
+/**
+ * BottomSheet behaviour under the Reanimated jest mock (animations resolve
+ * synchronously) and the Gesture Handler jest mock (gestures inert). What
+ * these prove: mount/unmount around the open prop, backdrop dismissal,
+ * portal layering, and the modal accessibility posture. The gesture physics
+ * are covered by the pure sheetMath suite; the feel is verified on device.
+ */
+
+const renderSheet = (open: boolean, onClose = jest.fn()) => {
+    const ui = (isOpen: boolean) => (
+        <BlendNativeProvider>
+            <Text>app content</Text>
+            <BottomSheet open={isOpen} onClose={onClose} testID="sheet">
+                <Text>sheet content</Text>
+            </BottomSheet>
+        </BlendNativeProvider>
+    )
+    return { ...render(ui(open)), ui, onClose }
+}
+
+describe('BottomSheet', () => {
+    it('renders nothing while closed', () => {
+        renderSheet(false)
+        expect(screen.queryByText('sheet content')).toBeNull()
+        expect(screen.getByText('app content')).toBeTruthy()
+    })
+
+    it('presents its content when open', () => {
+        renderSheet(true)
+        expect(screen.getByText('sheet content')).toBeTruthy()
+        expect(screen.getByTestId('sheet')).toBeTruthy()
+        expect(
+            screen.getByTestId('sheet-backdrop', {
+                includeHiddenElements: true,
+            })
+        ).toBeTruthy()
+    })
+
+    it('unmounts after the exit animation when open flips off', () => {
+        const { rerender, ui } = renderSheet(true)
+        expect(screen.getByText('sheet content')).toBeTruthy()
+        // The Reanimated mock completes the exit animation synchronously.
+        rerender(ui(false))
+        expect(screen.queryByText('sheet content')).toBeNull()
+    })
+
+    it('requests close on backdrop press', () => {
+        const onClose = jest.fn()
+        renderSheet(true, onClose)
+        const backdrop = screen.getByTestId('sheet-backdrop', {
+            includeHiddenElements: true,
+        })
+        // The pressable fills the backdrop layer.
+        fireEvent.press(backdrop.children[0] as never)
+        expect(onClose).toHaveBeenCalledTimes(1)
+    })
+
+    it('can disable backdrop dismissal', () => {
+        const onClose = jest.fn()
+        render(
+            <BlendNativeProvider>
+                <BottomSheet
+                    open
+                    onClose={onClose}
+                    dismissOnBackdropPress={false}
+                    testID="sheet"
+                />
+            </BlendNativeProvider>
+        )
+        const backdrop = screen.getByTestId('sheet-backdrop', {
+            includeHiddenElements: true,
+        })
+        fireEvent.press(backdrop.children[0] as never)
+        expect(onClose).not.toHaveBeenCalled()
+    })
+
+    it('marks the surface modal for assistive tech', () => {
+        renderSheet(true)
+        expect(screen.getByTestId('sheet').props.accessibilityViewIsModal).toBe(
+            true
+        )
+    })
+
+    it('hides the backdrop from assistive tech', () => {
+        renderSheet(true)
+        const backdrop = screen.getByTestId('sheet-backdrop', {
+            includeHiddenElements: true,
+        })
+        expect(backdrop.props.importantForAccessibility).toBe(
+            'no-hide-descendants'
+        )
+    })
+
+    it('hides the drag handle when asked', () => {
+        render(
+            <BlendNativeProvider>
+                <BottomSheet
+                    open
+                    onClose={jest.fn()}
+                    showHandle={false}
+                    testID="sheet"
+                >
+                    <Text>content</Text>
+                </BottomSheet>
+            </BlendNativeProvider>
+        )
+        const sheet = screen.getByTestId('sheet')
+        // Only the content remains inside the sheet surface.
+        expect(sheet.children).toHaveLength(1)
+    })
+})

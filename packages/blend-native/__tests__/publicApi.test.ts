@@ -95,6 +95,8 @@ describe('public API surface', () => {
     it('stays small enough to review in one sitting', () => {
         // A guard against drift, not a hard architectural limit — if this
         // trips, decide deliberately whether the additions are public API.
-        expect(exported.size).toBeLessThanOrEqual(30)
+        // Raised from 30 when the overlay foundation (Portal, BottomSheet,
+        // useReduceMotion) became public.
+        expect(exported.size).toBeLessThanOrEqual(36)
     })
 })
