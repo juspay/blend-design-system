@@ -2,9 +2,9 @@ name: Legacy Release (DEPRECATED)
 
 # This workflow is deprecated. Use the new manual workflows instead:
 # - create-beta-release.yml: Create beta releases from dev branch
-# - publish-beta-npm.yml: Publish beta to NPM
+# - publish-npm.yml: Publish beta to NPM (from staging)
 # - create-stable-release.yml: Create stable releases on main branch
-# - publish-stable-npm.yml: Publish stable to NPM
+# - publish-npm.yml: Publish stable to NPM (from main)
 
 on:
     # Disabled automatic triggers - only manual for emergency use

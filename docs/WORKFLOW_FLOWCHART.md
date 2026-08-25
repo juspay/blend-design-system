@@ -1,4 +1,4 @@
-# 🔄 Complete Workflow Flowchart
+| **Publish to NPM** (stable) | `publish-npm.yml` | main | Publishes the stable with the `latest` tag || **Publish to NPM** (beta) | `publish-npm.yml` | staging | Publishes the beta with the `beta` tag |# 🔄 Complete Workflow Flowchart
 
 This document provides a clear visual flowchart and explanation of all GitHub Actions workflows for the Blend Design System release process.
 
@@ -107,7 +107,7 @@ This document provides a clear visual flowchart and explanation of all GitHub Ac
 │       ▼                                                         │
 │       │                                                         │
 │       │  5. PUBLISH BETA TO NPM                                 │
-│       │     Run: "Publish Beta to NPM" workflow                 │
+│       │     Run: "Publish to NPM" workflow                      │
 │       │     Input: "PUBLISH"                                    │
 │       │     Must run from staging branch                        │
 │       ▼                                                         │
@@ -165,7 +165,7 @@ This document provides a clear visual flowchart and explanation of all GitHub Ac
 │       ▼                                                          │
 │       │                                                          │
 │       │  3. PUBLISH STABLE TO NPM                               │
-│       │     Run: "Publish Stable to NPM" workflow                │
+│       │     Run: "Publish to NPM" workflow                       │
 │       │     Input: "PUBLISH"                                    │
 │       │     Result: @juspay/blend-design-system@latest          │
 │       ▼                                                          │
@@ -206,7 +206,7 @@ This document provides a clear visual flowchart and explanation of all GitHub Ac
 │       │     Merge PR to staging - syncs version back             │
 │       │     Now staging has updated version ready for publish    │
 │       │                                                          │
-│       ├──► Publish Beta to NPM                                  │
+│       ├──► Publish to NPM                                       │
 │       │     npm install @juspay/blend-design-system@beta      │
 │       │                                                          │
 │       ├──► Test Beta                                            │
@@ -240,7 +240,7 @@ This document provides a clear visual flowchart and explanation of all GitHub Ac
 │  │  main   │ ◄─────── Merge PR                                  │
 │  └────┬────┘                                                      │
 │       │                                                          │
-│       └──► Publish Stable to NPM                                 │
+│       └──► Publish to NPM                                        │
 │            Result: @juspay/blend-design-system@latest           │
 │                                                                 │
 │       ▼                                                          │
@@ -306,9 +306,9 @@ This document provides a clear visual flowchart and explanation of all GitHub Ac
 | -------------------------- | ------------------------- | --------- | ------------------------------------------------- |
 | **CI**                     | `ci.yml`                  | main, dev | Continuous integration: lint, build, test         |
 | **Create Beta Release**    | `create-beta-release.yml` | staging   | Creates beta releases with incremental versioning |
-| **Publish Beta to NPM**    | `publish-beta-npm.yml`    | staging   | Publishes beta versions to NPM                    |
+| **Publish to NPM**         | `publish-npm.yml`         | staging   | Publishes beta versions to NPM                    |
 | **Promote Beta to Stable** | `promote-to-stable.yml`   | staging   | Promotes tested beta to stable                    |
-| **Publish Stable to NPM**  | `publish-stable-npm.yml`  | main      | Publishes stable versions to NPM                  |
+| **Publish to NPM**         | `publish-npm.yml`         | main      | Publishes stable versions to NPM                  |
 
 ### Deprecated Workflows
 
@@ -345,7 +345,7 @@ This document provides a clear visual flowchart and explanation of all GitHub Ac
                          │
                 Merge PR → dev → staging
                          │
-                Publish Beta to NPM
+                Publish to NPM
                          │
                      Test Beta
                          │
@@ -391,7 +391,7 @@ This document provides a clear visual flowchart and explanation of all GitHub Ac
 - [ ] **STEP 2: Manually create PR: `dev` → `staging`**
     - [ ] Purpose: Sync version back to staging
     - [ ] Merge this PR to staging
-- [ ] Run "Publish Beta to NPM" from `staging` branch
+- [ ] Run "Publish to NPM" from `staging` branch
 - [ ] Install and test: `npm install @juspay/blend-design-system@beta`
 
 **Subsequent Beta Releases (if issues found):**
@@ -402,7 +402,7 @@ This document provides a clear visual flowchart and explanation of all GitHub Ac
     - [ ] Auto-creates PR: staging → dev
 - [ ] **Merge auto PR to `dev`** (staging → dev)
 - [ ] **Manually create and merge PR: `dev` → `staging`** (version sync)
-- [ ] Run "Publish Beta to NPM" from `staging` and test again
+- [ ] Run "Publish to NPM" from `staging` and test again
 - [ ] Repeat until no issues
 
 ### Stable Release Checklist
@@ -411,7 +411,7 @@ This document provides a clear visual flowchart and explanation of all GitHub Ac
 - [ ] Last beta published to NPM (e.g., `1.0.0-beta.2`)
 - [ ] Run "Promote Beta to Stable" workflow from `staging` branch
 - [ ] **Merge auto-created PR to `main`** (staging → main)
-- [ ] Run "Publish Stable to NPM" workflow from `main` branch
+- [ ] Run "Publish to NPM" workflow from `main` branch
 - [ ] Verify: `npm install @juspay/blend-design-system@latest`
 
 ## 🔍 Troubleshooting Flow
