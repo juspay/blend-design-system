@@ -20,9 +20,11 @@ This package consumes Blend's token system via the React-free `@juspay/blend-des
 │  adapters/       CSS-string → RN style translation        │
 │                  cssStringAdapter, surfaceStyle           │
 │                                                           │
-│  primitives/     Block, Pressable, Text, Slot             │
+│  primitives/     Block, Pressable, Text, Slot, Separator  │
 │                                                           │
-│  components/     Button, Tag, shared/                     │
+│  a11y/           live-region announcements                │
+│                                                           │
+│  components/     Alert, Button, Tag, shared/              │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -80,6 +82,26 @@ import { BlendNativeProvider, Theme } from '@juspay/blend-native'
 
 Overrides are deep-merged onto the active theme's defaults — supply only the paths you want to change and every untouched path keeps its light/dark value. Components also work with no provider mounted, falling back to light-theme defaults.
 
+`theme` also accepts `'system'` (exported as `SYSTEM_THEME`), which follows the OS appearance via `useColorScheme` and re-renders when the user flips light/dark. `breakpoints` overrides the thresholds token resolution uses (`{ sm: 320, lg: 1024 }` by default — tablets resolve `lg`).
+
+### Fonts
+
+Web never applies Blend's font tokens — components inherit whatever the host document loads, and the consuming app supplies InterDisplay via `@font-face`. RN has no inheritance, so the provider is the inheritance mechanism: it resolves one family per role (`display` / `body` / `heading` / `mono`, defaulting to the foundation `font.family` tokens) and `Text` applies the `body` role by default.
+
+Consumers must load the faces themselves (e.g. `expo-font`, or native asset linking) **under the exact token family name** (`InterDisplay`); until they do, the platform falls back to the system font (with a dev warning on iOS). Opt out or override per role:
+
+```tsx
+<BlendNativeProvider fontFamily="system" />              // platform fonts everywhere
+<BlendNativeProvider fontFamily={{ mono: 'JetBrainsMono' }} />  // override one role
+<BlendNativeProvider fontFamily={{ body: null }} />      // disable one role
+```
+
+Android note: static font files must be registered so numeric `fontWeight` values resolve within one family (the `expo-font` config plugin handles this); otherwise weights beyond regular/bold may not render.
+
+### Font scaling
+
+OS font scaling (Dynamic Type) is deliberately left **on** — the package policy is to respect it and let controls grow: components size with `minHeight`, never a fixed `height`, so scaled text expands the control instead of clipping. Consumers needing a cap can pass RN's own `maxFontSizeMultiplier` through to `Text`.
+
 ### CSS-string adapter
 
 Blend tokens emit CSS strings (`"6px"`, `"1px solid #E1E4EA"`, `"linear-gradient(...)"`, `"0px 2px 8px rgba(5,5,6,0.07)"`). RN's stylesheet accepts only numbers or platform-specific objects, so every token value that touches layout or decoration is translated in `cssStringAdapter.ts`:
@@ -113,40 +135,45 @@ All functions are pure and total — unparseable input returns a safe fallback r
 
 ```
 packages/blend-native/
-├── package.json          # publishes raw src/ (no build step — Metro transpiles TS)
+├── package.json          # dual ESM+CJS build via react-native-builder-bob;
+│                         # Metro consumes raw src/ via the react-native condition
 ├── tsconfig.json         # ES2020, no DOM lib, JSX react-jsx, strict
+├── tsconfig.build.json   # declaration-only emit for bob's typescript target
 ├── eslint.config.js      # mirrors web config, no browser globals
 ├── vitest.config.ts      # covers the pure layer (see Testing)
+├── jest.config.cjs       # RN preset for *.render.test.tsx (RNTL)
 ├── __tests__/
 └── src/
-    ├── index.ts                  # public barrel
+    ├── index.ts                  # public barrel — the semver commitment
     ├── theme/
-    │   ├── BlendNativeProvider.tsx   # context
+    │   ├── BlendNativeProvider.tsx   # context (theme, overrides, breakpoints, fonts)
     │   ├── useNativeTokens.ts        # slot → flat, override-merged tokens
     │   ├── nativeTokenRegistry.ts    # slot → factory (ONE file per new component)
     │   ├── useNativeBreakpoint.ts    # useWindowDimensions → 'sm' | 'lg'
-    │   └── breakpoint.ts             # pure width → label (RN-free, testable)
+    │   ├── breakpoint.ts             # pure width → label (RN-free, testable)
+    │   ├── fonts.ts                  # pure role → family resolution (RN-free)
+    │   └── systemTheme.ts            # pure 'system' → light/dark (RN-free)
     ├── adapters/
     │   ├── cssStringAdapter.ts       # pure CSS-string → RN value parsers
     │   └── surfaceStyle.ts           # composes them into a ViewStyle
+    ├── a11y/
+    │   ├── announcement.ts           # pure announcement composition
+    │   └── useLiveRegion.ts          # iOS announceForAccessibility bridge
     ├── primitives/
-    │   ├── Block.tsx
-    │   ├── Pressable.tsx
-    │   ├── Text.tsx
-    │   └── Slot.tsx
+    │   ├── Block.tsx  Pressable.tsx  Text.tsx  Slot.tsx  Separator.tsx
+    │   ├── pressFeedback.ts          # ripple (Android) vs scale (elsewhere)
+    │   ├── tintSlot.ts               # explicit icon tinting (no currentColor)
+    │   └── touchTarget.ts            # 44pt hitSlop policy (RN-free, testable)
     └── components/
         ├── shared/
-        │   └── groupRadius.ts        # cross-component internals
+        │   └── group.ts              # grouped-control radius/border collapse
+        ├── Alert/                    # Alert.tsx + AlertActions/AlertClose/AlertText
         ├── Button/
         │   ├── Button.tsx
         │   ├── button.types.ts
         │   ├── button.utils.ts
         │   └── index.ts
-        └── Tag/
-            ├── Tag.tsx
-            ├── tag.types.ts
-            ├── tag.utils.ts
-            └── index.ts
+        └── Tag/                      # same shape as Button/
 ```
 
 Files are named plainly. `.native.tsx` / `.ios.tsx` / `.web.tsx` are Metro **resolver directives** meaning "use this instead of the sibling", so they are reserved for genuine platform splits — this package has none.
@@ -232,6 +259,20 @@ Plus any `PressableProps` (`onLongPress`, `onPressIn`, `hitSlop`, `accessibility
 | `pressed`            | `boolean \| 'mixed'`                 | —           | Toggle state (web's `aria-pressed`)                           |
 | `accessibilityLabel` | `string`                             | derived     | Overrides the name built from `text` + `pressed`              |
 
+### Alert props
+
+| Prop                              | Type                                              | Default          | Description                                                                        |
+| --------------------------------- | ------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------- |
+| `type`                            | `AlertType`                                       | `PRIMARY`        | `PRIMARY`, `SUCCESS`, `WARNING`, `ERROR`, `PURPLE`, `ORANGE`, `NEUTRAL`            |
+| `subType`                         | `AlertSubType`                                    | `SUBTLE`         | `SUBTLE`, `NO_FILL`                                                                |
+| `heading`                         | `string`                                          | —                | Alert heading                                                                      |
+| `description`                     | `string`                                          | —                | Body text                                                                          |
+| `slot`                            | `{ slot, maxHeight? }`                            | —                | Leading icon/element                                                               |
+| `actions`                         | `{ position?, primaryAction?, secondaryAction? }` | bottom           | Action links; `position` is `BOTTOM` or `RIGHT`                                    |
+| `closeButton`                     | `{ show?, onPress? }`                             | `{ show: true }` | Close affordance                                                                   |
+| `announce`                        | `boolean`                                         | `true`           | Live-region announcement (imperative on iOS, `accessibilityLiveRegion` on Android) |
+| `width` / `maxWidth` / `minWidth` | `string \| number`                                | token defaults   | Sizing overrides                                                                   |
+
 ## Development
 
 ```bash
@@ -244,9 +285,10 @@ pnpm --filter @juspay/blend-native test
 
 ### Testing
 
-The suites cover the package's **pure** layer — adapters, surface resolution, per-component style/utility functions, breakpoint resolution, and override merging — and run under plain vitest with no RN runtime, because every `react-native` import in those modules is type-only and therefore erased.
+Two runners, disjoint globs, both run by `pnpm test`:
 
-Component render tests are not wired up yet: `@testing-library/react-native` needs a Jest + RN preset, a different toolchain from the vitest setup the rest of the monorepo uses.
+- **vitest** (`test:unit`) covers the **pure** layer — adapters, surface resolution, per-component style/utility functions, breakpoint/theme/font resolution, and override merging. It runs with no RN runtime, because every `react-native` import in those modules is type-only and therefore erased.
+- **jest + `@testing-library/react-native`** (`test:render`) covers `*.render.test.tsx` — what actually reaches the render tree: accessibility reachability, provider wiring (breakpoints, fonts, `theme="system"`), and regressions only a mounted component can catch.
 
 **Verify visually on a simulator or device, not just the browser.** Several
 bugs here were invisible under `react-native-web` and only appeared on a real
@@ -272,8 +314,8 @@ capturing pressed states, and the Expo Go SDK ceiling on Android.
 - **Inset shadows dropped**: RN has no inset-shadow concept. `parseBoxShadow` returns `null` for inset declarations; focus-ring shadows become outer shadows.
 - **Hover is a no-op**: `ButtonState.HOVER` exists in the enum but native has no hover. Tokens apply only if the consumer explicitly sets `state={ButtonState.HOVER}`.
 - **No skeleton**: web's `skeleton` prop has no native counterpart. It is `Omit`ted from the prop types rather than accepted and ignored, so passing it is a compile error.
-- **Tag vertical padding is not applied**: the tokens pair a fixed `height` with vertical padding that leaves a content box shorter than the text's line height. CSS lets the line box overflow harmlessly; RN clips it, shearing descenders. `height` is treated as authoritative — which reproduces web's visual result exactly.
+- **Tag vertical padding is not applied**: the tokens pair a height with vertical padding that leaves a content box shorter than the text's line height. CSS lets the line box overflow harmlessly; RN clips it, shearing descenders. The height token is applied as `minHeight` (identical result at the default font scale, and the box grows under OS font scaling) and the inert vertical padding is dropped.
 - **Not ported from web's ButtonV2 barrel**: `IconButton`, `LinkButton` and `ButtonGroupV2` have no native counterpart yet, and neither does `TagGroupV2` — only the per-control `tagGroupPosition` / `buttonGroupPosition` prop is supported.
-- **No `react-native-builder-bob` build**: the package publishes raw TypeScript. Fine for Metro, not for other bundlers.
+- **Gradients in the ESM build**: the optional `expo-linear-gradient` peer is loaded with `require`, which exists under Metro, the CJS build, and bundlers that polyfill it (webpack). In a pure-ESM Node context the probe degrades and gradient surfaces render their first-stop flat fill.
 
 Controls smaller than 44pt automatically receive a `hitSlop` so their tap target meets Apple HIG and Material guidance without changing their visual size; pass `minTouchTarget={0}` to opt out.
