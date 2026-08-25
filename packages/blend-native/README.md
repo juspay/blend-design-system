@@ -188,12 +188,12 @@ pnpm add expo-linear-gradient
 
 ### Peer dependencies
 
-| Package                       | Version    | Required                                          |
-| ----------------------------- | ---------- | ------------------------------------------------- |
-| `@juspay/blend-design-system` | `>=0.0.37` | yes                                               |
-| `react`                       | `>=18.2.0` | yes                                               |
-| `react-native`                | `>=0.74.0` | yes                                               |
-| `expo-linear-gradient`        | `>=15.0.0` | **optional** — gradients fall back to a flat fill |
+| Package                       | Version           | Required                                          |
+| ----------------------------- | ----------------- | ------------------------------------------------- |
+| `@juspay/blend-design-system` | `>=0.0.38-beta.2` | yes                                               |
+| `react`                       | `>=18.2.0`        | yes                                               |
+| `react-native`                | `>=0.74.0`        | yes                                               |
+| `expo-linear-gradient`        | `>=15.0.0`        | **optional** — gradients fall back to a flat fill |
 
 ## Usage
 
