@@ -7,6 +7,7 @@ import {
     type BreakpointType,
 } from '@juspay/blend-design-system/node'
 import type { NativeComponentTokenOverrides } from './nativeTokenRegistry'
+import { PortalArea } from '../overlay/portal'
 import {
     resolveFontFamilies,
     type NativeFontFamilies,
@@ -125,7 +126,10 @@ export function BlendNativeProvider({
 
     return (
         <BlendNativeThemeContext.Provider value={value}>
-            {children}
+            {/* Portal layers render after (above) the app's children — mount
+                the provider at a screen-filling root so overlays cover the
+                screen. See overlay/portal.tsx. */}
+            <PortalArea>{children}</PortalArea>
         </BlendNativeThemeContext.Provider>
     )
 }
