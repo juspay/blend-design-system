@@ -334,7 +334,33 @@ module graph (Reanimated worklets, gesture handler, portals) compiles.
 `@juspay/blend-design-system`; compatibility is declared through the peer
 range. Publishing runs through the **Publish Native to NPM** workflow
 (`.github/workflows/publish-native-npm.yml`), which gates on branch,
-version format, and a green lint/typecheck/test/build before `npm publish`.
+version format, a green lint/typecheck/test/build, and the peer-export
+check below, before `npm publish`.
+
+### Publish the web package first — always
+
+This package imports its whole token system from
+`@juspay/blend-design-system/node`. The workspace build always has the
+newest exports, so **local checks and CI cannot tell you whether the
+version consumers will install has them**. A new native component almost
+always adds an export to `packages/blend/lib/node.ts`, and until a web
+version containing it is on npm, publishing native ships a package that
+crashes on first render with an unrelated `undefined`.
+
+```bash
+pnpm --filter @juspay/blend-native check:peer
+```
+
+resolves the floor version out of the declared peer range, fetches that
+exact version from the registry, and asserts every value import exists in
+it. Run it before any release; the publish workflow runs it too. When it
+fails, the fix is always the same order:
+
+1. Publish a `@juspay/blend-design-system` version whose `lib/node.ts`
+   carries the new exports (its own beta workflow runs from `staging`).
+2. Raise `peerDependencies["@juspay/blend-design-system"]` here to that
+   version.
+3. Re-run `check:peer` — then publish native.
 
 ### Beta
 

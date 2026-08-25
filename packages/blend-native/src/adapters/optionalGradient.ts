@@ -25,15 +25,14 @@ export type GradientComponent = React.ComponentType<{
     style?: ViewStyle
 }>
 
+type GradientModule = { LinearGradient: GradientComponent }
+
 export let LinearGradient: GradientComponent | null = null
 try {
     if (typeof require === 'function') {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        LinearGradient = (
-            require('expo-linear-gradient') as {
-                LinearGradient: GradientComponent
-            }
-        ).LinearGradient
+        const mod: GradientModule = require('expo-linear-gradient')
+        LinearGradient = mod.LinearGradient
     }
 } catch {
     LinearGradient = null

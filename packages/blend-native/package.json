@@ -29,6 +29,7 @@
     },
     "scripts": {
         "build": "bob build",
+        "check:peer": "node scripts/check-peer-exports.mjs",
         "clean": "rm -rf lib",
         "lint": "eslint .",
         "prepublishOnly": "bob build",
