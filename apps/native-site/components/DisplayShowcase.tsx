@@ -1,5 +1,11 @@
 import { View, StyleSheet, Text as RNText } from 'react-native'
-import { Avatar, AvatarShape, AvatarSize, AvatarStatusType } from 'blend-native'
+import {
+    Avatar,
+    KeyValuePair,
+    AvatarShape,
+    AvatarSize,
+    AvatarStatusType,
+} from 'blend-native'
 
 /**
  * Visual parity harness for the display components (Avatar, KeyValuePair,
@@ -78,6 +84,24 @@ export default function DisplayShowcase() {
                     shape={AvatarShape.ROUNDED}
                     size={AvatarSize.LG}
                     status={{ type: AvatarStatusType.OFFLINE }}
+                />
+            </Section>
+
+            <Section title="KeyValuePair — vertical / horizontal / truncation">
+                <KeyValuePair keyString="Merchant" value="Acme Payments Ltd" />
+                <KeyValuePair
+                    keyString="Status"
+                    value="Active"
+                    orientation="horizontal"
+                />
+                <KeyValuePair
+                    keyString="Very long value"
+                    value="This value is far too long to fit and must truncate to a single line"
+                />
+                <KeyValuePair
+                    keyString="Wrapped"
+                    value="This value wraps onto two lines at most before clamping"
+                    textOverflow="wrap-clamp"
                 />
             </Section>
 

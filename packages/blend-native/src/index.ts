@@ -25,6 +25,12 @@ export { Button } from './components/Button'
 export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
 export { LinkButton } from './components/Button'
+export { KeyValuePair } from './components/KeyValuePair'
+export type {
+    KeyValuePairNativeProps,
+    KeyValuePairOrientation,
+    KeyValuePairTextOverflow,
+} from './components/KeyValuePair'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
 export { TextInput } from './components/TextInput'
@@ -158,6 +164,7 @@ export {
     ButtonV2SubType as ButtonSubType,
     ButtonV2State as ButtonState,
     InputSizeV2 as InputSize,
+    KeyValuePairV2Size as KeyValuePairSize,
     InputStateV2 as InputState,
     ProgressBarV2Size as ProgressBarSize,
     ProgressBarV2Variant as ProgressBarVariant,

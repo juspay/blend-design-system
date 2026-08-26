@@ -1,5 +1,7 @@
 import { fireEvent, render } from '@testing-library/react-native'
+import { Text as RNText } from 'react-native'
 import { Avatar } from '../src/components/Avatar'
+import { KeyValuePair } from '../src/components/KeyValuePair'
 import { Spinner } from '../src/components/Spinner'
 import { ProgressBar } from '../src/components/ProgressBar'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
@@ -75,6 +77,63 @@ describe('Avatar rendering', () => {
         const dot = getByTestId('av-status', { includeHiddenElements: true })
         expect(dot.props.importantForAccessibility).toBe('no-hide-descendants')
         expect(getByTestId('av').props.accessibilityLabel).toBe('Jane, online')
+    })
+})
+
+describe('KeyValuePair rendering', () => {
+    it('renders key and value with truncation mapped to numberOfLines', () => {
+        const { getByTestId, getByText } = wrap(
+            <KeyValuePair
+                keyString="Merchant"
+                value="Acme Payments Ltd"
+                testID="kvp"
+            />
+        )
+        expect(getByText('Merchant')).toBeTruthy()
+        expect(getByTestId('kvp-value').props.numberOfLines).toBe(1)
+    })
+
+    it('wrap-clamp caps at maxLines; wrap removes the cap', () => {
+        const { getByTestId, rerender } = wrap(
+            <KeyValuePair
+                keyString="K"
+                value="V"
+                textOverflow="wrap-clamp"
+                maxLines={3}
+                testID="kvp"
+            />
+        )
+        expect(getByTestId('kvp-value').props.numberOfLines).toBe(3)
+        rerender(
+            <BlendNativeProvider>
+                <KeyValuePair
+                    keyString="K"
+                    value="V"
+                    textOverflow="wrap"
+                    testID="kvp"
+                />
+            </BlendNativeProvider>
+        )
+        expect(getByTestId('kvp-value').props.numberOfLines).toBeUndefined()
+    })
+
+    it('renders the three slot positions', () => {
+        const { getByText } = wrap(
+            <KeyValuePair
+                keyString="Status"
+                value="Active"
+                slots={{
+                    key: <RNText>k</RNText>,
+                    valueLeft: <RNText>l</RNText>,
+                    valueRight: <RNText>r</RNText>,
+                }}
+            />
+        )
+        for (const marker of ['k', 'l', 'r']) {
+            expect(
+                getByText(marker, { includeHiddenElements: true })
+            ).toBeTruthy()
+        }
     })
 })
 
