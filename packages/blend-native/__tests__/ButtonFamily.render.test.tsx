@@ -7,6 +7,7 @@ import {
     IconButton,
     LinkButton,
 } from '../src/components/Button'
+import { Tag, TagGroup } from '../src/components/Tag'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 
 type FlatStyle = Record<string, unknown>
@@ -174,6 +175,54 @@ describe('ButtonGroup accessibility', () => {
         fireEvent.press(getByTestId('b2'))
         expect(one).toHaveBeenCalledTimes(1)
         expect(two).toHaveBeenCalledTimes(1)
+    })
+})
+
+describe('TagGroup rendering', () => {
+    it('stacked: collapses member corners left/center/right', () => {
+        const { getByTestId } = wrap(
+            <TagGroup stacked testID="tags">
+                <Tag text="One" testID="t1" />
+                <Tag text="Two" testID="t2" />
+                <Tag text="Three" testID="t3" />
+            </TagGroup>
+        )
+        const first = flatten(getByTestId('t1').props.style)
+        const middle = flatten(getByTestId('t2').props.style)
+        const last = flatten(getByTestId('t3').props.style)
+        expect(first.borderTopRightRadius).toBe(0)
+        expect(first.borderTopLeftRadius).not.toBe(0)
+        expect(middle.borderTopLeftRadius).toBe(0)
+        expect(middle.borderTopRightRadius).toBe(0)
+        expect(last.borderTopLeftRadius).toBe(0)
+        expect(last.borderTopRightRadius).not.toBe(0)
+    })
+
+    it('non-stacked: members keep their full radius', () => {
+        const { getByTestId } = wrap(
+            <TagGroup testID="tags">
+                <Tag text="One" testID="t1" />
+                <Tag text="Two" testID="t2" />
+            </TagGroup>
+        )
+        expect(
+            flatten(getByTestId('t1').props.style).borderTopRightRadius
+        ).not.toBe(0)
+    })
+})
+
+describe('TagGroup accessibility', () => {
+    it('keeps interactive members individually reachable', () => {
+        const onPress = jest.fn()
+        const { getByTestId } = wrap(
+            <TagGroup stacked testID="tags">
+                <Tag text="One" testID="t1" onPress={onPress} />
+                <Tag text="Two" testID="t2" />
+            </TagGroup>
+        )
+        expect(getByTestId('tags').props.accessible).not.toBe(true)
+        fireEvent.press(getByTestId('t1'))
+        expect(onPress).toHaveBeenCalledTimes(1)
     })
 })
 

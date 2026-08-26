@@ -24,6 +24,7 @@ export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
 export { LinkButton } from './components/Button'
 export { Tag } from './components/Tag'
+export { TagGroup } from './components/Tag'
 export { TextInput } from './components/TextInput'
 export type {
     TextInputNativeProps,
@@ -45,7 +46,11 @@ export type {
     IconButtonNativeProps,
     LinkButtonNativeProps,
 } from './components/Button'
-export type { TagNativeProps, TagSlot } from './components/Tag'
+export type {
+    TagNativeProps,
+    TagGroupNativeProps,
+    TagSlot,
+} from './components/Tag'
 
 // ---- Theming ------------------------------------------------------------
 export {

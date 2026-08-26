@@ -78,6 +78,7 @@ describe('public API surface', () => {
             'IconButton',
             'LinkButton',
             'Tag',
+            'TagGroup',
         ]) {
             expect(exported.has(name)).toBe(true)
         }
