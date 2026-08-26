@@ -20,6 +20,7 @@
 // ---- Components ---------------------------------------------------------
 export { Alert } from './components/Alert'
 export { Button } from './components/Button'
+export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
 export { LinkButton } from './components/Button'
 export { Tag } from './components/Tag'
@@ -40,6 +41,7 @@ export type {
 } from './components/Alert'
 export type {
     ButtonNativeProps,
+    ButtonGroupNativeProps,
     IconButtonNativeProps,
     LinkButtonNativeProps,
 } from './components/Button'

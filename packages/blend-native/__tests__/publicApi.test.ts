@@ -74,6 +74,7 @@ describe('public API surface', () => {
         for (const name of [
             'Alert',
             'Button',
+            'ButtonGroup',
             'IconButton',
             'LinkButton',
             'Tag',

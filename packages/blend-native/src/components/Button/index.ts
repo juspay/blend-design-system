@@ -1,6 +1,8 @@
 export { default as Button } from './Button'
+export { default as ButtonGroup } from './ButtonGroup'
 export { default as IconButton } from './IconButton'
 export { default as LinkButton } from './LinkButton'
+export type { ButtonGroupNativeProps } from './ButtonGroup'
 export type {
     ButtonNativeProps,
     IconButtonNativeProps,

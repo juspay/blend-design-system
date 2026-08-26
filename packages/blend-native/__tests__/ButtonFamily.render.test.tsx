@@ -1,8 +1,17 @@
 import React from 'react'
 import { Text as RNText, View } from 'react-native'
 import { render, fireEvent } from '@testing-library/react-native'
-import { IconButton, LinkButton } from '../src/components/Button'
+import {
+    Button,
+    ButtonGroup,
+    IconButton,
+    LinkButton,
+} from '../src/components/Button'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
+
+type FlatStyle = Record<string, unknown>
+const flatten = (style: unknown): FlatStyle =>
+    Object.assign({}, ...[style].flat(Infinity).filter(Boolean))
 
 /**
  * Render tests for the Button/Tag family components (IconButton, LinkButton,
@@ -92,6 +101,79 @@ describe('LinkButton rendering', () => {
         )
         fireEvent.press(getByTestId('link'))
         expect(onPress).toHaveBeenCalledTimes(1)
+    })
+})
+
+describe('ButtonGroup rendering', () => {
+    const threeButtons = (stacked: boolean, gap?: number) => (
+        <ButtonGroup stacked={stacked} gap={gap} testID="group">
+            <Button text="One" testID="b1" onPress={() => {}} />
+            <Button text="Two" testID="b2" onPress={() => {}} />
+            <Button text="Three" testID="b3" onPress={() => {}} />
+        </ButtonGroup>
+    )
+
+    it('stacked: injects left/center/right and collapses shared edges', () => {
+        const { getByTestId } = wrap(threeButtons(true))
+        const first = flatten(getByTestId('b1').props.style)
+        const middle = flatten(getByTestId('b2').props.style)
+        const last = flatten(getByTestId('b3').props.style)
+
+        // End caps keep only their outward corners.
+        expect(first.borderTopRightRadius).toBe(0)
+        expect(first.borderTopLeftRadius).not.toBe(0)
+        expect(last.borderTopLeftRadius).toBe(0)
+        expect(last.borderTopRightRadius).not.toBe(0)
+        // The interior member squares off and drops its shared borders.
+        expect(middle.borderTopLeftRadius).toBe(0)
+        expect(middle.borderTopRightRadius).toBe(0)
+        expect(middle.borderLeftWidth).toBe(0)
+        expect(middle.borderRightWidth).toBe(0)
+        // Stacked groups have no gap.
+        expect(flatten(getByTestId('group').props.style).gap).toBe(0)
+    })
+
+    it('non-stacked: injects nothing and keeps the default gap', () => {
+        const { getByTestId } = wrap(threeButtons(false))
+        const first = flatten(getByTestId('b1').props.style)
+        expect(first.borderTopRightRadius).not.toBe(0)
+        expect(flatten(getByTestId('group').props.style).gap).toBe(10)
+    })
+
+    it('respects a custom gap', () => {
+        const { getByTestId } = wrap(threeButtons(false, 4))
+        expect(flatten(getByTestId('group').props.style).gap).toBe(4)
+    })
+
+    it('a single stacked child keeps its full radius', () => {
+        const { getByTestId } = wrap(
+            <ButtonGroup stacked testID="group">
+                <Button text="Only" testID="b1" onPress={() => {}} />
+            </ButtonGroup>
+        )
+        const only = flatten(getByTestId('b1').props.style)
+        expect(only.borderTopLeftRadius).not.toBe(0)
+        expect(only.borderTopRightRadius).not.toBe(0)
+    })
+})
+
+describe('ButtonGroup accessibility', () => {
+    it('keeps members individually pressable and reachable', () => {
+        // The container must not be `accessible` — that collapses the
+        // members into one node (the Alert container regression).
+        const one = jest.fn()
+        const two = jest.fn()
+        const { getByTestId } = wrap(
+            <ButtonGroup stacked testID="group">
+                <Button text="One" testID="b1" onPress={one} />
+                <Button text="Two" testID="b2" onPress={two} />
+            </ButtonGroup>
+        )
+        expect(getByTestId('group').props.accessible).not.toBe(true)
+        fireEvent.press(getByTestId('b1'))
+        fireEvent.press(getByTestId('b2'))
+        expect(one).toHaveBeenCalledTimes(1)
+        expect(two).toHaveBeenCalledTimes(1)
     })
 })
 

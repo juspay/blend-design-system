@@ -2,6 +2,7 @@ import { View, StyleSheet, Text as RNText } from 'react-native'
 import { Plus, Trash2 } from 'lucide-react-native'
 import {
     Button,
+    ButtonGroup,
     IconButton,
     LinkButton,
     ButtonType,
@@ -167,6 +168,44 @@ export default function ButtonShowcase() {
                         onPress={() => {}}
                     />
                 </View>
+            </Section>
+
+            {/* ---- ButtonGroup ---- */}
+            <Section title="ButtonGroup — stacked (joined edges)">
+                <ButtonGroup stacked>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Day"
+                        onPress={() => {}}
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Week"
+                        onPress={() => {}}
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Month"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        buttonType={ButtonType.SECONDARY}
+                        accessibilityLabel="Add view"
+                        onPress={() => {}}
+                    />
+                </ButtonGroup>
+            </Section>
+
+            <Section title="ButtonGroup — spaced (default gap)">
+                <ButtonGroup>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Cancel"
+                        onPress={() => {}}
+                    />
+                    <Button text="Confirm" onPress={() => {}} />
+                </ButtonGroup>
             </Section>
 
             {/* ---- Width control ---- */}
