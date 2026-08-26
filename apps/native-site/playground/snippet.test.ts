@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { buildSnippet, indent } from './snippet'
-import { enumOptions, humanize, numberOptions, unionOptions } from './types'
+import { addProps, buildSnippet, indent, replaceProp } from './snippet'
+import {
+    enumOptions,
+    humanize,
+    numberOptions,
+    toggleValues,
+    unionOptions,
+} from './types'
 import type { Control } from './types'
 
 enum Color {
@@ -79,6 +85,12 @@ describe('buildSnippet', () => {
         expect(snippet({ count: 2 })).toContain('count={2}')
     })
 
+    it('drops a slot cleared back to undefined, rather than printing {false}', () => {
+        // Regression: `off: undefined` used to collapse to `false`, which
+        // put `leftSlot={false}` in the block — not valid for the prop type.
+        expect(snippet({ leftSlot: undefined })).not.toContain('leftSlot')
+    })
+
     it('uses the toggle code hint for non-scalar values', () => {
         expect(snippet({ leftSlot: SLOT })).toContain(
             'leftSlot={{ slot: <Star /> }}'
@@ -129,16 +141,76 @@ describe('buildSnippet', () => {
     })
 })
 
+describe('replaceProp', () => {
+    const block = '<Tag\n    text="Blend"\n    size={2}\n/>'
+
+    it('rewrites the matching line and keeps its indentation', () => {
+        expect(replaceProp(block, 'text', '"First"')).toBe(
+            '<Tag\n    text="First"\n    size={2}\n/>'
+        )
+    })
+
+    it('leaves the block alone when the prop is absent', () => {
+        expect(replaceProp(block, 'color', '"red"')).toBe(block)
+    })
+})
+
+describe('addProps', () => {
+    it('appends to a multi-line block', () => {
+        expect(addProps('<Sheet\n    topRadius={0}\n/>', ['open={open}'])).toBe(
+            '<Sheet\n    topRadius={0}\n    open={open}\n/>'
+        )
+    })
+
+    it('expands a self-closed one-liner, which has no line to append after', () => {
+        expect(addProps('<Sheet />', ['open={open}'])).toBe(
+            '<Sheet\n    open={open}\n/>'
+        )
+    })
+})
+
 describe('indent', () => {
     it('shifts every non-empty line and leaves blank lines alone', () => {
         expect(indent('a\n\nb')).toBe('    a\n\n    b')
     })
 })
 
+describe('toggleValues', () => {
+    it('defaults to true / false when the spec says nothing', () => {
+        expect(toggleValues({})).toEqual({ on: true, off: false })
+    })
+
+    it('treats an explicit `off: undefined` as "clear the prop"', () => {
+        // Regression: this used to collapse to `false`, so switching a slot
+        // toggle on and off wrote `leftSlot={false}` — into the component's
+        // props and into the generated JSX, where it does not type-check.
+        expect(toggleValues({ on: SLOT, off: undefined })).toEqual({
+            on: SLOT,
+            off: undefined,
+        })
+    })
+
+    it('still honours an explicit `off: false`', () => {
+        expect(toggleValues({ on: 'yes', off: false })).toEqual({
+            on: 'yes',
+            off: false,
+        })
+    })
+})
+
 describe('option builders', () => {
     it('humanizes enum keys', () => {
         expect(humanize('NO_FILL')).toBe('No fill')
+        expect(humanize('SUCCESS')).toBe('Success')
+        expect(humanize('MD')).toBe('Md')
+        expect(humanize('wrap-clamp')).toBe('Wrap clamp')
         expect(humanize('sm')).toBe('Sm')
+    })
+
+    it('leaves component names alone rather than flattening their case', () => {
+        // Regression: these used to render as "Taggroup" / "Iconbutton".
+        expect(humanize('TagGroup')).toBe('TagGroup')
+        expect(humanize('IconButton')).toBe('IconButton')
     })
 
     it('derives options from the enum object, not a hardcoded list', () => {

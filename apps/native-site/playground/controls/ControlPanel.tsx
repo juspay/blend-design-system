@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { useChrome } from '../chrome'
-import { CONTROL_GROUPS } from '../types'
+import { CONTROL_GROUPS, toggleValues } from '../types'
 import type { Control, ControlGroup, Option } from '../types'
 import SegmentedControl from './SegmentedControl'
 import SelectControl from './SelectControl'
@@ -76,8 +76,7 @@ function ControlRow<P extends object>({
     const set = (next: unknown) => onChange(control.key, next)
 
     if (control.kind === 'toggle') {
-        const on = control.on === undefined ? true : control.on
-        const off = control.off === undefined ? false : control.off
+        const { on, off } = toggleValues(control)
         return (
             <ToggleControl
                 label={control.label}

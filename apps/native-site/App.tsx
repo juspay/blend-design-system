@@ -54,9 +54,15 @@ export default function App() {
     const tabs: readonly TabKey[] = spec.gallery
         ? ['preview', 'gallery']
         : ['preview']
-    // A spec without a gallery hides the tab; if it was the active one,
-    // fall back rather than rendering an empty screen.
-    const activeTab = spec.gallery ? tab : 'preview'
+
+    const selectComponent = useCallback((name: string) => {
+        setComponentName(name)
+        // A spec with no gallery hides that tab. Reset the choice rather
+        // than leaving it parked, or the next component that does have a
+        // gallery would open on it without the user asking.
+        if (!findSpec(name).gallery) setTab('preview')
+        setDrawerOpen(false)
+    }, [])
 
     return (
         <PlatformPreview>
@@ -91,10 +97,7 @@ export default function App() {
                                         <ComponentDrawer
                                             groups={COMPONENT_GROUPS}
                                             value={componentName}
-                                            onChange={(name) => {
-                                                setComponentName(name)
-                                                setDrawerOpen(false)
-                                            }}
+                                            onChange={selectComponent}
                                         />
                                     )}
                                 >
@@ -120,19 +123,30 @@ export default function App() {
                                             }
                                         />
 
-                                        {activeTab === 'preview' ? (
-                                            // Keyed so switching component resets
-                                            // the props to that spec's defaults.
+                                        {/* Hidden rather than unmounted: a
+                                            trip to the Gallery and back must
+                                            not discard the props you just
+                                            configured. Keyed so switching
+                                            component does reset them. */}
+                                        <View
+                                            style={[
+                                                styles.fill,
+                                                tab === 'gallery'
+                                                    ? styles.hidden
+                                                    : null,
+                                            ]}
+                                        >
                                             <Playground
                                                 key={spec.name}
                                                 spec={spec}
                                             />
-                                        ) : (
+                                        </View>
+                                        {tab === 'gallery' ? (
                                             <Gallery spec={spec} />
-                                        )}
+                                        ) : null}
 
                                         <PlaygroundTabBar
-                                            value={activeTab}
+                                            value={tab}
                                             onChange={setTab}
                                             tabs={tabs}
                                         />
@@ -149,4 +163,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
     fill: { flex: 1 },
+    // `display: none` takes the subtree out of Yoga's layout entirely, so
+    // the hidden Playground costs nothing while the Gallery is on screen.
+    hidden: { display: 'none' },
 })

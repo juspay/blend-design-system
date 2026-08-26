@@ -19,7 +19,22 @@ import type { TabBarProps } from './tabBar.shared'
  * Do not animate this with `opacity` — at 0 the system stops rendering the
  * effect entirely rather than fading it.
  */
-const GLASS = isLiquidGlassAvailable()
+/**
+ * `isLiquidGlassAvailable` reaches for the native module, which **throws**
+ * when it is not linked rather than returning `false`. This runs at module
+ * scope, so an unguarded throw would surface as a red screen while the app's
+ * import graph evaluates — taking everything down instead of degrading one
+ * bar. Below iOS 26 the module is present and simply answers `false`.
+ */
+function glassAvailable(): boolean {
+    try {
+        return isLiquidGlassAvailable()
+    } catch {
+        return false
+    }
+}
+
+const GLASS = glassAvailable()
 
 export default function PlaygroundTabBar({
     value,

@@ -58,6 +58,34 @@ function codeFor<P>(control: Control<P>, value: unknown): string | undefined {
     return undefined
 }
 
+/**
+ * Rewrites one prop line in a rendered block, for `wrapSnippet`. Returns the
+ * block untouched when the prop is not present.
+ */
+export function replaceProp(
+    jsx: string,
+    key: string,
+    formatted: string
+): string {
+    const lines = jsx.split('\n')
+    const index = lines.findIndex((line) => line.trim().startsWith(`${key}=`))
+    if (index === -1) return jsx
+
+    const line = lines[index]
+    const pad = line.slice(0, line.length - line.trimStart().length)
+    lines[index] = `${pad}${key}=${formatted}`
+    return lines.join('\n')
+}
+
+/** Inserts prop lines the stage supplies but no control drives. */
+export function addProps(jsx: string, props: readonly string[]): string {
+    const extra = props.map((prop) => `${INDENT}${prop}`).join('\n')
+    if (jsx.endsWith(' />')) {
+        return `${jsx.slice(0, -3)}\n${extra}\n/>`
+    }
+    return jsx.replace(/\n\/>$/, `\n${extra}\n/>`)
+}
+
 export function buildSnippet<P extends object>(
     componentName: string,
     props: P,

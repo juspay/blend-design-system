@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { BottomSheet } from 'blend-native'
 import type { BottomSheetProps } from 'blend-native'
 import SheetShowcase from '../../components/SheetShowcase'
+import { addProps, indent } from '../snippet'
 import { numberOptions } from '../types'
 import type { ComponentSpec } from '../types'
 
@@ -88,6 +89,18 @@ const spec: ComponentSpec<SheetPlaygroundProps> = {
             </View>
         </BottomSheet>
     ),
+    // `open`, `onClose` and the children come from the harness, not from a
+    // control, and `open`/`onClose` are required — without them the block
+    // would not compile if you pasted it.
+    wrapSnippet: (inner) => {
+        const withRequired = addProps(inner, [
+            'open={open}',
+            'onClose={() => setOpen(false)}',
+        ])
+        return `${withRequired.replace(/\n?\/>$/, '\n>')}\n${indent(
+            '<SheetBody />'
+        )}\n</BottomSheet>`
+    },
 }
 
 const styles = StyleSheet.create({

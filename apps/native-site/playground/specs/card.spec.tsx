@@ -5,6 +5,8 @@ import { MEDIA_NODE } from './slots'
 import { enumOptions } from '../types'
 import type { ComponentSpec } from '../types'
 
+const noop = () => {}
+
 const spec: ComponentSpec<CardNativeProps> = {
     name: 'Card',
     summary:
@@ -83,21 +85,24 @@ const spec: ComponentSpec<CardNativeProps> = {
         },
         {
             kind: 'toggle',
+            key: 'onPress',
+            label: 'Pressable',
+            group: 'State',
+            on: noop,
+            off: undefined,
+            onCode: 'handlePress',
+        },
+        {
+            // Web parity: selected chrome and the selected a11y state only
+            // apply to a pressable card, so this does nothing on its own.
+            // Surfacing that is more useful than hiding it.
+            kind: 'toggle',
             key: 'selected',
-            label: 'Selected (needs a press handler)',
+            label: 'Selected (needs Pressable)',
             group: 'State',
         },
     ],
-    render: (props) => (
-        <Card
-            {...props}
-            maxWidth={280}
-            // `selected` chrome and the button role only apply to a pressable
-            // card, so the handler follows the toggle rather than being
-            // always-on (which would make every card announce as a button).
-            onPress={props.selected ? () => {} : undefined}
-        />
-    ),
+    render: (props) => <Card {...props} maxWidth={280} />,
 }
 
 export default spec

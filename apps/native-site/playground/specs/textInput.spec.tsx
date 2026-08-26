@@ -3,6 +3,7 @@ import { InputSize, TextInput } from 'blend-native'
 import type { TextInputNativeProps } from 'blend-native'
 import InputShowcase from '../../components/InputShowcase'
 import { SEARCH_SLOT } from './slots'
+import { addProps } from '../snippet'
 import { enumOptions } from '../types'
 import type { ComponentSpec } from '../types'
 
@@ -105,6 +106,11 @@ const spec: ComponentSpec<TextInputNativeProps> = {
         },
     ],
     render: (props) => <LiveTextInput {...props} />,
+    // `value` is required and controlled. The preview holds it in local
+    // state; a consumer holds it in theirs, so the snippet says so rather
+    // than printing a field nobody can type into.
+    wrapSnippet: (inner) =>
+        addProps(inner, ['value={value}', 'onChangeText={setValue}']),
 }
 
 export default spec

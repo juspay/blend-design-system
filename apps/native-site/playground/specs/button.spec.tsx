@@ -133,7 +133,12 @@ const spec: ComponentSpec<ButtonPlaygroundProps> = {
             kind: 'segmented',
             key: 'width',
             label: 'Width',
-            options: numberOptions([120, 200, 280]),
+            // `Auto` writes `undefined`: without it a width, once set, could
+            // not be cleared, since no other option produces the unset value.
+            options: [
+                { label: 'Auto', value: undefined },
+                ...numberOptions([120, 200, 280]),
+            ],
         },
         {
             kind: 'text',

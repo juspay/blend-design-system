@@ -124,10 +124,23 @@ export function asAnySpec<P extends object>(spec: ComponentSpec<P>): AnySpec {
     return spec as unknown as AnySpec
 }
 
-/** `NO_FILL` -> `No fill`, `sm` -> `Sm`. */
+/**
+ * `NO_FILL` -> `No fill`, `wrap-clamp` -> `Wrap clamp`, `sm` -> `Sm`.
+ *
+ * A value that is already a proper name is left alone: enum keys are
+ * SCREAMING_SNAKE and want flattening, but union values such as `TagGroup`
+ * and `IconButton` are component names, and lowercasing them produces
+ * "Taggroup" and "Iconbutton".
+ */
 export function humanize(value: string): string {
-    const spaced = value.replace(/[_-]+/g, ' ').toLowerCase()
-    return spaced.charAt(0).toUpperCase() + spaced.slice(1)
+    // Separator or all-caps means an enum key (`NO_FILL`, `SUCCESS`, `MD`).
+    // Mixed case starting uppercase means a name, and is kept verbatim.
+    if (/[_-]/.test(value) || value === value.toUpperCase()) {
+        const spaced = value.replace(/[_-]+/g, ' ').toLowerCase()
+        return spaced.charAt(0).toUpperCase() + spaced.slice(1)
+    }
+    if (/^[A-Z]/.test(value)) return value
+    return value.charAt(0).toUpperCase() + value.slice(1)
 }
 
 /**
@@ -161,6 +174,27 @@ export const unionOptions =
         list: L & ([T] extends [L[number]] ? unknown : never)
     ): readonly Option<T>[] =>
         list.map((value) => ({ label: humanize(value), value }))
+
+/**
+ * The two values a toggle writes.
+ *
+ * `off: undefined` and an omitted `off` are deliberately different: the
+ * first means "clear the prop", the second means "write `false`". Collapsing
+ * them puts `leftSlot={false}` into the props a component receives and into
+ * the generated JSX, where it does not type-check.
+ *
+ * Lives here rather than inline in `ControlPanel` so it can be tested
+ * without rendering.
+ */
+export function toggleValues(control: { on?: unknown; off?: unknown }): {
+    on: unknown
+    off: unknown
+} {
+    return {
+        on: 'on' in control ? control.on : true,
+        off: 'off' in control ? control.off : false,
+    }
+}
 
 /** Numeric presets, for props with no natural enumeration. */
 export function numberOptions(

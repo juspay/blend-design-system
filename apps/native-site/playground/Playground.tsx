@@ -29,17 +29,16 @@ export default function Playground({ spec }: { spec: AnySpec }) {
         setProps((current) => ({ ...current, [key]: value }))
     }, [])
 
-    const dirty = useMemo(
-        () =>
-            Object.keys(spec.defaults).some(
-                (key) =>
-                    !Object.is(
-                        (props as Record<string, unknown>)[key],
-                        (spec.defaults as Record<string, unknown>)[key]
-                    )
-            ),
-        [props, spec.defaults]
-    )
+    // Both key sets, not just the defaults': a prop the spec has no default
+    // for (`loading`, `width`, a slot) is absent from `defaults`, and
+    // checking only those keys would leave Reset disabled after changing it
+    // — with no other way to undo.
+    const dirty = useMemo(() => {
+        const current = props as Record<string, unknown>
+        const initial = spec.defaults as Record<string, unknown>
+        const keys = new Set([...Object.keys(initial), ...Object.keys(current)])
+        return [...keys].some((key) => !Object.is(current[key], initial[key]))
+    }, [props, spec.defaults])
 
     const snippet = useMemo(
         () =>
