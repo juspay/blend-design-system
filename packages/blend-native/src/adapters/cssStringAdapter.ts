@@ -25,13 +25,28 @@ import type { ViewStyle } from 'react-native'
  * Here the `.` inside the optional group is mandatory, so each digit run has
  * exactly one valid division and matching stays linear.
  */
-const NUMBER = String.raw`-?(?:\d+(?:\.\d+)?|\.\d+)`
+const UNSIGNED_NUMBER = String.raw`(?:\d+(?:\.\d+)?|\.\d+)`
+const NUMBER = `-?${UNSIGNED_NUMBER}`
 
 /** `"6px"`, `"1.5px"`, `"0"` — a length, with the unit optional. */
 const DIMENSION_RE = new RegExp(`^(${NUMBER})(?:px)?$`)
 
 /** `"50%"`, `"33.5%"`, `"-5%"` — a percentage. */
 const PERCENT_RE = new RegExp(`^(${NUMBER})%$`)
+
+/** `"1px solid #E1E4EA"` — width, style, color. Width cannot be negative. */
+const BORDER_RE = new RegExp(
+    String.raw`^(${UNSIGNED_NUMBER})px\s+(?:solid|dashed|dotted)\s+(.+)$`
+)
+
+/** Every signed decimal in a string — for box-shadow's number run. */
+const NUMBER_G = new RegExp(NUMBER, 'g')
+
+/** `rgba(5, 5, 6, 0.07)` — channels, with the alpha optional. */
+const RGBA_RE = new RegExp(
+    String.raw`rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*(${UNSIGNED_NUMBER}))?\s*\)`,
+    'i'
+)
 
 /**
  * Result of parsing a background token.
@@ -166,9 +181,7 @@ export function parseBorder(
     // width: "1px" / "1.5px"
     // style: "solid" / "dashed" / "dotted" (RN only renders solid reliably)
     // color: hex / rgb / rgba / named
-    const match = value
-        .trim()
-        .match(/^(\d*\.?\d+)px\s+(?:solid|dashed|dotted)\s+(.+)$/)
+    const match = value.trim().match(BORDER_RE)
     if (!match) return {}
     const width = parseFloat(match[1])
     const color = match[2].trim()
@@ -201,8 +214,10 @@ export function parseBorderRadius(
     const trimmed = value.trim()
     if (trimmed === '' || trimmed === 'none') return undefined
 
-    const parts = trimmed.split(/\s+/).map((p) => parseFloat(p))
-    if (parts.some((p) => Number.isNaN(p))) return undefined
+    // Each corner must be a plain length — `parseFloat` would silently turn
+    // `"50%"` into `50` and `"12abc"` into `12`, both wrong on RN.
+    const parts = trimmed.split(/\s+/).map((p) => parseDimension(p))
+    if (parts.some((p) => p === undefined)) return undefined
 
     if (parts.length === 1) return parts[0]
     if (parts.length === 4) {
@@ -262,8 +277,7 @@ export function parseBoxShadow(
     const numericPart = outer
         .replace(/#[0-9a-fA-F]{3,8}|rgba?\([^)]*\)/gi, ' ')
         .replace(/\binset\b/gi, ' ')
-    const nums =
-        numericPart.match(/-?\d*\.?\d+/g)?.map((t) => parseFloat(t)) ?? []
+    const nums = numericPart.match(NUMBER_G)?.map((t) => parseFloat(t)) ?? []
 
     const [offsetX = 0, offsetY = 0, blur = 0, spread = 0] = nums
 
@@ -275,9 +289,7 @@ export function parseBoxShadow(
     // alpha separately for shadowOpacity (iOS multiplies them).
     let resolvedColor = shadowColor
     let resolvedOpacity = 1
-    const rgbaMatch = shadowColor.match(
-        /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/i
-    )
+    const rgbaMatch = shadowColor.match(RGBA_RE)
     if (rgbaMatch) {
         const [, r, g, b, a] = rgbaMatch
         resolvedColor = `rgb(${r}, ${g}, ${b})`
@@ -298,21 +310,79 @@ export function parseBoxShadow(
     }
 }
 
+/** `linear-gradient(<angle>deg, <stops>)` — the only gradient form Blend tokens use. */
+const LINEAR_GRADIENT_RE = new RegExp(
+    String.raw`linear-gradient\(\s*(${NUMBER})deg\s*,\s*(.+)\s*\)`,
+    'i'
+)
+
+/** The first color inside an unsupported gradient — its degrade target. */
+const FIRST_COLOR_RE = /#[0-9a-fA-F]{3,8}|rgba?\([^)]*\)|hsla?\([^)]*\)/i
+
+/** CSS-wide keywords that look like named colors but mean nothing to RN. */
+const NON_COLOR_KEYWORDS = new Set([
+    'inherit',
+    'initial',
+    'unset',
+    'revert',
+    'currentcolor',
+])
+
+/**
+ * Resolve gradient stop positions the way CSS does: a stop without a position
+ * gets one — first stop 0, last stop 1, interior stops spread evenly between
+ * their nearest positioned neighbours — and no stop may sit before an earlier
+ * one (out-of-order positions are raised to the running maximum).
+ */
+function resolveStopLocations(locations: (number | null)[]): number[] {
+    const out = locations.slice()
+    if (out[0] === null) out[0] = 0
+    if (out[out.length - 1] === null) out[out.length - 1] = 1
+
+    // Out-of-order specified positions clamp up to the running maximum.
+    let runningMax = 0
+    for (let i = 0; i < out.length; i++) {
+        const loc = out[i]
+        if (loc === null) continue
+        out[i] = Math.max(loc, runningMax)
+        runningMax = out[i] as number
+    }
+
+    // Interpolate each run of unspecified positions between its neighbours.
+    let i = 0
+    while (i < out.length) {
+        if (out[i] !== null) {
+            i++
+            continue
+        }
+        let j = i
+        while (out[j] === null) j++
+        const prev = out[i - 1] as number
+        const next = out[j] as number
+        const runLength = j - i
+        for (let k = 0; k < runLength; k++) {
+            out[i + k] = prev + ((k + 1) * (next - prev)) / (runLength + 1)
+        }
+        i = j
+    }
+    return out as number[]
+}
+
 /**
  * Parse a CSS `background` value into a `ParsedBackground`.
  *
  * - `"linear-gradient(180deg, #1A56DB -5%, #2563EB 107.5%)"` → gradient descriptor
- *   (percentage midpoints outside [0,1] are clamped — known limitation)
+ *   (percentage stops outside [0,1] are clamped — known limitation)
  * - `"#FFFFFF"` / `"rgb(255,255,255)"` → flat color
- * - `"none"` / `"transparent"` → null
+ * - unsupported gradient syntax (`to top`, radial, conic) → flat first stop,
+ *   never the raw string as a "color"
+ * - `"none"` / `"transparent"` / anything unrecognised → null
  */
 export function parseBackground(value: string | undefined): ParsedBackground {
     if (!value || value === 'none' || value === 'transparent') return null
 
     // Gradient?
-    const gradientMatch = value.match(
-        /linear-gradient\(\s*(\d+)deg\s*,\s*(.+)\s*\)/i
-    )
+    const gradientMatch = value.match(LINEAR_GRADIENT_RE)
     if (gradientMatch) {
         const angle = parseFloat(gradientMatch[1])
         const stopsStr = gradientMatch[2]
@@ -327,7 +397,7 @@ export function parseBackground(value: string | undefined): ParsedBackground {
             .map((s) => s.trim())
             .filter(Boolean)
         const colors: string[] = []
-        const locations: number[] = []
+        const locations: (number | null)[] = []
         for (const stop of stopStrs) {
             // "color" or "color position%"
             const parts = stop.split(/\s+/)
@@ -336,20 +406,13 @@ export function parseBackground(value: string | undefined): ParsedBackground {
                 const pct = parseFloat(parts[1]) / 100
                 locations.push(Math.min(1, Math.max(0, pct)))
             } else {
-                locations.push(0)
+                locations.push(null)
             }
         }
 
         if (colors.length < 2) {
             // Degenerate gradient — treat as flat color.
             return colors[0] ? { type: 'flat', color: colors[0] } : null
-        }
-
-        // If locations weren't specified, distribute evenly.
-        const allZero = locations.every((l) => l === 0)
-        let resolvedLocations = locations
-        if (allZero) {
-            resolvedLocations = colors.map((_, i) => i / (colors.length - 1))
         }
 
         // Convert CSS angle (0deg = bottom→top) to RN {start, end} coords.
@@ -370,14 +433,29 @@ export function parseBackground(value: string | undefined): ParsedBackground {
         return {
             type: 'gradient',
             colors,
-            locations: resolvedLocations,
+            locations: resolveStopLocations(locations),
             start,
             end,
         }
     }
 
-    // Solid color (hex / rgb / rgba / named)
-    if (/^(#[0-9a-fA-F]{3,8}|rgba?\(|[a-z]+)/i.test(value)) {
+    // Any other gradient form (`to top`, non-numeric angles, radial, conic):
+    // degrade to the first color stop rather than handing RN a gradient
+    // string as a "color" — an invalid color renders as a hard error.
+    if (/gradient\(/i.test(value)) {
+        const firstColor = value.match(FIRST_COLOR_RE)
+        return firstColor ? { type: 'flat', color: firstColor[0] } : null
+    }
+
+    // Solid color — a whole-string hex / rgb / rgba / hsl / named color.
+    // Anything trailing after the color (or a bare keyword like `inherit`)
+    // is not expressible as an RN color and returns null instead.
+    if (
+        /^#[0-9a-fA-F]{3,8}$/.test(value) ||
+        /^(?:rgba?|hsla?)\(/i.test(value) ||
+        (/^[a-z]+$/i.test(value) &&
+            !NON_COLOR_KEYWORDS.has(value.toLowerCase()))
+    ) {
         return { type: 'flat', color: value }
     }
 

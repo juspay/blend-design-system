@@ -147,6 +147,13 @@ describe('parseBorderRadius', () => {
             expect(parseBorderRadius(input)).toBeUndefined()
         }
     )
+
+    it.each([['50%'], ['12abc'], ['10px 50% 0 0']])(
+        'refuses non-length corners like %o instead of parseFloat-ing them',
+        (input) => {
+            expect(parseBorderRadius(input)).toBeUndefined()
+        }
+    )
 })
 
 describe('parseBoxShadow', () => {
@@ -199,8 +206,73 @@ describe('parseBackground', () => {
         expect(parsed.locations).toEqual([0, 1])
     })
 
+    it.each([['-90deg'], ['180.5deg']])(
+        'accepts a %s angle, not just positive integers',
+        (angle) => {
+            const parsed = parseBackground(
+                `linear-gradient(${angle}, #000000, #FFFFFF)`
+            )
+            expect(parsed?.type).toBe('gradient')
+        }
+    )
+
+    it('keeps explicit 0% stops instead of redistributing them', () => {
+        const parsed = parseBackground(
+            'linear-gradient(180deg, #000000 0%, #FFFFFF 0%)'
+        )
+        if (parsed?.type !== 'gradient') throw new Error('expected gradient')
+        expect(parsed.locations).toEqual([0, 0])
+    })
+
+    it('resolves mixed specified/unspecified stops the way CSS does', () => {
+        const parsed = parseBackground(
+            'linear-gradient(180deg, #000000 20%, #FFFFFF)'
+        )
+        if (parsed?.type !== 'gradient') throw new Error('expected gradient')
+        expect(parsed.locations).toEqual([0.2, 1])
+    })
+
+    it('interpolates an interior unspecified stop between its neighbours', () => {
+        const parsed = parseBackground(
+            'linear-gradient(180deg, #000000 0%, #888888, #FFFFFF 100%)'
+        )
+        if (parsed?.type !== 'gradient') throw new Error('expected gradient')
+        expect(parsed.locations).toEqual([0, 0.5, 1])
+    })
+
+    it('raises out-of-order stops to the running maximum, per CSS', () => {
+        const parsed = parseBackground(
+            'linear-gradient(180deg, #000000 80%, #FFFFFF 20%)'
+        )
+        if (parsed?.type !== 'gradient') throw new Error('expected gradient')
+        expect(parsed.locations).toEqual([0.8, 0.8])
+    })
+
+    it('degrades an unsupported gradient form to its first color stop', () => {
+        expect(
+            parseBackground('linear-gradient(to top, #1A56DB, #2563EB)')
+        ).toEqual({ type: 'flat', color: '#1A56DB' })
+        expect(
+            parseBackground('radial-gradient(circle, rgba(0,0,0,0.5), #FFF)')
+        ).toEqual({ type: 'flat', color: 'rgba(0,0,0,0.5)' })
+    })
+
+    it('never returns a gradient string as a flat "color"', () => {
+        const parsed = parseBackground('linear-gradient(to top, red, blue)')
+        if (parsed?.type === 'flat') {
+            expect(parsed.color).not.toContain('gradient')
+        }
+    })
+
     it.each([[undefined], ['none'], ['transparent']])(
         'returns null for %o',
+        (input) => {
+            expect(parseBackground(input)).toBeNull()
+        }
+    )
+
+    it.each([['ease-in-out'], ['url(x.png)'], ['inherit'], ['1px solid #000']])(
+        'returns null for the non-color value %o',
         (input) => {
             expect(parseBackground(input)).toBeNull()
         }
