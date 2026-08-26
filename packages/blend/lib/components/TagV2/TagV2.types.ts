@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react'
 import type { SkeletonVariant } from '../Skeleton/skeleton.tokens'
-import { CSSObject } from 'styled-components'
+import type { CSSObject } from 'styled-components'
 
 export enum TagV2PaddingDirection {
     TOP = 'top',
@@ -36,12 +36,26 @@ export enum TagV2Size {
     LG = 'lg',
 }
 
-export type TagV2Props = {
+/**
+ * Platform-neutral core of the TagV2 API — no DOM attributes, no React
+ * element slots. `@juspay/blend-native` derives its Tag props from this, so
+ * a rename or addition here reaches both platforms; `TagV2Props` layers the
+ * web-only pieces (slots, HTML attributes) on top without changing shape.
+ */
+export type TagBaseProps = {
     text: string
     size?: TagV2Size
     type?: TagV2Type
     subType?: TagV2SubType
     color?: TagV2Color
+    skeleton?: {
+        showSkeleton?: boolean
+        skeletonVariant?: SkeletonVariant
+    }
+    tagGroupPosition?: 'center' | 'left' | 'right'
+}
+
+export type TagV2Props = TagBaseProps & {
     leftSlot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
@@ -50,12 +64,7 @@ export type TagV2Props = {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
     }
-    skeleton?: {
-        showSkeleton?: boolean
-        skeletonVariant?: SkeletonVariant
-    }
-    tagGroupPosition?: 'center' | 'left' | 'right'
 } & Omit<
-    React.HTMLAttributes<HTMLDivElement | HTMLButtonElement>,
-    'size' | 'className' | 'style'
->
+        React.HTMLAttributes<HTMLDivElement | HTMLButtonElement>,
+        'size' | 'className' | 'style'
+    >

@@ -45,15 +45,24 @@ export type AlertV2Dimensions = {
     minWidth?: CSSObject['minWidth']
 }
 
-export type AlertV2Props = {
+/**
+ * Platform-neutral core of the AlertV2 API — the scalar props both platforms
+ * share. `@juspay/blend-native` derives its Alert props from this. Actions,
+ * close button, slot, and dimensions stay platform-specific: the web handlers
+ * are DOM `MouseEvent`s, and the dimensions are CSS-typed.
+ */
+export type AlertBaseProps = {
     type?: AlertV2Type
     subType?: AlertV2SubType
+    heading?: string
+    description?: string
+}
+
+export type AlertV2Props = AlertBaseProps & {
     slot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
     }
-    heading?: string
-    description?: string
     actions?: AlertV2Actions
     closeButton?: {
         show?: boolean
