@@ -1,6 +1,13 @@
 import { View, Text as RNText, StyleSheet } from 'react-native'
 import { Circle } from 'lucide-react-native'
-import { Tag, TagColor, TagSize, TagSubType, TagType } from 'blend-native'
+import {
+    Tag,
+    TagGroup,
+    TagColor,
+    TagSize,
+    TagSubType,
+    TagType,
+} from 'blend-native'
 
 /**
  * Visual parity harness for the native `Tag`.
@@ -123,24 +130,20 @@ export default function TagShowcase() {
                 />
             </Section>
 
-            <Section title="Tag group positions">
-                <View style={styles.group}>
-                    <Tag
-                        text="Left"
-                        tagGroupPosition="left"
-                        type={TagType.SUBTLE}
-                    />
-                    <Tag
-                        text="Center"
-                        tagGroupPosition="center"
-                        type={TagType.SUBTLE}
-                    />
-                    <Tag
-                        text="Right"
-                        tagGroupPosition="right"
-                        type={TagType.SUBTLE}
-                    />
-                </View>
+            <Section title="TagGroup — stacked (positions injected)">
+                <TagGroup stacked>
+                    <Tag text="Left" type={TagType.SUBTLE} />
+                    <Tag text="Center" type={TagType.SUBTLE} />
+                    <Tag text="Right" type={TagType.SUBTLE} />
+                </TagGroup>
+            </Section>
+
+            <Section title="TagGroup — spaced">
+                <TagGroup>
+                    <Tag text="Design" type={TagType.SUBTLE} />
+                    <Tag text="Native" type={TagType.SUBTLE} />
+                    <Tag text="Tokens" type={TagType.SUBTLE} />
+                </TagGroup>
             </Section>
         </View>
     )
@@ -156,5 +159,4 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
     },
     row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-    group: { flexDirection: 'row' },
 })

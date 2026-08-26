@@ -1,5 +1,14 @@
 import { View, StyleSheet, Text as RNText } from 'react-native'
-import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-native'
+import { Plus, Trash2 } from 'lucide-react-native'
+import {
+    Button,
+    ButtonGroup,
+    IconButton,
+    LinkButton,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from 'blend-native'
 
 function Section({
     title,
@@ -101,6 +110,102 @@ export default function ButtonShowcase() {
                     text="Inline SubType"
                     onPress={() => {}}
                 />
+            </Section>
+
+            {/* ---- IconButton ---- */}
+            <Section title="IconButton (icon-only, required label)">
+                <View style={styles.row}>
+                    <IconButton
+                        icon={<Plus />}
+                        accessibilityLabel="Add"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        buttonType={ButtonType.SECONDARY}
+                        accessibilityLabel="Add"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Trash2 />}
+                        buttonType={ButtonType.DANGER}
+                        accessibilityLabel="Delete"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        size={ButtonSize.MEDIUM}
+                        accessibilityLabel="Add"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        size={ButtonSize.LARGE}
+                        accessibilityLabel="Add"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        accessibilityLabel="Add"
+                        disabled
+                        onPress={() => {}}
+                    />
+                </View>
+            </Section>
+
+            {/* ---- LinkButton ---- */}
+            <Section title="LinkButton (link role, onPress navigation)">
+                <View style={styles.row}>
+                    <LinkButton text="Learn more" onPress={() => {}} />
+                    <LinkButton
+                        buttonType={ButtonType.SECONDARY}
+                        text="View docs"
+                        onPress={() => {}}
+                    />
+                    <LinkButton
+                        subType={ButtonSubType.INLINE}
+                        text="Inline link"
+                        onPress={() => {}}
+                    />
+                </View>
+            </Section>
+
+            {/* ---- ButtonGroup ---- */}
+            <Section title="ButtonGroup — stacked (joined edges)">
+                <ButtonGroup stacked>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Day"
+                        onPress={() => {}}
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Week"
+                        onPress={() => {}}
+                    />
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Month"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        buttonType={ButtonType.SECONDARY}
+                        accessibilityLabel="Add view"
+                        onPress={() => {}}
+                    />
+                </ButtonGroup>
+            </Section>
+
+            <Section title="ButtonGroup — spaced (default gap)">
+                <ButtonGroup>
+                    <Button
+                        buttonType={ButtonType.SECONDARY}
+                        text="Cancel"
+                        onPress={() => {}}
+                    />
+                    <Button text="Confirm" onPress={() => {}} />
+                </ButtonGroup>
             </Section>
 
             {/* ---- Width control ---- */}
@@ -208,5 +313,10 @@ const styles = StyleSheet.create({
         gap: 12,
         flexDirection: 'column',
         alignItems: 'stretch',
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
     },
 })

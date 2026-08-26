@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
     getGroupedBorderRadius,
     getGroupedBorderWidths,
+    getGroupPosition,
 } from '../src/components/shared/group'
 
 describe('getGroupedBorderRadius', () => {
@@ -52,5 +53,24 @@ describe('getGroupedBorderWidths', () => {
         expect(composed.borderWidth).toBe(1)
         expect(composed.borderLeftWidth).toBe(0)
         expect(composed.borderRightWidth).toBe(0)
+    })
+})
+
+describe('getGroupPosition', () => {
+    it('gives a lone member no position, so it keeps its full radius', () => {
+        expect(getGroupPosition(0, 1)).toBeUndefined()
+        expect(getGroupPosition(0, 0)).toBeUndefined()
+    })
+
+    it('splits a pair into the two end caps', () => {
+        expect(getGroupPosition(0, 2)).toBe('left')
+        expect(getGroupPosition(1, 2)).toBe('right')
+    })
+
+    it('marks every interior member center', () => {
+        expect(getGroupPosition(0, 4)).toBe('left')
+        expect(getGroupPosition(1, 4)).toBe('center')
+        expect(getGroupPosition(2, 4)).toBe('center')
+        expect(getGroupPosition(3, 4)).toBe('right')
     })
 })

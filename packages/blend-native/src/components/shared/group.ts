@@ -70,3 +70,28 @@ export function getGroupedBorderWidths(
     if (position !== 'center') return {}
     return { borderLeftWidth: 0, borderRightWidth: 0 }
 }
+
+/**
+ * A member's position from its index — what a group container injects into
+ * each child. Reimplements web's `Primitives/Group/utils.ts
+ * getGroupPosition`, horizontal-only (native groups have no vertical
+ * orientation yet); web does not export it from `/node`.
+ *
+ * A single member gets `undefined` so it keeps its full, ungrouped radius.
+ *
+ * ```
+ * getGroupPosition(0, 1) -> undefined
+ * getGroupPosition(0, 3) -> 'left'
+ * getGroupPosition(1, 3) -> 'center'
+ * getGroupPosition(2, 3) -> 'right'
+ * ```
+ */
+export function getGroupPosition(
+    index: number,
+    totalCount: number
+): GroupPosition | undefined {
+    if (totalCount <= 1) return undefined
+    if (index === 0) return 'left'
+    if (index === totalCount - 1) return 'right'
+    return 'center'
+}
