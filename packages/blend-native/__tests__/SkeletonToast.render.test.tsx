@@ -1,7 +1,8 @@
 import { Text } from 'react-native'
-import { act, render, screen } from '@testing-library/react-native'
+import { act, fireEvent, render, screen } from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { Skeleton } from '../src/components/Skeleton'
+import { Portal } from '../src/overlay/portal'
 import {
     dismissToast,
     resetToasts,
@@ -152,5 +153,53 @@ describe('toast outlet', () => {
         expect(screen.queryByText('toast-2')).toBeNull()
         expect(screen.getByText('toast-3')).toBeTruthy()
         expect(screen.getByText('toast-5')).toBeTruthy()
+    })
+
+    it('a finger on the toast pauses its auto-dismiss countdown', () => {
+        mount()
+        act(() => {
+            showToast({ content: <Text>Hold me</Text>, duration: 1000 })
+        })
+        act(() => {
+            jest.advanceTimersByTime(500)
+        })
+        // Touch down: the countdown pauses with ~500ms remaining.
+        fireEvent(screen.getByText('Hold me'), 'touchStart')
+        act(() => {
+            jest.advanceTimersByTime(5000)
+        })
+        expect(screen.getByText('Hold me')).toBeTruthy()
+        // Release: the remainder runs out.
+        fireEvent(screen.getByText('Hold me'), 'touchEnd')
+        act(() => {
+            jest.advanceTimersByTime(1000)
+        })
+        expect(screen.queryByText('Hold me')).toBeNull()
+    })
+
+    it('paints above overlay layers that mount later', () => {
+        render(
+            <BlendNativeProvider>
+                <Text>app</Text>
+            </BlendNativeProvider>
+        )
+        act(() => {
+            showToast({ content: <Text>on top</Text>, duration: null })
+        })
+        // A sheet-like overlay opened AFTER the toast mounts its portal
+        // later — without priority it would paint above the toast.
+        screen.rerender(
+            <BlendNativeProvider>
+                <Text>app</Text>
+                <Portal>
+                    <Text>sheet</Text>
+                </Portal>
+            </BlendNativeProvider>
+        )
+        const tree = JSON.stringify(screen.toJSON())
+        const toastIndex = tree.indexOf('blend-toast-outlet')
+        const sheetIndex = tree.indexOf('sheet')
+        expect(sheetIndex).toBeGreaterThan(-1)
+        expect(toastIndex).toBeGreaterThan(sheetIndex)
     })
 })
