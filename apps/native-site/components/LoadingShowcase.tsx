@@ -1,5 +1,9 @@
 import { StyleSheet, Text as RNText, View } from 'react-native'
 import {
+    ProgressBar,
+    ProgressBarAppearance,
+    ProgressBarSize,
+    ProgressBarVariant,
     Spinner,
     Button,
     ButtonType,
@@ -33,6 +37,28 @@ export default function LoadingShowcase() {
                 <Spinner size="md" />
                 <Spinner size="lg" />
                 <Spinner size="md" color="primary" />
+            </View>
+
+            <RNText style={styles.heading}>
+                ProgressBar (linear, segmented, circular)
+            </RNText>
+            <ProgressBar value={65} showLabel />
+            <ProgressBar
+                value={40}
+                appearance={ProgressBarAppearance.SEGMENTED}
+            />
+            <View style={{ flexDirection: 'row', gap: 24 }}>
+                <ProgressBar
+                    value={65}
+                    variant={ProgressBarVariant.CIRCULAR}
+                    showLabel
+                />
+                <ProgressBar
+                    value={40}
+                    variant={ProgressBarVariant.CIRCULAR}
+                    appearance={ProgressBarAppearance.SEGMENTED}
+                    size={ProgressBarSize.LG}
+                />
             </View>
 
             <RNText style={styles.heading}>Skeleton blocks</RNText>

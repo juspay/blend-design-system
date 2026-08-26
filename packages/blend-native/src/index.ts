@@ -32,6 +32,8 @@ export type {
 } from './components/TextInput'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
+export { ProgressBar } from './components/ProgressBar'
+export type { ProgressBarNativeProps } from './components/ProgressBar'
 export { Spinner } from './components/Spinner'
 export type { SpinnerNativeProps } from './components/Spinner'
 
@@ -151,6 +153,9 @@ export {
     ButtonV2State as ButtonState,
     InputSizeV2 as InputSize,
     InputStateV2 as InputState,
+    ProgressBarV2Size as ProgressBarSize,
+    ProgressBarV2Variant as ProgressBarVariant,
+    ProgressBarV2Appearance as ProgressBarAppearance,
     TagV2Type as TagType,
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,

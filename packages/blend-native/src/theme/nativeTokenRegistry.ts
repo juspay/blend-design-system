@@ -3,6 +3,7 @@ import {
     Theme,
     getAlertV2Tokens,
     getButtonV2Tokens,
+    getProgressBarV2Tokens,
     getSkeletonTokens,
     getSpinnerTokens,
     getTagV2Tokens,
@@ -27,6 +28,7 @@ import {
 export const NATIVE_TOKEN_REGISTRY = {
     ALERTV2: getAlertV2Tokens,
     BUTTONV2: getButtonV2Tokens,
+    PROGRESS_BARV2: getProgressBarV2Tokens,
     SKELETON: getSkeletonTokens,
     SPINNER: getSpinnerTokens,
     TAGV2: getTagV2Tokens,

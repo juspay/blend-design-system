@@ -77,6 +77,7 @@ describe('public API surface', () => {
             'ButtonGroup',
             'IconButton',
             'LinkButton',
+            'ProgressBar',
             'Spinner',
             'Tag',
             'TagGroup',
@@ -108,7 +109,8 @@ describe('public API surface', () => {
         // useReduceMotion) became public, then to 40 for the field layer
         // (TextInput, PrimitiveInput, input enums) and the toast pair, then
         // to 44 for the Button/Tag family wave (IconButton, LinkButton,
-        // ButtonGroup, TagGroup).
-        expect(exported.size).toBeLessThanOrEqual(44)
+        // ButtonGroup, TagGroup), then to 64 for the display wave (Spinner,
+        // ProgressBar, Avatar, KeyValuePair, Card, Snackbar and their enums).
+        expect(exported.size).toBeLessThanOrEqual(64)
     })
 })
