@@ -1,24 +1,22 @@
 import type React from 'react'
 import type { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native'
-import type {
-    TagV2Color,
-    TagV2Size,
-    TagV2SubType,
-    TagV2Type,
-} from '@juspay/blend-design-system/node'
+import type { TagBaseProps } from '@juspay/blend-design-system/node'
 import type { GroupPosition } from '../shared/group'
 
 /**
  * Props for the native `Tag`.
  *
- * Mirrors web `TagV2Props` (`packages/blend/lib/components/TagV2/
- * TagV2.types.ts`) with DOM-specific pieces replaced by RN equivalents:
+ * Derives from web's platform-neutral `TagBaseProps` (the `ButtonBaseProps`
+ * pattern), so a web-side rename or addition reaches this type instead of
+ * drifting silently. DOM-specific pieces are replaced by RN equivalents:
  *
  * - `onClick` → `onPress`, carrying a `GestureResponderEvent`.
  * - `aria-pressed` → `pressed`, surfaced as `accessibilityState.selected`.
  * - `HTMLAttributes` passthrough → RN `View`/`Pressable` props via `...rest`.
+ * - Web's `ReactElement` slots → native `TagSlot` (`ReactNode`, plain
+ *   `string | number` max height).
  *
- * `skeleton` is deliberately **absent** rather than accepted-and-ignored.
+ * `skeleton` is deliberately **omitted** rather than accepted-and-ignored.
  * Web's `TagV2` renders a `TagSkeleton`, which has no native counterpart yet;
  * omitting the prop from the type keeps it a compile error instead of a
  * silent no-op. Same decision as `Button`.
@@ -30,17 +28,16 @@ export type TagSlot = {
     maxHeight?: string | number
 }
 
-export type TagNativeProps = {
-    text: string
-    size?: TagV2Size
-    type?: TagV2Type
-    subType?: TagV2SubType
-    color?: TagV2Color
+export type TagNativeProps = Omit<
+    TagBaseProps,
+    'skeleton' | 'tagGroupPosition'
+> & {
     leftSlot?: TagSlot
     rightSlot?: TagSlot
     /**
      * Position within a tag group. Collapses the border radius on the joined
-     * edges, matching web's `getTagBorderRadius`.
+     * edges, matching web's `getTagBorderRadius`. Redeclared from the base
+     * (same union) to tie it to the shared `GroupPosition` type.
      */
     tagGroupPosition?: GroupPosition
     /**
