@@ -19,6 +19,8 @@
 
 // ---- Components ---------------------------------------------------------
 export { Alert } from './components/Alert'
+export { Avatar } from './components/Avatar'
+export type { AvatarNativeProps, AvatarStatus } from './components/Avatar'
 export { Button } from './components/Button'
 export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
@@ -145,6 +147,10 @@ export { useLiveRegionAnnounce } from './a11y/useLiveRegion'
 
 export {
     AlertV2Type as AlertType,
+    AvatarV2Size as AvatarSize,
+    AvatarV2Shape as AvatarShape,
+    AvatarV2Status as AvatarStatusType,
+    AvatarV2StatusPosition as AvatarStatusPosition,
     AlertV2SubType as AlertSubType,
     AlertV2ActionPosition as AlertActionPosition,
     ButtonV2Type as ButtonType,
