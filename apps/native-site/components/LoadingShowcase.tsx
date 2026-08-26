@@ -1,5 +1,7 @@
 import { StyleSheet, Text as RNText, View } from 'react-native'
 import {
+    addSnackbar,
+    SnackbarVariant,
     ProgressBar,
     ProgressBarAppearance,
     ProgressBarSize,
@@ -78,6 +80,38 @@ export default function LoadingShowcase() {
                     color={TagColor.PRIMARY}
                 />
             </Skeleton>
+
+            <RNText style={styles.heading}>
+                Snackbar (token-styled toasts)
+            </RNText>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    text="Info snackbar"
+                    onPress={() =>
+                        addSnackbar({
+                            header: 'Settlement complete',
+                            description: 'All 42 transactions settled.',
+                        })
+                    }
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    text="Error + action"
+                    onPress={() =>
+                        addSnackbar({
+                            header: 'Payment failed',
+                            description: 'The gateway timed out.',
+                            variant: SnackbarVariant.ERROR,
+                            duration: Infinity,
+                            actionButton: {
+                                label: 'Retry',
+                                onPress: () => {},
+                            },
+                        })
+                    }
+                />
+            </View>
 
             <RNText style={styles.heading}>Toasts</RNText>
             <Button

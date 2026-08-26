@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { Skeleton } from '../src/components/Skeleton'
 import { Portal } from '../src/overlay/portal'
+import { addSnackbar } from '../src/components/Snackbar'
 import {
     dismissToast,
     resetToasts,
@@ -175,6 +176,66 @@ describe('toast outlet', () => {
             jest.advanceTimersByTime(1000)
         })
         expect(screen.queryByText('Hold me')).toBeNull()
+    })
+
+    it('addSnackbar renders the styled toast with action and close', () => {
+        const onAction = jest.fn()
+        const onClose = jest.fn()
+        mount()
+        act(() => {
+            addSnackbar({
+                header: 'Payment failed',
+                description: 'Retry in a moment.',
+                actionButton: { label: 'Retry', onPress: onAction },
+                onClose,
+                duration: null,
+            })
+        })
+        expect(screen.getByText('Payment failed')).toBeTruthy()
+        expect(screen.getByText('Retry in a moment.')).toBeTruthy()
+
+        // Action fires and auto-dismisses (default).
+        fireEvent.press(screen.getByTestId('blend-snackbar-action'))
+        expect(onAction).toHaveBeenCalledTimes(1)
+        act(() => {
+            jest.advanceTimersByTime(500)
+        })
+        expect(screen.queryByText('Payment failed')).toBeNull()
+        expect(onClose).not.toHaveBeenCalled()
+    })
+
+    it('a persistent snackbar survives its would-be duration; close calls onClose', () => {
+        const onClose = jest.fn()
+        mount()
+        act(() => {
+            addSnackbar({ header: 'Sticky', duration: Infinity, onClose })
+        })
+        act(() => {
+            jest.advanceTimersByTime(60_000)
+        })
+        expect(screen.getByText('Sticky')).toBeTruthy()
+        fireEvent.press(screen.getByTestId('blend-snackbar-close'))
+        expect(onClose).toHaveBeenCalledTimes(1)
+    })
+
+    it('an action with autoDismiss false keeps the snackbar open', () => {
+        mount()
+        act(() => {
+            addSnackbar({
+                header: 'Undoable',
+                duration: null,
+                actionButton: {
+                    label: 'Undo',
+                    onPress: () => {},
+                    autoDismiss: false,
+                },
+            })
+        })
+        fireEvent.press(screen.getByTestId('blend-snackbar-action'))
+        act(() => {
+            jest.advanceTimersByTime(500)
+        })
+        expect(screen.getByText('Undoable')).toBeTruthy()
     })
 
     it('paints above overlay layers that mount later', () => {
