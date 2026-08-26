@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react-native'
+import { fireEvent, render } from '@testing-library/react-native'
+import { Avatar } from '../src/components/Avatar'
 import { Spinner } from '../src/components/Spinner'
 import { ProgressBar } from '../src/components/ProgressBar'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
@@ -29,6 +30,51 @@ describe('Spinner rendering', () => {
         const { getByTestId } = wrap(<Spinner testID="spin" overlay />)
         expect(getByTestId('spin-overlay')).toBeTruthy()
         expect(getByTestId('spin')).toBeTruthy()
+    })
+})
+
+describe('Avatar rendering', () => {
+    // The avatar is one collapsed a11y node (web's role="img"), so its
+    // children are hidden from the default query set.
+    const q = { includeHiddenElements: true } as const
+
+    it('renders initials with the shared hash color when there is no src', () => {
+        const { getByText, getByTestId } = wrap(
+            <Avatar alt="Jane Doe" testID="av" />
+        )
+        expect(getByText('JD', q)).toBeTruthy()
+        expect(getByTestId('av').props.accessibilityRole).toBe('image')
+        expect(getByTestId('av').props.accessibilityLabel).toBe('Jane Doe')
+    })
+
+    it('falls back to initials when the image errors', () => {
+        const onImageError = jest.fn()
+        const { getByTestId, queryByTestId } = wrap(
+            <Avatar
+                src="https://example.com/x.png"
+                alt="Jane Doe"
+                onImageError={onImageError}
+                testID="av"
+            />
+        )
+        expect(getByTestId('av-image', q)).toBeTruthy()
+        fireEvent(getByTestId('av-image', q), 'error')
+        expect(queryByTestId('av-image', q)).toBeNull()
+        expect(getByTestId('av-fallback', q)).toBeTruthy()
+        expect(onImageError).toHaveBeenCalledTimes(1)
+    })
+
+    it('hides the status dot from assistive tech, folding it into the name', () => {
+        const { getByTestId } = wrap(
+            <Avatar
+                alt="Jane"
+                status={{ type: 'online' as never }}
+                testID="av"
+            />
+        )
+        const dot = getByTestId('av-status', { includeHiddenElements: true })
+        expect(dot.props.importantForAccessibility).toBe('no-hide-descendants')
+        expect(getByTestId('av').props.accessibilityLabel).toBe('Jane, online')
     })
 })
 

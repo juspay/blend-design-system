@@ -2,6 +2,7 @@ import {
     FOUNDATION_THEME,
     Theme,
     getAlertV2Tokens,
+    getAvatarV2Tokens,
     getButtonV2Tokens,
     getProgressBarV2Tokens,
     getSkeletonTokens,
@@ -27,6 +28,7 @@ import {
  */
 export const NATIVE_TOKEN_REGISTRY = {
     ALERTV2: getAlertV2Tokens,
+    AVATARV2: getAvatarV2Tokens,
     BUTTONV2: getButtonV2Tokens,
     PROGRESS_BARV2: getProgressBarV2Tokens,
     SKELETON: getSkeletonTokens,

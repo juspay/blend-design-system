@@ -73,6 +73,7 @@ describe('public API surface', () => {
     it('exports the components', () => {
         for (const name of [
             'Alert',
+            'Avatar',
             'Button',
             'ButtonGroup',
             'IconButton',
