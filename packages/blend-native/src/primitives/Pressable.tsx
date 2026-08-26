@@ -378,14 +378,19 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
 
         // ---- Gradient path ----------------------------------------------
         //
-        //   <Pressable border + radius + overflow:hidden>
-        //     <LinearGradient absoluteFill (bled into the border zone) />
-        //     <View padding + layout> {content} </View>
+        //   <Pressable full surface + overflow:hidden>
+        //     <LinearGradient absolute (bled into the border zone) />
+        //     {content}
         //   </Pressable>
         //
-        // The gradient absolute-fills the whole border box — including under
-        // the border — so no antialiasing wedge forms at the corners, and the
-        // Pressable's own radius + overflow:hidden clips the bleed.
+        // The whole surface — padding, layout, sizing — stays on the
+        // Pressable. Yoga positions absolute children relative to the BORDER
+        // box (not CSS's padding box), so the bleed gradient fills the frame
+        // regardless of padding, and no inner layout view is needed. The
+        // previous split (frame + `flex`-growing content child) broke
+        // intrinsic sizing: under Yoga's at-most measurement a growing child
+        // consumes the parent row's available width, so an auto-width
+        // gradient button rendered container-wide.
         if (
             canRenderGradient &&
             !usesDisabledChrome &&
@@ -407,36 +412,8 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
                 left: bleed,
             }
 
-            // The gradient fills the border box, so padding and inner layout
-            // move to a child view; the Pressable keeps only the frame
-            // (border, radius, sizing) plus the clip.
-            const {
-                paddingTop,
-                paddingRight,
-                paddingBottom,
-                paddingLeft,
-                flexDirection: frameFlexDirection,
-                alignItems: frameAlignItems,
-                justifyContent: frameJustifyContent,
-                gap: frameGap,
-                ...frame
-            } = surface
-
-            const contentLayout: ViewStyle = {
-                flex: 1,
-                paddingTop,
-                paddingRight,
-                paddingBottom,
-                paddingLeft,
-                flexDirection: frameFlexDirection,
-                alignItems: frameAlignItems,
-                justifyContent: frameJustifyContent,
-                gap: frameGap,
-            }
-
             const frameStyle: ViewStyle = {
-                ...frame,
-                flexDirection: frameFlexDirection,
+                ...surface,
                 overflow: 'hidden',
             }
 
@@ -486,7 +463,7 @@ const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(
                                     ]}
                                 />
                             )}
-                            <View style={contentLayout}>{content}</View>
+                            {content}
                         </>
                     )}
                 </RNPressable>
