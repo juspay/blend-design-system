@@ -70,6 +70,8 @@ export default function App() {
                                         'button',
                                         'sheet',
                                         'input',
+                                        'loading',
+                                        'display',
                                     ] as Tab[]
                                 ).map((value) => (
                                     <Pressable
