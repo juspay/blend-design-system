@@ -47,6 +47,17 @@ export type { ProgressBarNativeProps } from './components/ProgressBar'
 export { Spinner } from './components/Spinner'
 export type { SpinnerNativeProps } from './components/Spinner'
 
+// Value unions for the props above. Exported so a consumer can type a
+// `variant`/`size` prop of their own, and so tooling can enumerate the
+// options; they are string unions on the web side, not enums, so there is
+// no runtime object to re-export.
+export type {
+    SkeletonVariant,
+    SkeletonShape,
+    SpinnerSize,
+    SpinnerColor,
+} from '@juspay/blend-design-system/node'
+
 export type {
     AlertNativeProps,
     AlertSlot,
