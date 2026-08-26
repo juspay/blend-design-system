@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { useChrome } from '../chrome'
 import { CONTROL_GROUPS } from '../types'
@@ -86,7 +87,7 @@ function ControlRow<P extends object>({
         )
     }
 
-    const labelled = (child: React.ReactNode) => (
+    const labelled = (child: ReactNode) => (
         <View style={styles.field}>
             <Text style={[styles.fieldLabel, { color: chrome.fgMuted }]}>
                 {control.label}
