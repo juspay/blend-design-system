@@ -135,10 +135,12 @@ export { useReduceMotion } from './motion/useReduceMotion'
 export { BottomSheet } from './overlay/sheet/BottomSheet'
 export type { BottomSheetProps } from './overlay/sheet/BottomSheet'
 
-// The toast host: the provider mounts the outlet, this pair drives it.
-// SnackbarV2 will layer token styling on top when it lands.
+// The toast host: the provider mounts the outlet, this pair drives it;
+// `addSnackbar` layers the SNACKBARV2 token styling on top.
 export { showToast, dismissToast } from './overlay/toast/toastStore'
 export type { ToastOptions } from './overlay/toast/toastStore'
+export { addSnackbar, dismissSnackbar } from './components/Snackbar'
+export type { SnackbarOptions, SnackbarAction } from './components/Snackbar'
 
 /** Position of a control within a button or tag group. */
 export type { GroupPosition } from './components/shared/group'
@@ -172,6 +174,7 @@ export {
     KeyValuePairV2Size as KeyValuePairSize,
     InputStateV2 as InputState,
     ProgressBarV2Size as ProgressBarSize,
+    SnackbarV2Variant as SnackbarVariant,
     ProgressBarV2Variant as ProgressBarVariant,
     ProgressBarV2Appearance as ProgressBarAppearance,
     TagV2Type as TagType,
