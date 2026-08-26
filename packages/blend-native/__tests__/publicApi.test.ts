@@ -71,7 +71,7 @@ describe('public API surface', () => {
     })
 
     it('exports the components', () => {
-        for (const name of ['Alert', 'Button', 'Tag']) {
+        for (const name of ['Alert', 'Button', 'IconButton', 'Tag']) {
             expect(exported.has(name)).toBe(true)
         }
     })
@@ -97,7 +97,9 @@ describe('public API surface', () => {
         // trips, decide deliberately whether the additions are public API.
         // Raised from 30 when the overlay foundation (Portal, BottomSheet,
         // useReduceMotion) became public, then to 40 for the field layer
-        // (TextInput, PrimitiveInput, input enums) and the toast pair.
-        expect(exported.size).toBeLessThanOrEqual(40)
+        // (TextInput, PrimitiveInput, input enums) and the toast pair, then
+        // to 44 for the Button/Tag family wave (IconButton, LinkButton,
+        // ButtonGroup, TagGroup).
+        expect(exported.size).toBeLessThanOrEqual(44)
     })
 })

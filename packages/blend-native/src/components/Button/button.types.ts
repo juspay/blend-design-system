@@ -1,3 +1,4 @@
+import type React from 'react'
 import type {
     GestureResponderEvent,
     PressableProps,
@@ -43,3 +44,25 @@ export type ButtonNativeProps = Omit<ButtonBaseProps, 'skeleton'> & {
         PressableProps,
         'style' | 'onPress' | 'disabled' | 'children' | 'testID'
     >
+
+/**
+ * Props for the native `IconButton` — an icon-only `Button`, mirroring web's
+ * `IconButton` wrapper over `ButtonV2`.
+ *
+ * `text`, `leftSlot`, `rightSlot` and `subType` are omitted so the icon-only
+ * shape cannot be undone from outside: the icon always renders through
+ * `leftSlot` with `subType` forced to `ICON_ONLY`.
+ *
+ * `accessibilityLabel` is **required** (web requires `aria-label` the same
+ * way): an icon-only control has no text to derive an accessible name from,
+ * so omitting the label would ship a button screen readers announce as
+ * nothing.
+ */
+export type IconButtonNativeProps = Omit<
+    ButtonNativeProps,
+    'text' | 'leftSlot' | 'rightSlot' | 'subType' | 'accessibilityLabel'
+> & {
+    /** The icon to render. Tinted by `Slot` like any other button slot. */
+    icon: React.ReactNode
+    accessibilityLabel: string
+}

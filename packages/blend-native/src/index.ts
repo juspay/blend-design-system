@@ -20,6 +20,7 @@
 // ---- Components ---------------------------------------------------------
 export { Alert } from './components/Alert'
 export { Button } from './components/Button'
+export { IconButton } from './components/Button'
 export { Tag } from './components/Tag'
 export { TextInput } from './components/TextInput'
 export type {
@@ -36,7 +37,10 @@ export type {
     AlertActions,
     AlertCloseButton,
 } from './components/Alert'
-export type { ButtonNativeProps } from './components/Button'
+export type {
+    ButtonNativeProps,
+    IconButtonNativeProps,
+} from './components/Button'
 export type { TagNativeProps, TagSlot } from './components/Tag'
 
 // ---- Theming ------------------------------------------------------------

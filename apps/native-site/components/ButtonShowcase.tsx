@@ -1,5 +1,12 @@
 import { View, StyleSheet, Text as RNText } from 'react-native'
-import { Button, ButtonType, ButtonSize, ButtonSubType } from 'blend-native'
+import { Plus, Trash2 } from 'lucide-react-native'
+import {
+    Button,
+    IconButton,
+    ButtonType,
+    ButtonSize,
+    ButtonSubType,
+} from 'blend-native'
 
 function Section({
     title,
@@ -101,6 +108,47 @@ export default function ButtonShowcase() {
                     text="Inline SubType"
                     onPress={() => {}}
                 />
+            </Section>
+
+            {/* ---- IconButton ---- */}
+            <Section title="IconButton (icon-only, required label)">
+                <View style={styles.row}>
+                    <IconButton
+                        icon={<Plus />}
+                        accessibilityLabel="Add"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        buttonType={ButtonType.SECONDARY}
+                        accessibilityLabel="Add"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Trash2 />}
+                        buttonType={ButtonType.DANGER}
+                        accessibilityLabel="Delete"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        size={ButtonSize.MEDIUM}
+                        accessibilityLabel="Add"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        size={ButtonSize.LARGE}
+                        accessibilityLabel="Add"
+                        onPress={() => {}}
+                    />
+                    <IconButton
+                        icon={<Plus />}
+                        accessibilityLabel="Add"
+                        disabled
+                        onPress={() => {}}
+                    />
+                </View>
             </Section>
 
             {/* ---- Width control ---- */}
@@ -208,5 +256,10 @@ const styles = StyleSheet.create({
         gap: 12,
         flexDirection: 'column',
         alignItems: 'stretch',
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
     },
 })
