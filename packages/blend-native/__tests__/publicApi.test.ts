@@ -76,6 +76,7 @@ describe('public API surface', () => {
             'Avatar',
             'Button',
             'ButtonGroup',
+            'Card',
             'IconButton',
             'KeyValuePair',
             'LinkButton',

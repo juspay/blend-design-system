@@ -25,6 +25,8 @@ export { Button } from './components/Button'
 export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
 export { LinkButton } from './components/Button'
+export { Card } from './components/Card'
+export type { CardNativeProps } from './components/Card'
 export { KeyValuePair } from './components/KeyValuePair'
 export type {
     KeyValuePairNativeProps,
@@ -163,6 +165,9 @@ export {
     ButtonV2Size as ButtonSize,
     ButtonV2SubType as ButtonSubType,
     ButtonV2State as ButtonState,
+    CardV2Variant as CardVariant,
+    CardV2Orientation as CardOrientation,
+    CardV2Padding as CardPadding,
     InputSizeV2 as InputSize,
     KeyValuePairV2Size as KeyValuePairSize,
     InputStateV2 as InputState,
