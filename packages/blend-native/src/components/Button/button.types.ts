@@ -1,6 +1,7 @@
 import type {
     GestureResponderEvent,
     PressableProps,
+    StyleProp,
     ViewStyle,
 } from 'react-native'
 import type { ButtonBaseProps } from '@juspay/blend-design-system/node'
@@ -37,7 +38,7 @@ export type ButtonNativeProps = Omit<ButtonBaseProps, 'skeleton'> & {
      */
     justifyContent?: ViewStyle['justifyContent']
     /** Escape hatch for RN styles the token props do not cover. */
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 } & Omit<
         PressableProps,
         'style' | 'onPress' | 'disabled' | 'children' | 'testID'

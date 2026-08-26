@@ -34,7 +34,10 @@ const renderInput = (
     )
 
 const flatten = (style: unknown) =>
-    Object.assign({}, ...(Array.isArray(style) ? style.flat() : [style]))
+    Object.assign(
+        {},
+        ...(Array.isArray(style) ? style.flat(Infinity) : [style])
+    )
 
 describe('TextInput rendering', () => {
     it('renders label, value and hint', () => {

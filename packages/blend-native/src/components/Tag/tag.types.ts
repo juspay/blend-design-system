@@ -1,5 +1,5 @@
 import type React from 'react'
-import type { GestureResponderEvent, ViewStyle } from 'react-native'
+import type { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native'
 import type {
     TagV2Color,
     TagV2Size,
@@ -59,5 +59,5 @@ export type TagNativeProps = {
     accessibilityLabel?: string
     testID?: string
     /** Escape hatch for RN styles the token props do not cover. */
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 }

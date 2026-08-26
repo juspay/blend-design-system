@@ -2,6 +2,7 @@ import type React from 'react'
 import type {
     TextInput as RNTextInput,
     TextInputProps as RNTextInputProps,
+    StyleProp,
     ViewStyle,
 } from 'react-native'
 import type { InputSizeV2 } from '@juspay/blend-design-system/node'
@@ -45,7 +46,7 @@ export type TextInputNativeProps = {
     /** Screen-reader name; defaults to `label`. */
     accessibilityLabel?: string
     /** Escape hatch for the outer column (label + field + footer). */
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
     /** Ref to the underlying RN TextInput (focus/blur/clear). */
     inputRef?: React.Ref<RNTextInput>
 } & Omit<

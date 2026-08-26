@@ -1,5 +1,5 @@
 import type React from 'react'
-import type { GestureResponderEvent, ViewStyle } from 'react-native'
+import type { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native'
 import type {
     AlertV2ActionPosition,
     AlertV2SubType,
@@ -77,5 +77,5 @@ export type AlertNativeProps = {
     announce?: boolean
     accessibilityLabel?: string
     testID?: string
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 }

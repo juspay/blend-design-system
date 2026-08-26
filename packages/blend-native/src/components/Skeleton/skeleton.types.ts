@@ -1,5 +1,5 @@
 import type React from 'react'
-import type { ViewStyle } from 'react-native'
+import type { StyleProp, ViewStyle } from 'react-native'
 import type {
     SkeletonShape,
     SkeletonVariant,
@@ -23,6 +23,6 @@ export type SkeletonNativeProps = {
     borderRadius?: number
     /** Wrap mode: content keeps its layout, renders invisible. */
     children?: React.ReactNode
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
     testID?: string
 }
