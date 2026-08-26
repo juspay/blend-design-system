@@ -1,7 +1,15 @@
-import { useCallback, useContext, useEffect, useSyncExternalStore } from 'react'
+import {
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+    useSyncExternalStore,
+} from 'react'
 import { StyleSheet, View } from 'react-native'
 import Animated, {
     Easing,
+    runOnJS,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
@@ -27,19 +35,62 @@ import {
  * The toast rendering surface, mounted once by `BlendNativeProvider`.
  *
  * Subscribes to the store and renders the newest `MAX_VISIBLE_TOASTS`
- * bottom-stacked above everything through a `Portal`. Each toast slides up
- * on entry (a fade under reduce-motion), owns its auto-dismiss timer, and
- * announces itself to assistive tech when asked.
+ * bottom-stacked above everything through a priority `Portal` — priority
+ * keeps toasts painting above overlays that mount later (a sheet opened
+ * after a toast must not cover it). Each toast slides up on entry, slides
+ * away on exit (fades under reduce-motion), owns its auto-dismiss timer —
+ * paused while a finger is on it — and announces itself to assistive tech
+ * when asked.
  */
+
+/** Toasts paint above ordinary overlay layers (sheets, menus, modals). */
+export const TOAST_PORTAL_PRIORITY = 1
+
+export const TOAST_EXIT_DURATION = MOTION_DURATION.fast
+
+function sameEntries(
+    a: readonly ToastEntry[],
+    b: readonly ToastEntry[]
+): boolean {
+    return a.length === b.length && a.every((entry, i) => entry === b[i])
+}
+
 export function ToastOutlet() {
     const toasts = useSyncExternalStore(subscribeToasts, getToasts, getToasts)
     const insets = useContext(SafeAreaInsetsContext)
 
     const visible = getVisibleToasts(toasts)
-    if (visible.length === 0) return null
+
+    // Entries that just left the store are kept mounted, flagged `exiting`,
+    // until their exit animation reports done — the keep-mounted pattern
+    // from BottomSheet. Departures are detected with the official
+    // setState-during-render derived-state form (store entries are stable
+    // object references, so identity comparison is exact and a same-id
+    // content replacement never triggers an exit).
+    const [prevVisible, setPrevVisible] = useState<readonly ToastEntry[]>([])
+    const [exitingList, setExitingList] = useState<readonly ToastEntry[]>([])
+    if (!sameEntries(prevVisible, visible)) {
+        const visibleIds = new Set(visible.map((entry) => entry.id))
+        const departed = prevVisible.filter(
+            (entry) => !visibleIds.has(entry.id)
+        )
+        setPrevVisible(visible)
+        setExitingList((current) => [
+            ...current.filter((entry) => !visibleIds.has(entry.id)),
+            ...departed.filter(
+                (entry) => !current.some((c) => c.id === entry.id)
+            ),
+        ])
+    }
+
+    const handleExited = useCallback((id: string) => {
+        setExitingList((current) => current.filter((entry) => entry.id !== id))
+    }, [])
+
+    if (visible.length === 0 && exitingList.length === 0) return null
 
     return (
-        <Portal>
+        <Portal priority={TOAST_PORTAL_PRIORITY}>
             <View
                 style={[
                     styles.stack,
@@ -48,8 +99,21 @@ export function ToastOutlet() {
                 pointerEvents="box-none"
                 testID="blend-toast-outlet"
             >
-                {visible.map((toast) => (
-                    <ToastItem key={toast.id} toast={toast} />
+                {visible.map((entry) => (
+                    <ToastItem
+                        key={entry.id}
+                        toast={entry}
+                        exiting={false}
+                        onExited={handleExited}
+                    />
+                ))}
+                {exitingList.map((entry) => (
+                    <ToastItem
+                        key={entry.id}
+                        toast={entry}
+                        exiting
+                        onExited={handleExited}
+                    />
                 ))}
             </View>
         </Portal>
@@ -58,26 +122,83 @@ export function ToastOutlet() {
 
 ToastOutlet.displayName = 'ToastOutlet'
 
-function ToastItem({ toast }: { toast: ToastEntry }) {
+function ToastItem({
+    toast,
+    exiting,
+    onExited,
+}: {
+    toast: ToastEntry
+    exiting: boolean
+    onExited: (id: string) => void
+}) {
     const reduceMotion = useReduceMotion()
     const progress = useSharedValue(0)
 
     const dismiss = useCallback(() => dismissToast(toast.id), [toast.id])
 
-    // Enter animation once per toast id.
+    // Enter once per toast id; exit when the store drops the entry, then
+    // report done so the outlet releases the retained item.
+    const notifyExited = useCallback(
+        () => onExited(toast.id),
+        [onExited, toast.id]
+    )
     useEffect(() => {
+        if (exiting) {
+            progress.value = withTiming(
+                0,
+                {
+                    duration: TOAST_EXIT_DURATION,
+                    easing: Easing.bezier(...MOTION_EASING.accelerate),
+                },
+                (finished) => {
+                    if (finished) runOnJS(notifyExited)()
+                }
+            )
+            return
+        }
         progress.value = withTiming(1, {
             duration: MOTION_PRESETS.slideUp.duration,
             easing: Easing.bezier(...MOTION_EASING.decelerate),
         })
-    }, [progress])
+    }, [progress, exiting, notifyExited])
 
-    // Auto-dismiss owns its timer; content replacement (same id) restarts it.
+    // Auto-dismiss owns its timer, with remaining-time bookkeeping so a
+    // finger on the toast pauses the countdown (the sonner behaviour).
+    // Content replacement (same id) restarts the full duration.
+    const remainingRef = useRef<number | null>(null)
+    const startedAtRef = useRef(0)
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    const stopTimer = useCallback(() => {
+        if (timerRef.current !== null) {
+            clearTimeout(timerRef.current)
+            timerRef.current = null
+        }
+    }, [])
+
+    const startTimer = useCallback(() => {
+        stopTimer()
+        if (remainingRef.current === null || exiting) return
+        startedAtRef.current = Date.now()
+        timerRef.current = setTimeout(dismiss, remainingRef.current)
+    }, [dismiss, exiting, stopTimer])
+
+    const pauseTimer = useCallback(() => {
+        if (timerRef.current === null || remainingRef.current === null) return
+        stopTimer()
+        remainingRef.current = Math.max(
+            0,
+            remainingRef.current - (Date.now() - startedAtRef.current)
+        )
+    }, [stopTimer])
+
     useEffect(() => {
-        if (toast.duration === null) return
-        const timer = setTimeout(dismiss, toast.duration)
-        return () => clearTimeout(timer)
-    }, [toast.id, toast.duration, toast.content, dismiss])
+        remainingRef.current = toast.duration
+        startTimer()
+        return stopTimer
+        // The full duration restarts when the toast's identity or content
+        // changes; startTimer/stopTimer identities are stable per item.
+    }, [toast.id, toast.duration, toast.content, startTimer, stopTimer])
 
     useLiveRegionAnnounce(toast.announcement, Boolean(toast.announcement))
 
@@ -101,6 +222,9 @@ function ToastItem({ toast }: { toast: ToastEntry }) {
         <Animated.View
             style={animatedStyle}
             accessibilityLiveRegion={toast.announcement ? 'polite' : 'none'}
+            onTouchStart={pauseTimer}
+            onTouchEnd={startTimer}
+            onTouchCancel={startTimer}
         >
             {typeof toast.content === 'function'
                 ? toast.content(dismiss)
@@ -108,11 +232,6 @@ function ToastItem({ toast }: { toast: ToastEntry }) {
         </Animated.View>
     )
 }
-
-/** Exit duration is not modelled yet — dismissal unmounts immediately;
- * SnackbarV2 will own richer exit choreography when it lands. Kept simple
- * so the host stays predictable under the synchronous test mock. */
-export const TOAST_EXIT_DURATION = MOTION_DURATION.fast
 
 const styles = StyleSheet.create({
     stack: {
