@@ -46,6 +46,13 @@ const EXCEPTIONS: { pattern: RegExp; handler: string }[] = [
         pattern: /^SKELETON\.\w+\.\w+\.borderRadius\.circle$/,
         handler: 'skeleton.utils.ts resolveSkeletonRadius',
     },
+    {
+        // 'calc(100vw - 32px)' — screen-relative width comes from the toast
+        // outlet's horizontal insets; calc()/vw are unsupported by design
+        // and the native snackbar never consumes this token.
+        pattern: /^SNACKBARV2\.\w+\.\w+\.maxWidth$/,
+        handler: 'ToastOutlet stack paddingHorizontal',
+    },
 ]
 
 type Leaf = { path: string; segments: string[]; value: unknown }

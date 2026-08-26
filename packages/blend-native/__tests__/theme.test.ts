@@ -51,8 +51,14 @@ describe('nativeTokenRegistry', () => {
     it('registers every currently-shipped component', () => {
         expect(NATIVE_TOKEN_SLOTS.slice().sort()).toEqual([
             'ALERTV2',
+            'AVATARV2',
             'BUTTONV2',
+            'CARDV2',
+            'KEYVALUEPAIRV2',
+            'PROGRESS_BARV2',
             'SKELETON',
+            'SNACKBARV2',
+            'SPINNER',
             'TAGV2',
             'TEXT_INPUTV2',
         ])

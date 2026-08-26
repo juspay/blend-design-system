@@ -1,5 +1,12 @@
 import { StyleSheet, Text as RNText, View } from 'react-native'
 import {
+    addSnackbar,
+    SnackbarVariant,
+    ProgressBar,
+    ProgressBarAppearance,
+    ProgressBarSize,
+    ProgressBarVariant,
+    Spinner,
     Button,
     ButtonType,
     dismissToast,
@@ -22,6 +29,40 @@ import {
 export default function LoadingShowcase() {
     return (
         <View style={styles.column}>
+            <RNText style={styles.heading}>
+                Spinner (sizes, colors, overlay-free)
+            </RNText>
+            <View
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}
+            >
+                <Spinner size="sm" />
+                <Spinner size="md" />
+                <Spinner size="lg" />
+                <Spinner size="md" color="primary" />
+            </View>
+
+            <RNText style={styles.heading}>
+                ProgressBar (linear, segmented, circular)
+            </RNText>
+            <ProgressBar value={65} showLabel />
+            <ProgressBar
+                value={40}
+                appearance={ProgressBarAppearance.SEGMENTED}
+            />
+            <View style={{ flexDirection: 'row', gap: 24 }}>
+                <ProgressBar
+                    value={65}
+                    variant={ProgressBarVariant.CIRCULAR}
+                    showLabel
+                />
+                <ProgressBar
+                    value={40}
+                    variant={ProgressBarVariant.CIRCULAR}
+                    appearance={ProgressBarAppearance.SEGMENTED}
+                    size={ProgressBarSize.LG}
+                />
+            </View>
+
             <RNText style={styles.heading}>Skeleton blocks</RNText>
             <Skeleton width={220} height={16} />
             <Skeleton width={160} height={16} variant="wave" />
@@ -39,6 +80,38 @@ export default function LoadingShowcase() {
                     color={TagColor.PRIMARY}
                 />
             </Skeleton>
+
+            <RNText style={styles.heading}>
+                Snackbar (token-styled toasts)
+            </RNText>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    text="Info snackbar"
+                    onPress={() =>
+                        addSnackbar({
+                            header: 'Settlement complete',
+                            description: 'All 42 transactions settled.',
+                        })
+                    }
+                />
+                <Button
+                    buttonType={ButtonType.SECONDARY}
+                    text="Error + action"
+                    onPress={() =>
+                        addSnackbar({
+                            header: 'Payment failed',
+                            description: 'The gateway timed out.',
+                            variant: SnackbarVariant.ERROR,
+                            duration: Infinity,
+                            actionButton: {
+                                label: 'Retry',
+                                onPress: () => {},
+                            },
+                        })
+                    }
+                />
+            </View>
 
             <RNText style={styles.heading}>Toasts</RNText>
             <Button

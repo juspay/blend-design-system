@@ -19,10 +19,20 @@
 
 // ---- Components ---------------------------------------------------------
 export { Alert } from './components/Alert'
+export { Avatar } from './components/Avatar'
+export type { AvatarNativeProps, AvatarStatus } from './components/Avatar'
 export { Button } from './components/Button'
 export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
 export { LinkButton } from './components/Button'
+export { Card } from './components/Card'
+export type { CardNativeProps } from './components/Card'
+export { KeyValuePair } from './components/KeyValuePair'
+export type {
+    KeyValuePairNativeProps,
+    KeyValuePairOrientation,
+    KeyValuePairTextOverflow,
+} from './components/KeyValuePair'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
 export { TextInput } from './components/TextInput'
@@ -32,6 +42,10 @@ export type {
 } from './components/TextInput'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
+export { ProgressBar } from './components/ProgressBar'
+export type { ProgressBarNativeProps } from './components/ProgressBar'
+export { Spinner } from './components/Spinner'
+export type { SpinnerNativeProps } from './components/Spinner'
 
 export type {
     AlertNativeProps,
@@ -121,10 +135,12 @@ export { useReduceMotion } from './motion/useReduceMotion'
 export { BottomSheet } from './overlay/sheet/BottomSheet'
 export type { BottomSheetProps } from './overlay/sheet/BottomSheet'
 
-// The toast host: the provider mounts the outlet, this pair drives it.
-// SnackbarV2 will layer token styling on top when it lands.
+// The toast host: the provider mounts the outlet, this pair drives it;
+// `addSnackbar` layers the SNACKBARV2 token styling on top.
 export { showToast, dismissToast } from './overlay/toast/toastStore'
 export type { ToastOptions } from './overlay/toast/toastStore'
+export { addSnackbar, dismissSnackbar } from './components/Snackbar'
+export type { SnackbarOptions, SnackbarAction } from './components/Snackbar'
 
 /** Position of a control within a button or tag group. */
 export type { GroupPosition } from './components/shared/group'
@@ -141,14 +157,26 @@ export { useLiveRegionAnnounce } from './a11y/useLiveRegion'
 
 export {
     AlertV2Type as AlertType,
+    AvatarV2Size as AvatarSize,
+    AvatarV2Shape as AvatarShape,
+    AvatarV2Status as AvatarStatusType,
+    AvatarV2StatusPosition as AvatarStatusPosition,
     AlertV2SubType as AlertSubType,
     AlertV2ActionPosition as AlertActionPosition,
     ButtonV2Type as ButtonType,
     ButtonV2Size as ButtonSize,
     ButtonV2SubType as ButtonSubType,
     ButtonV2State as ButtonState,
+    CardV2Variant as CardVariant,
+    CardV2Orientation as CardOrientation,
+    CardV2Padding as CardPadding,
     InputSizeV2 as InputSize,
+    KeyValuePairV2Size as KeyValuePairSize,
     InputStateV2 as InputState,
+    ProgressBarV2Size as ProgressBarSize,
+    SnackbarV2Variant as SnackbarVariant,
+    ProgressBarV2Variant as ProgressBarVariant,
+    ProgressBarV2Appearance as ProgressBarAppearance,
     TagV2Type as TagType,
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,
