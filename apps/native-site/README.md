@@ -2,9 +2,23 @@
 
 Expo demo app for [`blend-native`](../../packages/blend-native).
 
-It renders every variant of every shipped native component so they can be
-checked against the web originals: **Alert**, **Tag** and **Button**, each with
-a light/dark toggle driven by a single `BlendNativeProvider`.
+Every component the library ships gets two views of it, sharing one
+light/dark toggle driven by a single `BlendNativeProvider`:
+
+- **Preview** — one instance, a panel of controls that reach every variant
+  and combination, and the JSX for whatever is currently on screen.
+- **Gallery** — the dense every-variant grid, which is what catches
+  regressions.
+
+A **side drawer** picks the component; a **native bottom bar** picks the view.
+The selection is shared, so moving between Preview and Gallery keeps you on
+the same component.
+
+Open the drawer with the hamburger. Edge-swipe also works, **except on
+Android devices using gesture navigation**, where the system claims the left
+edge for its own back gesture and closes the app instead. That is the OS
+winning a gesture race, not a bug in the drawer, and it is why the hamburger
+is always present rather than being hidden on touch targets.
 
 This app is not a showcase for its own sake — it is the **verification vehicle
 for the library**. Several bugs in `blend-native` were invisible to the test
@@ -19,6 +33,7 @@ pnpm build:blend            # required — see the note below
 
 cd apps/native-site
 pnpm start                  # then press i / a / w
+pnpm test                   # the playground's pure layer (snippet + options)
 ```
 
 `pnpm build:blend` is not optional. `blend-native` imports tokens from
@@ -131,22 +146,64 @@ object, not what reached the screen. Render tests (`pnpm --filter
 blend-native test:render`) now cover behaviour and accessibility, but
 **visual correctness still needs eyes on a device.**
 
+The bottom bar is a third platform check on top of those two: it is a real
+`UIVisualEffectView` on iOS 26 through `expo-glass-effect`, a Material 3
+navigation bar on Android, and a plain bordered bar on the web. Below iOS 26
+the glass API is absent, so the iOS file falls back to an opaque surface —
+a translucent bar with no material behind it would leave the labels sitting
+unreadably on the scroll content. Checking one platform tells you nothing
+about the other two.
+
 ## Folder structure
 
 ```
 apps/native-site/
-├── App.tsx                     # provider, theme toggle, tab switcher
-├── app.json                    # Expo config
-├── metro.config.js             # pnpm symlink + workspace source resolution
+├── App.tsx                        # provider, drawer, app bar, tab bar
+├── app.json                       # Expo config
+├── metro.config.js                # pnpm symlink + workspace source resolution
 ├── babel.config.js
-└── components/
+├── playground/
+│   ├── types.ts                   # ComponentSpec, Control — the contract
+│   ├── snippet.ts                 # props -> JSX string (pure, unit-tested)
+│   ├── snippet.test.ts
+│   ├── chrome.ts                  # the harness palette, deliberately not Blend's
+│   ├── Playground.tsx             # stage + controls + snippet + reset
+│   ├── Gallery.tsx                # wraps a showcase as the second view
+│   ├── AppBar.tsx                 # title, hamburger, theme toggle
+│   ├── ComponentDrawer.tsx        # the grouped component list
+│   ├── tabBar.shared.ts           # props the three tab bars all satisfy
+│   ├── PlaygroundTabBar.tsx       # default / web
+│   ├── PlaygroundTabBar.ios.tsx   # Liquid Glass (expo-glass-effect)
+│   ├── PlaygroundTabBar.android.tsx  # Material 3 navigation bar
+│   ├── controls/                  # Segmented, Select, Toggle, Text, Panel
+│   └── specs/                     # one file per component + the registry
+└── components/                    # the showcases, now the Gallery view
     ├── AlertShowcase.tsx       # 7 types x 2 subTypes, actions, slots, wrapping
     ├── TagShowcase.tsx         # 3 types x 6 colors x 4 sizes x 2 subTypes
     ├── ButtonShowcase.tsx      # types, sizes, states, subTypes, widths
+    ├── InputShowcase.tsx       # TextInput sizes, slots, states
+    ├── LoadingShowcase.tsx     # Skeleton, Spinner, ProgressBar
+    ├── DisplayShowcase.tsx     # Avatar, Card, KeyValuePair
+    ├── SheetShowcase.tsx       # BottomSheet
     ├── PlatformPreview.tsx     # web-only Mobile/Web switch + zoom
     ├── MobileFrame.web.tsx     # phone chrome for the browser target
     └── MobileFrame.native.tsx  # passthrough on native
 ```
+
+### Two rules the harness depends on
+
+**The control chrome is plain React Native, never `blend-native`.** The
+playground is the instrument used to inspect the library, so it has to keep
+working when the library does not — a control panel built out of the
+components under test goes blank exactly when you need it. `chrome.ts` holds
+its own palette for the same reason.
+
+**Options come from the enums, not from hardcoded lists.**
+`enumOptions(TagColor, 'TagColor')` rather than `['neutral', 'primary', ...]`,
+so a colour added to the library shows up in the controls on its own. String
+unions have no runtime object to enumerate, so `unionOptions` takes an
+explicit list — and fails to compile if the union gains a member the list
+does not have.
 
 `MobileFrame.web.tsx` / `MobileFrame.native.tsx` are a genuine platform split,
 which is what Metro's `.web` / `.native` suffixes are for. Note that
@@ -154,10 +211,52 @@ which is what Metro's `.web` / `.native` suffixes are for. Note that
 no platform variants, and the suffix would advertise a split that does not
 exist.
 
-### Adding a showcase
+### Adding a component
 
-1. Create `components/<Name>Showcase.tsx`.
-2. Add it to the `Tab` union and the switch in `App.tsx`.
+Write a spec and register it. There is no screen to add.
+
+1. Create `playground/specs/<name>.spec.tsx`:
+
+    ```tsx
+    const spec: ComponentSpec<BadgeNativeProps> = {
+        name: 'Badge',
+        summary: 'One line on what is worth knowing.',
+        mode: 'inline', // 'overlay' for things that present over the screen
+        defaults: { text: 'New', variant: BadgeVariant.SUBTLE },
+        controls: [
+            {
+                kind: 'segmented',
+                key: 'variant',
+                label: 'Variant',
+                options: enumOptions(BadgeVariant, 'BadgeVariant'),
+            },
+            { kind: 'text', key: 'text', label: 'Text', always: true },
+        ],
+        render: (props) => <Badge {...props} />,
+        gallery: BadgeShowcase, // optional; without it the Gallery tab hides
+    }
+    ```
+
+2. Add it to a group in `playground/specs/index.ts`.
+
+Notes that save time:
+
+- `always: true` prints a prop in the snippet even at its default. Use it for
+  props the component has no default for — without it the snippet reads
+  `<Badge />`, which renders nothing.
+- `hidden: true` drives the preview without printing. It is for
+  playground-only props such as a family selector.
+- A `segmented` control with more than four options is promoted to a picker
+  automatically, so nobody has to remember to change `kind` when an enum grows.
+- Toggle payloads that are objects must be **module-level constants** — the
+  toggle decides it is on by comparing with `Object.is`, so an inline object
+  would leave it permanently off.
+
+### Adding a gallery
+
+1. Create `components/<Name>Showcase.tsx` returning a `View` (the harness
+   supplies the `ScrollView`).
+2. Point a spec's `gallery` at it. Several specs may share one.
 3. Lead with the case most likely to regress. `AlertShowcase` opens with a
    long wrapping description for exactly this reason.
 
