@@ -1,5 +1,6 @@
 import { StyleSheet, Text as RNText, View } from 'react-native'
 import {
+    Spinner,
     Button,
     ButtonType,
     dismissToast,
@@ -22,6 +23,18 @@ import {
 export default function LoadingShowcase() {
     return (
         <View style={styles.column}>
+            <RNText style={styles.heading}>
+                Spinner (sizes, colors, overlay-free)
+            </RNText>
+            <View
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}
+            >
+                <Spinner size="sm" />
+                <Spinner size="md" />
+                <Spinner size="lg" />
+                <Spinner size="md" color="primary" />
+            </View>
+
             <RNText style={styles.heading}>Skeleton blocks</RNText>
             <Skeleton width={220} height={16} />
             <Skeleton width={160} height={16} variant="wave" />

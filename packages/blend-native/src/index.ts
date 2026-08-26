@@ -32,6 +32,8 @@ export type {
 } from './components/TextInput'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
+export { Spinner } from './components/Spinner'
+export type { SpinnerNativeProps } from './components/Spinner'
 
 export type {
     AlertNativeProps,

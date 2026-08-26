@@ -77,6 +77,7 @@ describe('public API surface', () => {
             'ButtonGroup',
             'IconButton',
             'LinkButton',
+            'Spinner',
             'Tag',
             'TagGroup',
         ]) {
