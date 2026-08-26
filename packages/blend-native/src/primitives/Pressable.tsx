@@ -8,6 +8,7 @@ import {
     type LayoutChangeEvent,
     type PressableProps,
     type View as RNView,
+    type StyleProp,
     type ViewStyle,
 } from 'react-native'
 import {
@@ -116,7 +117,7 @@ export type PrimitivePressableProps = SurfaceStyleProps & {
     minTouchTarget?: number
 
     onPress?: (event: GestureResponderEvent) => void
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 } & Omit<PressableProps, 'style' | 'onPress' | 'disabled' | 'children'>
 
 const PressableImpl = forwardRef<RNView, PrimitivePressableProps>(

@@ -6,6 +6,7 @@ import {
     useWindowDimensions,
     View,
     type LayoutChangeEvent,
+    type StyleProp,
     type ViewStyle,
 } from 'react-native'
 import Animated, {
@@ -75,7 +76,7 @@ export type BottomSheetProps = {
     accessibilityLabel?: string
     testID?: string
     /** Style escape hatch for the sheet surface. */
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 }
 
 const ENTER = {

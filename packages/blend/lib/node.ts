@@ -97,6 +97,7 @@ export {
     AlertV2ActionPosition,
     AlertV2PaddingDirection,
 } from './components/AlertV2/alertV2.types'
+export type { AlertBaseProps } from './components/AlertV2/alertV2.types'
 
 export {
     TagV2Type,
@@ -105,5 +106,7 @@ export {
     TagV2Color,
     TagV2PaddingDirection,
 } from './components/TagV2/TagV2.types'
+export type { TagBaseProps } from './components/TagV2/TagV2.types'
 
 export { InputSizeV2, InputStateV2 } from './components/InputsV2/inputV2.types'
+export type { TextInputBaseProps } from './components/InputsV2/TextInputV2/TextInputV2.types'

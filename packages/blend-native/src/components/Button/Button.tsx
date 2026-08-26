@@ -167,7 +167,7 @@ const Button = forwardRef<RNView, ButtonNativeProps>(function Button(
             accessibilityRole="button"
             // Grouped members drop their shared edges; spread after the
             // resolved surface so `borderWidth` still covers the other sides.
-            style={{ ...styles.groupBorderWidths, ...style }}
+            style={[styles.groupBorderWidths, style]}
             {...rest}
         >
             {content}

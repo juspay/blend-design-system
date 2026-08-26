@@ -1,4 +1,4 @@
-import { StyleSheet, View, type ViewStyle } from 'react-native'
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native'
 import { FOUNDATION_THEME } from '@juspay/blend-design-system/node'
 import { parseDimension } from '../adapters/cssStringAdapter'
 
@@ -21,7 +21,7 @@ export type SeparatorProps = {
     /** Thickness across the line. Token string or number. */
     thickness?: string | number
     color?: string
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
     testID?: string
 }
 
