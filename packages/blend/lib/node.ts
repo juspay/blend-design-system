@@ -33,22 +33,56 @@ export type {
     ResponsiveAlertV2Tokens,
 } from './components/AlertV2/alertV2.tokens'
 export { getAvatarV2Tokens } from './components/AvatarV2/avatarV2.tokens'
+export type {
+    AvatarV2TokensType,
+    ResponsiveAvatarV2Tokens,
+} from './components/AvatarV2/avatarV2.tokens'
+// Pure string/hash helpers shared with the native Avatar — exporting them
+// beats duplicating the fallback-color palette. No React, no DOM at runtime.
+export {
+    getInitialsFromText,
+    getColorFromText,
+    DEFAULT_FALLBACK_COLOR,
+} from './components/AvatarV2/avatarV2.utils'
 export { getBreadcrumbV2Tokens } from './components/BreadcrumbV2/breadcrumbV2.tokens'
+export { getCardV2Tokens } from './components/CardV2/cardV2.tokens'
+export type {
+    CardV2TokensType,
+    ResponsiveCardV2Tokens,
+} from './components/CardV2/cardV2.tokens'
 export { getChartV2Tokens } from './components/ChartsV2/chartV2.tokens'
 export { getCheckboxV2Tokens } from './components/SelectorV2/CheckboxV2/checkboxV2.tokens'
 export { getCodeEditorV2Tokens } from './components/CodeEditorV2/codeEditorV2.tokens'
 export { getKeyValuePairV2Tokens } from './components/KeyValuePairV2/keyValuePairV2.tokens'
+export type {
+    KeyValuePairV2TokensType,
+    ResponsiveKeyValuePairV2Tokens,
+} from './components/KeyValuePairV2/keyValuePairV2.tokens.types'
 export { getMenuV2Tokens } from './components/MenuV2/menuV2.tokens'
 export { getModalV2Tokens } from './components/ModalV2/modalV2.tokens'
 export { getMultiSelectV2Tokens } from './components/MultiSelectV2/multiSelectV2.tokens'
 export { getPopoverV2Tokens } from './components/PopoverV2/popoverV2.token'
 export { getProgressBarV2Tokens } from './components/ProgressBarV2/progressBarV2.tokens'
+export type {
+    ProgressBarV2TokenType,
+    ResponsiveProgressBarV2Tokens,
+} from './components/ProgressBarV2/progressBarV2.tokens.types'
 export { getSpinnerTokens } from './components/Spinner/spinner.tokens'
+export type {
+    SpinnerTokensType,
+    ResponsiveSpinnerTokens,
+    SpinnerSize,
+    SpinnerColor,
+} from './components/Spinner/spinner.tokens.types'
 export { getEmptyStateTokens } from './components/EmptyState/emptyState.tokens'
 export { getRadioV2Tokens } from './components/SelectorV2/RadioV2/radioV2.tokens'
 export { getSingleSelectV2Tokens } from './components/SingleSelectV2/singleSelectV2.tokens'
 export { getSwitchV2Tokens } from './components/SelectorV2/SwitchV2/switchV2.tokens'
 export { getSnackbarV2Tokens } from './components/SnackbarV2/snackbarV2.tokens'
+export type {
+    SnackbarV2TokensType,
+    ResponsiveSnackbarV2Tokens,
+} from './components/SnackbarV2/snackbarV2.tokens.types'
 export { getStatCardV2Tokens } from './components/StatCardV2/statcardV2.tokens'
 export { getTabsV2Tokens } from './components/TabsV2/tabsV2.tokens'
 export { getTagV2Tokens } from './components/TagV2/tagV2.tokens'
@@ -110,3 +144,31 @@ export type { TagBaseProps } from './components/TagV2/TagV2.types'
 
 export { InputSizeV2, InputStateV2 } from './components/InputsV2/inputV2.types'
 export type { TextInputBaseProps } from './components/InputsV2/TextInputV2/TextInputV2.types'
+
+export {
+    AvatarV2Size,
+    AvatarV2Shape,
+    AvatarV2Status,
+    AvatarV2StatusPosition,
+} from './components/AvatarV2/avatarV2.types'
+
+export {
+    ProgressBarV2Size,
+    ProgressBarV2Variant,
+    ProgressBarV2Appearance,
+} from './components/ProgressBarV2/progressBarV2.tokens.types'
+
+// KeyValuePairV2StateType is deliberately NOT exported: it is a numeric enum
+// (vertical = 0, horizontal = 1); native models orientation as the
+// 'vertical' | 'horizontal' string union its token keys already use.
+export { KeyValuePairV2Size } from './components/KeyValuePairV2/keyValuePairV2.types'
+
+export {
+    CardV2Variant,
+    CardV2Orientation,
+    CardV2Padding,
+} from './components/CardV2/cardV2.types'
+
+// SnackbarV2Position is deliberately NOT exported: the native snackbar is a
+// bottom-only stack (documented divergence).
+export { SnackbarV2Variant } from './components/SnackbarV2/snackbarV2.types'
