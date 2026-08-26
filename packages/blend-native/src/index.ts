@@ -21,6 +21,7 @@
 export { Alert } from './components/Alert'
 export { Button } from './components/Button'
 export { IconButton } from './components/Button'
+export { LinkButton } from './components/Button'
 export { Tag } from './components/Tag'
 export { TextInput } from './components/TextInput'
 export type {
@@ -40,6 +41,7 @@ export type {
 export type {
     ButtonNativeProps,
     IconButtonNativeProps,
+    LinkButtonNativeProps,
 } from './components/Button'
 export type { TagNativeProps, TagSlot } from './components/Tag'
 

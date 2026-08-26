@@ -71,7 +71,13 @@ describe('public API surface', () => {
     })
 
     it('exports the components', () => {
-        for (const name of ['Alert', 'Button', 'IconButton', 'Tag']) {
+        for (const name of [
+            'Alert',
+            'Button',
+            'IconButton',
+            'LinkButton',
+            'Tag',
+        ]) {
             expect(exported.has(name)).toBe(true)
         }
     })

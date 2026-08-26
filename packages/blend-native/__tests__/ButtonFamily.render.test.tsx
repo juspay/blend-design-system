@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text as RNText, View } from 'react-native'
 import { render, fireEvent } from '@testing-library/react-native'
-import { IconButton } from '../src/components/Button'
+import { IconButton, LinkButton } from '../src/components/Button'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 
 /**
@@ -59,6 +59,39 @@ describe('IconButton rendering', () => {
         )
         expect(getByTestId('icon')).toBeTruthy()
         expect(queryByText('sneaky')).toBeNull()
+    })
+})
+
+describe('LinkButton rendering', () => {
+    it('announces itself as a link, not a button', () => {
+        // The role rides Button's rest spread, which must land after the
+        // explicit accessibilityRole="button" — this test pins that order.
+        const { getByTestId } = wrap(
+            <LinkButton text="Learn more" testID="link" onPress={() => {}} />
+        )
+        expect(getByTestId('link').props.accessibilityRole).toBe('link')
+    })
+
+    it('fires onPress and blocks it when disabled', () => {
+        const onPress = jest.fn()
+        const { getByTestId, rerender } = wrap(
+            <LinkButton text="Docs" testID="link" onPress={onPress} />
+        )
+        fireEvent.press(getByTestId('link'))
+        expect(onPress).toHaveBeenCalledTimes(1)
+
+        rerender(
+            <BlendNativeProvider>
+                <LinkButton
+                    text="Docs"
+                    testID="link"
+                    onPress={onPress}
+                    disabled
+                />
+            </BlendNativeProvider>
+        )
+        fireEvent.press(getByTestId('link'))
+        expect(onPress).toHaveBeenCalledTimes(1)
     })
 })
 

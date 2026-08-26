@@ -3,6 +3,7 @@ import { Plus, Trash2 } from 'lucide-react-native'
 import {
     Button,
     IconButton,
+    LinkButton,
     ButtonType,
     ButtonSize,
     ButtonSubType,
@@ -146,6 +147,23 @@ export default function ButtonShowcase() {
                         icon={<Plus />}
                         accessibilityLabel="Add"
                         disabled
+                        onPress={() => {}}
+                    />
+                </View>
+            </Section>
+
+            {/* ---- LinkButton ---- */}
+            <Section title="LinkButton (link role, onPress navigation)">
+                <View style={styles.row}>
+                    <LinkButton text="Learn more" onPress={() => {}} />
+                    <LinkButton
+                        buttonType={ButtonType.SECONDARY}
+                        text="View docs"
+                        onPress={() => {}}
+                    />
+                    <LinkButton
+                        subType={ButtonSubType.INLINE}
+                        text="Inline link"
                         onPress={() => {}}
                     />
                 </View>

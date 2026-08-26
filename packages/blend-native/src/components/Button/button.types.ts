@@ -66,3 +66,23 @@ export type IconButtonNativeProps = Omit<
     icon: React.ReactNode
     accessibilityLabel: string
 }
+
+/**
+ * Props for the native `LinkButton` — a `Button` announced as a link.
+ *
+ * Web's `LinkButton` renders an anchor; RN has no anchor, so navigation is
+ * the app's job via `onPress` (locked decision) and the whole difference is
+ * `accessibilityRole="link"`. Deliberately omitted rather than
+ * accepted-and-ignored (compile errors, the `skeleton` precedent):
+ *
+ * - `href` / `target` / `rel` — never existed here; wire navigation (or
+ *   `Linking.openURL` for external URLs) in `onPress`.
+ * - `justifyContent` — web's LinkButton hardcodes center.
+ * - `buttonGroupPosition` — web's LinkButton has no group support.
+ * - `accessibilityRole` — forced to `link`; overriding it would undo the
+ *   component's one job.
+ */
+export type LinkButtonNativeProps = Omit<
+    ButtonNativeProps,
+    'justifyContent' | 'buttonGroupPosition' | 'accessibilityRole'
+>
