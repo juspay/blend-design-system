@@ -251,6 +251,15 @@ Notes that save time:
 - Toggle payloads that are objects must be **module-level constants** — the
   toggle decides it is on by comparing with `Object.is`, so an inline object
   would leave it permanently off.
+- `off: undefined` and an omitted `off` mean different things. The first
+  clears the prop; the second writes `false`. A slot toggle wants the first —
+  `leftSlot={false}` is not a value its type accepts, and it would end up in
+  the snippet as well as in the component's props.
+- `wrapSnippet` reshapes the generated block for specs whose real call is not
+  a single element: a wrapper around several children, or a function call
+  such as `addSnackbar({ ... })`. `replaceProp` and `addProps` in `snippet.ts`
+  do the editing; anything the stage supplies but no control drives (required
+  props, children) belongs there, or the snippet will not compile.
 
 ### Adding a gallery
 
