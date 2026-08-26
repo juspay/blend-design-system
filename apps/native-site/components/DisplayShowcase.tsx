@@ -1,6 +1,8 @@
 import { View, StyleSheet, Text as RNText } from 'react-native'
 import {
     Avatar,
+    Card,
+    CardVariant,
     KeyValuePair,
     AvatarShape,
     AvatarSize,
@@ -102,6 +104,36 @@ export default function DisplayShowcase() {
                     keyString="Wrapped"
                     value="This value wraps onto two lines at most before clamping"
                     textOverflow="wrap-clamp"
+                />
+            </Section>
+
+            <Section title="Card — variants / interactive / selected">
+                <Card
+                    title="Outlined card"
+                    subtitle="Default variant"
+                    description="Border, no shadow."
+                />
+                <Card
+                    variant={CardVariant.ELEVATED}
+                    eyebrow="Elevated"
+                    title="Shadowed card"
+                    description="Foundation shadow chrome."
+                />
+                <Card
+                    variant={CardVariant.GHOST}
+                    title="Ghost card"
+                    description="No chrome, padding none by default."
+                />
+                <Card
+                    title="Pressable card"
+                    description="Tap me — button role."
+                    onPress={() => {}}
+                />
+                <Card
+                    title="Selected card"
+                    description="Selected border + ring."
+                    onPress={() => {}}
+                    selected
                 />
             </Section>
 

@@ -1,6 +1,7 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import { Text as RNText } from 'react-native'
 import { Avatar } from '../src/components/Avatar'
+import { Card } from '../src/components/Card'
 import { KeyValuePair } from '../src/components/KeyValuePair'
 import { Spinner } from '../src/components/Spinner'
 import { ProgressBar } from '../src/components/ProgressBar'
@@ -77,6 +78,49 @@ describe('Avatar rendering', () => {
         const dot = getByTestId('av-status', { includeHiddenElements: true })
         expect(dot.props.importantForAccessibility).toBe('no-hide-descendants')
         expect(getByTestId('av').props.accessibilityLabel).toBe('Jane, online')
+    })
+})
+
+describe('Card rendering', () => {
+    it('renders header text, body and footer', () => {
+        const { getByText } = wrap(
+            <Card
+                eyebrow="Payments"
+                title="Settlement"
+                subtitle="Today"
+                description="All settled."
+                footer={<RNText>foot</RNText>}
+            >
+                <RNText>body child</RNText>
+            </Card>
+        )
+        for (const text of [
+            'Payments',
+            'Settlement',
+            'Today',
+            'All settled.',
+            'body child',
+            'foot',
+        ]) {
+            expect(getByText(text)).toBeTruthy()
+        }
+    })
+
+    it('onPress renders a pressable button card; selected reaches a11y state', () => {
+        const onPress = jest.fn()
+        const { getByTestId } = wrap(
+            <Card title="Tap me" onPress={onPress} selected testID="card" />
+        )
+        const card = getByTestId('card')
+        expect(card.props.accessibilityRole).toBe('button')
+        expect(card.props.accessibilityState.selected).toBe(true)
+        fireEvent.press(card)
+        expect(onPress).toHaveBeenCalledTimes(1)
+    })
+
+    it('a static card is not a button', () => {
+        const { getByTestId } = wrap(<Card title="Still" testID="card" />)
+        expect(getByTestId('card').props.accessibilityRole).not.toBe('button')
     })
 })
 
