@@ -47,6 +47,18 @@ export default defineConfig({
     worker: {
         format: 'es',
     },
+    experimental: {
+        // Force an explicit `./` on JS-referenced asset URLs (only the Monaco
+        // worker chunks — the sole `new URL(..., import.meta.url)` refs in the
+        // library). Without it Vite emits `new URL("assets/x", import.meta.url)`;
+        // webpack-5 consumers that re-bundle this ESM (e.g. Next.js
+        // transpilePackages) treat a bare `assets/x` as a module request and
+        // fail to resolve it. CSS url() (hostType 'css') is left untouched.
+        renderBuiltUrl(filename, { hostType }) {
+            if (hostType === 'js') return './' + filename
+            return { relative: true }
+        },
+    },
     build: {
         copyPublicDir: false,
         lib: {

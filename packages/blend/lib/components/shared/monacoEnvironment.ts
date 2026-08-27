@@ -16,6 +16,7 @@
 
 type MonacoEnvironmentLike = {
     getWorker?: (workerId: string, label: string) => Worker
+    getWorkerUrl?: (workerId: string, label: string) => string
 }
 
 const createWorker = (label: string): Worker => {
@@ -78,8 +79,15 @@ export const configureMonacoEnvironment = (): void => {
     const globalScope = globalThis as typeof globalThis & {
         MonacoEnvironment?: MonacoEnvironmentLike
     }
-    if (globalScope.MonacoEnvironment) return
+    const existing = globalScope.MonacoEnvironment
+    // Defer only when a worker provider is already wired (e.g. by
+    // monaco-editor-webpack-plugin). A partial config with no provider — an
+    // empty `{}` or a `{ globalAPI: true }` / `{ baseUrl }` left by another
+    // library — would otherwise skip our getWorker and re-surface #1734, so we
+    // merge into it rather than replace, keeping any sibling keys.
+    if (existing && (existing.getWorker || existing.getWorkerUrl)) return
     globalScope.MonacoEnvironment = {
+        ...existing,
         getWorker: (_workerId: string, label: string): Worker =>
             createWorker(label),
     }
