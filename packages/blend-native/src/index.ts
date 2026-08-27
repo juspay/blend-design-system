@@ -37,6 +37,13 @@ export type {
 } from './components/KeyValuePair'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/Tabs'
+export type {
+    TabsNativeProps,
+    TabsListNativeProps,
+    TabsTriggerNativeProps,
+    TabsContentNativeProps,
+} from './components/Tabs'
 export { TextInput } from './components/TextInput'
 export type {
     TextInputNativeProps,
@@ -188,6 +195,8 @@ export {
     CardV2Orientation as CardOrientation,
     CardV2Padding as CardPadding,
     SelectorV2Size as SelectorSize,
+    TabsV2Variant as TabsVariant,
+    TabsV2Size as TabsSize,
     CheckboxV2CheckedState as CheckboxCheckedState,
     InputSizeV2 as InputSize,
     KeyValuePairV2Size as KeyValuePairSize,

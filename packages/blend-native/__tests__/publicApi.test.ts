@@ -85,6 +85,7 @@ describe('public API surface', () => {
             'Radio',
             'Spinner',
             'Switch',
+            'Tabs',
             'Tag',
             'TagGroup',
         ]) {

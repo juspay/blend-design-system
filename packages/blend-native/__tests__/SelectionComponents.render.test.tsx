@@ -2,6 +2,13 @@ import { fireEvent, render } from '@testing-library/react-native'
 import { Checkbox } from '../src/components/Checkbox'
 import { Radio } from '../src/components/Radio'
 import { Switch } from '../src/components/Switch'
+import {
+    Tabs,
+    TabsList,
+    TabsTrigger,
+    TabsContent,
+} from '../src/components/Tabs'
+import { Text as RNText } from 'react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import type { ReactElement } from 'react'
 
@@ -13,6 +20,73 @@ import type { ReactElement } from 'react'
 
 const wrap = (ui: ReactElement) =>
     render(<BlendNativeProvider>{ui}</BlendNativeProvider>)
+
+describe('Tabs rendering', () => {
+    const mountTabs = (
+        props: Partial<React.ComponentProps<typeof Tabs>> = {}
+    ) =>
+        wrap(
+            <Tabs defaultValue="one" {...props}>
+                <TabsList testID="list">
+                    <TabsTrigger value="one" testID="t1">
+                        One
+                    </TabsTrigger>
+                    <TabsTrigger value="two" testID="t2">
+                        Two
+                    </TabsTrigger>
+                </TabsList>
+                <TabsContent value="one">
+                    <RNText>panel one</RNText>
+                </TabsContent>
+                <TabsContent value="two">
+                    <RNText>panel two</RNText>
+                </TabsContent>
+            </Tabs>
+        )
+
+    it('uncontrolled: defaultValue selects, pressing a trigger switches', () => {
+        const { getByTestId, getByText, queryByText } = mountTabs()
+        expect(getByTestId('t1').props.accessibilityState.selected).toBe(true)
+        expect(getByText('panel one')).toBeTruthy()
+        expect(queryByText('panel two')).toBeNull()
+        fireEvent.press(getByTestId('t2'))
+        expect(getByText('panel two')).toBeTruthy()
+        expect(queryByText('panel one')).toBeNull()
+        expect(getByTestId('t2').props.accessibilityState.selected).toBe(true)
+    })
+
+    it('controlled: onValueChange fires and value wins', () => {
+        const onValueChange = jest.fn()
+        const { getByTestId, getByText, queryByText } = mountTabs({
+            value: 'one',
+            onValueChange,
+        })
+        fireEvent.press(getByTestId('t2'))
+        expect(onValueChange).toHaveBeenCalledWith('two')
+        // Still controlled to "one" until the owner re-renders.
+        expect(getByText('panel one')).toBeTruthy()
+        expect(queryByText('panel two')).toBeNull()
+    })
+
+    it('exposes tab roles and a disabled trigger blocks selection', () => {
+        const onValueChange = jest.fn()
+        const { getByTestId } = wrap(
+            <Tabs defaultValue="a" onValueChange={onValueChange}>
+                <TabsList>
+                    <TabsTrigger value="a" testID="ta">
+                        A
+                    </TabsTrigger>
+                    <TabsTrigger value="b" disabled testID="tb">
+                        B
+                    </TabsTrigger>
+                </TabsList>
+            </Tabs>
+        )
+        expect(getByTestId('ta').props.accessibilityRole).toBe('tab')
+        fireEvent.press(getByTestId('tb'))
+        expect(onValueChange).not.toHaveBeenCalled()
+    })
+})
 
 describe('Switch rendering', () => {
     it('exposes a switch role and toggles with the inverted value', () => {
