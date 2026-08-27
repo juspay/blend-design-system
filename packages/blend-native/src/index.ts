@@ -42,6 +42,12 @@ export type {
 } from './components/KeyValuePair'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
+export { Menu } from './components/Menu'
+export type {
+    MenuNativeProps,
+    MenuItemType,
+    MenuGroupType,
+} from './components/Menu'
 export { Modal } from './components/Modal'
 export type { ModalNativeProps, ModalAction } from './components/Modal'
 export { Popover } from './components/Popover'
@@ -234,6 +240,10 @@ export {
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,
     TagV2Color as TagColor,
+    MenuV2Alignment as MenuAlignment,
+    MenuV2Side as MenuSide,
+    MenuV2ItemVariant as MenuItemVariant,
+    MenuV2ItemActionType as MenuItemActionType,
     PopoverV2Size as PopoverSize,
     PopoverV2Side as PopoverSide,
     PopoverV2Align as PopoverAlign,
