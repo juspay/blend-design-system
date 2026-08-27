@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import { Checkbox } from '../src/components/Checkbox'
+import { Radio } from '../src/components/Radio'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import type { ReactElement } from 'react'
 
@@ -11,6 +12,55 @@ import type { ReactElement } from 'react'
 
 const wrap = (ui: ReactElement) =>
     render(<BlendNativeProvider>{ui}</BlendNativeProvider>)
+
+describe('Radio rendering', () => {
+    it('selects on press with radio semantics (no re-fire when selected)', () => {
+        const onCheckedChange = jest.fn()
+        const { getByTestId, rerender } = wrap(
+            <Radio
+                label="Option A"
+                checked={false}
+                onCheckedChange={onCheckedChange}
+                testID="ra"
+            />
+        )
+        const radio = getByTestId('ra')
+        expect(radio.props.accessibilityRole).toBe('radio')
+        expect(radio.props.accessibilityState.checked).toBe(false)
+        fireEvent.press(radio)
+        expect(onCheckedChange).toHaveBeenCalledWith(true)
+
+        rerender(
+            <BlendNativeProvider>
+                <Radio
+                    label="Option A"
+                    checked
+                    onCheckedChange={onCheckedChange}
+                    testID="ra"
+                />
+            </BlendNativeProvider>
+        )
+        fireEvent.press(getByTestId('ra'))
+        // Pressing a selected radio is a no-op.
+        expect(onCheckedChange).toHaveBeenCalledTimes(1)
+    })
+
+    it('caller-owned selection works across siblings', () => {
+        const select = jest.fn()
+        const { getByText } = wrap(
+            <>
+                <Radio label="One" checked onCheckedChange={() => select(1)} />
+                <Radio
+                    label="Two"
+                    checked={false}
+                    onCheckedChange={() => select(2)}
+                />
+            </>
+        )
+        fireEvent.press(getByText('Two'))
+        expect(select).toHaveBeenCalledWith(2)
+    })
+})
 
 describe('Checkbox rendering', () => {
     it('exposes a checkbox role with checked state and toggles on press', () => {

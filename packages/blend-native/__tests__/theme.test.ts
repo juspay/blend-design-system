@@ -57,6 +57,7 @@ describe('nativeTokenRegistry', () => {
             'CHECKBOXV2',
             'KEYVALUEPAIRV2',
             'PROGRESS_BARV2',
+            'RADIOV2',
             'SKELETON',
             'SNACKBARV2',
             'SPINNER',

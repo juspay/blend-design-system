@@ -44,6 +44,8 @@ export type {
 } from './components/TextInput'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
+export { Radio } from './components/Radio'
+export type { RadioNativeProps } from './components/Radio'
 export { ProgressBar } from './components/ProgressBar'
 export type { ProgressBarNativeProps } from './components/ProgressBar'
 export { Spinner } from './components/Spinner'
