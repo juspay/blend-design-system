@@ -4,7 +4,6 @@ import type {
     KeyValuePairOrientation,
     KeyValuePairTextOverflow,
 } from 'blend-native'
-import DisplayShowcase from '../../components/DisplayShowcase'
 import { CHECK_SLOT } from './slots'
 import { enumOptions, numberOptions, unionOptions } from '../types'
 import type { ComponentSpec } from '../types'
@@ -16,7 +15,6 @@ const spec: ComponentSpec<KeyValuePairNativeProps> = {
     summary:
         'Label above or beside a value. Truncation maps to RN `numberOfLines`: truncate is 1 line, wrap-clamp caps at `maxLines`, wrap is unlimited.',
     mode: 'inline',
-    gallery: DisplayShowcase,
     defaults: {
         keyString: 'Transaction ID',
         value: 'ord_9f2c41ab77e3',

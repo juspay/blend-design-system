@@ -8,23 +8,18 @@ import { BlendNativeProvider, Theme } from 'blend-native'
 import PlatformPreview from './components/PlatformPreview'
 import AppBar, { APP_BAR_HEIGHT } from './playground/AppBar'
 import ComponentDrawer from './playground/ComponentDrawer'
-import Gallery from './playground/Gallery'
 import Playground from './playground/Playground'
-import PlaygroundTabBar from './playground/PlaygroundTabBar'
 import { ChromeContext, DARK_CHROME, LIGHT_CHROME } from './playground/chrome'
 import { COMPONENT_GROUPS, findSpec } from './playground/specs'
 import { useHideOnScroll } from './playground/useHideOnScroll'
-import type { TabKey } from './playground/tabBar.shared'
 
 /**
- * Two levels of navigation. The drawer picks the component; the bottom bar
- * picks how to look at it. The component selection is shared across both
- * tabs, so moving between Preview and Gallery keeps you on the same
- * component rather than resetting — which is the reason for having both.
+ * The drawer picks the component; the playground is the whole screen.
  *
- * Blend's own components are used only inside the stage. Everything around
- * it is plain React Native, so a regression in the library cannot take the
- * instrument used to inspect it down with it.
+ * Blend's own components appear inside the stage, and in the two places the
+ * control panel knowingly borrows from the library (the picker's sheet and
+ * the JSX accordion). Everything else here is plain React Native, so a
+ * regression cannot take the instrument used to inspect it down with it.
  */
 
 /** Past this the drawer stays open instead of hiding behind the hamburger. */
@@ -35,7 +30,6 @@ export default function App() {
     const [componentName, setComponentName] = useState(
         COMPONENT_GROUPS[0].specs[0].name
     )
-    const [tab, setTab] = useState<TabKey>('preview')
     const [drawerOpen, setDrawerOpen] = useState(false)
 
     // Measured rather than read from `useWindowDimensions`: on the web target
@@ -52,12 +46,7 @@ export default function App() {
     const chrome = isDark ? DARK_CHROME : LIGHT_CHROME
 
     const spec = useMemo(() => findSpec(componentName), [componentName])
-    const tabs: readonly TabKey[] = spec.gallery
-        ? ['preview', 'gallery']
-        : ['preview']
 
-    // One handler drives both tabs; the header is app-level chrome, not the
-    // property of whichever view happens to be scrolling.
     const {
         onScroll,
         style: appBarRowStyle,
@@ -67,12 +56,9 @@ export default function App() {
     const selectComponent = useCallback(
         (name: string) => {
             setComponentName(name)
-            // A spec with no gallery hides that tab. Reset the choice rather
-            // than leaving it parked, or the next component that does have a
-            // gallery would open on it without the user asking.
-            if (!findSpec(name).gallery) setTab('preview')
             setDrawerOpen(false)
-            // A new component starts at the top, so the header comes back with it.
+            // A new component starts at the top, so the header comes back
+            // with it.
             reveal()
         },
         [reveal]
@@ -138,36 +124,13 @@ export default function App() {
                                             rowStyle={appBarRowStyle}
                                         />
 
-                                        {/* Hidden rather than unmounted: a
-                                            trip to the Gallery and back must
-                                            not discard the props you just
-                                            configured. Keyed so switching
-                                            component does reset them. */}
-                                        <View
-                                            style={[
-                                                styles.fill,
-                                                tab === 'gallery'
-                                                    ? styles.hidden
-                                                    : null,
-                                            ]}
-                                        >
-                                            <Playground
-                                                key={spec.name}
-                                                spec={spec}
-                                                onScroll={onScroll}
-                                            />
-                                        </View>
-                                        {tab === 'gallery' ? (
-                                            <Gallery
-                                                spec={spec}
-                                                onScroll={onScroll}
-                                            />
-                                        ) : null}
-
-                                        <PlaygroundTabBar
-                                            value={tab}
-                                            onChange={setTab}
-                                            tabs={tabs}
+                                        {/* Keyed so switching component
+                                            resets the props to that spec's
+                                            defaults. */}
+                                        <Playground
+                                            key={spec.name}
+                                            spec={spec}
+                                            onScroll={onScroll}
                                         />
                                     </View>
                                 </Drawer>
@@ -182,7 +145,4 @@ export default function App() {
 
 const styles = StyleSheet.create({
     fill: { flex: 1 },
-    // `display: none` takes the subtree out of Yoga's layout entirely, so
-    // the hidden Playground costs nothing while the Gallery is on screen.
-    hidden: { display: 'none' },
 })

@@ -8,7 +8,6 @@ import {
     TagType,
 } from 'blend-native'
 import type { TagNativeProps } from 'blend-native'
-import TagShowcase from '../../components/TagShowcase'
 import { CHECK_SLOT, STAR_SLOT } from './slots'
 import { indent, replaceProp } from '../snippet'
 import { enumOptions, unionOptions } from '../types'
@@ -71,7 +70,6 @@ const spec: ComponentSpec<TagPlaygroundProps> = {
     summary:
         'Static label, or a pressable toggle once `onPress` is supplied — mirroring web’s `TagElement = onClick ? PrimitiveButton : Block`. A stacked group collapses the radius on joined edges.',
     mode: 'inline',
-    gallery: TagShowcase,
     defaults: {
         family: 'Tag',
         stacked: true,

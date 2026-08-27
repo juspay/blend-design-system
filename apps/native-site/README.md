@@ -2,17 +2,13 @@
 
 Expo demo app for [`blend-native`](../../packages/blend-native).
 
-Every component the library ships gets two views of it, sharing one
-light/dark toggle driven by a single `BlendNativeProvider`:
+Every component the library ships gets a **preview**: one instance, a panel
+of controls that reach every variant and combination, and the JSX for
+whatever is currently on screen — all under one light/dark toggle driven by a
+single `BlendNativeProvider`.
 
-- **Preview** — one instance, a panel of controls that reach every variant
-  and combination, and the JSX for whatever is currently on screen.
-- **Gallery** — the dense every-variant grid, which is what catches
-  regressions.
-
-A **side drawer** picks the component; a **native bottom bar** picks the view.
-The selection is shared, so moving between Preview and Gallery keeps you on
-the same component.
+A **side drawer** picks the component. There is no other navigation; the
+playground is the whole screen.
 
 Open the drawer with the hamburger. Edge-swipe also works, **except on
 Android devices using gesture navigation**, where the system claims the left
@@ -146,19 +142,11 @@ object, not what reached the screen. Render tests (`pnpm --filter
 blend-native test:render`) now cover behaviour and accessibility, but
 **visual correctness still needs eyes on a device.**
 
-The bottom bar is a third platform check on top of those two: it is a real
-`UIVisualEffectView` on iOS 26 through `expo-glass-effect`, a Material 3
-navigation bar on Android, and a plain bordered bar on the web. Below iOS 26
-the glass API is absent, so the iOS file falls back to an opaque surface —
-a translucent bar with no material behind it would leave the labels sitting
-unreadably on the scroll content. Checking one platform tells you nothing
-about the other two.
-
 ## Folder structure
 
 ```
 apps/native-site/
-├── App.tsx                        # provider, drawer, app bar, tab bar
+├── App.tsx                        # provider, drawer, app bar
 ├── app.json                       # Expo config
 ├── metro.config.js                # pnpm symlink + workspace source resolution
 ├── babel.config.js
@@ -170,23 +158,11 @@ apps/native-site/
 │   ├── Playground.tsx             # pinned stage + scrolling controls + JSX
 │   ├── useHideOnScroll.ts         # collapses the app bar as you scroll
 │   ├── scroll.ts                  # the shared scroll-handler type
-│   ├── Gallery.tsx                # wraps a showcase as the second view
 │   ├── AppBar.tsx                 # title, hamburger, theme toggle
 │   ├── ComponentDrawer.tsx        # the grouped component list
-│   ├── tabBar.shared.ts           # props the three tab bars all satisfy
-│   ├── PlaygroundTabBar.tsx       # default / web
-│   ├── PlaygroundTabBar.ios.tsx   # Liquid Glass (expo-glass-effect)
-│   ├── PlaygroundTabBar.android.tsx  # Material 3 navigation bar
 │   ├── controls/                  # Select, Toggle, Text, Panel
 │   └── specs/                     # one file per component + the registry
-└── components/                    # the showcases, now the Gallery view
-    ├── AlertShowcase.tsx       # 7 types x 2 subTypes, actions, slots, wrapping
-    ├── TagShowcase.tsx         # 3 types x 6 colors x 4 sizes x 2 subTypes
-    ├── ButtonShowcase.tsx      # types, sizes, states, subTypes, widths
-    ├── InputShowcase.tsx       # TextInput sizes, slots, states
-    ├── LoadingShowcase.tsx     # Skeleton, Spinner, ProgressBar
-    ├── DisplayShowcase.tsx     # Avatar, Card, KeyValuePair
-    ├── SheetShowcase.tsx       # BottomSheet
+└── components/
     ├── PlatformPreview.tsx     # web-only Mobile/Web switch + zoom
     ├── MobileFrame.web.tsx     # phone chrome for the browser target
     └── MobileFrame.native.tsx  # passthrough on native
@@ -251,7 +227,6 @@ Write a spec and register it. There is no screen to add.
             { kind: 'text', key: 'text', label: 'Text', always: true },
         ],
         render: (props) => <Badge {...props} />,
-        gallery: BadgeShowcase, // optional; without it the Gallery tab hides
     }
     ```
 
@@ -280,14 +255,6 @@ Notes that save time:
   such as `addSnackbar({ ... })`. `replaceProp` and `addProps` in `snippet.ts`
   do the editing; anything the stage supplies but no control drives (required
   props, children) belongs there, or the snippet will not compile.
-
-### Adding a gallery
-
-1. Create `components/<Name>Showcase.tsx` returning a `View` (the harness
-   supplies the `ScrollView`).
-2. Point a spec's `gallery` at it. Several specs may share one.
-3. Lead with the case most likely to regress. `AlertShowcase` opens with a
-   long wrapping description for exactly this reason.
 
 ## Troubleshooting
 

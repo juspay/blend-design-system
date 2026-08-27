@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 /**
  * The playground harness contract.
@@ -121,11 +121,6 @@ export type ComponentSpec<P extends object> = {
      * already rendered; `indent` in `snippet.ts` handles the reflow.
      */
     wrapSnippet?: (inner: string, props: P) => string
-    /**
-     * The dense every-variant grid, shown under the Gallery tab. Several
-     * specs share one; a spec without one hides the Gallery tab.
-     */
-    gallery?: ComponentType
 }
 
 /**
