@@ -59,6 +59,7 @@ describe('nativeTokenRegistry', () => {
             'KEYVALUEPAIRV2',
             'NUMBER_INPUT_V2',
             'OTP_INPUTV2',
+            'POPOVERV2',
             'PROGRESS_BARV2',
             'RADIOV2',
             'SEARCH_INPUT_V2',

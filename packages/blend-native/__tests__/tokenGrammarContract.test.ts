@@ -60,6 +60,14 @@ const EXCEPTIONS: { pattern: RegExp; handler: string }[] = [
         pattern: /^ACCORDIONV2\.\w+\.\w+\.separator\.color\./,
         handler: 'Accordion.tsx Separator color',
     },
+    {
+        // '8px' — web's popover border token holds a bare length, an
+        // invalid CSS border shorthand browsers silently drop, so no border
+        // renders on web and native deliberately draws none (upstream
+        // finding, flagged in the PR).
+        pattern: /^POPOVERV2\.\w+\.\w+\.border$/,
+        handler: 'Popover.tsx docblock (token unused by design)',
+    },
 ]
 
 type Leaf = { path: string; segments: string[]; value: unknown }
