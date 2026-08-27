@@ -80,6 +80,8 @@ export type BottomSheetProps = {
     /** Show the drag handle. Default true. */
     showHandle?: boolean
     handleColor?: string
+    /** Overrides the handle geometry (width/height/margins). */
+    handleStyle?: StyleProp<ViewStyle>
     /** Allow drag-down to dismiss. Default true. */
     dragToDismiss?: boolean
     /** Dismiss when the backdrop is pressed. Default true. */
@@ -119,6 +121,7 @@ export function BottomSheet({
     topRadius = 16,
     showHandle = true,
     handleColor = 'rgba(0, 0, 0, 0.2)',
+    handleStyle,
     dragToDismiss = true,
     dismissOnBackdropPress = true,
     keyboardAvoidance = 'auto',
@@ -338,6 +341,7 @@ export function BottomSheet({
                             style={[
                                 styles.handle,
                                 { backgroundColor: handleColor },
+                                handleStyle,
                             ]}
                         />
                     ) : null}
