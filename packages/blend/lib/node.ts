@@ -113,6 +113,31 @@ export type {
     TagV2TokensType,
     ResponsiveTagV2Tokens,
 } from './components/TagV2/tagV2.tokens'
+export { getTextAreaV2Tokens } from './components/InputsV2/TextAreaV2/TextAreaV2.tokens'
+export type {
+    TextAreaV2TokensType,
+    ResponsiveTextAreaV2Tokens,
+} from './components/InputsV2/TextAreaV2/TextAreaV2.tokens.types'
+export { getNumberInputV2Tokens } from './components/InputsV2/NumberInputV2/numberInputV2.tokens'
+export type {
+    NumberInputV2TokensType,
+    ResponsiveNumberInputV2Tokens,
+} from './components/InputsV2/NumberInputV2/numberInputV2.tokens.types'
+export { getSearchInputV2Tokens } from './components/InputsV2/SearchInputV2/SearchInputV2.tokens'
+export type {
+    SearchInputV2TokensType,
+    ResponsiveSearchInputV2Tokens,
+} from './components/InputsV2/SearchInputV2/SearchInputV2.tokens.types'
+export { getOTPInputV2Tokens } from './components/InputsV2/OTPInputV2/OTPInputV2.tokens'
+export type {
+    OTPInputV2TokensType,
+    ResponsiveOTPInputV2Tokens,
+} from './components/InputsV2/OTPInputV2/OTPInputV2.tokens.types'
+export type {
+    InputLabelsV2Tokens,
+    InputFooterV2Tokens,
+    FloatingLabelsV2Tokens,
+} from './components/InputsV2/inputV2.tokens'
 export { getTextInputV2Tokens } from './components/InputsV2/TextInputV2/TextInputV2.tokens'
 export type {
     TextInputV2TokensType,
@@ -219,3 +244,9 @@ export type {
     AccordionBaseProps,
     AccordionItemBaseProps,
 } from './components/AccordionV2/accordionV2.types'
+
+export { NumberInputV2Direction } from './components/InputsV2/NumberInputV2/numberInputV2.types'
+export type { NumberInputBaseProps } from './components/InputsV2/NumberInputV2/numberInputV2.types'
+export type { TextAreaBaseProps } from './components/InputsV2/TextAreaV2/TextAreaV2.types'
+export type { SearchInputBaseProps } from './components/InputsV2/SearchInputV2/SearchInputV2.types'
+export type { OTPInputBaseProps } from './components/InputsV2/OTPInputV2/OTPInputV2.types'
