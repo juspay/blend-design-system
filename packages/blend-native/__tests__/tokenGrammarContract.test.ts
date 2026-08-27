@@ -68,6 +68,12 @@ const EXCEPTIONS: { pattern: RegExp; handler: string }[] = [
         pattern: /^POPOVERV2\.\w+\.\w+\.border$/,
         handler: 'Popover.tsx docblock (token unused by design)',
     },
+    {
+        // '20vh' — a viewport unit the adapters reject by design; the
+        // native modal header sizes to its content instead.
+        pattern: /^MODALV2\.\w+\.\w+\.header\.maxHeight$/,
+        handler: 'ModalHeader.tsx docblock (content-sized header)',
+    },
 ]
 
 type Leaf = { path: string; segments: string[]; value: unknown }

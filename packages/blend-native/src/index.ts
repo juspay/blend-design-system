@@ -42,6 +42,8 @@ export type {
 } from './components/KeyValuePair'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
+export { Modal } from './components/Modal'
+export type { ModalNativeProps, ModalAction } from './components/Modal'
 export { Popover } from './components/Popover'
 export type { PopoverNativeProps, PopoverAction } from './components/Popover'
 export { Tooltip } from './components/Tooltip'

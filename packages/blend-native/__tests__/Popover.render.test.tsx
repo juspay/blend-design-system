@@ -71,14 +71,12 @@ describe('Popover (tablet anchored presentation)', () => {
     let spy: jest.SpyInstance
 
     beforeEach(() => {
-        spy = jest
-            .spyOn(rn, 'useWindowDimensions')
-            .mockReturnValue({
-                width: 1194,
-                height: 834,
-                scale: 2,
-                fontScale: 1,
-            })
+        spy = jest.spyOn(rn, 'useWindowDimensions').mockReturnValue({
+            width: 1194,
+            height: 834,
+            scale: 2,
+            fontScale: 1,
+        })
     })
     afterEach(() => spy.mockRestore())
 
