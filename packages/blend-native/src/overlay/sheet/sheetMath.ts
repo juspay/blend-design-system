@@ -27,6 +27,34 @@ export function clampSheetDrag(translationY: number): number {
 }
 
 /**
+ * Whether the sheet (rather than an inner scrollable) should consume a drag:
+ * only when the scrollable is at (or bounced past) its top AND the finger is
+ * moving downward. With no scrollable registered the offset stays 0, so a
+ * plain-content sheet always consumes — today's behaviour.
+ */
+export function shouldSheetConsumeDrag(
+    scrollOffsetY: number,
+    translationY: number
+): boolean {
+    'worklet'
+    return scrollOffsetY <= 0 && translationY > 0
+}
+
+/**
+ * The sheet's effective drag once it starts consuming mid-gesture: the pan
+ * captures the translation at the instant the inner list reaches its top, so
+ * the sheet picks up from under the finger instead of jumping by however far
+ * the list had already scrolled.
+ */
+export function resolveSheetDrag(
+    translationY: number,
+    capturedTranslationY: number
+): number {
+    'worklet'
+    return Math.max(0, translationY - capturedTranslationY)
+}
+
+/**
  * Whether a released drag should dismiss the sheet: past the distance
  * threshold, or a genuine downward fling. An upward fling never dismisses,
  * whatever distance was covered first.

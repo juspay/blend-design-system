@@ -1,7 +1,8 @@
-import { Text } from 'react-native'
+import { ScrollView, Text } from 'react-native'
 import { fireEvent, render, screen } from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { BottomSheet } from '../src/overlay/sheet/BottomSheet'
+import { BottomSheetScrollable } from '../src/overlay/sheet/SheetScrollable'
 
 /**
  * BottomSheet behaviour under the Reanimated jest mock (animations resolve
@@ -112,5 +113,43 @@ describe('BottomSheet', () => {
         const sheet = screen.getByTestId('sheet')
         // Only the content remains inside the sheet surface.
         expect(sheet.children).toHaveLength(1)
+    })
+})
+
+describe('BottomSheetScrollable', () => {
+    it('renders its scrollable inside a sheet with the scroll plumbing attached', () => {
+        render(
+            <BlendNativeProvider>
+                <BottomSheet open onClose={jest.fn()} testID="sheet">
+                    <BottomSheetScrollable>
+                        <ScrollView testID="list">
+                            <Text>row</Text>
+                        </ScrollView>
+                    </BottomSheetScrollable>
+                </BottomSheet>
+            </BlendNativeProvider>
+        )
+        const list = screen.getByTestId('list')
+        expect(screen.getByText('row')).toBeTruthy()
+        // The offset plumbing replaces onScroll and sets the throttle.
+        expect(list.props.scrollEventThrottle).toBe(16)
+        expect(list.props.onScroll).toBeDefined()
+    })
+
+    it('is a passthrough outside a sheet', () => {
+        render(
+            <BlendNativeProvider>
+                <BottomSheetScrollable>
+                    <ScrollView testID="list">
+                        <Text>row</Text>
+                    </ScrollView>
+                </BottomSheetScrollable>
+            </BlendNativeProvider>
+        )
+        expect(screen.getByText('row')).toBeTruthy()
+        // No sheet, no injected throttle — the child renders unchanged.
+        expect(
+            screen.getByTestId('list').props.scrollEventThrottle
+        ).toBeUndefined()
     })
 })

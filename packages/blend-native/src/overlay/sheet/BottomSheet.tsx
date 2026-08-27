@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react'
 import {
     BackHandler,
     Pressable,
@@ -23,11 +29,14 @@ import { SafeAreaInsetsContext } from '../safeAreaInsets'
 import { MOTION_DURATION, MOTION_EASING } from '../../motion/motion'
 import { useReduceMotion } from '../../motion/useReduceMotion'
 import {
-    clampSheetDrag,
+    resolveSheetDrag,
     resolveSheetMaxHeight,
     shouldDismissSheet,
+    shouldSheetConsumeDrag,
     SHEET_MAX_HEIGHT_FRACTION,
 } from './sheetMath'
+import { SheetGestureContext } from './sheetGestureContext'
+import type { SheetGestureValue } from './sheetGestureContext'
 
 /**
  * BottomSheet — the gesture-driven sheet foundation.
@@ -109,6 +118,11 @@ export function BottomSheet({
     const progress = useSharedValue(0)
     const dragY = useSharedValue(0)
     const sheetHeight = useSharedValue(0)
+    // Scroll offset of a BottomSheetScrollable inside the sheet (0 when none
+    // is registered), and the translation captured at the instant the sheet
+    // starts consuming the drag (-1 = not consuming).
+    const scrollOffsetY = useSharedValue(0)
+    const capturedY = useSharedValue(-1)
     const window = useWindowDimensions()
     const insets = useContext(SafeAreaInsetsContext)
     const reduceMotion = useReduceMotion()
@@ -118,6 +132,9 @@ export function BottomSheet({
     useEffect(() => {
         if (open) {
             setMounted(true)
+            // A remount starts the inner list back at its top; without this a
+            // stale offset from the previous session would pin the sheet.
+            scrollOffsetY.value = 0
             progress.value = withTiming(1, ENTER)
         } else {
             // Drag offset folds into the exit so a gesture-dismissed sheet
@@ -127,7 +144,7 @@ export function BottomSheet({
                 if (finished) runOnJS(unmount)()
             })
         }
-    }, [open, progress, dragY, unmount])
+    }, [open, progress, dragY, scrollOffsetY, unmount])
 
     // Android hardware back closes the sheet instead of the screen.
     useEffect(() => {
@@ -149,15 +166,43 @@ export function BottomSheet({
         [sheetHeight]
     )
 
+    // Scroll-aware drag: the pan runs simultaneously with the native scroll
+    // gesture of any BottomSheetScrollable below. While the inner list is
+    // scrolled, the pan holds the sheet still and the list scrolls; the
+    // instant the list reaches its top under a downward finger, the pan
+    // captures the translation at that point and the sheet follows from
+    // under the finger. `activeOffsetY` keeps taps on sheet content working;
+    // `failOffsetX` hands horizontal swipes to the content.
     const pan = Gesture.Pan()
         .enabled(dragToDismiss)
+        .activeOffsetY(8)
+        .failOffsetX([-16, 16])
+        .onBegin(() => {
+            capturedY.value = -1
+        })
         .onChange((event) => {
-            dragY.value = clampSheetDrag(event.translationY)
+            if (capturedY.value < 0) {
+                if (
+                    !shouldSheetConsumeDrag(
+                        scrollOffsetY.value,
+                        event.translationY
+                    )
+                ) {
+                    return
+                }
+                capturedY.value = event.translationY
+            }
+            dragY.value = resolveSheetDrag(event.translationY, capturedY.value)
         })
         .onEnd((event) => {
+            if (capturedY.value < 0) return
+            const effectiveDrag = resolveSheetDrag(
+                event.translationY,
+                capturedY.value
+            )
             if (
                 shouldDismissSheet(
-                    event.translationY,
+                    effectiveDrag,
                     event.velocityY,
                     sheetHeight.value
                 )
@@ -167,6 +212,14 @@ export function BottomSheet({
                 dragY.value = withSpring(0, { damping: 22, stiffness: 320 })
             }
         })
+
+    // The gesture is rebuilt each render (the GestureDetector pattern); the
+    // context value tracks it so scrollables always compose with the current
+    // pan.
+    const gestureValue = useMemo<SheetGestureValue>(
+        () => ({ panGesture: pan, scrollOffsetY }),
+        [pan, scrollOffsetY]
+    )
 
     const windowHeight = window.height
     const sheetStyle = useAnimatedStyle(() => {
@@ -247,7 +300,9 @@ export function BottomSheet({
                             ]}
                         />
                     ) : null}
-                    {children}
+                    <SheetGestureContext.Provider value={gestureValue}>
+                        {children}
+                    </SheetGestureContext.Provider>
                 </Animated.View>
             </GestureDetector>
         </Portal>

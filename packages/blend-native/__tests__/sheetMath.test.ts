@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import {
     clampSheetDrag,
+    resolveSheetDrag,
     resolveSheetMaxHeight,
     shouldDismissSheet,
+    shouldSheetConsumeDrag,
     SHEET_DISMISS_FRACTION,
     SHEET_DISMISS_VELOCITY,
 } from '../src/overlay/sheet/sheetMath'
@@ -47,6 +49,47 @@ describe('shouldDismissSheet', () => {
 
     it('an unmeasured sheet never dismisses by distance', () => {
         expect(shouldDismissSheet(500, 0, 0)).toBe(false)
+    })
+})
+
+describe('shouldSheetConsumeDrag', () => {
+    it('consumes a downward drag while the list is at its top', () => {
+        expect(shouldSheetConsumeDrag(0, 10)).toBe(true)
+    })
+
+    it('consumes when the list has bounced past its top (iOS overscroll)', () => {
+        expect(shouldSheetConsumeDrag(-12, 10)).toBe(true)
+    })
+
+    it('lets a mid-scroll list keep the drag', () => {
+        expect(shouldSheetConsumeDrag(120, 10)).toBe(false)
+    })
+
+    it('never consumes an upward drag', () => {
+        expect(shouldSheetConsumeDrag(0, -10)).toBe(false)
+        expect(shouldSheetConsumeDrag(0, 0)).toBe(false)
+    })
+
+    it('defaults to consuming when no scrollable is registered (offset 0)', () => {
+        expect(shouldSheetConsumeDrag(0, 1)).toBe(true)
+    })
+})
+
+describe('resolveSheetDrag', () => {
+    it('follows the finger from the captured translation', () => {
+        expect(resolveSheetDrag(100, 40)).toBe(60)
+    })
+
+    it('starts at zero at the instant of capture — no jump', () => {
+        expect(resolveSheetDrag(40, 40)).toBe(0)
+    })
+
+    it('pins at zero when the finger moves back above the capture point', () => {
+        expect(resolveSheetDrag(10, 40)).toBe(0)
+    })
+
+    it('matches clampSheetDrag for an immediate consume (capture 0)', () => {
+        expect(resolveSheetDrag(35, 0)).toBe(clampSheetDrag(35))
     })
 })
 

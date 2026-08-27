@@ -171,6 +171,9 @@ export { useReduceMotion } from './motion/useReduceMotion'
 // Select/Menu/Modal compose it; also public for consumer-built sheets.
 export { BottomSheet } from './overlay/sheet/BottomSheet'
 export type { BottomSheetProps } from './overlay/sheet/BottomSheet'
+// Makes a scrollable inside a sheet cooperate with the sheet drag: the list
+// scrolls until it hits its top, then the sheet follows the finger.
+export { BottomSheetScrollable } from './overlay/sheet/SheetScrollable'
 
 // The toast host: the provider mounts the outlet, this pair drives it;
 // `addSnackbar` layers the SNACKBARV2 token styling on top.

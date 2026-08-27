@@ -124,7 +124,9 @@ describe('public API surface', () => {
         // ButtonGroup, TagGroup), then to 64 for the display wave (Spinner,
         // ProgressBar, Avatar, KeyValuePair, Card, Snackbar and their enums),
         // then to 84 for the Wave B form layer (Checkbox, Radio, Switch, the
-        // compound Tabs/Accordion, the input variants, and their enums).
-        expect(exported.size).toBeLessThanOrEqual(84)
+        // compound Tabs/Accordion, the input variants, and their enums),
+        // then to 85 when BottomSheetScrollable joined the sheet foundation
+        // (Wave C0 scroll-aware drag).
+        expect(exported.size).toBeLessThanOrEqual(85)
     })
 })
