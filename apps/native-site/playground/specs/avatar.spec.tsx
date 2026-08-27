@@ -54,13 +54,13 @@ const spec: ComponentSpec<AvatarNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(AvatarSize, 'AvatarSize'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'shape',
             label: 'Shape',
             options: enumOptions(AvatarShape, 'AvatarShape'),

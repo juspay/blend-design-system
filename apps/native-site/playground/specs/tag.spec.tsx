@@ -83,7 +83,7 @@ const spec: ComponentSpec<TagPlaygroundProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'family',
             label: 'Component',
             hidden: true,
@@ -96,7 +96,7 @@ const spec: ComponentSpec<TagPlaygroundProps> = {
             hidden: true,
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'type',
             label: 'Type',
             options: enumOptions(TagType, 'TagType'),
@@ -108,13 +108,13 @@ const spec: ComponentSpec<TagPlaygroundProps> = {
             options: enumOptions(TagColor, 'TagColor'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(TagSize, 'TagSize'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'subType',
             label: 'Shape',
             options: enumOptions(TagSubType, 'TagSubType'),

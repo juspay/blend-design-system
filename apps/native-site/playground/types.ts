@@ -55,10 +55,25 @@ type Common = {
 export type Control<P> = {
     [K in keyof P & string]:
         | (Common & {
-              /** `segmented` is inline (2-4 options); `select` opens a sheet. */
-              kind: 'select' | 'segmented'
+              /** One value, chosen from a bottom sheet. */
+              kind: 'select'
               key: K
               options: readonly Option<P[K]>[]
+          })
+        | (Common & {
+              /**
+               * Several values from the same sheet, for a prop that takes a
+               * list. The options are typed against the element, not the
+               * array.
+               */
+              kind: 'multiselect'
+              key: K
+              // `NonNullable` first: an optional prop's type includes
+              // `undefined`, and an indexed access does not distribute over
+              // that union, so the infer would collapse to `never`.
+              options: readonly Option<
+                  NonNullable<P[K]> extends readonly (infer E)[] ? E : never
+              >[]
           })
         | (Common & {
               kind: 'toggle'

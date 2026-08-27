@@ -24,19 +24,19 @@ const spec: ComponentSpec<CardNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'variant',
             label: 'Variant',
             options: enumOptions(CardVariant, 'CardVariant'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'orientation',
             label: 'Orientation',
             options: enumOptions(CardOrientation, 'CardOrientation'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'padding',
             label: 'Padding',
             options: enumOptions(CardPadding, 'CardPadding'),

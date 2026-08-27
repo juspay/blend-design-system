@@ -17,13 +17,13 @@ const spec: ComponentSpec<SpinnerNativeProps> = {
     defaults: { size: 'md', color: 'default' },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: unionOptions<SpinnerSize>()(['sm', 'md', 'lg']),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'color',
             label: 'Color',
             options: unionOptions<SpinnerColor>()([

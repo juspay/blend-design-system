@@ -15,7 +15,7 @@ const spec: ComponentSpec<OTPInputNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'length',
             label: 'Length',
             options: numberOptions([4, 5, 6]),

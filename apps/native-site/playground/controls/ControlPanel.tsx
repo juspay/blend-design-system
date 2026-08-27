@@ -3,18 +3,9 @@ import { StyleSheet, Text, View } from 'react-native'
 import { useChrome } from '../chrome'
 import { CONTROL_GROUPS, toggleValues } from '../types'
 import type { Control, ControlGroup, Option } from '../types'
-import SegmentedControl from './SegmentedControl'
 import SelectControl from './SelectControl'
 import TextControl from './TextControl'
 import ToggleControl from './ToggleControl'
-
-/**
- * Past this many values an inline row wraps into an unreadable block, so the
- * panel promotes the control to a picker regardless of what the spec asked
- * for. That keeps specs honest when an enum grows: nobody has to remember to
- * change `segmented` to `select`.
- */
-const MAX_INLINE_OPTIONS = 4
 
 const DEFAULT_GROUP: ControlGroup = 'Appearance'
 
@@ -106,21 +97,17 @@ function ControlRow<P extends object>({
         )
     }
 
-    const options = control.options as readonly Option<unknown>[]
-    const inline =
-        control.kind === 'segmented' && options.length <= MAX_INLINE_OPTIONS
-
+    // Everything that is not a boolean or free text is a picker, single or
+    // multi. One presentation for every value prop keeps the panel scannable
+    // however many options an enum grows to.
     return labelled(
-        inline ? (
-            <SegmentedControl options={options} value={value} onChange={set} />
-        ) : (
-            <SelectControl
-                label={control.label}
-                options={options}
-                value={value}
-                onChange={set}
-            />
-        )
+        <SelectControl
+            label={control.label}
+            options={control.options as readonly Option<unknown>[]}
+            value={value}
+            onChange={set}
+            multiple={control.kind === 'multiselect'}
+        />
     )
 }
 

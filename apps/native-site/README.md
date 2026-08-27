@@ -175,7 +175,7 @@ apps/native-site/
 │   ├── PlaygroundTabBar.tsx       # default / web
 │   ├── PlaygroundTabBar.ios.tsx   # Liquid Glass (expo-glass-effect)
 │   ├── PlaygroundTabBar.android.tsx  # Material 3 navigation bar
-│   ├── controls/                  # Segmented, Select, Toggle, Text, Panel
+│   ├── controls/                  # Select, Toggle, Text, Panel
 │   └── specs/                     # one file per component + the registry
 └── components/                    # the showcases, now the Gallery view
     ├── AlertShowcase.tsx       # 7 types x 2 subTypes, actions, slots, wrapping
@@ -192,11 +192,16 @@ apps/native-site/
 
 ### Two rules the harness depends on
 
-**The control chrome is plain React Native, never `blend-native`.** The
-playground is the instrument used to inspect the library, so it has to keep
-working when the library does not — a control panel built out of the
+**The control chrome is plain React Native, with one deliberate exception.**
+The playground is the instrument used to inspect the library, so it has to
+keep working when the library does not — a control panel built out of the
 components under test goes blank exactly when you need it. `chrome.ts` holds
 its own palette for the same reason.
+
+The exception is `SelectControl`, which presents its options in Blend's own
+`BottomSheet`. That is a knowing trade: if `BottomSheet` regresses, every
+picker goes with it. The rows inside the sheet are still plain React Native,
+so a broken sheet is the whole blast radius rather than the start of one.
 
 **Options come from the enums, not from hardcoded lists.**
 `enumOptions(TagColor, 'TagColor')` rather than `['neutral', 'primary', ...]`,
@@ -225,7 +230,7 @@ Write a spec and register it. There is no screen to add.
         defaults: { text: 'New', variant: BadgeVariant.SUBTLE },
         controls: [
             {
-                kind: 'segmented',
+                kind: 'select',
                 key: 'variant',
                 label: 'Variant',
                 options: enumOptions(BadgeVariant, 'BadgeVariant'),
@@ -246,8 +251,10 @@ Notes that save time:
   `<Badge />`, which renders nothing.
 - `hidden: true` drives the preview without printing. It is for
   playground-only props such as a family selector.
-- A `segmented` control with more than four options is promoted to a picker
-  automatically, so nobody has to remember to change `kind` when an enum grows.
+- There are three control kinds and no more: `select` (one value, chosen from
+  a bottom sheet), `multiselect` (several, same sheet, for a prop that takes a
+  list) and `toggle` and `text`. Value props all get the same picker, so the
+  panel stays scannable however many options an enum grows to.
 - Toggle payloads that are objects must be **module-level constants** — the
   toggle decides it is on by comparing with `Object.is`, so an inline object
   would leave it permanently off.

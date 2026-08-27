@@ -24,26 +24,26 @@ const spec: ComponentSpec<ProgressBarNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'value',
             label: 'Value',
             always: true,
             options: numberOptions([0, 25, 60, 100]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(ProgressBarSize, 'ProgressBarSize'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'variant',
             label: 'Variant',
             options: enumOptions(ProgressBarVariant, 'ProgressBarVariant'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'appearance',
             label: 'Appearance',
             options: enumOptions(

@@ -20,7 +20,7 @@ const spec: ComponentSpec<TextInputNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(InputSize, 'InputSize'),

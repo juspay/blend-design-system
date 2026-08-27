@@ -51,7 +51,7 @@ const spec: ComponentSpec<SnackbarOptions> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'variant',
             label: 'Variant',
             options: enumOptions(SnackbarVariant, 'SnackbarVariant'),

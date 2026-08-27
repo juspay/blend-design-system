@@ -7,6 +7,10 @@ import { createContext, useContext } from 'react'
  * is the instrument used to inspect the library, so it must keep working
  * when the library does not. A control panel built out of the components
  * under test goes blank exactly when you need it most.
+ *
+ * `SelectControl` is the one knowing exception — it presents its options in
+ * Blend's `BottomSheet`. Everything else here, the rows inside that sheet
+ * included, is plain React Native.
  */
 export type ChromePalette = {
     bg: string

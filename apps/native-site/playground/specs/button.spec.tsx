@@ -112,25 +112,25 @@ const spec: ComponentSpec<ButtonPlaygroundProps> = {
             ]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'buttonType',
             label: 'Type',
             options: enumOptions(ButtonType, 'ButtonType'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(ButtonSize, 'ButtonSize'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'subType',
             label: 'Sub type',
             options: enumOptions(ButtonSubType, 'ButtonSubType'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'width',
             label: 'Width',
             // `Auto` writes `undefined`: without it a width, once set, could

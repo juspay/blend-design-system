@@ -27,13 +27,13 @@ const spec: ComponentSpec<KeyValuePairNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(KeyValuePairSize, 'KeyValuePairSize'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'orientation',
             label: 'Orientation',
             options: unionOptions<KeyValuePairOrientation>()([
@@ -42,7 +42,7 @@ const spec: ComponentSpec<KeyValuePairNativeProps> = {
             ]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'textOverflow',
             label: 'Text overflow',
             options: unionOptions<KeyValuePairTextOverflow>()([
@@ -52,7 +52,7 @@ const spec: ComponentSpec<KeyValuePairNativeProps> = {
             ]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'maxLines',
             label: 'Max lines (wrap-clamp)',
             options: numberOptions([1, 2, 3]),

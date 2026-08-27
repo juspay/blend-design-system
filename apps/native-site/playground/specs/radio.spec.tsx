@@ -43,7 +43,7 @@ const spec: ComponentSpec<RadioNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(SelectorSize, 'SelectorSize'),

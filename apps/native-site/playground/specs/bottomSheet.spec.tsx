@@ -36,7 +36,7 @@ const spec: ComponentSpec<SheetPlaygroundProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'maxHeightFraction',
             label: 'Max height',
             options: [
@@ -46,13 +46,13 @@ const spec: ComponentSpec<SheetPlaygroundProps> = {
             ],
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'topRadius',
             label: 'Top radius',
             options: numberOptions([0, 16, 28]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'paragraphs',
             label: 'Content length',
             hidden: true,

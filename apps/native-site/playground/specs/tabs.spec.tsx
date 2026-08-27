@@ -76,7 +76,7 @@ const spec: ComponentSpec<TabsPlaygroundProps> = {
             options: enumOptions(TabsVariant, 'TabsVariant'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(TabsSize, 'TabsSize'),

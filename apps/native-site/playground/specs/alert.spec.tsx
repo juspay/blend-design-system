@@ -72,7 +72,7 @@ const spec: ComponentSpec<AlertNativeProps> = {
             options: enumOptions(AlertType, 'AlertType'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'subType',
             label: 'Sub type',
             options: enumOptions(AlertSubType, 'AlertSubType'),

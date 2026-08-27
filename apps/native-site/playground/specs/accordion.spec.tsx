@@ -82,13 +82,13 @@ const spec: ComponentSpec<AccordionPlaygroundProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'accordionType',
             label: 'Type',
             options: enumOptions(AccordionType, 'AccordionType'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'chevronPosition',
             label: 'Chevron',
             hidden: true,

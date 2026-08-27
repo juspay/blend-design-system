@@ -17,7 +17,7 @@ const spec: ComponentSpec<TextAreaNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'rows',
             label: 'Rows',
             options: numberOptions([2, 3, 5]),
