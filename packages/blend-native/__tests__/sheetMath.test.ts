@@ -107,4 +107,13 @@ describe('resolveSheetMaxHeight', () => {
     it('never returns a negative height', () => {
         expect(resolveSheetMaxHeight(100, 200)).toBe(0)
     })
+
+    it('shrinks by the keyboard height when the sheet translates over it', () => {
+        // 90% of 800 is 720, but only 800 - 59 - 300 = 441 stays visible
+        // once the sheet has slid up over a 300pt keyboard.
+        expect(resolveSheetMaxHeight(800, 59, 0.9, 300)).toBe(441)
+        // A short sheet cap is untouched by a small keyboard.
+        expect(resolveSheetMaxHeight(800, 0, 0.5, 100)).toBe(400)
+        expect(resolveSheetMaxHeight(800, 59, 0.9, 900)).toBe(0)
+    })
 })

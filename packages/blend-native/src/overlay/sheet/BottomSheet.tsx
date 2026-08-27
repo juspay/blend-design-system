@@ -7,6 +7,7 @@ import React, {
 } from 'react'
 import {
     BackHandler,
+    Platform,
     Pressable,
     StyleSheet,
     useWindowDimensions,
@@ -26,6 +27,7 @@ import Animated, {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Portal } from '../portal'
 import { SafeAreaInsetsContext } from '../safeAreaInsets'
+import { useKeyboardHeight } from '../useKeyboardHeight'
 import { MOTION_DURATION, MOTION_EASING } from '../../motion/motion'
 import { useReduceMotion } from '../../motion/useReduceMotion'
 import {
@@ -82,6 +84,16 @@ export type BottomSheetProps = {
     dragToDismiss?: boolean
     /** Dismiss when the backdrop is pressed. Default true. */
     dismissOnBackdropPress?: boolean
+    /**
+     * How the sheet reacts to the soft keyboard. `'translate'` slides the
+     * sheet up by the keyboard's height (over the bottom inset) and shrinks
+     * its max height to match. `'auto'` (default) translates on iOS and does
+     * nothing on Android — with the default `adjustResize` soft-input mode
+     * the Android window itself shrinks and the bottom-anchored sheet
+     * already rises, so translating would double-compensate. Android apps
+     * running `adjustPan`/`adjustNothing` should pass `'translate'`.
+     */
+    keyboardAvoidance?: 'auto' | 'translate' | 'none'
     accessibilityLabel?: string
     testID?: string
     /** Style escape hatch for the sheet surface. */
@@ -109,6 +121,7 @@ export function BottomSheet({
     handleColor = 'rgba(0, 0, 0, 0.2)',
     dragToDismiss = true,
     dismissOnBackdropPress = true,
+    keyboardAvoidance = 'auto',
     accessibilityLabel,
     testID,
     style,
@@ -123,11 +136,31 @@ export function BottomSheet({
     // starts consuming the drag (-1 = not consuming).
     const scrollOffsetY = useSharedValue(0)
     const capturedY = useSharedValue(-1)
+    const keyboardOffset = useSharedValue(0)
     const window = useWindowDimensions()
     const insets = useContext(SafeAreaInsetsContext)
     const reduceMotion = useReduceMotion()
+    const keyboard = useKeyboardHeight()
 
     const unmount = useCallback(() => setMounted(false), [])
+
+    const avoidsKeyboard =
+        keyboardAvoidance === 'translate' ||
+        (keyboardAvoidance === 'auto' && Platform.OS === 'ios')
+    const keyboardHeight = avoidsKeyboard
+        ? Math.max(0, keyboard.height - (insets?.bottom ?? 0))
+        : 0
+
+    useEffect(() => {
+        // Functional motion (the sheet must clear the keyboard), so reduce
+        // motion only skips the easing, not the move.
+        keyboardOffset.value = reduceMotion
+            ? keyboardHeight
+            : withTiming(keyboardHeight, {
+                  duration: MOTION_DURATION.normal,
+                  easing: Easing.bezier(...MOTION_EASING.standard),
+              })
+    }, [keyboardHeight, keyboardOffset, reduceMotion])
 
     useEffect(() => {
         if (open) {
@@ -226,7 +259,7 @@ export function BottomSheet({
         if (reduceMotion) {
             return {
                 opacity: progress.value,
-                transform: [{ translateY: dragY.value }],
+                transform: [{ translateY: dragY.value - keyboardOffset.value }],
             }
         }
         // Until the first layout lands, the full window height keeps the
@@ -235,7 +268,12 @@ export function BottomSheet({
         return {
             opacity: 1,
             transform: [
-                { translateY: (1 - progress.value) * height + dragY.value },
+                {
+                    translateY:
+                        (1 - progress.value) * height +
+                        dragY.value -
+                        keyboardOffset.value,
+                },
             ],
         }
     }, [reduceMotion, windowHeight])
@@ -249,7 +287,8 @@ export function BottomSheet({
     const maxHeight = resolveSheetMaxHeight(
         windowHeight,
         insets?.top ?? 0,
-        maxHeightFraction
+        maxHeightFraction,
+        keyboardHeight
     )
 
     return (

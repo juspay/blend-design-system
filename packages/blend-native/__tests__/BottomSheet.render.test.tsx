@@ -1,5 +1,5 @@
-import { ScrollView, Text } from 'react-native'
-import { fireEvent, render, screen } from '@testing-library/react-native'
+import { Keyboard, ScrollView, Text } from 'react-native'
+import { act, fireEvent, render, screen } from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { BottomSheet } from '../src/overlay/sheet/BottomSheet'
 import { BottomSheetScrollable } from '../src/overlay/sheet/SheetScrollable'
@@ -132,6 +132,40 @@ describe('BottomSheet', () => {
         const sheet = screen.getByTestId('sheet')
         // Only the content remains inside the sheet surface.
         expect(sheet.children).toHaveLength(1)
+    })
+})
+
+describe('BottomSheet keyboard avoidance', () => {
+    it('subscribes to keyboard events and survives a show/hide cycle', () => {
+        const listeners = new Map<string, (event: unknown) => void>()
+        const remove = jest.fn()
+        const addListener = jest
+            .spyOn(Keyboard, 'addListener')
+            .mockImplementation(((event: string, cb: never) => {
+                listeners.set(event, cb)
+                return { remove } as never
+            }) as never)
+        try {
+            const { unmount } = renderSheet(true)
+            act(() => {
+                listeners.get('keyboardDidShow')?.({
+                    endCoordinates: { height: 300 },
+                })
+                listeners.get('keyboardWillShow')?.({
+                    endCoordinates: { height: 300 },
+                })
+            })
+            expect(screen.getByText('sheet content')).toBeTruthy()
+            act(() => {
+                listeners.get('keyboardDidHide')?.({})
+                listeners.get('keyboardWillHide')?.({})
+            })
+            unmount()
+            // Both listeners (show + hide) removed on unmount.
+            expect(remove).toHaveBeenCalledTimes(2)
+        } finally {
+            addListener.mockRestore()
+        }
     })
 })
 

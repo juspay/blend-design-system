@@ -74,13 +74,19 @@ export function shouldDismissSheet(
 
 /**
  * The tallest a sheet may grow: the capped fraction of the window, minus
- * whatever top inset (status bar / notch) must stay visible above it.
+ * whatever top inset (status bar / notch) must stay visible above it, minus
+ * the keyboard when the sheet translates up to avoid it — otherwise a tall
+ * sheet pushed up by the keyboard would run past the notch.
  */
 export function resolveSheetMaxHeight(
     windowHeight: number,
     topInset: number = 0,
-    maxHeightFraction: number = SHEET_MAX_HEIGHT_FRACTION
+    maxHeightFraction: number = SHEET_MAX_HEIGHT_FRACTION,
+    keyboardHeight: number = 0
 ): number {
     const capped = windowHeight * maxHeightFraction
-    return Math.max(0, Math.min(capped, windowHeight - topInset))
+    return Math.max(
+        0,
+        Math.min(capped, windowHeight - topInset - keyboardHeight)
+    )
 }
