@@ -77,6 +77,7 @@ describe('public API surface', () => {
             'Button',
             'ButtonGroup',
             'Card',
+            'Checkbox',
             'IconButton',
             'KeyValuePair',
             'LinkButton',
@@ -113,7 +114,9 @@ describe('public API surface', () => {
         // (TextInput, PrimitiveInput, input enums) and the toast pair, then
         // to 44 for the Button/Tag family wave (IconButton, LinkButton,
         // ButtonGroup, TagGroup), then to 64 for the display wave (Spinner,
-        // ProgressBar, Avatar, KeyValuePair, Card, Snackbar and their enums).
-        expect(exported.size).toBeLessThanOrEqual(64)
+        // ProgressBar, Avatar, KeyValuePair, Card, Snackbar and their enums),
+        // then to 84 for the Wave B form layer (Checkbox, Radio, Switch, the
+        // compound Tabs/Accordion, the input variants, and their enums).
+        expect(exported.size).toBeLessThanOrEqual(84)
     })
 })

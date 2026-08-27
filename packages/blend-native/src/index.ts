@@ -26,6 +26,8 @@ export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
 export { LinkButton } from './components/Button'
 export { Card } from './components/Card'
+export { Checkbox } from './components/Checkbox'
+export type { CheckboxNativeProps } from './components/Checkbox'
 export type { CardNativeProps } from './components/Card'
 export { KeyValuePair } from './components/KeyValuePair'
 export type {
@@ -181,6 +183,8 @@ export {
     CardV2Variant as CardVariant,
     CardV2Orientation as CardOrientation,
     CardV2Padding as CardPadding,
+    SelectorV2Size as SelectorSize,
+    CheckboxV2CheckedState as CheckboxCheckedState,
     InputSizeV2 as InputSize,
     KeyValuePairV2Size as KeyValuePairSize,
     InputStateV2 as InputState,

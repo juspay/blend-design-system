@@ -54,6 +54,7 @@ describe('nativeTokenRegistry', () => {
             'AVATARV2',
             'BUTTONV2',
             'CARDV2',
+            'CHECKBOXV2',
             'KEYVALUEPAIRV2',
             'PROGRESS_BARV2',
             'SKELETON',
