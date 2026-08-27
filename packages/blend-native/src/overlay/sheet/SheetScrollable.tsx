@@ -1,10 +1,7 @@
-import { cloneElement, useContext } from 'react'
+import { cloneElement, useCallback, useContext } from 'react'
 import type { ReactElement } from 'react'
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import {
-    useAnimatedScrollHandler,
-    useSharedValue,
-} from 'react-native-reanimated'
 import { SheetGestureContext } from './sheetGestureContext'
 
 /**
@@ -24,31 +21,34 @@ import { SheetGestureContext } from './sheetGestureContext'
  * </BottomSheet>
  * ```
  *
- * The child's `onScroll` and `scrollEventThrottle` are replaced (the offset
- * has to reach the sheet's UI-thread gesture via a Reanimated handler) —
- * attach scroll listeners through `onMomentumScrollEnd`/`onScrollEndDrag`
- * instead. Outside a sheet the child renders unchanged.
+ * The offset reaches the sheet's gesture through a plain JS scroll handler
+ * writing a shared value (a Reanimated `useAnimatedScrollHandler` object
+ * would crash a plain FlatList, whose VirtualizedList internals call
+ * `props.onScroll(e)` directly) — one frame of latency, irrelevant for
+ * at-top detection. The child's own `onScroll` still runs; its
+ * `scrollEventThrottle` is set to 16. Outside a sheet the child renders
+ * unchanged.
  */
 export function BottomSheetScrollable({
     children,
 }: {
     /** Exactly one scrollable element. */
     children: ReactElement<{
-        onScroll?: unknown
+        onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
         scrollEventThrottle?: number
     }>
 }) {
     const sheet = useContext(SheetGestureContext)
-    // Hooks must run unconditionally; outside a sheet the handler writes to
-    // this inert local value.
-    const fallbackOffset = useSharedValue(0)
-    const offset = sheet?.scrollOffsetY ?? fallbackOffset
+    const childOnScroll = children.props.onScroll
 
-    const onScroll = useAnimatedScrollHandler(
-        (event) => {
-            offset.value = event.contentOffset.y
+    const onScroll = useCallback(
+        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            if (sheet) {
+                sheet.scrollOffsetY.value = event.nativeEvent.contentOffset.y
+            }
+            childOnScroll?.(event)
         },
-        [offset]
+        [sheet, childOnScroll]
     )
 
     if (!sheet) return children

@@ -33,6 +33,7 @@ import { useReduceMotion } from '../../motion/useReduceMotion'
 import {
     resolveSheetDrag,
     resolveSheetMaxHeight,
+    shouldActivateSheetPan,
     shouldDismissSheet,
     shouldSheetConsumeDrag,
     SHEET_MAX_HEIGHT_FRACTION,
@@ -203,16 +204,28 @@ export function BottomSheet({
     )
 
     // Scroll-aware drag: the pan runs simultaneously with the native scroll
-    // gesture of any BottomSheetScrollable below. While the inner list is
-    // scrolled, the pan holds the sheet still and the list scrolls; the
-    // instant the list reaches its top under a downward finger, the pan
-    // captures the translation at that point and the sheet follows from
-    // under the finger. `activeOffsetY` keeps taps on sheet content working;
-    // `failOffsetX` hands horizontal swipes to the content.
+    // gesture of any BottomSheetScrollable below, but activates MANUALLY —
+    // only once the finger has travelled downward while the inner list sits
+    // at its top. Until then it stays undetermined, so the list scrolls
+    // freely in both directions (an eagerly-activated pan starves the
+    // scroll view of the downward moves). If the list reaches its top
+    // mid-gesture, the pan activates then and the capture logic picks the
+    // sheet up from under the finger. `failOffsetX` hands horizontal swipes
+    // to the content.
+    const touchStartY = useSharedValue(0)
     const pan = Gesture.Pan()
         .enabled(dragToDismiss)
-        .activeOffsetY(8)
+        .manualActivation(true)
         .failOffsetX([-16, 16])
+        .onTouchesDown((event) => {
+            touchStartY.value = event.changedTouches[0]?.y ?? 0
+        })
+        .onTouchesMove((event, stateManager) => {
+            const travel = (event.changedTouches[0]?.y ?? 0) - touchStartY.value
+            if (shouldActivateSheetPan(travel, scrollOffsetY.value)) {
+                stateManager.activate()
+            }
+        })
         .onBegin(() => {
             capturedY.value = -1
         })

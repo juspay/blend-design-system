@@ -26,6 +26,9 @@ export function clampSheetDrag(translationY: number): number {
     return Math.max(0, translationY)
 }
 
+/** Downward travel (pt) before the sheet pan may activate — keeps taps live. */
+export const SHEET_PAN_ACTIVATION_DISTANCE = 8
+
 /**
  * Whether the sheet (rather than an inner scrollable) should consume a drag:
  * only when the scrollable is at (or bounced past) its top AND the finger is
@@ -38,6 +41,25 @@ export function shouldSheetConsumeDrag(
 ): boolean {
     'worklet'
     return scrollOffsetY <= 0 && translationY > 0
+}
+
+/**
+ * The manual-activation decision for the sheet pan: activate only once the
+ * finger has travelled the activation distance downward while the inner
+ * scrollable sits at its top. Until then the pan stays undetermined, so the
+ * scrollable (running simultaneously) keeps full control — and if the list
+ * reaches its top mid-gesture, the pan activates then and the capture logic
+ * picks the sheet up from under the finger.
+ */
+export function shouldActivateSheetPan(
+    touchTravelY: number,
+    scrollOffsetY: number
+): boolean {
+    'worklet'
+    return (
+        touchTravelY > SHEET_PAN_ACTIVATION_DISTANCE &&
+        shouldSheetConsumeDrag(scrollOffsetY, touchTravelY)
+    )
 }
 
 /**
