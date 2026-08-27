@@ -65,7 +65,9 @@ describe('single select token matrix', () => {
                     // stripped by SelectTrigger before parseBorder.
                     const outline = String(
                         tokens.trigger.outline?.container?.[state] ?? ''
-                    ).replace(/\s*!important\s*$/, '')
+                    )
+                        .replace(/!important\s*$/, '')
+                        .trimEnd()
                     if (outline && outline !== 'none') {
                         const parsed = parseBorder(outline)
                         expect(parsed.borderColor).toBeDefined()

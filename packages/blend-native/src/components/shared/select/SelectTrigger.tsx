@@ -114,7 +114,11 @@ export function SelectTrigger({
     const outline = String(
         (trigger.outline?.[variant] as Record<string, unknown>)?.[state] ??
             'none'
-    ).replace(/\s*!important\s*$/, '')
+        // Linear-time strip (a leading \s* here is a polynomial-ReDoS
+        // pattern per CodeQL, even on trusted token strings).
+    )
+        .replace(/!important\s*$/, '')
+        .trimEnd()
     const backgroundColor = String(
         (trigger.backgroundColor?.[variant] as Record<string, unknown>)?.[
             state
