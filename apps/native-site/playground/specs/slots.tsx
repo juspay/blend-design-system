@@ -20,6 +20,7 @@ export const X_SLOT = { slot: <X size={14} /> }
 
 export const STAR_NODE = <Star size={16} />
 export const BELL_NODE = <Bell size={16} />
+export const SEARCH_NODE = <Search size={16} color="#717784" />
 
 /** Stand-in for card imagery, so `media` can be toggled without an asset. */
 export const MEDIA_NODE = (

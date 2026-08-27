@@ -1,41 +1,19 @@
-import { useEffect, useState } from 'react'
 import { InputSize, TextInput } from 'blend-native'
 import type { TextInputNativeProps } from 'blend-native'
 import InputShowcase from '../../components/InputShowcase'
 import { SEARCH_SLOT } from './slots'
-import { addProps } from '../snippet'
 import { enumOptions } from '../types'
 import type { ComponentSpec } from '../types'
 
 const ERROR = { show: true, message: 'Enter a valid merchant reference' }
 
-/**
- * `value` is controlled, so the preview needs local state to be typeable —
- * without it the field would reject every keystroke and read as broken. The
- * text control still drives it: a change from above resets what is typed.
- */
-function LiveTextInput(props: TextInputNativeProps) {
-    const [value, setValue] = useState(props.value)
-    useEffect(() => setValue(props.value), [props.value])
-
-    return (
-        <TextInput
-            {...props}
-            value={value}
-            onChangeText={setValue}
-            style={{ width: 260 }}
-        />
-    )
-}
-
 const spec: ComponentSpec<TextInputNativeProps> = {
     name: 'TextInput',
     summary:
-        'Label, field and footer in one column. The floating-label mode and the embedded dropdown are web-only for now — both are omitted from the type rather than accepted and ignored.',
+        'Label, field and footer in one column. Uncontrolled out of the box (`defaultValue`), controlled when `value` is passed. The floating-label mode and the embedded dropdown are web-only for now — both are omitted from the type rather than accepted and ignored.',
     mode: 'inline',
     gallery: InputShowcase,
     defaults: {
-        value: '',
         label: 'Merchant reference',
         placeholder: 'ord_9f2c41ab77e3',
         size: InputSize.MD,
@@ -105,12 +83,7 @@ const spec: ComponentSpec<TextInputNativeProps> = {
             onCode: "{ show: true, message: '...' }",
         },
     ],
-    render: (props) => <LiveTextInput {...props} />,
-    // `value` is required and controlled. The preview holds it in local
-    // state; a consumer holds it in theirs, so the snippet says so rather
-    // than printing a field nobody can type into.
-    wrapSnippet: (inner) =>
-        addProps(inner, ['value={value}', 'onChangeText={setValue}']),
+    render: (props) => <TextInput {...props} style={{ width: 260 }} />,
 }
 
 export default spec

@@ -8,14 +8,18 @@ import button from './button.spec'
 import card from './card.spec'
 import checkbox from './checkbox.spec'
 import keyValuePair from './keyValuePair.spec'
+import numberInput from './numberInput.spec'
+import otpInput from './otpInput.spec'
 import progressBar from './progressBar.spec'
 import radio from './radio.spec'
+import searchInput from './searchInput.spec'
 import skeleton from './skeleton.spec'
 import snackbar from './snackbar.spec'
 import switchSpec from './switch.spec'
 import spinner from './spinner.spec'
 import tabs from './tabs.spec'
 import tag from './tag.spec'
+import textArea from './textArea.spec'
 import textInput from './textInput.spec'
 
 /**
@@ -40,6 +44,10 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
         title: 'Inputs',
         specs: [
             asAnySpec(textInput),
+            asAnySpec(textArea),
+            asAnySpec(numberInput),
+            asAnySpec(searchInput),
+            asAnySpec(otpInput),
             asAnySpec(checkbox),
             asAnySpec(radio),
             asAnySpec(switchSpec),
