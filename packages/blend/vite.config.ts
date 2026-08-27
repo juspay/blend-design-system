@@ -4,6 +4,11 @@ import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
+    // Relative asset base so URLs referenced from JS (e.g. the Monaco worker
+    // chunks in monacoEnvironment) resolve relative to the module via
+    // import.meta.url, and work wherever a consumer serves the package assets.
+    // Only affects asset URLs (workers, CSS url()), not ES import specifiers.
+    base: './',
     plugins: [
         react(),
         dts({
@@ -35,6 +40,12 @@ export default defineConfig({
                 replacement: resolve(__dirname, 'lib/main.ts'),
             },
         ],
+    },
+    // Emit Monaco's language workers (referenced via `new Worker(new URL(...,
+    // import.meta.url), { type: 'module' })` in monacoEnvironment) as ES-module
+    // worker chunks, so their URLs resolve relative to the module in consumers.
+    worker: {
+        format: 'es',
     },
     build: {
         copyPublicDir: false,

@@ -134,12 +134,18 @@ export function MonacoEditorWrapper({
     useEffect(() => {
         let cancelled = false
 
-        import(
-            // @ts-expect-error Monaco does not publish types for this ESM entry.
-            'monaco-editor/esm/vs/editor/editor.main.js'
-        ).then((monaco: typeof Monaco) => {
+        Promise.all([
+            import('../../shared/monacoEnvironment'),
+            import(
+                // @ts-expect-error Monaco does not publish types for this ESM entry.
+                'monaco-editor/esm/vs/editor/editor.main.js'
+            ),
+        ]).then(([env, monaco]) => {
             if (cancelled) return
-            loader.config({ monaco })
+            // Wire the bundled language workers before configuring the loader,
+            // so a self-hosted Monaco can spawn them (#1734).
+            env.configureMonacoEnvironment()
+            loader.config({ monaco: monaco as typeof Monaco })
             setIsMonacoLoaded(true)
         })
 
