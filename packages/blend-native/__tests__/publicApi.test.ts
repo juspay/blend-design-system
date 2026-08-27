@@ -83,6 +83,7 @@ describe('public API surface', () => {
             'KeyValuePair',
             'LinkButton',
             'NumberInput',
+            'OTPInput',
             'ProgressBar',
             'Radio',
             'SearchInput',

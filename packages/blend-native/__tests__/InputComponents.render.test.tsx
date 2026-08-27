@@ -2,6 +2,7 @@ import { fireEvent, render } from '@testing-library/react-native'
 import { TextArea } from '../src/components/TextArea'
 import { SearchInput } from '../src/components/SearchInput'
 import { NumberInput } from '../src/components/NumberInput'
+import { OTPInput } from '../src/components/OTPInput'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import type { ReactElement } from 'react'
 
@@ -167,5 +168,67 @@ describe('NumberInput rendering', () => {
             <NumberInput label="Amount" value={150} max={100} testID="ni" />
         )
         expect(getByText('Value must be at most 100')).toBeTruthy()
+    })
+})
+
+describe('OTPInput rendering', () => {
+    it('renders the clamped cell count with per-cell labels and autofill hooks', () => {
+        const { getByTestId, queryByTestId } = wrap(
+            <OTPInput label="OTP" length={4} testID="otp" />
+        )
+        for (let i = 0; i < 4; i += 1) {
+            expect(getByTestId(`otp-cell-${i}`)).toBeTruthy()
+        }
+        expect(queryByTestId('otp-cell-4')).toBeNull()
+        const first = getByTestId('otp-cell-0')
+        expect(first.props.accessibilityLabel).toBe('OTP, digit 1 of 4')
+        expect(getByTestId('otp-cell-3').props.accessibilityLabel).toBe(
+            'OTP, digit 4 of 4'
+        )
+        // Jest's react-native preset reports Platform.OS === 'ios'.
+        expect(first.props.textContentType).toBe('oneTimeCode')
+        expect(getByTestId('otp-cell-1').props.textContentType).toBeUndefined()
+        expect(first.props.keyboardType).toBe('number-pad')
+    })
+
+    it('spreads a multi-character run across cells and joins onChange', () => {
+        const onChange = jest.fn()
+        const { getByTestId } = wrap(
+            <OTPInput label="OTP" length={4} onChange={onChange} testID="otp" />
+        )
+        fireEvent.changeText(getByTestId('otp-cell-0'), '1234')
+        expect(onChange).toHaveBeenLastCalledWith('1234')
+        expect(getByTestId('otp-cell-2').props.value).toBe('3')
+    })
+
+    it('backspace on an empty cell clears the previous one', () => {
+        const onChange = jest.fn()
+        const { getByTestId } = wrap(
+            <OTPInput label="OTP" length={4} onChange={onChange} testID="otp" />
+        )
+        fireEvent.changeText(getByTestId('otp-cell-0'), '12')
+        expect(onChange).toHaveBeenLastCalledWith('12')
+        fireEvent(getByTestId('otp-cell-2'), 'keyPress', {
+            nativeEvent: { key: 'Backspace' },
+        })
+        expect(onChange).toHaveBeenLastCalledWith('1')
+        expect(getByTestId('otp-cell-1').props.value).toBe('')
+    })
+
+    it('controlled value wins and error shows the footer message', () => {
+        const { getByTestId, getByText } = wrap(
+            <OTPInput
+                label="OTP"
+                length={4}
+                value="99"
+                error
+                errorMessage="Code expired"
+                testID="otp"
+            />
+        )
+        fireEvent.changeText(getByTestId('otp-cell-2'), '5')
+        expect(getByTestId('otp-cell-0').props.value).toBe('9')
+        expect(getByTestId('otp-cell-2').props.value).toBe('')
+        expect(getByText('Code expired')).toBeTruthy()
     })
 })
