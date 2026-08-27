@@ -194,3 +194,52 @@ export function computeAnchoredPosition(
 
     return { x, y, placement, maxHeight, maxWidth }
 }
+
+export type ArrowPositionInput = {
+    /** The anchor's rect in window coordinates. */
+    anchor: Rect
+    /** Where the content ended up (`computeAnchoredPosition`'s x/y). */
+    contentPosition: { x: number; y: number }
+    /** The content's measured size. */
+    content: Size
+    /** The placement actually used, after any flip. */
+    placement: Placement
+    /** Edge length of the square rendered as the arrow (pre-rotation). */
+    arrowSize: number
+}
+
+/**
+ * Where the arrow sits on the content's anchor-facing edge, as the arrow's
+ * **center point in content-local coordinates**: the anchor's center is
+ * projected onto that edge and clamped inward by `arrowSize` so the arrow
+ * never escapes past the rounded corners. The caller renders a 45°-rotated
+ * square centered on the returned point, straddling the edge.
+ */
+export function computeArrowPosition(input: ArrowPositionInput): {
+    x: number
+    y: number
+} {
+    const { anchor, contentPosition, content, placement, arrowSize } = input
+    const anchorCenterX = anchor.x + anchor.width / 2
+    const anchorCenterY = anchor.y + anchor.height / 2
+
+    if (placement === 'top' || placement === 'bottom') {
+        // Arrow on the bottom edge when content sits above the anchor, on
+        // the top edge when below.
+        const y = placement === 'top' ? content.height : 0
+        const x = clamp(
+            anchorCenterX - contentPosition.x,
+            arrowSize,
+            content.width - arrowSize
+        )
+        return { x, y }
+    }
+
+    const x = placement === 'left' ? content.width : 0
+    const y = clamp(
+        anchorCenterY - contentPosition.y,
+        arrowSize,
+        content.height - arrowSize
+    )
+    return { x, y }
+}
