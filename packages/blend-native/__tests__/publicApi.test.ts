@@ -84,6 +84,7 @@ describe('public API surface', () => {
             'LinkButton',
             'ProgressBar',
             'Radio',
+            'SearchInput',
             'Spinner',
             'Switch',
             'Tabs',

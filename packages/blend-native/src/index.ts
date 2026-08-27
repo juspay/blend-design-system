@@ -58,6 +58,8 @@ export type {
 } from './components/TextInput'
 export { Switch } from './components/Switch'
 export type { SwitchNativeProps } from './components/Switch'
+export { SearchInput } from './components/SearchInput'
+export type { SearchInputNativeProps } from './components/SearchInput'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
 export { Radio } from './components/Radio'

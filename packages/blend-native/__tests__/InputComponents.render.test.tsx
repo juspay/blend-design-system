@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import { TextArea } from '../src/components/TextArea'
+import { SearchInput } from '../src/components/SearchInput'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import type { ReactElement } from 'react'
 
@@ -52,5 +53,36 @@ describe('TextArea rendering', () => {
             />
         )
         expect(getByText('Too short')).toBeTruthy()
+    })
+})
+
+describe('SearchInput rendering', () => {
+    it('shows the clear button once there is text and clears on press', () => {
+        const onClear = jest.fn()
+        const { getByTestId, queryByTestId } = wrap(
+            <SearchInput onClear={onClear} testID="si" />
+        )
+        expect(queryByTestId('si-clear')).toBeNull()
+        fireEvent.changeText(getByTestId('si-input'), 'upi')
+        expect(getByTestId('si-clear')).toBeTruthy()
+        fireEvent.press(getByTestId('si-clear'))
+        expect(onClear).toHaveBeenCalledTimes(1)
+        expect(getByTestId('si-input').props.value).toBe('')
+    })
+
+    it('hides the clear button when rightSlot occupies the spot', () => {
+        const { getByTestId, queryByTestId } = wrap(
+            <SearchInput defaultValue="upi" rightSlot={<></>} testID="si" />
+        )
+        expect(getByTestId('si-input').props.value).toBe('upi')
+        expect(queryByTestId('si-clear')).toBeNull()
+    })
+
+    it('uses the search return key and supports controlled value', () => {
+        const { getByTestId } = wrap(<SearchInput value="fixed" testID="si" />)
+        const input = getByTestId('si-input')
+        expect(input.props.returnKeyType).toBe('search')
+        fireEvent.changeText(input, 'attempt')
+        expect(getByTestId('si-input').props.value).toBe('fixed')
     })
 })
