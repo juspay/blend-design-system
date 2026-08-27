@@ -18,6 +18,11 @@
  */
 
 // ---- Components ---------------------------------------------------------
+export { Accordion, AccordionItem } from './components/Accordion'
+export type {
+    AccordionNativeProps,
+    AccordionItemNativeProps,
+} from './components/Accordion'
 export { Alert } from './components/Alert'
 export { Avatar } from './components/Avatar'
 export type { AvatarNativeProps, AvatarStatus } from './components/Avatar'
@@ -26,6 +31,8 @@ export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
 export { LinkButton } from './components/Button'
 export { Card } from './components/Card'
+export { Checkbox } from './components/Checkbox'
+export type { CheckboxNativeProps } from './components/Checkbox'
 export type { CardNativeProps } from './components/Card'
 export { KeyValuePair } from './components/KeyValuePair'
 export type {
@@ -35,13 +42,32 @@ export type {
 } from './components/KeyValuePair'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/Tabs'
+export type {
+    TabsNativeProps,
+    TabsListNativeProps,
+    TabsTriggerNativeProps,
+    TabsContentNativeProps,
+} from './components/Tabs'
+export { TextArea } from './components/TextArea'
+export type { TextAreaNativeProps } from './components/TextArea'
 export { TextInput } from './components/TextInput'
 export type {
     TextInputNativeProps,
     TextInputSlot,
 } from './components/TextInput'
+export { Switch } from './components/Switch'
+export type { SwitchNativeProps } from './components/Switch'
+export { SearchInput } from './components/SearchInput'
+export type { SearchInputNativeProps } from './components/SearchInput'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
+export { NumberInput } from './components/NumberInput'
+export type { NumberInputNativeProps } from './components/NumberInput'
+export { OTPInput } from './components/OTPInput'
+export type { OTPInputNativeProps } from './components/OTPInput'
+export { Radio } from './components/Radio'
+export type { RadioNativeProps } from './components/Radio'
 export { ProgressBar } from './components/ProgressBar'
 export type { ProgressBarNativeProps } from './components/ProgressBar'
 export { Spinner } from './components/Spinner'
@@ -167,6 +193,8 @@ export type { GroupPosition } from './components/shared/group'
 export { useLiveRegionAnnounce } from './a11y/useLiveRegion'
 
 export {
+    AccordionV2Type as AccordionType,
+    AccordionV2ChevronPosition as AccordionChevronPosition,
     AlertV2Type as AlertType,
     AvatarV2Size as AvatarSize,
     AvatarV2Shape as AvatarShape,
@@ -181,9 +209,14 @@ export {
     CardV2Variant as CardVariant,
     CardV2Orientation as CardOrientation,
     CardV2Padding as CardPadding,
+    SelectorV2Size as SelectorSize,
+    TabsV2Variant as TabsVariant,
+    TabsV2Size as TabsSize,
+    CheckboxV2CheckedState as CheckboxCheckedState,
     InputSizeV2 as InputSize,
     KeyValuePairV2Size as KeyValuePairSize,
     InputStateV2 as InputState,
+    NumberInputV2Direction as NumberInputDirection,
     ProgressBarV2Size as ProgressBarSize,
     SnackbarV2Variant as SnackbarVariant,
     ProgressBarV2Variant as ProgressBarVariant,

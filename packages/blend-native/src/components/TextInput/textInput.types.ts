@@ -34,7 +34,17 @@ export type TextInputSlot = {
     maxHeight?: string | number
 }
 
-export type TextInputNativeProps = Omit<TextInputBaseProps, 'helpIconText'> & {
+export type TextInputNativeProps = Omit<
+    TextInputBaseProps,
+    'helpIconText' | 'value'
+> & {
+    /**
+     * Controlled value. Optional since the uncontrolled fix: omit it (with
+     * an optional `defaultValue`) and the field manages its own text.
+     */
+    value?: string
+    /** Initial value for uncontrolled usage. Mount-only, like React's. */
+    defaultValue?: string
     onChangeText?: (text: string) => void
     required?: boolean
     disabled?: boolean
@@ -49,5 +59,10 @@ export type TextInputNativeProps = Omit<TextInputBaseProps, 'helpIconText'> & {
     inputRef?: React.Ref<RNTextInput>
 } & Omit<
         RNTextInputProps,
-        'value' | 'onChangeText' | 'style' | 'editable' | 'placeholderTextColor'
+        | 'value'
+        | 'defaultValue'
+        | 'onChangeText'
+        | 'style'
+        | 'editable'
+        | 'placeholderTextColor'
     >

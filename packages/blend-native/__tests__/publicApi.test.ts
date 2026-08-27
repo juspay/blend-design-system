@@ -72,16 +72,25 @@ describe('public API surface', () => {
 
     it('exports the components', () => {
         for (const name of [
+            'Accordion',
             'Alert',
             'Avatar',
             'Button',
             'ButtonGroup',
             'Card',
+            'Checkbox',
             'IconButton',
             'KeyValuePair',
             'LinkButton',
+            'NumberInput',
+            'OTPInput',
             'ProgressBar',
+            'Radio',
+            'SearchInput',
             'Spinner',
+            'Switch',
+            'Tabs',
+            'TextArea',
             'Tag',
             'TagGroup',
         ]) {
@@ -113,7 +122,9 @@ describe('public API surface', () => {
         // (TextInput, PrimitiveInput, input enums) and the toast pair, then
         // to 44 for the Button/Tag family wave (IconButton, LinkButton,
         // ButtonGroup, TagGroup), then to 64 for the display wave (Spinner,
-        // ProgressBar, Avatar, KeyValuePair, Card, Snackbar and their enums).
-        expect(exported.size).toBeLessThanOrEqual(64)
+        // ProgressBar, Avatar, KeyValuePair, Card, Snackbar and their enums),
+        // then to 84 for the Wave B form layer (Checkbox, Radio, Switch, the
+        // compound Tabs/Accordion, the input variants, and their enums).
+        expect(exported.size).toBeLessThanOrEqual(84)
     })
 })

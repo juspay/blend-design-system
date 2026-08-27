@@ -5,14 +5,14 @@ export enum NumberInputV2Direction {
     RIGHT = 'right',
 }
 
-export type NumberInputV2Props = {
-    slot?: {
-        left?: React.ReactNode
-        right?: React.ReactNode
-    }
+/**
+ * Platform-neutral core of the NumberInputV2 API — `@juspay/blend-native`
+ * derives its NumberInput props from this; the synthesized DOM change
+ * events and ReactNode slots stay web-only.
+ */
+export type NumberInputBaseProps = {
     value: number | null
     unit?: string
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     min?: number
     max?: number
     step?: number
@@ -30,12 +30,20 @@ export type NumberInputV2Props = {
     hintText?: string
     name?: string
     preventNegative?: boolean
+}
+
+export type NumberInputV2Props = NumberInputBaseProps & {
+    slot?: {
+        left?: React.ReactNode
+        right?: React.ReactNode
+    }
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
     onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void
 } & Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className' | 'value' | 'onBlur' | 'onFocus' | 'slot'
->
+        React.InputHTMLAttributes<HTMLInputElement>,
+        'size' | 'style' | 'className' | 'value' | 'onBlur' | 'onFocus' | 'slot'
+    >
 
 export type StepperArrowProps = {
     disabled?: boolean

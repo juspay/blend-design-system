@@ -123,3 +123,43 @@ describe('TextInput interaction', () => {
         expect(screen.getByLabelText('Name')).toBeTruthy()
     })
 })
+
+describe('TextInput uncontrolled mode', () => {
+    it('types without a value prop, seeded by defaultValue', () => {
+        const { getByTestId } = render(
+            <BlendNativeProvider>
+                <TextInput label="Notes" defaultValue="seed" testID="ti" />
+            </BlendNativeProvider>
+        )
+        const input = getByTestId('ti-input')
+        expect(input.props.value).toBe('seed')
+        fireEvent.changeText(input, 'typed')
+        expect(getByTestId('ti-input').props.value).toBe('typed')
+    })
+
+    it('still notifies onChangeText while uncontrolled', () => {
+        const onChangeText = jest.fn()
+        const { getByTestId } = render(
+            <BlendNativeProvider>
+                <TextInput
+                    label="Notes"
+                    onChangeText={onChangeText}
+                    testID="ti"
+                />
+            </BlendNativeProvider>
+        )
+        fireEvent.changeText(getByTestId('ti-input'), 'hi')
+        expect(onChangeText).toHaveBeenCalledWith('hi')
+        expect(getByTestId('ti-input').props.value).toBe('hi')
+    })
+
+    it('a controlled value still wins over typing', () => {
+        const { getByTestId } = render(
+            <BlendNativeProvider>
+                <TextInput label="Notes" value="fixed" testID="ti" />
+            </BlendNativeProvider>
+        )
+        fireEvent.changeText(getByTestId('ti-input'), 'attempt')
+        expect(getByTestId('ti-input').props.value).toBe('fixed')
+    })
+})
