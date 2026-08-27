@@ -6,6 +6,7 @@ import {
 } from 'react-native'
 import {
     computeAnchoredPosition,
+    computeArrowAlignedPosition,
     computeArrowPosition,
     type Alignment,
     type AnchoredPosition,
@@ -61,9 +62,22 @@ export function useAnchoredPosition(options: {
     viewportPadding?: number
     /** Edge length of the arrow square; enables the `arrow` result. */
     arrowSize?: number
+    /**
+     * Arrow-led cross axis (the tooltip contract): the tip sits at the
+     * `alignment` spot on the content and the content moves so the tip
+     * lands on the anchor's center. Requires `arrowSize`.
+     */
+    arrowAligned?: boolean
 }) {
-    const { open, placement, alignment, offset, viewportPadding, arrowSize } =
-        options
+    const {
+        open,
+        placement,
+        alignment,
+        offset,
+        viewportPadding,
+        arrowSize,
+        arrowAligned = false,
+    } = options
     const anchorRef = useRef<View>(null)
     const [anchorRect, setAnchorRect] = useState<Rect | null>(null)
     const [contentSize, setContentSize] = useState<Size | null>(null)
@@ -97,9 +111,12 @@ export function useAnchoredPosition(options: {
         )
     }, [])
 
-    const position = useMemo<AnchoredPosition | null>(() => {
+    const resolved = useMemo<{
+        position: AnchoredPosition
+        arrow: { x: number; y: number } | null
+    } | null>(() => {
         if (!anchorRect || !contentSize) return null
-        return computeAnchoredPosition({
+        const input = {
             anchor: anchorRect,
             content: contentSize,
             viewport: {
@@ -110,7 +127,25 @@ export function useAnchoredPosition(options: {
             alignment,
             offset,
             viewportPadding,
-        })
+        }
+        if (arrowAligned && arrowSize) {
+            const { arrow, ...position } = computeArrowAlignedPosition({
+                ...input,
+                arrowSize,
+            })
+            return { position, arrow }
+        }
+        const position = computeAnchoredPosition(input)
+        const arrow = arrowSize
+            ? computeArrowPosition({
+                  anchor: anchorRect,
+                  contentPosition: { x: position.x, y: position.y },
+                  content: contentSize,
+                  placement: position.placement,
+                  arrowSize,
+              })
+            : null
+        return { position, arrow }
     }, [
         anchorRect,
         contentSize,
@@ -121,18 +156,17 @@ export function useAnchoredPosition(options: {
         alignment,
         offset,
         viewportPadding,
+        arrowSize,
+        arrowAligned,
     ])
 
-    const arrow = useMemo(() => {
-        if (!position || !anchorRect || !contentSize || !arrowSize) return null
-        return computeArrowPosition({
-            anchor: anchorRect,
-            contentPosition: { x: position.x, y: position.y },
-            content: contentSize,
-            placement: position.placement,
-            arrowSize,
-        })
-    }, [position, anchorRect, contentSize, arrowSize])
-
-    return { anchorRef, onContentLayout, position, arrow, remeasure }
+    return {
+        anchorRef,
+        onContentLayout,
+        position: resolved?.position ?? null,
+        arrow: resolved?.arrow ?? null,
+        /** The anchor's window rect — for anchor-width-matched dropdowns. */
+        anchorRect,
+        remeasure,
+    }
 }

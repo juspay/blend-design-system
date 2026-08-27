@@ -33,7 +33,7 @@ function splitPadding(shorthand: unknown): { y: number; x: number } {
     return { y, x: parts[1] ?? y }
 }
 
-const ARROW_SIZE = 6
+const ARROW_SIZE = 7
 
 export function Tooltip({
     children,
@@ -74,8 +74,13 @@ export function Tooltip({
             placement={side}
             alignment={align}
             offset={offset}
-            arrowSize={showArrow ? ARROW_SIZE : undefined}
-            arrowColor={String(tokens.background ?? '#181B25')}
+            arrowSize={ARROW_SIZE}
+            arrowAligned
+            arrowColor={
+                showArrow
+                    ? String(tokens.background ?? '#181B25')
+                    : 'transparent'
+            }
             backdrop="transparent"
             testID={testID}
             contentStyle={[

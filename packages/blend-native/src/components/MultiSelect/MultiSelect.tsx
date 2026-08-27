@@ -374,7 +374,9 @@ export function MultiSelect({
                             {label || 'Select options'}
                         </Text>
                     </View>
-                    {list}
+                    <View style={{ paddingHorizontal: 8, paddingTop: 4 }}>
+                        {list}
+                    </View>
                 </BottomSheet>
             </>
         )
@@ -392,6 +394,7 @@ export function MultiSelect({
             offset={8}
             backdrop="transparent"
             modal
+            matchAnchorWidth
             testID={testID ? `${testID}-panel` : undefined}
             trigger={trigger}
             contentStyle={[

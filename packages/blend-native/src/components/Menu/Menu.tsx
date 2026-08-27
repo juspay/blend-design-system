@@ -1,4 +1,4 @@
-import { Pressable } from 'react-native'
+import { Pressable, View } from 'react-native'
 import type { MenuV2TokensType } from '@juspay/blend-design-system/node'
 import { useNativeTokens } from '../../theme/useNativeTokens'
 import { useNativeBreakpoint } from '../../theme/useNativeBreakpoint'
@@ -93,7 +93,7 @@ export function Menu({
                     testID={testID}
                     style={style}
                 >
-                    {list}
+                    <View style={padding}>{list}</View>
                 </BottomSheet>
             </>
         )

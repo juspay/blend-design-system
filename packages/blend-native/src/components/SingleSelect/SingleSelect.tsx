@@ -174,7 +174,9 @@ export function SingleSelect({
                             </Text>
                         </View>
                     ) : null}
-                    {list}
+                    <View style={{ paddingHorizontal: 8, paddingTop: 4 }}>
+                        {list}
+                    </View>
                 </BottomSheet>
             </>
         )
@@ -190,6 +192,7 @@ export function SingleSelect({
             offset={8}
             backdrop="transparent"
             modal
+            matchAnchorWidth
             testID={testID ? `${testID}-panel` : undefined}
             trigger={trigger}
             contentStyle={[

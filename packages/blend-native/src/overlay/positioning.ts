@@ -195,6 +195,70 @@ export function computeAnchoredPosition(
     return { x, y, placement, maxHeight, maxWidth }
 }
 
+/**
+ * Arrow-led placement — the tooltip contract: the arrow (“tip”) sits at a
+ * fixed spot on the content per `alignment` (`start` → near the leading
+ * edge, `center` → middle, `end` → near the trailing edge), and the
+ * CONTENT is positioned so that fixed tip lands on the anchor's center.
+ * This is how the established native tooltip libraries behave, and it
+ * keeps the bubble visually attached to its trigger; edge-aligned
+ * placement (`computeAnchoredPosition`) remains the right model for
+ * menus/popovers.
+ *
+ * The main axis (side, flip, offset) reuses `computeAnchoredPosition`;
+ * only the cross axis is arrow-led. Cross-axis clamping keeps the content
+ * on-screen; the arrow stays at its content-local spot by design.
+ */
+export function computeArrowAlignedPosition(
+    input: AnchoredPositionInput & { arrowSize: number }
+): AnchoredPosition & { arrow: { x: number; y: number } } {
+    const {
+        anchor,
+        content,
+        viewport,
+        alignment = 'center',
+        viewportPadding = 8,
+        arrowSize,
+    } = input
+
+    const base = computeAnchoredPosition(input)
+    const vertical = base.placement === 'top' || base.placement === 'bottom'
+    const crossLength = vertical ? content.width : content.height
+
+    // Where the tip sits on the content, per the alignment contract. The
+    // inset keeps the rotated square clear of rounded corners.
+    const inset = Math.max(arrowSize * 2, 12)
+    const arrowLocal =
+        alignment === 'start'
+            ? inset
+            : alignment === 'end'
+              ? crossLength - inset
+              : crossLength / 2
+
+    const anchorCenter = vertical
+        ? anchor.x + anchor.width / 2
+        : anchor.y + anchor.height / 2
+    const crossMax =
+        (vertical ? viewport.width : viewport.height) -
+        viewportPadding -
+        crossLength
+    const cross = clamp(anchorCenter - arrowLocal, viewportPadding, crossMax)
+
+    const arrow = vertical
+        ? {
+              x: arrowLocal,
+              y: base.placement === 'top' ? content.height : 0,
+          }
+        : {
+              x: base.placement === 'left' ? content.width : 0,
+              y: arrowLocal,
+          }
+
+    return vertical
+        ? { ...base, x: cross, arrow }
+        : { ...base, y: cross, arrow }
+}
+
 export type ArrowPositionInput = {
     /** The anchor's rect in window coordinates. */
     anchor: Rect

@@ -201,6 +201,9 @@ export function SelectTrigger({
         <View
             style={{
                 gap: parseDimension(tokens.gap as string | number) ?? 8,
+                // A field fills its container like the web trigger does,
+                // even under a centering parent.
+                alignSelf: 'stretch',
             }}
             testID={testID}
         >

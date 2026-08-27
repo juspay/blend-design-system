@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { BackHandler, Pressable, StyleSheet, View } from 'react-native'
 import type { StyleProp, ViewStyle } from 'react-native'
 import Animated, {
@@ -66,6 +66,14 @@ export type AnchoredOverlayProps = {
     contentStyle?: StyleProp<ViewStyle>
     /** Hide the app and lower layers from assistive tech while open. */
     modal?: boolean
+    /**
+     * Arrow-led cross axis (the tooltip contract): the tip sits at the
+     * `alignment` spot on the content and the content moves so the tip
+     * lands on the anchor's center. Requires `arrowSize`.
+     */
+    arrowAligned?: boolean
+    /** Give the content the anchor's width as its minWidth (dropdowns). */
+    matchAnchorWidth?: boolean
     children?: React.ReactNode
     accessibilityLabel?: string
     testID?: string
@@ -84,6 +92,8 @@ export function AnchoredOverlay({
     backdrop = 'transparent',
     contentStyle,
     modal = false,
+    arrowAligned = false,
+    matchAnchorWidth = false,
     children,
     accessibilityLabel,
     testID,
@@ -97,16 +107,31 @@ export function AnchoredOverlay({
         ? reducedMotionVariant(MOTION_PRESETS.scaleFade)
         : MOTION_PRESETS.scaleFade
 
-    const { anchorRef, onContentLayout, position, arrow } = useAnchoredPosition(
-        {
+    const { anchorRef, onContentLayout, position, arrow, anchorRect } =
+        useAnchoredPosition({
             open,
             placement,
             alignment,
             offset,
             viewportPadding,
             arrowSize,
-        }
-    )
+            arrowAligned,
+        })
+
+    // The engine works in window coordinates, but the portal layer is an
+    // absolute-fill of the provider, which need not sit at the window
+    // origin (headers, safe areas, embedded previews). Measure the layer's
+    // own window offset and subtract it, or every overlay drifts by that
+    // delta.
+    const layerRef = useRef<View>(null)
+    const [layerOffset, setLayerOffset] = useState({ x: 0, y: 0 })
+    const measureLayer = useCallback(() => {
+        layerRef.current?.measureInWindow((x, y) => {
+            setLayerOffset((current) =>
+                current.x === x && current.y === y ? current : { x, y }
+            )
+        })
+    }, [])
 
     const unmount = useCallback(() => setMounted(false), [])
 
@@ -189,6 +214,13 @@ export function AnchoredOverlay({
                         </Animated.View>
                     ) : null}
                     <View
+                        ref={layerRef}
+                        collapsable={false}
+                        pointerEvents="none"
+                        style={StyleSheet.absoluteFill}
+                        onLayout={measureLayer}
+                    />
+                    <View
                         // Positioner: parks the content invisibly until the
                         // first measurement lands (unmounting instead would
                         // keep onLayout from ever firing).
@@ -196,8 +228,8 @@ export function AnchoredOverlay({
                             styles.positioner,
                             position
                                 ? {
-                                      left: position.x,
-                                      top: position.y,
+                                      left: position.x - layerOffset.x,
+                                      top: position.y - layerOffset.y,
                                       maxWidth: position.maxWidth,
                                       maxHeight: position.maxHeight,
                                       opacity: 1,
@@ -210,7 +242,15 @@ export function AnchoredOverlay({
                         accessibilityLabel={accessibilityLabel}
                         testID={testID}
                     >
-                        <Animated.View style={[contentStyle, motionStyle]}>
+                        <Animated.View
+                            style={[
+                                contentStyle,
+                                matchAnchorWidth && anchorRect
+                                    ? { minWidth: anchorRect.width }
+                                    : null,
+                                motionStyle,
+                            ]}
+                        >
                             {children}
                             {arrowSize && arrow ? (
                                 <View
