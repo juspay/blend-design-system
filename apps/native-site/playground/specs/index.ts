@@ -8,8 +8,10 @@ import button from './button.spec'
 import card from './card.spec'
 import checkbox from './checkbox.spec'
 import keyValuePair from './keyValuePair.spec'
+import modal from './modal.spec'
 import numberInput from './numberInput.spec'
 import otpInput from './otpInput.spec'
+import popover from './popover.spec'
 import progressBar from './progressBar.spec'
 import radio from './radio.spec'
 import searchInput from './searchInput.spec'
@@ -21,6 +23,7 @@ import tabs from './tabs.spec'
 import tag from './tag.spec'
 import textArea from './textArea.spec'
 import textInput from './textInput.spec'
+import tooltip from './tooltip.spec'
 
 /**
  * The component list behind the drawer. Every renderable `blend-native`
@@ -75,7 +78,12 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
     },
     {
         title: 'Overlays',
-        specs: [asAnySpec(bottomSheet)],
+        specs: [
+            asAnySpec(bottomSheet),
+            asAnySpec(modal),
+            asAnySpec(popover),
+            asAnySpec(tooltip),
+        ],
     },
 ]
 
