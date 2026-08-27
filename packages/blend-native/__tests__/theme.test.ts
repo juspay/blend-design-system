@@ -50,6 +50,7 @@ describe('resolveBreakpoint', () => {
 describe('nativeTokenRegistry', () => {
     it('registers every currently-shipped component', () => {
         expect(NATIVE_TOKEN_SLOTS.slice().sort()).toEqual([
+            'ACCORDIONV2',
             'ALERTV2',
             'AVATARV2',
             'BUTTONV2',

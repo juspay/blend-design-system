@@ -8,6 +8,7 @@ import {
     TabsTrigger,
     TabsContent,
 } from '../src/components/Tabs'
+import { Accordion, AccordionItem } from '../src/components/Accordion'
 import { Text as RNText } from 'react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import type { ReactElement } from 'react'
@@ -20,6 +21,87 @@ import type { ReactElement } from 'react'
 
 const wrap = (ui: ReactElement) =>
     render(<BlendNativeProvider>{ui}</BlendNativeProvider>)
+
+describe('Accordion rendering', () => {
+    const mountAccordion = (
+        props: Partial<React.ComponentProps<typeof Accordion>> = {}
+    ) =>
+        wrap(
+            <Accordion {...props}>
+                <AccordionItem value="a" title="First" testID="ia">
+                    <RNText>content a</RNText>
+                </AccordionItem>
+                <AccordionItem value="b" title="Second" testID="ib">
+                    <RNText>content b</RNText>
+                </AccordionItem>
+            </Accordion>
+        )
+
+    it('uncontrolled single: toggles open and collapses (collapsible)', () => {
+        const { getByTestId } = mountAccordion()
+        const trigger = getByTestId('ia-trigger')
+        expect(trigger.props.accessibilityRole).toBe('button')
+        expect(trigger.props.accessibilityState.expanded).toBe(false)
+        fireEvent.press(trigger)
+        expect(
+            getByTestId('ia-trigger').props.accessibilityState.expanded
+        ).toBe(true)
+        fireEvent.press(getByTestId('ia-trigger'))
+        expect(
+            getByTestId('ia-trigger').props.accessibilityState.expanded
+        ).toBe(false)
+    })
+
+    it('single mode collapses the sibling', () => {
+        const { getByTestId } = mountAccordion({ defaultValue: 'a' })
+        fireEvent.press(getByTestId('ib-trigger'))
+        expect(
+            getByTestId('ia-trigger').props.accessibilityState.expanded
+        ).toBe(false)
+        expect(
+            getByTestId('ib-trigger').props.accessibilityState.expanded
+        ).toBe(true)
+    })
+
+    it('multiple mode keeps siblings open together', () => {
+        // Fresh mount: defaultValue is mount-only, like every defaultX.
+        const { getByTestId } = mountAccordion({
+            isMultiple: true,
+            defaultValue: ['a'],
+        })
+        fireEvent.press(getByTestId('ib-trigger'))
+        expect(
+            getByTestId('ia-trigger').props.accessibilityState.expanded
+        ).toBe(true)
+        expect(
+            getByTestId('ib-trigger').props.accessibilityState.expanded
+        ).toBe(true)
+    })
+
+    it('collapsed content is hidden from assistive tech', () => {
+        const { getByTestId } = mountAccordion({ defaultValue: 'a' })
+        expect(getByTestId('ia-panel').props.importantForAccessibility).toBe(
+            'auto'
+        )
+        expect(
+            getByTestId('ib-panel', { includeHiddenElements: true }).props
+                .importantForAccessibility
+        ).toBe('no-hide-descendants')
+    })
+
+    it('controlled: onValueChange fires, value wins', () => {
+        const onValueChange = jest.fn()
+        const { getByTestId } = mountAccordion({
+            value: 'a',
+            onValueChange,
+        })
+        fireEvent.press(getByTestId('ib-trigger'))
+        expect(onValueChange).toHaveBeenCalledWith('b')
+        expect(
+            getByTestId('ia-trigger').props.accessibilityState.expanded
+        ).toBe(true)
+    })
+})
 
 describe('Tabs rendering', () => {
     const mountTabs = (

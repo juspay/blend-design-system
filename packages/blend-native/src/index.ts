@@ -18,6 +18,11 @@
  */
 
 // ---- Components ---------------------------------------------------------
+export { Accordion, AccordionItem } from './components/Accordion'
+export type {
+    AccordionNativeProps,
+    AccordionItemNativeProps,
+} from './components/Accordion'
 export { Alert } from './components/Alert'
 export { Avatar } from './components/Avatar'
 export type { AvatarNativeProps, AvatarStatus } from './components/Avatar'
@@ -180,6 +185,8 @@ export type { GroupPosition } from './components/shared/group'
 export { useLiveRegionAnnounce } from './a11y/useLiveRegion'
 
 export {
+    AccordionV2Type as AccordionType,
+    AccordionV2ChevronPosition as AccordionChevronPosition,
     AlertV2Type as AlertType,
     AvatarV2Size as AvatarSize,
     AvatarV2Shape as AvatarShape,

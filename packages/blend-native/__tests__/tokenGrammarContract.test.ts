@@ -53,6 +53,13 @@ const EXCEPTIONS: { pattern: RegExp; handler: string }[] = [
         pattern: /^SNACKBARV2\.\w+\.\w+\.maxWidth$/,
         handler: 'ToastOutlet stack paddingHorizontal',
     },
+    {
+        // The accordion type key is literally 'border', so this leaf's own
+        // segment name collides with the border style key. It is a plain
+        // color, consumed by Accordion's Separator.
+        pattern: /^ACCORDIONV2\.\w+\.\w+\.separator\.color\./,
+        handler: 'Accordion.tsx Separator color',
+    },
 ]
 
 type Leaf = { path: string; segments: string[]; value: unknown }
@@ -82,8 +89,12 @@ const STYLE_KEY_RE =
  * to the nearest segment that names a style property.
  */
 function styleKeyFor(segments: string[]): string | null {
-    // segments[0..2] are slot/theme/breakpoint — never style keys.
-    for (let i = segments.length - 1; i >= 3; i--) {
+    // segments[0..2] are slot/theme/breakpoint — never style keys. Scan from
+    // the ROOT down: the style key always sits above its variant/state maps,
+    // and a variant key can itself be named like a style key (ACCORDIONV2's
+    // type key is literally 'border', so `backgroundColor.border.hover` must
+    // dispatch on `backgroundColor`, not `border`).
+    for (let i = 3; i < segments.length; i++) {
         if (STYLE_KEY_RE.test(segments[i])) return segments[i]
     }
     return null
@@ -174,7 +185,13 @@ function checkLeaf(leaf: Leaf): string | null {
     }
 
     if (key.startsWith('padding') || key === 'gap') {
-        if (parseDimension(value as string | number) === undefined) {
+        // Padding tokens may be multi-value shorthands ("20px 16px" —
+        // ACCORDIONV2's trigger padding); every part must be a length.
+        const parts = str.split(/\s+/)
+        if (
+            parts.some((part) => parseDimension(part) === undefined) &&
+            parseDimension(value as string | number) === undefined
+        ) {
             return 'parseDimension returned undefined (a % here is a bug)'
         }
         return null

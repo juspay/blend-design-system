@@ -1,6 +1,7 @@
 import {
     FOUNDATION_THEME,
     Theme,
+    getAccordionV2Tokens,
     getAlertV2Tokens,
     getAvatarV2Tokens,
     getButtonV2Tokens,
@@ -34,6 +35,7 @@ import {
  * entry, so registering one pulls in no UI code.
  */
 export const NATIVE_TOKEN_REGISTRY = {
+    ACCORDIONV2: getAccordionV2Tokens,
     ALERTV2: getAlertV2Tokens,
     AVATARV2: getAvatarV2Tokens,
     BUTTONV2: getButtonV2Tokens,
