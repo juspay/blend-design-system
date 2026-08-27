@@ -19,6 +19,7 @@ import {
     getSwitchV2Tokens,
     getTabsV2Tokens,
     getTagV2Tokens,
+    getTooltipV2Tokens,
     getTextAreaV2Tokens,
     getTextInputV2Tokens,
     type BreakpointType,
@@ -59,6 +60,7 @@ export const NATIVE_TOKEN_REGISTRY = {
     TAGV2: getTagV2Tokens,
     TEXT_AREA_V2: getTextAreaV2Tokens,
     TEXT_INPUTV2: getTextInputV2Tokens,
+    TOOLTIPV2: getTooltipV2Tokens,
 } as const
 
 /** Every component slot native can resolve. Derived, never hand-written. */

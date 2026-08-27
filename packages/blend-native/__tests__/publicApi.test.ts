@@ -93,6 +93,7 @@ describe('public API surface', () => {
             'TextArea',
             'Tag',
             'TagGroup',
+            'Tooltip',
         ]) {
             expect(exported.has(name)).toBe(true)
         }
@@ -126,7 +127,8 @@ describe('public API surface', () => {
         // then to 84 for the Wave B form layer (Checkbox, Radio, Switch, the
         // compound Tabs/Accordion, the input variants, and their enums),
         // then to 85 when BottomSheetScrollable joined the sheet foundation
-        // (Wave C0 scroll-aware drag).
-        expect(exported.size).toBeLessThanOrEqual(85)
+        // (Wave C0 scroll-aware drag), then to 96 for the Wave C1 overlay
+        // components (Tooltip, Popover, Modal and their enums).
+        expect(exported.size).toBeLessThanOrEqual(96)
     })
 })

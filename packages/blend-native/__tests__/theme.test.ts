@@ -70,6 +70,7 @@ describe('nativeTokenRegistry', () => {
             'TAGV2',
             'TEXT_AREA_V2',
             'TEXT_INPUTV2',
+            'TOOLTIPV2',
         ])
     })
 

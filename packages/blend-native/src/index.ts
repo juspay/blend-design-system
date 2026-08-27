@@ -42,6 +42,8 @@ export type {
 } from './components/KeyValuePair'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
+export { Tooltip } from './components/Tooltip'
+export type { TooltipNativeProps } from './components/Tooltip'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/Tabs'
 export type {
     TabsNativeProps,
@@ -228,5 +230,9 @@ export {
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,
     TagV2Color as TagColor,
+    TooltipV2Side as TooltipSide,
+    TooltipV2Align as TooltipAlign,
+    TooltipV2Size as TooltipSize,
+    TooltipV2SlotDirection as TooltipSlotDirection,
     Theme,
 } from '@juspay/blend-design-system/node'
