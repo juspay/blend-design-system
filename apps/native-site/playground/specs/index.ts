@@ -8,13 +8,16 @@ import button from './button.spec'
 import card from './card.spec'
 import checkbox from './checkbox.spec'
 import keyValuePair from './keyValuePair.spec'
+import menu from './menu.spec'
 import modal from './modal.spec'
+import multiSelect from './multiSelect.spec'
 import numberInput from './numberInput.spec'
 import otpInput from './otpInput.spec'
 import popover from './popover.spec'
 import progressBar from './progressBar.spec'
 import radio from './radio.spec'
 import searchInput from './searchInput.spec'
+import singleSelect from './singleSelect.spec'
 import skeleton from './skeleton.spec'
 import snackbar from './snackbar.spec'
 import switchSpec from './switch.spec'
@@ -51,6 +54,8 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
             asAnySpec(numberInput),
             asAnySpec(searchInput),
             asAnySpec(otpInput),
+            asAnySpec(singleSelect),
+            asAnySpec(multiSelect),
             asAnySpec(checkbox),
             asAnySpec(radio),
             asAnySpec(switchSpec),
@@ -80,6 +85,7 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
         title: 'Overlays',
         specs: [
             asAnySpec(bottomSheet),
+            asAnySpec(menu),
             asAnySpec(modal),
             asAnySpec(popover),
             asAnySpec(tooltip),
