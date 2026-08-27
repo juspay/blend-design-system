@@ -62,6 +62,8 @@ export { SearchInput } from './components/SearchInput'
 export type { SearchInputNativeProps } from './components/SearchInput'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
+export { NumberInput } from './components/NumberInput'
+export type { NumberInputNativeProps } from './components/NumberInput'
 export { Radio } from './components/Radio'
 export type { RadioNativeProps } from './components/Radio'
 export { ProgressBar } from './components/ProgressBar'
@@ -212,6 +214,7 @@ export {
     InputSizeV2 as InputSize,
     KeyValuePairV2Size as KeyValuePairSize,
     InputStateV2 as InputState,
+    NumberInputV2Direction as NumberInputDirection,
     ProgressBarV2Size as ProgressBarSize,
     SnackbarV2Variant as SnackbarVariant,
     ProgressBarV2Variant as ProgressBarVariant,

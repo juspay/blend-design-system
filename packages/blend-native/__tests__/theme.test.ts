@@ -57,6 +57,7 @@ describe('nativeTokenRegistry', () => {
             'CARDV2',
             'CHECKBOXV2',
             'KEYVALUEPAIRV2',
+            'NUMBER_INPUT_V2',
             'PROGRESS_BARV2',
             'RADIOV2',
             'SEARCH_INPUT_V2',
