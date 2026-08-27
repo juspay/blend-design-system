@@ -42,6 +42,8 @@ export type {
     TextInputNativeProps,
     TextInputSlot,
 } from './components/TextInput'
+export { Switch } from './components/Switch'
+export type { SwitchNativeProps } from './components/Switch'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
 export { Radio } from './components/Radio'

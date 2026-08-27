@@ -1,6 +1,7 @@
 import { fireEvent, render } from '@testing-library/react-native'
 import { Checkbox } from '../src/components/Checkbox'
 import { Radio } from '../src/components/Radio'
+import { Switch } from '../src/components/Switch'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import type { ReactElement } from 'react'
 
@@ -12,6 +13,40 @@ import type { ReactElement } from 'react'
 
 const wrap = (ui: ReactElement) =>
     render(<BlendNativeProvider>{ui}</BlendNativeProvider>)
+
+describe('Switch rendering', () => {
+    it('exposes a switch role and toggles with the inverted value', () => {
+        const onCheckedChange = jest.fn()
+        const { getByTestId } = wrap(
+            <Switch
+                label="Notifications"
+                checked
+                onCheckedChange={onCheckedChange}
+                testID="sw"
+            />
+        )
+        const sw = getByTestId('sw')
+        expect(sw.props.accessibilityRole).toBe('switch')
+        expect(sw.props.accessibilityState.checked).toBe(true)
+        fireEvent.press(sw)
+        expect(onCheckedChange).toHaveBeenCalledWith(false)
+    })
+
+    it('disabled blocks toggling', () => {
+        const onCheckedChange = jest.fn()
+        const { getByTestId } = wrap(
+            <Switch
+                label="Frozen"
+                checked={false}
+                disabled
+                onCheckedChange={onCheckedChange}
+                testID="sw"
+            />
+        )
+        fireEvent.press(getByTestId('sw'))
+        expect(onCheckedChange).not.toHaveBeenCalled()
+    })
+})
 
 describe('Radio rendering', () => {
     it('selects on press with radio semantics (no re-fire when selected)', () => {

@@ -12,6 +12,7 @@ import {
     getSkeletonTokens,
     getSnackbarV2Tokens,
     getSpinnerTokens,
+    getSwitchV2Tokens,
     getTagV2Tokens,
     getTextInputV2Tokens,
     type BreakpointType,
@@ -43,6 +44,7 @@ export const NATIVE_TOKEN_REGISTRY = {
     SKELETON: getSkeletonTokens,
     SNACKBARV2: getSnackbarV2Tokens,
     SPINNER: getSpinnerTokens,
+    SWITCHV2: getSwitchV2Tokens,
     TAGV2: getTagV2Tokens,
     TEXT_INPUTV2: getTextInputV2Tokens,
 } as const
