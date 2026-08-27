@@ -65,6 +65,7 @@ describe('nativeTokenRegistry', () => {
             'SWITCHV2',
             'TABSV2',
             'TAGV2',
+            'TEXT_AREA_V2',
             'TEXT_INPUTV2',
         ])
     })

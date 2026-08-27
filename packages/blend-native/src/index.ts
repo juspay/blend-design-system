@@ -49,6 +49,8 @@ export type {
     TabsTriggerNativeProps,
     TabsContentNativeProps,
 } from './components/Tabs'
+export { TextArea } from './components/TextArea'
+export type { TextAreaNativeProps } from './components/TextArea'
 export { TextInput } from './components/TextInput'
 export type {
     TextInputNativeProps,

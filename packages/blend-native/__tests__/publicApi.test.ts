@@ -87,6 +87,7 @@ describe('public API surface', () => {
             'Spinner',
             'Switch',
             'Tabs',
+            'TextArea',
             'Tag',
             'TagGroup',
         ]) {

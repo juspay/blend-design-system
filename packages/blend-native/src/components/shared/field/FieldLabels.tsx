@@ -1,7 +1,7 @@
 import {
     InputSizeV2,
     InputStateV2,
-    type TextInputV2TokensType,
+    type InputLabelsV2Tokens,
 } from '@juspay/blend-design-system/node'
 import { Block } from '../../../primitives/Block'
 import { Text } from '../../../primitives/Text'
@@ -25,7 +25,7 @@ export type FieldLabelsProps = {
     required?: boolean
     size?: InputSizeV2
     state?: InputStateV2
-    tokens: TextInputV2TokensType['topContainer']
+    tokens: InputLabelsV2Tokens
     testID?: string
 }
 

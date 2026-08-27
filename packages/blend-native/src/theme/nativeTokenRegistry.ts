@@ -16,6 +16,7 @@ import {
     getSwitchV2Tokens,
     getTabsV2Tokens,
     getTagV2Tokens,
+    getTextAreaV2Tokens,
     getTextInputV2Tokens,
     type BreakpointType,
 } from '@juspay/blend-design-system/node'
@@ -50,6 +51,7 @@ export const NATIVE_TOKEN_REGISTRY = {
     SWITCHV2: getSwitchV2Tokens,
     TABSV2: getTabsV2Tokens,
     TAGV2: getTagV2Tokens,
+    TEXT_AREA_V2: getTextAreaV2Tokens,
     TEXT_INPUTV2: getTextInputV2Tokens,
 } as const
 
