@@ -20,8 +20,7 @@ const spec: ComponentSpec<PopoverPlaygroundProps> = {
     name: 'Popover',
     summary:
         'On phones it presents as a bottom sheet (what web does with its mobile drawer); on tablets it anchors to the trigger. Header, body and actions come from POPOVERV2 tokens.',
-    mode: 'overlay',
-    triggerLabel: 'Open the popover',
+    mode: 'inline',
     defaults: {
         heading: 'Filters',
         description: 'Narrow the settlement list',
@@ -72,7 +71,7 @@ const spec: ComponentSpec<PopoverPlaygroundProps> = {
             onCode: "{ text: 'Clear' }",
         },
     ],
-    render: (props, ctx) => (
+    render: (props) => (
         <Popover
             {...props}
             trigger={
@@ -80,8 +79,6 @@ const spec: ComponentSpec<PopoverPlaygroundProps> = {
                     <Text style={styles.triggerText}>Open the popover</Text>
                 </View>
             }
-            open={ctx.open}
-            onOpenChange={ctx.setOpen}
         >
             <Text style={styles.body}>
                 Any content renders here — form controls, lists, summaries.
