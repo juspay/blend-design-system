@@ -11,7 +11,6 @@ import type { SelectSearchControlProps } from '../Select/search.types'
 import {
     SelectV2Alignment,
     SelectV2FlattenedItemBase,
-    SelectV2BaseItemType,
     SelectV2MenuRootPropsBase,
     SelectV2SkeletonProps,
     SelectV2Side,
@@ -47,25 +46,24 @@ export type SelectV2MenuPosition = {
     alignOffset?: number
 }
 
-export type SelectV2ErrorState = {
-    show?: boolean
-    message?: string
-}
-
 export type SelectV2SearchConfig = SelectSearchControlProps & {
     show?: boolean
     placeholder?: string
 }
 
-export type SingleSelectV2ItemType = SelectV2BaseItemType & {
-    subMenu?: SingleSelectV2ItemType[]
-}
-
-export type SingleSelectV2GroupType = {
-    groupLabel?: string
-    items: SingleSelectV2ItemType[]
-    showSeparator?: boolean
-}
+// Moved to the leaf `singleSelectV2.base.types.ts` (see its header) and
+// re-exported here so existing consumers keep importing from this module.
+export type {
+    SingleSelectV2ItemType,
+    SingleSelectV2GroupType,
+    SingleSelectBaseProps,
+} from './singleSelectV2.base.types'
+export type { SelectV2ErrorState } from '../SelectV2/selectV2.base.types'
+import type {
+    SingleSelectV2GroupType,
+    SingleSelectV2ItemType,
+    SingleSelectBaseProps,
+} from './singleSelectV2.base.types'
 
 export type FlattenedItem = SelectV2FlattenedItemBase<SingleSelectV2ItemType>
 
@@ -148,28 +146,11 @@ export type SingleSelectV2MenuProps = {
     menuId?: string
     menuFooter?: ReactNode
 }
-export type SingleSelectV2PropsBase = {
-    label?: string
-    subLabel?: string
-    hintText?: string
-    required?: boolean
-    helpIconText?: string
-
-    placeholder: string
-    size?: SelectV2Size
-    variant?: SelectV2Variant
-
-    items: SingleSelectV2GroupType[]
-    selected: string
-    onSelect: (value: string) => void
-
+export type SingleSelectV2PropsBase = SingleSelectBaseProps & {
     search?: SelectV2SearchConfig
 
     slot?: ReactNode
     customTrigger?: ReactElement
-
-    open?: boolean
-    onOpenChange?: (open: boolean) => void
 
     usePanelOnMobile?: boolean
 
@@ -178,23 +159,13 @@ export type SingleSelectV2PropsBase = {
     menuDimensions?: SelectV2MenuDimensions
     triggerDimensions?: SelectV2TriggerDimensions
 
-    inline?: boolean
-
-    error?: SelectV2ErrorState
-
     enableVirtualization?: boolean
     virtualListItemHeight?: number
     virtualListOverscan?: number
 
-    onEndReached?: () => void
-    endReachedThreshold?: number
-    hasMore?: boolean
     loadingComponent?: ReactNode
 
     skeleton?: SelectV2SkeletonProps
-
-    allowCustomValue?: boolean
-    customValueLabel?: string
 
     singleSelectGroupPosition?: 'center' | 'left' | 'right'
     menuFooter?: ReactNode
