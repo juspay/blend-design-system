@@ -167,7 +167,9 @@ apps/native-site/
 │   ├── snippet.ts                 # props -> JSX string (pure, unit-tested)
 │   ├── snippet.test.ts
 │   ├── chrome.ts                  # the harness palette, deliberately not Blend's
-│   ├── Playground.tsx             # stage + controls + snippet + reset
+│   ├── Playground.tsx             # pinned stage + scrolling controls + JSX
+│   ├── useHideOnScroll.ts         # collapses the app bar as you scroll
+│   ├── scroll.ts                  # the shared scroll-handler type
 │   ├── Gallery.tsx                # wraps a showcase as the second view
 │   ├── AppBar.tsx                 # title, hamburger, theme toggle
 │   ├── ComponentDrawer.tsx        # the grouped component list
@@ -198,10 +200,21 @@ keep working when the library does not — a control panel built out of the
 components under test goes blank exactly when you need it. `chrome.ts` holds
 its own palette for the same reason.
 
-The exception is `SelectControl`, which presents its options in Blend's own
-`BottomSheet`. That is a knowing trade: if `BottomSheet` regresses, every
-picker goes with it. The rows inside the sheet are still plain React Native,
-so a broken sheet is the whole blast radius rather than the start of one.
+Two pieces knowingly break that rule: `SelectControl` presents its options in
+Blend's own `BottomSheet`, and the JSX block is a Blend `Accordion`. Both are
+trades made on purpose — if either regresses, that one piece goes with it, and
+nothing else does. The rows inside the sheet and the snippet inside the
+accordion are still plain React Native.
+
+### Why the stage is pinned
+
+The preview sits **outside** the scroll view. Watching a component change as
+you change its props is the entire point, and it cannot do that if reaching
+the controls pushes it off screen. Only the panel scrolls.
+
+That costs vertical space, which is why the app bar collapses on the way down
+and comes back on the way up (`useHideOnScroll`). The safe-area inset above it
+does not collapse — losing that would let content slide under the status bar.
 
 **Options come from the enums, not from hardcoded lists.**
 `enumOptions(TagColor, 'TagColor')` rather than `['neutral', 'primary', ...]`,

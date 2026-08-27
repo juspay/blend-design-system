@@ -1,15 +1,28 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
+import Animated from 'react-native-reanimated'
+import type { AnimatedStyle } from 'react-native-reanimated'
+import type { ViewStyle } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Menu, Moon, Sun } from 'lucide-react-native'
 import { useChrome } from './chrome'
 
-/** Title, the drawer trigger, and the app-wide light/dark toggle. */
+/** Height of the title row, excluding the status-bar inset. */
+export const APP_BAR_HEIGHT = 52
+
+/**
+ * Title, the drawer trigger, and the app-wide light/dark toggle.
+ *
+ * The row collapses to nothing as the user scrolls down (`useHideOnScroll`
+ * supplies `rowStyle`). The safe-area inset above it does not collapse —
+ * losing that would let the content slide under the status bar.
+ */
 export default function AppBar({
     title,
     onOpenDrawer,
     isDark,
     onToggleTheme,
     showMenuButton,
+    rowStyle,
 }: {
     title: string
     onOpenDrawer: () => void
@@ -17,6 +30,12 @@ export default function AppBar({
     onToggleTheme: () => void
     /** Hidden when the drawer is permanent — there is nothing to open. */
     showMenuButton: boolean
+    /**
+     * The collapsing height/opacity from `useHideOnScroll`. Typed as
+     * Reanimated's own style rather than `StyleProp<ViewStyle>`, which does
+     * not accept an animated style handle.
+     */
+    rowStyle?: AnimatedStyle<ViewStyle>
 }) {
     const chrome = useChrome()
     const insets = useSafeAreaInsets()
@@ -32,7 +51,7 @@ export default function AppBar({
                 },
             ]}
         >
-            <View style={styles.row}>
+            <Animated.View style={[styles.row, rowStyle]}>
                 {showMenuButton ? (
                     <Pressable
                         onPress={onOpenDrawer}
@@ -76,7 +95,7 @@ export default function AppBar({
                         <Sun size={20} color={chrome.fg} />
                     )}
                 </Pressable>
-            </View>
+            </Animated.View>
         </View>
     )
 }
@@ -84,11 +103,14 @@ export default function AppBar({
 const styles = StyleSheet.create({
     bar: { borderBottomWidth: StyleSheet.hairlineWidth },
     row: {
-        height: 52,
+        height: APP_BAR_HEIGHT,
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 6,
         gap: 4,
+        // The row's height animates to zero; without this its children would
+        // spill past the collapsing box on the way.
+        overflow: 'hidden',
     },
     iconButton: {
         width: 44,

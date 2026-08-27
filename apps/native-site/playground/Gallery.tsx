@@ -1,5 +1,7 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
+import Animated from 'react-native-reanimated'
 import { useChrome } from './chrome'
+import type { ScrollHandler } from './scroll'
 import type { AnySpec } from './types'
 
 /**
@@ -12,7 +14,13 @@ import type { AnySpec } from './types'
  * The showcase files are reused unchanged. Several specs share one, so a
  * component's gallery may show its neighbours too.
  */
-export default function Gallery({ spec }: { spec: AnySpec }) {
+export default function Gallery({
+    spec,
+    onScroll,
+}: {
+    spec: AnySpec
+    onScroll?: ScrollHandler
+}) {
     const chrome = useChrome()
     const Showcase = spec.gallery
 
@@ -27,12 +35,14 @@ export default function Gallery({ spec }: { spec: AnySpec }) {
     }
 
     return (
-        <ScrollView
+        <Animated.ScrollView
+            onScroll={onScroll}
+            scrollEventThrottle={16}
             style={{ backgroundColor: chrome.bg }}
             contentContainerStyle={styles.scroll}
         >
             <Showcase />
-        </ScrollView>
+        </Animated.ScrollView>
     )
 }
 

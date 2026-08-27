@@ -6,13 +6,14 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { Drawer } from 'react-native-drawer-layout'
 import { BlendNativeProvider, Theme } from 'blend-native'
 import PlatformPreview from './components/PlatformPreview'
-import AppBar from './playground/AppBar'
+import AppBar, { APP_BAR_HEIGHT } from './playground/AppBar'
 import ComponentDrawer from './playground/ComponentDrawer'
 import Gallery from './playground/Gallery'
 import Playground from './playground/Playground'
 import PlaygroundTabBar from './playground/PlaygroundTabBar'
 import { ChromeContext, DARK_CHROME, LIGHT_CHROME } from './playground/chrome'
 import { COMPONENT_GROUPS, findSpec } from './playground/specs'
+import { useHideOnScroll } from './playground/useHideOnScroll'
 import type { TabKey } from './playground/tabBar.shared'
 
 /**
@@ -55,14 +56,27 @@ export default function App() {
         ? ['preview', 'gallery']
         : ['preview']
 
-    const selectComponent = useCallback((name: string) => {
-        setComponentName(name)
-        // A spec with no gallery hides that tab. Reset the choice rather
-        // than leaving it parked, or the next component that does have a
-        // gallery would open on it without the user asking.
-        if (!findSpec(name).gallery) setTab('preview')
-        setDrawerOpen(false)
-    }, [])
+    // One handler drives both tabs; the header is app-level chrome, not the
+    // property of whichever view happens to be scrolling.
+    const {
+        onScroll,
+        style: appBarRowStyle,
+        reveal,
+    } = useHideOnScroll(APP_BAR_HEIGHT)
+
+    const selectComponent = useCallback(
+        (name: string) => {
+            setComponentName(name)
+            // A spec with no gallery hides that tab. Reset the choice rather
+            // than leaving it parked, or the next component that does have a
+            // gallery would open on it without the user asking.
+            if (!findSpec(name).gallery) setTab('preview')
+            setDrawerOpen(false)
+            // A new component starts at the top, so the header comes back with it.
+            reveal()
+        },
+        [reveal]
+    )
 
     return (
         <PlatformPreview>
@@ -121,6 +135,7 @@ export default function App() {
                                                         : Theme.DARK
                                                 )
                                             }
+                                            rowStyle={appBarRowStyle}
                                         />
 
                                         {/* Hidden rather than unmounted: a
@@ -139,10 +154,14 @@ export default function App() {
                                             <Playground
                                                 key={spec.name}
                                                 spec={spec}
+                                                onScroll={onScroll}
                                             />
                                         </View>
                                         {tab === 'gallery' ? (
-                                            <Gallery spec={spec} />
+                                            <Gallery
+                                                spec={spec}
+                                                onScroll={onScroll}
+                                            />
                                         ) : null}
 
                                         <PlaygroundTabBar
