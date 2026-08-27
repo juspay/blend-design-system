@@ -72,6 +72,12 @@ export { Switch } from './components/Switch'
 export type { SwitchNativeProps } from './components/Switch'
 export { SearchInput } from './components/SearchInput'
 export type { SearchInputNativeProps } from './components/SearchInput'
+export { SingleSelect } from './components/SingleSelect'
+export type {
+    SingleSelectNativeProps,
+    SingleSelectItemType,
+    SingleSelectGroupType,
+} from './components/SingleSelect'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
 export { NumberInput } from './components/NumberInput'
@@ -225,6 +231,8 @@ export {
     CardV2Orientation as CardOrientation,
     CardV2Padding as CardPadding,
     SelectorV2Size as SelectorSize,
+    SelectV2Size as SelectSize,
+    SelectV2Variant as SelectVariant,
     TabsV2Variant as TabsVariant,
     TabsV2Size as TabsSize,
     CheckboxV2CheckedState as CheckboxCheckedState,

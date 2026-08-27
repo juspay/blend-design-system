@@ -65,6 +65,7 @@ describe('nativeTokenRegistry', () => {
             'PROGRESS_BARV2',
             'RADIOV2',
             'SEARCH_INPUT_V2',
+            'SINGLE_SELECT_V2',
             'SKELETON',
             'SNACKBARV2',
             'SPINNER',

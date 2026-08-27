@@ -90,6 +90,7 @@ describe('public API surface', () => {
             'ProgressBar',
             'Radio',
             'SearchInput',
+            'SingleSelect',
             'Spinner',
             'Switch',
             'Tabs',
@@ -131,7 +132,8 @@ describe('public API surface', () => {
         // compound Tabs/Accordion, the input variants, and their enums),
         // then to 85 when BottomSheetScrollable joined the sheet foundation
         // (Wave C0 scroll-aware drag), then to 96 for the Wave C1 overlay
-        // components (Tooltip, Popover, Modal and their enums).
-        expect(exported.size).toBeLessThanOrEqual(96)
+        // components (Tooltip, Popover, Modal and their enums), then to 106
+        // for Wave C2 (Menu, SingleSelect, MultiSelect and their enums).
+        expect(exported.size).toBeLessThanOrEqual(106)
     })
 })
