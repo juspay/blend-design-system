@@ -250,3 +250,32 @@ export type { NumberInputBaseProps } from './components/InputsV2/NumberInputV2/n
 export type { TextAreaBaseProps } from './components/InputsV2/TextAreaV2/TextAreaV2.types'
 export type { SearchInputBaseProps } from './components/InputsV2/SearchInputV2/SearchInputV2.types'
 export type { OTPInputBaseProps } from './components/InputsV2/OTPInputV2/OTPInputV2.types'
+
+// Overlay components (Wave C1): token types, enums and platform-neutral
+// base props for the React Native ports.
+export type {
+    TooltipV2TokensType,
+    ResponsiveTooltipV2Tokens,
+} from './components/TooltipV2/tooltipV2.tokens.types'
+export {
+    TooltipV2Side,
+    TooltipV2Align,
+    TooltipV2Size,
+    TooltipV2SlotDirection,
+} from './components/TooltipV2/tooltipV2.types'
+export type { TooltipBaseProps } from './components/TooltipV2/tooltipV2.types'
+export type {
+    PopoverV2TokenType,
+    ResponsivePopoverV2Tokens,
+} from './components/PopoverV2/popoverV2.tokens.types'
+export {
+    PopoverV2Size,
+    PopoverV2Side,
+    PopoverV2Align,
+} from './components/PopoverV2/popoverV2.base.types'
+export type { PopoverBaseProps } from './components/PopoverV2/popoverV2.base.types'
+export type {
+    ModalV2TokensType,
+    ResponsiveModalV2Tokens,
+} from './components/ModalV2/modalV2.tokens.types'
+export type { ModalBaseProps } from './components/ModalV2/modalV2.base.types'
