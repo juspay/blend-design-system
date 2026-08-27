@@ -29,19 +29,26 @@ export type TabsV2TabItem = {
     newItem?: boolean
 }
 
-export type TabsV2Props = ComponentPropsWithoutRef<
-    typeof TabsPrimitive.Root
-> & {
+/**
+ * Platform-neutral core of the TabsV2 root API — `@juspay/blend-native`
+ * derives its Tabs props from this; the Radix `Root` surface and the
+ * skeleton/sticky pieces stay web-only.
+ */
+export type TabsBaseProps = {
     variant?: TabsV2Variant
     size?: TabsV2Size
     expanded?: boolean
     fitContent?: boolean
     disabled?: boolean
-    showSkeleton?: boolean
-    skeletonVariant?: SkeletonVariant
-    stickyHeader?: boolean
-    offsetTop?: number
 }
+
+export type TabsV2Props = ComponentPropsWithoutRef<typeof TabsPrimitive.Root> &
+    TabsBaseProps & {
+        showSkeleton?: boolean
+        skeletonVariant?: SkeletonVariant
+        stickyHeader?: boolean
+        offsetTop?: number
+    }
 
 export type TabsV2ListProps = ComponentPropsWithoutRef<
     typeof TabsPrimitive.List
