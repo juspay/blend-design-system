@@ -1,6 +1,5 @@
 import { Card, CardOrientation, CardPadding, CardVariant } from 'blend-native'
 import type { CardNativeProps } from 'blend-native'
-import DisplayShowcase from '../../components/DisplayShowcase'
 import { MEDIA_NODE } from './slots'
 import { enumOptions } from '../types'
 import type { ComponentSpec } from '../types'
@@ -12,7 +11,6 @@ const spec: ComponentSpec<CardNativeProps> = {
     summary:
         'Surface for grouped content. Web’s `interactive` becomes `onPress` here: providing it renders a Pressable card with a button role.',
     mode: 'inline',
-    gallery: DisplayShowcase,
     defaults: {
         variant: CardVariant.OUTLINED,
         orientation: CardOrientation.VERTICAL,
@@ -24,19 +22,19 @@ const spec: ComponentSpec<CardNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'variant',
             label: 'Variant',
             options: enumOptions(CardVariant, 'CardVariant'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'orientation',
             label: 'Orientation',
             options: enumOptions(CardOrientation, 'CardOrientation'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'padding',
             label: 'Padding',
             options: enumOptions(CardPadding, 'CardPadding'),

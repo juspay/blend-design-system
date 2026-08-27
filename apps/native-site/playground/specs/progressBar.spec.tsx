@@ -5,7 +5,6 @@ import {
     ProgressBarVariant,
 } from 'blend-native'
 import type { ProgressBarNativeProps } from 'blend-native'
-import LoadingShowcase from '../../components/LoadingShowcase'
 import { enumOptions, numberOptions } from '../types'
 import type { ComponentSpec } from '../types'
 
@@ -14,7 +13,6 @@ const spec: ComponentSpec<ProgressBarNativeProps> = {
     summary:
         'Determinate progress only, like web. Native draws discrete ticks for the segmented track — RN has no repeating-linear-gradient.',
     mode: 'inline',
-    gallery: LoadingShowcase,
     defaults: {
         value: 60,
         size: ProgressBarSize.MD,
@@ -24,26 +22,26 @@ const spec: ComponentSpec<ProgressBarNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'value',
             label: 'Value',
             always: true,
             options: numberOptions([0, 25, 60, 100]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(ProgressBarSize, 'ProgressBarSize'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'variant',
             label: 'Variant',
             options: enumOptions(ProgressBarVariant, 'ProgressBarVariant'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'appearance',
             label: 'Appearance',
             options: enumOptions(

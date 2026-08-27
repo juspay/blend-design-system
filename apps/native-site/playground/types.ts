@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 /**
  * The playground harness contract.
@@ -55,10 +55,25 @@ type Common = {
 export type Control<P> = {
     [K in keyof P & string]:
         | (Common & {
-              /** `segmented` is inline (2-4 options); `select` opens a sheet. */
-              kind: 'select' | 'segmented'
+              /** One value, chosen from a bottom sheet. */
+              kind: 'select'
               key: K
               options: readonly Option<P[K]>[]
+          })
+        | (Common & {
+              /**
+               * Several values from the same sheet, for a prop that takes a
+               * list. The options are typed against the element, not the
+               * array.
+               */
+              kind: 'multiselect'
+              key: K
+              // `NonNullable` first: an optional prop's type includes
+              // `undefined`, and an indexed access does not distribute over
+              // that union, so the infer would collapse to `never`.
+              options: readonly Option<
+                  NonNullable<P[K]> extends readonly (infer E)[] ? E : never
+              >[]
           })
         | (Common & {
               kind: 'toggle'
@@ -106,11 +121,6 @@ export type ComponentSpec<P extends object> = {
      * already rendered; `indent` in `snippet.ts` handles the reflow.
      */
     wrapSnippet?: (inner: string, props: P) => string
-    /**
-     * The dense every-variant grid, shown under the Gallery tab. Several
-     * specs share one; a spec without one hides the Gallery tab.
-     */
-    gallery?: ComponentType
 }
 
 /**

@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { BottomSheet } from 'blend-native'
 import type { BottomSheetProps } from 'blend-native'
-import SheetShowcase from '../../components/SheetShowcase'
 import { addProps, indent } from '../snippet'
 import { numberOptions } from '../types'
 import type { ComponentSpec } from '../types'
@@ -25,7 +24,6 @@ const spec: ComponentSpec<SheetPlaygroundProps> = {
         'The gesture-driven sheet the phone modes of Select, Menu and Modal are built on. Also public, for consumer-built sheets.',
     mode: 'overlay',
     triggerLabel: 'Open the sheet',
-    gallery: SheetShowcase,
     defaults: {
         paragraphs: 2,
         showHandle: true,
@@ -36,7 +34,7 @@ const spec: ComponentSpec<SheetPlaygroundProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'maxHeightFraction',
             label: 'Max height',
             options: [
@@ -46,13 +44,13 @@ const spec: ComponentSpec<SheetPlaygroundProps> = {
             ],
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'topRadius',
             label: 'Top radius',
             options: numberOptions([0, 16, 28]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'paragraphs',
             label: 'Content length',
             hidden: true,

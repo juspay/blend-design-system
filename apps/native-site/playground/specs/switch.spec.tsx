@@ -25,7 +25,7 @@ const spec: ComponentSpec<SwitchNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(SelectorSize, 'SelectorSize'),

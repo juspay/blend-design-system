@@ -6,7 +6,6 @@ import {
     AvatarStatusType,
 } from 'blend-native'
 import type { AvatarNativeProps } from 'blend-native'
-import DisplayShowcase from '../../components/DisplayShowcase'
 import { enumOptions, humanize } from '../types'
 import type { ComponentSpec } from '../types'
 
@@ -46,7 +45,6 @@ const spec: ComponentSpec<AvatarNativeProps> = {
     summary:
         'Image with an initials fallback. The fallback colour is hashed from the text by the same function web uses, so a person keeps their colour across platforms.',
     mode: 'inline',
-    gallery: DisplayShowcase,
     defaults: {
         alt: 'Priya Raman',
         size: AvatarSize.MD,
@@ -54,13 +52,13 @@ const spec: ComponentSpec<AvatarNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(AvatarSize, 'AvatarSize'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'shape',
             label: 'Shape',
             options: enumOptions(AvatarShape, 'AvatarShape'),

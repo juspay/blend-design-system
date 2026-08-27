@@ -1,36 +1,68 @@
 import { useState } from 'react'
-import { Modal, Pressable, ScrollView, StyleSheet, Text } from 'react-native'
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { BottomSheet } from 'blend-native'
 import { Check, ChevronDown } from 'lucide-react-native'
 import { useChrome } from '../chrome'
 import type { Option } from '../types'
 
 /**
- * Value picker for controls with more options than fit inline. Built on RN's
- * own `Modal` rather than Blend's `BottomSheet` — see `chrome.ts` for why
- * the harness does not consume the library it inspects.
+ * Value picker for every non-boolean, non-text prop, presented in Blend's own
+ * `BottomSheet`.
+ *
+ * This is the one place the harness consumes the library it inspects, which
+ * is a deliberate exception to the rule in `chrome.ts`: if `BottomSheet`
+ * regresses, these pickers go with it. The rows inside are still plain React
+ * Native, so a broken sheet is the only failure mode — not a cascade.
  */
 export default function SelectControl({
     label,
     options,
     value,
     onChange,
+    multiple = false,
 }: {
     label: string
     options: readonly Option<unknown>[]
+    /** The selected value, or the selected values when `multiple`. */
     value: unknown
     onChange: (value: unknown) => void
+    multiple?: boolean
 }) {
     const chrome = useChrome()
     const [open, setOpen] = useState(false)
-    const current = options.find((option) => Object.is(option.value, value))
+
+    const selected = multiple && Array.isArray(value) ? value : [value]
+    const isSelected = (option: Option<unknown>) =>
+        selected.some((entry) => Object.is(entry, option.value))
+
+    const summary = multiple
+        ? options
+              .filter(isSelected)
+              .map((option) => option.label)
+              .join(', ')
+        : options.find(isSelected)?.label
+
+    const choose = (option: Option<unknown>) => {
+        if (!multiple) {
+            onChange(option.value)
+            setOpen(false)
+            return
+        }
+        // Toggle membership; the sheet stays open so several can be picked.
+        const next = isSelected(option)
+            ? selected.filter((entry) => !Object.is(entry, option.value))
+            : [...selected, option.value]
+        onChange(next)
+    }
 
     return (
         <>
             <Pressable
                 onPress={() => setOpen(true)}
                 accessibilityRole="button"
-                accessibilityLabel={`${label}: ${current?.label ?? 'none'}`}
+                accessibilityLabel={`${label}: ${summary || 'none'}`}
                 accessibilityHint="Opens the value list"
+                android_ripple={{ color: chrome.border }}
                 style={[
                     styles.trigger,
                     {
@@ -39,74 +71,65 @@ export default function SelectControl({
                     },
                 ]}
             >
-                <Text style={[styles.triggerLabel, { color: chrome.fg }]}>
-                    {current?.label ?? '—'}
+                <Text
+                    numberOfLines={1}
+                    style={[styles.triggerLabel, { color: chrome.fg }]}
+                >
+                    {summary || '—'}
                 </Text>
                 <ChevronDown size={16} color={chrome.fgMuted} />
             </Pressable>
 
-            <Modal
-                visible={open}
-                transparent
-                animationType="fade"
-                onRequestClose={() => setOpen(false)}
+            <BottomSheet
+                open={open}
+                onClose={() => setOpen(false)}
+                accessibilityLabel={label}
+                backgroundColor={chrome.bg}
+                maxHeightFraction={0.6}
             >
-                <Pressable
-                    style={[styles.scrim, { backgroundColor: chrome.scrim }]}
-                    onPress={() => setOpen(false)}
-                    accessibilityRole="button"
-                    accessibilityLabel="Close the value list"
-                >
-                    {/* Swallows presses so a tap on the sheet itself does not
-                        fall through to the scrim's dismiss handler. */}
-                    <Pressable
-                        style={[
-                            styles.sheet,
-                            {
-                                backgroundColor: chrome.bg,
-                                borderColor: chrome.border,
-                            },
-                        ]}
-                        onPress={() => {}}
-                    >
-                        <Text style={[styles.title, { color: chrome.fgMuted }]}>
-                            {label}
-                        </Text>
-                        <ScrollView>
-                            {options.map((option) => {
-                                const selected = Object.is(option.value, value)
-                                return (
-                                    <Pressable
-                                        key={option.label}
-                                        accessibilityRole="menuitem"
-                                        accessibilityState={{ selected }}
-                                        onPress={() => {
-                                            onChange(option.value)
-                                            setOpen(false)
-                                        }}
-                                        style={styles.row}
+                <View style={styles.sheet}>
+                    <Text style={[styles.title, { color: chrome.fgMuted }]}>
+                        {label}
+                    </Text>
+                    <ScrollView>
+                        {options.map((option) => {
+                            const on = isSelected(option)
+                            return (
+                                <Pressable
+                                    key={option.label}
+                                    accessibilityRole={
+                                        multiple ? 'checkbox' : 'menuitem'
+                                    }
+                                    accessibilityState={{
+                                        selected: on,
+                                        checked: multiple ? on : undefined,
+                                    }}
+                                    android_ripple={{
+                                        color: chrome.surfaceAlt,
+                                    }}
+                                    onPress={() => choose(option)}
+                                    style={styles.row}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.rowLabel,
+                                            { color: chrome.fg },
+                                        ]}
                                     >
-                                        <Text
-                                            style={[
-                                                styles.rowLabel,
-                                                { color: chrome.fg },
-                                            ]}
-                                        >
-                                            {option.label}
-                                        </Text>
-                                        {selected ? (
-                                            <Check
-                                                size={16}
-                                                color={chrome.accent}
-                                            />
-                                        ) : null}
-                                    </Pressable>
-                                )
-                            })}
-                        </ScrollView>
-                    </Pressable>
-                </Pressable>
-            </Modal>
+                                        {option.label}
+                                    </Text>
+                                    {on ? (
+                                        <Check
+                                            size={17}
+                                            color={chrome.accent}
+                                        />
+                                    ) : null}
+                                </Pressable>
+                            )
+                        })}
+                    </ScrollView>
+                </View>
+            </BottomSheet>
         </>
     )
 }
@@ -117,37 +140,31 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 8,
-        minHeight: 40,
-        paddingVertical: 8,
+        minHeight: 44,
+        paddingVertical: 10,
         paddingHorizontal: 12,
         borderRadius: 8,
         borderWidth: 1,
+        overflow: 'hidden',
     },
-    triggerLabel: { fontSize: 13, fontWeight: '500', flexShrink: 1 },
-    scrim: { flex: 1, justifyContent: 'flex-end' },
-    sheet: {
-        maxHeight: '70%',
-        borderTopLeftRadius: 16,
-        borderTopRightRadius: 16,
-        borderWidth: StyleSheet.hairlineWidth,
-        paddingTop: 12,
-        paddingBottom: 28,
-        paddingHorizontal: 8,
-    },
+    triggerLabel: { fontSize: 14, fontWeight: '500', flexShrink: 1 },
+    sheet: { paddingHorizontal: 8, paddingBottom: 12 },
     title: {
         fontSize: 11,
         fontWeight: '700',
         letterSpacing: 0.6,
         textTransform: 'uppercase',
         paddingHorizontal: 12,
-        paddingBottom: 8,
+        paddingVertical: 10,
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        minHeight: 44,
+        minHeight: 48,
         paddingHorizontal: 12,
+        borderRadius: 8,
+        overflow: 'hidden',
     },
     rowLabel: { fontSize: 15, flexShrink: 1 },
 })

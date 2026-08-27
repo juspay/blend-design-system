@@ -38,7 +38,7 @@ const spec: ComponentSpec<NumberInputNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(InputSize, 'InputSize'),
@@ -65,7 +65,7 @@ const spec: ComponentSpec<NumberInputNativeProps> = {
             placeholder: 'INR — replaces the steppers',
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'unitDirection',
             label: 'Unit side',
             options: enumOptions(NumberInputDirection, 'NumberInputDirection'),

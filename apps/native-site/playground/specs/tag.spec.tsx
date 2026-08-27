@@ -8,7 +8,6 @@ import {
     TagType,
 } from 'blend-native'
 import type { TagNativeProps } from 'blend-native'
-import TagShowcase from '../../components/TagShowcase'
 import { CHECK_SLOT, STAR_SLOT } from './slots'
 import { indent, replaceProp } from '../snippet'
 import { enumOptions, unionOptions } from '../types'
@@ -71,7 +70,6 @@ const spec: ComponentSpec<TagPlaygroundProps> = {
     summary:
         'Static label, or a pressable toggle once `onPress` is supplied — mirroring web’s `TagElement = onClick ? PrimitiveButton : Block`. A stacked group collapses the radius on joined edges.',
     mode: 'inline',
-    gallery: TagShowcase,
     defaults: {
         family: 'Tag',
         stacked: true,
@@ -83,7 +81,7 @@ const spec: ComponentSpec<TagPlaygroundProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'family',
             label: 'Component',
             hidden: true,
@@ -96,7 +94,7 @@ const spec: ComponentSpec<TagPlaygroundProps> = {
             hidden: true,
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'type',
             label: 'Type',
             options: enumOptions(TagType, 'TagType'),
@@ -108,13 +106,13 @@ const spec: ComponentSpec<TagPlaygroundProps> = {
             options: enumOptions(TagColor, 'TagColor'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(TagSize, 'TagSize'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'subType',
             label: 'Shape',
             options: enumOptions(TagSubType, 'TagSubType'),

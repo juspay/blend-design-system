@@ -5,7 +5,6 @@ import {
     AlertType,
 } from 'blend-native'
 import type { AlertActions, AlertNativeProps } from 'blend-native'
-import AlertShowcase from '../../components/AlertShowcase'
 import { BELL_NODE } from './slots'
 import { enumOptions } from '../types'
 import type { ComponentSpec } from '../types'
@@ -53,7 +52,6 @@ const spec: ComponentSpec<AlertNativeProps> = {
     summary:
         'Announced to assistive tech on appearance, matching web’s hard-coded assertive live region. Turn `announce` off for alerts that are part of a screen’s initial content, or several of them talk over each other.',
     mode: 'inline',
-    gallery: AlertShowcase,
     defaults: {
         type: AlertType.PRIMARY,
         subType: AlertSubType.SUBTLE,
@@ -72,7 +70,7 @@ const spec: ComponentSpec<AlertNativeProps> = {
             options: enumOptions(AlertType, 'AlertType'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'subType',
             label: 'Sub type',
             options: enumOptions(AlertSubType, 'AlertSubType'),

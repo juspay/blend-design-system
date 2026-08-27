@@ -7,23 +7,36 @@ import {
     Text,
     View,
 } from 'react-native'
-import { ChevronRight, RotateCcw } from 'lucide-react-native'
+import Animated from 'react-native-reanimated'
+import { Accordion, AccordionItem, AccordionType } from 'blend-native'
+import { RotateCcw } from 'lucide-react-native'
 import { MONO_FONT, useChrome } from './chrome'
 import ControlPanel from './controls/ControlPanel'
 import { buildSnippet } from './snippet'
 import type { AnySpec } from './types'
+import type { ScrollHandler } from './scroll'
 
 /**
  * One component, one instance, and the controls to reshape it.
  *
+ * The stage sits **outside** the ScrollView: the point of the preview is to
+ * watch a component change as you change its props, which it cannot do if
+ * reaching the controls pushes it off screen. Only the panel scrolls, and
+ * the app bar collapses on the way to pay for the height.
+ *
  * State is keyed on the spec by the caller (`<Playground key={spec.name} />`),
  * so switching component resets the props without an effect.
  */
-export default function Playground({ spec }: { spec: AnySpec }) {
+export default function Playground({
+    spec,
+    onScroll,
+}: {
+    spec: AnySpec
+    onScroll?: ScrollHandler
+}) {
     const chrome = useChrome()
     const [props, setProps] = useState(spec.defaults)
     const [open, setOpen] = useState(false)
-    const [showCode, setShowCode] = useState(false)
 
     const onChange = useCallback((key: string, value: unknown) => {
         setProps((current) => ({ ...current, [key]: value }))
@@ -53,11 +66,7 @@ export default function Playground({ spec }: { spec: AnySpec }) {
     )
 
     return (
-        <ScrollView
-            style={{ backgroundColor: chrome.bg }}
-            contentContainerStyle={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-        >
+        <View style={[styles.root, { backgroundColor: chrome.bg }]}>
             <View
                 style={[
                     styles.stage,
@@ -90,81 +99,80 @@ export default function Playground({ spec }: { spec: AnySpec }) {
                 {spec.render(props, { open, setOpen })}
             </View>
 
-            <View style={styles.summaryRow}>
-                <Text style={[styles.summary, { color: chrome.fgMuted }]}>
-                    {spec.summary}
-                </Text>
-                <Pressable
-                    onPress={() => setProps(spec.defaults)}
-                    disabled={!dirty}
-                    accessibilityRole="button"
-                    accessibilityLabel="Reset to defaults"
-                    accessibilityState={{ disabled: !dirty }}
-                    style={[
-                        styles.reset,
-                        {
-                            borderColor: chrome.border,
-                            opacity: dirty ? 1 : 0.4,
-                        },
-                    ]}
-                >
-                    <RotateCcw size={13} color={chrome.fgMuted} />
-                    <Text
-                        style={[styles.resetLabel, { color: chrome.fgMuted }]}
-                    >
-                        Reset
+            <Animated.ScrollView
+                onScroll={onScroll}
+                scrollEventThrottle={16}
+                contentContainerStyle={styles.scroll}
+                keyboardShouldPersistTaps="handled"
+            >
+                <View style={styles.summaryRow}>
+                    <Text style={[styles.summary, { color: chrome.fgMuted }]}>
+                        {spec.summary}
                     </Text>
-                </Pressable>
-            </View>
-
-            <ControlPanel
-                controls={spec.controls}
-                props={props}
-                onChange={onChange}
-            />
-
-            <View style={[styles.codeCard, { borderColor: chrome.border }]}>
-                <Pressable
-                    onPress={() => setShowCode((value) => !value)}
-                    accessibilityRole="button"
-                    accessibilityState={{ expanded: showCode }}
-                    style={styles.codeHeader}
-                >
-                    {/* The rotation goes on a wrapper View, not on the
-                        icon: react-native-svg does not reliably apply a
-                        transform passed through to the Svg element. */}
-                    <View style={showCode ? styles.chevronOpen : undefined}>
-                        <ChevronRight size={14} color={chrome.fgMuted} />
-                    </View>
-                    <Text style={[styles.codeTitle, { color: chrome.fgMuted }]}>
-                        JSX
-                    </Text>
-                </Pressable>
-                {showCode ? (
-                    <ScrollView
-                        horizontal
+                    <Pressable
+                        onPress={() => setProps(spec.defaults)}
+                        disabled={!dirty}
+                        accessibilityRole="button"
+                        accessibilityLabel="Reset to defaults"
+                        accessibilityState={{ disabled: !dirty }}
                         style={[
-                            styles.codeBody,
-                            { backgroundColor: chrome.codeBg },
+                            styles.reset,
+                            {
+                                borderColor: chrome.border,
+                                opacity: dirty ? 1 : 0.4,
+                            },
                         ]}
                     >
+                        <RotateCcw size={13} color={chrome.fgMuted} />
                         <Text
-                            selectable
-                            style={[styles.code, { color: chrome.codeFg }]}
+                            style={[
+                                styles.resetLabel,
+                                { color: chrome.fgMuted },
+                            ]}
                         >
-                            {snippet}
+                            Reset
                         </Text>
-                    </ScrollView>
-                ) : null}
-            </View>
-        </ScrollView>
+                    </Pressable>
+                </View>
+
+                <ControlPanel
+                    controls={spec.controls}
+                    props={props}
+                    onChange={onChange}
+                />
+
+                {/* Blend's own Accordion, so the harness exercises it too. */}
+                <Accordion accordionType={AccordionType.BORDER}>
+                    <AccordionItem value="jsx" title="JSX">
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            style={[
+                                styles.codeBody,
+                                { backgroundColor: chrome.codeBg },
+                            ]}
+                        >
+                            <Text
+                                selectable
+                                style={[styles.code, { color: chrome.codeFg }]}
+                            >
+                                {snippet}
+                            </Text>
+                        </ScrollView>
+                    </AccordionItem>
+                </Accordion>
+            </Animated.ScrollView>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-    scroll: { padding: 16, gap: 20, paddingBottom: 40 },
+    root: { flex: 1 },
+    scroll: { padding: 16, paddingTop: 0, gap: 20, paddingBottom: 40 },
     stage: {
-        minHeight: 168,
+        // Pinned, so it keeps a floor but never grows to crowd the controls.
+        minHeight: 150,
+        margin: 16,
         borderRadius: 12,
         // Dashed so a component's own bounds are readable against it —
         // `alignSelf` and width behaviour are invisible on a flush surface.
@@ -189,6 +197,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 12,
+        paddingTop: 16,
     },
     summary: { fontSize: 12, lineHeight: 17, flexShrink: 1 },
     reset: {
@@ -201,22 +210,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
     },
     resetLabel: { fontSize: 12, fontWeight: '500' },
-    codeCard: { borderRadius: 10, borderWidth: 1, overflow: 'hidden' },
-    codeHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-        paddingVertical: 10,
-        paddingHorizontal: 12,
-    },
-    chevronOpen: { transform: [{ rotate: '90deg' }] },
-    codeTitle: {
-        fontSize: 11,
-        fontWeight: '700',
-        letterSpacing: 0.6,
-        textTransform: 'uppercase',
-    },
-    codeBody: { paddingHorizontal: 12, paddingVertical: 10 },
+    codeBody: { paddingHorizontal: 12, paddingVertical: 10, borderRadius: 8 },
     code: {
         fontFamily: Platform.select(MONO_FONT),
         fontSize: 12,

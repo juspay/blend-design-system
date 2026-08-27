@@ -6,9 +6,8 @@ import type { SpecGroup } from './specs'
 /**
  * Drawer contents: the component list, grouped.
  *
- * The selection is shared by both tabs, so picking a component in Preview
- * and switching to Gallery shows the same component rather than resetting —
- * which is the point of having the two modes side by side.
+ * This is the app's only navigation — picking a component swaps what the
+ * playground is showing and closes the drawer behind you.
  */
 export default function ComponentDrawer({
     groups,

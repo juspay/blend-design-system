@@ -2,17 +2,13 @@
 
 Expo demo app for [`blend-native`](../../packages/blend-native).
 
-Every component the library ships gets two views of it, sharing one
-light/dark toggle driven by a single `BlendNativeProvider`:
+Every component the library ships gets a **preview**: one instance, a panel
+of controls that reach every variant and combination, and the JSX for
+whatever is currently on screen — all under one light/dark toggle driven by a
+single `BlendNativeProvider`.
 
-- **Preview** — one instance, a panel of controls that reach every variant
-  and combination, and the JSX for whatever is currently on screen.
-- **Gallery** — the dense every-variant grid, which is what catches
-  regressions.
-
-A **side drawer** picks the component; a **native bottom bar** picks the view.
-The selection is shared, so moving between Preview and Gallery keeps you on
-the same component.
+A **side drawer** picks the component. There is no other navigation; the
+playground is the whole screen.
 
 Open the drawer with the hamburger. Edge-swipe also works, **except on
 Android devices using gesture navigation**, where the system claims the left
@@ -146,19 +142,11 @@ object, not what reached the screen. Render tests (`pnpm --filter
 blend-native test:render`) now cover behaviour and accessibility, but
 **visual correctness still needs eyes on a device.**
 
-The bottom bar is a third platform check on top of those two: it is a real
-`UIVisualEffectView` on iOS 26 through `expo-glass-effect`, a Material 3
-navigation bar on Android, and a plain bordered bar on the web. Below iOS 26
-the glass API is absent, so the iOS file falls back to an opaque surface —
-a translucent bar with no material behind it would leave the labels sitting
-unreadably on the scroll content. Checking one platform tells you nothing
-about the other two.
-
 ## Folder structure
 
 ```
 apps/native-site/
-├── App.tsx                        # provider, drawer, app bar, tab bar
+├── App.tsx                        # provider, drawer, app bar
 ├── app.json                       # Expo config
 ├── metro.config.js                # pnpm symlink + workspace source resolution
 ├── babel.config.js
@@ -167,24 +155,14 @@ apps/native-site/
 │   ├── snippet.ts                 # props -> JSX string (pure, unit-tested)
 │   ├── snippet.test.ts
 │   ├── chrome.ts                  # the harness palette, deliberately not Blend's
-│   ├── Playground.tsx             # stage + controls + snippet + reset
-│   ├── Gallery.tsx                # wraps a showcase as the second view
+│   ├── Playground.tsx             # pinned stage + scrolling controls + JSX
+│   ├── useHideOnScroll.ts         # collapses the app bar as you scroll
+│   ├── scroll.ts                  # the shared scroll-handler type
 │   ├── AppBar.tsx                 # title, hamburger, theme toggle
 │   ├── ComponentDrawer.tsx        # the grouped component list
-│   ├── tabBar.shared.ts           # props the three tab bars all satisfy
-│   ├── PlaygroundTabBar.tsx       # default / web
-│   ├── PlaygroundTabBar.ios.tsx   # Liquid Glass (expo-glass-effect)
-│   ├── PlaygroundTabBar.android.tsx  # Material 3 navigation bar
-│   ├── controls/                  # Segmented, Select, Toggle, Text, Panel
+│   ├── controls/                  # Select, Toggle, Text, Panel
 │   └── specs/                     # one file per component + the registry
-└── components/                    # the showcases, now the Gallery view
-    ├── AlertShowcase.tsx       # 7 types x 2 subTypes, actions, slots, wrapping
-    ├── TagShowcase.tsx         # 3 types x 6 colors x 4 sizes x 2 subTypes
-    ├── ButtonShowcase.tsx      # types, sizes, states, subTypes, widths
-    ├── InputShowcase.tsx       # TextInput sizes, slots, states
-    ├── LoadingShowcase.tsx     # Skeleton, Spinner, ProgressBar
-    ├── DisplayShowcase.tsx     # Avatar, Card, KeyValuePair
-    ├── SheetShowcase.tsx       # BottomSheet
+└── components/
     ├── PlatformPreview.tsx     # web-only Mobile/Web switch + zoom
     ├── MobileFrame.web.tsx     # phone chrome for the browser target
     └── MobileFrame.native.tsx  # passthrough on native
@@ -192,11 +170,27 @@ apps/native-site/
 
 ### Two rules the harness depends on
 
-**The control chrome is plain React Native, never `blend-native`.** The
-playground is the instrument used to inspect the library, so it has to keep
-working when the library does not — a control panel built out of the
+**The control chrome is plain React Native, with one deliberate exception.**
+The playground is the instrument used to inspect the library, so it has to
+keep working when the library does not — a control panel built out of the
 components under test goes blank exactly when you need it. `chrome.ts` holds
 its own palette for the same reason.
+
+Two pieces knowingly break that rule: `SelectControl` presents its options in
+Blend's own `BottomSheet`, and the JSX block is a Blend `Accordion`. Both are
+trades made on purpose — if either regresses, that one piece goes with it, and
+nothing else does. The rows inside the sheet and the snippet inside the
+accordion are still plain React Native.
+
+### Why the stage is pinned
+
+The preview sits **outside** the scroll view. Watching a component change as
+you change its props is the entire point, and it cannot do that if reaching
+the controls pushes it off screen. Only the panel scrolls.
+
+That costs vertical space, which is why the app bar collapses on the way down
+and comes back on the way up (`useHideOnScroll`). The safe-area inset above it
+does not collapse — losing that would let content slide under the status bar.
 
 **Options come from the enums, not from hardcoded lists.**
 `enumOptions(TagColor, 'TagColor')` rather than `['neutral', 'primary', ...]`,
@@ -225,7 +219,7 @@ Write a spec and register it. There is no screen to add.
         defaults: { text: 'New', variant: BadgeVariant.SUBTLE },
         controls: [
             {
-                kind: 'segmented',
+                kind: 'select',
                 key: 'variant',
                 label: 'Variant',
                 options: enumOptions(BadgeVariant, 'BadgeVariant'),
@@ -233,7 +227,6 @@ Write a spec and register it. There is no screen to add.
             { kind: 'text', key: 'text', label: 'Text', always: true },
         ],
         render: (props) => <Badge {...props} />,
-        gallery: BadgeShowcase, // optional; without it the Gallery tab hides
     }
     ```
 
@@ -246,8 +239,10 @@ Notes that save time:
   `<Badge />`, which renders nothing.
 - `hidden: true` drives the preview without printing. It is for
   playground-only props such as a family selector.
-- A `segmented` control with more than four options is promoted to a picker
-  automatically, so nobody has to remember to change `kind` when an enum grows.
+- There are three control kinds and no more: `select` (one value, chosen from
+  a bottom sheet), `multiselect` (several, same sheet, for a prop that takes a
+  list) and `toggle` and `text`. Value props all get the same picker, so the
+  panel stays scannable however many options an enum grows to.
 - Toggle payloads that are objects must be **module-level constants** — the
   toggle decides it is on by comparing with `Object.is`, so an inline object
   would leave it permanently off.
@@ -260,14 +255,6 @@ Notes that save time:
   such as `addSnackbar({ ... })`. `replaceProp` and `addProps` in `snippet.ts`
   do the editing; anything the stage supplies but no control drives (required
   props, children) belongs there, or the snippet will not compile.
-
-### Adding a gallery
-
-1. Create `components/<Name>Showcase.tsx` returning a `View` (the harness
-   supplies the `ScrollView`).
-2. Point a spec's `gallery` at it. Several specs may share one.
-3. Lead with the case most likely to regress. `AlertShowcase` opens with a
-   long wrapping description for exactly this reason.
 
 ## Troubleshooting
 

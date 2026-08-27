@@ -47,9 +47,24 @@ function formatValue(value: unknown, code: string | undefined): string | null {
 }
 
 function codeFor<P>(control: Control<P>, value: unknown): string | undefined {
-    if (control.kind === 'select' || control.kind === 'segmented') {
+    if (control.kind === 'select') {
         const options = control.options as readonly Option<unknown>[]
         return options.find((option) => Object.is(option.value, value))?.code
+    }
+    if (control.kind === 'multiselect') {
+        if (!Array.isArray(value)) return undefined
+        // An array has no readable literal form of its own, so build one:
+        // each entry uses its option's code where there is one, and its own
+        // literal otherwise.
+        const options = control.options as readonly Option<unknown>[]
+        const entries = value.map((entry) => {
+            const option = options.find((candidate) =>
+                Object.is(candidate.value, entry)
+            )
+            if (option?.code !== undefined) return option.code
+            return typeof entry === 'string' ? `'${entry}'` : String(entry)
+        })
+        return `[${entries.join(', ')}]`
     }
     if (control.kind === 'toggle') {
         const on = control.on === undefined ? true : control.on

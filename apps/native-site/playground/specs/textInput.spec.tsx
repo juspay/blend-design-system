@@ -1,6 +1,5 @@
 import { InputSize, TextInput } from 'blend-native'
 import type { TextInputNativeProps } from 'blend-native'
-import InputShowcase from '../../components/InputShowcase'
 import { SEARCH_SLOT } from './slots'
 import { enumOptions } from '../types'
 import type { ComponentSpec } from '../types'
@@ -12,7 +11,6 @@ const spec: ComponentSpec<TextInputNativeProps> = {
     summary:
         'Label, field and footer in one column. Uncontrolled out of the box (`defaultValue`), controlled when `value` is passed. The floating-label mode and the embedded dropdown are web-only for now — both are omitted from the type rather than accepted and ignored.',
     mode: 'inline',
-    gallery: InputShowcase,
     defaults: {
         label: 'Merchant reference',
         placeholder: 'ord_9f2c41ab77e3',
@@ -20,7 +18,7 @@ const spec: ComponentSpec<TextInputNativeProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(InputSize, 'InputSize'),

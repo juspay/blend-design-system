@@ -8,7 +8,6 @@ import {
     LinkButton,
 } from 'blend-native'
 import type { ButtonNativeProps } from 'blend-native'
-import ButtonShowcase from '../../components/ButtonShowcase'
 import { BELL_NODE, CHECK_SLOT, STAR_SLOT } from './slots'
 import { indent } from '../snippet'
 import { enumOptions, numberOptions, unionOptions } from '../types'
@@ -90,7 +89,6 @@ const spec: ComponentSpec<ButtonPlaygroundProps> = {
     summary:
         'Four exports over one token slot. LinkButton differs only by announcing as a link — RN has no anchor, so navigation is the app’s job in `onPress`.',
     mode: 'inline',
-    gallery: ButtonShowcase,
     defaults: {
         family: 'Button',
         text: 'Continue',
@@ -112,25 +110,25 @@ const spec: ComponentSpec<ButtonPlaygroundProps> = {
             ]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'buttonType',
             label: 'Type',
             options: enumOptions(ButtonType, 'ButtonType'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'size',
             label: 'Size',
             options: enumOptions(ButtonSize, 'ButtonSize'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'subType',
             label: 'Sub type',
             options: enumOptions(ButtonSubType, 'ButtonSubType'),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'width',
             label: 'Width',
             // `Auto` writes `undefined`: without it a width, once set, could

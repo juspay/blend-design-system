@@ -29,13 +29,13 @@ const defaults: Props = { text: 'Blend', color: Color.SUCCESS }
 const controls: readonly Control<Props>[] = [
     { kind: 'text', key: 'text', label: 'Text', always: true },
     {
-        kind: 'segmented',
+        kind: 'select',
         key: 'color',
         label: 'Color',
         options: enumOptions(Color, 'Color'),
     },
     {
-        kind: 'segmented',
+        kind: 'select',
         key: 'count',
         label: 'Count',
         options: numberOptions([1, 2]),
@@ -115,7 +115,7 @@ describe('buildSnippet', () => {
     it('leaves hidden controls out, so playground-only props never reach the JSX', () => {
         const out = buildSnippet('Tag', { count: 2, disabled: true }, {}, [
             {
-                kind: 'segmented',
+                kind: 'select',
                 key: 'count',
                 label: 'Family',
                 hidden: true,
@@ -138,6 +138,34 @@ describe('buildSnippet', () => {
         expect(out).toBe(
             '<TagGroup>\n    <Tag\n        text="Hi"\n    />\n</TagGroup>'
         )
+    })
+})
+
+describe('multiselect', () => {
+    type Multi = { sizes?: readonly string[] }
+    const control = {
+        kind: 'multiselect' as const,
+        key: 'sizes' as const,
+        label: 'Sizes',
+        options: [
+            { label: 'Sm', value: 'sm', code: 'Size.SM' },
+            { label: 'Md', value: 'md', code: 'Size.MD' },
+            { label: 'Lg', value: 'lg' },
+        ],
+    }
+    const build = (sizes: readonly string[]) =>
+        buildSnippet<Multi>('Tag', { sizes }, {}, [control])
+
+    it('prints an array, using each option code where there is one', () => {
+        expect(build(['sm', 'md'])).toContain('sizes={[Size.SM, Size.MD]}')
+    })
+
+    it('falls back to the literal for an option with no code', () => {
+        expect(build(['lg'])).toContain("sizes={['lg']}")
+    })
+
+    it('prints an empty selection as an empty array, not a placeholder', () => {
+        expect(build([])).toContain('sizes={[]}')
     })
 })
 

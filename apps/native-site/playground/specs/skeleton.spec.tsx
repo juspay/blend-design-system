@@ -4,7 +4,6 @@ import type {
     SkeletonShape,
     SkeletonVariant,
 } from 'blend-native'
-import LoadingShowcase from '../../components/LoadingShowcase'
 import { numberOptions, unionOptions } from '../types'
 import type { ComponentSpec } from '../types'
 
@@ -13,11 +12,10 @@ const spec: ComponentSpec<SkeletonNativeProps> = {
     summary:
         'Placeholder box while content loads. `pulse` breathes; `wave` and `shimmer` sweep a gradient across it.',
     mode: 'inline',
-    gallery: LoadingShowcase,
     defaults: { variant: 'pulse', shape: 'rounded', width: 200, height: 20 },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'variant',
             label: 'Variant',
             options: unionOptions<SkeletonVariant>()([
@@ -27,7 +25,7 @@ const spec: ComponentSpec<SkeletonNativeProps> = {
             ]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'shape',
             label: 'Shape',
             options: unionOptions<SkeletonShape>()([
@@ -37,13 +35,13 @@ const spec: ComponentSpec<SkeletonNativeProps> = {
             ]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'width',
             label: 'Width',
             options: numberOptions([80, 140, 200, 260]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'height',
             label: 'Height',
             options: numberOptions([12, 20, 48, 80]),
