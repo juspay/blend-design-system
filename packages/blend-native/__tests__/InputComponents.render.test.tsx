@@ -1,4 +1,5 @@
 import { fireEvent, render } from '@testing-library/react-native'
+import { View } from 'react-native'
 import { TextArea } from '../src/components/TextArea'
 import { SearchInput } from '../src/components/SearchInput'
 import { NumberInput } from '../src/components/NumberInput'
@@ -74,7 +75,7 @@ describe('SearchInput rendering', () => {
 
     it('hides the clear button when rightSlot occupies the spot', () => {
         const { getByTestId, queryByTestId } = wrap(
-            <SearchInput defaultValue="upi" rightSlot={<></>} testID="si" />
+            <SearchInput defaultValue="upi" rightSlot={<View />} testID="si" />
         )
         expect(getByTestId('si-input').props.value).toBe('upi')
         expect(queryByTestId('si-clear')).toBeNull()

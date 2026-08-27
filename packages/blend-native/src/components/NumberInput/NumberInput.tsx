@@ -56,7 +56,6 @@ const NumberInput = forwardRef<RNView, NumberInputNativeProps>(
             required = false,
             disabled = false,
             placeholder,
-            name: _name,
             testID,
             accessibilityLabel,
             style,
