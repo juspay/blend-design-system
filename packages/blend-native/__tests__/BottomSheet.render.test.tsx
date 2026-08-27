@@ -80,6 +80,25 @@ describe('BottomSheet', () => {
         expect(onClose).not.toHaveBeenCalled()
     })
 
+    it('wires VoiceOver escape to onClose', () => {
+        const onClose = jest.fn()
+        renderSheet(true, onClose)
+        const sheet = screen.getByTestId('sheet')
+        expect(sheet.props.onAccessibilityEscape).toBeDefined()
+        sheet.props.onAccessibilityEscape()
+        expect(onClose).toHaveBeenCalledTimes(1)
+    })
+
+    it('hides the app content from assistive tech while open', () => {
+        renderSheet(true)
+        // The portal's modal layer hides everything painted below it; RNTL's
+        // default queries respect that.
+        expect(screen.queryByText('app content')).toBeNull()
+        expect(
+            screen.getByText('app content', { includeHiddenElements: true })
+        ).toBeTruthy()
+    })
+
     it('marks the surface modal for assistive tech', () => {
         renderSheet(true)
         expect(screen.getByTestId('sheet').props.accessibilityViewIsModal).toBe(

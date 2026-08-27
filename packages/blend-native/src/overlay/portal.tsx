@@ -33,10 +33,20 @@ import { StyleSheet, View } from 'react-native'
  * overlay degrades to inline rendering rather than disappearing.
  */
 
-type PortalNode = { key: string; node: React.ReactNode; priority: number }
+type PortalNode = {
+    key: string
+    node: React.ReactNode
+    priority: number
+    modal: boolean
+}
 
 type PortalRegistry = {
-    mount: (key: string, node: React.ReactNode, priority?: number) => void
+    mount: (
+        key: string,
+        node: React.ReactNode,
+        priority?: number,
+        modal?: boolean
+    ) => void
     unmount: (key: string) => void
 }
 
@@ -48,18 +58,27 @@ export type PortalProps = {
     children?: React.ReactNode
     /** Paint above lower-priority layers regardless of mount order. */
     priority?: number
+    /**
+     * Hide everything painted below this layer from assistive tech while it
+     * is mounted: the app's content and every lower layer get
+     * `importantForAccessibility="no-hide-descendants"` (TalkBack) and
+     * `accessibilityElementsHidden` (VoiceOver). iOS's
+     * `accessibilityViewIsModal` only fences siblings; this is the pair that
+     * actually works on Android. The topmost modal layer wins.
+     */
+    modal?: boolean
 }
 
 /** Renders `children` into the provider's overlay layer. */
-export function Portal({ children, priority = 0 }: PortalProps) {
+export function Portal({ children, priority = 0, modal = false }: PortalProps) {
     const registry = useContext(PortalRegistryContext)
     const key = useId()
 
     useEffect(() => {
         if (!registry) return
-        registry.mount(key, children, priority)
+        registry.mount(key, children, priority, modal)
         return () => registry.unmount(key)
-    }, [registry, key, children, priority])
+    }, [registry, key, children, priority, modal])
 
     // In an effect, not during render — warning inline would be a
     // render-phase side effect (breaks under StrictMode double-render, the
@@ -90,15 +109,15 @@ export function PortalArea({ children }: { children?: React.ReactNode }) {
     const [portals, setPortals] = useState<PortalNode[]>([])
 
     const mount = useCallback(
-        (key: string, node: React.ReactNode, priority = 0) => {
+        (key: string, node: React.ReactNode, priority = 0, modal = false) => {
             setPortals((current) => {
                 const existing = current.findIndex((p) => p.key === key)
                 if (existing === -1) {
-                    return [...current, { key, node, priority }]
+                    return [...current, { key, node, priority, modal }]
                 }
                 // Re-mount with new content keeps its layer position.
                 const next = current.slice()
-                next[existing] = { key, node, priority }
+                next[existing] = { key, node, priority, modal }
                 return next
             })
         },
@@ -118,22 +137,57 @@ export function PortalArea({ children }: { children?: React.ReactNode }) {
     // keep mount order, preserving the last-opened-on-top behaviour.
     const ordered = [...portals].sort((a, b) => a.priority - b.priority)
 
+    // The topmost modal layer hides the app content and every layer painted
+    // below it from assistive tech; layers above it (e.g. the toast stack at
+    // its higher priority) stay reachable.
+    let topModalIndex = -1
+    for (let i = ordered.length - 1; i >= 0; i -= 1) {
+        if (ordered[i].modal) {
+            topModalIndex = i
+            break
+        }
+    }
+    const hideApp = topModalIndex >= 0
+
     return (
         <PortalRegistryContext.Provider value={registry}>
-            {children}
-            {ordered.map(({ key, node }) => (
-                <View
-                    key={key}
-                    style={StyleSheet.absoluteFill}
-                    // Touches fall through empty layer area to the app;
-                    // the overlay's own views still receive theirs.
-                    pointerEvents="box-none"
-                >
-                    {node}
-                </View>
-            ))}
+            <View
+                style={styles.appContent}
+                collapsable={false}
+                importantForAccessibility={
+                    hideApp ? 'no-hide-descendants' : 'auto'
+                }
+                accessibilityElementsHidden={hideApp}
+            >
+                {children}
+            </View>
+            {ordered.map(({ key, node }, index) => {
+                const hidden = index < topModalIndex
+                return (
+                    <View
+                        key={key}
+                        style={StyleSheet.absoluteFill}
+                        // Touches fall through empty layer area to the app;
+                        // the overlay's own views still receive theirs.
+                        pointerEvents="box-none"
+                        importantForAccessibility={
+                            hidden ? 'no-hide-descendants' : 'auto'
+                        }
+                        accessibilityElementsHidden={hidden}
+                    >
+                        {node}
+                    </View>
+                )
+            })}
         </PortalRegistryContext.Provider>
     )
 }
+
+const styles = StyleSheet.create({
+    // The provider sits at a screen-filling root (its documented contract),
+    // so the app content wrapper fills it; a wrapper View is what the
+    // modality a11y props need to hang on.
+    appContent: { flex: 1 },
+})
 
 PortalArea.displayName = 'PortalArea'

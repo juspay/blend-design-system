@@ -86,6 +86,41 @@ describe('Portal', () => {
         expect(screen.queryByText('overlay')).toBeNull()
     })
 
+    it('a modal layer hides the app and lower layers from assistive tech', () => {
+        const ui = (modalOpen: boolean) => (
+            <BlendNativeProvider>
+                <Text>app content</Text>
+                <Portal>
+                    <Text>below</Text>
+                </Portal>
+                {modalOpen ? (
+                    <Portal modal>
+                        <Text>sheet</Text>
+                    </Portal>
+                ) : null}
+                <Portal priority={1}>
+                    <Text>toast</Text>
+                </Portal>
+            </BlendNativeProvider>
+        )
+        const { rerender } = render(ui(true))
+        // RNTL's default queries skip accessibility-hidden elements, so the
+        // hiding itself is the assertion.
+        expect(screen.queryByText('app content')).toBeNull()
+        expect(screen.queryByText('below')).toBeNull()
+        expect(
+            screen.getByText('app content', { includeHiddenElements: true })
+        ).toBeTruthy()
+        // The modal layer itself and higher-priority layers stay reachable.
+        expect(screen.getByText('sheet')).toBeTruthy()
+        expect(screen.getByText('toast')).toBeTruthy()
+
+        // Unmounting the modal layer restores everything.
+        rerender(ui(false))
+        expect(screen.getByText('app content')).toBeTruthy()
+        expect(screen.getByText('below')).toBeTruthy()
+    })
+
     it('falls back to inline rendering with no provider, warning once', () => {
         const warn = jest.spyOn(console, 'warn').mockImplementation(() => {})
         try {

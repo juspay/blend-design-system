@@ -253,7 +253,7 @@ export function BottomSheet({
     )
 
     return (
-        <Portal>
+        <Portal modal>
             <Animated.View
                 style={[
                     StyleSheet.absoluteFill,
@@ -277,6 +277,8 @@ export function BottomSheet({
                 <Animated.View
                     onLayout={onSheetLayout}
                     accessibilityViewIsModal
+                    // VoiceOver's two-finger Z scrub dismisses the sheet.
+                    onAccessibilityEscape={onClose}
                     accessibilityLabel={accessibilityLabel}
                     testID={testID}
                     style={[
