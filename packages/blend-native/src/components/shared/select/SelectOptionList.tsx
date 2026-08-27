@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { FlatList, Pressable, View } from 'react-native'
 import { Check } from 'lucide-react-native'
-import type { SingleSelectV2TokensType } from '@juspay/blend-design-system/node'
 import { parseDimension } from '../../../adapters/cssStringAdapter'
 import Text from '../../../primitives/Text'
 import Slot from '../../../primitives/Slot'
@@ -17,6 +16,40 @@ import { BottomSheetScrollable } from '../../../overlay/sheet/SheetScrollable'
  * default selected-checkmark for its Checkbox; `listHeader` covers the
  * select-all row injection.
  */
+
+/**
+ * Structural slice of the option-list token tree — both select token
+ * types satisfy it (MultiSelect's `menu.item` differs only in extras).
+ */
+export type SelectListTokens = {
+    menu: {
+        content?: {
+            backgroundColor?: unknown
+            border?: unknown
+            borderRadius?: unknown
+        }
+        groupLabel?: { color?: unknown; fontSize?: unknown }
+        item: {
+            gap?: unknown
+            borderRadius?: unknown
+            paddingTop?: unknown
+            paddingBottom?: unknown
+            paddingLeft?: unknown
+            paddingRight?: unknown
+            backgroundColor?: Record<string, unknown>
+            option?: {
+                fontSize?: unknown
+                fontWeight?: unknown
+                color?: Record<string, unknown>
+            }
+            description?: {
+                fontSize?: unknown
+                color?: Record<string, unknown>
+            }
+            separator?: { color?: unknown }
+        }
+    }
+}
 
 export type SelectOption = {
     label: string
@@ -91,7 +124,7 @@ export function SelectOptionList({
     keepOpenOnPress?: boolean
     allowCustomValue?: boolean
     customValueLabel?: string
-    tokens: SingleSelectV2TokensType
+    tokens: SelectListTokens
     listHeader?: React.ReactNode
     listFooter?: React.ReactNode
     showItemDividers?: boolean

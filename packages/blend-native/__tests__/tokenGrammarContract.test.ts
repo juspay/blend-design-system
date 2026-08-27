@@ -74,6 +74,14 @@ const EXCEPTIONS: { pattern: RegExp; handler: string }[] = [
         pattern: /^MODALV2\.\w+\.\w+\.header\.maxHeight$/,
         handler: 'ModalHeader.tsx docblock (content-sized header)',
     },
+    {
+        // '0.375rem' — a rem length inside the floating-label subtree.
+        // The floating-label mode is web-only (deferred with TextInput's),
+        // so native never consumes this branch; rem stays unsupported by
+        // design (upstream finding, flagged in the PR).
+        pattern: /^MULTI_SELECT_V2\.\w+\.\w+\.trigger\.floatingLabel\./,
+        handler: 'multiSelect.types.ts docblock (floating label web-only)',
+    },
 ]
 
 type Leaf = { path: string; segments: string[]; value: unknown }

@@ -1,7 +1,6 @@
 import { Pressable, View } from 'react-native'
 import { ChevronDown } from 'lucide-react-native'
 import { SelectV2Size, SelectV2Variant } from '@juspay/blend-design-system/node'
-import type { SingleSelectV2TokensType } from '@juspay/blend-design-system/node'
 import { parseBorder, parseDimension } from '../../../adapters/cssStringAdapter'
 import Text from '../../../primitives/Text'
 import Slot from '../../../primitives/Slot'
@@ -21,16 +20,48 @@ import Slot from '../../../primitives/Slot'
  * `parseBorder`.
  */
 
-export type SelectTriggerTokens = Pick<
-    SingleSelectV2TokensType,
-    | 'gap'
-    | 'label'
-    | 'subLabel'
-    | 'hintText'
-    | 'errorMessage'
-    | 'required'
-    | 'trigger'
->
+/**
+ * Structural slice of the trigger-relevant token tree — both
+ * `SingleSelectV2TokensType` and `MultiSelectV2TokensType` satisfy it, so
+ * the one trigger serves both selects without a union of the full types.
+ */
+export type SelectTriggerTokens = {
+    gap?: unknown
+    label?: {
+        fontSize?: unknown
+        fontWeight?: unknown
+        color?: Record<string, unknown>
+    }
+    subLabel?: { fontSize?: unknown; color?: Record<string, unknown> }
+    hintText?: { fontSize?: unknown; color?: Record<string, unknown> }
+    errorMessage?: { fontSize?: unknown; color?: unknown }
+    required?: { color?: unknown }
+    trigger: {
+        height?: Record<string, Record<string, unknown>>
+        padding?: Record<
+            string,
+            Record<
+                string,
+                {
+                    top?: unknown
+                    right?: unknown
+                    bottom?: unknown
+                    left?: unknown
+                }
+            >
+        >
+        borderRadius?: Record<string, Record<string, unknown>>
+        backgroundColor?: Record<string, Record<string, unknown>>
+        outline?: Record<string, Record<string, unknown>>
+        slot?: { gap?: unknown; width?: unknown }
+        placeholder?: { color?: unknown; fontSize?: unknown }
+        selectedValue?: {
+            color?: unknown
+            fontSize?: unknown
+            fontWeight?: unknown
+        }
+    }
+}
 
 function triggerState(open: boolean, error: boolean): string {
     if (error) return 'error'

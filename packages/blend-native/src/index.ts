@@ -80,6 +80,12 @@ export type {
 } from './components/SingleSelect'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
+export { MultiSelect } from './components/MultiSelect'
+export type {
+    MultiSelectNativeProps,
+    MultiSelectItemType,
+    MultiSelectGroupType,
+} from './components/MultiSelect'
 export { NumberInput } from './components/NumberInput'
 export type { NumberInputNativeProps } from './components/NumberInput'
 export { OTPInput } from './components/OTPInput'
@@ -232,6 +238,7 @@ export {
     CardV2Padding as CardPadding,
     SelectorV2Size as SelectorSize,
     SelectV2Size as SelectSize,
+    MultiSelectV2SelectionTagType as MultiSelectSelectionTagType,
     SelectV2Variant as SelectVariant,
     TabsV2Variant as TabsVariant,
     TabsV2Size as TabsSize,
