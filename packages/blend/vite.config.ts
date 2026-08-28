@@ -4,6 +4,11 @@ import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
+    // Relative asset base so URLs referenced from JS (e.g. the Monaco worker
+    // chunks in monacoEnvironment) resolve relative to the module via
+    // import.meta.url, and work wherever a consumer serves the package assets.
+    // Only affects asset URLs (workers, CSS url()), not ES import specifiers.
+    base: './',
     plugins: [
         react(),
         dts({
@@ -35,6 +40,24 @@ export default defineConfig({
                 replacement: resolve(__dirname, 'lib/main.ts'),
             },
         ],
+    },
+    // Emit Monaco's language workers (referenced via `new Worker(new URL(...,
+    // import.meta.url), { type: 'module' })` in monacoEnvironment) as ES-module
+    // worker chunks, so their URLs resolve relative to the module in consumers.
+    worker: {
+        format: 'es',
+    },
+    experimental: {
+        // Force an explicit `./` on JS-referenced asset URLs (only the Monaco
+        // worker chunks — the sole `new URL(..., import.meta.url)` refs in the
+        // library). Without it Vite emits `new URL("assets/x", import.meta.url)`;
+        // webpack-5 consumers that re-bundle this ESM (e.g. Next.js
+        // transpilePackages) treat a bare `assets/x` as a module request and
+        // fail to resolve it. CSS url() (hostType 'css') is left untouched.
+        renderBuiltUrl(filename, { hostType }) {
+            if (hostType === 'js') return './' + filename
+            return { relative: true }
+        },
     },
     build: {
         copyPublicDir: false,

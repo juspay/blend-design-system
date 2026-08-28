@@ -24,7 +24,7 @@
 // inline types claim two independent components where there is one, so
 // type-driven tooling emits duplicates. Discovery is by runtime value, so
 // new compounds are covered automatically without registering them here.
-import { readdirSync, existsSync, statSync } from 'node:fs'
+import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import ts from 'typescript'
@@ -259,6 +259,26 @@ if (moduleSymbol && compoundStatics.length > 0) {
                     'value identity instead of inlining the props.'
             )
         }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Check 4: JS-referenced asset URLs (the Monaco worker chunks, issue #1734)
+// must keep an explicit `./` — `new URL("assets/x", import.meta.url)` without
+// it is a bare specifier that webpack-5 consumers re-bundling this ESM (e.g.
+// Next.js transpilePackages) resolve as a node_modules module, breaking their
+// build. The Vite config forces the `./`; this locks it in.
+// ---------------------------------------------------------------------------
+const bareAssetUrl = /new URL\(\s*(?:\/\*[^*]*\*\/\s*)?["']assets\//
+for (const file of readdirSync(distDir).filter((f) => f.endsWith('.js'))) {
+    const source = readFileSync(resolve(distDir, file), 'utf8')
+    if (bareAssetUrl.test(source)) {
+        failed = true
+        console.error(
+            `✖ dist/${file} references an asset with \`new URL("assets/…", import.meta.url)\` ` +
+                'without a leading "./". A bare specifier breaks webpack-5 consumers — ' +
+                'ensure vite.config `experimental.renderBuiltUrl` prefixes "./" for hostType "js".'
+        )
     }
 }
 
