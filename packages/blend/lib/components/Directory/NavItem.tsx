@@ -17,6 +17,7 @@ import {
     getItemPathSegment,
     getItemVisualState,
     handleKeyDown,
+    isActiveAncestorPath,
     normalizeExpandedItems,
     resolveItemColors,
 } from './utils'
@@ -162,6 +163,10 @@ const NavListItem = styled.li<{
     $isLast?: boolean
     $tokens: DirectoryTokenType
     $hierarchyLineBorderRadius: React.CSSProperties['borderRadius']
+    // ::before (vertical guide) is on the active path
+    $verticalActive?: boolean
+    // ::after (elbow) is on the active path
+    $elbowActive?: boolean
 }>`
     width: 100%;
     display: flex;
@@ -170,10 +175,28 @@ const NavListItem = styled.li<{
     align-items: stretch;
     position: relative;
 
-    ${({ $showHierarchyLines, $isLast, $tokens, $hierarchyLineBorderRadius }) =>
-        $showHierarchyLines &&
-        `
-            --directory-connector-elbow-top: ${$tokens.section.itemList.nested.connector.elbowTop};
+    ${({
+        $showHierarchyLines,
+        $isLast,
+        $tokens,
+        $hierarchyLineBorderRadius,
+        $verticalActive,
+        $elbowActive,
+    }) => {
+        if (!$showHierarchyLines) return ''
+        const nested = $tokens.section.itemList.nested
+        const activeColor = nested.border.activeColor ?? nested.border.color
+        // Vertical and elbow are fully decoupled (z-index model):
+        // - The ::before vertical guide is painted ON TOP of the ::after elbow,
+        //   so an above-sibling's active guide covers the elbow's default nub —
+        //   the vertical stays continuous with no recolouring of the elbow.
+        // - The elbow (::after) is therefore coloured as ONE piece by elbowColor:
+        //   default for every off-path row (no active bleed onto the horizontal
+        //   or the rounded corner), active only for the on-path child.
+        const guideColor = $verticalActive ? activeColor : nested.border.color
+        const elbowColor = $elbowActive ? activeColor : nested.border.color
+        return `
+            --directory-connector-elbow-top: ${nested.connector.elbowTop};
 
             padding-bottom: ${$isLast ? '0' : $tokens.section.itemList.gap};
 
@@ -182,33 +205,70 @@ const NavListItem = styled.li<{
                 content: '';
                 position: absolute;
                 pointer-events: none;
-                border-color: ${$tokens.section.itemList.nested.border.color};
-            }
-
-            &::before {
-                left: calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset});
-                top: calc(-1 * ${$tokens.section.itemList.gap});
-                bottom: ${$isLast ? 'calc(100% - var(--directory-connector-elbow-top))' : `calc(-1 * ${$tokens.section.itemList.gap})`};
-                border-left: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
             }
 
             &::after {
-                left: calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset});
+                /* Crisp full elbow (vertical drop + horizontal + rounded
+                   corner), coloured as ONE piece by elbowColor.
+                   Off-path (z 0): sits under the guide, so the active guide
+                   covers its default vertical drop and the vertical stays
+                   continuous; its corner stays default (no active bleed).
+                   On-path (z 2): sits above the guide so the whole active
+                   elbow renders crisply and connects to the active stub. */
+                z-index: ${$elbowActive ? 2 : 0};
+                left: calc(-1 * ${nested.paddingLeft} + ${nested.border.leftOffset});
                 top: var(--directory-connector-elbow-top);
-                width: calc(${$tokens.section.itemList.nested.paddingLeft} - ${$tokens.section.itemList.nested.border.leftOffset} + ${$tokens.section.itemList.nested.connector.elbowWidthOffset});
-                height: ${$tokens.section.itemList.nested.connector.elbowHeight};
-                border-left: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
-                border-bottom: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
+                width: calc(${nested.paddingLeft} - ${nested.border.leftOffset} + ${nested.connector.elbowWidthOffset});
+                height: ${nested.connector.elbowHeight};
+                border-left: ${nested.border.width} solid ${elbowColor};
+                border-bottom: ${nested.border.width} solid ${elbowColor};
                 border-bottom-left-radius: ${addPxToValue($hierarchyLineBorderRadius)};
             }
-        `}
+
+            &::before {
+                z-index: 1;
+                left: calc(-1 * ${nested.paddingLeft} + ${nested.border.leftOffset});
+                top: calc(-1 * ${$tokens.section.itemList.gap});
+                bottom: ${
+                    $isLast
+                        ? 'calc(100% - var(--directory-connector-elbow-top))'
+                        : `calc(-1 * ${$tokens.section.itemList.gap})`
+                };
+                border-left: ${nested.border.width} solid ${guideColor};
+            }
+        `
+    }}
+`
+
+// Highlighted vertical stub for the on-path child: an active guide that runs
+// from the gap above the row down to exactly where the elbow's curve begins.
+// It sits above the (default) ::before guide and the elbow, so the active path
+// reaches the corner without recolouring the full-height guide line below it.
+const ActivePathStub = styled.span<{ $tokens: DirectoryTokenType }>`
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    left: ${({ $tokens }) =>
+        `calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset})`};
+    top: ${({ $tokens }) => `calc(-1 * ${$tokens.section.itemList.gap})`};
+    /* from the gap above the row down to the top of the elbow's vertical drop,
+       where the on-path elbow's own (active) border-left takes over */
+    height: ${({ $tokens }) =>
+        `calc(${$tokens.section.itemList.gap} + ${$tokens.section.itemList.nested.connector.elbowTop})`};
+    border-left: ${({ $tokens }) =>
+        `${$tokens.section.itemList.nested.border.width} solid ${
+            $tokens.section.itemList.nested.border.activeColor ??
+            $tokens.section.itemList.nested.border.color
+        }`};
 `
 
 const NavItemContentFrame = styled.div<{
     $showHierarchyLines?: boolean
 }>`
     position: relative;
-    z-index: ${({ $showHierarchyLines }) => ($showHierarchyLines ? 1 : 'auto')};
+    /* above the connector layers (elbow 0, guide 1, active stub 2) so the row's
+       background/label always paints over the hierarchy lines */
+    z-index: ${({ $showHierarchyLines }) => ($showHierarchyLines ? 3 : 'auto')};
 `
 
 const NestedListFrame = styled.div`
@@ -396,6 +456,8 @@ const NavItem = ({
     isNested = false,
     enableParentSelection = false,
     highlightActivePath = false,
+    pathVerticalActive = false,
+    pathElbowActive = false,
 }: NavItemProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const { isItemExpanded, setItemExpanded } = useExpandedItemsContext()
@@ -422,6 +484,24 @@ const NavItem = ({
         highlightActivePath,
     })
     const itemColors = resolveItemColors(tokens, visualState)
+    // Icons use a neutral colour (design), falling back to the row text colour
+    // when the token doesn't define one.
+    const iconColor =
+        tokens.section.itemList.item.icon.color ?? itemColors.color
+
+    // Index of this item's child that lies on the active path (the selected
+    // node or one of its ancestors). Its vertical guide highlights from the top
+    // of the column down to that child; children below it stay default.
+    const activeChildIndex =
+        highlightActivePath && activeItem && item.items
+            ? item.items.findIndex((childItem) => {
+                  const childPath = `${itemPath}/${getItemPathSegment(childItem)}`
+                  return (
+                      activeItem === childPath ||
+                      isActiveAncestorPath(childPath, activeItem)
+                  )
+              })
+            : -1
 
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
     const nestedListRef = useRef<HTMLUListElement>(null)
@@ -570,7 +650,7 @@ const NavItem = ({
                                     size?: number
                                 }
                             >,
-                            { color: itemColors.color }
+                            { color: iconColor }
                         )}
                     </IconWrapper>
                 )
@@ -596,7 +676,7 @@ const NavItem = ({
                                         size?: number
                                     }
                                 >,
-                                { color: itemColors.color }
+                                { color: iconColor }
                             )}
                         </IconWrapper>
                     )}
@@ -687,10 +767,15 @@ const NavItem = ({
             $isLast={isLast}
             $tokens={tokens}
             $hierarchyLineBorderRadius={hierarchyLineBorderRadius}
+            $verticalActive={pathVerticalActive}
+            $elbowActive={pathElbowActive}
             data-directory-hierarchy-item={
                 showHierarchyLines && isNested ? 'true' : undefined
             }
         >
+            {showHierarchyLines && isNested && pathElbowActive && (
+                <ActivePathStub $tokens={tokens} aria-hidden="true" />
+            )}
             <NavItemContentFrame $showHierarchyLines={showHierarchyLines}>
                 {isIconOnlyMenuTrigger ? (
                     <MenuV2
@@ -748,6 +833,13 @@ const NavItem = ({
                                         enableParentSelection
                                     }
                                     highlightActivePath={highlightActivePath}
+                                    pathVerticalActive={
+                                        activeChildIndex >= 0 &&
+                                        childIdx < activeChildIndex
+                                    }
+                                    pathElbowActive={
+                                        childIdx === activeChildIndex
+                                    }
                                     onNavigate={(direction, currentIndex) => {
                                         if (
                                             direction === 'up' &&

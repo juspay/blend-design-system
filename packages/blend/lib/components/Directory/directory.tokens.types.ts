@@ -109,6 +109,10 @@ export type DirectoryTokenType = {
                 // Icon/leftSlot styling
                 icon: {
                     width: CSSObject['width'] // Icon size
+                    // Neutral icon colour, independent of the row's text tier
+                    // (matches the design where icons stay a light grey).
+                    // Optional: falls back to the row text colour when unset.
+                    color?: CSSObject['color']
                 }
 
                 // Chevron for expandable items
@@ -127,6 +131,10 @@ export type DirectoryTokenType = {
                 border: {
                     width: CSSObject['width'] // Border line width
                     color: CSSObject['color'] // Border line color
+                    // Connector colour for segments on the active path (only used
+                    // when highlightActivePath is on). Optional so pre-existing
+                    // whole-slot DIRECTORY overrides keep type-checking.
+                    activeColor?: CSSObject['color']
                     leftOffset: CSSObject['left'] // Border line left position
                 }
                 connector: {
