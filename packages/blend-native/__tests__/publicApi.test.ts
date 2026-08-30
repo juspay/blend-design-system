@@ -78,16 +78,26 @@ describe('public API surface', () => {
             'Button',
             'ButtonGroup',
             'Card',
+            'Chart',
+            'ChartContainer',
+            'ChartHeader',
+            'ChartLegend',
+            'ChartNoData',
+            'ChartSkeleton',
             'Checkbox',
             'IconButton',
+            'OutageChart',
             'KeyValuePair',
             'LinkButton',
             'NumberInput',
             'OTPInput',
             'ProgressBar',
             'Radio',
+            'SankeyChart',
             'SearchInput',
+            'Sparkline',
             'Spinner',
+            'StatCard',
             'Switch',
             'Tabs',
             'TextArea',
@@ -124,7 +134,10 @@ describe('public API surface', () => {
         // ButtonGroup, TagGroup), then to 64 for the display wave (Spinner,
         // ProgressBar, Avatar, KeyValuePair, Card, Snackbar and their enums),
         // then to 84 for the Wave B form layer (Checkbox, Radio, Switch, the
-        // compound Tabs/Accordion, the input variants, and their enums).
-        expect(exported.size).toBeLessThanOrEqual(84)
+        // compound Tabs/Accordion, the input variants, and their enums), then
+        // to 94 for the Charts suite (Chart, ChartContainer, ChartHeader,
+        // ChartLegend, ChartNoData, ChartSkeleton, Sparkline, SankeyChart,
+        // OutageChart, StatCard and their enums).
+        expect(exported.size).toBeLessThanOrEqual(94)
     })
 })

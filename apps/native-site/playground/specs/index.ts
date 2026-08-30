@@ -6,15 +6,19 @@ import avatar from './avatar.spec'
 import bottomSheet from './bottomSheet.spec'
 import button from './button.spec'
 import card from './card.spec'
+import chart from './chart.spec'
 import checkbox from './checkbox.spec'
 import keyValuePair from './keyValuePair.spec'
 import numberInput from './numberInput.spec'
 import otpInput from './otpInput.spec'
+import outageChart from './outageChart.spec'
 import progressBar from './progressBar.spec'
 import radio from './radio.spec'
+import sankeyChart from './sankeyChart.spec'
 import searchInput from './searchInput.spec'
 import skeleton from './skeleton.spec'
 import snackbar from './snackbar.spec'
+import statCard from './statCard.spec'
 import switchSpec from './switch.spec'
 import spinner from './spinner.spec'
 import tabs from './tabs.spec'
@@ -68,7 +72,11 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
         specs: [
             asAnySpec(avatar),
             asAnySpec(card),
+            asAnySpec(chart),
             asAnySpec(keyValuePair),
+            asAnySpec(outageChart),
+            asAnySpec(sankeyChart),
+            asAnySpec(statCard),
             asAnySpec(tabs),
             asAnySpec(accordion),
         ],

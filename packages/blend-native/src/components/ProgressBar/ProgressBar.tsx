@@ -138,12 +138,17 @@ function LinearBar({ tokens, percentage, appearance, size, testID }: BarProps) {
     const [trackWidth, setTrackWidth] = useState(0)
 
     const height = parseDimension(tokens.linear.height[size] as string) ?? 8
+    const segmented = appearance === ProgressBarV2Appearance.SEGMENTED
     const trackRadius =
         parseBorderRadius(tokens.linear.borderRadius[appearance] as string) ?? 0
-    const fillRadius =
-        parseBorderRadius(
-            tokens.linear.fill.borderRadius[appearance] as string
-        ) ?? 0
+    // Segmented track has sharp corners (radius 0); the fill token says 2px,
+    // but that reveals the transparent track (i.e. the card's white bg)
+    // through the rounded corners. Use the track radius for segmented fills.
+    const fillRadius = segmented
+        ? trackRadius
+        : (parseBorderRadius(
+              tokens.linear.fill.borderRadius[appearance] as string
+          ) ?? 0)
     const duration = parseTransitionDuration(tokens.transition as string)
 
     const progress = useTweenedProgress(percentage, duration)
@@ -152,7 +157,6 @@ function LinearBar({ tokens, percentage, appearance, size, testID }: BarProps) {
         []
     )
 
-    const segmented = appearance === ProgressBarV2Appearance.SEGMENTED
     const pattern = segmented
         ? parseSegmentedPattern(
               tokens.linear.empty.backgroundImage[appearance] as
