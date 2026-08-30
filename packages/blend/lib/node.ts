@@ -103,6 +103,19 @@ export type {
     ResponsiveSnackbarV2Tokens,
 } from './components/SnackbarV2/snackbarV2.tokens.types'
 export { getStatCardV2Tokens } from './components/StatCardV2/statcardV2.tokens'
+export type {
+    StatCardV2TokensType,
+    ResponsiveStatCardV2Tokens,
+} from './components/StatCardV2/statcardV2.tokens.types'
+export {
+    StatCardV2Variant,
+    StatCardV2ChangeType,
+} from './components/StatCardV2/statcardV2.tokens.types'
+export { StatCardV2ArrowDirection } from './components/StatCardV2/statcardV2.types'
+export type {
+    ChartV2TokensType,
+    ResponsiveChartV2Tokens,
+} from './components/ChartsV2/chartV2.tokens.types'
 export { getTabsV2Tokens } from './components/TabsV2/tabsV2.tokens'
 export type {
     TabsV2TokensType,
