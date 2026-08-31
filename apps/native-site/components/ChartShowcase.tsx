@@ -141,6 +141,39 @@ const COLUMN_MULTI: ChartSeries[] = [
     },
 ]
 
+// Line + column combo — line series marked with `chartType: 'line'`, the
+// rest render as (stacked) columns, matching web's lineColumn demo.
+const COMBO_LINE_COLUMN: ChartSeries[] = [
+    {
+        name: 'Overall',
+        chartType: 'line',
+        data: [
+            { x: 'Q1', y: 54 },
+            { x: 'Q2', y: 62 },
+            { x: 'Q3', y: 58 },
+            { x: 'Q4', y: 71 },
+        ],
+    },
+    {
+        name: 'goindigo',
+        data: [
+            { x: 'Q1', y: 30 },
+            { x: 'Q2', y: 34 },
+            { x: 'Q3', y: 28 },
+            { x: 'Q4', y: 39 },
+        ],
+    },
+    {
+        name: 'Orange',
+        data: [
+            { x: 'Q1', y: 14 },
+            { x: 'Q2', y: 18 },
+            { x: 'Q3', y: 16 },
+            { x: 'Q4', y: 21 },
+        ],
+    },
+]
+
 const SCATTER_DATA: ChartSeries[] = [
     {
         name: 'Cluster A',
@@ -260,6 +293,15 @@ export default function ChartShowcase() {
                 <Chart
                     type="column"
                     series={COLUMN_MULTI}
+                    height={250}
+                    showLegend
+                />
+            </Section>
+
+            <Section title="Line + Column — combo">
+                <Chart
+                    type="lineColumn"
+                    series={COMBO_LINE_COLUMN}
                     height={250}
                     showLegend
                 />

@@ -180,6 +180,7 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
             y: d.y,
         })),
         color: s.color ?? paletteColor(i),
+        chartType: s.chartType,
     }))
 
     // --- Render helpers -----------------------------------------------
@@ -282,6 +283,90 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
                                 />
                             ))}
                         </VictoryGroup>
+                    </VictoryChart>
+                </View>
+            )
+        }
+
+        if (type === 'lineColumn') {
+            // Combo line + column: bars share one category band (stacked, to
+            // match web's `stacking: 'normal'`), and line series plot over the
+            // same categories. Grouping the columns gives them their own
+            // vertical extent while sharing the x domain with the lines.
+            const barWidth = 12
+
+            const lineSeries = victorySeries.filter(
+                (s) => s.chartType === 'line'
+            )
+            const columnSeries = victorySeries.filter(
+                (s) => s.chartType !== 'line'
+            )
+
+            return (
+                <View onLayout={onLayout} style={{ width: '100%' }}>
+                    <VictoryChart
+                        width={measuredWidth}
+                        height={height}
+                        padding={{
+                            top: 8,
+                            bottom: 40,
+                            left: showYAxis ? 50 : 8,
+                            right: 8,
+                        }}
+                        domainPadding={{ x: 40, y: 10 }}
+                    >
+                        <VictoryAxis
+                            style={{
+                                axis: axisStyle.axis,
+                                tickLabels: showXAxis
+                                    ? axisStyle.tickLabels
+                                    : { fill: 'transparent' },
+                                grid: {
+                                    stroke: 'transparent',
+                                    strokeWidth: 0,
+                                },
+                                ticks: axisStyle.ticks,
+                            }}
+                        />
+                        <VictoryAxis
+                            dependentAxis
+                            style={{
+                                axis: dependentAxisStyle.axis,
+                                tickLabels: showYAxis
+                                    ? dependentAxisStyle.tickLabels
+                                    : { fill: 'transparent' },
+                                grid: dependentAxisStyle.grid,
+                                ticks: dependentAxisStyle.ticks,
+                            }}
+                        />
+                        {columnSeries.length > 0 && (
+                            <VictoryGroup offset={16}>
+                                {columnSeries.map((s) => (
+                                    <VictoryBar
+                                        key={s.name}
+                                        data={s.data}
+                                        barWidth={barWidth}
+                                        style={{
+                                            data: { fill: s.color },
+                                        }}
+                                        cornerRadius={2}
+                                    />
+                                ))}
+                            </VictoryGroup>
+                        )}
+                        {lineSeries.map((s) => (
+                            <VictoryLine
+                                key={s.name}
+                                data={s.data}
+                                interpolation="monotoneX"
+                                style={{
+                                    data: {
+                                        stroke: s.color,
+                                        strokeWidth: DEFAULT_STROKE_WIDTH,
+                                    },
+                                }}
+                            />
+                        ))}
                     </VictoryChart>
                 </View>
             )
