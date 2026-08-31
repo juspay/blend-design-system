@@ -68,8 +68,36 @@ export type {
     ResponsiveKeyValuePairV2Tokens,
 } from './components/KeyValuePairV2/keyValuePairV2.tokens.types'
 export { getMenuV2Tokens } from './components/MenuV2/menuV2.tokens'
+export type {
+    MenuV2TokensType,
+    ResponsiveMenuV2TokensType,
+} from './components/MenuV2/menuV2.tokens.types'
+export {
+    MenuV2Alignment,
+    MenuV2Side,
+    MenuV2ItemVariant,
+    MenuV2ItemActionType,
+} from './components/MenuV2/menuV2.types'
+export type {
+    MenuV2ItemType,
+    MenuV2GroupType,
+    MenuV2ItemLabel,
+    MenuV2Props,
+} from './components/MenuV2/menuV2.types'
+
 export { getModalV2Tokens } from './components/ModalV2/modalV2.tokens'
+
 export { getMultiSelectV2Tokens } from './components/MultiSelectV2/multiSelectV2.tokens'
+export type {
+    MultiSelectV2TokensType,
+    ResponsiveMultiSelectV2Tokens,
+} from './components/MultiSelectV2/multiSelectV2.tokens.types'
+export { MultiSelectV2SelectionTagType } from './components/MultiSelectV2/multiSelectV2.types'
+export type {
+    MultiSelectV2ItemType,
+    MultiSelectV2GroupType,
+    MultiSelectV2Props,
+} from './components/MultiSelectV2/multiSelectV2.types'
 export { getPopoverV2Tokens } from './components/PopoverV2/popoverV2.token'
 export { getProgressBarV2Tokens } from './components/ProgressBarV2/progressBarV2.tokens'
 export type {
@@ -91,6 +119,21 @@ export type {
     RadioV2IndicatorState,
 } from './components/SelectorV2/RadioV2/radioV2.tokens.types'
 export { getSingleSelectV2Tokens } from './components/SingleSelectV2/singleSelectV2.tokens'
+export type {
+    SingleSelectV2TokensType,
+    ResponsiveSingleSelectV2Tokens,
+    SingleSelectV2MenuItemTokensType,
+} from './components/SingleSelectV2/singleSelectV2.tokens.types'
+export type {
+    SingleSelectV2ItemType,
+    SingleSelectV2GroupType,
+    SingleSelectV2Props,
+    SelectV2MenuDimensions,
+    SelectV2TriggerDimensions,
+    SelectV2MenuPosition,
+    SelectV2ErrorState,
+    SelectV2SearchConfig,
+} from './components/SingleSelectV2/singleSelectV2.types'
 export { getSwitchV2Tokens } from './components/SelectorV2/SwitchV2/switchV2.tokens'
 export type {
     SwitchV2TokensType,
@@ -251,97 +294,31 @@ export type { TextAreaBaseProps } from './components/InputsV2/TextAreaV2/TextAre
 export type { SearchInputBaseProps } from './components/InputsV2/SearchInputV2/SearchInputV2.types'
 export type { OTPInputBaseProps } from './components/InputsV2/OTPInputV2/OTPInputV2.types'
 
-// Overlay components (Wave C1): token types, enums and platform-neutral
-// base props for the React Native ports.
-export type {
-    TooltipV2TokensType,
-    ResponsiveTooltipV2Tokens,
-} from './components/TooltipV2/tooltipV2.tokens.types'
-export {
-    TooltipV2Side,
-    TooltipV2Align,
-    TooltipV2Size,
-    TooltipV2SlotDirection,
-} from './components/TooltipV2/tooltipV2.types'
-export type { TooltipBaseProps } from './components/TooltipV2/tooltipV2.types'
-export type {
-    PopoverV2TokenType,
-    ResponsivePopoverV2Tokens,
-} from './components/PopoverV2/popoverV2.tokens.types'
-export {
-    PopoverV2Size,
-    PopoverV2Side,
-    PopoverV2Align,
-} from './components/PopoverV2/popoverV2.base.types'
-export type { PopoverBaseProps } from './components/PopoverV2/popoverV2.base.types'
-export type {
-    ModalV2TokensType,
-    ResponsiveModalV2Tokens,
-} from './components/ModalV2/modalV2.tokens.types'
-export type { ModalBaseProps } from './components/ModalV2/modalV2.base.types'
-
-// Menu and Select family (Wave C2): token types, enums, platform-neutral
-// bases, the neutral item models, and the pure search/flatten utils the
-// React Native package reuses instead of forking.
-export type {
-    MenuV2TokensType,
-    ResponsiveMenuV2TokensType,
-} from './components/MenuV2/menuV2.tokens.types'
-export {
-    MenuV2Alignment,
-    MenuV2Side,
-    MenuV2ItemVariant,
-    MenuV2ItemActionType,
-} from './components/MenuV2/menuV2.types'
-export type {
-    MenuBaseProps,
-    MenuV2ItemType,
-    MenuV2GroupType,
-    MenuV2ItemLabel,
-    MenuV2SearchSortFn,
-    MenuV2SelectionStyle,
-    MenuV2SelectionMode,
-} from './components/MenuV2/menuV2.types'
-export {
-    MenuV2MatchRank,
-    defaultSearchSortFn,
-    filterMenuV2Groups,
-    flattenMenuV2Groups,
-} from './components/MenuV2/menuV2.utils'
-export type { MenuV2FlatRow } from './components/MenuV2/menuV2.utils'
+// SelectV2 shared enums and base types — shared by SingleSelectV2 and
+// MultiSelectV2. Native re-uses the same enums (re-exported with cleaner
+// names without the "V2" suffix from its own barrel).
 export {
     SelectV2Alignment,
     SelectV2Variant,
     SelectV2Size,
     SelectV2Side,
-} from './components/SelectV2/selectV2.base.types'
+} from './components/SelectV2/selectV2.shared.types'
 export type {
     SelectV2BaseItemType,
-    SelectV2TooltipProps,
-    SelectV2ErrorState,
     SelectV2FlattenedItemBase,
-} from './components/SelectV2/selectV2.base.types'
+    SelectV2SkeletonProps,
+} from './components/SelectV2/selectV2.shared.types'
 export type {
-    SingleSelectV2TokensType,
-    ResponsiveSingleSelectV2Tokens,
-} from './components/SingleSelectV2/singleSelectV2.tokens.types'
-export type {
-    SingleSelectBaseProps,
-    SingleSelectV2ItemType,
-    SingleSelectV2GroupType,
-} from './components/SingleSelectV2/singleSelectV2.base.types'
-export type {
-    MultiSelectV2TokensType,
-    ResponsiveMultiSelectV2Tokens,
-} from './components/MultiSelectV2/multiSelectV2.tokens.types'
-export { MultiSelectV2SelectionTagType } from './components/MultiSelectV2/multiSelectV2.base.types'
-export type {
-    MultiSelectBaseProps,
-    MultiSelectV2ItemType,
-    MultiSelectV2GroupType,
-    FlattenedMultiSelectV2Item,
-    MultiSelectV2PrimaryAction,
-    MultiSelectV2SecondaryAction,
-} from './components/MultiSelectV2/multiSelectV2.base.types'
-export { flattenMobileMultiSelectV2Groups } from './components/MultiSelectV2/mobile/mobileMultiSelectV2.utils'
-export type { FlattenedMobileMultiSelectV2Item } from './components/MultiSelectV2/mobile/mobileMultiSelectV2.utils'
+    SelectV2ItemStates,
+    SelectV2TriggerStates,
+} from './components/SelectV2/selectV2.tokenStates'
+
+// Pure selection math for multi-select — no React, no DOM. Shared between
+// web and native so the cap/scope semantics cannot drift.
+export {
+    getNextSelectionAfterToggle,
+    getNextSelectionForScope,
+    isBlockedByMaxSelections,
+    clampScopeToMaxSelections,
+    emitLegacyScopeChanges,
+} from './components/shared/multiSelectSelection'

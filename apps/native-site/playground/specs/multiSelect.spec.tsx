@@ -1,107 +1,170 @@
-import { useEffect, useState } from 'react'
-import { MultiSelect, MultiSelectSelectionTagType } from 'blend-native'
-import type { MultiSelectGroupType, MultiSelectNativeProps } from 'blend-native'
-import { addProps } from '../snippet'
+import { useState } from 'react'
+import { View } from 'react-native'
+import { MultiSelect } from 'blend-native'
+import type { MultiSelectV2GroupType } from 'blend-native'
+import {
+    MultiSelectSelectionTagType,
+    SelectAlignment,
+    SelectSize,
+    SelectVariant,
+} from 'blend-native'
 import { enumOptions } from '../types'
 import type { ComponentSpec } from '../types'
 
-const GROUPS: MultiSelectGroupType[] = [
+type MultiSelectPlaygroundProps = {
+    size: SelectSize
+    variant: SelectVariant
+    alignment: SelectAlignment
+    selectionTagType: MultiSelectSelectionTagType
+    search: boolean
+    enableSelectAll: boolean
+    showClearButton: boolean
+    showActionButtons: boolean
+    disabled: boolean
+    error: boolean
+}
+
+const GROUPS: MultiSelectV2GroupType[] = [
     {
-        groupLabel: 'Methods',
+        groupLabel: 'Fruits',
         items: [
-            { label: 'UPI', value: 'upi' },
-            { label: 'Cards', value: 'cards' },
-            { label: 'Netbanking', value: 'netbanking' },
-            { label: 'Wallets', value: 'wallets', disabled: true },
+            { value: 'apple', label: 'Apple' },
+            { value: 'banana', label: 'Banana' },
+            { value: 'mango', label: 'Mango' },
+        ],
+    },
+    {
+        groupLabel: 'Vegetables',
+        items: [
+            { value: 'carrot', label: 'Carrot' },
+            { value: 'spinach', label: 'Spinach' },
         ],
     },
 ]
 
-/** `selectedValues` is controlled; the preview holds it locally. */
-function LiveMultiSelect(props: MultiSelectNativeProps) {
-    const [values, setValues] = useState(props.selectedValues)
-    useEffect(() => setValues(props.selectedValues), [props.selectedValues])
+function MultiSelectPreview({
+    size,
+    variant,
+    alignment,
+    selectionTagType,
+    search,
+    enableSelectAll,
+    showClearButton,
+    showActionButtons,
+    disabled,
+    error,
+}: MultiSelectPlaygroundProps) {
+    const [selectedValues, setSelectedValues] = useState<string[]>([])
+    const [open, setOpen] = useState(false)
     return (
-        <MultiSelect
-            {...props}
-            selectedValues={values}
-            onSelectionChange={setValues}
-        />
+        <View style={{ width: 320 }}>
+            <MultiSelect
+                placeholder="Pick fruits"
+                items={GROUPS}
+                selectedValues={selectedValues}
+                onSelectionChange={setSelectedValues}
+                open={open}
+                onOpenChange={setOpen}
+                size={size}
+                variant={variant}
+                alignment={alignment}
+                selectionTagType={selectionTagType}
+                search={search ? { show: true } : undefined}
+                enableSelectAll={enableSelectAll}
+                showClearButton={showClearButton}
+                showActionButtons={showActionButtons}
+                primaryAction={{
+                    text: 'Apply',
+                    onClick: () => {},
+                }}
+                secondaryAction={{
+                    text: 'Cancel',
+                    onClick: () => {},
+                }}
+                disabled={disabled}
+                error={
+                    error
+                        ? { show: true, message: 'At least one required' }
+                        : undefined
+                }
+            />
+        </View>
     )
 }
 
-const spec: ComponentSpec<MultiSelectNativeProps> = {
+const spec: ComponentSpec<MultiSelectPlaygroundProps> = {
     name: 'MultiSelect',
     summary:
-        'Checkbox rows that keep the surface open on toggle, a COUNT/TEXT selection tag on the trigger, tri-state select-all, and one onSelectionChange per gesture.',
+        'Trigger button opening a multi-select dropdown panel. Supports select-all, clear button, action buttons, search, maxSelections, and mobile bottom-sheet mode.',
     mode: 'inline',
     defaults: {
-        label: 'Payment methods',
-        placeholder: 'Choose methods',
-        items: GROUPS,
-        selectedValues: [],
+        size: SelectSize.MD,
+        variant: SelectVariant.CONTAINER,
+        alignment: SelectAlignment.START,
         selectionTagType: MultiSelectSelectionTagType.COUNT,
+        search: false,
+        enableSelectAll: false,
+        showClearButton: false,
+        showActionButtons: false,
+        disabled: false,
+        error: false,
     },
     controls: [
         {
             kind: 'select',
+            key: 'size',
+            label: 'Size',
+            options: enumOptions(SelectSize, 'SelectSize'),
+        },
+        {
+            kind: 'select',
+            key: 'variant',
+            label: 'Variant',
+            options: enumOptions(SelectVariant, 'SelectVariant'),
+        },
+        {
+            kind: 'select',
+            key: 'alignment',
+            label: 'Alignment',
+            options: enumOptions(SelectAlignment, 'SelectAlignment'),
+        },
+        {
+            kind: 'select',
             key: 'selectionTagType',
-            label: 'Selection tag',
+            label: 'Tag type',
             options: enumOptions(
                 MultiSelectSelectionTagType,
                 'MultiSelectSelectionTagType'
             ),
         },
-        {
-            kind: 'text',
-            key: 'label',
-            label: 'Label',
-            group: 'Content',
-            always: true,
-        },
+        { kind: 'toggle', key: 'search', label: 'Search', group: 'Content' },
         {
             kind: 'toggle',
             key: 'enableSelectAll',
             label: 'Select all',
-            group: 'State',
+            group: 'Content',
         },
         {
             kind: 'toggle',
             key: 'showClearButton',
             label: 'Clear button',
-            group: 'State',
-        },
-        {
-            kind: 'toggle',
-            key: 'search',
-            label: 'Search',
-            group: 'State',
-            on: { show: true },
-            off: undefined,
-            onCode: '{ show: true }',
+            group: 'Content',
         },
         {
             kind: 'toggle',
             key: 'showActionButtons',
-            label: 'Action bar',
-            group: 'State',
+            label: 'Action buttons',
+            group: 'Content',
         },
-        {
-            kind: 'toggle',
-            key: 'primaryAction',
-            label: 'Apply action',
-            group: 'State',
-            on: { text: 'Apply', onClick: () => {} },
-            off: undefined,
-            onCode: "{ text: 'Apply', onClick: apply }",
-        },
+        { kind: 'toggle', key: 'disabled', label: 'Disabled', group: 'State' },
+        { kind: 'toggle', key: 'error', label: 'Error', group: 'State' },
     ],
-    render: (props) => <LiveMultiSelect {...props} />,
+    render: (props) => <MultiSelectPreview {...props} />,
     wrapSnippet: (inner) =>
-        addProps(inner, [
-            'selectedValues={values}',
-            'onSelectionChange={setValues}',
-        ]),
+        inner.replace(
+            /\n\/>$/,
+            '\n    placeholder="Pick fruits"\n    items={GROUPS}\n    selectedValues={selectedValues}\n    onSelectionChange={setSelectedValues}\n/>'
+        ),
 }
 
 export default spec

@@ -40,6 +40,25 @@ export type {
     KeyValuePairOrientation,
     KeyValuePairTextOverflow,
 } from './components/KeyValuePair'
+export { Menu } from './components/Menu'
+export type {
+    MenuNativeProps,
+    MenuItemType,
+    MenuGroupType,
+} from './components/Menu'
+export { MultiSelect } from './components/MultiSelect'
+export type {
+    MultiSelectNativeProps,
+    MultiSelectAction,
+    MultiSelectV2ItemType,
+    MultiSelectV2GroupType,
+} from './components/MultiSelect'
+export { SingleSelect } from './components/SingleSelect'
+export type {
+    SingleSelectNativeProps,
+    SingleSelectV2ItemType,
+    SingleSelectV2GroupType,
+} from './components/SingleSelect'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
 export { Menu } from './components/Menu'
@@ -246,8 +265,15 @@ export {
     InputSizeV2 as InputSize,
     KeyValuePairV2Size as KeyValuePairSize,
     InputStateV2 as InputState,
+    MenuV2Alignment as MenuAlignment,
+    MenuV2Side as MenuSide,
+    MultiSelectV2SelectionTagType as MultiSelectSelectionTagType,
     NumberInputV2Direction as NumberInputDirection,
     ProgressBarV2Size as ProgressBarSize,
+    SelectV2Alignment as SelectAlignment,
+    SelectV2Side as SelectSide,
+    SelectV2Size as SelectSize,
+    SelectV2Variant as SelectVariant,
     SnackbarV2Variant as SnackbarVariant,
     ProgressBarV2Variant as ProgressBarVariant,
     ProgressBarV2Appearance as ProgressBarAppearance,

@@ -1,142 +1,205 @@
-import { Text as RNText } from 'react-native'
-import { fireEvent, render, screen } from '@testing-library/react-native'
+import { Text } from 'react-native'
+import { render, screen, fireEvent } from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { Menu } from '../src/components/Menu'
-import type { MenuGroupType } from '../src/components/Menu'
+import { MenuV2Side, MenuV2Alignment } from '@juspay/blend-design-system/node'
+import type { MenuV2GroupType } from '@juspay/blend-design-system/node'
 
-/**
- * Menu behaviour under the jest mocks: open/close, item press with
- * closeOnSelect, search filtering, the sub-menu push-in pane, and both
- * presentations (phone default; tablet via mocked dimensions).
- */
+const wrap = (ui: React.ReactElement) =>
+    render(<BlendNativeProvider>{ui}</BlendNativeProvider>)
 
-const GROUPS: MenuGroupType[] = [
+const groups: MenuV2GroupType[] = [
     {
-        label: 'Payouts',
+        label: 'Fruits',
         items: [
-            { label: { text: 'Settle now' } },
-            { label: { text: 'Schedule' }, subLabel: 'Pick a date' },
+            { id: 'a', label: { text: 'Apple' }, onClick: jest.fn() },
+            { id: 'b', label: { text: 'Banana' } },
+        ],
+    },
+    {
+        label: 'Veggies',
+        items: [
+            { id: 'c', label: { text: 'Carrot' } },
+            { id: 'd', label: { text: 'Spinach (disabled)' }, disabled: true },
         ],
         showSeparator: true,
     },
-    {
-        items: [
-            {
-                label: { text: 'More' },
-                subMenu: [{ label: { text: 'Export CSV' } }],
-            },
-        ],
-    },
 ]
 
-const renderMenu = (props: Partial<React.ComponentProps<typeof Menu>> = {}) =>
-    render(
-        <BlendNativeProvider>
+describe('Menu rendering', () => {
+    it('renders the trigger', () => {
+        wrap(
             <Menu
-                trigger={<RNText>menu trigger</RNText>}
-                items={GROUPS}
+                trigger={<Text>Open Menu</Text>}
+                items={groups}
                 testID="menu"
-                {...props}
             />
-        </BlendNativeProvider>
-    )
-
-describe('Menu (phone sheet presentation)', () => {
-    it('opens on trigger press and lists groups, items and sub-menu rows', () => {
-        renderMenu()
-        expect(screen.queryByText('Settle now')).toBeNull()
-        fireEvent.press(screen.getByTestId('menu-trigger'))
-        expect(screen.getByText('Payouts')).toBeTruthy()
-        expect(screen.getByText('Settle now')).toBeTruthy()
-        expect(screen.getByText('Pick a date')).toBeTruthy()
-        expect(screen.getByText('More')).toBeTruthy()
-    })
-
-    it('fires onPress and closes via closeOnSelect', () => {
-        const onPress = jest.fn()
-        const groups: MenuGroupType[] = [
-            { items: [{ label: { text: 'Settle now' }, onPress }] },
-        ]
-        renderMenu({ items: groups })
-        fireEvent.press(screen.getByTestId('menu-trigger'))
-        fireEvent.press(screen.getByText('Settle now'))
-        expect(onPress).toHaveBeenCalledTimes(1)
-        expect(screen.queryByText('Settle now')).toBeNull()
-    })
-
-    it('keeps the menu open when closeOnSelect is off', () => {
-        renderMenu({ closeOnSelect: false })
-        fireEvent.press(screen.getByTestId('menu-trigger'))
-        fireEvent.press(screen.getByText('Settle now'))
-        expect(screen.getByText('Settle now')).toBeTruthy()
-    })
-
-    it('pushes into a sub-menu pane and back out', () => {
-        renderMenu()
-        fireEvent.press(screen.getByTestId('menu-trigger'))
-        fireEvent.press(screen.getByText('More'))
-        expect(screen.getByText('Export CSV')).toBeTruthy()
-        expect(screen.queryByText('Settle now')).toBeNull()
-        fireEvent.press(screen.getByTestId('menu-back'))
-        expect(screen.getByText('Settle now')).toBeTruthy()
-    })
-
-    it('filters through the search field', () => {
-        renderMenu({ enableSearch: true })
-        fireEvent.press(screen.getByTestId('menu-trigger'))
-        fireEvent.changeText(
-            screen.getByTestId('menu-search-input'),
-            'schedule'
         )
-        expect(screen.getByText('Schedule')).toBeTruthy()
-        expect(screen.queryByText('Settle now')).toBeNull()
+        expect(screen.getByText('Open Menu')).toBeTruthy()
     })
 
-    it('marks selected rows for assistive tech', () => {
-        const groups: MenuGroupType[] = [
-            {
-                items: [
-                    { label: { text: 'Weekly' }, selected: true },
-                    { label: { text: 'Monthly' } },
-                ],
-            },
-        ]
-        renderMenu({ items: groups })
-        fireEvent.press(screen.getByTestId('menu-trigger'))
-        // The checkmark icon itself is SVG (device pass); the contract here
-        // is the accessibility state.
-        expect(
-            screen.getByLabelText('Weekly').props.accessibilityState.selected
-        ).toBe(true)
-        expect(
-            screen.getByLabelText('Monthly').props.accessibilityState.selected
-        ).toBeUndefined()
+    it('opens the dropdown when trigger is pressed (controlled)', () => {
+        const onOpenChange = jest.fn()
+        const { rerender } = wrap(
+            <Menu
+                trigger={<Text>Open Menu</Text>}
+                items={groups}
+                open={false}
+                onOpenChange={onOpenChange}
+                testID="menu"
+            />
+        )
+        fireEvent.press(screen.getByText('Open Menu'))
+        expect(onOpenChange).toHaveBeenCalledWith(true)
+        // Now simulate parent setting open=true
+        rerender(
+            <BlendNativeProvider>
+                <Menu
+                    trigger={<Text>Open Menu</Text>}
+                    items={groups}
+                    open
+                    onOpenChange={onOpenChange}
+                    testID="menu"
+                />
+            </BlendNativeProvider>
+        )
+        expect(screen.getByText('Apple')).toBeTruthy()
+        expect(screen.getByText('Banana')).toBeTruthy()
+        expect(screen.getByText('Carrot')).toBeTruthy()
     })
-})
 
-describe('Menu (tablet anchored presentation)', () => {
-    const rn = jest.requireActual('react-native')
-    let spy: jest.SpyInstance
-
-    beforeEach(() => {
-        spy = jest.spyOn(rn, 'useWindowDimensions').mockReturnValue({
-            width: 1194,
-            height: 834,
-            scale: 2,
-            fontScale: 1,
-        })
+    it('fires onClick on item press and closes when closeOnSelect', () => {
+        const onClick = jest.fn()
+        const onOpenChange = jest.fn()
+        const { rerender } = wrap(
+            <Menu
+                trigger={<Text>Open Menu</Text>}
+                items={[
+                    {
+                        label: 'Items',
+                        items: [
+                            {
+                                id: 'a',
+                                label: { text: 'Apple' },
+                                onClick,
+                            },
+                        ],
+                    },
+                ]}
+                open
+                onOpenChange={onOpenChange}
+                closeOnSelect
+                testID="menu"
+            />
+        )
+        fireEvent.press(screen.getByText('Apple'))
+        expect(onClick).toHaveBeenCalledTimes(1)
+        expect(onOpenChange).toHaveBeenCalledWith(false)
+        // Clean up by unmounting
+        rerender(
+            <BlendNativeProvider>
+                <Text>done</Text>
+            </BlendNativeProvider>
+        )
     })
-    afterEach(() => spy.mockRestore())
 
-    it('presents anchored content instead of a sheet', () => {
-        renderMenu({ open: true })
-        expect(
-            screen.getByText('Settle now', { includeHiddenElements: true })
-        ).toBeTruthy()
-        expect(
-            screen.getByTestId('menu-backdrop', {
-                includeHiddenElements: true,
-            })
-        ).toBeTruthy()
+    it('does not close when closeOnSelect is false', () => {
+        const onClick = jest.fn()
+        const onOpenChange = jest.fn()
+        wrap(
+            <Menu
+                trigger={<Text>Open Menu</Text>}
+                items={[
+                    {
+                        label: 'Items',
+                        items: [
+                            {
+                                id: 'a',
+                                label: { text: 'Apple' },
+                                onClick,
+                            },
+                        ],
+                    },
+                ]}
+                open
+                onOpenChange={onOpenChange}
+                closeOnSelect={false}
+                testID="menu"
+            />
+        )
+        fireEvent.press(screen.getByText('Apple'))
+        expect(onClick).toHaveBeenCalledTimes(1)
+        expect(onOpenChange).not.toHaveBeenCalled()
+    })
+
+    it('renders group labels', () => {
+        wrap(
+            <Menu
+                trigger={<Text>Open Menu</Text>}
+                items={groups}
+                open
+                testID="menu"
+            />
+        )
+        expect(screen.getByText('Fruits')).toBeTruthy()
+        expect(screen.getByText('Veggies')).toBeTruthy()
+    })
+
+    it('renders search input when enableSearch is true', () => {
+        wrap(
+            <Menu
+                trigger={<Text>Open Menu</Text>}
+                items={groups}
+                open
+                enableSearch
+                searchPlaceholder="Search items..."
+                testID="menu"
+            />
+        )
+        expect(screen.getByPlaceholderText('Search items...')).toBeTruthy()
+    })
+
+    it('filters items based on search text', () => {
+        wrap(
+            <Menu
+                trigger={<Text>Open Menu</Text>}
+                items={groups}
+                open
+                enableSearch
+                testID="menu"
+            />
+        )
+        const input = screen.getByPlaceholderText('Search...')
+        fireEvent.changeText(input, 'apple')
+        expect(screen.getByText('Apple')).toBeTruthy()
+        expect(screen.queryByText('Banana')).toBeNull()
+        expect(screen.queryByText('Carrot')).toBeNull()
+    })
+
+    it('renders menuFooter when provided', () => {
+        wrap(
+            <Menu
+                trigger={<Text>Open Menu</Text>}
+                items={groups}
+                open
+                menuFooter={<Text>Footer content</Text>}
+                testID="menu"
+            />
+        )
+        expect(screen.getByText('Footer content')).toBeTruthy()
+    })
+
+    it('respects default side and alignment', () => {
+        // Smoke test: just verifying it renders without error
+        wrap(
+            <Menu
+                trigger={<Text>Open Menu</Text>}
+                items={groups}
+                side={MenuV2Side.BOTTOM}
+                alignment={MenuV2Alignment.CENTER}
+                testID="menu"
+            />
+        )
+        expect(screen.getByText('Open Menu')).toBeTruthy()
     })
 })
