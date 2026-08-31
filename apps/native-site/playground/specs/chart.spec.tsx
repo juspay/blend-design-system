@@ -75,6 +75,7 @@ const spec: ComponentSpec<ChartPlaygroundProps> = {
                 'area',
                 'bar',
                 'column',
+                'lineColumn',
                 'scatter',
                 'pie',
                 'donut',

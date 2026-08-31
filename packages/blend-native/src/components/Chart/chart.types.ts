@@ -8,6 +8,7 @@ export type ChartType =
     | 'area'
     | 'bar'
     | 'column'
+    | 'lineColumn'
     | 'scatter'
     | 'pie'
     | 'donut'
@@ -36,6 +37,12 @@ export type ChartSeries = {
     strokeWidth?: number
     /** Fill opacity for area charts (0–1). */
     fillOpacity?: number
+    /**
+     * Per-series chart type for combo charts. Only read when the chart
+     * `type` is `'lineColumn'` — series default to `'column'`, so a combo
+     * is one or more `'line'` series plus one or more columns.
+     */
+    chartType?: 'line' | 'column'
 }
 
 // ---- Pie data -----------------------------------------------------------
