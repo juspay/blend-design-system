@@ -11,7 +11,6 @@ import chart from './chart.spec'
 import checkbox from './checkbox.spec'
 import keyValuePair from './keyValuePair.spec'
 import menu from './menu.spec'
-import modal from './modal.spec'
 import multiSelect from './multiSelect.spec'
 import numberInput from './numberInput.spec'
 import otpInput from './otpInput.spec'
@@ -91,6 +90,14 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
             asAnySpec(statCard),
             asAnySpec(tabs),
             asAnySpec(accordion),
+        ],
+    },
+    {
+        title: 'Selectors',
+        specs: [
+            asAnySpec(singleSelect),
+            asAnySpec(multiSelect),
+            asAnySpec(menu),
         ],
     },
     {

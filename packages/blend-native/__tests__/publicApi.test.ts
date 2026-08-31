@@ -92,7 +92,6 @@ describe('public API surface', () => {
             'LinkButton',
             'Menu',
             'MultiSelect',
-            'Modal',
             'NumberInput',
             'Popover',
             'OTPInput',
@@ -150,7 +149,8 @@ describe('public API surface', () => {
         // then to 110 for Upload (+ validateUploadFiles, UploadState,
         // UploadErrorReason), then to 113 for Badge (+ BadgeColor,
         // BadgeSize), then to 122 for the chart wave (Chart and its
-        // compounds, SankeyChart, OutageChart).
-        expect(exported.size).toBeLessThanOrEqual(122)
+        // compounds, SankeyChart, OutageChart), then to 124 for the
+        // select rework (select/menu enums and helpers).
+        expect(exported.size).toBeLessThanOrEqual(124)
     })
 })
