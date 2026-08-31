@@ -72,6 +72,50 @@ export { ProgressBar } from './components/ProgressBar'
 export type { ProgressBarNativeProps } from './components/ProgressBar'
 export { Spinner } from './components/Spinner'
 export type { SpinnerNativeProps } from './components/Spinner'
+export { Sparkline } from './components/Sparkline'
+export type {
+    SparklineDatum,
+    SparklineNativeProps,
+    SparklineType,
+} from './components/Sparkline'
+export { StatCard } from './components/StatCard'
+export type {
+    StatCardNativeProps,
+    StatCardChange,
+    StatCardSkeletonProps,
+} from './components/StatCard'
+export { Chart } from './components/Chart'
+export { ChartContainer } from './components/Chart'
+export { ChartHeader } from './components/Chart'
+export { ChartLegend } from './components/Chart'
+export { ChartSkeleton } from './components/Chart'
+export { ChartNoData } from './components/Chart'
+export type {
+    ChartNativeProps,
+    ChartType,
+    ChartSeries,
+    ChartDatum,
+    ChartPieSlice,
+    ChartLegendItem,
+    ChartLegendProps,
+    ChartHeaderProps,
+    ChartContainerProps,
+    ChartSkeletonProps,
+    ChartNoDataProps,
+} from './components/Chart'
+export { SankeyChart } from './components/SankeyChart'
+export type {
+    SankeyChartProps,
+    SankeyNode,
+    SankeyLink,
+} from './components/SankeyChart'
+export { OutageChart } from './components/OutageChart'
+export type {
+    OutageChartNativeProps,
+    OutageTrendDatum,
+    OutageZone,
+    OutageSegment,
+} from './components/OutageChart'
 
 // Value unions for the props above. Exported so a consumer can type a
 // `variant`/`size` prop of their own, and so tooling can enumerate the
@@ -221,6 +265,9 @@ export {
     SnackbarV2Variant as SnackbarVariant,
     ProgressBarV2Variant as ProgressBarVariant,
     ProgressBarV2Appearance as ProgressBarAppearance,
+    StatCardV2Variant as StatCardVariant,
+    StatCardV2ChangeType as StatCardChangeType,
+    StatCardV2ArrowDirection as StatCardArrowDirection,
     TagV2Type as TagType,
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,
