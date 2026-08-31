@@ -10,7 +10,7 @@ export const getMenuV2DarkTokens = (
             backgroundColor: foundationToken.colors.gray[900],
             border: `1px solid ${foundationToken.colors.gray[700]}`,
             borderRadius: foundationToken.unit[8],
-            boxShadow: foundationToken.shadows.md,
+            boxShadow: foundationToken.shadows.lg,
             zIndex: foundationToken.zIndex[101],
 
             minWidth: 200,
@@ -44,9 +44,9 @@ export const getMenuV2DarkTokens = (
                 },
 
                 item: {
-                    paddingTop: foundationToken.unit[8],
+                    paddingTop: foundationToken.unit[6],
                     paddingRight: foundationToken.unit[8],
-                    paddingBottom: foundationToken.unit[8],
+                    paddingBottom: foundationToken.unit[6],
                     paddingLeft: foundationToken.unit[8],
 
                     marginTop: foundationToken.unit[0],
@@ -54,16 +54,16 @@ export const getMenuV2DarkTokens = (
                     marginBottom: foundationToken.unit[0],
                     marginLeft: foundationToken.unit[4],
 
-                    borderRadius: foundationToken.unit[4],
+                    borderRadius: foundationToken.unit[8],
                     gap: foundationToken.unit[4],
 
                     backgroundColor: {
                         [MenuV2ItemVariant.DEFAULT]: {
                             default: foundationToken.colors.gray[900],
                             hover: foundationToken.colors.gray[800],
-                            active: foundationToken.colors.gray[800],
-                            focus: foundationToken.colors.gray[800],
-                            focusVisible: foundationToken.colors.gray[800],
+                            active: foundationToken.colors.gray[600],
+                            focus: foundationToken.colors.gray[600],
+                            focusVisible: foundationToken.colors.gray[600],
                             disabled: foundationToken.colors.gray[900],
                             selected: foundationToken.colors.gray[800],
                         },
@@ -97,12 +97,12 @@ export const getMenuV2DarkTokens = (
                         color: {
                             [MenuV2ItemVariant.DEFAULT]: {
                                 default: foundationToken.colors.gray[200],
-                                hover: foundationToken.colors.gray[200],
-                                active: foundationToken.colors.gray[200],
-                                focus: foundationToken.colors.gray[200],
-                                focusVisible: foundationToken.colors.gray[200],
+                                hover: foundationToken.colors.gray[100],
+                                active: foundationToken.colors.gray[100],
+                                focus: foundationToken.colors.gray[100],
+                                focusVisible: foundationToken.colors.gray[100],
                                 disabled: foundationToken.colors.gray[500],
-                                selected: foundationToken.colors.gray[200],
+                                selected: foundationToken.colors.gray[100],
                             },
                             [MenuV2ItemVariant.ACTION]: {
                                 [MenuV2ItemActionType.PRIMARY]: {
@@ -212,7 +212,7 @@ export const getMenuV2DarkTokens = (
             backgroundColor: foundationToken.colors.gray[900],
             border: `1px solid ${foundationToken.colors.gray[700]}`,
             borderRadius: foundationToken.unit[8],
-            boxShadow: foundationToken.shadows.md,
+            boxShadow: foundationToken.shadows.lg,
             zIndex: foundationToken.zIndex[101],
 
             minWidth: 200,
@@ -246,9 +246,9 @@ export const getMenuV2DarkTokens = (
                 },
 
                 item: {
-                    paddingTop: foundationToken.unit[8],
+                    paddingTop: foundationToken.unit[6],
                     paddingRight: foundationToken.unit[8],
-                    paddingBottom: foundationToken.unit[8],
+                    paddingBottom: foundationToken.unit[6],
                     paddingLeft: foundationToken.unit[8],
 
                     marginTop: foundationToken.unit[0],
@@ -256,16 +256,16 @@ export const getMenuV2DarkTokens = (
                     marginBottom: foundationToken.unit[0],
                     marginLeft: foundationToken.unit[4],
 
-                    borderRadius: foundationToken.unit[4],
+                    borderRadius: foundationToken.unit[8],
                     gap: foundationToken.unit[4],
 
                     backgroundColor: {
                         [MenuV2ItemVariant.DEFAULT]: {
                             default: foundationToken.colors.gray[900],
                             hover: foundationToken.colors.gray[800],
-                            active: foundationToken.colors.gray[800],
-                            focus: foundationToken.colors.gray[800],
-                            focusVisible: foundationToken.colors.gray[800],
+                            active: foundationToken.colors.gray[600],
+                            focus: foundationToken.colors.gray[600],
+                            focusVisible: foundationToken.colors.gray[600],
                             disabled: foundationToken.colors.gray[900],
                             selected: foundationToken.colors.gray[800],
                         },
@@ -299,12 +299,12 @@ export const getMenuV2DarkTokens = (
                         color: {
                             [MenuV2ItemVariant.DEFAULT]: {
                                 default: foundationToken.colors.gray[200],
-                                hover: foundationToken.colors.gray[200],
-                                active: foundationToken.colors.gray[200],
-                                focus: foundationToken.colors.gray[200],
-                                focusVisible: foundationToken.colors.gray[200],
+                                hover: foundationToken.colors.gray[100],
+                                active: foundationToken.colors.gray[100],
+                                focus: foundationToken.colors.gray[100],
+                                focusVisible: foundationToken.colors.gray[100],
                                 disabled: foundationToken.colors.gray[500],
-                                selected: foundationToken.colors.gray[200],
+                                selected: foundationToken.colors.gray[100],
                             },
                             [MenuV2ItemVariant.ACTION]: {
                                 [MenuV2ItemActionType.PRIMARY]: {
