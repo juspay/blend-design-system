@@ -1,7 +1,8 @@
-import { Text } from 'react-native'
-import { fireEvent, render, screen } from '@testing-library/react-native'
+import { Keyboard, ScrollView, Text } from 'react-native'
+import { act, fireEvent, render, screen } from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { BottomSheet } from '../src/overlay/sheet/BottomSheet'
+import { BottomSheetScrollable } from '../src/overlay/sheet/SheetScrollable'
 
 /**
  * BottomSheet behaviour under the Reanimated jest mock (animations resolve
@@ -79,6 +80,25 @@ describe('BottomSheet', () => {
         expect(onClose).not.toHaveBeenCalled()
     })
 
+    it('wires VoiceOver escape to onClose', () => {
+        const onClose = jest.fn()
+        renderSheet(true, onClose)
+        const sheet = screen.getByTestId('sheet')
+        expect(sheet.props.onAccessibilityEscape).toBeDefined()
+        sheet.props.onAccessibilityEscape()
+        expect(onClose).toHaveBeenCalledTimes(1)
+    })
+
+    it('hides the app content from assistive tech while open', () => {
+        renderSheet(true)
+        // The portal's modal layer hides everything painted below it; RNTL's
+        // default queries respect that.
+        expect(screen.queryByText('app content')).toBeNull()
+        expect(
+            screen.getByText('app content', { includeHiddenElements: true })
+        ).toBeTruthy()
+    })
+
     it('marks the surface modal for assistive tech', () => {
         renderSheet(true)
         expect(screen.getByTestId('sheet').props.accessibilityViewIsModal).toBe(
@@ -112,5 +132,77 @@ describe('BottomSheet', () => {
         const sheet = screen.getByTestId('sheet')
         // Only the content remains inside the sheet surface.
         expect(sheet.children).toHaveLength(1)
+    })
+})
+
+describe('BottomSheet keyboard avoidance', () => {
+    it('subscribes to keyboard events and survives a show/hide cycle', () => {
+        const listeners = new Map<string, (event: unknown) => void>()
+        const remove = jest.fn()
+        const addListener = jest
+            .spyOn(Keyboard, 'addListener')
+            .mockImplementation(((event: string, cb: never) => {
+                listeners.set(event, cb)
+                return { remove } as never
+            }) as never)
+        try {
+            const { unmount } = renderSheet(true)
+            act(() => {
+                listeners.get('keyboardDidShow')?.({
+                    endCoordinates: { height: 300 },
+                })
+                listeners.get('keyboardWillShow')?.({
+                    endCoordinates: { height: 300 },
+                })
+            })
+            expect(screen.getByText('sheet content')).toBeTruthy()
+            act(() => {
+                listeners.get('keyboardDidHide')?.({})
+                listeners.get('keyboardWillHide')?.({})
+            })
+            unmount()
+            // Both listeners (show + hide) removed on unmount.
+            expect(remove).toHaveBeenCalledTimes(2)
+        } finally {
+            addListener.mockRestore()
+        }
+    })
+})
+
+describe('BottomSheetScrollable', () => {
+    it('renders its scrollable inside a sheet with the scroll plumbing attached', () => {
+        render(
+            <BlendNativeProvider>
+                <BottomSheet open onClose={jest.fn()} testID="sheet">
+                    <BottomSheetScrollable>
+                        <ScrollView testID="list">
+                            <Text>row</Text>
+                        </ScrollView>
+                    </BottomSheetScrollable>
+                </BottomSheet>
+            </BlendNativeProvider>
+        )
+        const list = screen.getByTestId('list')
+        expect(screen.getByText('row')).toBeTruthy()
+        // The offset plumbing replaces onScroll and sets the throttle.
+        expect(list.props.scrollEventThrottle).toBe(16)
+        expect(list.props.onScroll).toBeDefined()
+    })
+
+    it('is a passthrough outside a sheet', () => {
+        render(
+            <BlendNativeProvider>
+                <BottomSheetScrollable>
+                    <ScrollView testID="list">
+                        <Text>row</Text>
+                    </ScrollView>
+                </BottomSheetScrollable>
+            </BlendNativeProvider>
+        )
+        expect(screen.getByText('row')).toBeTruthy()
+        // No sheet, no injected throttle — the child renders unchanged.
+        expect(
+            screen.getByTestId('list').props.scrollEventThrottle
+        ).toBeUndefined()
     })
 })

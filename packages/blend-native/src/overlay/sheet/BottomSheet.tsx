@@ -1,6 +1,13 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react'
 import {
     BackHandler,
+    Platform,
     Pressable,
     StyleSheet,
     useWindowDimensions,
@@ -20,14 +27,19 @@ import Animated, {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Portal } from '../portal'
 import { SafeAreaInsetsContext } from '../safeAreaInsets'
+import { useKeyboardHeight } from '../useKeyboardHeight'
 import { MOTION_DURATION, MOTION_EASING } from '../../motion/motion'
 import { useReduceMotion } from '../../motion/useReduceMotion'
 import {
-    clampSheetDrag,
+    resolveSheetDrag,
     resolveSheetMaxHeight,
+    shouldActivateSheetPan,
     shouldDismissSheet,
+    shouldSheetConsumeDrag,
     SHEET_MAX_HEIGHT_FRACTION,
 } from './sheetMath'
+import { SheetGestureContext } from './sheetGestureContext'
+import type { SheetGestureValue } from './sheetGestureContext'
 
 /**
  * BottomSheet — the gesture-driven sheet foundation.
@@ -69,10 +81,22 @@ export type BottomSheetProps = {
     /** Show the drag handle. Default true. */
     showHandle?: boolean
     handleColor?: string
+    /** Overrides the handle geometry (width/height/margins). */
+    handleStyle?: StyleProp<ViewStyle>
     /** Allow drag-down to dismiss. Default true. */
     dragToDismiss?: boolean
     /** Dismiss when the backdrop is pressed. Default true. */
     dismissOnBackdropPress?: boolean
+    /**
+     * How the sheet reacts to the soft keyboard. `'translate'` slides the
+     * sheet up by the keyboard's height (over the bottom inset) and shrinks
+     * its max height to match. `'auto'` (default) translates on iOS and does
+     * nothing on Android — with the default `adjustResize` soft-input mode
+     * the Android window itself shrinks and the bottom-anchored sheet
+     * already rises, so translating would double-compensate. Android apps
+     * running `adjustPan`/`adjustNothing` should pass `'translate'`.
+     */
+    keyboardAvoidance?: 'auto' | 'translate' | 'none'
     accessibilityLabel?: string
     testID?: string
     /** Style escape hatch for the sheet surface. */
@@ -98,8 +122,10 @@ export function BottomSheet({
     topRadius = 16,
     showHandle = true,
     handleColor = 'rgba(0, 0, 0, 0.2)',
+    handleStyle,
     dragToDismiss = true,
     dismissOnBackdropPress = true,
+    keyboardAvoidance = 'auto',
     accessibilityLabel,
     testID,
     style,
@@ -109,15 +135,43 @@ export function BottomSheet({
     const progress = useSharedValue(0)
     const dragY = useSharedValue(0)
     const sheetHeight = useSharedValue(0)
+    // Scroll offset of a BottomSheetScrollable inside the sheet (0 when none
+    // is registered), and the translation captured at the instant the sheet
+    // starts consuming the drag (-1 = not consuming).
+    const scrollOffsetY = useSharedValue(0)
+    const capturedY = useSharedValue(-1)
+    const keyboardOffset = useSharedValue(0)
     const window = useWindowDimensions()
     const insets = useContext(SafeAreaInsetsContext)
     const reduceMotion = useReduceMotion()
+    const keyboard = useKeyboardHeight()
 
     const unmount = useCallback(() => setMounted(false), [])
+
+    const avoidsKeyboard =
+        keyboardAvoidance === 'translate' ||
+        (keyboardAvoidance === 'auto' && Platform.OS === 'ios')
+    const keyboardHeight = avoidsKeyboard
+        ? Math.max(0, keyboard.height - (insets?.bottom ?? 0))
+        : 0
+
+    useEffect(() => {
+        // Functional motion (the sheet must clear the keyboard), so reduce
+        // motion only skips the easing, not the move.
+        keyboardOffset.value = reduceMotion
+            ? keyboardHeight
+            : withTiming(keyboardHeight, {
+                  duration: MOTION_DURATION.normal,
+                  easing: Easing.bezier(...MOTION_EASING.standard),
+              })
+    }, [keyboardHeight, keyboardOffset, reduceMotion])
 
     useEffect(() => {
         if (open) {
             setMounted(true)
+            // A remount starts the inner list back at its top; without this a
+            // stale offset from the previous session would pin the sheet.
+            scrollOffsetY.value = 0
             progress.value = withTiming(1, ENTER)
         } else {
             // Drag offset folds into the exit so a gesture-dismissed sheet
@@ -127,7 +181,7 @@ export function BottomSheet({
                 if (finished) runOnJS(unmount)()
             })
         }
-    }, [open, progress, dragY, unmount])
+    }, [open, progress, dragY, scrollOffsetY, unmount])
 
     // Android hardware back closes the sheet instead of the screen.
     useEffect(() => {
@@ -149,15 +203,55 @@ export function BottomSheet({
         [sheetHeight]
     )
 
+    // Scroll-aware drag: the pan runs simultaneously with the native scroll
+    // gesture of any BottomSheetScrollable below, but activates MANUALLY —
+    // only once the finger has travelled downward while the inner list sits
+    // at its top. Until then it stays undetermined, so the list scrolls
+    // freely in both directions (an eagerly-activated pan starves the
+    // scroll view of the downward moves). If the list reaches its top
+    // mid-gesture, the pan activates then and the capture logic picks the
+    // sheet up from under the finger. `failOffsetX` hands horizontal swipes
+    // to the content.
+    const touchStartY = useSharedValue(0)
     const pan = Gesture.Pan()
         .enabled(dragToDismiss)
+        .manualActivation(true)
+        .failOffsetX([-16, 16])
+        .onTouchesDown((event) => {
+            touchStartY.value = event.changedTouches[0]?.y ?? 0
+        })
+        .onTouchesMove((event, stateManager) => {
+            const travel = (event.changedTouches[0]?.y ?? 0) - touchStartY.value
+            if (shouldActivateSheetPan(travel, scrollOffsetY.value)) {
+                stateManager.activate()
+            }
+        })
+        .onBegin(() => {
+            capturedY.value = -1
+        })
         .onChange((event) => {
-            dragY.value = clampSheetDrag(event.translationY)
+            if (capturedY.value < 0) {
+                if (
+                    !shouldSheetConsumeDrag(
+                        scrollOffsetY.value,
+                        event.translationY
+                    )
+                ) {
+                    return
+                }
+                capturedY.value = event.translationY
+            }
+            dragY.value = resolveSheetDrag(event.translationY, capturedY.value)
         })
         .onEnd((event) => {
+            if (capturedY.value < 0) return
+            const effectiveDrag = resolveSheetDrag(
+                event.translationY,
+                capturedY.value
+            )
             if (
                 shouldDismissSheet(
-                    event.translationY,
+                    effectiveDrag,
                     event.velocityY,
                     sheetHeight.value
                 )
@@ -168,12 +262,20 @@ export function BottomSheet({
             }
         })
 
+    // The gesture is rebuilt each render (the GestureDetector pattern); the
+    // context value tracks it so scrollables always compose with the current
+    // pan.
+    const gestureValue = useMemo<SheetGestureValue>(
+        () => ({ panGesture: pan, scrollOffsetY }),
+        [pan, scrollOffsetY]
+    )
+
     const windowHeight = window.height
     const sheetStyle = useAnimatedStyle(() => {
         if (reduceMotion) {
             return {
                 opacity: progress.value,
-                transform: [{ translateY: dragY.value }],
+                transform: [{ translateY: dragY.value - keyboardOffset.value }],
             }
         }
         // Until the first layout lands, the full window height keeps the
@@ -182,7 +284,12 @@ export function BottomSheet({
         return {
             opacity: 1,
             transform: [
-                { translateY: (1 - progress.value) * height + dragY.value },
+                {
+                    translateY:
+                        (1 - progress.value) * height +
+                        dragY.value -
+                        keyboardOffset.value,
+                },
             ],
         }
     }, [reduceMotion, windowHeight])
@@ -196,11 +303,12 @@ export function BottomSheet({
     const maxHeight = resolveSheetMaxHeight(
         windowHeight,
         insets?.top ?? 0,
-        maxHeightFraction
+        maxHeightFraction,
+        keyboardHeight
     )
 
     return (
-        <Portal>
+        <Portal modal>
             <Animated.View
                 style={[
                     StyleSheet.absoluteFill,
@@ -224,6 +332,8 @@ export function BottomSheet({
                 <Animated.View
                     onLayout={onSheetLayout}
                     accessibilityViewIsModal
+                    // VoiceOver's two-finger Z scrub dismisses the sheet.
+                    onAccessibilityEscape={onClose}
                     accessibilityLabel={accessibilityLabel}
                     testID={testID}
                     style={[
@@ -244,10 +354,13 @@ export function BottomSheet({
                             style={[
                                 styles.handle,
                                 { backgroundColor: handleColor },
+                                handleStyle,
                             ]}
                         />
                     ) : null}
-                    {children}
+                    <SheetGestureContext.Provider value={gestureValue}>
+                        {children}
+                    </SheetGestureContext.Provider>
                 </Animated.View>
             </GestureDetector>
         </Portal>

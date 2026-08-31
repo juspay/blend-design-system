@@ -42,6 +42,18 @@ export type {
 } from './components/KeyValuePair'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
+export { Menu } from './components/Menu'
+export type {
+    MenuNativeProps,
+    MenuItemType,
+    MenuGroupType,
+} from './components/Menu'
+export { Modal } from './components/Modal'
+export type { ModalNativeProps, ModalAction } from './components/Modal'
+export { Popover } from './components/Popover'
+export type { PopoverNativeProps, PopoverAction } from './components/Popover'
+export { Tooltip } from './components/Tooltip'
+export type { TooltipNativeProps } from './components/Tooltip'
 export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/Tabs'
 export type {
     TabsNativeProps,
@@ -60,8 +72,20 @@ export { Switch } from './components/Switch'
 export type { SwitchNativeProps } from './components/Switch'
 export { SearchInput } from './components/SearchInput'
 export type { SearchInputNativeProps } from './components/SearchInput'
+export { SingleSelect } from './components/SingleSelect'
+export type {
+    SingleSelectNativeProps,
+    SingleSelectItemType,
+    SingleSelectGroupType,
+} from './components/SingleSelect'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
+export { MultiSelect } from './components/MultiSelect'
+export type {
+    MultiSelectNativeProps,
+    MultiSelectItemType,
+    MultiSelectGroupType,
+} from './components/MultiSelect'
 export { NumberInput } from './components/NumberInput'
 export type { NumberInputNativeProps } from './components/NumberInput'
 export { OTPInput } from './components/OTPInput'
@@ -171,6 +195,9 @@ export { useReduceMotion } from './motion/useReduceMotion'
 // Select/Menu/Modal compose it; also public for consumer-built sheets.
 export { BottomSheet } from './overlay/sheet/BottomSheet'
 export type { BottomSheetProps } from './overlay/sheet/BottomSheet'
+// Makes a scrollable inside a sheet cooperate with the sheet drag: the list
+// scrolls until it hits its top, then the sheet follows the finger.
+export { BottomSheetScrollable } from './overlay/sheet/SheetScrollable'
 
 // The toast host: the provider mounts the outlet, this pair drives it;
 // `addSnackbar` layers the SNACKBARV2 token styling on top.
@@ -210,6 +237,9 @@ export {
     CardV2Orientation as CardOrientation,
     CardV2Padding as CardPadding,
     SelectorV2Size as SelectorSize,
+    SelectV2Size as SelectSize,
+    MultiSelectV2SelectionTagType as MultiSelectSelectionTagType,
+    SelectV2Variant as SelectVariant,
     TabsV2Variant as TabsVariant,
     TabsV2Size as TabsSize,
     CheckboxV2CheckedState as CheckboxCheckedState,
@@ -225,5 +255,16 @@ export {
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,
     TagV2Color as TagColor,
+    MenuV2Alignment as MenuAlignment,
+    MenuV2Side as MenuSide,
+    MenuV2ItemVariant as MenuItemVariant,
+    MenuV2ItemActionType as MenuItemActionType,
+    PopoverV2Size as PopoverSize,
+    PopoverV2Side as PopoverSide,
+    PopoverV2Align as PopoverAlign,
+    TooltipV2Side as TooltipSide,
+    TooltipV2Align as TooltipAlign,
+    TooltipV2Size as TooltipSize,
+    TooltipV2SlotDirection as TooltipSlotDirection,
     Theme,
 } from '@juspay/blend-design-system/node'

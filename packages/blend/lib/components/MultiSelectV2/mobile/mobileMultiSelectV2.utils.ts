@@ -2,7 +2,7 @@ import type { VirtualListItem } from '../../VirtualList/types'
 import type {
     FlattenedMultiSelectV2Item,
     MultiSelectV2GroupType,
-} from '../multiSelectV2.types'
+} from '../multiSelectV2.base.types'
 
 export type FlattenedMobileMultiSelectV2Item = Omit<
     FlattenedMultiSelectV2Item,

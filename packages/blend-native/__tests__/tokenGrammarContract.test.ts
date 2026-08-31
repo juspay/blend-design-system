@@ -60,6 +60,28 @@ const EXCEPTIONS: { pattern: RegExp; handler: string }[] = [
         pattern: /^ACCORDIONV2\.\w+\.\w+\.separator\.color\./,
         handler: 'Accordion.tsx Separator color',
     },
+    {
+        // '8px' — web's popover border token holds a bare length, an
+        // invalid CSS border shorthand browsers silently drop, so no border
+        // renders on web and native deliberately draws none (upstream
+        // finding, flagged in the PR).
+        pattern: /^POPOVERV2\.\w+\.\w+\.border$/,
+        handler: 'Popover.tsx docblock (token unused by design)',
+    },
+    {
+        // '20vh' — a viewport unit the adapters reject by design; the
+        // native modal header sizes to its content instead.
+        pattern: /^MODALV2\.\w+\.\w+\.header\.maxHeight$/,
+        handler: 'ModalHeader.tsx docblock (content-sized header)',
+    },
+    {
+        // '0.375rem' — a rem length inside the floating-label subtree.
+        // The floating-label mode is web-only (deferred with TextInput's),
+        // so native never consumes this branch; rem stays unsupported by
+        // design (upstream finding, flagged in the PR).
+        pattern: /^MULTI_SELECT_V2\.\w+\.\w+\.trigger\.floatingLabel\./,
+        handler: 'multiSelect.types.ts docblock (floating label web-only)',
+    },
 ]
 
 type Leaf = { path: string; segments: string[]; value: unknown }

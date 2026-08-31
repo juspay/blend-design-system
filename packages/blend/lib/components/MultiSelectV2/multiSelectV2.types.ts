@@ -1,8 +1,6 @@
 import type { ReactNode, ReactElement, ButtonHTMLAttributes } from 'react'
 import type { DropdownMenuContentProps } from '@radix-ui/react-dropdown-menu'
 import type {
-    SelectV2FlattenedItemBase,
-    SelectV2BaseItemType,
     SelectV2MenuRootPropsBase,
     SelectV2SkeletonProps,
     SelectV2Size,
@@ -33,24 +31,21 @@ export type {
     SelectV2SearchConfig,
 }
 
-export enum MultiSelectV2SelectionTagType {
-    COUNT = 'count',
-    TEXT = 'text',
-}
-
-export type MultiSelectV2ItemType = SelectV2BaseItemType & {
-    alwaysSelected?: boolean
-    subMenu?: MultiSelectV2ItemType[]
-}
-
-export type MultiSelectV2GroupType = {
-    groupLabel?: string
-    items: MultiSelectV2ItemType[]
-    showSeparator?: boolean
-}
-
-export type FlattenedMultiSelectV2Item =
-    SelectV2FlattenedItemBase<MultiSelectV2ItemType>
+// Moved to the leaf `multiSelectV2.base.types.ts` (see its header) and
+// re-exported here so existing consumers keep importing from this module.
+export { MultiSelectV2SelectionTagType } from './multiSelectV2.base.types'
+export type {
+    MultiSelectV2ItemType,
+    MultiSelectV2GroupType,
+    FlattenedMultiSelectV2Item,
+    MultiSelectV2PrimaryAction,
+    MultiSelectV2SecondaryAction,
+    MultiSelectBaseProps,
+} from './multiSelectV2.base.types'
+import type {
+    MultiSelectV2GroupType,
+    MultiSelectBaseProps,
+} from './multiSelectV2.base.types'
 
 export type MultiSelectV2MenuProps = {
     items: MultiSelectV2GroupType[]
@@ -108,77 +103,30 @@ export type MultiSelectV2MenuRootProps = SelectV2MenuRootPropsBase & {
 export type MultiSelectV2Props = Omit<
     ButtonHTMLAttributes<HTMLButtonElement>,
     'style' | 'className' | 'onChange' | 'slot'
-> & {
-    selectedValues: string[]
-    /**
-     * Legacy per-item toggle callback. Prefer `onSelectionChange` for the
-     * complete resulting selection.
-     */
-    onChange?: (value: string | string[]) => void
-    /**
-     * Recommended callback. Fires once per accepted user gesture with the
-     * complete resulting selection.
-     */
-    onSelectionChange?: (selectedValues: string[]) => void
-    items?: MultiSelectV2GroupType[]
+> &
+    MultiSelectBaseProps & {
+        /**
+         * Legacy per-item toggle callback. Prefer `onSelectionChange` for
+         * the complete resulting selection.
+         */
+        onChange?: (value: string | string[]) => void
+        slot?: ReactNode
+        search?: SelectV2SearchConfig
 
-    label: string
-    subLabel?: string
-    helpIconText?: string
-    required?: boolean
-    variant?: SelectV2Variant
-    selectionTagType?: MultiSelectV2SelectionTagType
-    slot?: ReactNode
-    hintText?: string
-    placeholder: string
-    size?: SelectV2Size
-    search?: SelectV2SearchConfig
-    enableSelectAll?: boolean
-    selectAllText?: string
-    maxSelections?: number
+        customTrigger?: ReactElement
+        usePanelOnMobile?: boolean
 
-    customTrigger?: ReactElement
-    usePanelOnMobile?: boolean
+        triggerDimensions?: SelectV2TriggerDimensions
+        menuDimensions?: SelectV2MenuDimensions
+        menuPosition?: SelectV2MenuPosition
 
-    triggerDimensions?: SelectV2TriggerDimensions
-    menuDimensions?: SelectV2MenuDimensions
-    menuPosition?: SelectV2MenuPosition
+        enableVirtualization?: boolean
+        virtualListItemHeight?: number
+        virtualListOverscan?: number
+        itemsToRender?: number
 
-    inline?: boolean
-    onOpenChange?: (open: boolean) => void
-
-    error?: SelectV2ErrorState
-
-    showActionButtons?: boolean
-    primaryAction?: {
-        text: string
-        onClick: (selectedValues: string[]) => void
-        disabled?: boolean
-        loading?: boolean
+        loadingComponent?: ReactNode
+        skeleton?: SelectV2SkeletonProps
+        multiSelectGroupPosition?: 'center' | 'left' | 'right'
+        menuFooter?: ReactNode
     }
-    secondaryAction?: {
-        text: string
-        onClick: () => void
-        disabled?: boolean
-        loading?: boolean
-    }
-    showItemDividers?: boolean
-    showHeaderBorder?: boolean
-
-    enableVirtualization?: boolean
-    virtualListItemHeight?: number
-    virtualListOverscan?: number
-    itemsToRender?: number
-
-    onEndReached?: () => void
-    endReachedThreshold?: number
-    hasMore?: boolean
-    loadingComponent?: ReactNode
-    skeleton?: SelectV2SkeletonProps
-    allowCustomValue?: boolean
-    customValueLabel?: string
-    showClearButton?: boolean
-    onClearAllClick?: () => void
-    multiSelectGroupPosition?: 'center' | 'left' | 'right'
-    menuFooter?: ReactNode
-}

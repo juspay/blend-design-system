@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import {
     computeAnchoredPosition,
+    computeArrowAlignedPosition,
+    computeArrowPosition,
     type AnchoredPositionInput,
 } from '../src/overlay/positioning'
 
@@ -129,5 +131,163 @@ describe('computeAnchoredPosition', () => {
         // Pins to the leading padding instead of producing NaN/negatives.
         expect(p.x).toBe(8)
         expect(p.y).toBe(8)
+    })
+})
+
+describe('computeArrowPosition', () => {
+    const anchor = { x: 150, y: 300, width: 100, height: 40 }
+    const content = { width: 200, height: 150 }
+    const arrowSize = 6
+
+    it('projects the anchor center onto the top edge for bottom placement', () => {
+        // Anchor center x = 200; content at x=150 -> arrow center at 50.
+        expect(
+            computeArrowPosition({
+                anchor,
+                contentPosition: { x: 150, y: 348 },
+                content,
+                placement: 'bottom',
+                arrowSize,
+            })
+        ).toEqual({ x: 50, y: 0 })
+    })
+
+    it('sits on the bottom edge for top placement', () => {
+        expect(
+            computeArrowPosition({
+                anchor,
+                contentPosition: { x: 150, y: 142 },
+                content,
+                placement: 'top',
+                arrowSize,
+            })
+        ).toEqual({ x: 50, y: 150 })
+    })
+
+    it('sits on the vertical edges for left/right placements', () => {
+        // Anchor center y = 320; content at y=280 -> arrow center at 40.
+        expect(
+            computeArrowPosition({
+                anchor,
+                contentPosition: { x: 258, y: 280 },
+                content,
+                placement: 'right',
+                arrowSize,
+            })
+        ).toEqual({ x: 0, y: 40 })
+        expect(
+            computeArrowPosition({
+                anchor,
+                contentPosition: { x: -58, y: 280 },
+                content,
+                placement: 'left',
+                arrowSize,
+            })
+        ).toEqual({ x: 200, y: 40 })
+    })
+
+    it('clamps inside the rounded corners when the content is shifted', () => {
+        // Content clamped far right of the anchor: projection would land at
+        // x = -50, held at arrowSize instead.
+        expect(
+            computeArrowPosition({
+                anchor,
+                contentPosition: { x: 250, y: 348 },
+                content,
+                placement: 'bottom',
+                arrowSize,
+            })
+        ).toEqual({ x: arrowSize, y: 0 })
+        // And at the far edge: projection past the width pins to
+        // width - arrowSize.
+        expect(
+            computeArrowPosition({
+                anchor,
+                contentPosition: { x: -100, y: 348 },
+                content,
+                placement: 'bottom',
+                arrowSize,
+            })
+        ).toEqual({ x: content.width - arrowSize, y: 0 })
+    })
+
+    it('degrades to the leading clamp for content narrower than two arrows', () => {
+        expect(
+            computeArrowPosition({
+                anchor,
+                contentPosition: { x: 195, y: 348 },
+                content: { width: 8, height: 40 },
+                placement: 'bottom',
+                arrowSize,
+            }).x
+        ).toBe(arrowSize)
+    })
+})
+
+describe('computeArrowAlignedPosition (the tooltip contract)', () => {
+    const base = {
+        anchor: { x: 150, y: 300, width: 100, height: 40 },
+        content: { width: 200, height: 40 },
+        viewport: { width: 400, height: 800 },
+        offset: 8,
+        viewportPadding: 8,
+        arrowSize: 7,
+    }
+    const inset = Math.max(7 * 2, 12) // 14
+
+    it('center: the tip sits mid-content, over the anchor center', () => {
+        const r = computeArrowAlignedPosition({
+            ...base,
+            placement: 'top',
+            alignment: 'center',
+        })
+        expect(r.arrow.x).toBe(100)
+        // Content positioned so the tip lands on anchor center x = 200.
+        expect(r.x + r.arrow.x).toBe(200)
+        expect(r.arrow.y).toBe(base.content.height)
+    })
+
+    it('start: the tip sits near the leading edge', () => {
+        const r = computeArrowAlignedPosition({
+            ...base,
+            placement: 'top',
+            alignment: 'start',
+        })
+        expect(r.arrow.x).toBe(inset)
+        expect(r.x + r.arrow.x).toBe(200)
+    })
+
+    it('end: the tip sits near the trailing edge', () => {
+        const r = computeArrowAlignedPosition({
+            ...base,
+            placement: 'top',
+            alignment: 'end',
+        })
+        expect(r.arrow.x).toBe(base.content.width - inset)
+        expect(r.x + r.arrow.x).toBe(200)
+    })
+
+    it('clamps the content to the viewport while the tip stays put', () => {
+        const r = computeArrowAlignedPosition({
+            ...base,
+            anchor: { x: 0, y: 300, width: 20, height: 40 },
+            placement: 'top',
+            alignment: 'end',
+        })
+        // Anchor center 10; unclamped x would be 10 - 186 < 0.
+        expect(r.x).toBe(8)
+        expect(r.arrow.x).toBe(base.content.width - inset)
+    })
+
+    it('horizontal placements arrow-align on the y axis', () => {
+        const r = computeArrowAlignedPosition({
+            ...base,
+            content: { width: 120, height: 200 },
+            placement: 'right',
+            alignment: 'start',
+        })
+        expect(r.arrow.y).toBe(inset)
+        expect(r.y + r.arrow.y).toBe(320)
+        expect(r.arrow.x).toBe(0)
     })
 })

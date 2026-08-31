@@ -250,3 +250,98 @@ export type { NumberInputBaseProps } from './components/InputsV2/NumberInputV2/n
 export type { TextAreaBaseProps } from './components/InputsV2/TextAreaV2/TextAreaV2.types'
 export type { SearchInputBaseProps } from './components/InputsV2/SearchInputV2/SearchInputV2.types'
 export type { OTPInputBaseProps } from './components/InputsV2/OTPInputV2/OTPInputV2.types'
+
+// Overlay components (Wave C1): token types, enums and platform-neutral
+// base props for the React Native ports.
+export type {
+    TooltipV2TokensType,
+    ResponsiveTooltipV2Tokens,
+} from './components/TooltipV2/tooltipV2.tokens.types'
+export {
+    TooltipV2Side,
+    TooltipV2Align,
+    TooltipV2Size,
+    TooltipV2SlotDirection,
+} from './components/TooltipV2/tooltipV2.types'
+export type { TooltipBaseProps } from './components/TooltipV2/tooltipV2.types'
+export type {
+    PopoverV2TokenType,
+    ResponsivePopoverV2Tokens,
+} from './components/PopoverV2/popoverV2.tokens.types'
+export {
+    PopoverV2Size,
+    PopoverV2Side,
+    PopoverV2Align,
+} from './components/PopoverV2/popoverV2.base.types'
+export type { PopoverBaseProps } from './components/PopoverV2/popoverV2.base.types'
+export type {
+    ModalV2TokensType,
+    ResponsiveModalV2Tokens,
+} from './components/ModalV2/modalV2.tokens.types'
+export type { ModalBaseProps } from './components/ModalV2/modalV2.base.types'
+
+// Menu and Select family (Wave C2): token types, enums, platform-neutral
+// bases, the neutral item models, and the pure search/flatten utils the
+// React Native package reuses instead of forking.
+export type {
+    MenuV2TokensType,
+    ResponsiveMenuV2TokensType,
+} from './components/MenuV2/menuV2.tokens.types'
+export {
+    MenuV2Alignment,
+    MenuV2Side,
+    MenuV2ItemVariant,
+    MenuV2ItemActionType,
+} from './components/MenuV2/menuV2.types'
+export type {
+    MenuBaseProps,
+    MenuV2ItemType,
+    MenuV2GroupType,
+    MenuV2ItemLabel,
+    MenuV2SearchSortFn,
+    MenuV2SelectionStyle,
+    MenuV2SelectionMode,
+} from './components/MenuV2/menuV2.types'
+export {
+    MenuV2MatchRank,
+    defaultSearchSortFn,
+    filterMenuV2Groups,
+    flattenMenuV2Groups,
+} from './components/MenuV2/menuV2.utils'
+export type { MenuV2FlatRow } from './components/MenuV2/menuV2.utils'
+export {
+    SelectV2Alignment,
+    SelectV2Variant,
+    SelectV2Size,
+    SelectV2Side,
+} from './components/SelectV2/selectV2.base.types'
+export type {
+    SelectV2BaseItemType,
+    SelectV2TooltipProps,
+    SelectV2ErrorState,
+    SelectV2FlattenedItemBase,
+} from './components/SelectV2/selectV2.base.types'
+export type {
+    SingleSelectV2TokensType,
+    ResponsiveSingleSelectV2Tokens,
+} from './components/SingleSelectV2/singleSelectV2.tokens.types'
+export type {
+    SingleSelectBaseProps,
+    SingleSelectV2ItemType,
+    SingleSelectV2GroupType,
+} from './components/SingleSelectV2/singleSelectV2.base.types'
+export type {
+    MultiSelectV2TokensType,
+    ResponsiveMultiSelectV2Tokens,
+} from './components/MultiSelectV2/multiSelectV2.tokens.types'
+export { MultiSelectV2SelectionTagType } from './components/MultiSelectV2/multiSelectV2.base.types'
+export type {
+    MultiSelectBaseProps,
+    MultiSelectV2ItemType,
+    MultiSelectV2GroupType,
+    FlattenedMultiSelectV2Item,
+    MultiSelectV2PrimaryAction,
+    MultiSelectV2SecondaryAction,
+} from './components/MultiSelectV2/multiSelectV2.base.types'
+export { flattenMobileMultiSelectV2Groups } from './components/MultiSelectV2/mobile/mobileMultiSelectV2.utils'
+export type { FlattenedMobileMultiSelectV2Item } from './components/MultiSelectV2/mobile/mobileMultiSelectV2.utils'
