@@ -2,7 +2,6 @@ import { SankeyChart } from 'blend-native'
 import type { SankeyChartProps, SankeyNode, SankeyLink } from 'blend-native'
 import { numberOptions, unionOptions } from '../types'
 import type { ComponentSpec } from '../types'
-import SankeyChartShowcase from '../../components/SankeyChartShowcase'
 
 type SankeyChartPlaygroundProps = Omit<
     SankeyChartProps,
@@ -70,7 +69,6 @@ const spec: ComponentSpec<SankeyChartPlaygroundProps> = {
     summary:
         'Flow visualization where ribbon width is proportional to value. Tap a node to highlight its flow.',
     mode: 'inline',
-    gallery: SankeyChartShowcase,
     defaults: {
         height: 360,
         curveFactor: 0.5,
@@ -80,7 +78,7 @@ const spec: ComponentSpec<SankeyChartPlaygroundProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'dataSet',
             label: 'Dataset',
             options: unionOptions<SankeyChartPlaygroundProps['dataSet']>()([
@@ -90,14 +88,14 @@ const spec: ComponentSpec<SankeyChartPlaygroundProps> = {
             ]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'height',
             label: 'Height',
             group: 'Appearance',
             options: numberOptions([240, 300, 360, 440]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'curveFactor',
             label: 'Curve',
             group: 'Appearance',
@@ -110,7 +108,7 @@ const spec: ComponentSpec<SankeyChartPlaygroundProps> = {
             ],
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'focusBehavior',
             label: 'Focus',
             group: 'Appearance',

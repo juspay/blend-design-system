@@ -7,7 +7,6 @@ import type {
 } from 'blend-native'
 import { unionOptions } from '../types'
 import type { ComponentSpec } from '../types'
-import ChartShowcase from '../../components/ChartShowcase'
 
 type ChartPlaygroundProps = Omit<
     ChartNativeProps,
@@ -55,7 +54,6 @@ const spec: ComponentSpec<ChartPlaygroundProps> = {
     summary:
         'Full-featured charts — line, area, bar, column, scatter, pie, donut — with legend, skeleton, and no-data states.',
     mode: 'inline',
-    gallery: ChartShowcase,
     defaults: {
         type: 'line',
         height: 300,
@@ -69,7 +67,7 @@ const spec: ComponentSpec<ChartPlaygroundProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'type',
             label: 'Type',
             options: unionOptions<ChartType>()([
@@ -83,7 +81,7 @@ const spec: ComponentSpec<ChartPlaygroundProps> = {
             ]),
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'height',
             label: 'Height',
             group: 'Appearance',

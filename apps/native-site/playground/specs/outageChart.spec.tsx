@@ -7,7 +7,6 @@ import type {
 } from 'blend-native'
 import { numberOptions } from '../types'
 import type { ComponentSpec } from '../types'
-import OutageChartShowcase from '../../components/OutageChartShowcase'
 
 type OutageChartPlaygroundProps = Omit<
     OutageChartNativeProps,
@@ -92,7 +91,6 @@ const spec: ComponentSpec<OutageChartPlaygroundProps> = {
     summary:
         'Zone-colored trend line over a per-lane outage timeline. Tap a segment to highlight its x-span on the trend chart.',
     mode: 'inline',
-    gallery: OutageChartShowcase,
     defaults: {
         title: 'UPI Outage Trend',
         trendHeight: 160,
@@ -103,7 +101,7 @@ const spec: ComponentSpec<OutageChartPlaygroundProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'trendHeight',
             label: 'Trend height',
             group: 'Appearance',

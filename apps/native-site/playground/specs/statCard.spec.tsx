@@ -12,7 +12,6 @@ import type {
 } from 'blend-native'
 import { enumOptions, numberOptions, unionOptions } from '../types'
 import type { ComponentSpec } from '../types'
-import StatCardShowcase from '../../components/StatCardShowcase'
 
 type StatCardPlaygroundProps = Omit<
     StatCardNativeProps,
@@ -63,7 +62,6 @@ const spec: ComponentSpec<StatCardPlaygroundProps> = {
     summary:
         'Titled metric card with a value, delta indicator, progress bar, or sparkline chart.',
     mode: 'inline',
-    gallery: StatCardShowcase,
     defaults: {
         variant: StatCardVariant.NUMBER,
         title: 'Gross volume',
@@ -79,7 +77,7 @@ const spec: ComponentSpec<StatCardPlaygroundProps> = {
     },
     controls: [
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'variant',
             label: 'Variant',
             options: enumOptions(StatCardVariant, 'StatCardVariant'),
@@ -111,7 +109,7 @@ const spec: ComponentSpec<StatCardPlaygroundProps> = {
             hidden: true,
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'changeType',
             label: 'Change type',
             group: 'Content',
@@ -119,7 +117,7 @@ const spec: ComponentSpec<StatCardPlaygroundProps> = {
             hidden: true,
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'arrowDirection',
             label: 'Arrow',
             group: 'Content',
@@ -130,7 +128,7 @@ const spec: ComponentSpec<StatCardPlaygroundProps> = {
             hidden: true,
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'progressValue',
             label: 'Progress',
             group: 'Content',
@@ -138,7 +136,7 @@ const spec: ComponentSpec<StatCardPlaygroundProps> = {
             hidden: true,
         },
         {
-            kind: 'segmented',
+            kind: 'select',
             key: 'chartType',
             label: 'Chart type',
             group: 'Content',
