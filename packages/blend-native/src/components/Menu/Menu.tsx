@@ -62,7 +62,7 @@ const Menu = forwardRef<MenuRef, MenuNativeProps>(function Menu(
         alignment = MenuV2Alignment.START,
         side = MenuV2Side.BOTTOM,
         sideOffset = 8,
-        usePanelOnMobile = true,
+        usePanelOnMobile = false,
         enableVirtualization = false,
         menuFooter,
         testID,

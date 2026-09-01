@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import {
     Pressable as RNPressable,
     StyleSheet,
@@ -6,6 +6,7 @@ import {
 } from 'react-native'
 import Animated, {
     Easing,
+    runOnJS,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
@@ -63,9 +64,17 @@ export function DropdownContent({
 }: DropdownContentProps) {
     const reduceMotion = useReduceMotion()
     const progress = useSharedValue(0)
+    const [mounted, setMounted] = useState(open)
 
     React.useEffect(() => {
-        progress.value = withTiming(open ? 1 : 0, open ? ENTER : EXIT)
+        if (open) {
+            setMounted(true)
+            progress.value = withTiming(1, ENTER)
+        } else {
+            progress.value = withTiming(0, EXIT, (finished) => {
+                if (finished) runOnJS(setMounted)(false)
+            })
+        }
     }, [open, progress])
 
     const animatedStyle = useAnimatedStyle(() => {
@@ -82,9 +91,13 @@ export function DropdownContent({
         onClose()
     }, [onClose])
 
-    if (!open && progress.value === 0) return null
+    const lastPosition = useRef<AnchoredPosition | null>(null)
+    if (position) lastPosition.current = position
+    const effectivePosition = position ?? lastPosition.current
 
-    const hasPosition = position !== null
+    if (!mounted) return null
+
+    const hasPosition = effectivePosition !== null
 
     return (
         <Portal>
@@ -111,14 +124,14 @@ export function DropdownContent({
                         minWidth: parseDimension(tokens.minWidth),
                         maxWidth: parseDimension(tokens.maxWidth),
                         maxHeight: hasPosition
-                            ? position!.maxHeight
+                            ? effectivePosition!.maxHeight
                             : undefined,
                         // Hidden until position lands so the content does
                         // not flash at {0,0} before measurement completes.
                         opacity: hasPosition ? undefined : 0,
                         position: 'absolute',
-                        left: hasPosition ? position!.x : 0,
-                        top: hasPosition ? position!.y : 0,
+                        left: hasPosition ? effectivePosition!.x : 0,
+                        top: hasPosition ? effectivePosition!.y : 0,
                     },
                     animatedStyle,
                 ]}
