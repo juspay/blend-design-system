@@ -173,21 +173,3 @@ export function flattenSingleSelectGroups(
         showSeparator: group.showSeparator,
     }))
 }
-
-/** Resolve trigger styles from tokens. */
-export function getTriggerStyles(
-    tokens: SingleSelectV2TokensType,
-    size: SelectV2Size,
-    variant: SelectV2Variant,
-    state: DropdownTriggerState
-) {
-    const trigger = tokens.trigger
-    return {
-        height: trigger.height[size][variant],
-        padding: trigger.padding[size][variant],
-        borderRadius: trigger.borderRadius[size][variant],
-        boxShadow: trigger.boxShadow[variant],
-        backgroundColor: trigger.backgroundColor[variant][state],
-        border: trigger.outline[variant][state],
-    }
-}
