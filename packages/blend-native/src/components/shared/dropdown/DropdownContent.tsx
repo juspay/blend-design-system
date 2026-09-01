@@ -10,9 +10,13 @@ import Animated, {
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated'
+import {
+    parseBorder,
+    parseBoxShadow,
+    parseDimension,
+} from '../../../adapters/cssStringAdapter'
 import { Portal } from '../../../overlay/portal'
 import { Block } from '../../../primitives/Block'
-import { parseDimension } from '../../../adapters/cssStringAdapter'
 import { MOTION_DURATION, MOTION_EASING } from '../../../motion/motion'
 import { useReduceMotion } from '../../../motion/useReduceMotion'
 import type { AnchoredPosition } from '../../../overlay/positioning'
@@ -98,6 +102,8 @@ export function DropdownContent({
                     {
                         backgroundColor: tokens.backgroundColor,
                         borderRadius: parseDimension(tokens.borderRadius),
+                        ...(parseBorder(tokens.border) ?? {}),
+                        ...(parseBoxShadow(tokens.boxShadow) ?? {}),
                         paddingTop: parseDimension(tokens.paddingTop),
                         paddingRight: parseDimension(tokens.paddingRight),
                         paddingBottom: parseDimension(tokens.paddingBottom),
