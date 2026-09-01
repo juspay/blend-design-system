@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
     isControlledDateRange,
     detectPresetFromRange,
@@ -134,6 +134,19 @@ describe('isControlledDateRange', () => {
 })
 
 describe('detectPresetFromRange - custom presets', () => {
+    // Pin the clock to mid-month. matchesThisMonthPreset compares the range
+    // start against the 1st of the month with a 25-hour tolerance, so when
+    // these tests run on the 1st/2nd of a real month, ranges like
+    // "two hours ago to now" would falsely match THIS_MONTH.
+    beforeEach(() => {
+        vi.useFakeTimers()
+        vi.setSystemTime(new Date(2026, 5, 15, 12, 0, 0))
+    })
+
+    afterEach(() => {
+        vi.useRealTimers()
+    })
+
     // Helper: build presetConfigs from a CustomPresetDefinition so that the
     // definition is registered in the module-level customPresetDefinitions Map
     // (processCustomPresets has the side effect of populating that Map).
