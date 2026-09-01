@@ -1,82 +1,113 @@
-import { StyleSheet, Text, View } from 'react-native'
-import { Menu } from 'blend-native'
-import type { MenuGroupType, MenuNativeProps } from 'blend-native'
+import { useState } from 'react'
+import { View } from 'react-native'
+import { Button, Menu } from 'blend-native'
+import type { MenuGroupType } from 'blend-native'
+import { MenuAlignment, MenuSide } from 'blend-native'
+import { enumOptions } from '../types'
 import type { ComponentSpec } from '../types'
 
-/** The menu owns its trigger, so the spec is inline like Popover's. */
-type MenuPlaygroundProps = Omit<MenuNativeProps, 'trigger'>
+type MenuPlaygroundProps = {
+    alignment: MenuAlignment
+    side: MenuSide
+    closeOnSelect: boolean
+    enableSearch: boolean
+}
 
-const GROUPS: MenuGroupType[] = [
+const MENU_GROUPS: MenuGroupType[] = [
     {
-        label: 'Payouts',
+        label: 'Transactions',
         items: [
-            { label: { text: 'Settle now' } },
-            { label: { text: 'Schedule' }, subLabel: 'Pick a date' },
+            { id: 'refund', label: { text: 'Refund' }, onClick: () => {} },
+            {
+                id: 'receipt',
+                label: { text: 'Download receipt' },
+                onClick: () => {},
+            },
         ],
-        showSeparator: true,
     },
     {
+        label: 'Account',
         items: [
             {
-                label: { text: 'More' },
-                subMenu: [
-                    { label: { text: 'Export CSV' } },
-                    { label: { text: 'Export PDF' } },
-                ],
+                id: 'settings',
+                label: { text: 'Settings' },
+                onClick: () => {},
             },
             {
-                label: { text: 'Deactivate' },
-                variant: 'action',
-                actionType: 'danger',
-            } as MenuGroupType['items'][number],
+                id: 'signout',
+                label: { text: 'Sign out' },
+                onClick: () => {},
+            },
         ],
     },
 ]
 
+function MenuPreview({
+    alignment,
+    side,
+    closeOnSelect,
+    enableSearch,
+}: MenuPlaygroundProps) {
+    const [open, setOpen] = useState(false)
+    return (
+        <View style={{ alignItems: 'center' }}>
+            <Menu
+                trigger={
+                    <Button
+                        text={open ? 'Close menu' : 'Open menu'}
+                        onPress={() => setOpen(true)}
+                    />
+                }
+                items={MENU_GROUPS}
+                open={open}
+                onOpenChange={setOpen}
+                alignment={alignment}
+                side={side}
+                closeOnSelect={closeOnSelect}
+                enableSearch={enableSearch}
+            />
+        </View>
+    )
+}
+
 const spec: ComponentSpec<MenuPlaygroundProps> = {
     name: 'Menu',
     summary:
-        'Sheet on phones, anchored on tablets (web anchors at every size — a documented divergence). Sub-menus push in as a pane with a back row; selection stays controlled by the caller.',
+        'Anchored dropdown menu with grouped items, per-item selection state and search filtering. Renders a bottom sheet on small screens.',
     mode: 'inline',
     defaults: {
-        items: GROUPS,
+        alignment: MenuAlignment.START,
+        side: MenuSide.BOTTOM,
         closeOnSelect: true,
+        enableSearch: false,
     },
     controls: [
+        {
+            kind: 'select',
+            key: 'alignment',
+            label: 'Alignment',
+            options: enumOptions(MenuAlignment, 'MenuAlignment'),
+        },
+        {
+            kind: 'select',
+            key: 'side',
+            label: 'Side',
+            options: enumOptions(MenuSide, 'MenuSide'),
+        },
+        { kind: 'toggle', key: 'closeOnSelect', label: 'Close on select' },
         {
             kind: 'toggle',
             key: 'enableSearch',
             label: 'Search',
-            group: 'State',
-        },
-        {
-            kind: 'toggle',
-            key: 'closeOnSelect',
-            label: 'Close on select',
-            group: 'State',
+            group: 'Content',
         },
     ],
-    render: (props) => (
-        <Menu
-            {...props}
-            trigger={
-                <View style={styles.trigger}>
-                    <Text style={styles.triggerText}>Open the menu</Text>
-                </View>
-            }
-        />
-    ),
+    render: (props) => <MenuPreview {...props} />,
+    wrapSnippet: (inner) =>
+        inner.replace(
+            /\n\/>$/,
+            '\n    trigger={<Button text="Open menu" />}\n    items={MENU_GROUPS}\n/>'
+        ),
 }
-
-const styles = StyleSheet.create({
-    trigger: {
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        borderRadius: 8,
-        backgroundColor: '#1D4ED8',
-        alignSelf: 'center',
-    },
-    triggerText: { color: '#FFFFFF', fontWeight: '600' },
-})
 
 export default spec

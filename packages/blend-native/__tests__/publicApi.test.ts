@@ -84,7 +84,6 @@ describe('public API surface', () => {
             'LinkButton',
             'Menu',
             'MultiSelect',
-            'Modal',
             'NumberInput',
             'Popover',
             'OTPInput',
@@ -131,10 +130,9 @@ describe('public API surface', () => {
         // ProgressBar, Avatar, KeyValuePair, Card, Snackbar and their enums),
         // then to 84 for the Wave B form layer (Checkbox, Radio, Switch, the
         // compound Tabs/Accordion, the input variants, and their enums),
-        // then to 85 when BottomSheetScrollable joined the sheet foundation
-        // (Wave C0 scroll-aware drag), then to 96 for the Wave C1 overlay
-        // components (Tooltip, Popover, Modal and their enums), then to 106
-        // for Wave C2 (Menu, SingleSelect, MultiSelect and their enums).
-        expect(exported.size).toBeLessThanOrEqual(106)
+        // then to 100 for the dropdown family (Menu, SingleSelect,
+        // MultiSelect, the Select/Menu enums), then to 110 for the Wave C
+        // overlay surface (Modal, Popover, Tooltip and their enums).
+        expect(exported.size).toBeLessThanOrEqual(110)
     })
 })

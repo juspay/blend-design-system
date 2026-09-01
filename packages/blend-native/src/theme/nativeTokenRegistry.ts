@@ -52,7 +52,7 @@ export const NATIVE_TOKEN_REGISTRY = {
     CARDV2: getCardV2Tokens,
     CHECKBOXV2: getCheckboxV2Tokens,
     KEYVALUEPAIRV2: getKeyValuePairV2Tokens,
-    MENU_V2: getMenuV2Tokens,
+    MENUV2: getMenuV2Tokens,
     MODALV2: getModalV2Tokens,
     MULTI_SELECT_V2: getMultiSelectV2Tokens,
     NUMBER_INPUT_V2: getNumberInputV2Tokens,

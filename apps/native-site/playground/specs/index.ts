@@ -82,6 +82,14 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
         ],
     },
     {
+        title: 'Selectors',
+        specs: [
+            asAnySpec(singleSelect),
+            asAnySpec(multiSelect),
+            asAnySpec(menu),
+        ],
+    },
+    {
         title: 'Overlays',
         specs: [
             asAnySpec(bottomSheet),

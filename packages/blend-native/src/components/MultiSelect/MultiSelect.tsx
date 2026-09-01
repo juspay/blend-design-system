@@ -1,425 +1,367 @@
-import { useMemo } from 'react'
-import { Pressable, View } from 'react-native'
-import {
-    MultiSelectV2SelectionTagType,
-    SelectV2Variant,
-} from '@juspay/blend-design-system/node'
-import type { MultiSelectV2TokensType } from '@juspay/blend-design-system/node'
-import { useNativeTokens } from '../../theme/useNativeTokens'
-import { useNativeBreakpoint } from '../../theme/useNativeBreakpoint'
-import { useControllableState } from '../../hooks/useControllableState'
-import { AnchoredOverlay } from '../../overlay/anchored/AnchoredOverlay'
-import { BottomSheet } from '../../overlay/sheet/BottomSheet'
-import { parseBorder, parseDimension } from '../../adapters/cssStringAdapter'
-import Text from '../../primitives/Text'
-import { Button } from '../Button'
+import React, { forwardRef, memo, useCallback, useMemo, useState } from 'react'
+import { View } from 'react-native'
 import { Checkbox } from '../Checkbox'
-import { SelectTrigger } from '../shared/select/SelectTrigger'
-import { SelectOptionList } from '../shared/select/SelectOptionList'
-import type { SelectOption } from '../shared/select/SelectOptionList'
-import { ButtonV2Size, ButtonV2Type } from '@juspay/blend-design-system/node'
 import {
-    applySelectAll,
-    resolveSelectAllState,
-    toggleSelection,
+    SelectV2Alignment,
+    SelectV2Side,
+    SelectV2Variant,
+    SelectV2Size,
+    SelectorV2Size,
+    MultiSelectV2SelectionTagType,
+    type MultiSelectV2TokensType,
+} from '@juspay/blend-design-system/node'
+import { useNativeTokens } from '../../theme/useNativeTokens'
+import { BottomSheet } from '../../overlay/sheet/BottomSheet'
+import { Block } from '../../primitives/Block'
+import { DropdownContent, DropdownList, useDropdown } from '../shared/dropdown'
+import { flattenGroups } from '../shared/dropdown/dropdownFlatten'
+import { MultiSelectTrigger } from './MultiSelectTrigger'
+import { MultiSelectMenuHeader } from './MultiSelectMenuHeader'
+import { MultiSelectMenuActions } from './MultiSelectMenuActions'
+import {
+    getMultiSelectContentTokens,
+    getMultiSelectItemTokens,
+    getTriggerState,
+    getValueLabelMap,
+    getSelectionTagText,
+    getSelectAllState,
+    getAllAvailableValues,
+    handleSelectAll,
+    filterMultiSelectV2MenuGroups,
+    flattenMultiSelectGroups,
+    getNextSelectionAfterToggle as toggleSelection,
+    isBlockedByMaxSelections as isBlocked,
 } from './multiSelect.utils'
-import type { MultiSelectNativeProps } from './multiSelect.types'
+import type {
+    MultiSelectNativeProps,
+    MultiSelectRef,
+} from './multiSelect.types'
 
-/**
- * MultiSelect — the native port of web's `MultiSelectV2`.
- *
- * The surface stays open on toggle; rows carry a `Checkbox` indicator and
- * the trigger a COUNT/TEXT selection tag. Phones (`sm`) get the flat
- * bottom panel styled from the tokens' dedicated `drawer` subtree;
- * tablets (`lg`) an anchored dropdown. One `onSelectionChange` per
- * accepted gesture (the legacy `onChange` is omitted).
- */
-export function MultiSelect({
-    selectedValues,
-    onSelectionChange,
-    items = [],
-    label,
-    subLabel,
-    required = false,
-    variant = SelectV2Variant.CONTAINER,
-    selectionTagType = MultiSelectV2SelectionTagType.COUNT,
-    hintText,
-    placeholder,
-    size,
-    enableSelectAll = false,
-    selectAllText = 'Select all',
-    maxSelections,
-    onOpenChange,
-    error,
-    showActionButtons = false,
-    primaryAction,
-    secondaryAction,
-    showItemDividers = false,
-    showHeaderBorder = false,
-    allowCustomValue,
-    customValueLabel,
-    showClearButton = false,
-    onClearAllClick,
-    open,
-    search,
-    slot,
-    customTrigger,
-    disabled = false,
-    loadingComponent,
-    menuFooter,
-    maxHeightFraction,
-    minWidth,
-    maxWidth,
-    maxHeight,
-    testID,
-    style,
-}: MultiSelectNativeProps) {
-    const tokens = useNativeTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
-    const breakpoint = useNativeBreakpoint()
-    const [isOpen, setOpen] = useControllableState<boolean>(
-        open,
-        false,
-        onOpenChange
-    )
-    const close = () => setOpen(false)
-
-    const allItems = useMemo(
-        () => items.flatMap((group) => group.items),
-        [items]
-    )
-    const alwaysSelected = useMemo(
-        () =>
-            new Set(
-                allItems
-                    .filter((item) => item.alwaysSelected)
-                    .map((item) => item.value)
-            ),
-        [allItems]
-    )
-    const selectableValues = useMemo(
-        () =>
-            allItems.filter((item) => !item.disabled).map((item) => item.value),
-        [allItems]
-    )
-
-    const handleToggle = (value: string, option?: SelectOption) => {
-        option?.onPress?.()
-        const next = toggleSelection(selectedValues, value, {
-            maxSelections,
-            alwaysSelected,
-        })
-        if (next !== selectedValues) onSelectionChange?.(next)
+const PLACEMENT_MAP: Record<SelectV2Side, 'top' | 'bottom' | 'left' | 'right'> =
+    {
+        [SelectV2Side.TOP]: 'top',
+        [SelectV2Side.BOTTOM]: 'bottom',
+        [SelectV2Side.LEFT]: 'left',
+        [SelectV2Side.RIGHT]: 'right',
     }
 
-    const selectAllState = resolveSelectAllState(
-        selectedValues,
-        selectableValues
-    )
-    const handleSelectAll = () => {
-        onSelectionChange?.(
-            applySelectAll(selectedValues, selectableValues, {
-                maxSelections,
-                alwaysSelected,
-            })
-        )
-    }
-
-    const tag = tokens.trigger.selectionTag?.[variant]?.[
-        selectionTagType === MultiSelectV2SelectionTagType.COUNT
-            ? 'count'
-            : 'text'
-    ] as Record<string, unknown> | undefined
-    const valueText = selectedValues.length ? (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            {selectionTagType === MultiSelectV2SelectionTagType.COUNT ? (
-                <View
-                    style={{
-                        backgroundColor: String(
-                            tag?.backgroundColor ?? '#0561E2'
-                        ),
-                        borderRadius:
-                            parseDimension(
-                                tokens.trigger.selectionTag?.borderRadius as
-                                    | string
-                                    | number
-                            ) ?? 4,
-                        paddingHorizontal:
-                            parseDimension(
-                                tag?.paddingRight as string | number
-                            ) ?? 6,
-                    }}
-                    testID={testID ? `${testID}-count` : undefined}
-                >
-                    <Text
-                        color={String(tag?.color ?? '#FFFFFF')}
-                        fontSize={12}
-                        fontWeight={(tag?.fontWeight as number) ?? 500}
-                    >
-                        {String(selectedValues.length)}
-                    </Text>
-                </View>
-            ) : (
-                <Text
-                    color={String(tag?.color ?? '#525866')}
-                    fontSize={
-                        tokens.trigger.selectedValue?.fontSize as
-                            | string
-                            | number
-                    }
-                    numberOfLines={1}
-                >
-                    {allItems
-                        .filter((item) => selectedValues.includes(item.value))
-                        .map((item) => item.label)
-                        .join(', ')}
-                </Text>
-            )}
-        </View>
-    ) : undefined
-
-    const selectAllRow = enableSelectAll ? (
-        <Pressable
-            onPress={handleSelectAll}
-            accessibilityRole="checkbox"
-            accessibilityState={{
-                checked:
-                    selectAllState === 'indeterminate'
-                        ? 'mixed'
-                        : selectAllState === 'checked',
-            }}
-            style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingVertical: 8,
-                paddingHorizontal: 8,
-                ...(showHeaderBorder
-                    ? {
-                          ...parseBorder(
-                              String(
-                                  tokens.drawer?.header?.borderBottom ?? 'none'
-                              )
-                          ),
-                          borderBottomWidth: 1,
-                          borderTopWidth: 0,
-                          borderLeftWidth: 0,
-                          borderRightWidth: 0,
-                      }
-                    : null),
-            }}
-            testID={testID ? `${testID}-select-all` : undefined}
-        >
-            <Checkbox
-                checked={
-                    selectAllState === 'indeterminate'
-                        ? 'indeterminate'
-                        : selectAllState === 'checked'
-                }
-                onCheckedChange={handleSelectAll}
-                label={selectAllText}
-            />
-        </Pressable>
-    ) : null
-
-    const actions =
-        showActionButtons && (primaryAction || secondaryAction) ? (
-            <View
-                style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                    gap: 12,
-                    paddingVertical: 8,
-                    paddingHorizontal: 8,
-                }}
-                testID={testID ? `${testID}-actions` : undefined}
-            >
-                {secondaryAction ? (
-                    <Button
-                        text={secondaryAction.text}
-                        buttonType={ButtonV2Type.SECONDARY}
-                        size={ButtonV2Size.SMALL}
-                        onPress={() => secondaryAction.onClick()}
-                        disabled={secondaryAction.disabled}
-                        loading={secondaryAction.loading}
-                    />
-                ) : null}
-                {primaryAction ? (
-                    <Button
-                        text={primaryAction.text}
-                        buttonType={ButtonV2Type.PRIMARY}
-                        size={ButtonV2Size.SMALL}
-                        onPress={() => primaryAction.onClick(selectedValues)}
-                        disabled={primaryAction.disabled}
-                        loading={primaryAction.loading}
-                    />
-                ) : null}
-            </View>
-        ) : null
-
-    const clearRow =
-        showClearButton && selectedValues.length ? (
-            <Pressable
-                onPress={() => {
-                    onClearAllClick?.()
-                    onSelectionChange?.(
-                        selectedValues.filter((value) =>
-                            alwaysSelected.has(value)
-                        )
-                    )
-                }}
-                accessibilityRole="button"
-                style={{ paddingVertical: 8, paddingHorizontal: 8 }}
-                testID={testID ? `${testID}-clear` : undefined}
-            >
-                <Text color="#0561E2" fontSize={13} fontWeight={500}>
-                    Clear all
-                </Text>
-            </Pressable>
-        ) : null
-
-    const list = (
-        <SelectOptionList
-            groups={items}
-            selectedValues={selectedValues}
-            onOptionPress={handleToggle}
-            search={search}
-            allowCustomValue={allowCustomValue}
-            customValueLabel={customValueLabel}
-            tokens={tokens}
-            showItemDividers={showItemDividers}
-            listHeader={selectAllRow}
-            listFooter={
-                <>
-                    {clearRow}
-                    {actions}
-                    {loadingComponent}
-                    {menuFooter}
-                </>
-            }
-            renderIndicator={(selected, option) => (
-                <Checkbox
-                    checked={selected}
-                    onCheckedChange={() => handleToggle(option.value, option)}
-                    disabled={option.disabled}
-                />
-            )}
-            testID={testID}
-        />
-    )
-
-    const trigger = (
-        <SelectTrigger
-            label={label}
-            subLabel={subLabel}
-            hintText={hintText}
-            errorMessage={error?.message}
-            required={required}
-            error={Boolean(error?.show)}
-            disabled={disabled}
-            open={isOpen}
-            placeholder={placeholder}
-            valueText={valueText}
-            slot={slot}
-            customTrigger={customTrigger}
-            size={size}
-            variant={variant}
-            onPress={() => setOpen(true)}
-            tokens={tokens}
-            testID={testID}
-        />
-    )
-
-    if (breakpoint === 'sm') {
-        const header = tokens.drawer?.header
-        return (
-            <>
-                {trigger}
-                <BottomSheet
-                    open={isOpen}
-                    onClose={close}
-                    maxHeightFraction={maxHeightFraction}
-                    accessibilityLabel={label}
-                    testID={testID ? `${testID}-panel` : undefined}
-                    style={style}
-                >
-                    <View
-                        style={{
-                            paddingTop: parseDimension(
-                                header?.paddingTop as string | number
-                            ),
-                            paddingBottom: parseDimension(
-                                header?.paddingBottom as string | number
-                            ),
-                            alignItems: 'center',
-                            ...(showHeaderBorder
-                                ? {
-                                      ...parseBorder(
-                                          String(header?.borderBottom ?? 'none')
-                                      ),
-                                      borderBottomWidth: 1,
-                                      borderTopWidth: 0,
-                                      borderLeftWidth: 0,
-                                      borderRightWidth: 0,
-                                  }
-                                : null),
-                        }}
-                    >
-                        <Text
-                            color={String(
-                                tokens.label?.color?.default ?? '#2B303B'
-                            )}
-                            fontSize={tokens.label?.fontSize as number}
-                            fontWeight={600}
-                            accessibilityRole="header"
-                        >
-                            {label || 'Select options'}
-                        </Text>
-                    </View>
-                    <View style={{ paddingHorizontal: 8, paddingTop: 4 }}>
-                        {list}
-                    </View>
-                </BottomSheet>
-            </>
-        )
-    }
-
-    // MultiSelect's menu chrome sits at the subtree's top level (no
-    // `content` wrapper, unlike SingleSelect).
-    const content = tokens.menu as Record<string, unknown> | undefined
-    return (
-        <AnchoredOverlay
-            open={isOpen}
-            onRequestClose={close}
-            placement="bottom"
-            alignment="start"
-            offset={8}
-            backdrop="transparent"
-            modal
-            matchAnchorWidth
-            testID={testID ? `${testID}-panel` : undefined}
-            trigger={trigger}
-            contentStyle={[
-                {
-                    backgroundColor: String(
-                        content?.backgroundColor ?? '#FFFFFF'
-                    ),
-                    borderRadius:
-                        parseDimension(
-                            content?.borderRadius as string | number
-                        ) ?? 8,
-                    ...parseBorder(String(content?.border ?? 'none')),
-                    padding: 6,
-                    minWidth: minWidth ?? 200,
-                    maxWidth,
-                    maxHeight,
-                },
-                style,
-            ]}
-        >
-            {list}
-        </AnchoredOverlay>
-    )
+const ALIGN_MAP: Record<SelectV2Alignment, 'start' | 'center' | 'end'> = {
+    [SelectV2Alignment.START]: 'start',
+    [SelectV2Alignment.CENTER]: 'center',
+    [SelectV2Alignment.END]: 'end',
 }
 
-MultiSelect.displayName = 'MultiSelect'
+/**
+ * MultiSelect — React Native implementation of web's `MultiSelectV2`.
+ *
+ * A trigger button opens a dropdown panel with multi-select items. Supports
+ * select-all, action buttons, maxSelections, clear button, search, and
+ * mobile bottom-sheet mode.
+ */
+const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
+    function MultiSelect(
+        {
+            label,
+            subLabel,
+            hintText,
+            required = false,
+            placeholder,
+            size = SelectV2Size.MD,
+            variant = SelectV2Variant.CONTAINER,
+            selectionTagType = MultiSelectV2SelectionTagType.COUNT,
+            items = [],
+            selectedValues,
+            onChange,
+            onSelectionChange,
+            search,
+            enableSelectAll = false,
+            selectAllText = 'Select All',
+            maxSelections,
+            customTrigger,
+            open: openProp,
+            onOpenChange,
+            usePanelOnMobile = true,
+            alignment = SelectV2Alignment.START,
+            side = SelectV2Side.BOTTOM,
+            sideOffset = 8,
+            error,
+            disabled = false,
+            showActionButtons = false,
+            primaryAction,
+            secondaryAction,
+            showClearButton = false,
+            onClearAllClick,
+            enableVirtualization = false,
+            menuFooter,
+            testID,
+            accessibilityLabel,
+        },
+        ref
+    ) {
+        const tokens =
+            useNativeTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
+        const [searchText, setSearchText] = useState('')
 
-export default MultiSelect
+        const dropdown = useDropdown({
+            open: openProp,
+            onOpenChange,
+            placement: PLACEMENT_MAP[side],
+            alignment: ALIGN_MAP[alignment],
+            offset: sideOffset,
+            usePanelOnMobile,
+        })
+
+        const hasError = Boolean(error?.show)
+        const triggerState = getTriggerState(dropdown.open, disabled, hasError)
+
+        const valueLabelMap = useMemo(() => getValueLabelMap(items), [items])
+        const selectionTagText = getSelectionTagText(
+            selectionTagType,
+            selectedValues,
+            valueLabelMap
+        )
+
+        const contentTokens = useMemo(
+            () => getMultiSelectContentTokens(tokens, size, variant),
+            [tokens, size, variant]
+        )
+
+        const itemTokens = useMemo(
+            () => getMultiSelectItemTokens(tokens),
+            [tokens]
+        )
+
+        const enableSearch = search?.show ?? false
+
+        const filteredGroups = useMemo(() => {
+            if (!enableSearch || !searchText) return items
+            return filterMultiSelectV2MenuGroups(items, searchText)
+        }, [items, enableSearch, searchText])
+
+        const adapterGroups = useMemo(
+            () =>
+                flattenMultiSelectGroups(
+                    filteredGroups,
+                    selectedValues,
+                    (adapter) => ({
+                        ...adapter,
+                        leadingAccessory: (
+                            <View pointerEvents="none">
+                                <Checkbox
+                                    checked={Boolean(adapter.isSelected)}
+                                    disabled={Boolean(adapter.disabled)}
+                                    size={SelectorV2Size.SM}
+                                    accessibilityLabel={adapter.primaryText}
+                                />
+                            </View>
+                        ),
+                    })
+                ),
+            [filteredGroups, selectedValues]
+        )
+
+        const flatRows = useMemo(
+            () => flattenGroups(adapterGroups),
+            [adapterGroups]
+        )
+
+        const availableValues = useMemo(
+            () => getAllAvailableValues(items),
+            [items]
+        )
+        const { allSelected, someSelected } = getSelectAllState(
+            selectedValues,
+            availableValues
+        )
+
+        const handleItemPress = useCallback(
+            (item: unknown) => {
+                const msItem = item as { value: string; disabled?: boolean }
+                if (isBlocked(selectedValues, msItem.value, maxSelections)) {
+                    return
+                }
+                const nextSelection = toggleSelection(
+                    selectedValues,
+                    msItem.value
+                )
+                onSelectionChange?.(nextSelection)
+                if (
+                    !selectedValues.includes(msItem.value) ||
+                    nextSelection.includes(msItem.value)
+                ) {
+                    // Emit legacy per-item callback only when the item is
+                    // being added (matching web's onChange semantics)
+                    if (
+                        nextSelection.includes(msItem.value) &&
+                        !selectedValues.includes(msItem.value)
+                    ) {
+                        onChange?.(msItem.value)
+                    } else if (
+                        !nextSelection.includes(msItem.value) &&
+                        selectedValues.includes(msItem.value)
+                    ) {
+                        onChange?.(msItem.value)
+                    }
+                }
+            },
+            [selectedValues, maxSelections, onSelectionChange, onChange]
+        )
+
+        const handleSelectAllToggle = useCallback(() => {
+            const nextSelection = handleSelectAll(
+                !allSelected,
+                items,
+                selectedValues,
+                onChange,
+                maxSelections
+            )
+            onSelectionChange?.(nextSelection)
+        }, [
+            allSelected,
+            items,
+            selectedValues,
+            onChange,
+            maxSelections,
+            onSelectionChange,
+        ])
+
+        const handleClear = useCallback(() => {
+            onSelectionChange?.([])
+            onClearAllClick?.()
+        }, [onSelectionChange, onClearAllClick])
+
+        React.useEffect(() => {
+            if (!dropdown.open) setSearchText('')
+        }, [dropdown.open])
+
+        const triggerElement = customTrigger ? (
+            React.cloneElement(customTrigger, {
+                ref: dropdown.anchorRef,
+                onPress: dropdown.handleOpen,
+            } as React.Attributes)
+        ) : (
+            <MultiSelectTrigger
+                ref={dropdown.anchorRef}
+                label={label}
+                subLabel={subLabel}
+                hintText={hintText}
+                required={required}
+                placeholder={placeholder}
+                selectionTagText={selectionTagText}
+                selectedCount={selectedValues.length}
+                selectionTagType={selectionTagType}
+                size={size}
+                variant={variant}
+                disabled={disabled}
+                state={triggerState}
+                error={error}
+                tokens={tokens}
+                showClearButton={showClearButton}
+                testID={testID ? `${testID}-trigger` : undefined}
+                accessibilityLabel={accessibilityLabel}
+                onPress={dropdown.handleOpen}
+                onClear={handleClear}
+            />
+        )
+
+        const content = (
+            <>
+                {enableSelectAll || enableSearch ? (
+                    <MultiSelectMenuHeader
+                        allSelected={allSelected}
+                        someSelected={someSelected}
+                        selectAllText={selectAllText}
+                        onSelectAllToggle={handleSelectAllToggle}
+                        tokens={tokens}
+                        searchValue={searchText}
+                        onSearchChange={setSearchText}
+                        searchPlaceholder={search?.placeholder}
+                        enableSearch={enableSearch}
+                        testID={testID}
+                    />
+                ) : null}
+                <DropdownList
+                    rows={flatRows}
+                    itemTokens={itemTokens}
+                    separatorColor={String(tokens.menu.item.seperator.color)}
+                    separatorHeight={tokens.menu.item.seperator.height}
+                    separatorMargin={tokens.menu.item.seperator.margin}
+                    labelColor={String(
+                        tokens.menu.item.optionsLabel.color.default
+                    )}
+                    labelFontSize={tokens.menu.item.optionsLabel.fontSize ?? 14}
+                    labelFontWeight={
+                        tokens.menu.item.optionsLabel.fontWeight ?? '500'
+                    }
+                    labelPaddingTop={tokens.menu.item.optionsLabel.paddingTop}
+                    labelPaddingBottom={
+                        tokens.menu.item.optionsLabel.paddingBottom
+                    }
+                    labelPaddingHorizontal={
+                        tokens.menu.item.optionsLabel.paddingLeft
+                    }
+                    onItemPress={handleItemPress}
+                    enableVirtualization={enableVirtualization}
+                    testID={testID ? `${testID}-list` : undefined}
+                />
+                {showActionButtons ? (
+                    <MultiSelectMenuActions
+                        primaryAction={primaryAction}
+                        secondaryAction={secondaryAction}
+                        tokens={tokens}
+                        selectedValues={selectedValues}
+                        testID={testID ? `${testID}-actions` : undefined}
+                    />
+                ) : null}
+                {menuFooter ? <Block paddingTop={4}>{menuFooter}</Block> : null}
+            </>
+        )
+
+        if (dropdown.shouldUseSheet) {
+            return (
+                <View ref={ref} testID={testID}>
+                    {triggerElement}
+                    <BottomSheet
+                        open={dropdown.open}
+                        onClose={() => dropdown.setOpen(false)}
+                        backgroundColor={contentTokens.backgroundColor}
+                        topRadius={16}
+                        accessibilityLabel={
+                            accessibilityLabel ?? 'Multi-select'
+                        }
+                        testID={testID ? `${testID}-sheet` : undefined}
+                    >
+                        <Block
+                            paddingTop={contentTokens.paddingTop}
+                            paddingRight={contentTokens.paddingRight}
+                            paddingBottom={contentTokens.paddingBottom}
+                            paddingLeft={contentTokens.paddingLeft}
+                        >
+                            {content}
+                        </Block>
+                    </BottomSheet>
+                </View>
+            )
+        }
+
+        return (
+            <View ref={ref} testID={testID}>
+                {triggerElement}
+                <DropdownContent
+                    open={dropdown.open}
+                    onClose={() => dropdown.setOpen(false)}
+                    position={dropdown.position}
+                    onContentLayout={dropdown.onContentLayout}
+                    tokens={contentTokens}
+                    accessibilityLabel={accessibilityLabel ?? 'Multi-select'}
+                    testID={testID ? `${testID}-content` : undefined}
+                >
+                    {content}
+                </DropdownContent>
+            </View>
+        )
+    }
+)
+
+export default memo(MultiSelect)
+MultiSelect.displayName = 'MultiSelect'

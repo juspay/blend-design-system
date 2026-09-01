@@ -57,7 +57,7 @@ describe('nativeTokenRegistry', () => {
             'CARDV2',
             'CHECKBOXV2',
             'KEYVALUEPAIRV2',
-            'MENU_V2',
+            'MENUV2',
             'MODALV2',
             'MULTI_SELECT_V2',
             'NUMBER_INPUT_V2',
