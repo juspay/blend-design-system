@@ -50,8 +50,8 @@ export function useDropdown(options: {
     const shouldUseSheet = usePanelOnMobile && breakpoint === 'sm'
 
     const handleOpen = useCallback(() => {
-        setOpen(true)
-    }, [setOpen])
+        setOpen(!open)
+    }, [open, setOpen])
 
     return useMemo(
         () => ({
