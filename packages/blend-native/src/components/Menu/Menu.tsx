@@ -150,15 +150,9 @@ const Menu = forwardRef<MenuRef, MenuNativeProps>(function Menu(
     } as React.Attributes)
 
     const content = (
-        <View
-            style={{
-                paddingHorizontal: 16,
-                paddingTop: 8,
-                paddingBottom: 8,
-            }}
-        >
+        <>
             {enableSearch ? (
-                <Block paddingBottom={8}>
+                <Block paddingBottom={8} paddingLeft={8} paddingRight={8}>
                     <DropdownSearch
                         value={searchText}
                         onChange={setSearchText}
@@ -178,15 +172,16 @@ const Menu = forwardRef<MenuRef, MenuNativeProps>(function Menu(
                 labelFontWeight={tokens.group.label.fontWeight ?? '500'}
                 labelPaddingTop={tokens.group.label.paddingTop}
                 labelPaddingBottom={tokens.group.label.paddingBottom}
+                labelPaddingHorizontal={tokens.group.label.paddingLeft}
                 onItemPress={handleItemPress}
                 enableVirtualization={enableVirtualization}
                 testID={testID ? `${testID}-list` : undefined}
             />
             {menuFooter ? <Block paddingTop={4}>{menuFooter}</Block> : null}
-        </View>
+        </>
     )
 
-    if (dropdown.shouldUseSheet && dropdown.open) {
+    if (dropdown.shouldUseSheet) {
         return (
             <View ref={ref} testID={testID}>
                 {triggerElement}
@@ -198,7 +193,14 @@ const Menu = forwardRef<MenuRef, MenuNativeProps>(function Menu(
                     accessibilityLabel={accessibilityLabel ?? 'Menu'}
                     testID={testID ? `${testID}-sheet` : undefined}
                 >
-                    {content}
+                    <Block
+                        paddingTop={contentTokens.paddingTop}
+                        paddingRight={contentTokens.paddingRight}
+                        paddingBottom={contentTokens.paddingBottom}
+                        paddingLeft={contentTokens.paddingLeft}
+                    >
+                        {content}
+                    </Block>
                 </BottomSheet>
             </View>
         )

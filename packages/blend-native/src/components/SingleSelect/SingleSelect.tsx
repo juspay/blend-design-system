@@ -199,15 +199,9 @@ const SingleSelect = forwardRef<SingleSelectRef, SingleSelectNativeProps>(
         )
 
         const content = (
-            <View
-                style={{
-                    paddingHorizontal: 16,
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                }}
-            >
+            <>
                 {enableSearch ? (
-                    <Block paddingBottom={8}>
+                    <Block paddingBottom={8} paddingLeft={8} paddingRight={8}>
                         <DropdownSearch
                             value={searchText}
                             onChange={setSearchText}
@@ -227,15 +221,16 @@ const SingleSelect = forwardRef<SingleSelectRef, SingleSelectNativeProps>(
                     labelFontWeight={tokens.menu.groupLabel.fontWeight ?? '500'}
                     labelPaddingTop={tokens.menu.groupLabel.paddingTop}
                     labelPaddingBottom={tokens.menu.groupLabel.paddingBottom}
+                    labelPaddingHorizontal={tokens.menu.groupLabel.paddingLeft}
                     onItemPress={handleItemPress}
                     enableVirtualization={enableVirtualization}
                     testID={testID ? `${testID}-list` : undefined}
                 />
                 {menuFooter ? <Block paddingTop={4}>{menuFooter}</Block> : null}
-            </View>
+            </>
         )
 
-        if (dropdown.shouldUseSheet && dropdown.open) {
+        if (dropdown.shouldUseSheet) {
             return (
                 <View ref={ref} testID={testID}>
                     {triggerElement}
@@ -247,7 +242,14 @@ const SingleSelect = forwardRef<SingleSelectRef, SingleSelectNativeProps>(
                         accessibilityLabel={accessibilityLabel ?? 'Select'}
                         testID={testID ? `${testID}-sheet` : undefined}
                     >
-                        {content}
+                        <Block
+                            paddingTop={contentTokens.paddingTop}
+                            paddingRight={contentTokens.paddingRight}
+                            paddingBottom={contentTokens.paddingBottom}
+                            paddingLeft={contentTokens.paddingLeft}
+                        >
+                            {content}
+                        </Block>
                     </BottomSheet>
                 </View>
             )

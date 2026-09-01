@@ -2,7 +2,6 @@ import React, { useCallback } from 'react'
 import {
     Pressable as RNPressable,
     StyleSheet,
-    type DimensionValue,
     type LayoutChangeEvent,
 } from 'react-native'
 import Animated, {
@@ -13,6 +12,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { Portal } from '../../../overlay/portal'
 import { Block } from '../../../primitives/Block'
+import { parseDimension } from '../../../adapters/cssStringAdapter'
 import { MOTION_DURATION, MOTION_EASING } from '../../../motion/motion'
 import { useReduceMotion } from '../../../motion/useReduceMotion'
 import type { AnchoredPosition } from '../../../overlay/positioning'
@@ -97,22 +97,13 @@ export function DropdownContent({
                     styles.container,
                     {
                         backgroundColor: tokens.backgroundColor,
-                        borderColor: tokens.border ? undefined : undefined,
-                        borderRadius: tokens.borderRadius,
-                        paddingTop: tokens.paddingTop as
-                            | DimensionValue
-                            | undefined,
-                        paddingRight: tokens.paddingRight as
-                            | DimensionValue
-                            | undefined,
-                        paddingBottom: tokens.paddingBottom as
-                            | DimensionValue
-                            | undefined,
-                        paddingLeft: tokens.paddingLeft as
-                            | DimensionValue
-                            | undefined,
-                        minWidth: tokens.minWidth as DimensionValue | undefined,
-                        maxWidth: tokens.maxWidth as DimensionValue | undefined,
+                        borderRadius: parseDimension(tokens.borderRadius),
+                        paddingTop: parseDimension(tokens.paddingTop),
+                        paddingRight: parseDimension(tokens.paddingRight),
+                        paddingBottom: parseDimension(tokens.paddingBottom),
+                        paddingLeft: parseDimension(tokens.paddingLeft),
+                        minWidth: parseDimension(tokens.minWidth),
+                        maxWidth: parseDimension(tokens.maxWidth),
                         maxHeight: hasPosition
                             ? position!.maxHeight
                             : undefined,
@@ -129,11 +120,7 @@ export function DropdownContent({
                 accessibilityLabel={accessibilityLabel}
                 testID={testID}
             >
-                <Block
-                    background={tokens.boxShadow}
-                    width="100%"
-                    overflow="hidden"
-                >
+                <Block width="100%" overflow="hidden">
                     {children}
                 </Block>
             </Animated.View>

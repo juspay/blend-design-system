@@ -170,62 +170,66 @@ function MultiSelectTriggerImpl(
                 }}
                 testID={testID}
             >
-                {hasSelection &&
-                selectionTagType === MultiSelectV2SelectionTagType.COUNT ? (
+                {/* Content block: placeholder always visible (matching web);
+                    selection tag renders as a sibling beside it. Both
+                    share one nowrap row that truncates with ellipsis. */}
+                <Block
+                    flexDirection="row"
+                    alignItems="center"
+                    width="100%"
+                    flexShrink={1}
+                    minWidth={0}
+                    overflow="hidden"
+                >
                     <Text
-                        fontSize={trigger.selectedValue.fontSize}
-                        fontWeight={trigger.selectedValue.fontWeight}
+                        fontSize={trigger.placeholder.fontSize}
+                        fontWeight={trigger.placeholder.fontWeight}
                         color={String(trigger.placeholder.color)}
-                        style={{ flex: 1, flexShrink: 1 }}
+                        style={{ flexShrink: 0 }}
                         numberOfLines={1}
                     >
                         {placeholder}
                     </Text>
-                ) : (
-                    <Text
-                        fontSize={
-                            hasSelection
-                                ? trigger.selectedValue.fontSize
-                                : trigger.placeholder.fontSize
-                        }
-                        fontWeight={
-                            hasSelection
-                                ? trigger.selectedValue.fontWeight
-                                : trigger.placeholder.fontWeight
-                        }
-                        color={String(
-                            hasSelection
-                                ? trigger.selectedValue.color
-                                : trigger.placeholder.color
-                        )}
-                        style={{ flex: 1, flexShrink: 1 }}
-                        numberOfLines={1}
-                    >
-                        {hasSelection ? selectionTagText : placeholder}
-                    </Text>
-                )}
 
-                {hasSelection &&
-                selectionTagType === MultiSelectV2SelectionTagType.COUNT &&
-                tagTokens.backgroundColor !== 'transparent' ? (
-                    <Block
-                        backgroundColor={String(tagTokens.backgroundColor)}
-                        paddingTop={tagTokens.paddingTop}
-                        paddingRight={tagTokens.paddingRight}
-                        paddingBottom={tagTokens.paddingBottom}
-                        paddingLeft={tagTokens.paddingLeft}
-                        borderRadius={4}
-                        style={{ marginLeft: 8 }}
-                    >
+                    {hasSelection &&
+                    selectionTagType === MultiSelectV2SelectionTagType.TEXT ? (
                         <Text
                             fontSize={trigger.selectedValue.fontSize}
-                            fontWeight={Number(tagTokens.fontWeight) || 500}
+                            fontWeight={tagTokens.fontWeight as string | number}
                             color={String(tagTokens.color)}
+                            style={{
+                                flexShrink: 1,
+                                minWidth: 0,
+                                marginLeft: 4,
+                            }}
+                            numberOfLines={1}
                         >
-                            {selectedCount}
+                            {selectionTagText}
                         </Text>
-                    </Block>
-                ) : null}
+                    ) : null}
+
+                    {hasSelection &&
+                    selectionTagType === MultiSelectV2SelectionTagType.COUNT &&
+                    tagTokens.backgroundColor !== 'transparent' ? (
+                        <Block
+                            backgroundColor={String(tagTokens.backgroundColor)}
+                            paddingTop={tagTokens.paddingTop}
+                            paddingRight={tagTokens.paddingRight}
+                            paddingBottom={tagTokens.paddingBottom}
+                            paddingLeft={tagTokens.paddingLeft}
+                            borderRadius={4}
+                            style={{ marginLeft: 4 }}
+                        >
+                            <Text
+                                fontSize={trigger.selectedValue.fontSize}
+                                fontWeight={Number(tagTokens.fontWeight) || 500}
+                                color={String(tagTokens.color)}
+                            >
+                                {selectedCount}
+                            </Text>
+                        </Block>
+                    ) : null}
+                </Block>
 
                 {showClearButton && hasSelection && clearTokens ? (
                     <Pressable
