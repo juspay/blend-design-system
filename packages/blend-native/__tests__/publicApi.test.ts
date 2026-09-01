@@ -131,7 +131,8 @@ describe('public API surface', () => {
         // then to 84 for the Wave B form layer (Checkbox, Radio, Switch, the
         // compound Tabs/Accordion, the input variants, and their enums),
         // then to 100 for the dropdown family (Menu, SingleSelect,
-        // MultiSelect, the Select/Menu enums).
-        expect(exported.size).toBeLessThanOrEqual(100)
+        // MultiSelect, the Select/Menu enums), then to 110 for the Wave C
+        // overlay surface (Modal, Popover, Tooltip and their enums).
+        expect(exported.size).toBeLessThanOrEqual(110)
     })
 })

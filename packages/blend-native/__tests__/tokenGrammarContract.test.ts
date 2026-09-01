@@ -67,6 +67,21 @@ const EXCEPTIONS: { pattern: RegExp; handler: string }[] = [
         pattern: /^MULTI_SELECT_V2\.\w+\.\w+\.trigger\.floatingLabel\./,
         handler: 'Not rendered by native MultiSelect',
     },
+    {
+        // '20vh' — viewport-relative height, no RN equivalent. The native
+        // Modal overlay sizes itself from the window dimensions and safe
+        // areas, never reading this token.
+        pattern: /^MODALV2\.\w+\.\w+\.header\.maxHeight$/,
+        handler: 'AnchoredOverlay/BottomSheet size from viewport',
+    },
+    {
+        // '8px' — invalid CSS border shorthand (missing style and color);
+        // browsers silently drop it. Upstream bug in PopoverV2 tokens.
+        // Native Popover only uses the radius/shadow tokens for its
+        // surface; the malformed border is never applied.
+        pattern: /^POPOVERV2\.\w+\.\w+\.border$/,
+        handler: 'Not applied by native Popover (upstream token bug)',
+    },
 ]
 
 type Leaf = { path: string; segments: string[]; value: unknown }

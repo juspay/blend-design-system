@@ -84,8 +84,17 @@ export type {
     MenuV2ItemLabel,
     MenuV2Props,
 } from './components/MenuV2/menuV2.types'
+export type { MenuV2SearchSortFn } from './components/MenuV2/menuV2.types'
+export type { MenuV2FlatRow } from './components/MenuV2/menuV2.utils'
+export {
+    defaultSearchSortFn,
+    filterMenuV2Groups,
+    flattenMenuV2Groups,
+} from './components/MenuV2/menuV2.utils'
 
 export { getModalV2Tokens } from './components/ModalV2/modalV2.tokens'
+export type { ModalV2TokensType } from './components/ModalV2/modalV2.tokens.types'
+export type { ModalBaseProps } from './components/ModalV2/modalV2.base.types'
 
 export { getMultiSelectV2Tokens } from './components/MultiSelectV2/multiSelectV2.tokens'
 export type {
@@ -99,6 +108,13 @@ export type {
     MultiSelectV2Props,
 } from './components/MultiSelectV2/multiSelectV2.types'
 export { getPopoverV2Tokens } from './components/PopoverV2/popoverV2.token'
+export type { PopoverV2TokenType } from './components/PopoverV2/popoverV2.tokens.types'
+export {
+    PopoverV2Size,
+    PopoverV2Side,
+    PopoverV2Align,
+} from './components/PopoverV2/popoverV2.base.types'
+export type { PopoverBaseProps } from './components/PopoverV2/popoverV2.base.types'
 export { getProgressBarV2Tokens } from './components/ProgressBarV2/progressBarV2.tokens'
 export type {
     ProgressBarV2TokenType,
@@ -200,6 +216,14 @@ export { getTopbarTokens } from './components/Topbar/topbar.tokens'
 export { getSidebarTokens } from './components/Sidebar/sidebar.tokens'
 export { getMobileNavigationTokens } from './components/Sidebar/SidebarMobile/mobile.tokens'
 export { getTooltipV2Tokens } from './components/TooltipV2/tooltipV2.tokens'
+export type { TooltipV2TokensType } from './components/TooltipV2/tooltipV2.tokens.types'
+export {
+    TooltipV2Side,
+    TooltipV2Align,
+    TooltipV2Size,
+    TooltipV2SlotDirection,
+} from './components/TooltipV2/tooltipV2.types'
+export type { TooltipBaseProps } from './components/TooltipV2/tooltipV2.types'
 export { getTimePickerTokens } from './components/TimePicker/timePicker.tokens'
 export { getCalendarToken } from './components/DateRangePicker/dateRangePicker.tokens'
 

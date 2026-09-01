@@ -61,12 +61,6 @@ export type {
 } from './components/SingleSelect'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
-export { Menu } from './components/Menu'
-export type {
-    MenuNativeProps,
-    MenuItemType,
-    MenuGroupType,
-} from './components/Menu'
 export { Modal } from './components/Modal'
 export type { ModalNativeProps, ModalAction } from './components/Modal'
 export { Popover } from './components/Popover'
@@ -91,20 +85,8 @@ export { Switch } from './components/Switch'
 export type { SwitchNativeProps } from './components/Switch'
 export { SearchInput } from './components/SearchInput'
 export type { SearchInputNativeProps } from './components/SearchInput'
-export { SingleSelect } from './components/SingleSelect'
-export type {
-    SingleSelectNativeProps,
-    SingleSelectItemType,
-    SingleSelectGroupType,
-} from './components/SingleSelect'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
-export { MultiSelect } from './components/MultiSelect'
-export type {
-    MultiSelectNativeProps,
-    MultiSelectItemType,
-    MultiSelectGroupType,
-} from './components/MultiSelect'
 export { NumberInput } from './components/NumberInput'
 export type { NumberInputNativeProps } from './components/NumberInput'
 export { OTPInput } from './components/OTPInput'
@@ -267,13 +249,12 @@ export {
     InputStateV2 as InputState,
     MenuV2Alignment as MenuAlignment,
     MenuV2Side as MenuSide,
-    MultiSelectV2SelectionTagType as MultiSelectSelectionTagType,
+    MenuV2ItemVariant as MenuItemVariant,
+    MenuV2ItemActionType as MenuItemActionType,
     NumberInputV2Direction as NumberInputDirection,
     ProgressBarV2Size as ProgressBarSize,
     SelectV2Alignment as SelectAlignment,
     SelectV2Side as SelectSide,
-    SelectV2Size as SelectSize,
-    SelectV2Variant as SelectVariant,
     SnackbarV2Variant as SnackbarVariant,
     ProgressBarV2Variant as ProgressBarVariant,
     ProgressBarV2Appearance as ProgressBarAppearance,
@@ -281,10 +262,6 @@ export {
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,
     TagV2Color as TagColor,
-    MenuV2Alignment as MenuAlignment,
-    MenuV2Side as MenuSide,
-    MenuV2ItemVariant as MenuItemVariant,
-    MenuV2ItemActionType as MenuItemActionType,
     PopoverV2Size as PopoverSize,
     PopoverV2Side as PopoverSide,
     PopoverV2Align as PopoverAlign,
