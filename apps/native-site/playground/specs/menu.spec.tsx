@@ -50,7 +50,7 @@ function MenuPreview({
 }: MenuPlaygroundProps) {
     const [open, setOpen] = useState(false)
     return (
-        <View style={{ width: 280, alignItems: 'flex-start' }}>
+        <View style={{ alignItems: 'center' }}>
             <Menu
                 trigger={
                     <Button
