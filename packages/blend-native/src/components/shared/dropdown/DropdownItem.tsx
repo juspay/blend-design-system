@@ -4,12 +4,19 @@ import { Check, ChevronRight } from 'lucide-react-native'
 import { Pressable } from '../../../primitives/Pressable'
 import { Text } from '../../../primitives/Text'
 import { Slot } from '../../../primitives/Slot'
+import { parseDimension } from '../../../adapters/cssStringAdapter'
 import type { DropdownItemAdapter, DropdownItemTokens } from './dropdown.types'
 
 /**
  * A pressable row inside a dropdown list: leading slot + label + sublabel
  * + trailing checkmark/chevron. Generic over the item type so Menu,
  * SingleSelect, and MultiSelect all share it.
+ *
+ * Layout matches web mobile (`SingleSelectV2MobileItem` / `SelectItemV2`):
+ * outer column with gap between the main row and the sub-label row.
+ * The main row is horizontal: leading accessory + leading slot +
+ * label (flex 1) + trailing slot/checkmark/chevron. The sub-label
+ * renders as a full-width second row below.
  *
  * State resolution: native has no hover/focus. `active` (pressed) is
  * handled by `Pressable` via `activeBackground`; `selected` and `disabled`
@@ -67,8 +74,7 @@ const DropdownItemImpl = forwardRef<RNView, DropdownItemProps>(
                 paddingRight={tokens.paddingRight}
                 paddingBottom={tokens.paddingBottom}
                 paddingLeft={tokens.paddingLeft}
-                flexDirection="row"
-                alignItems="center"
+                flexDirection="column"
                 gap={tokens.gap}
                 borderRadius={tokens.borderRadius}
                 disabled={disabled}
@@ -76,7 +82,7 @@ const DropdownItemImpl = forwardRef<RNView, DropdownItemProps>(
                 style={
                     tokens.margin != null
                         ? {
-                              margin: tokens.margin as import('react-native').DimensionValue,
+                              margin: parseDimension(tokens.margin),
                           }
                         : undefined
                 }
@@ -88,36 +94,68 @@ const DropdownItemImpl = forwardRef<RNView, DropdownItemProps>(
                 accessibilityLabel={primaryText}
                 testID={testID}
             >
-                {checkmarkOnLeading && tokens.text.checkmark ? (
-                    <Check
-                        size={Number(tokens.text.checkmark.width) || 16}
-                        color={tokens.text.checkmark.color}
-                    />
-                ) : null}
+                {/* Main row: leading + label + trailing */}
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        width: '100%',
+                        gap: 8,
+                    }}
+                >
+                    {checkmarkOnLeading && tokens.text.checkmark ? (
+                        <Check
+                            size={Number(tokens.text.checkmark.width) || 16}
+                            color={tokens.text.checkmark.color}
+                        />
+                    ) : null}
 
-                {leadingAccessory}
+                    {leadingAccessory}
 
-                {leadingSlot ? (
-                    <Slot
-                        maxHeight={tokens.text.leftSlot.maxHeight}
-                        color={tokens.text.color[state]}
-                        hidden
-                    >
-                        {leadingSlot}
-                    </Slot>
-                ) : null}
+                    {leadingSlot ? (
+                        <Slot
+                            maxHeight={tokens.text.leftSlot.maxHeight}
+                            color={tokens.text.color[state]}
+                            hidden
+                        >
+                            {leadingSlot}
+                        </Slot>
+                    ) : null}
 
-                <View style={{ flex: 1, flexShrink: 1 }}>
-                    <Text
-                        fontSize={tokens.text.fontSize}
-                        fontWeight={tokens.text.fontWeight}
-                        lineHeight={tokens.text.lineHeight}
-                        color={tokens.text.color[state]}
-                        numberOfLines={1}
-                    >
-                        {primaryText}
-                    </Text>
-                    {secondaryText ? (
+                    <View style={{ flex: 1, flexShrink: 1 }}>
+                        <Text
+                            fontSize={tokens.text.fontSize}
+                            fontWeight={tokens.text.fontWeight}
+                            lineHeight={tokens.text.lineHeight}
+                            color={tokens.text.color[state]}
+                            numberOfLines={1}
+                        >
+                            {primaryText}
+                        </Text>
+                    </View>
+
+                    {trailingSlot}
+
+                    {showCheckmark &&
+                    !checkmarkOnLeading &&
+                    tokens.text.checkmark ? (
+                        <Check
+                            size={Number(tokens.text.checkmark.width) || 16}
+                            color={tokens.text.checkmark.color}
+                        />
+                    ) : null}
+
+                    {hasSubMenu ? (
+                        <ChevronRight
+                            size={Number(tokens.text.rightChevron.width) || 16}
+                            color={tokens.text.rightChevron.color}
+                        />
+                    ) : null}
+                </View>
+
+                {/* Sub-label row */}
+                {secondaryText ? (
+                    <View style={{ width: '100%' }}>
                         <Text
                             fontSize={tokens.text.subText.fontSize}
                             fontWeight={tokens.text.subText.fontWeight}
@@ -127,25 +165,7 @@ const DropdownItemImpl = forwardRef<RNView, DropdownItemProps>(
                         >
                             {secondaryText}
                         </Text>
-                    ) : null}
-                </View>
-
-                {trailingSlot}
-
-                {showCheckmark &&
-                !checkmarkOnLeading &&
-                tokens.text.checkmark ? (
-                    <Check
-                        size={Number(tokens.text.checkmark.width) || 16}
-                        color={tokens.text.checkmark.color}
-                    />
-                ) : null}
-
-                {hasSubMenu ? (
-                    <ChevronRight
-                        size={Number(tokens.text.rightChevron.width) || 16}
-                        color={tokens.text.rightChevron.color}
-                    />
+                    </View>
                 ) : null}
             </Pressable>
         )

@@ -265,13 +265,7 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
         )
 
         const content = (
-            <View
-                style={{
-                    paddingHorizontal: 16,
-                    paddingTop: 8,
-                    paddingBottom: 8,
-                }}
-            >
+            <>
                 {enableSelectAll || enableSearch ? (
                     <MultiSelectMenuHeader
                         allSelected={allSelected}
@@ -303,6 +297,9 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                     labelPaddingBottom={
                         tokens.menu.item.optionsLabel.paddingBottom
                     }
+                    labelPaddingHorizontal={
+                        tokens.menu.item.optionsLabel.paddingLeft
+                    }
                     onItemPress={handleItemPress}
                     enableVirtualization={enableVirtualization}
                     testID={testID ? `${testID}-list` : undefined}
@@ -317,10 +314,10 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                     />
                 ) : null}
                 {menuFooter ? <Block paddingTop={4}>{menuFooter}</Block> : null}
-            </View>
+            </>
         )
 
-        if (dropdown.shouldUseSheet && dropdown.open) {
+        if (dropdown.shouldUseSheet) {
             return (
                 <View ref={ref} testID={testID}>
                     {triggerElement}
@@ -334,7 +331,14 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                         }
                         testID={testID ? `${testID}-sheet` : undefined}
                     >
-                        {content}
+                        <Block
+                            paddingTop={contentTokens.paddingTop}
+                            paddingRight={contentTokens.paddingRight}
+                            paddingBottom={contentTokens.paddingBottom}
+                            paddingLeft={contentTokens.paddingLeft}
+                        >
+                            {content}
+                        </Block>
                     </BottomSheet>
                 </View>
             )

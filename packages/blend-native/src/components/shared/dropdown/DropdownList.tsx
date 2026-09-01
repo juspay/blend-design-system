@@ -1,8 +1,10 @@
 import { useCallback, memo } from 'react'
-import { FlatList, ScrollView, View, type ListRenderItem } from 'react-native'
+import { FlatList, ScrollView, type ListRenderItem } from 'react-native'
 import { DropdownItem } from './DropdownItem'
 import { DropdownSeparator } from './DropdownSeparator'
 import { Text } from '../../../primitives/Text'
+import { Block } from '../../../primitives/Block'
+import { parseDimension } from '../../../adapters/cssStringAdapter'
 import type {
     DropdownFlatRow,
     DropdownItemAdapter,
@@ -28,6 +30,7 @@ export type DropdownListProps<TItem = unknown> = {
     labelFontWeight: string | number
     labelPaddingTop?: string | number
     labelPaddingBottom?: string | number
+    labelPaddingHorizontal?: string | number
     onItemPress: (item: DropdownItemAdapter<TItem>['item']) => void
     enableVirtualization?: boolean
     virtualizationThreshold?: number
@@ -47,6 +50,7 @@ function DropdownListImpl<TItem>({
     labelFontWeight,
     labelPaddingTop,
     labelPaddingBottom,
+    labelPaddingHorizontal,
     onItemPress,
     enableVirtualization = false,
     virtualizationThreshold = VIRTUALIZATION_THRESHOLD,
@@ -65,6 +69,7 @@ function DropdownListImpl<TItem>({
                 labelFontWeight={labelFontWeight}
                 labelPaddingTop={labelPaddingTop}
                 labelPaddingBottom={labelPaddingBottom}
+                labelPaddingHorizontal={labelPaddingHorizontal}
                 onItemPress={onItemPress}
             />
         ),
@@ -78,6 +83,7 @@ function DropdownListImpl<TItem>({
             labelFontWeight,
             labelPaddingTop,
             labelPaddingBottom,
+            labelPaddingHorizontal,
             onItemPress,
         ]
     )
@@ -121,6 +127,7 @@ function DropdownListImpl<TItem>({
                     labelFontWeight={labelFontWeight}
                     labelPaddingTop={labelPaddingTop}
                     labelPaddingBottom={labelPaddingBottom}
+                    labelPaddingHorizontal={labelPaddingHorizontal}
                     onItemPress={onItemPress}
                 />
             ))}
@@ -139,6 +146,7 @@ type RowRendererProps<TItem> = {
     labelFontWeight: string | number
     labelPaddingTop?: string | number
     labelPaddingBottom?: string | number
+    labelPaddingHorizontal?: string | number
     onItemPress: (item: DropdownItemAdapter<TItem>['item']) => void
 }
 
@@ -153,6 +161,7 @@ function RowRenderer<TItem>({
     labelFontWeight,
     labelPaddingTop,
     labelPaddingBottom,
+    labelPaddingHorizontal,
     onItemPress,
 }: RowRendererProps<TItem>) {
     if (row.type === 'separator') {
@@ -167,20 +176,21 @@ function RowRenderer<TItem>({
 
     if (row.type === 'label') {
         return (
-            <View
-                style={{
-                    paddingTop: labelPaddingTop as number | undefined,
-                    paddingBottom: labelPaddingBottom as number | undefined,
-                }}
+            <Block
+                paddingTop={parseDimension(labelPaddingTop) ?? 0}
+                paddingBottom={parseDimension(labelPaddingBottom) ?? 0}
+                paddingLeft={parseDimension(labelPaddingHorizontal) ?? 0}
+                paddingRight={parseDimension(labelPaddingHorizontal) ?? 0}
             >
                 <Text
                     fontSize={labelFontSize}
                     fontWeight={labelFontWeight}
                     color={labelColor}
+                    style={{ textTransform: 'uppercase' }}
                 >
                     {row.label}
                 </Text>
-            </View>
+            </Block>
         )
     }
 
