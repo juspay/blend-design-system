@@ -1,9 +1,11 @@
-import { forwardRef, useMemo, useState, useCallback } from 'react'
+import { forwardRef, useContext, useMemo, useState, useCallback } from 'react'
 import { View } from 'react-native'
 import type { View as RNView, LayoutChangeEvent } from 'react-native'
 import Svg, { Path, Rect, Text as SvgText, G } from 'react-native-svg'
 import type { ChartV2TokensType } from '@juspay/blend-design-system/node'
 import { useNativeTokens } from '../../theme/useNativeTokens'
+import { BlendNativeThemeContext } from '../../theme/BlendNativeProvider'
+import { parseDimension } from '../../adapters/cssStringAdapter'
 import { ChartContainer } from '../Chart'
 import { ChartNoData } from '../Chart'
 import { ChartSkeleton } from '../Chart'
@@ -53,6 +55,10 @@ const SankeyChart = forwardRef<RNView, SankeyChartProps>(function SankeyChart(
 ) {
     const tokens = useNativeTokens<ChartV2TokensType>('CHARTSV2')
     const ct = tokens.chart
+    // SvgText does not inherit the RN font context — resolve the body role
+    // explicitly, like Chart.tsx does for Victory labels.
+    const { fontFamily: familyMap } = useContext(BlendNativeThemeContext)
+    const labelFontFamily = familyMap.body ?? undefined
 
     const [measuredWidth, setMeasuredWidth] = useState<number | undefined>()
     const onLayout = (event: LayoutChangeEvent) => {
@@ -205,7 +211,7 @@ const SankeyChart = forwardRef<RNView, SankeyChartProps>(function SankeyChart(
                                 key={`link-${i}`}
                                 d={path}
                                 fill={link.resolvedColor}
-                                opacity={dimmed ? 0.12 : 0.4}
+                                opacity={dimmed ? 0.12 : 0.5}
                                 onPress={
                                     focusBehavior !== 'none'
                                         ? () => handleLinkPress(linkKey)
@@ -251,8 +257,8 @@ const SankeyChart = forwardRef<RNView, SankeyChartProps>(function SankeyChart(
                                     <SvgText
                                         x={
                                             node.columnIndex === 0
-                                                ? x - 6
-                                                : x + nodeWidth + 6
+                                                ? x - 8
+                                                : x + nodeWidth + 8
                                         }
                                         y={
                                             node.y +
@@ -263,7 +269,15 @@ const SankeyChart = forwardRef<RNView, SankeyChartProps>(function SankeyChart(
                                                 2 +
                                             4
                                         }
-                                        fontSize={11}
+                                        fontSize={
+                                            parseDimension(
+                                                ct.xAxis.labels.fontSize as
+                                                    | string
+                                                    | number
+                                            ) ?? 11
+                                        }
+                                        fontFamily={labelFontFamily}
+                                        fontWeight={500}
                                         fill={dimmed ? labelColor : titleColor}
                                         textAnchor={
                                             node.columnIndex === 0

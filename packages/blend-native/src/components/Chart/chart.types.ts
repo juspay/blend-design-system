@@ -151,9 +151,9 @@ export type ChartNativeProps = {
 /** Default palette for multi-series charts. */
 export const CHART_PALETTE = [
     '#2B7FFF', // blue-500
-    '#00C950', // green-500
-    '#FF6B00', // orange-500
     '#FB2C36', // red-500
+    '#FF6B00', // orange-500
+    '#00C950', // green-500
     '#A855F7', // purple-500
     '#06B6D4', // cyan-500
     '#EAB308', // yellow-500

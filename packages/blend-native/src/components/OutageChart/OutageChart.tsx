@@ -20,7 +20,7 @@ import type { OutageChartNativeProps, OutageSegment } from './outageChart.types'
 
 const DEFAULT_TREND_HEIGHT = 160
 const DEFAULT_LANE_HEIGHT = 48
-const DEFAULT_SEGMENT_HEIGHT = 8
+const DEFAULT_SEGMENT_HEIGHT = 4
 const HIGHLIGHT_OPACITY = 0.15
 const DIMMED_OPACITY = 0.25
 
@@ -327,8 +327,7 @@ const OutageChart = forwardRef<RNView, OutageChartNativeProps>(
                                                     left: `${left}%`,
                                                     width: `${width}%`,
                                                     height: segmentHeight,
-                                                    borderRadius:
-                                                        segmentHeight / 2,
+                                                    borderRadius: 0,
                                                     backgroundColor:
                                                         segment.color,
                                                     opacity: dimmed
