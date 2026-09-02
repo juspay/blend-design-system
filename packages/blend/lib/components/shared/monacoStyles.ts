@@ -18,7 +18,7 @@
 // This module is browser-only and is loaded lazily from the editor wrappers'
 // mount effect, so it never runs during SSR.
 
-// @ts-expect-error resolved by the '*.css?inline' ambient module (lib/types/assets.d.ts)
+// Import resolved by the '*.css?inline' ambient module (lib/types/assets.d.ts).
 import editorStyles from 'monaco-editor/min/vs/editor/editor.main.css?inline'
 import { version as MONACO_VERSION } from 'monaco-editor/package.json'
 
