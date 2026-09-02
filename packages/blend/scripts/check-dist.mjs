@@ -282,13 +282,64 @@ for (const file of readdirSync(distDir).filter((f) => f.endsWith('.js'))) {
     }
 }
 
+// ---------------------------------------------------------------------------
+// Check 5: Monaco's editor stylesheet must ship self-contained in JS, not in
+// the global style.css (issue #1744). CodeEditor injects the stylesheet at
+// runtime (components/shared/monacoStyles.ts) so a self-hosted editor renders
+// styled with NO `@juspay/blend-design-system/style.css` import. That means
+// the editor CSS must (a) be present in a JS chunk — the inlined string — and
+// (b) NOT be extracted into style.css, or it would double-ship ~260KB and
+// re-introduce the global-stylesheet dependency the injection removes.
+// The full Monaco editor CSS carries 700+ `.monaco-editor` selectors, so a
+// generous threshold cleanly separates "the whole stylesheet is here" from the
+// handful of ad-hoc `.monaco-editor` overrides the wrappers inline.
+// ---------------------------------------------------------------------------
+const MONACO_BULK_THRESHOLD = 100
+const countMatches = (source, needle) => source.split(needle).length - 1
+
+const stylePath = resolve(distDir, 'style.css')
+if (existsSync(stylePath)) {
+    const styleMonaco = countMatches(
+        readFileSync(stylePath, 'utf8'),
+        '.monaco-editor'
+    )
+    if (styleMonaco >= MONACO_BULK_THRESHOLD) {
+        failed = true
+        console.error(
+            `✖ dist/style.css carries the full Monaco editor stylesheet ` +
+                `(${styleMonaco} \`.monaco-editor\` selectors). CodeEditor injects ` +
+                'it at runtime (monacoStyles.ts), so it must NOT also be extracted ' +
+                'into style.css — a static `import` of a Monaco CSS file crept back in.'
+        )
+    }
+}
+
+const jsHasMonacoBulk = readdirSync(distDir)
+    .filter((f) => f.endsWith('.js'))
+    .some(
+        (f) =>
+            countMatches(
+                readFileSync(resolve(distDir, f), 'utf8'),
+                '.monaco-editor'
+            ) >= MONACO_BULK_THRESHOLD
+    )
+if (!jsHasMonacoBulk) {
+    failed = true
+    console.error(
+        '✖ No dist JS chunk contains the Monaco editor stylesheet. CodeEditor ' +
+            'relies on monacoStyles.ts injecting it via `?inline`; the inline import ' +
+            'appears to have been dropped, so a self-hosted editor renders unstyled.'
+    )
+}
+
 if (failed) {
     process.exit(1)
 }
 
 console.log(
     `✔ dist/ has no file/directory collisions; key exports (${KEY_EXPORTS.join(', ')}) are typed; ` +
-        `${verifiedStatics} compound statics declared (flat-export aliases as \`typeof\`).`
+        `${verifiedStatics} compound statics declared (flat-export aliases as \`typeof\`); ` +
+        'Monaco editor CSS ships self-contained in JS, not style.css.'
 )
 // Importing dist/main.js leaves live handles behind (styled-components /
 // framer-motion timers under jsdom), so Node would hang without an explicit
