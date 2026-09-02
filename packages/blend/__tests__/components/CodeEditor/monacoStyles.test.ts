@@ -1,9 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { version as MONACO_VERSION } from 'monaco-editor/package.json'
 
 // Self-hosting Monaco's editor stylesheet (#1744): injectMonacoStyles() must
 // put the stylesheet into the DOM exactly once, so a CodeEditor renders styled
 // with no global Blend stylesheet import — and never duplicate ~260KB of CSS
-// across multiple editor mounts or a second copy of the package.
+// across multiple editor mounts or another copy of the package that bundles the
+// same Monaco version.
 const MARKER = 'style[data-blend-monaco]'
 
 describe('injectMonacoStyles (#1744)', () => {
@@ -41,9 +43,9 @@ describe('injectMonacoStyles (#1744)', () => {
         expect(document.head.querySelectorAll(MARKER)).toHaveLength(1)
     })
 
-    it('does not duplicate when a marker style already exists (e.g. a second package copy)', async () => {
+    it('does not duplicate when a same-version marker already exists (another package copy)', async () => {
         const existing = document.createElement('style')
-        existing.setAttribute('data-blend-monaco', '')
+        existing.setAttribute('data-blend-monaco', MONACO_VERSION)
         existing.textContent = '/* injected by another bundle */'
         document.head.appendChild(existing)
 
@@ -54,5 +56,25 @@ describe('injectMonacoStyles (#1744)', () => {
         const styles = document.head.querySelectorAll(MARKER)
         expect(styles).toHaveLength(1)
         expect(styles[0]).toBe(existing)
+    })
+
+    it('injects its own stylesheet alongside a different Monaco version', async () => {
+        const other = document.createElement('style')
+        other.setAttribute('data-blend-monaco', '0.0.0-different')
+        other.textContent = '/* a different bundled Monaco version */'
+        document.head.appendChild(other)
+
+        const { injectMonacoStyles } =
+            await import('../../../lib/components/shared/monacoStyles')
+        injectMonacoStyles()
+
+        // The mismatched version must not satisfy dedup — our version gets its
+        // own stylesheet so the editor is not left inheriting foreign CSS.
+        expect(document.head.querySelectorAll(MARKER)).toHaveLength(2)
+        expect(
+            document.head.querySelector(
+                `style[data-blend-monaco="${MONACO_VERSION}"]`
+            )?.textContent
+        ).toContain('.monaco-editor')
     })
 })
