@@ -22,8 +22,9 @@ function ChartNoData({ title, subtitle, slot }: ChartNoDataProps) {
             accessibilityRole="text"
         >
             {title ? (
+                /* Matches web's `heading.sm` variant: 18/600/24. */
                 <Text
-                    fontSize={16}
+                    fontSize={18}
                     fontWeight={600}
                     lineHeight={24}
                     color={String(tokens.chart.xAxis.title.color)}
@@ -32,6 +33,7 @@ function ChartNoData({ title, subtitle, slot }: ChartNoDataProps) {
                 </Text>
             ) : null}
             {subtitle ? (
+                /* Matches web's `body.sm` variant: 12/400/18. */
                 <Text
                     fontSize={12}
                     fontWeight={400}

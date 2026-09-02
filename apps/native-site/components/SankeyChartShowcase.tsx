@@ -23,13 +23,13 @@ function Section({
 }
 
 const PAYMENT_NODES: SankeyNode[] = [
-    { id: 'initiated', label: 'Initiated' },
-    { id: 'success', label: 'Success' },
-    { id: 'failure', label: 'Failure' },
-    { id: 'pending', label: 'Pending' },
-    { id: 'settled', label: 'Settled' },
-    { id: 'refunded', label: 'Refunded' },
-    { id: 'closed', label: 'Closed' },
+    { id: 'initiated', label: 'Initiated', color: '#2B7FFF' },
+    { id: 'success', label: 'Success', color: '#00C950' },
+    { id: 'failure', label: 'Failure', color: '#FB2C36' },
+    { id: 'pending', label: 'Pending', color: '#EAB308' },
+    { id: 'settled', label: 'Settled', color: '#14B8A6' },
+    { id: 'refunded', label: 'Refunded', color: '#06B6D4' },
+    { id: 'closed', label: 'Closed', color: '#6B7280' },
 ]
 
 // Clean 3-column flow:

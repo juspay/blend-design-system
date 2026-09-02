@@ -1,4 +1,4 @@
-import { forwardRef, useMemo, useState, useCallback } from 'react'
+import { forwardRef, useContext, useMemo, useState, useCallback } from 'react'
 import type { View as RNView, LayoutChangeEvent } from 'react-native'
 import { View } from 'react-native'
 import {
@@ -14,6 +14,8 @@ import {
 import type { ChartV2TokensType } from '@juspay/blend-design-system/node'
 import { useNativeTokens } from '../../theme/useNativeTokens'
 import { parseDimension } from '../../adapters/cssStringAdapter'
+import { BlendNativeThemeContext } from '../../theme/BlendNativeProvider'
+import { resolveFontWeight } from '../../primitives/textStyle'
 import Text from '../../primitives/Text'
 import ChartContainer from './ChartContainer'
 import ChartHeader from './ChartHeader'
@@ -59,6 +61,11 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
 ) {
     const tokens = useNativeTokens<ChartV2TokensType>('CHARTSV2')
     const ct = tokens.chart
+    // Victory labels don't inherit from RN `Text`, so the app font (the
+    // provider's `body` role) must be applied explicitly — same pattern as
+    // the `Text` primitive, which web gets for free via CSS inheritance.
+    const { fontFamily: familyMap } = useContext(BlendNativeThemeContext)
+    const axisFontFamily = familyMap.body ?? undefined
 
     // --- Hidden keys (controlled or uncontrolled) -------------------------
     const isControlled = controlledHiddenKeys !== undefined
@@ -142,7 +149,10 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
     const axisLabelStyle = {
         fill: String(ct.xAxis.labels.color),
         fontSize: parseDimension(ct.xAxis.labels.fontSize as string | number),
-        fontFamily: undefined as string | undefined,
+        fontFamily: axisFontFamily as string | undefined,
+        fontWeight: resolveFontWeight(
+            ct.xAxis.labels.fontWeight as string | number
+        ),
     }
 
     const axisStyle = {
@@ -162,7 +172,9 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
 
     const dependentAxisStyle = {
         axis: { stroke: 'transparent' },
-        tickLabels: axisLabelStyle,
+        // `padding` is the gap between the tick labels and the axis/grid
+        // lines — Victory's default is ~10, which reads as crowded.
+        tickLabels: { ...axisLabelStyle, padding: 16 },
         grid: {
             stroke: showGrid ? String(ct.yAxis.gridLine.color) : 'transparent',
             strokeWidth: showGrid
@@ -199,14 +211,18 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
             )
         }
 
-        const domainPadding = { x: 20, y: 10 }
+        // Inset between the domain edges and the plot area. Highcharts does
+        // this automatically per chart type; Victory needs it explicit. Kept
+        // small to match web — the axis-label lanes below are the real
+        // margins, this only keeps edge points from clipping.
+        const domainPadding = { x: 8, y: 10 }
 
         if (type === 'bar' || type === 'column') {
             // Grouped bars: VictoryGroup splits each category band into N
             // equal slices (offset = the pixel width of each slice). Give the
             // group a fixed barWidth so bars keep a gap between series within
-            // a category, and let domainPadding x widen the bands so
-            // categories aren't jammed edge-to-edge.
+            // a category; domainPadding x keeps the first/last band from
+            // touching the plot edges.
             const isHorizontal = type === 'bar'
             const groupOffset = 16
             const barWidth = 12
@@ -227,10 +243,10 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
                             bottom: 40,
                             // Categories sit on the *left* for horizontal bars —
                             // they need a wider lane than the 8px default.
-                            left: isHorizontal ? 60 : showYAxis ? 50 : 8,
+                            left: isHorizontal ? 44 : showYAxis ? 40 : 8,
                             right: 8,
                         }}
-                        domainPadding={{ x: 40, y: 10 }}
+                        domainPadding={{ x: 16, y: 10 }}
                         horizontal={isHorizontal}
                     >
                         {/* Independent axis — category labels ('Q1', 'Jan').
@@ -310,10 +326,10 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
                         padding={{
                             top: 8,
                             bottom: 40,
-                            left: showYAxis ? 50 : 8,
+                            left: showYAxis ? 40 : 8,
                             right: 8,
                         }}
-                        domainPadding={{ x: 40, y: 10 }}
+                        domainPadding={{ x: 16, y: 10 }}
                     >
                         <VictoryAxis
                             style={{
@@ -381,7 +397,7 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
                         padding={{
                             top: 8,
                             bottom: 40,
-                            left: showYAxis ? 50 : 8,
+                            left: showYAxis ? 40 : 8,
                             right: 8,
                         }}
                         domainPadding={domainPadding}
@@ -434,7 +450,7 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
                     padding={{
                         top: 8,
                         bottom: 40,
-                        left: showYAxis ? 50 : 8,
+                        left: showYAxis ? 40 : 8,
                         right: 8,
                     }}
                     domainPadding={domainPadding}
@@ -583,7 +599,11 @@ const Chart = forwardRef<RNView, ChartNativeProps>(function Chart(
             {header ? <ChartHeader>{header}</ChartHeader> : null}
             <View
                 style={{
-                    padding: 16,
+                    // Web's card adds no padding around the chart — the only
+                    // inset is Highcharts' internal spacing (~10px). The 8px
+                    // here approximates that; Victory's own padding hosts the
+                    // axis-label lanes.
+                    padding: 8,
                     gap: 12,
                     backgroundColor: String(ct.backgroundColor),
                 }}
