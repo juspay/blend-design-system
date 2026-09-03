@@ -50,6 +50,14 @@ export {
     DEFAULT_FALLBACK_COLOR,
 } from './components/AvatarV2/avatarV2.utils'
 export { getBreadcrumbV2Tokens } from './components/BreadcrumbV2/breadcrumbV2.tokens'
+export type {
+    BreadcrumbV2TokensType,
+    ResponsiveBreadcrumbV2Tokens,
+} from './components/BreadcrumbV2/breadcrumbV2.tokens'
+export type {
+    BreadcrumbBaseProps,
+    BreadcrumbBaseItemType,
+} from './components/BreadcrumbV2/breadcrumbV2.types'
 export { getCardV2Tokens } from './components/CardV2/cardV2.tokens'
 export type {
     CardV2TokensType,

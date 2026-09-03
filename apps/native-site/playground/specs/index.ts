@@ -5,6 +5,7 @@ import alert from './alert.spec'
 import avatar from './avatar.spec'
 import badge from './badge.spec'
 import bottomSheet from './bottomSheet.spec'
+import breadcrumb from './breadcrumb.spec'
 import button from './button.spec'
 import card from './card.spec'
 import chart from './chart.spec'
@@ -82,6 +83,7 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
         title: 'Data display',
         specs: [
             asAnySpec(avatar),
+            asAnySpec(breadcrumb),
             asAnySpec(badge),
             asAnySpec(card),
             asAnySpec(chart),
