@@ -30,6 +30,11 @@ export { Button } from './components/Button'
 export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
 export { LinkButton } from './components/Button'
+export { Breadcrumb } from './components/Breadcrumb'
+export type {
+    BreadcrumbNativeProps,
+    BreadcrumbNativeItemType,
+} from './components/Breadcrumb'
 export { Card } from './components/Card'
 export { Checkbox } from './components/Checkbox'
 export type { CheckboxNativeProps } from './components/Checkbox'

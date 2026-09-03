@@ -76,6 +76,7 @@ describe('public API surface', () => {
             'Alert',
             'Avatar',
             'Button',
+            'Breadcrumb',
             'ButtonGroup',
             'Card',
             'Checkbox',
@@ -134,7 +135,8 @@ describe('public API surface', () => {
         // then to 85 when BottomSheetScrollable joined the sheet foundation
         // (Wave C0 scroll-aware drag), then to 96 for the Wave C1 overlay
         // components (Tooltip, Popover, Modal and their enums), then to 106
-        // for Wave C2 (Menu, SingleSelect, MultiSelect and their enums).
-        expect(exported.size).toBeLessThanOrEqual(106)
+        // for Wave C2 (Menu, SingleSelect, MultiSelect and their enums),
+        // then to 107 for Breadcrumb.
+        expect(exported.size).toBeLessThanOrEqual(107)
     })
 })
