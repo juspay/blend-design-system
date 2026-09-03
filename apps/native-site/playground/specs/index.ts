@@ -4,6 +4,7 @@ import accordion from './accordion.spec'
 import alert from './alert.spec'
 import avatar from './avatar.spec'
 import bottomSheet from './bottomSheet.spec'
+import breadcrumb from './breadcrumb.spec'
 import button from './button.spec'
 import card from './card.spec'
 import checkbox from './checkbox.spec'
@@ -75,6 +76,7 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
         title: 'Data display',
         specs: [
             asAnySpec(avatar),
+            asAnySpec(breadcrumb),
             asAnySpec(card),
             asAnySpec(keyValuePair),
             asAnySpec(tabs),
