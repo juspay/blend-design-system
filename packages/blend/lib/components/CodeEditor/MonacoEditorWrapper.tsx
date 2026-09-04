@@ -3,7 +3,6 @@ import Editor, { loader, OnMount } from '@monaco-editor/react'
 import type * as Monaco from 'monaco-editor'
 import Block from '../Primitives/Block/Block'
 import type { CodeBlockTokenType } from '../CodeBlock/codeBlock.token'
-import './monaco-editor.css'
 
 // Monaco registers only `javascript`/`typescript` (VS Code's
 // `javascriptreact`/`typescriptreact` IDs are not registered, so they would
@@ -356,16 +355,20 @@ export const MonacoEditorWrapper = ({
 
         Promise.all([
             import('../shared/monacoEnvironment'),
+            import('../shared/monacoStyles'),
             import(
                 // @ts-expect-error Monaco does not publish types for this ESM entry.
                 'monaco-editor/esm/vs/editor/editor.main.js'
             ),
         ])
-            .then(([env, monaco]) => {
+            .then(([env, styles, monaco]) => {
                 if (cancelled) return
                 // Wire the bundled language workers before configuring the
-                // loader, so a self-hosted Monaco can spawn them (#1734).
+                // loader, so a self-hosted Monaco can spawn them (#1734), and
+                // inject the editor stylesheet so it renders styled without a
+                // global Blend stylesheet import (#1744).
                 env.configureMonacoEnvironment()
+                styles.injectMonacoStyles()
                 loader.config({ monaco: monaco as typeof Monaco })
                 setIsMonacoLoaded(true)
             })

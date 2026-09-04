@@ -1,7 +1,40 @@
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import dts from 'vite-plugin-dts'
+
+// Monaco's ESM editor bundle (`editor.main.js`, dynamically imported by the
+// CodeEditor wrappers) side-effect-imports dozens of its own `.css` files. In a
+// Vite *library* build those are extracted into the shared `dist/style.css`,
+// which forces consumers to import the global Blend stylesheet just to get a
+// styled editor (#1744). We instead inject the editor stylesheet ourselves at
+// runtime — see `components/shared/monacoStyles.ts`, which imports the `min`
+// build's self-contained CSS via `?inline`. This plugin neutralizes Monaco's
+// own CSS side-effect imports so ~260KB of editor CSS is shipped ONCE (inlined
+// in JS, injected on mount) and never duplicated into `style.css`.
+//
+// It only touches `.css` requests whose importer lives inside `monaco-editor`
+// (Monaco's internal imports); our explicit `?inline` import — whose importer
+// is a Blend lib file — is left untouched, as is every other package's CSS.
+const EMPTY_MONACO_CSS = '\0blend-empty-monaco-css'
+const neutralizeMonacoCss = (): Plugin => ({
+    name: 'blend-neutralize-monaco-css',
+    enforce: 'pre',
+    resolveId(source, importer) {
+        if (
+            source.endsWith('.css') &&
+            !source.includes('?inline') &&
+            importer?.includes('monaco-editor')
+        ) {
+            return EMPTY_MONACO_CSS
+        }
+        return null
+    },
+    load(id) {
+        if (id === EMPTY_MONACO_CSS) return ''
+        return null
+    },
+})
 
 export default defineConfig({
     // Relative asset base so URLs referenced from JS (e.g. the Monaco worker
@@ -10,6 +43,7 @@ export default defineConfig({
     // Only affects asset URLs (workers, CSS url()), not ES import specifiers.
     base: './',
     plugins: [
+        neutralizeMonacoCss(),
         react(),
         dts({
             include: ['lib'],
