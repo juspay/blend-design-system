@@ -1,13 +1,13 @@
 import { InputSizeV2 } from '../inputV2.types'
+import type { UploadErrorReasonValue } from './uploadV2.base.types'
+import { UploadState } from './uploadV2.base.types'
 
-export enum UploadState {
-    IDLE = 'idle',
-    UPLOADING = 'uploading',
-    SUCCESS = 'success',
-    ERROR = 'error',
-
-    DISABLED = 'disabled',
-}
+export { UploadState, UploadErrorReason } from './uploadV2.base.types'
+export type {
+    UploadErrorReasonValue,
+    UploadFileBase,
+    UploadBaseProps,
+} from './uploadV2.base.types'
 
 export enum UploadDragState {
     DRAG_ENTER = 'drag_enter',
@@ -15,15 +15,6 @@ export enum UploadDragState {
     DRAG_OVER = 'drag_over',
     DROP = 'drop',
 }
-
-export const UploadErrorReason = {
-    OVERSIZED: 'oversized',
-    MAX_FILES: 'maxFiles',
-    INVALID_TYPE: 'invalidType',
-} as const
-
-export type UploadErrorReasonValue =
-    (typeof UploadErrorReason)[keyof typeof UploadErrorReason]
 
 export type UploadFileV2 = {
     id?: string

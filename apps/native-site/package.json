@@ -17,6 +17,7 @@
         "@juspay/blend-design-system": "workspace:*",
         "blend-native": "workspace:*",
         "expo": "~56.0.12",
+        "expo-document-picker": "~56.0.4",
         "expo-linear-gradient": "~56.0.4",
         "lucide-react-native": "^1.33.0",
         "react": "19.2.3",

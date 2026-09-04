@@ -75,6 +75,7 @@ describe('public API surface', () => {
             'Accordion',
             'Alert',
             'Avatar',
+            'Badge',
             'Button',
             'ButtonGroup',
             'Card',
@@ -99,6 +100,7 @@ describe('public API surface', () => {
             'Tag',
             'TagGroup',
             'Tooltip',
+            'Upload',
         ]) {
             expect(exported.has(name)).toBe(true)
         }
@@ -134,7 +136,10 @@ describe('public API surface', () => {
         // then to 85 when BottomSheetScrollable joined the sheet foundation
         // (Wave C0 scroll-aware drag), then to 96 for the Wave C1 overlay
         // components (Tooltip, Popover, Modal and their enums), then to 106
-        // for Wave C2 (Menu, SingleSelect, MultiSelect and their enums).
-        expect(exported.size).toBeLessThanOrEqual(106)
+        // for Wave C2 (Menu, SingleSelect, MultiSelect and their enums),
+        // then to 110 for Upload (+ validateUploadFiles, UploadState,
+        // UploadErrorReason), then to 113 for Badge (+ BadgeColor,
+        // BadgeSize).
+        expect(exported.size).toBeLessThanOrEqual(113)
     })
 })
