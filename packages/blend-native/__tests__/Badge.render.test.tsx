@@ -6,7 +6,7 @@ import { View } from 'react-native'
 /**
  * Badge render behaviour: the pill renders its formatted count, the dot
  * renders when there is no content, zero hides unless showZero, showBadge
- * force-hides, and the wrapped form overlays children at a corner.
+ * force-hides, and the wrapped form overlays children at a corner. 
  */
 
 const renderBadge = (props: React.ComponentProps<typeof Badge> = {}) =>
