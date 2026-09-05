@@ -26,6 +26,8 @@ export type {
 export { Alert } from './components/Alert'
 export { Avatar } from './components/Avatar'
 export type { AvatarNativeProps, AvatarStatus } from './components/Avatar'
+export { Badge } from './components/Badge'
+export type { BadgeNativeProps } from './components/Badge'
 export { Button } from './components/Button'
 export { ButtonGroup } from './components/Button'
 export { IconButton } from './components/Button'
@@ -96,6 +98,16 @@ export { ProgressBar } from './components/ProgressBar'
 export type { ProgressBarNativeProps } from './components/ProgressBar'
 export { Spinner } from './components/Spinner'
 export type { SpinnerNativeProps } from './components/Spinner'
+export { Upload } from './components/Upload'
+export type {
+    UploadNativeProps,
+    UploadFileNativeItem,
+} from './components/Upload'
+export { validateUploadFiles } from './components/Upload'
+export {
+    UploadState,
+    UploadErrorReason,
+} from '@juspay/blend-design-system/node'
 
 // Value unions for the props above. Exported so a consumer can type a
 // `variant`/`size` prop of their own, and so tooling can enumerate the
@@ -106,6 +118,7 @@ export type {
     SkeletonShape,
     SpinnerSize,
     SpinnerColor,
+    BadgePosition,
 } from '@juspay/blend-design-system/node'
 
 export type {
@@ -227,6 +240,8 @@ export {
     AvatarV2Shape as AvatarShape,
     AvatarV2Status as AvatarStatusType,
     AvatarV2StatusPosition as AvatarStatusPosition,
+    BadgeColor,
+    BadgeSize,
     AlertV2SubType as AlertSubType,
     AlertV2ActionPosition as AlertActionPosition,
     ButtonV2Type as ButtonType,
