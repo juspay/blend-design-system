@@ -116,6 +116,34 @@ const columnChartOptions: ChartV2Options = {
     ],
 }
 
+const denseColumnChartOptions: ChartV2Options = {
+    ...baseChartOptions,
+    chart: {
+        ...baseChartOptions.chart,
+        type: 'column',
+    },
+    xAxis: {
+        categories: Array.from({ length: 30 }, (_, i) => `Merchant ${i + 1}`),
+        title: {
+            text: 'Merchant',
+        },
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Transactions',
+        },
+    },
+    series: [
+        {
+            type: 'column',
+            name: 'Successful',
+            color: chartColors[0],
+            data: Array.from({ length: 30 }, (_, i) => 40 + ((i * 17) % 120)),
+        },
+    ],
+}
+
 const pieChartOptions: ChartV2Options = {
     ...baseChartOptions,
     chart: {
@@ -672,6 +700,18 @@ export const HorizontalBarChartExample: Story = {
             subtitle="Horizontal bars for long labels and ranked values"
             icon={<BarChart3 size={20} />}
             options={horizontalBarChartOptions}
+        />
+    ),
+}
+
+export const DenseColumnChartExample: Story = {
+    name: 'Dense column chart',
+    render: () => (
+        <ChartShell
+            title="Volume by merchant"
+            subtitle="30 categories — x-axis labels are automatically thinned to 12"
+            icon={<BarChart3 size={20} />}
+            options={denseColumnChartOptions}
         />
     ),
 }

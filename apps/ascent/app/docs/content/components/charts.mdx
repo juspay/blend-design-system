@@ -314,7 +314,7 @@ function SankeyChart() {
             {
                 content: 'xAxis',
                 hintText:
-                    'Optional configuration object for the X-axis (horizontal axis). Can include label (axis title), type (numeric, date, category), showLabel (display axis label), interval (tick spacing), and show (visibility). Controls axis appearance, formatting, and behavior.',
+                    'Optional configuration object for the X-axis (horizontal axis). Can include label (axis title), type (numeric, date, category), showLabel (display axis label), interval (tick spacing), show (visibility), and maxTicks (label budget — for category axes in line/bar/lineBar/area charts, labels are automatically thinned to at most 12, or maxTicks when set, halved with a floor of 3 on small screens). Controls axis appearance, formatting, and behavior.',
             },
             {
                 content: 'XAxisConfig',
@@ -597,6 +597,22 @@ xAxis={{
     // Auto-generate consistent ticks
     autoConsistentTicks: true,
     maxTicks: 8,
+}}
+```
+
+### Dense Category Labels
+
+For line, bar, lineBar, and area charts with a category x-axis, labels are
+automatically thinned once the data exceeds 12 points so dense charts stay
+readable — only every Nth label is shown, and the full value remains
+available in the tooltip. Tune the budget with `maxTicks` (halved with a
+floor of 3 on small screens), or opt out entirely by setting `interval`
+yourself:
+
+```tsx
+xAxis={{
+    // Cap rendered labels at 5 (default: 12)
+    maxTicks: 5,
 }}
 ```
 
