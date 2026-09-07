@@ -13,15 +13,9 @@ import type { ComponentSpec } from '../types'
  * (the API contract — the component trusts the app to validate), and hands
  * them back through `onChange`.
  *
- * The picker's accept filter uses MIME types mirroring ACCEPTED_TYPES.
+ * Web `<input type="file">` parity: no accept filter, any file type picks.
+ * Only the size cap is enforced, same as an unconstrained web field.
  */
-const ACCEPTED_TYPES = ['.pdf', '.png', '.jpg', 'application/vnd.ms-excel']
-const PICKER_MIME_TYPES = [
-    'application/pdf',
-    'image/png',
-    'image/jpeg',
-    'application/vnd.ms-excel',
-]
 const MAX_SIZE = 5 * 1024 * 1024 // 5 MB
 
 /** `files` is controlled; the preview holds them and appends validated picks. */
@@ -30,7 +24,7 @@ function LiveUpload(props: UploadNativeProps) {
 
     const handleBrowse = async () => {
         const result = await ExpoDocumentPicker.getDocumentAsync({
-            type: PICKER_MIME_TYPES,
+            type: '*/*',
             multiple: props.multiple ?? true,
             copyToCacheDirectory: true,
         })
@@ -45,7 +39,6 @@ function LiveUpload(props: UploadNativeProps) {
         }))
 
         const marked = validateUploadFiles(picked, {
-            acceptedTypes: ACCEPTED_TYPES,
             maxSize: MAX_SIZE,
             multiple: props.multiple ?? true,
             existingCount: files.length,
@@ -68,7 +61,6 @@ function LiveUpload(props: UploadNativeProps) {
             }}
             onBrowse={handleBrowse}
             maxSize={MAX_SIZE}
-            acceptedFileTypes={ACCEPTED_TYPES}
         />
     )
 }
@@ -76,11 +68,11 @@ function LiveUpload(props: UploadNativeProps) {
 const spec: ComponentSpec<UploadNativeProps> = {
     name: 'Upload',
     summary:
-        'Controlled file field with a real system file picker (`expo-document-picker` behind `onBrowse` — the app owns picking). Picked files are marked with `validateUploadFiles` against a 5 MB cap and the accepted list; the +N overflow becomes a bottom sheet on phones.',
+        'Controlled file field with a real system file picker (`expo-document-picker` behind `onBrowse` — the app owns picking). Any file type, like an unconstrained web field; a 5 MB cap is the only validation. The +N overflow becomes a bottom sheet on phones.',
     mode: 'inline',
     defaults: {
-        label: 'Documents',
-        description: 'PDF or images, up to 5 MB each',
+        label: 'Attachments',
+        description: 'Any file type, up to 5 MB each',
         multiple: true,
         state: UploadState.IDLE,
     },
@@ -143,7 +135,6 @@ const spec: ComponentSpec<UploadNativeProps> = {
             'files={files}',
             'onChange={setFiles}',
             'onBrowse={openPicker}',
-            'acceptedFileTypes={ACCEPTED_TYPES}',
             'maxSize={5 * 1024 * 1024}',
         ]),
 }

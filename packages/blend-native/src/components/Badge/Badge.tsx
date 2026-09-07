@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { View } from 'react-native'
+import type { LayoutChangeEvent } from 'react-native'
 import {
     BadgeColor,
     BadgeSize,
@@ -45,6 +46,25 @@ export function Badge({
     children,
 }: BadgeNativeProps) {
     const tokens = useNativeTokens<BadgeTokensType>('BADGE')
+
+    // The circular overlay places the badge on the child's 45°
+    // circumference — a percentage of the wrapper's own size, measurable
+    // only post-layout, so the wrapper reports it through `onLayout`.
+    // Declared at the top: the standalone branch returns early below, and a
+    // hook after an early return breaks the hook order (the playground
+    // toggles between the two shapes).
+    const [parentSize, setParentSize] = useState<{
+        width: number
+        height: number
+    } | null>(null)
+    const onWrapperLayout = (event: LayoutChangeEvent) => {
+        const { width, height } = event.nativeEvent.layout
+        setParentSize((prev) =>
+            prev && prev.width === width && prev.height === height
+                ? prev
+                : { width, height }
+        )
+    }
 
     // Hide badge when count is 0 and showZero is false — web parity.
     const effectiveShowBadge = showBadge && !(count === 0 && !showZero)
@@ -133,10 +153,14 @@ export function Badge({
         customOffset: offset,
         hasContent,
         isCircular,
+        parentSize: parentSize ?? undefined,
     })
 
     return (
-        <View style={[{ alignSelf: 'flex-start' }, style]}>
+        <View
+            style={[{ alignSelf: 'center' }, style]}
+            onLayout={isCircular ? onWrapperLayout : undefined}
+        >
             {children}
             {effectiveShowBadge && (
                 <View

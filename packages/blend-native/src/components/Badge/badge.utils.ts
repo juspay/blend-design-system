@@ -59,30 +59,37 @@ export function resolvePositionInsets(
     // Half the badge's rendered extent. A dot is square; a pill's width
     // depends on its text, which is not knowable without measuring, so the
     // pill height stands in as the conservative half-extent on both axes.
+    const direction = directionFor(position)
     const badgeExtent = hasContent
         ? parseDimension(tokens.pill.height[size] as string | number)
         : parseDimension(tokens.dot.width[size] as string | number)
     const half = (badgeExtent ?? 0) / 2
 
-    // Web's circular branch applies the custom offset with outward signs
-    // on every corner (the non-circular branch applies it inward), and
-    // bases the inset on 14% of the containing block's size.
+    // Web's circular branch uses `translate(..., -0.5*W)` — a centered
+    // coordinate, not an inset from the edge. With the wrapper's measured
+    // size we place the badge's circumference point exactly. Without it the
+    // badge falls back to the corner, `-half` outside it (first frame only).
     if (isCircular) {
-        const x = customOffset?.[0] ?? 0
-        const y = customOffset?.[1] ?? 0
-        const horizontal =
-            (parentSize ? parentSize.width * CIRCULAR_INSET_RATIO : 0) -
-            x -
-            half
-        const vertical =
-            (parentSize ? parentSize.height * CIRCULAR_INSET_RATIO : 0) -
-            y -
-            half
-        return applyToCorner(position, vertical, horizontal)
+        if (parentSize) {
+            // The offset always moves the badge outward (away from the
+            // child's center), which decreases whichever inset it's applied
+            // to — independent of which corner. Web parity.
+            const horizontal =
+                parentSize.width * CIRCULAR_INSET_RATIO -
+                Math.abs(customOffset?.[0] ?? 0) -
+                half
+            const vertical =
+                parentSize.height * CIRCULAR_INSET_RATIO -
+                Math.abs(customOffset?.[1] ?? 0) -
+                half
+            return direction.apply(vertical, horizontal)
+        }
+        return direction.apply(-half, -half)
     }
 
     // Web: a dot defaults to no offset, a pill to the token offset; a
-    // custom offset replaces both components.
+    // custom offset replaces both components. Then the `translate(±50%)`
+    // overhang converts to `-half` on the chosen corner's inset.
     const tokenOffset = parseDimension(
         tokens.position.offset[size] as string | number
     )
@@ -96,24 +103,45 @@ export function resolvePositionInsets(
         : hasContent
           ? (tokenOffset ?? 0)
           : 0
-
-    return applyToCorner(position, yBase - half, xBase - half)
+    return direction.apply(yBase - half, xBase - half)
 }
 
-function applyToCorner(
-    position: BadgePosition,
-    vertical: number,
-    horizontal: number
-): BadgePositionInsets {
+/**
+ * Per-corner direction: how the vertical/horizontal values land on the
+ * inset keys for the chosen corner.
+ */
+function directionFor(position: BadgePosition): {
+    apply: (vertical: number, horizontal: number) => BadgePositionInsets
+} {
     switch (position) {
         case 'top-right':
-            return { top: vertical, right: horizontal }
+            return {
+                apply: (vertical, horizontal) => ({
+                    top: vertical,
+                    right: horizontal,
+                }),
+            }
         case 'top-left':
-            return { top: vertical, left: horizontal }
+            return {
+                apply: (vertical, horizontal) => ({
+                    top: vertical,
+                    left: horizontal,
+                }),
+            }
         case 'bottom-right':
-            return { bottom: vertical, right: horizontal }
+            return {
+                apply: (vertical, horizontal) => ({
+                    bottom: vertical,
+                    right: horizontal,
+                }),
+            }
         case 'bottom-left':
-            return { bottom: vertical, left: horizontal }
+            return {
+                apply: (vertical, horizontal) => ({
+                    bottom: vertical,
+                    left: horizontal,
+                }),
+            }
     }
 }
 

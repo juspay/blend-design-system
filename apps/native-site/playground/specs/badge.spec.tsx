@@ -19,17 +19,13 @@ function BadgePreview({ wrapped, position, ...props }: BadgePlaygroundProps) {
     if (!wrapped) return <Badge {...props} />
 
     return (
-        <Badge
-            {...props}
-            position={position}
-            isCircular={props.isCircular ?? true}
-        >
+        <Badge {...props} position={position}>
             <View
                 testID="badge-child"
                 style={{
                     width: 64,
                     height: 64,
-                    borderRadius: 9999,
+                    borderRadius: props.isCircular ? 9999 : 12,
                     backgroundColor: '#DBEAFE',
                 }}
             />
