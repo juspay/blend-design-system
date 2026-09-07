@@ -11,6 +11,7 @@ type MenuPlaygroundProps = {
     side: MenuSide
     closeOnSelect: boolean
     enableSearch: boolean
+    usePanelOnMobile: boolean
 }
 
 const MENU_GROUPS: MenuGroupType[] = [
@@ -47,6 +48,7 @@ function MenuPreview({
     side,
     closeOnSelect,
     enableSearch,
+    usePanelOnMobile,
 }: MenuPlaygroundProps) {
     const [open, setOpen] = useState(false)
     return (
@@ -65,6 +67,7 @@ function MenuPreview({
                 side={side}
                 closeOnSelect={closeOnSelect}
                 enableSearch={enableSearch}
+                usePanelOnMobile={usePanelOnMobile}
             />
         </View>
     )
@@ -80,6 +83,7 @@ const spec: ComponentSpec<MenuPlaygroundProps> = {
         side: MenuSide.BOTTOM,
         closeOnSelect: true,
         enableSearch: false,
+        usePanelOnMobile: false,
     },
     controls: [
         {
@@ -100,6 +104,12 @@ const spec: ComponentSpec<MenuPlaygroundProps> = {
             key: 'enableSearch',
             label: 'Search',
             group: 'Content',
+        },
+        {
+            kind: 'toggle',
+            key: 'usePanelOnMobile',
+            label: 'Sheet on mobile',
+            group: 'State',
         },
     ],
     render: (props) => <MenuPreview {...props} />,
