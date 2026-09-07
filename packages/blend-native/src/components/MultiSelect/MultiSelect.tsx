@@ -272,6 +272,7 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                         someSelected={someSelected}
                         selectAllText={selectAllText}
                         onSelectAllToggle={handleSelectAllToggle}
+                        enableSelectAll={enableSelectAll}
                         tokens={tokens}
                         searchValue={searchText}
                         onSearchChange={setSearchText}
@@ -280,30 +281,38 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                         testID={testID}
                     />
                 ) : null}
-                <DropdownList
-                    rows={flatRows}
-                    itemTokens={itemTokens}
-                    separatorColor={String(tokens.menu.item.seperator.color)}
-                    separatorHeight={tokens.menu.item.seperator.height}
-                    separatorMargin={tokens.menu.item.seperator.margin}
-                    labelColor={String(
-                        tokens.menu.item.optionsLabel.color.default
-                    )}
-                    labelFontSize={tokens.menu.item.optionsLabel.fontSize ?? 14}
-                    labelFontWeight={
-                        tokens.menu.item.optionsLabel.fontWeight ?? '500'
-                    }
-                    labelPaddingTop={tokens.menu.item.optionsLabel.paddingTop}
-                    labelPaddingBottom={
-                        tokens.menu.item.optionsLabel.paddingBottom
-                    }
-                    labelPaddingHorizontal={
-                        tokens.menu.item.optionsLabel.paddingLeft
-                    }
-                    onItemPress={handleItemPress}
-                    enableVirtualization={enableVirtualization}
-                    testID={testID ? `${testID}-list` : undefined}
-                />
+                <Block paddingTop={enableSelectAll || enableSearch ? 8 : 0}>
+                    <DropdownList
+                        rows={flatRows}
+                        itemTokens={itemTokens}
+                        separatorColor={String(
+                            tokens.menu.item.seperator.color
+                        )}
+                        separatorHeight={tokens.menu.item.seperator.height}
+                        separatorMargin={tokens.menu.item.seperator.margin}
+                        labelColor={String(
+                            tokens.menu.item.optionsLabel.color.default
+                        )}
+                        labelFontSize={
+                            tokens.menu.item.optionsLabel.fontSize ?? 14
+                        }
+                        labelFontWeight={
+                            tokens.menu.item.optionsLabel.fontWeight ?? '500'
+                        }
+                        labelPaddingTop={
+                            tokens.menu.item.optionsLabel.paddingTop
+                        }
+                        labelPaddingBottom={
+                            tokens.menu.item.optionsLabel.paddingBottom
+                        }
+                        labelPaddingHorizontal={
+                            tokens.menu.item.optionsLabel.paddingLeft
+                        }
+                        onItemPress={handleItemPress}
+                        enableVirtualization={enableVirtualization}
+                        testID={testID ? `${testID}-list` : undefined}
+                    />
+                </Block>
                 {showActionButtons ? (
                     <MultiSelectMenuActions
                         primaryAction={primaryAction}
