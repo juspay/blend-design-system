@@ -1,6 +1,6 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
 import styled from 'styled-components'
-import { cloneElement, forwardRef, isValidElement } from 'react'
+import { cloneElement, forwardRef, isValidElement, useState } from 'react'
 import {
     type TooltipV2Props,
     TooltipV2Align,
@@ -79,18 +79,33 @@ export const TooltipV2 = forwardRef<HTMLElement, TooltipV2Props>(
     ) => {
         const tooltipTokens =
             useResponsiveTokens<TooltipV2TokensType>('TOOLTIPV2')
+        const isControlled = open !== undefined
+        const [isArmed, setIsArmed] = useState(false)
+        const shouldMountRadix = isControlled ? open === true : isArmed
+
+        const arm = () => {
+            if (!isControlled) setIsArmed(true)
+        }
+        const disarm = () => {
+            if (!isControlled) setIsArmed(false)
+        }
 
         const isNativeElement =
             isValidElement(trigger) && typeof trigger.type === 'string'
         const shouldWrapTrigger = !isNativeElement
+        const triggerHostStyle: React.CSSProperties = {
+            display: fullWidth ? 'flex' : 'inline-flex',
+            width: fullWidth ? '100%' : 'auto',
+        }
 
         const triggerNode = shouldWrapTrigger ? (
             <span
                 ref={ref as React.Ref<HTMLSpanElement>}
-                style={{
-                    display: fullWidth ? 'flex' : 'inline-flex',
-                    width: fullWidth ? '100%' : 'auto',
-                }}
+                style={triggerHostStyle}
+                onPointerEnter={arm}
+                onPointerLeave={disarm}
+                onFocus={arm}
+                onBlur={disarm}
             >
                 {trigger}
             </span>
@@ -104,18 +119,45 @@ export const TooltipV2 = forwardRef<HTMLElement, TooltipV2Props>(
                         }
                     ).ref
                 ),
+                onPointerEnter: arm,
+                onPointerLeave: disarm,
+                onFocus: arm,
+                onBlur: disarm,
             } as React.Attributes & { ref: React.Ref<HTMLElement> })
         ) : (
             trigger
         )
+
+        if (!shouldMountRadix) {
+            if (shouldWrapTrigger) {
+                return triggerNode
+            }
+            return (
+                <span
+                    ref={ref as React.Ref<HTMLSpanElement>}
+                    style={triggerHostStyle}
+                    onPointerEnter={arm}
+                    onFocus={arm}
+                >
+                    {trigger}
+                </span>
+            )
+        }
 
         return (
             <RadixTooltip.Provider
                 delayDuration={delayDuration}
                 disableHoverableContent={disableInteractive}
             >
-                <RadixTooltip.Root open={open} onOpenChange={onOpenChange}>
-                    <RadixTooltip.Trigger asChild>
+                <RadixTooltip.Root
+                    {...(isControlled ? { open } : {})}
+                    onOpenChange={onOpenChange}
+                >
+                    <RadixTooltip.Trigger
+                        asChild
+                        onPointerLeave={disarm}
+                        onBlur={disarm}
+                    >
                         {triggerNode}
                     </RadixTooltip.Trigger>
                     {content && (

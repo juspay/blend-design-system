@@ -1,6 +1,6 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
 import styled, { type CSSObject } from 'styled-components'
-import { isValidElement } from 'react'
+import { isValidElement, useState, type CSSProperties } from 'react'
 import {
     type TooltipProps,
     TooltipAlign,
@@ -42,30 +42,65 @@ export const Tooltip = ({
     disableInteractive = false,
 }: TooltipProps) => {
     const tooltipTokens = useResponsiveTokens<TooltipTokensType>('TOOLTIP')
+    const isControlled = open !== undefined
+    const [isArmed, setIsArmed] = useState(false)
+    // Radix TooltipTrigger composes a useState setter into an unstable ref.
+    // React 19's ref cleanup then loops when many Roots mount at once (e.g.
+    // truncated labels in a filter list). Arm Radix only for the active
+    // tooltip.
+    const shouldMountRadix = isControlled ? open === true : isArmed
+
+    const arm = () => {
+        if (!isControlled) setIsArmed(true)
+    }
+    const disarm = () => {
+        if (!isControlled) setIsArmed(false)
+    }
 
     const isNativeElement =
         isValidElement(trigger) && typeof trigger.type === 'string'
     const shouldWrapTrigger = !isNativeElement
+    const triggerHostStyle: CSSProperties = {
+        display: fullWidth ? 'flex' : 'inline-flex',
+        width: fullWidth ? '100%' : 'auto',
+    }
 
     const wrappedTrigger = shouldWrapTrigger ? (
         <span
-            style={{
-                display: fullWidth ? 'flex' : 'inline-flex',
-                width: fullWidth ? '100%' : 'auto',
-            }}
+            style={triggerHostStyle}
+            onPointerEnter={arm}
+            onPointerLeave={disarm}
+            onFocus={arm}
+            onBlur={disarm}
         >
             {trigger}
         </span>
     ) : (
         trigger
     )
+
+    if (!shouldMountRadix) {
+        if (shouldWrapTrigger) {
+            return wrappedTrigger
+        }
+        return (
+            <span style={triggerHostStyle} onPointerEnter={arm} onFocus={arm}>
+                {trigger}
+            </span>
+        )
+    }
+
     return (
         <RadixTooltip.Provider
             delayDuration={delayDuration}
             disableHoverableContent={disableInteractive}
         >
-            <RadixTooltip.Root open={open}>
-                <RadixTooltip.Trigger asChild>
+            <RadixTooltip.Root {...(isControlled ? { open } : {})}>
+                <RadixTooltip.Trigger
+                    asChild
+                    onPointerLeave={disarm}
+                    onBlur={disarm}
+                >
                     {wrappedTrigger}
                 </RadixTooltip.Trigger>
                 {content && (
