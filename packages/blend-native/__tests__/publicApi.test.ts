@@ -79,8 +79,15 @@ describe('public API surface', () => {
             'Button',
             'ButtonGroup',
             'Card',
+            'Chart',
+            'ChartContainer',
+            'ChartHeader',
+            'ChartLegend',
+            'ChartNoData',
+            'ChartSkeleton',
             'Checkbox',
             'IconButton',
+            'OutageChart',
             'KeyValuePair',
             'LinkButton',
             'Menu',
@@ -91,9 +98,12 @@ describe('public API surface', () => {
             'OTPInput',
             'ProgressBar',
             'Radio',
+            'SankeyChart',
             'SearchInput',
+            'Sparkline',
             'SingleSelect',
             'Spinner',
+            'StatCard',
             'Switch',
             'Tabs',
             'TextArea',
@@ -139,7 +149,8 @@ describe('public API surface', () => {
         // for Wave C2 (Menu, SingleSelect, MultiSelect and their enums),
         // then to 110 for Upload (+ validateUploadFiles, UploadState,
         // UploadErrorReason), then to 113 for Badge (+ BadgeColor,
-        // BadgeSize).
-        expect(exported.size).toBeLessThanOrEqual(113)
+        // BadgeSize), then to 122 for the chart wave (Chart and its
+        // compounds, SankeyChart, OutageChart).
+        expect(exported.size).toBeLessThanOrEqual(122)
     })
 })
