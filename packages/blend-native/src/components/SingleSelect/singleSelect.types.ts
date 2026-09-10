@@ -1,63 +1,68 @@
-import type React from 'react'
-import type { StyleProp, ViewStyle } from 'react-native'
+import type { ReactElement, ReactNode } from 'react'
+import type { View as RNView } from 'react-native'
 import type {
-    SingleSelectBaseProps,
+    SelectV2Alignment,
+    SelectV2Variant,
+    SelectV2Size,
+    SelectV2Side,
     SingleSelectV2ItemType,
+    SingleSelectV2GroupType,
+    SelectV2ErrorState,
+    SelectV2SearchConfig,
 } from '@juspay/blend-design-system/node'
 
 /**
- * The native select option — web's item with the platform pieces swapped:
- * `onClick` becomes `onPress`, and `subMenu`/`tooltip`/`tooltipProps`/
- * `disableTruncation` are omitted. Sub-menus are flattened away — web's
- * own mobile panel flattens groups too, and one consistent item model
- * beats a tablet-only nesting (docblocked divergence).
- */
-export type SingleSelectItemType = Omit<
-    SingleSelectV2ItemType,
-    'onClick' | 'subMenu' | 'tooltip' | 'tooltipProps' | 'disableTruncation'
-> & {
-    onPress?: () => void
-}
-
-export type SingleSelectGroupType = {
-    groupLabel?: string
-    items: SingleSelectItemType[]
-    showSeparator?: boolean
-}
-
-/**
- * Props for the native `SingleSelect` — the port of web's `SingleSelectV2`.
+ * SingleSelect — React Native implementation of web's `SingleSelectV2`.
  *
- * Derives from `SingleSelectBaseProps`. Phones (`sm`) get the flat bottom
- * panel web's `usePanelOnMobile` prescribes (the prop itself omitted —
- * the breakpoint decides); tablets (`lg`) an anchored dropdown under the
- * trigger.
- *
- * Deliberately omitted rather than accepted-and-ignored: the
- * virtualization trio (the list IS a FlatList), `skeleton` (Wave-C-wide),
- * `helpIconText` (needs Tooltip-in-label), `singleSelectGroupPosition`
- * (no grouped-trigger composition yet), `menuPosition`/CSS dimensions
- * (replaced by the number fields below, `lg` only), and web's
- * DOM-attribute spread. `search` is a plain `{ show, placeholder }` —
- * web's controlled search-config carries V1 Select DOM types.
+ * A trigger button that opens a dropdown panel; selecting an item fires
+ * `onSelect(value)` and closes the panel. Supports search, sub-menus,
+ * custom triggers, error state, and mobile bottom-sheet mode.
  */
-export type SingleSelectNativeProps = Omit<
-    SingleSelectBaseProps,
-    'items' | 'helpIconText'
-> & {
-    items: SingleSelectGroupType[]
-    search?: { show?: boolean; placeholder?: string }
-    slot?: React.ReactNode
-    /** Replaces the built-in trigger surface (label/footer kept). */
-    customTrigger?: React.ReactNode
+export type SingleSelectNativeProps = {
+    label?: string
+    subLabel?: string
+    hintText?: string
+    required?: boolean
+
+    placeholder: string
+    size?: SelectV2Size
+    variant?: SelectV2Variant
+
+    items: SingleSelectV2GroupType[]
+    selected: string
+    onSelect: (value: string) => void
+
+    search?: SelectV2SearchConfig
+
+    slot?: ReactNode
+    customTrigger?: ReactElement
+
+    open?: boolean
+    onOpenChange?: (open: boolean) => void
+
+    usePanelOnMobile?: boolean
+
+    alignment?: SelectV2Alignment
+    side?: SelectV2Side
+    sideOffset?: number
+
+    error?: SelectV2ErrorState
     disabled?: boolean
-    loadingComponent?: React.ReactNode
-    menuFooter?: React.ReactNode
-    /** Sheet-mode height cap as a window fraction. Default 0.9. */
-    maxHeightFraction?: number
-    minWidth?: number
-    maxWidth?: number
-    maxHeight?: number
+
+    enableVirtualization?: boolean
+
+    allowCustomValue?: boolean
+    customValueLabel?: string
+
+    menuFooter?: ReactNode
+
     testID?: string
-    style?: StyleProp<ViewStyle>
+    accessibilityLabel?: string
+    style?: import('react-native').StyleProp<import('react-native').ViewStyle>
 }
+
+export type { SingleSelectV2ItemType }
+export type { SingleSelectV2GroupType }
+export type { SelectV2Alignment, SelectV2Variant, SelectV2Size, SelectV2Side }
+
+export type SingleSelectRef = RNView

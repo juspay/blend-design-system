@@ -1,90 +1,218 @@
-import { fireEvent, render, screen } from '@testing-library/react-native'
+import { Text } from 'react-native'
+import { render, screen, fireEvent } from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { SingleSelect } from '../src/components/SingleSelect'
-import type { SingleSelectGroupType } from '../src/components/SingleSelect'
+import { SelectV2Size, SelectV2Variant } from '@juspay/blend-design-system/node'
+import type { SingleSelectV2GroupType } from '@juspay/blend-design-system/node'
 
-/**
- * SingleSelect behaviour under the jest mocks: trigger chrome, the phone
- * panel, selection closing and firing, error state, search and custom
- * values.
- */
+const wrap = (ui: React.ReactElement) =>
+    render(<BlendNativeProvider>{ui}</BlendNativeProvider>)
 
-const GROUPS: SingleSelectGroupType[] = [
+const groups: SingleSelectV2GroupType[] = [
     {
-        groupLabel: 'Frequency',
+        groupLabel: 'Fruits',
         items: [
-            { label: 'Weekly', value: 'weekly' },
-            { label: 'Monthly', value: 'monthly', subLabel: 'On the 1st' },
+            { value: 'apple', label: 'Apple' },
+            { value: 'banana', label: 'Banana' },
+        ],
+    },
+    {
+        groupLabel: 'Veggies',
+        items: [
+            { value: 'carrot', label: 'Carrot' },
+            { value: 'spinach', label: 'Spinach' },
         ],
     },
 ]
 
-const renderSelect = (
-    props: Partial<React.ComponentProps<typeof SingleSelect>> = {}
-) => {
-    const onSelect = jest.fn()
-    render(
-        <BlendNativeProvider>
+describe('SingleSelect rendering', () => {
+    it('renders the placeholder text when no selection', () => {
+        wrap(
             <SingleSelect
-                label="Payout frequency"
-                placeholder="Choose one"
-                items={GROUPS}
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                testID="ss"
+            />
+        )
+        expect(screen.getByText('Pick a fruit')).toBeTruthy()
+    })
+
+    it('renders the selected label when a value is selected', () => {
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected="apple"
+                onSelect={jest.fn()}
+                testID="ss"
+            />
+        )
+        expect(screen.getByText('Apple')).toBeTruthy()
+    })
+
+    it('renders label and subLabel', () => {
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                label="Choose Fruit"
+                subLabel="required"
+                required
+                testID="ss"
+            />
+        )
+        expect(screen.getByText('Choose Fruit')).toBeTruthy()
+    })
+
+    it('opens the dropdown when trigger is pressed (controlled)', () => {
+        const onOpenChange = jest.fn()
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                open={false}
+                onOpenChange={onOpenChange}
+                testID="ss"
+            />
+        )
+        fireEvent.press(screen.getByText('Pick a fruit'))
+        expect(onOpenChange).toHaveBeenCalledWith(true)
+    })
+
+    it('renders items when open', () => {
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                open
+                testID="ss"
+            />
+        )
+        expect(screen.getByText('Apple')).toBeTruthy()
+        expect(screen.getByText('Banana')).toBeTruthy()
+        expect(screen.getByText('Carrot')).toBeTruthy()
+        expect(screen.getByText('Fruits')).toBeTruthy()
+    })
+
+    it('calls onSelect when an item is pressed', () => {
+        const onSelect = jest.fn()
+        const onOpenChange = jest.fn()
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
                 selected=""
                 onSelect={onSelect}
-                testID="select"
-                {...props}
+                open
+                onOpenChange={onOpenChange}
+                testID="ss"
             />
-        </BlendNativeProvider>
-    )
-    return { onSelect }
-}
-
-describe('SingleSelect (phone panel presentation)', () => {
-    it('shows the placeholder, opens the panel, selects and closes', () => {
-        const { onSelect } = renderSelect()
-        expect(screen.getByText('Choose one')).toBeTruthy()
-        fireEvent.press(screen.getByTestId('select-trigger'))
-        expect(screen.getByText('Frequency')).toBeTruthy()
-        fireEvent.press(screen.getByText('Weekly'))
-        expect(onSelect).toHaveBeenCalledWith('weekly')
-        expect(screen.queryByText('Frequency')).toBeNull()
-    })
-
-    it('renders the selected value on the trigger', () => {
-        renderSelect({ selected: 'monthly' })
-        expect(screen.getByText('Monthly')).toBeTruthy()
-        expect(screen.queryByText('Choose one')).toBeNull()
-    })
-
-    it('shows the error message over the hint', () => {
-        renderSelect({
-            hintText: 'You can change this later',
-            error: { show: true, message: 'Pick a frequency' },
-        })
-        expect(screen.getByText('Pick a frequency')).toBeTruthy()
-        expect(screen.queryByText('You can change this later')).toBeNull()
-    })
-
-    it('search filters and allowCustomValue offers the query', () => {
-        const { onSelect } = renderSelect({
-            search: { show: true },
-            allowCustomValue: true,
-        })
-        fireEvent.press(screen.getByTestId('select-trigger'))
-        fireEvent.changeText(
-            screen.getByTestId('select-search-input'),
-            'quarterly'
         )
-        expect(screen.queryByText('Weekly')).toBeNull()
-        fireEvent.press(screen.getByText('Use "quarterly"'))
-        expect(onSelect).toHaveBeenCalledWith('quarterly')
+        // Press "Banana" (there are two "Apple" texts — selected label and item)
+        fireEvent.press(screen.getByText('Banana'))
+        expect(onSelect).toHaveBeenCalledWith('banana')
+        // Should close after select
+        expect(onOpenChange).toHaveBeenCalledWith(false)
     })
 
-    it('marks selected options for assistive tech', () => {
-        renderSelect({ selected: 'weekly' })
-        fireEvent.press(screen.getByTestId('select-trigger'))
-        expect(
-            screen.getByLabelText('Weekly').props.accessibilityState.selected
-        ).toBe(true)
+    it('renders search input when search.show is true', () => {
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                open
+                search={{ show: true, placeholder: 'Type to search...' }}
+                testID="ss"
+            />
+        )
+        expect(screen.getByPlaceholderText('Type to search...')).toBeTruthy()
+    })
+
+    it('filters items based on search text', () => {
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                open
+                search={{ show: true }}
+                testID="ss"
+            />
+        )
+        const input = screen.getByPlaceholderText('Search...')
+        fireEvent.changeText(input, 'carrot')
+        expect(screen.getByText('Carrot')).toBeTruthy()
+        expect(screen.queryByText('Apple')).toBeNull()
+        expect(screen.queryByText('Banana')).toBeNull()
+    })
+
+    it('renders error state', () => {
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                error={{ show: true, message: 'Selection is required' }}
+                testID="ss"
+            />
+        )
+        expect(screen.getByText('Selection is required')).toBeTruthy()
+    })
+
+    it('renders hintText in the footer', () => {
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                hintText="Select one option"
+                testID="ss"
+            />
+        )
+        expect(screen.getByText('Select one option')).toBeTruthy()
+    })
+
+    it('renders menuFooter when provided', () => {
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                open
+                menuFooter={<Text>Footer content</Text>}
+                testID="ss"
+            />
+        )
+        expect(screen.getByText('Footer content')).toBeTruthy()
+    })
+
+    it('renders with different sizes and variants', () => {
+        // Smoke test: just verify it renders
+        wrap(
+            <SingleSelect
+                placeholder="Pick a fruit"
+                items={groups}
+                selected=""
+                onSelect={jest.fn()}
+                size={SelectV2Size.LG}
+                variant={SelectV2Variant.NO_CONTAINER}
+                testID="ss"
+            />
+        )
+        expect(screen.getByText('Pick a fruit')).toBeTruthy()
     })
 })

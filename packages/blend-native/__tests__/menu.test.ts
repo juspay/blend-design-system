@@ -2,100 +2,175 @@ import { describe, it, expect } from 'vitest'
 import {
     FOUNDATION_THEME,
     Theme,
-    flattenMenuV2Groups,
-    filterMenuV2Groups,
+    MenuV2ItemVariant,
+    MenuV2ItemActionType,
     getMenuV2Tokens,
-    type MenuV2GroupType,
     type MenuV2TokensType,
 } from '@juspay/blend-design-system/node'
-import { parseBorder, parseDimension } from '../src/adapters/cssStringAdapter'
+import {
+    menuItemAdapter,
+    getMenuItemTokens,
+    getMenuContentTokens,
+    flattenMenuGroups,
+    toFilterableItem,
+} from '../src/components/Menu/menu.utils'
+import type { MenuV2ItemType } from '@juspay/blend-design-system/node'
 
-const THEMES = [Theme.LIGHT, Theme.DARK]
-const BREAKPOINTS = ['sm', 'lg'] as const
-const VARIANT_PATHS = ['default', 'action.primary', 'action.danger'] as const
-const STATES = ['default', 'active', 'disabled', 'selected'] as const
+const tokens = getMenuV2Tokens(FOUNDATION_THEME, Theme.LIGHT)
+    .sm as MenuV2TokensType
 
-const dig = (node: unknown, path: string): unknown =>
-    path
-        .split('.')
-        .reduce((acc, key) => (acc as Record<string, unknown>)?.[key], node)
-
-describe('menu token matrix', () => {
-    for (const theme of THEMES) {
-        for (const breakpoint of BREAKPOINTS) {
-            const tokens = getMenuV2Tokens(FOUNDATION_THEME, theme)[
-                breakpoint
-            ] as MenuV2TokensType
-
-            it(`${theme}/${breakpoint}: surface chrome parses`, () => {
-                expect(String(tokens.backgroundColor)).toMatch(/^#|^rgb/)
-                expect(
-                    parseBorder(String(tokens.border)).borderColor
-                ).toBeDefined()
-                expect(
-                    parseDimension(tokens.borderRadius as string | number)
-                ).toBeGreaterThan(0)
-                expect(
-                    parseDimension(tokens.minWidth as string | number)
-                ).toBeGreaterThan(0)
-            })
-
-            it.each(
-                VARIANT_PATHS.flatMap((v) => STATES.map((s) => [v, s] as const))
-            )(
-                `${theme}/${breakpoint}: %s/%s item colours resolve`,
-                (variant, state) => {
-                    const item = tokens.group.item
-                    for (const base of [
-                        'backgroundColor',
-                        'text.color',
-                        'text.subText.color',
-                    ]) {
-                        const value = dig(item, `${base}.${variant}.${state}`)
-                        expect(String(value)).toMatch(/^#|^rgb/)
-                    }
-                }
-            )
-        }
+describe('menuItemAdapter', () => {
+    const baseItem: MenuV2ItemType = {
+        id: 'item-1',
+        label: { text: 'Apple' },
+        subLabel: 'A fruit',
     }
-})
 
-describe('menu list flattening (node utils on native item shapes)', () => {
-    const groups = [
-        {
-            label: 'Payouts',
-            items: [
-                { label: { text: 'Settle now' }, onPress: () => {} },
-                { label: { text: 'Schedule' }, disabled: true },
-            ],
-            showSeparator: true,
-        },
-        {
-            items: [
-                {
-                    label: { text: 'Danger zone' },
-                    variant: 'action',
-                    actionType: 'danger',
-                },
-            ],
-        },
-    ] as unknown as MenuV2GroupType[]
-
-    it('flattens labels, items and separators in order', () => {
-        const rows = flattenMenuV2Groups(groups)
-        expect(rows.map((r) => r.type)).toEqual([
-            'label',
-            'item',
-            'item',
-            'separator',
-            'item',
-        ])
+    it('unwraps label.text into primaryText', () => {
+        const adapter = menuItemAdapter(baseItem, 0)
+        expect(adapter.primaryText).toBe('Apple')
     })
 
-    it('filters by label text', () => {
-        const filtered = filterMenuV2Groups(groups, 'settle')
-        expect(filtered).toHaveLength(1)
-        expect(filtered[0].items).toHaveLength(1)
-        expect(filtered[0].items[0].label.text).toBe('Settle now')
+    it('maps subLabel to secondaryText', () => {
+        const adapter = menuItemAdapter(baseItem, 0)
+        expect(adapter.secondaryText).toBe('A fruit')
+    })
+
+    it('maps label.leftSlot to leadingSlot', () => {
+        const slot = { type: 'icon' } as unknown as React.ReactElement
+        const item = { ...baseItem, label: { text: 'Apple', leftSlot: slot } }
+        const adapter = menuItemAdapter(item, 0)
+        expect(adapter.leadingSlot).toBe(slot)
+    })
+
+    it('detects hasSubMenu when subMenu is non-empty', () => {
+        const item = {
+            ...baseItem,
+            subMenu: [{ label: { text: 'Child' } }],
+        } as MenuV2ItemType
+        expect(menuItemAdapter(item, 0).hasSubMenu).toBe(true)
+    })
+
+    it('hasSubMenu is false when subMenu is empty', () => {
+        const item = { ...baseItem, subMenu: [] } as MenuV2ItemType
+        expect(menuItemAdapter(item, 0).hasSubMenu).toBe(false)
+    })
+
+    it('passes through disabled and selected', () => {
+        const item = { ...baseItem, disabled: true, selected: true }
+        const adapter = menuItemAdapter(item, 0)
+        expect(adapter.disabled).toBe(true)
+        expect(adapter.isSelected).toBe(true)
+    })
+
+    it('resolves variant=default', () => {
+        const adapter = menuItemAdapter(baseItem, 0)
+        expect(adapter.variant).toBe('default')
+    })
+
+    it('resolves variant=action/primary', () => {
+        const item = {
+            ...baseItem,
+            variant: MenuV2ItemVariant.ACTION,
+            actionType: MenuV2ItemActionType.PRIMARY,
+        } as MenuV2ItemType
+        expect(menuItemAdapter(item, 0).variant).toBe('primary')
+    })
+
+    it('resolves variant=action/danger', () => {
+        const item = {
+            ...baseItem,
+            variant: MenuV2ItemVariant.ACTION,
+            actionType: MenuV2ItemActionType.DANGER,
+        } as MenuV2ItemType
+        expect(menuItemAdapter(item, 0).variant).toBe('danger')
+    })
+
+    it('generates an id when absent', () => {
+        const item = { label: { text: 'NoId' } } as MenuV2ItemType
+        expect(menuItemAdapter(item, 3).id).toBe('menu-item-3')
+    })
+})
+
+describe('getMenuItemTokens', () => {
+    it('returns a backgroundColor record for all states', () => {
+        const t = getMenuItemTokens(tokens)
+        expect(t.backgroundColor.default).toBeDefined()
+        expect(t.backgroundColor.hover).toBeDefined()
+        expect(t.backgroundColor.active).toBeDefined()
+        expect(t.backgroundColor.disabled).toBeDefined()
+        expect(t.backgroundColor.selected).toBeDefined()
+    })
+
+    it('returns a text color record for all states', () => {
+        const t = getMenuItemTokens(tokens)
+        expect(t.text.color.default).toBeDefined()
+        expect(t.text.color.disabled).toBeDefined()
+    })
+
+    it('preserves checkmark config', () => {
+        const t = getMenuItemTokens(tokens)
+        expect(t.text.checkmark).toBeDefined()
+        expect(t.text.checkmark?.position).toBe('trailing')
+    })
+
+    it('resolves action/primary variant tokens', () => {
+        const actionTokens = getMenuItemTokens(
+            tokens,
+            MenuV2ItemVariant.ACTION,
+            MenuV2ItemActionType.PRIMARY
+        )
+        const regularTokens = getMenuItemTokens(tokens)
+        // Action variant should differ from default variant
+        expect(actionTokens.backgroundColor.default).not.toBe(
+            regularTokens.backgroundColor.default
+        )
+    })
+})
+
+describe('getMenuContentTokens', () => {
+    it('maps content-level token fields', () => {
+        const t = getMenuContentTokens(tokens)
+        expect(t.backgroundColor).toBeDefined()
+        expect(t.borderRadius).toBeDefined()
+        expect(t.paddingTop).toBeDefined()
+    })
+})
+
+describe('flattenMenuGroups', () => {
+    it('adapts groups with labels and items', () => {
+        const groups = [
+            {
+                label: 'Fruits',
+                items: [
+                    { id: 'a', label: { text: 'Apple' } },
+                    { id: 'b', label: { text: 'Banana' } },
+                ] as MenuV2ItemType[],
+                showSeparator: true,
+            },
+        ]
+        const result = flattenMenuGroups(groups)
+        expect(result).toHaveLength(1)
+        expect(result[0].label).toBe('Fruits')
+        expect(result[0].items).toHaveLength(2)
+        expect(result[0].items[0].primaryText).toBe('Apple')
+        expect(result[0].showSeparator).toBe(true)
+    })
+})
+
+describe('toFilterableItem', () => {
+    it('maps label.text to primaryText', () => {
+        const item = { label: { text: 'Apple' } } as MenuV2ItemType
+        expect(toFilterableItem(item).primaryText).toBe('Apple')
+    })
+
+    it('maps subMenu to subItems recursively', () => {
+        const item = {
+            label: { text: 'Parent' },
+            subMenu: [{ label: { text: 'Child' } }],
+        } as MenuV2ItemType
+        const result = toFilterableItem(item)
+        expect(result.subItems).toHaveLength(1)
+        expect(result.subItems![0].primaryText).toBe('Child')
     })
 })

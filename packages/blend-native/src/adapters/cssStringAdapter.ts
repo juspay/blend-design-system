@@ -187,7 +187,11 @@ export function parseBorder(
     if (!match) return {}
     const width = parseFloat(match[1])
     const borderStyle = match[2] as NonNullable<ViewStyle['borderStyle']>
-    const color = match[3].trim()
+    // Strip `!important` — web token factories emit it on some borders;
+    // RN has no CSS specificity, so it's meaningless here and makes the
+    // color string invalid if left in. Whitespace around it is handled by
+    // `.trim()` so the regex itself stays linear (no `\s*` quantifiers).
+    const color = match[3].replace(/!important$/i, '').trim()
     if (Number.isNaN(width) || !color) return {}
     return { borderWidth: width, borderColor: color, borderStyle }
 }
