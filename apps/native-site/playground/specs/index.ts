@@ -3,6 +3,7 @@ import type { AnySpec } from '../types'
 import accordion from './accordion.spec'
 import alert from './alert.spec'
 import avatar from './avatar.spec'
+import badge from './badge.spec'
 import bottomSheet from './bottomSheet.spec'
 import button from './button.spec'
 import card from './card.spec'
@@ -27,6 +28,7 @@ import tag from './tag.spec'
 import textArea from './textArea.spec'
 import textInput from './textInput.spec'
 import tooltip from './tooltip.spec'
+import upload from './upload.spec'
 
 /**
  * The component list behind the drawer. Every renderable `blend-native`
@@ -59,6 +61,7 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
             asAnySpec(checkbox),
             asAnySpec(radio),
             asAnySpec(switchSpec),
+            asAnySpec(upload),
         ],
     },
     {
@@ -75,6 +78,7 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
         title: 'Data display',
         specs: [
             asAnySpec(avatar),
+            asAnySpec(badge),
             asAnySpec(card),
             asAnySpec(keyValuePair),
             asAnySpec(tabs),

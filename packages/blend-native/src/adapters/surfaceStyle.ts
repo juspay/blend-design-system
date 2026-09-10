@@ -162,9 +162,10 @@ export function resolveSurfaceStyle(
     put(style, 'backgroundColor', backgroundColor)
 
     // ---- Border ---------------------------------------------------------
-    const borderStyle = parseBorder(props.border)
-    put(style, 'borderWidth', borderStyle.borderWidth)
-    put(style, 'borderColor', borderStyle.borderColor)
+    const border = parseBorder(props.border)
+    put(style, 'borderWidth', border.borderWidth)
+    put(style, 'borderColor', border.borderColor)
+    put(style, 'borderStyle', border.borderStyle)
 
     // ---- Radius ---------------------------------------------------------
     const radius = parseBorderRadius(props.borderRadius)

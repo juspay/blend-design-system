@@ -36,7 +36,7 @@ const PERCENT_RE = new RegExp(`^(${NUMBER})%$`)
 
 /** `"1px solid #E1E4EA"` — width, style, color. Width cannot be negative. */
 const BORDER_RE = new RegExp(
-    String.raw`^(${UNSIGNED_NUMBER})px\s+(?:solid|dashed|dotted)\s+(.+)$`
+    String.raw`^(${UNSIGNED_NUMBER})px\s+(solid|dashed|dotted)\s+(.+)$`
 )
 
 /** Every signed decimal in a string — for box-shadow's number run. */
@@ -165,28 +165,31 @@ export function parseDuration(
 
 /**
  * Parse a CSS `border` shorthand (`"1px solid #E1E4EA"`) into RN border props.
- * Returns `{ borderWidth, borderColor }` — the only two border properties RN
- * supports uniformly across iOS/Android.
+ * Returns `{ borderWidth, borderColor, borderStyle }`. `borderStyle` is always
+ * emitted on a match (`'solid'` is RN's default, so existing tokens render
+ * identically); `'dashed'` / `'dotted'` reach RN's `borderStyle` directly.
  *
- * `parseBorder("1.5px solid #1A56DB") → { borderWidth: 1.5, borderColor: "#1A56DB" }`
+ * `parseBorder("1.5px solid #1A56DB") → { borderWidth: 1.5, borderColor: "#1A56DB", borderStyle: "solid" }`
+ * `parseBorder("1.5px dashed #1A56DB") → { borderWidth: 1.5, borderColor: "#1A56DB", borderStyle: "dashed" }`
  * `parseBorder("none") → {}`
  */
 export function parseBorder(
     value: string | undefined
-): Partial<Pick<ViewStyle, 'borderWidth' | 'borderColor'>> {
+): Partial<Pick<ViewStyle, 'borderWidth' | 'borderColor' | 'borderStyle'>> {
     if (!value || value === 'none' || value === 'transparent') {
         return {}
     }
     // Match: <width> <style> <color>
     // width: "1px" / "1.5px"
-    // style: "solid" / "dashed" / "dotted" (RN only renders solid reliably)
+    // style: "solid" / "dashed" / "dotted"
     // color: hex / rgb / rgba / named
     const match = value.trim().match(BORDER_RE)
     if (!match) return {}
     const width = parseFloat(match[1])
-    const color = match[2].trim()
+    const borderStyle = match[2] as NonNullable<ViewStyle['borderStyle']>
+    const color = match[3].trim()
     if (Number.isNaN(width) || !color) return {}
-    return { borderWidth: width, borderColor: color }
+    return { borderWidth: width, borderColor: color, borderStyle }
 }
 
 /**

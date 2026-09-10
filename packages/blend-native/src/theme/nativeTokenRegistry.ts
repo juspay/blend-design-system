@@ -4,6 +4,7 @@ import {
     getAccordionV2Tokens,
     getAlertV2Tokens,
     getAvatarV2Tokens,
+    getBadgeTokens,
     getButtonV2Tokens,
     getCardV2Tokens,
     getCheckboxV2Tokens,
@@ -27,6 +28,7 @@ import {
     getTooltipV2Tokens,
     getTextAreaV2Tokens,
     getTextInputV2Tokens,
+    getUploadV2Tokens,
     type BreakpointType,
 } from '@juspay/blend-design-system/node'
 
@@ -48,6 +50,7 @@ export const NATIVE_TOKEN_REGISTRY = {
     ACCORDIONV2: getAccordionV2Tokens,
     ALERTV2: getAlertV2Tokens,
     AVATARV2: getAvatarV2Tokens,
+    BADGE: getBadgeTokens,
     BUTTONV2: getButtonV2Tokens,
     CARDV2: getCardV2Tokens,
     CHECKBOXV2: getCheckboxV2Tokens,
@@ -70,6 +73,7 @@ export const NATIVE_TOKEN_REGISTRY = {
     TAGV2: getTagV2Tokens,
     TEXT_AREA_V2: getTextAreaV2Tokens,
     TEXT_INPUTV2: getTextInputV2Tokens,
+    UPLOADV2: getUploadV2Tokens,
     TOOLTIPV2: getTooltipV2Tokens,
 } as const
 

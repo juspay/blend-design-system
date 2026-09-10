@@ -144,6 +144,27 @@ export type {
     ResponsiveTextInputV2Tokens,
 } from './components/InputsV2/TextInputV2/TextInputV2.tokens.types'
 export { getUploadV2Tokens } from './components/InputsV2/UploadV2/UploadV2.tokens'
+export type {
+    UploadV2TokensType,
+    ResponsiveUploadV2Tokens,
+} from './components/InputsV2/UploadV2/UploadV2.tokens.types'
+export {
+    UploadState,
+    UploadErrorReason,
+} from './components/InputsV2/UploadV2/uploadV2.base.types'
+export type {
+    UploadFileBase,
+    UploadBaseProps,
+    UploadErrorReasonValue,
+} from './components/InputsV2/UploadV2/uploadV2.base.types'
+
+export { getBadgeTokens } from './components/Badge/badge.tokens'
+export type {
+    BadgeTokensType,
+    ResponsiveBadgeTokens,
+} from './components/Badge/badge.tokens.types'
+export { BadgeColor, BadgeSize } from './components/Badge/Badge.types'
+export type { BadgePosition } from './components/Badge/Badge.types'
 
 export { getSkeletonTokens } from './components/Skeleton/skeleton.tokens'
 export type {

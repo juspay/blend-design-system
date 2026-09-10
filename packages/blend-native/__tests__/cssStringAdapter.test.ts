@@ -89,6 +89,7 @@ describe('parseBorder', () => {
         expect(parseBorder('1px solid #E1E4EA')).toEqual({
             borderWidth: 1,
             borderColor: '#E1E4EA',
+            borderStyle: 'solid',
         })
     })
 
@@ -96,13 +97,23 @@ describe('parseBorder', () => {
         expect(parseBorder('1.5px solid #1A56DB')).toEqual({
             borderWidth: 1.5,
             borderColor: '#1A56DB',
+            borderStyle: 'solid',
         })
     })
 
-    it('accepts dashed and dotted styles', () => {
+    it('emits borderStyle: dashed, which Upload needs for its drop zone', () => {
         expect(parseBorder('2px dashed #000')).toEqual({
             borderWidth: 2,
             borderColor: '#000',
+            borderStyle: 'dashed',
+        })
+    })
+
+    it('emits borderStyle: dotted', () => {
+        expect(parseBorder('1px dotted #333')).toEqual({
+            borderWidth: 1,
+            borderColor: '#333',
+            borderStyle: 'dotted',
         })
     })
 

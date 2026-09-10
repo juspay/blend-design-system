@@ -53,6 +53,7 @@ describe('nativeTokenRegistry', () => {
             'ACCORDIONV2',
             'ALERTV2',
             'AVATARV2',
+            'BADGE',
             'BUTTONV2',
             'CARDV2',
             'CHECKBOXV2',
@@ -76,6 +77,7 @@ describe('nativeTokenRegistry', () => {
             'TEXT_AREA_V2',
             'TEXT_INPUTV2',
             'TOOLTIPV2',
+            'UPLOADV2',
         ])
     })
 
