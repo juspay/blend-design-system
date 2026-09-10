@@ -187,7 +187,7 @@ const Breadcrumb = forwardRef<RNScrollView, BreadcrumbNativeProps>(
                                 | React.ReactElement
                                 | undefined,
                         },
-                        onPress: item.onPress,
+                        onClick: item.onPress,
                     })),
                 },
             ]
@@ -258,10 +258,25 @@ const Breadcrumb = forwardRef<RNScrollView, BreadcrumbNativeProps>(
                     >
                         <Menu
                             trigger={
-                                <Ellipsis
-                                    size={tokens.ellipsis.size}
-                                    color={String(tokens.ellipsis.color)}
-                                />
+                                <Pressable
+                                    accessibilityRole="button"
+                                    accessibilityLabel="Show hidden breadcrumb items"
+                                    hitSlop={8}
+                                    style={{
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                    testID={
+                                        testID
+                                            ? `${testID}-overflow-trigger`
+                                            : undefined
+                                    }
+                                >
+                                    <Ellipsis
+                                        size={tokens.ellipsis.size}
+                                        color={String(tokens.ellipsis.color)}
+                                    />
+                                </Pressable>
                             }
                             items={overflowGroups}
                             testID={testID ? `${testID}-overflow` : undefined}
