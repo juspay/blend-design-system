@@ -54,6 +54,7 @@ describe('nativeTokenRegistry', () => {
             'ALERTV2',
             'AVATARV2',
             'BADGE',
+            'BREADCRUMBV2',
             'BUTTONV2',
             'CARDV2',
             'CHARTSV2',

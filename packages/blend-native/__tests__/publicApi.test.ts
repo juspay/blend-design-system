@@ -77,6 +77,7 @@ describe('public API surface', () => {
             'Avatar',
             'Badge',
             'Button',
+            'Breadcrumb',
             'ButtonGroup',
             'Card',
             'Chart',
@@ -150,7 +151,8 @@ describe('public API surface', () => {
         // UploadErrorReason), then to 113 for Badge (+ BadgeColor,
         // BadgeSize), then to 122 for the chart wave (Chart and its
         // compounds, SankeyChart, OutageChart), then to 124 for the
-        // select rework (select/menu enums and helpers).
-        expect(exported.size).toBeLessThanOrEqual(124)
+        // select rework (select/menu enums and helpers), then to 125 for
+        // Breadcrumb.
+        expect(exported.size).toBeLessThanOrEqual(125)
     })
 })
