@@ -35,7 +35,7 @@ export const getButtonV2DarkTokens = (
 ): ResponsiveButtonV2Tokens => {
     return {
         sm: {
-            gap: foundationToken.unit[10],
+            gap: foundationToken.unit[6],
             slotMaxHeight: getSlotMaxHeightTokens(foundationToken),
             focusRing: getFocusRingTokens(foundationToken),
             // Pattern: backgroundColor.[variant].[subType].[state]
@@ -737,7 +737,7 @@ export const getButtonV2DarkTokens = (
             },
         },
         lg: {
-            gap: foundationToken.unit[20],
+            gap: foundationToken.unit[6],
             slotMaxHeight: getSlotMaxHeightTokens(foundationToken),
             focusRing: getFocusRingTokens(foundationToken),
             backgroundColor: {

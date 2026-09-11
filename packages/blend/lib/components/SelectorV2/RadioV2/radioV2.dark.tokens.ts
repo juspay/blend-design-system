@@ -148,7 +148,7 @@ export const getRadioV2DarkTokens = (
                 height: {
                     sm: foundationToken.unit[14],
                     md: foundationToken.unit[16],
-                    lg: foundationToken.unit[16],
+                    lg: foundationToken.unit[20],
                 },
                 borderWidth: {
                     inactive: {
