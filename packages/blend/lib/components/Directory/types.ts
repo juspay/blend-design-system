@@ -129,6 +129,13 @@ export type NavItemProps = {
     isNested?: boolean
     enableParentSelection?: boolean
     highlightActivePath?: boolean
+    // Active-path connector highlighting, decided by the parent:
+    // - pathVerticalActive: this row sits at/above the on-path child, so its
+    //   vertical guide segment (::before) is on the active path.
+    // - pathElbowActive: this row IS the on-path child, so its elbow (::after)
+    //   and the stub above it are highlighted.
+    pathVerticalActive?: boolean
+    pathElbowActive?: boolean
 }
 
 export type DirectoryFlatRow =

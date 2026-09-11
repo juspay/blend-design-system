@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
+import { Building2 } from 'lucide-react'
 import { Directory, ThemeProvider } from '@juspay/blend-design-system'
 import { Theme } from '../../../../../../packages/blend/lib/context/theme.enum'
 import {
@@ -36,30 +37,30 @@ const directoryData: DirectoryData[] = [
 ]
 
 // Deep tree for the active-path stories — mirrors the Entity Management
-// hierarchy (group → network → merchant).
+// hierarchy (group → network → merchant). Every row carries an entity icon.
+const ent = (label: string, items?: DirectoryData['items']) => ({
+    label,
+    leftSlot: <Building2 size={16} />,
+    ...(items ? { items } : {}),
+})
+
 const entityData: DirectoryData[] = [
     {
         label: 'Entities',
         isCollapsible: false,
         defaultOpen: true,
         items: [
-            {
-                label: 'Acme Commerce Group',
-                items: [
-                    {
-                        label: 'Helix Network',
-                        items: [
-                            { label: 'Orbit Pharma' },
-                            { label: 'Indus Pharma' },
-                            { label: 'Orion Pharma' },
-                            { label: 'Apollo Pharma' },
-                        ],
-                    },
-                    { label: 'Quanta Network' },
-                ],
-            },
-            { label: 'Nimbus Ventures' },
-            { label: 'Polaris Channel' },
+            ent('Acme Commerce Group', [
+                ent('Helix Network', [
+                    ent('Orbit Pharma'),
+                    ent('Indus Pharma'),
+                    ent('Orion Pharma'),
+                    ent('Apollo Pharma'),
+                ]),
+                ent('Quanta Network'),
+            ]),
+            ent('Nimbus Ventures'),
+            ent('Polaris Channel'),
         ],
     },
 ]
@@ -139,6 +140,7 @@ export const ActivePathHighlight: Story = {
     args: {
         directoryData: entityData,
         showHierarchyLines: true,
+        hierarchyLineBorderRadius: 8,
         highlightActivePath: true,
         enableParentSelection: true,
         defaultExpandedItems: entityExpanded,
@@ -163,6 +165,7 @@ export const ActivePathHighlightDark: Story = {
     args: {
         directoryData: entityData,
         showHierarchyLines: true,
+        hierarchyLineBorderRadius: 8,
         highlightActivePath: true,
         enableParentSelection: true,
         defaultExpandedItems: entityExpanded,

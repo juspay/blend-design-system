@@ -3,6 +3,7 @@ import {
     TextInput as RNTextInput,
     StyleSheet,
     type TextInputProps as RNTextInputProps,
+    type StyleProp,
     type TextStyle,
 } from 'react-native'
 import { parseDimension } from '../adapters/cssStringAdapter'
@@ -33,7 +34,7 @@ export type PrimitiveInputProps = {
     lineHeight?: string | number
     /** Placeholder colour for the current state. */
     placeholderColor?: string
-    style?: TextStyle
+    style?: StyleProp<TextStyle>
 } & Omit<RNTextInputProps, 'style' | 'placeholderTextColor'>
 
 const PrimitiveInputImpl = forwardRef<RNTextInput, PrimitiveInputProps>(

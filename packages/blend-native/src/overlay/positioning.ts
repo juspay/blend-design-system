@@ -194,3 +194,116 @@ export function computeAnchoredPosition(
 
     return { x, y, placement, maxHeight, maxWidth }
 }
+
+/**
+ * Arrow-led placement — the tooltip contract: the arrow (“tip”) sits at a
+ * fixed spot on the content per `alignment` (`start` → near the leading
+ * edge, `center` → middle, `end` → near the trailing edge), and the
+ * CONTENT is positioned so that fixed tip lands on the anchor's center.
+ * This is how the established native tooltip libraries behave, and it
+ * keeps the bubble visually attached to its trigger; edge-aligned
+ * placement (`computeAnchoredPosition`) remains the right model for
+ * menus/popovers.
+ *
+ * The main axis (side, flip, offset) reuses `computeAnchoredPosition`;
+ * only the cross axis is arrow-led. Cross-axis clamping keeps the content
+ * on-screen; the arrow stays at its content-local spot by design.
+ */
+export function computeArrowAlignedPosition(
+    input: AnchoredPositionInput & { arrowSize: number }
+): AnchoredPosition & { arrow: { x: number; y: number } } {
+    const {
+        anchor,
+        content,
+        viewport,
+        alignment = 'center',
+        viewportPadding = 8,
+        arrowSize,
+    } = input
+
+    const base = computeAnchoredPosition(input)
+    const vertical = base.placement === 'top' || base.placement === 'bottom'
+    const crossLength = vertical ? content.width : content.height
+
+    // Where the tip sits on the content, per the alignment contract. The
+    // inset keeps the rotated square clear of rounded corners.
+    const inset = Math.max(arrowSize * 2, 12)
+    const arrowLocal =
+        alignment === 'start'
+            ? inset
+            : alignment === 'end'
+              ? crossLength - inset
+              : crossLength / 2
+
+    const anchorCenter = vertical
+        ? anchor.x + anchor.width / 2
+        : anchor.y + anchor.height / 2
+    const crossMax =
+        (vertical ? viewport.width : viewport.height) -
+        viewportPadding -
+        crossLength
+    const cross = clamp(anchorCenter - arrowLocal, viewportPadding, crossMax)
+
+    const arrow = vertical
+        ? {
+              x: arrowLocal,
+              y: base.placement === 'top' ? content.height : 0,
+          }
+        : {
+              x: base.placement === 'left' ? content.width : 0,
+              y: arrowLocal,
+          }
+
+    return vertical
+        ? { ...base, x: cross, arrow }
+        : { ...base, y: cross, arrow }
+}
+
+export type ArrowPositionInput = {
+    /** The anchor's rect in window coordinates. */
+    anchor: Rect
+    /** Where the content ended up (`computeAnchoredPosition`'s x/y). */
+    contentPosition: { x: number; y: number }
+    /** The content's measured size. */
+    content: Size
+    /** The placement actually used, after any flip. */
+    placement: Placement
+    /** Edge length of the square rendered as the arrow (pre-rotation). */
+    arrowSize: number
+}
+
+/**
+ * Where the arrow sits on the content's anchor-facing edge, as the arrow's
+ * **center point in content-local coordinates**: the anchor's center is
+ * projected onto that edge and clamped inward by `arrowSize` so the arrow
+ * never escapes past the rounded corners. The caller renders a 45°-rotated
+ * square centered on the returned point, straddling the edge.
+ */
+export function computeArrowPosition(input: ArrowPositionInput): {
+    x: number
+    y: number
+} {
+    const { anchor, contentPosition, content, placement, arrowSize } = input
+    const anchorCenterX = anchor.x + anchor.width / 2
+    const anchorCenterY = anchor.y + anchor.height / 2
+
+    if (placement === 'top' || placement === 'bottom') {
+        // Arrow on the bottom edge when content sits above the anchor, on
+        // the top edge when below.
+        const y = placement === 'top' ? content.height : 0
+        const x = clamp(
+            anchorCenterX - contentPosition.x,
+            arrowSize,
+            content.width - arrowSize
+        )
+        return { x, y }
+    }
+
+    const x = placement === 'left' ? content.width : 0
+    const y = clamp(
+        anchorCenterY - contentPosition.y,
+        arrowSize,
+        content.height - arrowSize
+    )
+    return { x, y }
+}

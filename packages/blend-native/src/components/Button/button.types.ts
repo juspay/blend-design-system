@@ -1,6 +1,8 @@
+import type React from 'react'
 import type {
     GestureResponderEvent,
     PressableProps,
+    StyleProp,
     ViewStyle,
 } from 'react-native'
 import type { ButtonBaseProps } from '@juspay/blend-design-system/node'
@@ -37,8 +39,50 @@ export type ButtonNativeProps = Omit<ButtonBaseProps, 'skeleton'> & {
      */
     justifyContent?: ViewStyle['justifyContent']
     /** Escape hatch for RN styles the token props do not cover. */
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 } & Omit<
         PressableProps,
         'style' | 'onPress' | 'disabled' | 'children' | 'testID'
     >
+
+/**
+ * Props for the native `IconButton` — an icon-only `Button`, mirroring web's
+ * `IconButton` wrapper over `ButtonV2`.
+ *
+ * `text`, `leftSlot`, `rightSlot` and `subType` are omitted so the icon-only
+ * shape cannot be undone from outside: the icon always renders through
+ * `leftSlot` with `subType` forced to `ICON_ONLY`.
+ *
+ * `accessibilityLabel` is **required** (web requires `aria-label` the same
+ * way): an icon-only control has no text to derive an accessible name from,
+ * so omitting the label would ship a button screen readers announce as
+ * nothing.
+ */
+export type IconButtonNativeProps = Omit<
+    ButtonNativeProps,
+    'text' | 'leftSlot' | 'rightSlot' | 'subType' | 'accessibilityLabel'
+> & {
+    /** The icon to render. Tinted by `Slot` like any other button slot. */
+    icon: React.ReactNode
+    accessibilityLabel: string
+}
+
+/**
+ * Props for the native `LinkButton` — a `Button` announced as a link.
+ *
+ * Web's `LinkButton` renders an anchor; RN has no anchor, so navigation is
+ * the app's job via `onPress` (locked decision) and the whole difference is
+ * `accessibilityRole="link"`. Deliberately omitted rather than
+ * accepted-and-ignored (compile errors, the `skeleton` precedent):
+ *
+ * - `href` / `target` / `rel` — never existed here; wire navigation (or
+ *   `Linking.openURL` for external URLs) in `onPress`.
+ * - `justifyContent` — web's LinkButton hardcodes center.
+ * - `buttonGroupPosition` — web's LinkButton has no group support.
+ * - `accessibilityRole` — forced to `link`; overriding it would undo the
+ *   component's one job.
+ */
+export type LinkButtonNativeProps = Omit<
+    ButtonNativeProps,
+    'justifyContent' | 'buttonGroupPosition' | 'accessibilityRole'
+>

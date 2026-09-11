@@ -3,6 +3,7 @@ import {
     Text as RNText,
     StyleSheet,
     type TextProps as RNTextProps,
+    type StyleProp,
     type TextStyle,
 } from 'react-native'
 import { parseDimension } from '../adapters/cssStringAdapter'
@@ -51,7 +52,7 @@ export type BlendTextProps = {
     /** Flex display — web `Text` is sometimes `inline`; on RN Text is always inline. */
     as?: string
 } & Omit<RNTextProps, 'style'> & {
-        style?: TextStyle
+        style?: StyleProp<TextStyle>
     }
 
 function TextImpl({

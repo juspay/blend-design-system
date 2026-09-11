@@ -1,4 +1,5 @@
 import { forwardRef, useCallback, useMemo, useState } from 'react'
+import { useControllableState } from '../../hooks/useControllableState'
 import type {
     TextInputProps as RNTextInputProps,
     View as RNView,
@@ -32,6 +33,7 @@ import type { TextInputNativeProps } from './textInput.types'
 const TextInput = forwardRef<RNView, TextInputNativeProps>(function TextInput(
     {
         value,
+        defaultValue,
         onChangeText,
         label,
         subLabel,
@@ -54,6 +56,13 @@ const TextInput = forwardRef<RNView, TextInputNativeProps>(function TextInput(
 ) {
     const tokens = useNativeTokens<TextInputV2TokensType>('TEXT_INPUTV2')
     const [focused, setFocused] = useState(false)
+    // Controlled when `value` is supplied; otherwise the field owns its
+    // text, seeded by `defaultValue` (the audit's uncontrolled fix).
+    const [currentValue, setCurrentValue] = useControllableState<string>(
+        value,
+        defaultValue ?? '',
+        onChangeText
+    )
 
     // Labels/footer track error+disabled; the container also tracks focus.
     const fieldState = getFieldState(error, disabled)
@@ -122,8 +131,8 @@ const TextInput = forwardRef<RNView, TextInputNativeProps>(function TextInput(
 
                 <PrimitiveInput
                     ref={inputRef}
-                    value={value}
-                    onChangeText={onChangeText}
+                    value={currentValue}
+                    onChangeText={setCurrentValue}
                     editable={!disabled}
                     fontSize={styles.text.fontSize}
                     fontWeight={styles.text.fontWeight}

@@ -71,7 +71,47 @@ describe('public API surface', () => {
     })
 
     it('exports the components', () => {
-        for (const name of ['Alert', 'Button', 'Tag']) {
+        for (const name of [
+            'Accordion',
+            'Alert',
+            'Avatar',
+            'Badge',
+            'Button',
+            'Breadcrumb',
+            'ButtonGroup',
+            'Card',
+            'Chart',
+            'ChartContainer',
+            'ChartHeader',
+            'ChartLegend',
+            'ChartNoData',
+            'ChartSkeleton',
+            'Checkbox',
+            'IconButton',
+            'OutageChart',
+            'KeyValuePair',
+            'LinkButton',
+            'Menu',
+            'MultiSelect',
+            'NumberInput',
+            'Popover',
+            'OTPInput',
+            'ProgressBar',
+            'Radio',
+            'SankeyChart',
+            'SearchInput',
+            'Sparkline',
+            'SingleSelect',
+            'Spinner',
+            'StatCard',
+            'Switch',
+            'Tabs',
+            'TextArea',
+            'Tag',
+            'TagGroup',
+            'Tooltip',
+            'Upload',
+        ]) {
             expect(exported.has(name)).toBe(true)
         }
     })
@@ -97,7 +137,22 @@ describe('public API surface', () => {
         // trips, decide deliberately whether the additions are public API.
         // Raised from 30 when the overlay foundation (Portal, BottomSheet,
         // useReduceMotion) became public, then to 40 for the field layer
-        // (TextInput, PrimitiveInput, input enums) and the toast pair.
-        expect(exported.size).toBeLessThanOrEqual(40)
+        // (TextInput, PrimitiveInput, input enums) and the toast pair, then
+        // to 44 for the Button/Tag family wave (IconButton, LinkButton,
+        // ButtonGroup, TagGroup), then to 64 for the display wave (Spinner,
+        // ProgressBar, Avatar, KeyValuePair, Card, Snackbar and their enums),
+        // then to 84 for the Wave B form layer (Checkbox, Radio, Switch, the
+        // compound Tabs/Accordion, the input variants, and their enums),
+        // then to 85 when BottomSheetScrollable joined the sheet foundation
+        // (Wave C0 scroll-aware drag), then to 96 for the Wave C1 overlay
+        // components (Tooltip, Popover, Modal and their enums), then to 106
+        // for Wave C2 (Menu, SingleSelect, MultiSelect and their enums),
+        // then to 110 for Upload (+ validateUploadFiles, UploadState,
+        // UploadErrorReason), then to 113 for Badge (+ BadgeColor,
+        // BadgeSize), then to 122 for the chart wave (Chart and its
+        // compounds, SankeyChart, OutageChart), then to 124 for the
+        // select rework (select/menu enums and helpers), then to 125 for
+        // Breadcrumb.
+        expect(exported.size).toBeLessThanOrEqual(125)
     })
 })

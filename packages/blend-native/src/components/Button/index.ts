@@ -1,5 +1,13 @@
 export { default as Button } from './Button'
-export type { ButtonNativeProps } from './button.types'
+export { default as ButtonGroup } from './ButtonGroup'
+export { default as IconButton } from './IconButton'
+export { default as LinkButton } from './LinkButton'
+export type { ButtonGroupNativeProps } from './ButtonGroup'
+export type {
+    ButtonNativeProps,
+    IconButtonNativeProps,
+    LinkButtonNativeProps,
+} from './button.types'
 export {
     getButtonNativeStyles,
     getButtonPadding,

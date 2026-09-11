@@ -1,10 +1,20 @@
 # Blend Native Site
 
-Expo demo app for [`@juspay/blend-native`](../../packages/blend-native).
+Expo demo app for [`blend-native`](../../packages/blend-native).
 
-It renders every variant of every shipped native component so they can be
-checked against the web originals: **Alert**, **Tag** and **Button**, each with
-a light/dark toggle driven by a single `BlendNativeProvider`.
+Every component the library ships gets a **preview**: one instance, a panel
+of controls that reach every variant and combination, and the JSX for
+whatever is currently on screen — all under one light/dark toggle driven by a
+single `BlendNativeProvider`.
+
+A **side drawer** picks the component. There is no other navigation; the
+playground is the whole screen.
+
+Open the drawer with the hamburger. Edge-swipe also works, **except on
+Android devices using gesture navigation**, where the system claims the left
+edge for its own back gesture and closes the app instead. That is the OS
+winning a gesture race, not a bug in the drawer, and it is why the hamburger
+is always present rather than being hidden on touch targets.
 
 This app is not a showcase for its own sake — it is the **verification vehicle
 for the library**. Several bugs in `blend-native` were invisible to the test
@@ -19,9 +29,10 @@ pnpm build:blend            # required — see the note below
 
 cd apps/native-site
 pnpm start                  # then press i / a / w
+pnpm test                   # the playground's pure layer (snippet + options)
 ```
 
-`pnpm build:blend` is not optional. `@juspay/blend-native` imports tokens from
+`pnpm build:blend` is not optional. `blend-native` imports tokens from
 `@juspay/blend-design-system/node`, which resolves to that package's **built**
 `dist/`. If you have just changed `packages/blend/lib/node.ts`, the new exports
 are missing until you rebuild, and the failure looks like an unrelated
@@ -128,25 +139,65 @@ these shipped green on the browser target and was broken on a device:
 
 The unit suites could not catch any of them: they verify a resolved style
 object, not what reached the screen. Render tests (`pnpm --filter
-@juspay/blend-native test:render`) now cover behaviour and accessibility, but
+blend-native test:render`) now cover behaviour and accessibility, but
 **visual correctness still needs eyes on a device.**
 
 ## Folder structure
 
 ```
 apps/native-site/
-├── App.tsx                     # provider, theme toggle, tab switcher
-├── app.json                    # Expo config
-├── metro.config.js             # pnpm symlink + workspace source resolution
+├── App.tsx                        # provider, drawer, app bar
+├── app.json                       # Expo config
+├── metro.config.js                # pnpm symlink + workspace source resolution
 ├── babel.config.js
+├── playground/
+│   ├── types.ts                   # ComponentSpec, Control — the contract
+│   ├── snippet.ts                 # props -> JSX string (pure, unit-tested)
+│   ├── snippet.test.ts
+│   ├── chrome.ts                  # the harness palette, deliberately not Blend's
+│   ├── Playground.tsx             # pinned stage + scrolling controls + JSX
+│   ├── useHideOnScroll.ts         # collapses the app bar as you scroll
+│   ├── scroll.ts                  # the shared scroll-handler type
+│   ├── AppBar.tsx                 # title, hamburger, theme toggle
+│   ├── ComponentDrawer.tsx        # the grouped component list
+│   ├── controls/                  # Select, Toggle, Text, Panel
+│   └── specs/                     # one file per component + the registry
 └── components/
-    ├── AlertShowcase.tsx       # 7 types x 2 subTypes, actions, slots, wrapping
-    ├── TagShowcase.tsx         # 3 types x 6 colors x 4 sizes x 2 subTypes
-    ├── ButtonShowcase.tsx      # types, sizes, states, subTypes, widths
     ├── PlatformPreview.tsx     # web-only Mobile/Web switch + zoom
     ├── MobileFrame.web.tsx     # phone chrome for the browser target
     └── MobileFrame.native.tsx  # passthrough on native
 ```
+
+### Two rules the harness depends on
+
+**The control chrome is plain React Native, with one deliberate exception.**
+The playground is the instrument used to inspect the library, so it has to
+keep working when the library does not — a control panel built out of the
+components under test goes blank exactly when you need it. `chrome.ts` holds
+its own palette for the same reason.
+
+Two pieces knowingly break that rule: `SelectControl` presents its options in
+Blend's own `BottomSheet`, and the JSX block is a Blend `Accordion`. Both are
+trades made on purpose — if either regresses, that one piece goes with it, and
+nothing else does. The rows inside the sheet and the snippet inside the
+accordion are still plain React Native.
+
+### Why the stage is pinned
+
+The preview sits **outside** the scroll view. Watching a component change as
+you change its props is the entire point, and it cannot do that if reaching
+the controls pushes it off screen. Only the panel scrolls.
+
+That costs vertical space, which is why the app bar collapses on the way down
+and comes back on the way up (`useHideOnScroll`). The safe-area inset above it
+does not collapse — losing that would let content slide under the status bar.
+
+**Options come from the enums, not from hardcoded lists.**
+`enumOptions(TagColor, 'TagColor')` rather than `['neutral', 'primary', ...]`,
+so a colour added to the library shows up in the controls on its own. String
+unions have no runtime object to enumerate, so `unionOptions` takes an
+explicit list — and fails to compile if the union gains a member the list
+does not have.
 
 `MobileFrame.web.tsx` / `MobileFrame.native.tsx` are a genuine platform split,
 which is what Metro's `.web` / `.native` suffixes are for. Note that
@@ -154,19 +205,63 @@ which is what Metro's `.web` / `.native` suffixes are for. Note that
 no platform variants, and the suffix would advertise a split that does not
 exist.
 
-### Adding a showcase
+### Adding a component
 
-1. Create `components/<Name>Showcase.tsx`.
-2. Add it to the `Tab` union and the switch in `App.tsx`.
-3. Lead with the case most likely to regress. `AlertShowcase` opens with a
-   long wrapping description for exactly this reason.
+Write a spec and register it. There is no screen to add.
+
+1. Create `playground/specs/<name>.spec.tsx`:
+
+    ```tsx
+    const spec: ComponentSpec<BadgeNativeProps> = {
+        name: 'Badge',
+        summary: 'One line on what is worth knowing.',
+        mode: 'inline', // 'overlay' for things that present over the screen
+        defaults: { text: 'New', variant: BadgeVariant.SUBTLE },
+        controls: [
+            {
+                kind: 'select',
+                key: 'variant',
+                label: 'Variant',
+                options: enumOptions(BadgeVariant, 'BadgeVariant'),
+            },
+            { kind: 'text', key: 'text', label: 'Text', always: true },
+        ],
+        render: (props) => <Badge {...props} />,
+    }
+    ```
+
+2. Add it to a group in `playground/specs/index.ts`.
+
+Notes that save time:
+
+- `always: true` prints a prop in the snippet even at its default. Use it for
+  props the component has no default for — without it the snippet reads
+  `<Badge />`, which renders nothing.
+- `hidden: true` drives the preview without printing. It is for
+  playground-only props such as a family selector.
+- There are three control kinds and no more: `select` (one value, chosen from
+  a bottom sheet), `multiselect` (several, same sheet, for a prop that takes a
+  list) and `toggle` and `text`. Value props all get the same picker, so the
+  panel stays scannable however many options an enum grows to.
+- Toggle payloads that are objects must be **module-level constants** — the
+  toggle decides it is on by comparing with `Object.is`, so an inline object
+  would leave it permanently off.
+- `off: undefined` and an omitted `off` mean different things. The first
+  clears the prop; the second writes `false`. A slot toggle wants the first —
+  `leftSlot={false}` is not a value its type accepts, and it would end up in
+  the snippet as well as in the component's props.
+- `wrapSnippet` reshapes the generated block for specs whose real call is not
+  a single element: a wrapper around several children, or a function call
+  such as `addSnackbar({ ... })`. `replaceProp` and `addProps` in `snippet.ts`
+  do the editing; anything the stage supplies but no control drives (required
+  props, children) belongs there, or the snippet will not compile.
 
 ## Troubleshooting
 
 **`Project is incompatible with this version of Expo Go`**
 See [Android — Expo Go will probably not work](#android--expo-go-will-probably-not-work). Build with `npx expo run:android`.
 
-**Metro can't find `@juspay/blend-native`**
+**Metro can't find `blend-native`**
 Run `pnpm install` from the repo root to link workspace packages, then
 `pnpm start --clear` to drop Metro's cache.
 
@@ -188,6 +283,6 @@ gradients fall back to their first colour. Install it, and check
 `parseBackground` in `cssStringAdapter.ts` is parsing the token.
 
 **TypeScript errors in `blend-native` source**
-Type-check the package on its own: `pnpm --filter @juspay/blend-native typecheck`.
+Type-check the package on its own: `pnpm --filter blend-native typecheck`.
 This app's `tsconfig.json` extends `expo/tsconfig.base`, which has different
 strictness settings.

@@ -1,21 +1,22 @@
 import type React from 'react'
-import type { GestureResponderEvent, ViewStyle } from 'react-native'
+import type { GestureResponderEvent, StyleProp, ViewStyle } from 'react-native'
 import type {
+    AlertBaseProps,
     AlertV2ActionPosition,
-    AlertV2SubType,
-    AlertV2Type,
 } from '@juspay/blend-design-system/node'
 
 /**
  * Props for the native `Alert`.
  *
- * Mirrors web `AlertV2Props` (`packages/blend/lib/components/AlertV2/
- * alertV2.types.ts`) with DOM-specific pieces replaced by RN equivalents:
+ * The scalar core (`type`, `subType`, `heading`, `description`) derives from
+ * web's platform-neutral `AlertBaseProps`, so a web-side rename or addition
+ * reaches this type instead of drifting silently. The rest is re-declared
+ * natively because web's shapes are DOM-bound:
  *
  * - `onClick` handlers become `onPress`, carrying a `GestureResponderEvent`.
  * - `HTMLAttributes` passthrough becomes RN `View` props via `...rest`.
  * - `width` / `maxWidth` / `minWidth` accept token strings or numbers and are
- *   resolved by `parseSize`.
+ *   resolved by `parseSize` (web types them as `CSSObject` values).
  */
 
 export type AlertSlot = {
@@ -52,12 +53,8 @@ export type AlertCloseButton = {
     accessibilityLabel?: string
 }
 
-export type AlertNativeProps = {
-    type?: AlertV2Type
-    subType?: AlertV2SubType
+export type AlertNativeProps = AlertBaseProps & {
     slot?: AlertSlot
-    heading?: string
-    description?: string
     actions?: AlertActions
     closeButton?: AlertCloseButton
 
@@ -77,5 +74,5 @@ export type AlertNativeProps = {
     announce?: boolean
     accessibilityLabel?: string
     testID?: string
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 }

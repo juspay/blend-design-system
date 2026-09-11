@@ -1,4 +1,4 @@
-# @juspay/blend-native
+# blend-native
 
 React Native components for the [Blend Design System](https://github.com/juspay/blend-design-system).
 
@@ -69,7 +69,7 @@ RN Pressable (+ LinearGradient when the background is a gradient)
 Theme and per-slot token overrides come from context, mirroring web's `ThemeProvider`:
 
 ```tsx
-import { BlendNativeProvider, Theme } from '@juspay/blend-native'
+import { BlendNativeProvider, Theme } from 'blend-native'
 ;<BlendNativeProvider
     theme={Theme.DARK}
     componentTokens={{
@@ -181,19 +181,19 @@ Files are named plainly. `.native.tsx` / `.ios.tsx` / `.web.tsx` are Metro **res
 ## Installation
 
 ```bash
-pnpm add @juspay/blend-native @juspay/blend-design-system react react-native
+pnpm add blend-native @juspay/blend-design-system react react-native
 # only if you use gradient variants (Button primary):
 pnpm add expo-linear-gradient
 ```
 
 ### Peer dependencies
 
-| Package                       | Version    | Required                                          |
-| ----------------------------- | ---------- | ------------------------------------------------- |
-| `@juspay/blend-design-system` | `>=0.0.37` | yes                                               |
-| `react`                       | `>=18.2.0` | yes                                               |
-| `react-native`                | `>=0.74.0` | yes                                               |
-| `expo-linear-gradient`        | `>=15.0.0` | **optional** — gradients fall back to a flat fill |
+| Package                       | Version           | Required                                          |
+| ----------------------------- | ----------------- | ------------------------------------------------- |
+| `@juspay/blend-design-system` | `>=0.0.38-beta.2` | yes                                               |
+| `react`                       | `>=18.2.0`        | yes                                               |
+| `react-native`                | `>=0.74.0`        | yes                                               |
+| `expo-linear-gradient`        | `>=15.0.0`        | **optional** — gradients fall back to a flat fill |
 
 ## Usage
 
@@ -205,7 +205,7 @@ import {
     Tag,
     TagType,
     TagColor,
-} from '@juspay/blend-native'
+} from 'blend-native'
 
 function Example() {
     return (
@@ -276,9 +276,9 @@ Plus any `PressableProps` (`onLongPress`, `onPressIn`, `hitSlop`, `accessibility
 ## Development
 
 ```bash
-pnpm --filter @juspay/blend-native typecheck
-pnpm --filter @juspay/blend-native lint
-pnpm --filter @juspay/blend-native test
+pnpm --filter blend-native typecheck
+pnpm --filter blend-native lint
+pnpm --filter blend-native test
 ```
 
 `@juspay/blend-design-system/node` resolves to the workspace package, which serves built `dist/`. Run `pnpm build:blend` after changing `packages/blend/lib/node.ts`, or the new exports will be missing at runtime.
@@ -308,12 +308,12 @@ receive. Before a release, smoke-test the publish artifact itself:
 
 ```bash
 # 1. Build and pack — the tarball is byte-for-byte what npm publish uploads
-pnpm --filter @juspay/blend-native build
-pnpm --filter @juspay/blend-native pack --pack-destination /tmp
+pnpm --filter blend-native build
+pnpm --filter blend-native pack --pack-destination /tmp
 
 # 2. Point native-site at the tarball instead of the workspace:
-#    - apps/native-site/package.json: "@juspay/blend-native": "file:/tmp/juspay-blend-native-<version>.tgz"
-#    - apps/native-site/tsconfig.json: REMOVE the "@juspay/blend-native" paths entry
+#    - apps/native-site/package.json: "blend-native": "file:/tmp/juspay-blend-native-<version>.tgz"
+#    - apps/native-site/tsconfig.json: REMOVE the "blend-native" paths entry
 pnpm install --filter native-site
 
 # 3. Consumer checks
@@ -330,7 +330,7 @@ module graph (Reanimated worklets, gesture handler, portals) compiles.
 
 ## Publishing
 
-`@juspay/blend-native` versions **independently** of
+`blend-native` versions **independently** of
 `@juspay/blend-design-system`; compatibility is declared through the peer
 range. Publishing runs through the **Publish Native to NPM** workflow
 (`.github/workflows/publish-native-npm.yml`), which gates on branch,
@@ -348,7 +348,7 @@ version containing it is on npm, publishing native ships a package that
 crashes on first render with an unrelated `undefined`.
 
 ```bash
-pnpm --filter @juspay/blend-native check:peer
+pnpm --filter blend-native check:peer
 ```
 
 resolves the floor version out of the declared peer range, fetches that
@@ -370,7 +370,7 @@ fails, the fix is always the same order:
    `dev`** (or `staging`), `dist_tag: beta`, type `PUBLISH` to confirm.
 3. The workflow refuses a non-beta version, an already-published version,
    or a red check; on success it verifies the tag on the registry.
-4. Consumers install with `npm install @juspay/blend-native@beta`.
+4. Consumers install with `npm install blend-native@beta`.
 
 ### Stable
 
@@ -378,7 +378,7 @@ fails, the fix is always the same order:
    `main` through the usual `dev → staging → main` train.
 2. Run the same workflow **from `main`**, `dist_tag: latest`, confirm
    `PUBLISH`. The workflow refuses `latest` from any other branch.
-3. Consumers on `npm install @juspay/blend-native` now get this version.
+3. Consumers on `npm install blend-native` now get this version.
 
 Iterating a beta: bump to `-beta.N+1`, merge, run the workflow again — the
 already-published gate makes re-running for a published version a no-op.
@@ -398,7 +398,12 @@ already-published gate makes re-running for a published version a no-op.
 - **Hover is a no-op**: `ButtonState.HOVER` exists in the enum but native has no hover. Tokens apply only if the consumer explicitly sets `state={ButtonState.HOVER}`.
 - **No skeleton**: web's `skeleton` prop has no native counterpart. It is `Omit`ted from the prop types rather than accepted and ignored, so passing it is a compile error.
 - **Tag vertical padding is not applied**: the tokens pair a height with vertical padding that leaves a content box shorter than the text's line height. CSS lets the line box overflow harmlessly; RN clips it, shearing descenders. The height token is applied as `minHeight` (identical result at the default font scale, and the box grows under OS font scaling) and the inert vertical padding is dropped.
-- **Not ported from web's ButtonV2 barrel**: `IconButton`, `LinkButton` and `ButtonGroupV2` have no native counterpart yet, and neither does `TagGroupV2` — only the per-control `tagGroupPosition` / `buttonGroupPosition` prop is supported.
+- **Display wave**: `Spinner` (Reanimated rotation of web's SVG arc; static under reduce-motion), `ProgressBar` (determinate only, like web; `accessibilityValue` announces min/max/now; the segmented empty track renders discrete tick marks in place of web's `repeating-linear-gradient`; web's missing `circular.size.md` token is healed by falling back down the size ladder), `Avatar` (RN `Image` with the shared `/node` initials + hash-palette fallback; status folded into the accessible name), `KeyValuePair` (orientation as a string union — web's numeric enum is not mirrored; truncation via `numberOfLines`; `showTooltipOnTruncate` waits on Tooltip), `Card` (props API + ReactNode slots; `onPress` renders a real button-role Pressable; `scrollable`, hover/focus chrome and compound statics omitted at the type level), and `addSnackbar`/`dismissSnackbar` (token-styled toasts on the host — **bottom-only**; `Infinity`/`null` is persistent, `0` is not, matching web).
+- **Button/Tag families**: `IconButton` (icon-only, `accessibilityLabel` required), `LinkButton` (`accessibilityRole="link"`; **`onPress`-only** — `href`/`target`/`rel` are omitted at the type level, navigation is the app's job), `ButtonGroup` and `TagGroup` (stacked groups clone-inject the member position; the container is deliberately not `accessible`, so members stay individually reachable — a deliberate divergence from web's `role="group"`). Like web, stacked tags collapse corners only; there is no tag border-collapsing path.
+- **Selection wave**: `Checkbox` (controlled-only like web; `'indeterminate'` announced as `checked: 'mixed'`; the whole control+label row is one pressable so a label tap toggles; web's error-shake animation is omitted as a decorative web-ism), `Radio` (`onCheckedChange` receives `true` instead of web's raw DOM change event; no RadioGroup on either platform — the caller owns selection), `Switch` (thumb travel is **computed** from the track/thumb size tokens instead of web's hardcoded `12px/16px`, so it stays correct if tokens change), `Tabs` (full compound `Tabs`/`TabsList`/`TabsTrigger`/`TabsContent` on context instead of Radix + cloneElement; the indicator is one Reanimated view driven by trigger `onLayout`, replacing web's ResizeObserver CSS vars and framer-motion `layoutId`; `closable`, `stickyHeader`, `showSkeleton` and the dropdown-item utils are omitted at the type level), and `Accordion` (measured-height `withTiming` expand; controlled-ness follows the current render — web's mount-latched controlled quirk is deliberately not reproduced).
+- **Overlay wave (C0/C1)**: `BottomSheet` gains scroll-aware dragging (`BottomSheetScrollable` — the list scrolls until it hits its top, then the sheet follows the finger), keyboard avoidance (`keyboardAvoidance`, iOS-translate by default since Android's `adjustResize` already raises the window), Android/iOS modality (modal portal layers hide lower content from TalkBack/VoiceOver; `onAccessibilityEscape` dismisses) — it remains the documented counterpart of web's DrawerV2, which is an unstyled vaul shell. `Tooltip` opens on **long-press** (`delayDuration` becomes `delayLongPress`; `disableInteractive` omitted — hover-only concept) and anchors at every size. `Popover` and `Modal` present as bottom sheets on phones (web's drawer/vaul behaviour, with `useDrawerOnMobile` omitted since the breakpoint decides) and as anchored surface / centered dialog on tablets; actions are plain `{ text, onPress }` objects rendered with native `Button` (web types them as Button props). `skeleton` props are omitted Wave-C-wide pending the loading-state policy. Web token findings flagged upstream: POPOVERV2's `border` token holds a bare `"8px"` (invalid shorthand, no border renders on either platform) and MODALV2's `header.maxHeight` is `"20vh"` (viewport units unsupported; the native header sizes to content).
+- **Menu & Selects (C2)**: all three present as bottom sheets/panels on phones and anchored surfaces on tablets — for `Menu` this diverges from web, which anchors at every size (documented). Item models port as-is with `onClick` renamed `onPress`; native items stay structurally assignable to the web types, so the node-exported `filterMenuV2Groups`/`flattenMenuV2Groups` run unchanged. Lists are FlatLists — inherently windowed, so web's `@tanstack/react-virtual` props (`enableVirtualScrolling`, `enableVirtualization`, thresholds) are omitted. Sub-menus are a **push-in pane** in Menu and flattened away in the Selects (web's own mobile panels flatten too). Per-item tooltips are omitted (hover-anchored). `MultiSelect` ships only `onSelectionChange` (the legacy `onChange` has no native consumers to migrate); its action objects are web's own already-neutral shapes. Selection cardinality rides `accessibilityState` — RN has no menuitemradio/menuitemcheckbox roles. Web token findings flagged upstream: the select `outline` tokens carry an ` !important` suffix (stripped before parsing) and MULTI_SELECT_V2's `floatingLabel` subtree holds `rem` lengths (floating-label mode is web-only, deferred with TextInput's).
+- **Input variants**: `TextInput`/`TextArea`/`SearchInput` are uncontrolled out of the box (`defaultValue`) and controlled when `value` is passed. `TextArea` drops `resize` (no RN equivalent; height comes from `rows`). `SearchInput` keeps web's rules — SM-only chrome, clear button hidden while empty/disabled or when a `rightSlot` occupies the spot — and sets `returnKeyType="search"`. `NumberInput` hands `onValueChange` the parsed `number | null` instead of web's fabricated DOM change events, flattens web's `label: { text, subtext }` object to flat `label`/`subLabel`, renders lucide chevrons where web uses Phosphor triangles, and announces as an `adjustable` with increment/decrement accessibility actions rather than an ARIA spinbutton. `OTPInput` renders N real cells (no hidden master input); paste and SMS autofill arrive as one multi-character change and spread across cells, with the first cell carrying `textContentType="oneTimeCode"` (iOS) and `autoComplete="sms-otp"` (Android). `helpIconText`/`helpIconHintText` props wait on the native Tooltip and are omitted at the type level.
 - **Gradients in the ESM build**: the optional `expo-linear-gradient` peer is loaded with `require`, which exists under Metro, the CJS build, and bundlers that polyfill it (webpack). In a pure-ESM Node context the probe degrades and gradient surfaces render their first-stop flat fill.
 
 Controls smaller than 44pt automatically receive a `hitSlop` so their tap target meets Apple HIG and Material guidance without changing their visual size; pass `minTouchTarget={0}` to opt out.

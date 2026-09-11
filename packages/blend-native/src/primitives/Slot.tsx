@@ -1,5 +1,5 @@
 import React, { memo } from 'react'
-import { View, StyleSheet, type ViewStyle } from 'react-native'
+import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native'
 import { parseSize } from '../adapters/cssStringAdapter'
 import { tintSlot } from './tintSlot'
 
@@ -42,7 +42,7 @@ export type SlotProps = {
      * renders a text label, matching web's `aria-hidden`.
      */
     hidden?: boolean
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
     testID?: string
 }
 

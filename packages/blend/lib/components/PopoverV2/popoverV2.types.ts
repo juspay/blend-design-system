@@ -6,24 +6,17 @@ export type PopoverV2ActionType = Omit<
     'buttonGroupPosition' | 'subType'
 >
 
-export enum PopoverV2Size {
-    SM = 'sm',
-    MD = 'md',
-    LG = 'lg',
-}
+import {
+    PopoverV2Size,
+    PopoverV2Side,
+    PopoverV2Align,
+} from './popoverV2.base.types'
+import type { PopoverBaseProps } from './popoverV2.base.types'
 
-export enum PopoverV2Side {
-    TOP = 'top',
-    RIGHT = 'right',
-    BOTTOM = 'bottom',
-    LEFT = 'left',
-}
-
-export enum PopoverV2Align {
-    START = 'start',
-    CENTER = 'center',
-    END = 'end',
-}
+// Re-exported so existing consumers keep importing from this module; the
+// definitions live in the leaf `popoverV2.base.types.ts` (see its header).
+export { PopoverV2Size, PopoverV2Side, PopoverV2Align }
+export type { PopoverBaseProps }
 
 type BodySkeletonV2Props = {
     show?: boolean
@@ -44,24 +37,13 @@ export type PopoverV2Dimensions = {
     minHeight?: number
     maxHeight?: number
 }
-export type PopoverV2Props = {
-    heading?: string
-    description?: string
+export type PopoverV2Props = PopoverBaseProps & {
     trigger: React.ReactNode
     children: React.ReactNode
-    showCloseButton?: boolean
-    onOpenChange?: (open: boolean) => void
-    open?: boolean
     asModal?: boolean
     primaryAction?: PopoverV2ActionType
     secondaryAction?: PopoverV2ActionType
-    sideOffset?: number
-    side?: PopoverV2Side
-    align?: PopoverV2Align
-    alignOffset?: number
     // zIndex?: number
-    size?: PopoverV2Size
-    onClose?: () => void
     shadow?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
     useDrawerOnMobile?: boolean
     avoidCollisions?: boolean

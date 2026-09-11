@@ -11,16 +11,32 @@ export enum AccordionV2ChevronPosition {
     RIGHT = 'right',
 }
 
-export type AccordionV2ItemProps = {
+/**
+ * Platform-neutral cores of the AccordionV2 API — `@juspay/blend-native`
+ * derives its Accordion/AccordionItem props from these; ReactNode slots and
+ * CSS-typed dimensions stay in the web layer.
+ */
+export type AccordionBaseProps = {
+    accordionType?: AccordionV2Type
+    defaultValue?: string | string[]
+    value?: string | string[]
+    isMultiple?: boolean
+    onValueChange?: (value: string | string[]) => void
+}
+
+export type AccordionItemBaseProps = {
     value: string
     title: string
     subtext?: string
+    isDisabled?: boolean
+    chevronPosition?: AccordionV2ChevronPosition
+}
+
+export type AccordionV2ItemProps = AccordionItemBaseProps & {
     leftSlot?: ReactNode
     rightSlot?: ReactNode
     subtextSlot?: ReactNode
     children: ReactNode
-    isDisabled?: boolean
-    chevronPosition?: AccordionV2ChevronPosition
 }
 
 export type AccordionV2Dimensions = {
@@ -29,11 +45,6 @@ export type AccordionV2Dimensions = {
     minWidth?: CSSObject['minWidth']
 }
 
-export type AccordionV2Props = {
+export type AccordionV2Props = AccordionBaseProps & {
     children: ReactNode
-    accordionType?: AccordionV2Type
-    defaultValue?: string | string[]
-    value?: string | string[]
-    isMultiple?: boolean
-    onValueChange?: (value: string | string[]) => void
 } & AccordionV2Dimensions

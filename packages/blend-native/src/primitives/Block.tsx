@@ -5,6 +5,7 @@ import {
     StyleSheet,
     type View as RNView,
     type ViewProps,
+    type StyleProp,
     type ViewStyle,
 } from 'react-native'
 import {
@@ -33,7 +34,7 @@ import {
 export type BlockProps = SurfaceStyleProps & {
     children?: React.ReactNode
     /** Escape hatch for RN styles the token props do not cover. */
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 } & Omit<ViewProps, 'style'>
 
 const BlockImpl = forwardRef<RNView, BlockProps>(function Block(

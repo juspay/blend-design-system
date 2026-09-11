@@ -50,11 +50,37 @@ describe('resolveBreakpoint', () => {
 describe('nativeTokenRegistry', () => {
     it('registers every currently-shipped component', () => {
         expect(NATIVE_TOKEN_SLOTS.slice().sort()).toEqual([
+            'ACCORDIONV2',
             'ALERTV2',
+            'AVATARV2',
+            'BADGE',
+            'BREADCRUMBV2',
             'BUTTONV2',
+            'CARDV2',
+            'CHARTSV2',
+            'CHECKBOXV2',
+            'KEYVALUEPAIRV2',
+            'MENUV2',
+            'MODALV2',
+            'MULTI_SELECT_V2',
+            'NUMBER_INPUT_V2',
+            'OTP_INPUTV2',
+            'POPOVERV2',
+            'PROGRESS_BARV2',
+            'RADIOV2',
+            'SEARCH_INPUT_V2',
+            'SINGLE_SELECT_V2',
             'SKELETON',
+            'SNACKBARV2',
+            'SPINNER',
+            'STATCARDV2',
+            'SWITCHV2',
+            'TABSV2',
             'TAGV2',
+            'TEXT_AREA_V2',
             'TEXT_INPUTV2',
+            'TOOLTIPV2',
+            'UPLOADV2',
         ])
     })
 

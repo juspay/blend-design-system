@@ -5,7 +5,13 @@ import { CSSObject } from 'styled-components'
 import { SelectorV2Size } from '../../SelectorV2/selectorV2.types'
 
 export { CheckboxV2CheckedState }
-export type CheckboxV2Props = {
+
+/**
+ * Platform-neutral core of the CheckboxV2 API — no DOM attributes, no React
+ * element slots. `@juspay/blend-native` derives its Checkbox props from
+ * this; `CheckboxV2Props` layers the web-only pieces on top unchanged.
+ */
+export type CheckboxBaseProps = {
     checked?: boolean | 'indeterminate'
     onCheckedChange?: (checked: boolean | 'indeterminate') => void
     required?: boolean
@@ -13,6 +19,9 @@ export type CheckboxV2Props = {
     label?: string
     subLabel?: string
     size?: SelectorV2Size
+}
+
+export type CheckboxV2Props = CheckboxBaseProps & {
     slot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
@@ -22,9 +31,9 @@ export type CheckboxV2Props = {
         subLabel?: number
     }
 } & Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'className' | 'style' | 'slot' | 'onChange'
->
+        ButtonHTMLAttributes<HTMLButtonElement>,
+        'className' | 'style' | 'slot' | 'onChange'
+    >
 
 export type CheckboxV2RootProps = {
     tokens: CheckboxV2TokensType

@@ -25,7 +25,10 @@ jest.mock('react-native/Libraries/Utilities/useColorScheme', () => ({
 const BODY_FAMILY = String(FOUNDATION_THEME.font.family.body)
 
 const flatten = (style: unknown) =>
-    Object.assign({}, ...(Array.isArray(style) ? style.flat() : [style]))
+    Object.assign(
+        {},
+        ...(Array.isArray(style) ? style.flat(Infinity) : [style])
+    )
 
 describe('font family policy', () => {
     it('applies the token body family by default', () => {

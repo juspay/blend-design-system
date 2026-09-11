@@ -21,7 +21,7 @@ import {
 } from './systemTheme'
 
 /**
- * Theme context for `@juspay/blend-native`.
+ * Theme context for `blend-native`.
  *
  * Replaces the per-component `theme` prop the package shipped with. A prop
  * meant no app-wide dark mode (every call site had to thread it), no nested

@@ -20,7 +20,12 @@ export type TextInputV2Dropdown = SingleSelectV2Props & {
     position: TextInputV2DropdownPosition
 }
 
-export type TextInputV2Props = {
+/**
+ * Platform-neutral core of the TextInputV2 API — no DOM types, no dropdown
+ * (which would drag the SingleSelectV2 type graph into the node entry).
+ * `@juspay/blend-native` derives its input props from this.
+ */
+export type TextInputBaseProps = {
     value: string
     label?: string
     subLabel?: string
@@ -31,6 +36,9 @@ export type TextInputV2Props = {
     }
     hintText?: string
     helpIconText?: string
+}
+
+export type TextInputV2Props = TextInputBaseProps & {
     dropdown?: TextInputV2Dropdown | TextInputV2Dropdown[]
     leftSlot?: {
         slot: ReactElement
@@ -41,9 +49,9 @@ export type TextInputV2Props = {
         maxHeight?: CSSObject['maxHeight']
     }
 } & Omit<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    'size' | 'style' | 'className' | 'dropdown'
->
+        React.InputHTMLAttributes<HTMLInputElement>,
+        'size' | 'style' | 'className' | 'dropdown'
+    >
 
 export type EmbeddedSingleSelectOptions = {
     fieldLabel: string | undefined

@@ -104,44 +104,35 @@ export type MenuV2Dimensions = {
     maxHeight?: CSSObject['maxHeight']
 }
 
-export type MenuV2Props = {
-    trigger: React.ReactElement
+/**
+ * The platform-neutral core of `MenuV2Props` — the item model, search and
+ * selection contract, so `@juspay/blend-design-system/node` can export it
+ * for the React Native package. The ReactElement trigger, CSS dimensions,
+ * virtualization config and DOM-typed props stay in `MenuV2Props`.
+ */
+export type MenuBaseProps = {
     items?: MenuV2GroupType[]
-    dimensions?: MenuV2Dimensions
     enableSearch?: boolean
     searchPlaceholder?: string
     searchSortFn?: MenuV2SearchSortFn
     onEnter?: (searchText: string, filteredGroups: MenuV2GroupType[]) => void
-    enableVirtualScrolling?: boolean
-    virtualScrolling?: MenuV2VirtualScrollingConfig
     open?: boolean
     onOpenChange?: (open: boolean) => void
-    asModal?: boolean
-    /**
-     * How selected items are indicated.
-     * - `checkmark`: trailing tick icon on selected items
-     * - `highlight`: selected background from design tokens
-     * Defaults to `checkmark` when any item has `selected` set.
-     * Can be overridden per group via `MenuV2GroupType.selectionStyle`.
-     */
     selectionStyle?: MenuV2SelectionStyle
-    /**
-     * Selection cardinality used for accessibility semantics.
-     * - `single`: items use `menuitemradio`
-     * - `multiple`: items use `menuitemcheckbox`
-     * Defaults to `single` when an item has `selected` set.
-     * Can be overridden per group via `MenuV2GroupType.selectionMode`.
-     */
     selectionMode?: MenuV2SelectionMode
-    /**
-     * When `false`, selecting an item keeps the menu open (multi-select).
-     * Defaults to `true` (current fire-and-forget close behavior).
-     */
     closeOnSelect?: boolean
     alignment?: MenuV2Alignment
     side?: MenuV2Side
     sideOffset?: number
     alignOffset?: number
+}
+
+export type MenuV2Props = MenuBaseProps & {
+    trigger: React.ReactElement
+    dimensions?: MenuV2Dimensions
+    enableVirtualScrolling?: boolean
+    virtualScrolling?: MenuV2VirtualScrollingConfig
+    asModal?: boolean
     collisionBoundaryRef?: HTMLElement | null | (HTMLElement | null)[]
     triggerProps?: Omit<
         React.ButtonHTMLAttributes<HTMLButtonElement>,

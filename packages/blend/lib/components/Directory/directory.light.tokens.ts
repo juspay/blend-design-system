@@ -82,11 +82,12 @@ export const getDirectoryLightTokens = (
                         border: {
                             width: foundationToken.unit[1],
                             color: foundationToken.colors.gray[200],
-                            leftOffset: foundationToken.unit[16],
+                            activeColor: foundationToken.colors.gray[400],
+                            leftOffset: `calc(${foundationToken.unit[12]} + ${foundationToken.unit[20]} / 2)`,
                         },
                         connector: {
                             itemInset: foundationToken.unit[8],
-                            itemPaddingLeft: foundationToken.unit[8],
+                            itemPaddingLeft: foundationToken.unit[4],
                             elbowTop: foundationToken.unit[5],
                             elbowHeight: foundationToken.unit[10],
                             elbowWidthOffset: foundationToken.unit[6],
@@ -173,11 +174,12 @@ export const getDirectoryLightTokens = (
                         border: {
                             width: foundationToken.unit[1],
                             color: foundationToken.colors.gray[200],
-                            leftOffset: foundationToken.unit[16],
+                            activeColor: foundationToken.colors.gray[400],
+                            leftOffset: `calc(${foundationToken.unit[12]} + ${foundationToken.unit[14]} / 2)`,
                         },
                         connector: {
                             itemInset: foundationToken.unit[8],
-                            itemPaddingLeft: foundationToken.unit[8],
+                            itemPaddingLeft: foundationToken.unit[4],
                             elbowTop: foundationToken.unit[5],
                             elbowHeight: foundationToken.unit[10],
                             elbowWidthOffset: foundationToken.unit[6],

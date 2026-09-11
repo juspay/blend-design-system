@@ -134,14 +134,31 @@ export function MonacoEditorWrapper({
     useEffect(() => {
         let cancelled = false
 
-        import(
-            // @ts-expect-error Monaco does not publish types for this ESM entry.
-            'monaco-editor/esm/vs/editor/editor.main.js'
-        ).then((monaco: typeof Monaco) => {
-            if (cancelled) return
-            loader.config({ monaco })
-            setIsMonacoLoaded(true)
-        })
+        Promise.all([
+            import('../../shared/monacoEnvironment'),
+            import('../../shared/monacoStyles'),
+            import(
+                // @ts-expect-error Monaco does not publish types for this ESM entry.
+                'monaco-editor/esm/vs/editor/editor.main.js'
+            ),
+        ])
+            .then(([env, styles, monaco]) => {
+                if (cancelled) return
+                // Wire the bundled language workers before configuring the
+                // loader, so a self-hosted Monaco can spawn them (#1734), and
+                // inject the editor stylesheet so it renders styled without a
+                // global Blend stylesheet import (#1744).
+                env.configureMonacoEnvironment()
+                styles.injectMonacoStyles()
+                loader.config({ monaco: monaco as typeof Monaco })
+                setIsMonacoLoaded(true)
+            })
+            .catch((error) => {
+                if (cancelled) return
+                // Surface the failure instead of an unhandled rejection; the
+                // wrapper stays in its loading state.
+                console.error('Failed to load the code editor (Monaco).', error)
+            })
 
         return () => {
             cancelled = true

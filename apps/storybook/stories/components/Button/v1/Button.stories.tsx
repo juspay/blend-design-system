@@ -284,6 +284,21 @@ export const Default: Story = {
 }
 
 /**
+ * Disabled Secondary with an icon — frame, icon and label all read as disabled.
+ */
+export const DisabledSecondary: Story = {
+    name: 'Disabled Secondary',
+    render: () => (
+        <Button
+            buttonType={ButtonType.SECONDARY}
+            text="Button"
+            disabled
+            leadingIcon={<Settings size={16} />}
+        />
+    ),
+}
+
+/**
  * Button types
  */
 export const ButtonTypes: Story = {

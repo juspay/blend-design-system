@@ -1,5 +1,5 @@
 import type React from 'react'
-import type { ViewStyle } from 'react-native'
+import type { StyleProp, ViewStyle } from 'react-native'
 
 /**
  * Optional `expo-linear-gradient` probe, shared by every surface that can
@@ -22,7 +22,7 @@ export type GradientComponent = React.ComponentType<{
     locations?: readonly number[]
     start?: { x: number; y: number }
     end?: { x: number; y: number }
-    style?: ViewStyle
+    style?: StyleProp<ViewStyle>
 }>
 
 type GradientModule = { LinearGradient: GradientComponent }

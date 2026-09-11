@@ -1,6 +1,6 @@
 import {
     InputSizeV2,
-    type TextInputV2TokensType,
+    type InputFooterV2Tokens,
 } from '@juspay/blend-design-system/node'
 import { Block } from '../../../primitives/Block'
 import { Text } from '../../../primitives/Text'
@@ -20,7 +20,7 @@ export type FieldFooterProps = {
     error?: FieldError
     hintText?: string
     size?: InputSizeV2
-    tokens: TextInputV2TokensType['bottomContainer']
+    tokens: InputFooterV2Tokens
     testID?: string
 }
 

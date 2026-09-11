@@ -288,7 +288,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                                         ? 'transparent'
                                         : buttonTokens.text.color[buttonType][
                                               subType
-                                          ][state]
+                                          ][isDisabled ? 'disabled' : state]
                                 }
                                 aria-hidden={isSkeleton ? true : undefined}
                                 lineHeight={lineHeight}

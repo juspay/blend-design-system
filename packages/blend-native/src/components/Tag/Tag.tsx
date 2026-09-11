@@ -177,7 +177,7 @@ const Tag = forwardRef<RNView, TagNativeProps>(function Tag(
                 accessibilityLabel={accessibleName}
                 accessibilityState={getTagAccessibilityState(true, pressed)}
                 testID={testID}
-                style={{ ...groupBorderWidths, ...style }}
+                style={[groupBorderWidths, style]}
             >
                 {content}
             </Pressable>
@@ -192,7 +192,7 @@ const Tag = forwardRef<RNView, TagNativeProps>(function Tag(
             accessibilityRole="text"
             accessibilityLabel={accessibilityLabel}
             testID={testID}
-            style={{ ...groupBorderWidths, ...style }}
+            style={[groupBorderWidths, style]}
         >
             {content}
         </Block>
