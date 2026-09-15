@@ -33,6 +33,7 @@
         "clean": "rm -rf lib",
         "lint": "eslint .",
         "prepublishOnly": "bob build",
+        "release": "node scripts/publish.mjs",
         "test": "vitest run && jest",
         "test:render": "jest",
         "test:unit": "vitest run",
