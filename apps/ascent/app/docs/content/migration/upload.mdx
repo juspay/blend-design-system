@@ -1,0 +1,144 @@
+---
+title: Upload v1 to v2
+description: Migrate Upload to UploadV2 with a controlled file-state model and built-in validation results.
+---
+
+## Upload v1 to v2
+
+`UploadV2` replaces v1's callback-heavy upload lifecycle with a controlled
+`files` array. It validates selected and dropped files itself, retains invalid
+files in that array, and reports their reason so the parent can render or
+submit a predictable file state.
+
+## Quick migration
+
+```tsx
+// v1
+import { Upload } from '@juspay/blend-design-system'
+
+<Upload
+    label="Settlement file"
+    subLabel="CSV only"
+    accept={['.csv']}
+    maxSize={8 * 1024 * 1024}
+    value={file}
+    onChange={setFile}
+    onDropAccepted={uploadFiles}
+    errorText="Choose a valid file"
+/>
+
+// v2
+import { UploadFileV2, UploadV2 } from '@juspay/blend-design-system'
+
+const [files, setFiles] = useState<UploadFileV2[]>([])
+
+<UploadV2
+    label="Settlement file"
+    subLabel="CSV only"
+    acceptedFileTypes={['.csv']}
+    maxSize={8 * 1024 * 1024}
+    files={files}
+    onChange={setFiles}
+    error={{ show: hasFormError, message: 'Choose a valid file' }}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and accepted-file prop
+
+Replace `Upload` with `UploadV2`, and rename `accept` to
+`acceptedFileTypes`. Both accept extensions, MIME types, and MIME wildcards:
+
+```tsx
+// v1
+accept={['.csv', 'image/*']}
+
+// v2
+acceptedFileTypes={['.csv', 'image/*']}
+```
+
+### Replace `value` with controlled `files`
+
+v1 returns `File | File[] | null` through `value` and `onChange`. v2 uses
+`UploadFileV2[]`:
+
+```tsx
+type UploadFileV2 = {
+    id?: string
+    file: File
+    isValid: boolean
+    errorReason?: 'oversized' | 'maxFiles' | 'invalidType'
+}
+```
+
+Keep `files` in parent state and update it with `onChange`. Unlike v1, v2
+retains rejected files with `isValid: false`; filter to valid files when
+preparing an upload request:
+
+```tsx
+const validFiles = files
+    .filter(({ isValid }) => isValid)
+    .map(({ file }) => file)
+```
+
+### Move selection lifecycle work into `onChange`
+
+`onDrop`, `onDropAccepted`, `onDropRejected`, `onStateChange`,
+`onFileRemove`, and `onReplaceFile` are not v2 props. Handle file selection,
+validation results, remove effects, and upload requests from the controlled
+`files` state instead.
+
+v2 validates direct selection and drag-and-drop consistently, so consumers do
+not need to maintain separate accepted and rejected callbacks.
+
+### Replace v1 file-status arrays and progress simulation
+
+`uploadingFiles`, `uploadedFiles`, `failedFiles`, and `progressSpeed` are
+removed. Use `files` for selected-file validation and drive the visual upload
+state with `state` plus `progressBarValue`:
+
+```tsx
+<UploadV2
+    files={files}
+    onChange={setFiles}
+    state={UploadV2State.UPLOADING}
+    progressBarValue={uploadProgress}
+/>
+```
+
+`UploadV2State` also adds `DISABLED`; setting it blocks interaction just like
+the `disabled` prop.
+
+### Replace custom content and error APIs
+
+Replace v1 `children` and `actionSlot` with `slot`. Replace
+`helpIconHintText` with `helpIconText`, and move a form-level error into
+`error={{ show, message }}`. `errorText` still exists for the upload-surface
+message, while `error.message` is used by the standard input footer.
+
+### Remove v1 drag-state and validation escape hatches
+
+`isDragActive`, `isDragAccept`, `isDragReject`, `validator`, and
+`enforceFileTypeConsistency` have no v2 equivalents. v2 owns drag visuals and
+supports accepted type, size, and file-count validation only. Keep custom
+validation outside the component and set its form error explicitly.
+
+### Update theme overrides
+
+Rebuild `UPLOAD` token overrides against `UPLOADV2`. v2 uses the shared input
+label and footer contracts alongside its own file-list, drop-zone, validation,
+and progress tokens.
+
+## What continues to work
+
+`label`, `subLabel`, `description`, `multiple`, `maxSize`, `maxFiles`,
+`required`, `disabled`, `name`, `id`, and native file-input attributes retain
+their purpose. `multiple` now defaults to `true` in v2, so set
+`multiple={false}` explicitly for a single-file field.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/upload#component-tokens) with the [V2 component token reference](/docs/components/upload-v2#component-tokens).

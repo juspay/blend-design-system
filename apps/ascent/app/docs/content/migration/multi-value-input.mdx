@@ -1,0 +1,82 @@
+---
+title: Multi Value Input v1 to v2
+description: Migrate MultiValueInput to MultiValueInputV2, including tag configuration and input size.
+---
+
+## Multi Value Input v1 to v2
+
+`MultiValueInputV2` retains v1’s editable value, callbacks, labels, errors, and slots. The migration mainly makes tag presentation explicit and adopts the shared v2 input size enum.
+
+### Quick migration
+
+```tsx
+// v1
+import { MultiValueInput, TextInputSize } from '@juspay/blend-design-system'
+;<MultiValueInput
+    label="Recipients"
+    tags={['alex@example.com', 'sam@example.com']}
+    size={TextInputSize.MEDIUM}
+    onTagAdd={addRecipient}
+    onTagRemove={removeRecipient}
+/>
+
+// v2
+import {
+    InputSizeV2,
+    MultiValueInputV2,
+    TagShape,
+    TagSize,
+    TagVariant,
+} from '@juspay/blend-design-system'
+;<MultiValueInputV2
+    label="Recipients"
+    tags={{
+        value: ['alex@example.com', 'sam@example.com'],
+        size: TagSize.SM,
+        shape: TagShape.SQUARICAL,
+        variant: TagVariant.SUBTLE,
+    }}
+    size={InputSizeV2.MD}
+    onTagAdd={addRecipient}
+    onTagRemove={removeRecipient}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and input size enum
+
+Replace `MultiValueInput` with `MultiValueInputV2`. Map `TextInputSize.SMALL`, `.MEDIUM`, and `.LARGE` to `InputSizeV2.SM`, `.MD`, and `.LG`.
+
+### Replace a tag string array with tag configuration
+
+The v1 `tags` prop accepts `string[]`. v2 requires an object that supplies the values plus the v1 Tag visual configuration:
+
+```tsx
+// v1
+tags={tags}
+
+// v2
+tags={{
+    value: tags,
+    size: TagSize.SM,
+    shape: TagShape.SQUARICAL,
+    variant: TagVariant.SUBTLE,
+}}
+```
+
+Choose `TagSize`, `TagShape`, and `TagVariant` deliberately for the call site. This makes tag visuals predictable instead of deriving them implicitly from the input.
+
+### Update theme overrides
+
+Move custom overrides from `MULTI_VALUE_INPUT` to `MULTI_VALUE_INPUT_V2`. Rebuild against the v2 token structure, including its shared input-size and tag treatment.
+
+## What continues to work
+
+`value`, `label`, `sublabel`, `helpIconHintText`, `hintText`, `error`, `errorMessage`, `disabled`, `onChange`, `onTagAdd`, `onTagRemove`, `onFocus`, `onBlur`, `leftSlot`, `rightSlot`, and standard supported input attributes continue to work. Error handling remains the v1 boolean-plus-message pair.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/multivalueinput#component-tokens) with the [V2 component token reference](/docs/components/multi-value-input-v2#component-tokens).

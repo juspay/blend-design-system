@@ -1,6 +1,9 @@
 import React from 'react'
 import type { SkeletonVariant } from '../Skeleton/types'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
+import type { MenuSelectionMode, MenuSelectionStyle } from './selection'
+
+export type { MenuSelectionMode, MenuSelectionStyle } from './selection'
 
 export enum MenuAlignment {
     START = 'start',
@@ -47,6 +50,12 @@ export type MenuProps = {
     open?: boolean
     onOpenChange?: (open: boolean) => void
     asModal?: boolean
+    /** How controlled selected items are indicated. */
+    selectionStyle?: MenuSelectionStyle
+    /** The selection cardinality used for selectable item accessibility semantics. */
+    selectionMode?: MenuSelectionMode
+    /** Whether activating an item closes the menu. Defaults to true. */
+    closeOnSelect?: boolean
     alignment?: MenuAlignment
     side?: MenuSide
     sideOffset?: number
@@ -82,6 +91,8 @@ export type MenuItemType = {
     variant?: MenuItemVariant
     actionType?: MenuItemActionType
     disabled?: boolean
+    /** Controlled selection state. Menu never changes this value internally. */
+    selected?: boolean
     onClick?: () => void
     subMenu?: MenuItemType[]
     enableSubMenuSearch?: boolean
@@ -112,4 +123,8 @@ export type MenuGroupType = {
     label?: string
     items: MenuItemType[]
     showSeparator?: boolean
+    /** Overrides the Menu-level selection style for this group's selectable items. */
+    selectionStyle?: MenuSelectionStyle
+    /** Overrides the Menu-level selection mode for this group's selectable items. */
+    selectionMode?: MenuSelectionMode
 }

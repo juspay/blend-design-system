@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { Upload, UploadState } from '@juspay/blend-design-system'
+import {
+    Theme,
+    ThemeProvider,
+    Upload,
+    UploadState,
+} from '@juspay/blend-design-system'
 import { FileText } from 'lucide-react'
 import {
     getA11yConfig,
@@ -518,6 +523,67 @@ export const ErrorState: Story = {
         },
         onFileRemove: (fileId) => {
             console.log('Remove file:', fileId)
+        },
+    },
+}
+
+export const DarkTheme: Story = {
+    render: () => (
+        <ThemeProvider theme={Theme.DARK}>
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(3, minmax(260px, 1fr))',
+                    gap: 24,
+                    padding: 32,
+                    backgroundColor: '#171a1f',
+                    color: '#f2f4f8',
+                }}
+            >
+                <Upload
+                    label="Idle"
+                    subLabel="PDF or DOCX"
+                    description="Choose a file or drag & drop it here"
+                    onDrop={() => {}}
+                />
+                <Upload
+                    label="Uploading"
+                    description="Upload in progress"
+                    state={UploadState.UPLOADING}
+                    uploadingFiles={[
+                        {
+                            file: createMockFile('document.pdf'),
+                            progress: 45,
+                            status: UploadState.UPLOADING,
+                            id: 'dark-uploading',
+                        },
+                    ]}
+                    onDrop={() => {}}
+                />
+                <Upload
+                    label="Error"
+                    description="Upload failed"
+                    state={UploadState.ERROR}
+                    errorText="File type not supported"
+                    failedFiles={[
+                        {
+                            file: createMockFile('invalid.zip'),
+                            id: 'dark-error',
+                            status: 'error',
+                            error: 'File type not supported',
+                        },
+                    ]}
+                    onDrop={() => {}}
+                    onFileRemove={() => {}}
+                />
+            </div>
+        </ThemeProvider>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Idle, uploading, and error Upload surfaces rendered with the dark theme token set.',
+            },
         },
     },
 }

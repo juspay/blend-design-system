@@ -7,6 +7,11 @@ export type ChartHeight = 'default' | 'fullscreen' | 'small'
 export type ChartTokensType = {
     border: CSSObject['border']
     borderRadius: CSSObject['borderRadius']
+    axis: {
+        lineColor: CSSObject['color']
+        gridLineColor: CSSObject['color']
+        labelColor: CSSObject['color']
+    }
     header: {
         padding: {
             x: CSSObject['padding']
@@ -55,6 +60,11 @@ export const getChartTokens = (
     return {
         sm: {
             border: `1px solid ${foundationToken.colors.gray[200]}`,
+            axis: {
+                lineColor: foundationToken.colors.gray[150],
+                gridLineColor: foundationToken.colors.gray[150],
+                labelColor: foundationToken.colors.gray[400],
+            },
             borderRadius: foundationToken.border.radius[8],
             header: {
                 padding: {
@@ -98,6 +108,11 @@ export const getChartTokens = (
         },
         lg: {
             border: `1px solid ${foundationToken.colors.gray[200]}`,
+            axis: {
+                lineColor: foundationToken.colors.gray[150],
+                gridLineColor: foundationToken.colors.gray[150],
+                labelColor: foundationToken.colors.gray[400],
+            },
             borderRadius: foundationToken.border.radius[8],
             header: {
                 padding: {

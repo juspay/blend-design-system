@@ -68,6 +68,7 @@ function VirtualListInner<T extends VirtualListItem>(
         endReachedThreshold = 200,
         isLoading = false,
         hasMore = false,
+        paginationKey,
         className,
         style,
     }: VirtualListProps<T>,
@@ -79,6 +80,10 @@ function VirtualListInner<T extends VirtualListItem>(
     )
 
     const endReachedCalledRef = useRef(false)
+    const paginationIdentity = paginationKey ?? items.length
+    const lastPaginationIdentityRef = useRef<string | number>(
+        paginationIdentity
+    )
 
     /* ---------------------------------------------
      * Measure container height
@@ -175,20 +180,27 @@ function VirtualListInner<T extends VirtualListItem>(
     useEffect(() => {
         onScroll?.(scrollTop)
 
-        if (
-            hasMore &&
-            !isLoading &&
-            onEndReached &&
-            !endReachedCalledRef.current
-        ) {
-            const distanceFromBottom =
-                totalHeight - (scrollTop + containerHeight)
-
-            if (distanceFromBottom < endReachedThreshold) {
-                endReachedCalledRef.current = true
-                onEndReached()
-            }
+        if (lastPaginationIdentityRef.current !== paginationIdentity) {
+            lastPaginationIdentityRef.current = paginationIdentity
+            endReachedCalledRef.current = false
         }
+
+        if (!hasMore || !onEndReached) {
+            endReachedCalledRef.current = false
+            return
+        }
+
+        const distanceFromBottom = totalHeight - (scrollTop + containerHeight)
+
+        if (distanceFromBottom > endReachedThreshold) {
+            endReachedCalledRef.current = false
+            return
+        }
+
+        if (isLoading || endReachedCalledRef.current) return
+
+        endReachedCalledRef.current = true
+        onEndReached()
     }, [
         scrollTop,
         onScroll,
@@ -198,13 +210,8 @@ function VirtualListInner<T extends VirtualListItem>(
         totalHeight,
         containerHeight,
         endReachedThreshold,
+        paginationIdentity,
     ])
-
-    useEffect(() => {
-        if (!isLoading) {
-            endReachedCalledRef.current = false
-        }
-    }, [isLoading])
 
     /* ---------------------------------------------
      * Imperative API

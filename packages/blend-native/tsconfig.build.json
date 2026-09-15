@@ -1,0 +1,16 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "declarationMap": true,
+        "outDir": "lib/typescript",
+        // The build must not depend on the workspace source of the web
+        // package — published consumers resolve `@juspay/blend-design-system`
+        // themselves, from its own published types.
+        "paths": {}
+    },
+    "include": ["src"],
+    "exclude": ["__tests__", "**/*.test.ts", "**/*.test.tsx"]
+}

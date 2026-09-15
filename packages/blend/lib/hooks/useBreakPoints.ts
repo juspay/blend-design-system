@@ -12,7 +12,10 @@ export function useBreakpoints(breakpoints = BREAKPOINTS) {
         if (typeof window === 'undefined') return null
 
         try {
-            return window.top && window.top !== window ? window.top : window
+            const root =
+                window.top && window.top !== window ? window.top : window
+            void root.innerWidth
+            return root
         } catch {
             return window
         }
@@ -31,7 +34,7 @@ export function useBreakpoints(breakpoints = BREAKPOINTS) {
 
     useEffect(() => {
         const root = getRootWindow()
-        if (!root) return
+        if (!root || typeof root.addEventListener !== 'function') return
 
         const handleResize = () => {
             const newWidth = root.innerWidth

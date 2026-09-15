@@ -12,6 +12,7 @@ type MultiSelectV2MenuItemProps = {
     maxSelections?: number
     allItems?: MultiSelectV2ItemType[]
     index?: number
+    focusIdentityEnabled?: boolean
 }
 
 const MultiSelectV2MenuItem = ({
@@ -21,6 +22,7 @@ const MultiSelectV2MenuItem = ({
     maxSelections,
     allItems,
     index = 0,
+    focusIdentityEnabled,
 }: MultiSelectV2MenuItemProps) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
@@ -57,6 +59,7 @@ const MultiSelectV2MenuItem = ({
                 onSelect={onSelect}
                 selected={selected}
                 maxSelections={maxSelections}
+                focusIdentityEnabled={focusIdentityEnabled}
             />
         )
     }
@@ -70,6 +73,7 @@ const MultiSelectV2MenuItem = ({
             itemTokens={multiSelectTokens.menu.item}
             selectedPosition={getSelectedPosition()}
             index={index}
+            focusIdentityValue={focusIdentityEnabled ? item.value : undefined}
         />
     )
 }

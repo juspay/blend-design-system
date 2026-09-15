@@ -50,21 +50,10 @@ function MyComponent() {
                     padding: '24px',
                     width: '100%',
                     maxWidth: '400px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--surface)',
                     borderRadius: '8px',
                 }}
             >
-                <style>
-                    {`
-                    .unit-input-preview input {
-                        color: #374151 !important;
-                    }
-                    .unit-input-preview input::placeholder {
-                        color: #9CA3AF !important;
-                    }
-                `}
-                </style>
-
                 <div className="unit-input-preview">
                     <UnitInput
                         label="Weight"
@@ -85,11 +74,11 @@ function MyComponent() {
                     <div
                         style={{
                             padding: '12px',
-                            backgroundColor: '#f0fdf4',
-                            border: '1px solid #bbf7d0',
+                            backgroundColor: 'var(--success-bg)',
+                            border: '1px solid var(--success-border)',
                             borderRadius: '6px',
                             fontSize: '14px',
-                            color: '#166534',
+                            color: 'var(--success-foreground)',
                         }}
                     >
                         ✓ Weight entered: {weight} kg

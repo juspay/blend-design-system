@@ -94,26 +94,26 @@ export const MDXComponents = {
     },
     p: (props: ParagraphProps) => (
         <p
-            className="pt-2 md:leading-9 tracking-[-0.32px] md:text-justify text-foreground"
+            className="pt-2 md:leading-8 tracking-[-0.32px] md:text-justify text-foreground"
             {...props}
         />
     ),
 
     ol: (props: ListProps) => (
         <ol
-            className="list-decimal pl-5 space-y-2 md:leading-9 tracking-[-0.32px] text-foreground mt-3"
+            className="list-decimal pl-5 space-y-2 md:leading-8 tracking-[-0.32px] text-foreground mt-3"
             {...props}
         />
     ),
     ul: (props: ListProps) => (
         <ul
-            className="list-disc pl-5 space-y-1 md:leading-9 tracking-[-0.32px] text-foreground mt-3"
+            className="list-disc pl-5 space-y-1 md:leading-8 tracking-[-0.32px] text-foreground mt-3"
             {...props}
         />
     ),
     li: (props: ListItemProps) => (
         <li
-            className="pl-1 md:leading-9 tracking-[-0.32px] text-foreground"
+            className="pl-1 md:leading-8 tracking-[-0.32px] text-foreground"
             {...props}
         />
     ),

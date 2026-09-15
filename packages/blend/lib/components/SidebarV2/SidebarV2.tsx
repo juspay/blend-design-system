@@ -71,6 +71,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             onActiveItemChange,
             defaultActiveItem,
             onSidebarStateChange,
+            enableIntermediateState = false,
             showHierarchyLines = false,
             hierarchyLineBorderRadius = 0,
             expandedItems,
@@ -130,8 +131,6 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
         const iconOnlyMode = !isExpanded
         const showTopbar = useTopbarV2AutoHide(enableTopbarAutoHide)
         const hasSecondarySidebarItems = !!secondarySidebar?.items?.length
-        const shouldRenderSecondarySidebar =
-            hasSecondarySidebarItems && isExpanded
 
         const baseId = useId()
         const sidebarId = `${baseId}-sidebar`
@@ -304,10 +303,11 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                         position="relative"
                     >
                         {/* Secondary Sidebar */}
-                        {shouldRenderSecondarySidebar && (
+                        {hasSecondarySidebarItems && (
                             <SecondarySidebar
                                 id={secondarySidebarId}
                                 secondarySidebar={secondarySidebar}
+                                isExpanded={isExpanded}
                                 tokens={tokens}
                             />
                         )}
@@ -328,7 +328,11 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 defaultActiveItem={defaultActiveItem}
                                 iconOnlyMode={iconOnlyMode}
                                 footer={footer}
-                                setIsHovering={setIsHovering}
+                                setIsHovering={
+                                    enableIntermediateState
+                                        ? setIsHovering
+                                        : undefined
+                                }
                                 sidebarState={sidebarStatus}
                                 tokens={tokens}
                                 showHierarchyLines={showHierarchyLines}
@@ -344,7 +348,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                             />
                         )}
 
-                        {!isExpanded && (
+                        {enableIntermediateState && !isExpanded && (
                             <Block
                                 position="absolute"
                                 display="flex"
@@ -376,7 +380,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                               .boxShadow
                                         : 'none'
                                 }
-                                transition="width 0.3s ease-in-out, border 0.2s ease-in-out"
+                                transition="width 0.2s cubic-bezier(0.2, 0, 0, 1), border 0.2s ease-in-out"
                                 pointerEvents={isHovering ? 'auto' : 'none'}
                                 onMouseLeave={() => setIsHovering(false)}
                             >
@@ -384,6 +388,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                     <SecondarySidebar
                                         id={`${secondarySidebarId}-intermediate`}
                                         secondarySidebar={secondarySidebar}
+                                        isExpanded
                                         tokens={tokens}
                                     />
                                 )}

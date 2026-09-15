@@ -286,13 +286,94 @@ const longNameDirectoryData: DirectoryData[] = [
     },
 ]
 
+const LAZY_PAGE_SIZE = 25
+const LAZY_MAX_ROWS = 150
+
+const LazyLoadSection = () => {
+    const [rowCount, setRowCount] = useState(LAZY_PAGE_SIZE)
+    const [isLoading, setIsLoading] = useState(false)
+    const [events, setEvents] = useState<string[]>([])
+
+    const logEvent = (message: string) => {
+        console.log(`[Directory onEndReached] ${message}`)
+        setEvents((prev) => [...prev.slice(-5), message])
+    }
+
+    const handleEndReached = () => {
+        if (isLoading) return
+        if (rowCount >= LAZY_MAX_ROWS) {
+            logEvent(`end reached at ${rowCount} rows — no more data`)
+            return
+        }
+        logEvent(
+            `end reached at ${rowCount} rows — fetching ${LAZY_PAGE_SIZE} more…`
+        )
+        setIsLoading(true)
+        window.setTimeout(() => {
+            setRowCount((prev) =>
+                Math.min(prev + LAZY_PAGE_SIZE, LAZY_MAX_ROWS)
+            )
+            setIsLoading(false)
+        }, 600)
+    }
+
+    const lazyDirectoryData: DirectoryData[] = useMemo(
+        () => [
+            {
+                label: `Lazy merchants (${rowCount} loaded)`,
+                isCollapsible: false,
+                items: Array.from({ length: rowCount }, (_, index) => ({
+                    id: `lazy-${index}`,
+                    label: `Merchant ${String(index + 1).padStart(3, '0')}`,
+                    leftSlot: <Store style={iconStyle} />,
+                })),
+            },
+        ],
+        [rowCount]
+    )
+
+    return (
+        <section className="space-y-3">
+            <h2 className="text-xl font-semibold">
+                Lazy loading (onEndReached)
+            </h2>
+            <div className="grid gap-6 lg:grid-cols-2">
+                <div className="h-72 w-full max-w-md rounded-lg border border-gray-200 bg-white p-3">
+                    <Directory
+                        directoryData={lazyDirectoryData}
+                        onEndReached={handleEndReached}
+                        endReachedThreshold={80}
+                    />
+                </div>
+                <div className="w-full max-w-md space-y-2">
+                    <p className="text-xs text-gray-500">
+                        Scroll the list to the bottom — each time the viewport
+                        gets within 80px of the end, onEndReached fires (also
+                        printed to the browser console), a fetch is simulated
+                        for 600ms, and {LAZY_PAGE_SIZE} more rows are appended
+                        (up to {LAZY_MAX_ROWS}).
+                    </p>
+                    {isLoading && (
+                        <p className="text-xs font-medium text-blue-600">
+                            loading more…
+                        </p>
+                    )}
+                    <pre className="whitespace-pre-wrap rounded bg-gray-50 p-2 text-xs text-gray-700">
+                        {events.length
+                            ? events.join('\n')
+                            : 'no onEndReached events yet'}
+                    </pre>
+                </div>
+            </div>
+        </section>
+    )
+}
+
 const DirectoryDemo = () => {
     const [showHierarchyLines, setShowHierarchyLines] = useState(true)
     const [hierarchyLineBorderRadius, setHierarchyLineBorderRadius] =
         useState(0)
-    const [activeItem, setActiveItem] = useState<string | null>(
-        'Acme Commerce Group/Helix Network/Orbit Pharma'
-    )
+    const [activeItem, setActiveItem] = useState<string | null>(null)
     const virtualizedExpandedItems = useMemo(
         () => [
             'Merchant Directory',
@@ -422,6 +503,7 @@ const DirectoryDemo = () => {
                                 onActiveItemChange={setActiveItem}
                                 showHierarchyLines={showHierarchyLines}
                                 hierarchyLineBorderRadius={`${hierarchyLineBorderRadius}px`}
+                                enableParentSelection
                             />
                         </div>
                         <p className="text-xs text-gray-500">
@@ -532,6 +614,8 @@ const DirectoryDemo = () => {
                     merchant rows. Only visible rows plus overscan are mounted.
                 </p>
             </section>
+
+            <LazyLoadSection />
         </div>
     )
 }

@@ -73,7 +73,7 @@ const ComponentsGrid = () => {
 
             {/* Header - matching ChangelogHeader style */}
             <div className="py-8 md:py-11 px-4 sm:px-6 border-b border-border">
-                <h1 className="scroll-m-20 text-4xl sm:text-5xl md:text-6xl lg:text-[86px] tracking-tight font-manrope font-medium text-primary">
+                <h1 className="scroll-m-20 text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tight font-manrope font-medium text-primary">
                     Components
                 </h1>
             </div>

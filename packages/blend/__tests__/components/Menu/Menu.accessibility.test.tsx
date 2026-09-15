@@ -1244,3 +1244,113 @@ describe('Menu Accessibility', () => {
         })
     })
 })
+
+describe('Menu Selection Accessibility', () => {
+    it('Selection Accessibility exposes conditional radio semantics and passes axe', async () => {
+        const { container, user } = render(
+            <Menu
+                trigger={<button type="button">Open selection menu</button>}
+                selectionMode="single"
+                items={[
+                    {
+                        items: [
+                            { label: 'Current', selected: true },
+                            { label: 'Next', selected: false },
+                            { label: 'Legacy' },
+                        ],
+                    },
+                ]}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', { name: 'Open selection menu' })
+        )
+
+        expect(
+            screen.getByRole('menuitemradio', { name: 'Current' })
+        ).toHaveAttribute('aria-checked', 'true')
+        expect(
+            screen.getByRole('menuitemradio', { name: 'Next' })
+        ).toHaveAttribute('aria-checked', 'false')
+        expect(
+            screen.getByRole('menuitem', { name: 'Legacy' })
+        ).not.toHaveAttribute('aria-checked')
+
+        const results = await axe(container, {
+            rules: { 'aria-required-children': { enabled: false } },
+        })
+        expect(results).toHaveNoViolations()
+    })
+
+    it('Selection Accessibility activates a focused radio item once with Enter', async () => {
+        const onClick = vi.fn()
+        const { user } = render(
+            <Menu
+                trigger={<button type="button">Open selection menu</button>}
+                selectionMode="single"
+                items={[
+                    { items: [{ label: 'Next', selected: false, onClick }] },
+                ]}
+            />
+        )
+
+        await user.click(
+            screen.getByRole('button', { name: 'Open selection menu' })
+        )
+        const item = screen.getByRole('menuitemradio', { name: 'Next' })
+        item.focus()
+        await user.keyboard('{Enter}')
+
+        expect(onClick).toHaveBeenCalledTimes(1)
+        await waitFor(() =>
+            expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+        )
+    })
+
+    it('Selection Accessibility keeps a controlled checkbox menu open on Space', async () => {
+        const onClick = vi.fn()
+
+        const ControlledMenu = () => {
+            const [selected, setSelected] = React.useState(false)
+            return (
+                <Menu
+                    trigger={<button type="button">Open selection menu</button>}
+                    selectionMode="multiple"
+                    closeOnSelect={false}
+                    items={[
+                        {
+                            items: [
+                                {
+                                    label: 'Toggle me',
+                                    selected,
+                                    onClick: () => {
+                                        onClick()
+                                        setSelected(true)
+                                    },
+                                },
+                            ],
+                        },
+                    ]}
+                />
+            )
+        }
+
+        const { user } = render(<ControlledMenu />)
+        await user.click(
+            screen.getByRole('button', { name: 'Open selection menu' })
+        )
+        const item = screen.getByRole('menuitemcheckbox', { name: 'Toggle me' })
+        expect(item).toHaveAttribute('aria-checked', 'false')
+        item.focus()
+        await user.keyboard(' ')
+
+        expect(onClick).toHaveBeenCalledTimes(1)
+        await waitFor(() =>
+            expect(
+                screen.getByRole('menuitemcheckbox', { name: 'Toggle me' })
+            ).toHaveAttribute('aria-checked', 'true')
+        )
+        expect(screen.getByRole('menu')).toBeInTheDocument()
+    })
+})

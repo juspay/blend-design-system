@@ -6,6 +6,7 @@ import {
     ButtonType,
     ButtonSize,
     ButtonSubType,
+    ThemeProvider,
 } from '@juspay/blend-design-system'
 import {
     Plus,
@@ -18,6 +19,8 @@ import {
     Search,
     Copy,
 } from 'lucide-react'
+import { Theme } from '../../../../../../packages/blend/lib/context/theme.enum'
+import { CHROMATIC_CONFIG } from '../../../../.storybook/a11y.config'
 
 const meta: Meta<typeof ButtonGroup> = {
     title: 'Components/ButtonGroup',
@@ -501,5 +504,49 @@ export const ManyButtonGroups: Story = {
                 story: 'Button group with many buttons, useful for pagination or tabs.',
             },
         },
+    },
+}
+
+/** Stacked and spaced groups under dark theme (separator/gap tokens). */
+export const Dark: Story = {
+    name: 'Dark theme',
+    decorators: [
+        (Story) => (
+            <ThemeProvider theme={Theme.DARK}>
+                <div
+                    style={{
+                        background: '#181B25',
+                        padding: 32,
+                        borderRadius: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 24,
+                    }}
+                >
+                    <Story />
+                </div>
+            </ThemeProvider>
+        ),
+    ],
+    render: () => (
+        <>
+            <ButtonGroup stacked>
+                <Button text="Save" buttonType={ButtonType.PRIMARY} />
+                <Button text="Cancel" buttonType={ButtonType.SECONDARY} />
+                <Button text="More" buttonType={ButtonType.SECONDARY} />
+            </ButtonGroup>
+            <ButtonGroup stacked={false}>
+                <Button text="Edit" buttonType={ButtonType.SECONDARY} />
+                <Button text="Delete" buttonType={ButtonType.DANGER} />
+            </ButtonGroup>
+        </>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Dark theme ButtonGroup gap/separator tokens with themed Button children.',
+            },
+        },
+        chromatic: CHROMATIC_CONFIG,
     },
 }

@@ -1,3 +1,4 @@
+import type { ChartTokensType } from './chart.tokens'
 import { ReactNode } from 'react'
 import { TooltipProps } from 'recharts'
 import {
@@ -40,6 +41,7 @@ export enum ChartType {
     SCATTER = 'scatter',
     AREA = 'area',
     SANKEY = 'sankey',
+    FUNNEL = 'funnel',
 }
 
 export enum LegendsChangeType {
@@ -100,9 +102,35 @@ export type AxisConfig = {
 export type XAxisConfig = AxisConfig
 export type YAxisConfig = AxisConfig
 
+export type TooltipFormatterParams = {
+    seriesName: NameType
+    value: ValueType
+    dataIndex: number
+    color: string
+    payload: unknown
+}
+
+export type TooltipFormatter = (params: TooltipFormatterParams) => ReactNode
+
+export type FunnelConfig = {
+    percentageBase?: 'previous' | 'first'
+    showLabels?: boolean
+}
+
+export type TooltipContentProps = TooltipProps<ValueType, NameType> & {
+    originalData: NewNestedDataPoint[]
+    chartType: ChartType
+    selectedKeys: string[]
+    xAxis?: XAxisConfig
+    yAxis?: YAxisConfig
+}
+
 export type TooltipConfig = {
     position?: { x?: number; y?: number }
     allowEscapeViewBox?: { x?: boolean; y?: boolean }
+    content?: (props: TooltipContentProps) => ReactNode
+    formatter?: TooltipFormatter
+    labelFormatter?: (axisValue: string | number) => ReactNode
 }
 
 export type DotItemDotProps = {
@@ -142,11 +170,16 @@ export type RenderChartProps = {
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
     tooltip?: TooltipConfig
+    funnelConfig?: FunnelConfig
     noData?: NoDataProps
     height?: number | string
     CustomizedDot?: (props: DotItemDotProps) => React.ReactElement<SVGElement>
     lineSeriesKeys?: string[]
     onKeyClick?: (key: string) => void
+    /** Resolved CHARTS tokens. renderChart is a plain function, not a
+     *  component, so it cannot read them itself; without these the axis falls
+     *  back to theme-neutral foundation greys and draws white rules on dark. */
+    chartTokens?: ChartTokensType
 }
 
 export type CoreChartProps = {
@@ -157,6 +190,7 @@ export type CoreChartProps = {
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
     tooltip?: TooltipConfig
+    funnelConfig?: FunnelConfig
     height?: number | string
     width?: number | string
     isSmallScreen?: boolean
@@ -189,6 +223,7 @@ export type ChartsProps = {
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
     tooltip?: TooltipConfig
+    funnelConfig?: FunnelConfig
     noData?: NoDataProps
     height?: number
     showHeader?: boolean
@@ -240,7 +275,10 @@ export type ChartLegendsProps = {
     showAllLegends?: boolean
 }
 
-export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {
+export type CustomTooltipProps = Omit<
+    TooltipProps<ValueType, NameType>,
+    'formatter' | 'labelFormatter'
+> & {
     hoveredKey: string | null
     originalData: NewNestedDataPoint[]
     setHoveredKey: (key: string) => void
@@ -248,6 +286,8 @@ export type CustomTooltipProps = TooltipProps<ValueType, NameType> & {
     selectedKeys: string[]
     xAxis?: XAxisConfig
     yAxis?: YAxisConfig
+    formatter?: TooltipFormatter
+    labelFormatter?: (axisValue: string | number) => ReactNode
 }
 
 export type SankeyNode = {

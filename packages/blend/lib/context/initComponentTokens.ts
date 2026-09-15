@@ -1,5 +1,8 @@
 import { type ThemeType } from '../tokens'
-import { type ComponentTokenType } from './ThemeContext'
+import {
+    type ComponentTokenOverrides,
+    type ComponentTokenType,
+} from './ThemeContext'
 import { Theme } from './theme.enum'
 import { getAlertTokens } from '../components/Alert/alert.tokens'
 import { getNumberInputTokens } from '../components/Inputs/NumberInput/numberInput.tokens'
@@ -25,6 +28,7 @@ import { getMultiSelectTokens } from '../components/MultiSelect/multiSelect.toke
 import { getSingleSelectTokens } from '../components/SingleSelect/singleSelect.tokens'
 import { getTableToken } from '../components/DataTable/dataTable.tokens'
 import { getCalendarToken } from '../components/DateRangePicker/dateRangePicker.tokens'
+import { getTimePickerTokens } from '../components/TimePicker/timePicker.tokens'
 import { getAccordionToken } from '../components/Accordion/accordion.tokens'
 import { getStatCardToken } from '../components/StatCard/statcard.tokens'
 import { getDrawerComponentTokens } from '../components/Drawer/drawer.tokens'
@@ -35,6 +39,8 @@ import { getKeyValuePairTokens } from '../components/KeyValuePair/KeyValuePair.t
 import { getCardTokens } from '../components/Card/card.tokens'
 import { getCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { getSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
+import { getSpinnerTokens } from '../components/Spinner/spinner.tokens'
+import { getEmptyStateTokens } from '../components/EmptyState/emptyState.tokens'
 import { getTopbarTokens } from '../components/Topbar/topbar.tokens'
 import { getTopbarV2Tokens } from '../components/TopbarV2/topbarV2.tokens'
 import { getAvatarTokens } from '../components/Avatar/avatar.tokens'
@@ -79,204 +85,416 @@ import { getSearchInputV2Tokens } from '../components/InputsV2/SearchInputV2/Sea
 import { getOTPInputV2Tokens } from '../components/InputsV2/OTPInputV2/OTPInputV2.tokens'
 import { getBadgeTokens } from '../components/Badge/badge.tokens'
 import { getStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
+import { getButtonGroupTokens } from '../components/ButtonGroup/buttonGroup.tokens'
 
 import { getChatInputV2Tokens } from '../components/InputsV2/ChatInputV2/ChatInputV2.tokens'
 import { getChatInputV2MobileTokens } from '../components/InputsV2/ChatInputV2/ChatInputV2Mobile.tokens'
 import { getUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
-const initTokens = (
-    componentTokens: ComponentTokenType,
+import { getSliderTokens } from '../components/Slider/slider.tokens'
+import { getSelectTokens } from '../components/Select/select.tokens'
+import { mergeTokenTree } from './mergeTokenTree'
+
+const mergeTokens = <T>(defaults: T, overrides: unknown): T =>
+    mergeTokenTree(defaults, overrides) as T
+
+const computeTokens = (
+    componentTokens: ComponentTokenOverrides,
     foundationTokens: ThemeType,
     theme: Theme | string = Theme.LIGHT
 ): Required<ComponentTokenType> => {
     return {
-        TAGS: componentTokens.TAGS ?? getTagTokens(foundationTokens, theme),
-        SEARCH_INPUT:
-            componentTokens.SEARCH_INPUT ??
+        TAGS: mergeTokens(
+            getTagTokens(foundationTokens, theme),
+            componentTokens.TAGS
+        ),
+        SEARCH_INPUT: mergeTokens(
             getSearchInputTokens(foundationTokens),
-        TEXT_AREA:
-            componentTokens.TEXT_AREA ?? getTextAreaTokens(foundationTokens),
-        RADIO: componentTokens.RADIO ?? getRadioTokens(foundationTokens),
-        SWITCH: componentTokens.SWITCH ?? getSwitchTokens(foundationTokens),
-        TEXT_INPUT:
-            componentTokens.TEXT_INPUT ?? getTextInputTokens(foundationTokens),
-        NUMBER_INPUT:
-            componentTokens.NUMBER_INPUT ??
+            componentTokens.SEARCH_INPUT
+        ),
+        TEXT_AREA: mergeTokens(
+            getTextAreaTokens(foundationTokens),
+            componentTokens.TEXT_AREA
+        ),
+        RADIO: mergeTokens(
+            getRadioTokens(foundationTokens),
+            componentTokens.RADIO
+        ),
+        SWITCH: mergeTokens(
+            getSwitchTokens(foundationTokens),
+            componentTokens.SWITCH
+        ),
+        TEXT_INPUT: mergeTokens(
+            getTextInputTokens(foundationTokens),
+            componentTokens.TEXT_INPUT
+        ),
+        NUMBER_INPUT: mergeTokens(
             getNumberInputTokens(foundationTokens),
-        ALERT: componentTokens.ALERT ?? getAlertTokens(foundationTokens),
-        OTP_INPUT:
-            componentTokens.OTP_INPUT ?? getOTPInputTokens(foundationTokens),
-        TOOLTIP: componentTokens.TOOLTIP ?? getTooltipTokens(foundationTokens),
-        UNIT_INPUT:
-            componentTokens.UNIT_INPUT ?? getUnitInputTokens(foundationTokens),
-        MULTI_VALUE_INPUT:
-            componentTokens.MULTI_VALUE_INPUT ??
+            componentTokens.NUMBER_INPUT
+        ),
+        ALERT: mergeTokens(
+            getAlertTokens(foundationTokens),
+            componentTokens.ALERT
+        ),
+        OTP_INPUT: mergeTokens(
+            getOTPInputTokens(foundationTokens),
+            componentTokens.OTP_INPUT
+        ),
+        TOOLTIP: mergeTokens(
+            getTooltipTokens(foundationTokens),
+            componentTokens.TOOLTIP
+        ),
+        UNIT_INPUT: mergeTokens(
+            getUnitInputTokens(foundationTokens, theme),
+            componentTokens.UNIT_INPUT
+        ),
+        MULTI_VALUE_INPUT: mergeTokens(
             getMultiValueInputTokens(foundationTokens),
-        DROPDOWN_INPUT:
-            componentTokens.DROPDOWN_INPUT ??
-            getDropdownInputTokens(foundationTokens),
-        CHECKBOX:
-            componentTokens.CHECKBOX ?? getCheckboxTokens(foundationTokens),
-        TABS: componentTokens.TABS ?? getTabsTokens(foundationTokens),
-        BUTTON: componentTokens.BUTTON ?? getButtonTokens(foundationTokens),
-        KEYVALUEPAIR:
-            componentTokens.KEYVALUEPAIR ??
+            componentTokens.MULTI_VALUE_INPUT
+        ),
+        DROPDOWN_INPUT: mergeTokens(
+            getDropdownInputTokens(foundationTokens, theme),
+            componentTokens.DROPDOWN_INPUT
+        ),
+        CHECKBOX: mergeTokens(
+            getCheckboxTokens(foundationTokens),
+            componentTokens.CHECKBOX
+        ),
+        TABS: mergeTokens(
+            getTabsTokens(foundationTokens),
+            componentTokens.TABS
+        ),
+        BUTTON: mergeTokens(
+            getButtonTokens(foundationTokens),
+            componentTokens.BUTTON
+        ),
+        KEYVALUEPAIR: mergeTokens(
             getKeyValuePairTokens(foundationTokens),
-        MODAL:
-            componentTokens.MODAL ?? getModalComponentTokens(foundationTokens),
-        MODALV2:
-            componentTokens.MODALV2 ??
+            componentTokens.KEYVALUEPAIR
+        ),
+        MODAL: mergeTokens(
+            getModalComponentTokens(foundationTokens, theme),
+            componentTokens.MODAL
+        ),
+        MODALV2: mergeTokens(
             getModalV2Tokens(foundationTokens, theme),
-        BREADCRUMB:
-            componentTokens.BREADCRUMB ?? getBreadcrumbTokens(foundationTokens),
-        POPOVER: componentTokens.POPOVER ?? getPopoverTokens(foundationTokens),
-        MENU: componentTokens.MENU ?? getMenuTokens(foundationTokens),
-        MENU_V2:
-            componentTokens.MENU_V2 ?? getMenuV2Tokens(foundationTokens, theme),
-        MULTI_SELECT:
-            componentTokens.MULTI_SELECT ??
+            componentTokens.MODALV2
+        ),
+        BREADCRUMB: mergeTokens(
+            getBreadcrumbTokens(foundationTokens),
+            componentTokens.BREADCRUMB
+        ),
+        POPOVER: mergeTokens(
+            getPopoverTokens(foundationTokens),
+            componentTokens.POPOVER
+        ),
+        MENU: mergeTokens(
+            getMenuTokens(foundationTokens),
+            componentTokens.MENU
+        ),
+        MENU_V2: mergeTokens(
+            getMenuV2Tokens(foundationTokens, theme),
+            componentTokens.MENU_V2
+        ),
+        MULTI_SELECT: mergeTokens(
             getMultiSelectTokens(foundationTokens),
-        SINGLE_SELECT:
-            componentTokens.SINGLE_SELECT ??
+            componentTokens.MULTI_SELECT
+        ),
+        SINGLE_SELECT: mergeTokens(
             getSingleSelectTokens(foundationTokens),
-        TABLE: componentTokens.TABLE ?? getTableToken(foundationTokens),
-        CALENDAR:
-            componentTokens.CALENDAR ?? getCalendarToken(foundationTokens),
-        ACCORDION:
-            componentTokens.ACCORDION ?? getAccordionToken(foundationTokens),
-        STAT_CARD:
-            componentTokens.STAT_CARD ?? getStatCardToken(foundationTokens),
-        PROGRESS_BAR:
-            componentTokens.PROGRESS_BAR ??
+            componentTokens.SINGLE_SELECT
+        ),
+        TABLE: mergeTokens(
+            getTableToken(foundationTokens, theme),
+            componentTokens.TABLE
+        ),
+        CALENDAR: mergeTokens(
+            getCalendarToken(foundationTokens, theme),
+            componentTokens.CALENDAR
+        ),
+        TIME_PICKER: mergeTokens(
+            getTimePickerTokens(foundationTokens, theme),
+            componentTokens.TIME_PICKER
+        ),
+        ACCORDION: mergeTokens(
+            getAccordionToken(foundationTokens),
+            componentTokens.ACCORDION
+        ),
+        STAT_CARD: mergeTokens(
+            getStatCardToken(foundationTokens),
+            componentTokens.STAT_CARD
+        ),
+        PROGRESS_BAR: mergeTokens(
             getProgressBarTokens(foundationTokens),
-        DRAWER:
-            componentTokens.DRAWER ??
+            componentTokens.PROGRESS_BAR
+        ),
+        DRAWER: mergeTokens(
             getDrawerComponentTokens(foundationTokens),
-        CHARTS: componentTokens.CHARTS ?? getChartTokens(foundationTokens),
-        SNACKBAR:
-            componentTokens.SNACKBAR ?? getSnackbarTokens(foundationTokens),
-        STEPPER: componentTokens.STEPPER ?? getStepperTokens(foundationTokens),
-        CARD: componentTokens.CARD ?? getCardTokens(foundationTokens),
-        CARDV2:
-            componentTokens.CARDV2 ?? getCardV2Tokens(foundationTokens, theme),
-        SKELETON:
-            componentTokens.SKELETON ?? getSkeletonTokens(foundationTokens),
-        TOPBAR: componentTokens.TOPBAR ?? getTopbarTokens(foundationTokens),
-        TOPBARV2:
-            componentTokens.TOPBARV2 ??
+            componentTokens.DRAWER
+        ),
+        CHARTS: mergeTokens(
+            getChartTokens(foundationTokens),
+            componentTokens.CHARTS
+        ),
+        SNACKBAR: mergeTokens(
+            getSnackbarTokens(foundationTokens),
+            componentTokens.SNACKBAR
+        ),
+        STEPPER: mergeTokens(
+            getStepperTokens(foundationTokens),
+            componentTokens.STEPPER
+        ),
+        CARD: mergeTokens(
+            getCardTokens(foundationTokens, theme),
+            componentTokens.CARD
+        ),
+        CARDV2: mergeTokens(
+            getCardV2Tokens(foundationTokens, theme),
+            componentTokens.CARDV2
+        ),
+        SKELETON: mergeTokens(
+            getSkeletonTokens(foundationTokens, theme),
+            componentTokens.SKELETON
+        ),
+        SPINNER: mergeTokens(
+            getSpinnerTokens(foundationTokens, theme),
+            componentTokens.SPINNER
+        ),
+        EMPTY_STATE: mergeTokens(
+            getEmptyStateTokens(foundationTokens, theme),
+            componentTokens.EMPTY_STATE
+        ),
+        TOPBAR: mergeTokens(
+            getTopbarTokens(foundationTokens),
+            componentTokens.TOPBAR
+        ),
+        TOPBARV2: mergeTokens(
             getTopbarV2Tokens(foundationTokens, theme),
-        AVATAR: componentTokens.AVATAR ?? getAvatarTokens(foundationTokens),
-        AVATAR_GROUP:
-            componentTokens.AVATAR_GROUP ??
-            getAvatarGroupTokens(foundationTokens),
-        SIDEBAR: componentTokens.SIDEBAR ?? getSidebarTokens(foundationTokens),
-        DIRECTORY:
-            componentTokens.DIRECTORY ?? getDirectoryTokens(foundationTokens),
-        MOBILE_NAVIGATION:
-            componentTokens.MOBILE_NAVIGATION ??
-            getMobileNavigationTokens(foundationTokens),
-        MOBILE_NAVIGATION_V2:
-            componentTokens.MOBILE_NAVIGATION_V2 ??
+            componentTokens.TOPBARV2
+        ),
+        AVATAR: mergeTokens(
+            getAvatarTokens(foundationTokens),
+            componentTokens.AVATAR
+        ),
+        AVATAR_GROUP: mergeTokens(
+            getAvatarGroupTokens(foundationTokens, theme),
+            componentTokens.AVATAR_GROUP
+        ),
+        SIDEBAR: mergeTokens(
+            getSidebarTokens(foundationTokens),
+            componentTokens.SIDEBAR
+        ),
+        DIRECTORY: mergeTokens(
+            getDirectoryTokens(foundationTokens, theme),
+            componentTokens.DIRECTORY
+        ),
+        MOBILE_NAVIGATION: mergeTokens(
+            getMobileNavigationTokens(foundationTokens, theme),
+            componentTokens.MOBILE_NAVIGATION
+        ),
+        MOBILE_NAVIGATION_V2: mergeTokens(
             getMobileNavigationV2Tokens(foundationTokens, theme),
-        UPLOAD: componentTokens.UPLOAD ?? getUploadTokens(foundationTokens),
-        CODE_BLOCK:
-            componentTokens.CODE_BLOCK ?? getCodeBlockTokens(foundationTokens),
-        CHAT_INPUT:
-            componentTokens.CHAT_INPUT ?? getChatInputTokens(foundationTokens),
-        CHAT_INPUTV2:
-            componentTokens.CHAT_INPUTV2 ??
+            componentTokens.MOBILE_NAVIGATION_V2
+        ),
+        UPLOAD: mergeTokens(
+            getUploadTokens(foundationTokens, theme),
+            componentTokens.UPLOAD
+        ),
+        CODE_BLOCK: mergeTokens(
+            getCodeBlockTokens(foundationTokens, theme),
+            componentTokens.CODE_BLOCK
+        ),
+        BUTTON_GROUP: mergeTokens(
+            getButtonGroupTokens(foundationTokens, theme),
+            componentTokens.BUTTON_GROUP
+        ),
+        CHAT_INPUT: mergeTokens(
+            getChatInputTokens(foundationTokens),
+            componentTokens.CHAT_INPUT
+        ),
+        CHAT_INPUTV2: mergeTokens(
             getChatInputV2Tokens(foundationTokens, theme),
-        CHAT_INPUTV2_MOBILE:
-            componentTokens.CHAT_INPUTV2_MOBILE ??
+            componentTokens.CHAT_INPUTV2
+        ),
+        CHAT_INPUTV2_MOBILE: mergeTokens(
             getChatInputV2MobileTokens(foundationTokens, theme),
-        BUTTONV2:
-            componentTokens.BUTTONV2 ??
+            componentTokens.CHAT_INPUTV2_MOBILE
+        ),
+        BUTTONV2: mergeTokens(
             getButtonV2Tokens(foundationTokens, theme),
-        TAGV2: componentTokens.TAGV2 ?? getTagV2Tokens(foundationTokens, theme),
-        ALERTV2:
-            componentTokens.ALERTV2 ??
+            componentTokens.BUTTONV2
+        ),
+        TAGV2: mergeTokens(
+            getTagV2Tokens(foundationTokens, theme),
+            componentTokens.TAGV2
+        ),
+        ALERTV2: mergeTokens(
             getAlertV2Tokens(foundationTokens, theme),
-        ACCORDIONV2:
-            componentTokens.ACCORDIONV2 ??
+            componentTokens.ALERTV2
+        ),
+        ACCORDIONV2: mergeTokens(
             getAccordionV2Tokens(foundationTokens, theme),
-        SNACKBARV2:
-            componentTokens.SNACKBARV2 ??
+            componentTokens.ACCORDIONV2
+        ),
+        SNACKBARV2: mergeTokens(
             getSnackbarV2Tokens(foundationTokens, theme),
-        SWITCHV2:
-            componentTokens.SWITCHV2 ??
+            componentTokens.SNACKBARV2
+        ),
+        SWITCHV2: mergeTokens(
             getSwitchV2Tokens(foundationTokens, theme),
-        SINGLE_SELECT_V2:
-            componentTokens.SINGLE_SELECT_V2 ??
+            componentTokens.SWITCHV2
+        ),
+        SINGLE_SELECT_V2: mergeTokens(
             getSingleSelectV2Tokens(foundationTokens, theme),
-        MULTI_SELECT_V2:
-            componentTokens.MULTI_SELECT_V2 ??
+            componentTokens.SINGLE_SELECT_V2
+        ),
+        MULTI_SELECT_V2: mergeTokens(
             getMultiSelectV2Tokens(foundationTokens, theme),
-        BREADCRUMBV2:
-            componentTokens.BREADCRUMBV2 ??
+            componentTokens.MULTI_SELECT_V2
+        ),
+        BREADCRUMBV2: mergeTokens(
             getBreadcrumbV2Tokens(foundationTokens, theme),
-        AVATARV2:
-            componentTokens.AVATARV2 ??
+            componentTokens.BREADCRUMBV2
+        ),
+        AVATARV2: mergeTokens(
             getAvatarV2Tokens(foundationTokens, theme),
-        TEXT_INPUTV2:
-            componentTokens.TEXT_INPUTV2 ??
+            componentTokens.AVATARV2
+        ),
+        TEXT_INPUTV2: mergeTokens(
             getTextInputV2Tokens(foundationTokens, theme),
-        TEXT_AREA_V2:
-            componentTokens.TEXT_AREA_V2 ??
+            componentTokens.TEXT_INPUTV2
+        ),
+        TEXT_AREA_V2: mergeTokens(
             getTextAreaV2Tokens(foundationTokens, theme),
-        CHARTSV2:
-            componentTokens.CHARTSV2 ??
+            componentTokens.TEXT_AREA_V2
+        ),
+        CHARTSV2: mergeTokens(
             getChartV2Tokens(foundationTokens, theme),
-        TIMELINE:
-            componentTokens.TIMELINE ??
+            componentTokens.CHARTSV2
+        ),
+        TIMELINE: mergeTokens(
             getTimelineTokens(foundationTokens, theme),
-        CHECKBOXV2:
-            componentTokens.CHECKBOXV2 ??
+            componentTokens.TIMELINE
+        ),
+        CHECKBOXV2: mergeTokens(
             getCheckboxV2Tokens(foundationTokens, theme),
-        KEYVALUEPAIRV2:
-            componentTokens.KEYVALUEPAIRV2 ??
+            componentTokens.CHECKBOXV2
+        ),
+        KEYVALUEPAIRV2: mergeTokens(
             getKeyValuePairV2Tokens(foundationTokens, theme),
-        STATCARDV2:
-            componentTokens.STATCARDV2 ??
+            componentTokens.KEYVALUEPAIRV2
+        ),
+        STATCARDV2: mergeTokens(
             getStatCardV2Tokens(foundationTokens, theme),
-        TOOLTIPV2:
-            componentTokens.TOOLTIPV2 ??
+            componentTokens.STATCARDV2
+        ),
+        TOOLTIPV2: mergeTokens(
             getTooltipV2Tokens(foundationTokens, theme),
-        RADIOV2:
-            componentTokens.RADIOV2 ??
+            componentTokens.TOOLTIPV2
+        ),
+        RADIOV2: mergeTokens(
             getRadioV2Tokens(foundationTokens, theme),
-        POPOVERV2:
-            componentTokens.POPOVERV2 ??
+            componentTokens.RADIOV2
+        ),
+        POPOVERV2: mergeTokens(
             getPopoverV2Tokens(foundationTokens, theme),
-        SIDEBARV2:
-            componentTokens.SIDEBARV2 ??
+            componentTokens.POPOVERV2
+        ),
+        SIDEBARV2: mergeTokens(
             getSidebarV2Tokens(foundationTokens, theme),
-        TABSV2:
-            componentTokens.TABSV2 ?? getTabsV2Tokens(foundationTokens, theme),
-        CODEEDITORV2:
-            componentTokens.CODEEDITORV2 ??
+            componentTokens.SIDEBARV2
+        ),
+        TABSV2: mergeTokens(
+            getTabsV2Tokens(foundationTokens, theme),
+            componentTokens.TABSV2
+        ),
+        CODEEDITORV2: mergeTokens(
             getCodeEditorV2Tokens(foundationTokens, theme),
-        PROGRESS_BARV2:
-            componentTokens.PROGRESS_BARV2 ??
+            componentTokens.CODEEDITORV2
+        ),
+        PROGRESS_BARV2: mergeTokens(
             getProgressBarV2Tokens(foundationTokens, theme),
-        MULTI_VALUE_INPUT_V2:
-            componentTokens.MULTI_VALUE_INPUT_V2 ??
+            componentTokens.PROGRESS_BARV2
+        ),
+        MULTI_VALUE_INPUT_V2: mergeTokens(
             getMultiValueInputV2Tokens(foundationTokens, theme),
-        NUMBER_INPUT_V2:
-            componentTokens.NUMBER_INPUT_V2 ??
+            componentTokens.MULTI_VALUE_INPUT_V2
+        ),
+        NUMBER_INPUT_V2: mergeTokens(
             getNumberInputV2Tokens(foundationTokens, theme),
-        OTP_INPUTV2:
-            componentTokens.OTP_INPUTV2 ??
+            componentTokens.NUMBER_INPUT_V2
+        ),
+        OTP_INPUTV2: mergeTokens(
             getOTPInputV2Tokens(foundationTokens, theme),
-        BADGE: componentTokens.BADGE ?? getBadgeTokens(foundationTokens, theme),
-        SEARCH_INPUT_V2:
-            componentTokens.SEARCH_INPUT_V2 ??
+            componentTokens.OTP_INPUTV2
+        ),
+        BADGE: mergeTokens(
+            getBadgeTokens(foundationTokens, theme),
+            componentTokens.BADGE
+        ),
+        SEARCH_INPUT_V2: mergeTokens(
             getSearchInputV2Tokens(foundationTokens, theme),
-        STEPPERV2:
-            componentTokens.STEPPERV2 ??
+            componentTokens.SEARCH_INPUT_V2
+        ),
+        STEPPERV2: mergeTokens(
             getStepperV2Tokens(foundationTokens, theme),
-        UPLOADV2:
-            componentTokens.UPLOADV2 ??
+            componentTokens.STEPPERV2
+        ),
+        UPLOADV2: mergeTokens(
             getUploadV2Tokens(foundationTokens, theme),
+            componentTokens.UPLOADV2
+        ),
+        SLIDER: mergeTokens(
+            getSliderTokens(foundationTokens, theme),
+            componentTokens.SLIDER
+        ),
+        SELECT: mergeTokens(
+            getSelectTokens(foundationTokens, theme),
+            componentTokens.SELECT
+        ),
     }
+}
+
+/**
+ * Resolving the full token set runs ~90 token factories, so identical inputs
+ * are memoised. Object inputs are matched by reference (they are module-scope
+ * singletons in practice), the theme by value. Resolved tokens are never
+ * mutated by consumers, so sharing one object across mounts is safe.
+ */
+const NO_COMPONENT_TOKENS: ComponentTokenOverrides = {}
+
+const tokenCache = new WeakMap<
+    ThemeType,
+    WeakMap<
+        ComponentTokenOverrides,
+        Map<Theme | string, Required<ComponentTokenType>>
+    >
+>()
+
+const initTokens = (
+    componentTokens: ComponentTokenOverrides,
+    foundationTokens: ThemeType,
+    theme: Theme | string = Theme.LIGHT
+): Required<ComponentTokenType> => {
+    const componentTokensKey = componentTokens ?? NO_COMPONENT_TOKENS
+
+    let byComponentTokens = tokenCache.get(foundationTokens)
+    if (!byComponentTokens) {
+        byComponentTokens = new WeakMap()
+        tokenCache.set(foundationTokens, byComponentTokens)
+    }
+
+    let byTheme = byComponentTokens.get(componentTokensKey)
+    if (!byTheme) {
+        byTheme = new Map()
+        byComponentTokens.set(componentTokensKey, byTheme)
+    }
+
+    const cached = byTheme.get(theme)
+    if (cached) return cached
+
+    const resolved = computeTokens(componentTokensKey, foundationTokens, theme)
+    byTheme.set(theme, resolved)
+    return resolved
 }
 
 export default initTokens

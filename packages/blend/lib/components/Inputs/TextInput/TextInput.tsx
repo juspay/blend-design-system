@@ -1,3 +1,4 @@
+import { useTheme } from '../../../context/ThemeContext'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveInput from '../../Primitives/PrimitiveInput/PrimitiveInput'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
@@ -53,6 +54,12 @@ const TextInput = ({
 }: TextInputProps) => {
     const textInputTokens =
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
+    const { theme: blendTheme } = useTheme()
+    // primary[50] reads as a near-white halo on a dark surface
+    const focusRingColor =
+        blendTheme === 'dark'
+            ? FOUNDATION_THEME.colors.primary[800]
+            : FOUNDATION_THEME.colors.primary[50]
     const inputRef = useRef<HTMLInputElement>(null)
     const [isAutofilled, setIsAutofilled] = useState(false)
 
@@ -378,7 +385,7 @@ const TextInput = ({
                         border: textInputTokens.inputContainer.border[
                             error ? 'error' : 'focus'
                         ],
-                        boxShadow: '0 0 0 3px #EFF6FF',
+                        boxShadow: `0 0 0 3px ${focusRingColor}`,
                         backgroundColor: 'rgba(239, 246, 255, 0.15)',
                     }}
                     placeholderStyles={{

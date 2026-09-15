@@ -204,6 +204,22 @@ describe('MultiSelectV2 utils', () => {
             expect(onChange).toHaveBeenCalledWith('a')
             expect(onChange).toHaveBeenCalledWith('b')
         })
+
+        it('clamps additions to maxSelections when selectAll is true', () => {
+            const onChange = vi.fn()
+            const groups: MultiSelectV2GroupType[] = [
+                {
+                    items: [
+                        { label: 'A', value: 'a' },
+                        { label: 'B', value: 'b' },
+                        { label: 'C', value: 'c' },
+                    ],
+                },
+            ]
+            handleSelectAll(true, groups, ['a'], onChange, 2)
+            expect(onChange).toHaveBeenCalledTimes(1)
+            expect(onChange).toHaveBeenCalledWith('b')
+        })
     })
 
     describe('flattenMenuGroups', () => {

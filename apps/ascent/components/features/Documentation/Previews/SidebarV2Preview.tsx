@@ -89,7 +89,7 @@ external make: (
             rescript={reCode}
             rescriptBinding={bindingCode}
         >
-            <div className="w-full h-64 bg-gray-100 rounded overflow-hidden">
+            <div className="w-full h-64 bg-muted rounded overflow-hidden">
                 <SidebarV2
                     data={directoryData}
                     isExpanded={true}

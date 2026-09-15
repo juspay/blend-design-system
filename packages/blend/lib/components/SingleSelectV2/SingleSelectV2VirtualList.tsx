@@ -37,6 +37,7 @@ const SingleSelectV2VirtualList = ({
     loadingComponent,
     hasMore,
     virtualScrollRef,
+    focusIdentityEnabled,
 }: SingleSelectV2VirtualListProps) => {
     const menuGroupLabel = singleSelectTokens.menu.groupLabel
     const menuItem = singleSelectTokens.menu.item
@@ -93,6 +94,7 @@ const SingleSelectV2VirtualList = ({
                             onSelect={onSelect}
                             singleSelectTokens={singleSelectTokens}
                             index={ordinalIndex}
+                            focusIdentityEnabled={focusIdentityEnabled}
                         />
                     </Block>
                 </Block>

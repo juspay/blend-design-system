@@ -7,12 +7,13 @@ export function useReducedMotion(): boolean {
     })
 
     useEffect(() => {
-        const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
-        const handler = (e: MediaQueryListEvent) => {
-            setPrefersReducedMotion(e.matches)
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+        const handleChange = (event: MediaQueryListEvent) => {
+            setPrefersReducedMotion(event.matches)
         }
-        mql.addEventListener('change', handler)
-        return () => mql.removeEventListener('change', handler)
+
+        mediaQuery.addEventListener('change', handleChange)
+        return () => mediaQuery.removeEventListener('change', handleChange)
     }, [])
 
     return prefersReducedMotion

@@ -41,6 +41,8 @@ export type SelectItemProps = {
     className?: string
     selectedPosition?: 'first' | 'middle' | 'last' | 'only' | 'none'
     index?: number
+    /** Internal identity used to recover focus while controlled results update. */
+    focusIdentityValue?: string
     /** @default 'SINGLE_SELECT' – use SelectV2.SelectItemV2 for SingleSelectV2 */
     tokenKey?: 'SINGLE_SELECT'
 }

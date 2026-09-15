@@ -1,0 +1,199 @@
+---
+title: Modal v1 to v2
+description: Migrate Modal to ModalV2, including ButtonV2 actions, grouped dimensions, and functional header and footer composition.
+---
+
+## Overview
+
+`Modal` is deprecated in favor of `ModalV2`. The core controlled API remains
+the same: `isOpen`, `onClose`, title and subtitle, body content, close behavior,
+actions, loading skeletons, and the mobile drawer presentation all carry over.
+
+V2 uses `ButtonV2` for actions, moves dimensions into one object, renames the
+header slot, and provides working header/footer composition controls. It also
+uses `DrawerV2` for the mobile presentation, so test mobile layout and gestures
+as part of the upgrade.
+
+## Quick migration
+
+```tsx
+// v1
+import { ButtonType, Modal } from '@juspay/blend-design-system'
+;<Modal
+    isOpen={isOpen}
+    onClose={() => setIsOpen(false)}
+    title="Delete project?"
+    subtitle="This cannot be undone."
+    headerRightSlot={<StatusBadge text="Permanent" />}
+    minWidth="360px"
+    maxWidth="560px"
+    primaryAction={{
+        text: 'Delete',
+        buttonType: ButtonType.PRIMARY,
+        leadingIcon: <TrashIcon />,
+        onClick: deleteProject,
+    }}
+    secondaryAction={{
+        text: 'Cancel',
+        buttonType: ButtonType.SECONDARY,
+        onClick: () => setIsOpen(false),
+    }}
+>
+    <ProjectDeletionSummary />
+</Modal>
+```
+
+```tsx
+// v2
+import { ButtonV2Type, ModalV2 } from '@juspay/blend-design-system'
+;<ModalV2
+    isOpen={isOpen}
+    onClose={() => setIsOpen(false)}
+    title="Delete project?"
+    subtitle="This cannot be undone."
+    headerSlot={<StatusBadge text="Permanent" />}
+    dimensions={{ minWidth: '360px', maxWidth: '560px' }}
+    primaryAction={{
+        text: 'Delete',
+        buttonType: ButtonV2Type.PRIMARY,
+        leftSlot: { slot: <TrashIcon aria-hidden="true" /> },
+        onClick: deleteProject,
+    }}
+    secondaryAction={{
+        text: 'Cancel',
+        buttonType: ButtonV2Type.SECONDARY,
+        onClick: () => setIsOpen(false),
+    }}
+>
+    <ProjectDeletionSummary />
+</ModalV2>
+```
+
+## Breaking changes
+
+### Rename the component and action button API
+
+**v1:** `Modal` actions use `ModalButtonAction`, which is based on
+`ButtonProps` and its `ButtonType`, `ButtonSize`, and `ButtonSubType` enums.
+
+**v2:** `ModalV2` actions use `ModalV2ButtonAction`, which is based on
+`ButtonV2Props` and the `ButtonV2` enums.
+
+Rename `Modal` to `ModalV2`, then migrate both action objects as ButtonV2
+props. In particular, replace `leadingIcon` and `trailingIcon` with `leftSlot`
+and `rightSlot` objects:
+
+```tsx
+// v1 action
+primaryAction={{
+    text: 'Save',
+    buttonType: ButtonType.PRIMARY,
+    leadingIcon: <SaveIcon />,
+}}
+
+// v2 action
+primaryAction={{
+    text: 'Save',
+    buttonType: ButtonV2Type.PRIMARY,
+    leftSlot: { slot: <SaveIcon aria-hidden="true" /> },
+}}
+```
+
+`ButtonV2` also groups skeleton configuration and replaces `fullWidth` with
+`width="100%"`. Apply the same Button migration rules to actions where those
+props are used. Primary and secondary actions remain right-aligned, with the
+secondary action before the primary action.
+
+### Rename `headerRightSlot` to `headerSlot`
+
+**v1:** `headerRightSlot` renders beside the title in the header’s text area.
+
+**v2:** `headerSlot` renders in the same title row.
+
+Rename the prop and keep the existing node. The new name describes the actual
+placement more accurately: it is beside the title, not in the far-right close
+button area.
+
+### Group all dimensions under `dimensions`
+
+**v1:** `minWidth`, `maxWidth`, `minHeight`, and `maxHeight` are top-level
+props.
+
+**v2:** use `dimensions={{ minWidth, maxWidth, minHeight, maxHeight }}`. V2
+also adds `width` and `height`.
+
+```tsx
+<ModalV2
+    dimensions={{
+        width: '640px',
+        minWidth: '360px',
+        maxWidth: '90vw',
+        minHeight: '240px',
+        maxHeight: '90vh',
+    }}
+    {...props}
+/>
+```
+
+Move every existing sizing value into this object. The default min dimensions
+remain empty and the default maximum dimensions remain `90vw` and `90vh`.
+
+### Use the functional header and footer composition controls
+
+**v1:** `showHeader`, `showFooter`, `customHeader`, and `customFooter` appear
+in the type, but the v1 modal renderer does not use them to control its
+generated desktop structure.
+
+**v2:** these are active composition props. `showHeader` and `showFooter`
+default to `true`; `customHeader` replaces the generated header, and
+`customFooter` replaces the generated footer.
+
+Do not carry over any v1 workaround that hid generated content with CSS. Use
+`showHeader={false}` or `showFooter={false}` when it should not render, and use
+the custom slots for a fully custom region. In v2, a default header can render
+the close button even when no title or subtitle is supplied; explicitly disable
+the header or close button if that is not wanted.
+
+### Preserve accessible naming for custom headers
+
+**v1:** the generated title and subtitle produce the dialog’s accessible name
+and description.
+
+**v2:** generated headers retain that behavior. With `customHeader`, V2 cannot
+automatically connect the custom content to the dialog title ID.
+
+Give a custom-header modal an explicit `aria-label`, or pass
+`aria-labelledby` and `aria-describedby` that reference elements in the custom
+header. V2 supports these dialog attributes directly; they take precedence over
+the generated labels.
+
+### Update the token contract
+
+**v1:** the component consumes `MODAL` tokens, including combined `padding.x`
+and `padding.y` entries.
+
+**v2:** it consumes `MODALV2`, with light and dark tokens and more precise
+per-side padding, header slot, divider, close-button dimensions, overlay
+offset, line-height, and skeleton entries.
+
+Rebuild custom overrides for `MODALV2` instead of copying the `MODAL` shape.
+Review desktop and mobile layouts in both color schemes, especially when the
+old theme changed padding or header/footer borders.
+
+## What continues to work
+
+`isOpen`, `onClose`, `isCustom`, `title`, `subtitle`, `children`,
+`showCloseButton`, `closeOnBackdropClick`, `showDivider`,
+`useDrawerOnMobile`, and the `skeleton` shape continue to work with the same
+purpose and defaults. `skeleton.bodySkeletonProps.width` remains a string;
+V2 additionally allows a numeric body-skeleton height.
+
+At viewports below 1024px, `useDrawerOnMobile` still defaults to `true`. The
+implementation now builds that mobile surface on `DrawerV2`, preserving the
+bottom-sheet experience while using the v2 drawer primitives.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/modal#component-tokens) with the [V2 component token reference](/docs/components/modal-v2#component-tokens).

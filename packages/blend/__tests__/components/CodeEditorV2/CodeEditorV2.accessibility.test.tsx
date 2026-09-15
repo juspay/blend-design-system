@@ -1,9 +1,11 @@
 import React from 'react'
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render, cleanup } from '../../test-utils'
 import { axe } from 'jest-axe'
 import CodeEditorV2 from '../../../lib/components/CodeEditorV2/CodeEditorV2'
 import { CodeEditorV2Variant } from '../../../lib/components/CodeEditorV2/codeEditorV2.types'
+
+vi.mock('@monaco-editor/react', () => import('../../mocks/monaco-editor-react'))
 
 describe('CodeEditorV2 Accessibility', () => {
     afterEach(() => {

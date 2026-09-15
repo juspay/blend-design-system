@@ -86,6 +86,44 @@ function MyComponent() {
 }
 ```
 
+## Server-side search
+
+Pass `searchText` to make search controlled. In this mode, `SingleSelect` renders
+that value, calls `onSearchChange` for every input change, and does not filter
+`items`; supply the already-filtered API results yourself. Debouncing, request
+cancellation, caching, and error handling remain consumer responsibilities.
+
+```tsx
+<SingleSelect
+    label="Find a person"
+    placeholder="Select a person"
+    items={apiResults}
+    selected={selected}
+    onSelect={setSelected}
+    searchText={query}
+    onSearchChange={setQuery}
+    isSearchLoading={isSearching}
+    emptyStateText={query ? 'No people found' : 'Start typing to search'}
+/>
+```
+
+Controlled mode is selected by the presence of `searchText`, including an empty
+string. Omitting `onSearchChange` creates a read-only search input. Setting
+`enableSearch={false}` hides the input but still disables internal filtering.
+`isSearchLoading` describes search requests only; pagination continues to use
+`hasMore` and `loadingComponent`.
+
+The controlled query persists when the menu closes and reopens. Clear it from
+your own UI only when that is the experience you want, for example from a
+consumer-owned reset action that calls `setQuery('')`.
+
+| Legacy `SingleSelect` prop | `SingleSelectV2` equivalent |
+| -------------------------- | --------------------------- |
+| `searchText`               | `search.searchText`         |
+| `onSearchChange`           | `search.onSearchChange`     |
+| `isSearchLoading`          | `search.isSearchLoading`    |
+| `emptyStateText`           | `search.emptyStateText`     |
+
 ## API Reference
 
 <DocsTypeTable
@@ -206,6 +244,40 @@ function MyComponent() {
                 hintText: 'Placeholder text for the search input field',
             },
             { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SingleSelect.searchText',
+                hintText:
+                    'Controlled search value. When present, the component does not filter items internally.',
+            },
+            { content: 'string', hintText: 'Controlled search query' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SingleSelect.onSearchChange',
+                hintText: 'Called for every user change to the search input.',
+            },
+            { content: '(text: string) => void', hintText: 'Change callback' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SingleSelect.isSearchLoading',
+                hintText: 'Shows the search loading state inside the menu.',
+            },
+            { content: 'boolean', hintText: 'Search request state' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'SingleSelect.emptyStateText',
+                hintText:
+                    'Overrides the message shown when no items are available.',
+            },
+            { content: 'string', hintText: 'Empty-state message' },
             { content: '' },
         ],
         [

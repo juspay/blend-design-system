@@ -63,21 +63,10 @@ function MyComponent() {
                     padding: '24px',
                     width: '100%',
                     maxWidth: '600px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--surface)',
                     borderRadius: '8px',
                 }}
             >
-                <style>
-                    {`
-                    .date-range-picker-preview input {
-                        color: #374151 !important;
-                    }
-                    .date-range-picker-preview input::placeholder {
-                        color: #9CA3AF !important;
-                    }
-                `}
-                </style>
-
                 <div className="date-range-picker-preview">
                     <DateRangePicker
                         value={dateRange}
@@ -92,11 +81,15 @@ function MyComponent() {
                 <div
                     style={{
                         padding: '12px',
-                        backgroundColor: dateRange ? '#f0fdf4' : '#f9fafb',
-                        border: `1px solid ${dateRange ? '#bbf7d0' : '#e5e7eb'}`,
+                        backgroundColor: dateRange
+                            ? 'var(--success-bg)'
+                            : 'var(--muted)',
+                        border: `1px solid ${dateRange ? 'var(--success-border)' : 'var(--border)'}`,
                         borderRadius: '6px',
                         fontSize: '14px',
-                        color: dateRange ? '#166534' : '#6b7280',
+                        color: dateRange
+                            ? 'var(--success-foreground)'
+                            : 'var(--muted-foreground)',
                     }}
                 >
                     {dateRange ? '✓' : 'ℹ'} {formatDateRange(dateRange)}

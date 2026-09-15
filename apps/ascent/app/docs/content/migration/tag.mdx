@@ -1,0 +1,181 @@
+---
+title: Tag v1 to v2
+description: Migrate Tag to TagV2, including renamed visual props, slot objects, grouped tags, skeletons, and tokens.
+---
+
+## Overview
+
+`Tag` is deprecated in favor of `TagV2`. The available visual treatments,
+colors, sizes, text, optional leading/trailing content, skeleton loading, and
+interactive click behavior remain available.
+
+V2 renames the visual configuration to `type` and `subType`, makes slots
+explicit element objects, groups skeleton configuration, and aligns grouped
+tags through `tagGroupPosition`. It also uses fixed size-token heights instead
+of v1's intrinsic-height tag and no longer supplies v1's automatic truncation
+tooltip.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Tag,
+    TagColor,
+    TagShape,
+    TagSize,
+    TagVariant,
+} from '@juspay/blend-design-system'
+;<Tag
+    text="In review"
+    variant={TagVariant.SUBTLE}
+    shape={TagShape.ROUNDED}
+    color={TagColor.WARNING}
+    size={TagSize.MD}
+    leftSlot={<ClockIcon />}
+    rightSlot={<CloseIcon />}
+    showSkeleton={isLoading}
+    skeletonVariant="pulse"
+    onClick={openReview}
+/>
+```
+
+```tsx
+// v2
+import {
+    TagV2,
+    TagV2Color,
+    TagV2Size,
+    TagV2SubType,
+    TagV2Type,
+} from '@juspay/blend-design-system'
+;<TagV2
+    text="In review"
+    type={TagV2Type.SUBTLE}
+    subType={TagV2SubType.ROUNDED}
+    color={TagV2Color.WARNING}
+    size={TagV2Size.MD}
+    leftSlot={{ slot: <ClockIcon /> }}
+    rightSlot={{ slot: <CloseIcon /> }}
+    skeleton={{ showSkeleton: isLoading, skeletonVariant: 'pulse' }}
+    onClick={openReview}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and visual enums
+
+**v1:** `Tag`, `TagVariant`, `TagShape`, `TagColor`, and `TagSize`.
+
+**v2:** `TagV2`, `TagV2Type`, `TagV2SubType`, `TagV2Color`, and `TagV2Size`.
+
+Map `variant` to `type` and `shape` to `subType`. All enum values are retained:
+`NO_FILL`, `ATTENTIVE`, and `SUBTLE`; `ROUNDED` and `SQUARICAL`; all six colors;
+and `XS` through `LG`. The defaults remain subtle, squarical, primary, and
+small.
+
+### Wrap slots in explicit objects
+
+**v1:** `leftSlot` and `rightSlot` accept any `ReactNode`.
+
+**v2:** each slot accepts `{ slot: ReactElement; maxHeight?: string | number }`.
+
+```tsx
+// v1
+leftSlot={<StatusIcon />}
+
+// v2
+leftSlot={{ slot: <StatusIcon />, maxHeight: 16 }}
+```
+
+Wrap text, fragments, and multiple siblings in one element before passing them
+to V2. Omit `maxHeight` for the size-token default; set it only when the
+default icon limit is unsuitable. V2 adds accessible attributes to decorative
+slot icons, so give interactive or meaningful slot content its own accessible
+name and behavior.
+
+### Group skeleton props into `skeleton`
+
+**v1:** `showSkeleton` and `skeletonVariant` are top-level props.
+
+**v2:** use `skeleton={{ showSkeleton, skeletonVariant }}`.
+
+Move both values into the object. While skeleton loading is active, V2 keeps
+the slot shapes but hides their content. The default remains a pulse skeleton.
+
+### Replace `splitTagPosition` with `tagGroupPosition`
+
+**v1:** `splitTagPosition` accepts `left` or `right` for `SplitTag` border
+radius handling.
+
+**v2:** `tagGroupPosition` accepts `left`, `center`, or `right` for grouped
+tags.
+
+Map `left` and `right` directly. Use `center` for a middle tag in a longer
+group; V2 removes all of its corner radius. Update the surrounding group layout
+at the same time, since V2 treats this as a Tag Group concern rather than a
+SplitTag-specific prop.
+
+### Review width, height, and truncation behavior
+
+**v1:** tags use intrinsic height, accept `width`, `minWidth`, and `maxWidth`
+as Block props, and show the full text in a tooltip when constrained text is
+truncated.
+
+**v2:** the public TagV2 API uses a size-token height and fit-content width;
+width constraints are not part of its typed API. It does not provide the v1
+automatic truncation tooltip.
+
+Wrap V2 in an application-owned layout element when a fixed or constrained
+width is required, and add a Tooltip around the tag when truncated text needs a
+way to be read in full. Visually test long labels at every size before removing
+v1 constraints.
+
+### Move root style overrides outside the component
+
+**v1:** `Tag` inherits Block props, including `className`, `style`, and layout
+styling.
+
+**v2:** `className` and `style` are omitted from `TagV2Props` and removed
+before rendering.
+
+Put layout and custom visual styles on a wrapper instead of relying on root
+overrides. Use documented V2 props, tokens, or a controlled wrapper for
+dimensions and spacing; this keeps TagV2's height, focus, and grouped-radius
+behavior predictable.
+
+### Review interactive tag presentation
+
+Both versions make a tag keyboard-operable when `onClick` is supplied, with
+Enter and Space invoking the click handler. V1 renders an interactive Block
+with a ripple effect. V2 renders a button primitive and supplies focus-visible
+styles, but does not reproduce the v1 ripple animation.
+
+No callback change is needed, but verify pointer, keyboard, focus, pressed
+state (`aria-pressed`), and nested slot behavior in interactive tags.
+
+### Update custom tokens
+
+**v1:** the component reads `TAGS` tokens.
+
+**v2:** it reads `TAGV2`, with separate light and dark token sets.
+
+Rebuild overrides against `TAGV2` rather than copying v1 paths. V2 adds size
+heights, per-side padding, slot maximum heights, and text line-height tokens.
+Review each type/color/size/subtype combination, plus grouped left/center/right
+radius behavior.
+
+## What continues to work
+
+`text`, all visual color/type/size choices, leading and trailing content,
+skeleton loading, `onClick`, standard accessibility attributes, and forwarded
+refs retain their purpose. Interactive tags are still named from their text by
+default, and callers can provide a more specific accessible name with
+`aria-label`.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/tag#component-tokens) with the [V2 component token reference](/docs/components/tag-v2#component-tokens).

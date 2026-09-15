@@ -24,6 +24,16 @@ export type AddToastOptions = {
         onClick: () => void
         autoDismiss?: boolean
     }
+    /**
+     * Time in milliseconds before the snackbar auto-dismisses. Defaults to 4000.
+     *
+     * `duration: Infinity` prevents auto-dismissal. **`duration: 0` does not** —
+     * `0` is falsy and falls through to the 4000ms default, producing a normal
+     * 4-second snackbar.
+     *
+     * The close button remains available. To keep an action click from
+     * dismissing the snackbar, also set `actionButton.autoDismiss` to `false`.
+     */
     duration?: number
     position?: SnackbarPosition
     wrap?: boolean

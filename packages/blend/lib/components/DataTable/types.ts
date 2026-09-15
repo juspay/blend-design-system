@@ -172,6 +172,29 @@ export type BaseColumnDefinition<T> = {
     canHide?: boolean
     frozen?: boolean
     className?: string
+    /**
+     * Explicitly selects the filter UI for this column, overriding what `type` would infer.
+     * - SELECT and MULTISELECT work on any column whose cell values are strings or numbers.
+     * - DATE requires cell values that can be parsed as dates; rows whose value can't be
+     *   parsed are filtered out rather than shown.
+     * - SLIDER additionally requires `sliderConfig`, which the `ColumnDefinition` union only
+     *   provides when `type` is `ColumnType.SLIDER` — so SLIDER is effectively limited to
+     *   slider columns today.
+     * - TEXT, NUMBER, and BOOLEAN have no filter component, so the column falls back to
+     *   the `type`-derived filter behaviour instead of disabling filtering.
+     * @example
+     * // A TEXT column filtered as a multiselect against a fixed set of options
+     * {
+     *   field: 'status',
+     *   header: 'Status',
+     *   type: ColumnType.TEXT,
+     *   filterType: FilterType.MULTISELECT,
+     *   filterOptions: [
+     *     { id: 'active', label: 'Active', value: 'active' },
+     *     { id: 'inactive', label: 'Inactive', value: 'inactive' },
+     *   ],
+     * }
+     */
     filterType?: FilterType
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
@@ -310,6 +333,29 @@ export type SearchConfig = {
     query: string
     caseSensitive?: boolean
     searchFields?: string[]
+}
+
+export type DataTableExportFormat = 'csv' | 'xlsx'
+
+export type DataTableExportScope = 'currentPage' | 'allLoaded'
+
+export type DataTableExportContext<T extends Record<string, unknown>> = {
+    visibleColumns: ColumnDefinition<T>[]
+    filters: ColumnFilter[]
+    advancedFilters: unknown[]
+    search: SearchConfig
+    sort: SortConfig | null
+    scope: DataTableExportScope
+}
+
+export type DataTableExportConfig<T extends Record<string, unknown>> = {
+    enabled: boolean
+    fileName?: string
+    formats?: DataTableExportFormat[]
+    scope?: DataTableExportScope
+    onExport?: (
+        context: DataTableExportContext<T>
+    ) => T[] | void | Promise<T[] | void>
 }
 
 export type ColumnFilter = {
@@ -453,6 +499,11 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     onPageSizeChange?: (pageSize: number) => void
 
     isLoading?: boolean
+    error?: boolean
+    renderErrorState?: (retry?: () => void) => ReactNode
+    onRetry?: () => void
+    showEmptyState?: boolean
+    renderEmptyState?: () => ReactNode
     showSkeleton?: boolean
     skeletonVariant?: SkeletonVariant
     isRowLoading?: (row: T, index: number) => boolean
@@ -496,6 +547,9 @@ export type DataTableProps<T extends Record<string, unknown>> = {
     ) => void
 
     bulkActions?: BulkActionsConfig
+
+    /** Export the visible table columns and the rows in the configured scope. */
+    exportConfig?: DataTableExportConfig<T>
 
     rowActions?: RowActionsConfig<T>
 

@@ -54,27 +54,23 @@ export type ModalV2Dimensions = {
     maxHeight?: CSSObject['maxHeight']
 }
 
-export type ModalV2Props = {
-    isOpen: boolean
+// Defined in the leaf `modalV2.base.types.ts` (see its header) and
+// re-exported here so existing consumers keep importing from this module.
+export type { ModalBaseProps } from './modalV2.base.types'
+import type { ModalBaseProps } from './modalV2.base.types'
+
+export type ModalV2Props = ModalBaseProps & {
     isCustom?: boolean
-    onClose: () => void
-    title?: string
-    subtitle?: string
     children: ReactNode
     primaryAction?: ModalV2ButtonAction
     secondaryAction?: ModalV2ButtonAction
-    showCloseButton?: boolean
-    showHeader?: boolean
-    showFooter?: boolean
-    closeOnBackdropClick?: boolean
     customHeader?: ReactNode
     customFooter?: ReactNode
     headerSlot?: ReactNode
-    showDivider?: boolean
     dimensions?: ModalV2Dimensions
     useDrawerOnMobile?: boolean
     skeleton?: ModalV2BodySkeletonProps
 } & Omit<
-    HTMLAttributes<HTMLDivElement>,
-    'children' | 'title' | 'className' | 'style'
->
+        HTMLAttributes<HTMLDivElement>,
+        'children' | 'title' | 'className' | 'style'
+    >

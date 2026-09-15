@@ -5,6 +5,8 @@ import { afterEach, vi, beforeAll, afterAll, expect } from 'vitest'
 import { toHaveNoViolations } from 'jest-axe'
 import './__tests__/test-utils/jest-axe.d.ts'
 
+vi.mock('monaco-editor/esm/vs/editor/editor.main.js', () => ({ editor: {} }))
+
 // Extend expect with jest-axe matchers
 expect.extend(toHaveNoViolations)
 

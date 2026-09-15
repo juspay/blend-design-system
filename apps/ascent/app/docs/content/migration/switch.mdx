@@ -1,0 +1,70 @@
+---
+title: Switch v1 to v2
+description: Migrate Switch to SwitchV2 with v2 selector sizes and structured supporting content.
+---
+
+## Switch v1 to v2
+
+`SwitchV2` keeps the controlled boolean interaction of `Switch` and adopts the shared selector content and size model.
+
+### Quick migration
+
+```tsx
+// v1
+import { Switch, SwitchSize } from '@juspay/blend-design-system'
+;<Switch
+    checked={notificationsEnabled}
+    onChange={setNotificationsEnabled}
+    size={SwitchSize.MEDIUM}
+    label="Product notifications"
+    subtext="Receive important updates"
+    slot={<InfoIcon />}
+/>
+
+// v2
+import { SelectorV2Size, SwitchV2 } from '@juspay/blend-design-system'
+;<SwitchV2
+    checked={notificationsEnabled}
+    onCheckedChange={setNotificationsEnabled}
+    size={SelectorV2Size.MD}
+    label="Product notifications"
+    subLabel="Receive important updates"
+    slot={{ slot: <InfoIcon /> }}
+/>
+```
+
+## Breaking changes
+
+### Rename the component, size enum, and callback
+
+Replace `Switch` with `SwitchV2`, `SwitchSize` with `SelectorV2Size`, and `onChange` with `onCheckedChange`. The callback continues to receive the next boolean checked value.
+
+### Rename supporting text
+
+Replace `subtext` with `subLabel`, and update `maxLength.subtext` to `maxLength.subLabel`.
+
+### Wrap slots
+
+v1 slots accept a `ReactNode`. v2 expects a slot object:
+
+```tsx
+slot={{ slot: <InfoIcon />, maxHeight: 16 }}
+```
+
+### Remove `defaultChecked`
+
+`defaultChecked` is not a v2 prop. Use controlled state with `checked` and `onCheckedChange` for the initial and subsequent values.
+
+### Update theme overrides
+
+Move custom overrides from `SWITCH` to `SWITCHV2`. Review the v2 contract for its separate control, thumb, label, sub-label, and slot states.
+
+## What continues to work
+
+`checked`, `label`, `id`, `name`, `value`, `disabled`, `required`, `error`, and supported button attributes continue to work. The default size remains medium (`MD`).
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/switch#component-tokens) with the [V2 component token reference](/docs/components/switch-v2#component-tokens).

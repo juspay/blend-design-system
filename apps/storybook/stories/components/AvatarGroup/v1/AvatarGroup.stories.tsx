@@ -4,12 +4,14 @@ import {
     AvatarGroup,
     AvatarSize,
     AvatarShape,
+    ThemeProvider,
 } from '@juspay/blend-design-system'
 import { User, Star, Crown, Shield, Heart, Zap } from 'lucide-react'
 import {
     getA11yConfig,
     CHROMATIC_CONFIG,
 } from '../../../../.storybook/a11y.config'
+import { Theme } from '../../../../../../packages/blend/lib/context/theme.enum'
 
 const meta: Meta<typeof AvatarGroup> = {
     title: 'Components/AvatarGroup',
@@ -625,5 +627,45 @@ export const SkeletonState: Story = {
             },
         },
         a11y: getA11yConfig('content'),
+    },
+}
+
+/** Overflow counter, rings, and borders under dark theme tokens. */
+export const Dark: Story = {
+    name: 'Dark theme',
+    args: {
+        avatars: sampleAvatars.slice(0, 6),
+        maxCount: 3,
+        size: AvatarSize.MD,
+        shape: AvatarShape.CIRCULAR,
+        selectedAvatarIds: [1],
+    },
+    decorators: [
+        (Story) => (
+            <ThemeProvider theme={Theme.DARK}>
+                <div
+                    style={{
+                        background: '#181B25',
+                        padding: 32,
+                        borderRadius: 8,
+                        minHeight: 120,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Story />
+                </div>
+            </ThemeProvider>
+        ),
+    ],
+    render: (args: any) => <AvatarGroup {...args} />,
+    parameters: {
+        docs: {
+            description: {
+                story: 'Dark theme for AvatarGroup chrome: overflow pill, avatar rings/borders, and selection outline.',
+            },
+        },
+        chromatic: { ...CHROMATIC_CONFIG, delay: 400 },
     },
 }

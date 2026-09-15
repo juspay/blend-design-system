@@ -37,7 +37,11 @@ export type SwitchV2ContentProps = {
     subLabelId?: string
 }
 
-export type SwitchV2Props = {
+/**
+ * Platform-neutral core of the SwitchV2 API — `@juspay/blend-native`
+ * derives its Switch props from this.
+ */
+export type SwitchBaseProps = {
     checked?: boolean
     onCheckedChange?: (checked: boolean) => void
     required?: boolean
@@ -45,6 +49,9 @@ export type SwitchV2Props = {
     label?: string
     subLabel?: string
     size?: SelectorV2Size
+}
+
+export type SwitchV2Props = SwitchBaseProps & {
     slot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
@@ -54,6 +61,6 @@ export type SwitchV2Props = {
         subLabel?: number
     }
 } & Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    'className' | 'style' | 'slot'
->
+        ButtonHTMLAttributes<HTMLButtonElement>,
+        'className' | 'style' | 'slot'
+    >

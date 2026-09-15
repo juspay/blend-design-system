@@ -1,3 +1,4 @@
+import { useTheme } from '../../../context/ThemeContext'
 import { type KeyboardEvent, useRef, useState, useId } from 'react'
 import Block from '../../Primitives/Block/Block'
 import { Tag, TagShape, TagSize } from '../../Tags'
@@ -66,6 +67,12 @@ const MultiValueInput = ({
 }: MultiValueInputProps) => {
     const multiValueInputTokens =
         useResponsiveTokens<MultiValueInputTokensType>('MULTI_VALUE_INPUT')
+    const { theme: blendTheme } = useTheme()
+    // primary[50] reads as a near-white halo on a dark surface
+    const focusRingColor =
+        blendTheme === 'dark'
+            ? FOUNDATION_THEME.colors.primary[800]
+            : FOUNDATION_THEME.colors.primary[50]
     const [isFocused, setIsFocused] = useState(false)
     const shouldShake = useErrorShake(error || false)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -165,7 +172,7 @@ const MultiValueInput = ({
                             ? 'rgba(239, 246, 255, 0.15)'
                             : 'transparent',
                         boxShadow: isFocused
-                            ? '0 0 0 3px #EFF6FF'
+                            ? `0 0 0 3px ${focusRingColor}`
                             : '0 0 0 0 transparent',
                     }}
                     _focus={{
@@ -250,6 +257,15 @@ const MultiValueInput = ({
                             name={name}
                             flexGrow={1}
                             minWidth="120px"
+                            color={
+                                multiValueInputTokens.inputContainer.color[
+                                    disabled
+                                        ? 'disabled'
+                                        : error
+                                          ? 'error'
+                                          : 'default'
+                                ]
+                            }
                             placeholderColor={FOUNDATION_THEME.colors.gray[400]}
                             fontSize={
                                 multiValueInputTokens.inputContainer.fontSize[

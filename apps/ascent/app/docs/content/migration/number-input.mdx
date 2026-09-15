@@ -1,0 +1,95 @@
+---
+title: Number Input v1 to v2
+description: Migrate NumberInput to NumberInputV2 with structured labels, slots, and error state.
+---
+
+## Number Input v1 to v2
+
+`NumberInputV2` keeps numeric values, limits, stepping, and negative-value prevention, while making labels, adornments, and errors more consistent with the other v2 inputs.
+
+### Quick migration
+
+```tsx
+// v1
+import { NumberInput, NumberInputSize } from '@juspay/blend-design-system'
+;<NumberInput
+    label="Seats"
+    sublabel="Maximum 50"
+    size={NumberInputSize.MEDIUM}
+    error={hasError}
+    errorMessage="Enter a valid number"
+    value={seats}
+    onChange={handleSeatsChange}
+/>
+
+// v2
+import { InputSizeV2, NumberInputV2 } from '@juspay/blend-design-system'
+;<NumberInputV2
+    label={{ text: 'Seats', subtext: 'Maximum 50' }}
+    size={InputSizeV2.MD}
+    error={{ show: hasError, message: 'Enter a valid number' }}
+    value={seats}
+    onChange={handleSeatsChange}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and size enum
+
+Replace `NumberInput` with `NumberInputV2`. `NumberInputSize.MEDIUM` and `NumberInputSize.LARGE` map to `InputSizeV2.MD` and `InputSizeV2.LG`. v2 also provides `InputSizeV2.SM` for compact layouts.
+
+### Group label text
+
+`label` is now an object instead of two separate strings:
+
+```tsx
+// v1
+label="Seats" sublabel="Maximum 50"
+
+// v2
+label={{ text: 'Seats', subtext: 'Maximum 50' }}
+```
+
+This gives the label and its supporting text one clear API and supports the v2 input layout at every size.
+
+### Move errors into an object
+
+```tsx
+// v1
+error={hasError} errorMessage="Enter a valid number"
+
+// v2
+error={{ show: hasError, message: 'Enter a valid number' }}
+```
+
+### Use v2 slots and units for new adornments
+
+`NumberInputV2` adds a `slot` object and a dedicated `unit` with placement control:
+
+```tsx
+// v2
+slot={{ right: <CurrencyIcon /> }}
+unit="USD"
+unitDirection={NumberInputV2Direction.RIGHT}
+```
+
+Use `unit` for text such as a currency or measurement. Use `slot` for interactive or visual content that is not the unit itself.
+
+### Rename the help icon prop
+
+Replace `helpIconHintText` with `helpIconText`.
+
+### Update theme overrides
+
+Custom number-input token overrides must move from `NUMBER_INPUT` to `NUMBER_INPUT_V2`. Review the v2 token contract instead of copying the old shape: v2 includes separate label, unit, slot, error, and responsive size tokens.
+
+## What continues to work
+
+`value` remains `number | null`, and `onChange` still receives the input change event. `min`, `max`, `step`, `placeholder`, `name`, `required`, `disabled`, `onBlur`, `onFocus`, `preventNegative`, and standard number-input attributes continue to work. The default step remains `1`; specify `size={InputSizeV2.MD}` to retain the v1 default visual size.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/numberinput#component-tokens) with the [V2 component token reference](/docs/components/number-input-v2#component-tokens).

@@ -1,17 +1,22 @@
 import Block from '../../../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../../../tokens'
 import Text from '../../../Text/Text'
+import type { CSSObject } from 'styled-components'
 
 const FloatingLabels = ({
     label,
     required,
     name,
     isFocused = false,
+    labelColor,
+    requiredColor,
 }: {
     label: string
     required: boolean
     name: string
     isFocused: boolean
+    labelColor?: CSSObject['color']
+    requiredColor?: CSSObject['color']
 }) => {
     return (
         <Block
@@ -26,7 +31,7 @@ const FloatingLabels = ({
                 htmlFor={name}
                 variant={isFocused ? 'body.sm' : 'body.md'}
                 fontWeight={500}
-                color={FOUNDATION_THEME.colors.gray[400]}
+                color={labelColor ?? FOUNDATION_THEME.colors.gray[400]}
                 style={{ margin: 0, padding: 0 }}
             >
                 {label}
@@ -34,7 +39,8 @@ const FloatingLabels = ({
             {required && (
                 <span
                     style={{
-                        color: FOUNDATION_THEME.colors.red[500],
+                        color:
+                            requiredColor ?? FOUNDATION_THEME.colors.red[500],
                     }}
                 >
                     *

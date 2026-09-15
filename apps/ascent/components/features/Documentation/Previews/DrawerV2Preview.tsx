@@ -38,7 +38,7 @@ function MyComponent() {
             <DrawerV2 open={isOpen} onOpenChange={setIsOpen}>
                 <DrawerV2Portal>
                     <DrawerV2Overlay className="fixed inset-0 bg-black/40 z-50" />
-                    <DrawerV2Content className="fixed inset-x-0 bottom-0 bg-white p-6 rounded-t-xl z-50 max-h-[80vh]">
+                    <DrawerV2Content className="fixed inset-x-0 bottom-0 bg-background p-6 rounded-t-xl z-50 max-h-[80vh]">
                         <DrawerV2Title>Drawer Title</DrawerV2Title>
                         <div className="p-4">
                             <p>Your content here</p>
@@ -68,7 +68,7 @@ let make = () => {
     <DrawerV2Binding open={isOpen} onOpenChange={setIsOpen}>
       <DrawerV2PortalBinding>
         <DrawerV2OverlayBinding className="fixed inset-0 bg-black/40 z-50" />
-        <DrawerV2ContentBinding className="fixed inset-x-0 bottom-0 bg-white p-6 rounded-t-xl z-50 max-h-[80vh]">
+        <DrawerV2ContentBinding className="fixed inset-x-0 bottom-0 bg-background p-6 rounded-t-xl z-50 max-h-[80vh]">
           <DrawerV2TitleBinding>{React.string("Drawer Title")}</DrawerV2TitleBinding>
           <div className="p-4">
             <p>{React.string("Your content here")}</p>
@@ -106,11 +106,11 @@ external make: (
                 <DrawerV2 open={isOpen} onOpenChange={setIsOpen}>
                     <DrawerV2Portal>
                         <DrawerV2Overlay className="fixed inset-0 bg-black/40 z-50" />
-                        <DrawerV2Content className="fixed inset-x-0 bottom-0 bg-white p-6 rounded-t-xl z-50 max-h-[80vh]">
+                        <DrawerV2Content className="fixed inset-x-0 bottom-0 bg-background p-6 rounded-t-xl z-50 max-h-[80vh]">
                             <DrawerV2Title className="text-lg font-semibold mb-2">
                                 Drawer Content
                             </DrawerV2Title>
-                            <p className="text-gray-600 mb-4">
+                            <p className="text-muted-foreground mb-4">
                                 This is a sample drawer content area.
                             </p>
                             <ButtonV2

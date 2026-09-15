@@ -30,6 +30,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
             className,
             selectedPosition = 'none',
             index = 0,
+            focusIdentityValue,
         },
         ref
     ) => {
@@ -195,6 +196,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
                     data-state={isSelected ? 'selected' : 'not selected'}
                     data-element="select-item"
                     data-id={item.label || 'select-item'}
+                    data-value={focusIdentityValue}
                     ref={ref}
                     role={type === SelectItemType.MULTI ? 'option' : 'menuitem'}
                     aria-selected={

@@ -24,6 +24,7 @@ export type MultiSelectV2MenuVirtualListProps = {
     onEndReached?: () => void
     endReachedThreshold?: number
     hasMore?: boolean
+    focusIdentityEnabled?: boolean
 }
 
 const MultiSelectV2MenuVirtualList = ({
@@ -40,6 +41,7 @@ const MultiSelectV2MenuVirtualList = ({
     onEndReached,
     endReachedThreshold,
     hasMore,
+    focusIdentityEnabled,
 }: MultiSelectV2MenuVirtualListProps) => (
     <Block
         style={{
@@ -123,6 +125,7 @@ const MultiSelectV2MenuVirtualList = ({
                                 maxSelections={maxSelections}
                                 allItems={allItemsFlat}
                                 index={itemIndex}
+                                focusIdentityEnabled={focusIdentityEnabled}
                             />
                         </Block>
                     )

@@ -15,6 +15,9 @@ StorybookLink: components-button-buttonv2--docs
 
 <ButtonV2Preview />
 
+> **Migration:** Migrating from V1? Read the [Button to ButtonV2 migration guide](/docs/migration/button)
+> for prop, event, enum, and token changes.
+
 ## Usage
 
 ```tsx
@@ -142,11 +145,11 @@ function MyComponent() {
             {
                 content: 'onClick',
                 hintText:
-                    'Callback function invoked when the button is clicked.',
+                    'Optional callback invoked with the genuine MouseEvent when the button is clicked.',
             },
             {
-                content: '() => void',
-                hintText: 'Click handler',
+                content: '(event: React.MouseEvent<HTMLButtonElement>) => void',
+                hintText: 'Click handler with the native button event',
             },
             { content: '' },
         ],
@@ -183,6 +186,18 @@ function MyComponent() {
             {
                 content: 'string | number',
                 hintText: 'CSS max-width value',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'justifyContent',
+                hintText:
+                    'CSS justify-content value for horizontal content alignment. Defaults to center.',
+            },
+            {
+                content: 'React.CSSProperties["justifyContent"]',
+                hintText: 'Content alignment inside the button',
             },
             { content: '' },
         ],
@@ -228,13 +243,28 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+When `skeleton.showSkeleton` is true, ButtonV2 sets `aria-busy="true"` and
+blocks interaction while the placeholder is displayed.
+
 ## Component Tokens
 
 You can style the ButtonV2 component using the following tokens:
 
+Partial `BUTTONV2` overrides are merged on top of the active light or dark
+defaults. Unchanged token paths therefore keep the correct values when the
+theme changes.
+
 ```tsx
 export type ButtonV2TokensType = {
     gap: CSSObject['gap']
+    slotMaxHeight: {
+        [key in ButtonV2Size]: CSSObject['maxHeight']
+    }
+    focusRing: {
+        [key in ButtonV2Type]: {
+            [key in ButtonV2SubType]: CSSObject['boxShadow']
+        }
+    }
     backgroundColor: {
         [key in ButtonV2Type]: {
             [key in ButtonV2SubType]: {

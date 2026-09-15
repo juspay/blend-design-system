@@ -23,7 +23,8 @@ import type { ResponsiveMenuTokensType } from '../components/Menu/menu.tokens'
 import type { ResponsiveMenuV2TokensType } from '../components/MenuV2/menuV2.tokens'
 import type { ResponsiveMultiSelectTokens } from '../components/MultiSelect/multiSelect.tokens'
 import type { ResponsiveTableTokens } from '../components/DataTable/dataTable.tokens'
-import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens'
+import type { ResponsiveCalendarTokens } from '../components/DateRangePicker/dateRangePicker.tokens.types'
+import type { ResponsiveTimePickerTokens } from '../components/TimePicker/timePicker.tokens.types'
 import type { ResponsiveAccordionTokens } from '../components/Accordion/accordion.tokens'
 import type { ResponsiveProgressBarTokens } from '../components/ProgressBar/progressbar.tokens'
 import type { ResponsiveDrawerTokens } from '../components/Drawer/drawer.tokens'
@@ -35,6 +36,8 @@ import { ResponsiveKeyValuePairTokens } from '../components/KeyValuePair/KeyValu
 import { ResponsiveCardTokens } from '../components/Card/card.tokens'
 import type { ResponsiveCardV2Tokens } from '../components/CardV2/cardV2.tokens'
 import { ResponsiveSkeletonTokens } from '../components/Skeleton/skeleton.tokens'
+import type { ResponsiveSpinnerTokens } from '../components/Spinner/spinner.tokens'
+import type { ResponsiveEmptyStateTokens } from '../components/EmptyState/emptyState.tokens'
 import type { ResponsiveTopbarTokens } from '../components/Topbar/topbar.tokens'
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
@@ -42,6 +45,7 @@ import { ResponsiveStatCardTokens } from '../components/StatCard/statcard.tokens
 import { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
 import { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
+import type { ResponsiveButtonGroupTokens } from '../components/ButtonGroup/buttonGroup.tokens'
 import { ResponsiveMobileNavigationTokens } from '../components/Sidebar/SidebarMobile/mobile.tokens'
 import { ResponsiveMobileNavigationV2Tokens } from '../components/SidebarV2/SidebarV2MobileNavigation/mobile.tokens'
 import { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
@@ -79,6 +83,8 @@ import { ChatInputV2MobileTokensType } from '../components/InputsV2/ChatInputV2/
 import type { ResponsiveStepperV2Tokens } from '../components/StepperV2/stepperV2.tokens'
 import { ResponsiveUploadV2Tokens } from '../components/InputsV2/UploadV2/UploadV2.tokens'
 import type { ResponsiveModalV2Tokens } from '../components/ModalV2/modalV2.tokens.types'
+import type { ResponsiveSliderTokens } from '../components/Slider/slider.tokens.types'
+import type { ResponsiveSelectTokens } from '../components/Select/select.tokens.types'
 
 export const useComponentToken = (
     component: keyof ComponentTokenType
@@ -107,6 +113,7 @@ export const useComponentToken = (
     | ResponsiveSingleSelectTokens
     | ResponsiveTableTokens
     | ResponsiveCalendarTokens
+    | ResponsiveTimePickerTokens
     | ResponsiveAccordionTokens
     | ResponsiveStatCardTokens
     | ResponsiveProgressBarTokens
@@ -118,12 +125,15 @@ export const useComponentToken = (
     | ResponsiveCardTokens
     | ResponsiveCardV2Tokens
     | ResponsiveSkeletonTokens
+    | ResponsiveSpinnerTokens
+    | ResponsiveEmptyStateTokens
     | ResponsiveTopbarTokens
     | ResponsiveAvatarTokens
     | ResponsiveAvatarGroupTokens
     | ResponsiveSidebarTokens
     | ResponsiveUploadTokens
     | ResponsiveCodeBlockTokens
+    | ResponsiveButtonGroupTokens
     | ResponsiveMobileNavigationTokens
     | ResponsiveMobileNavigationV2Tokens
     | ResponsiveDirectoryTokens
@@ -165,7 +175,9 @@ export const useComponentToken = (
     | ResponsiveStepperV2Tokens
     | ResponsiveModalV2Tokens
     | ResponsiveUploadV2Tokens
-    | ChatInputV2MobileTokensType => {
+    | ChatInputV2MobileTokensType
+    | ResponsiveSliderTokens
+    | ResponsiveSelectTokens => {
     const { componentTokens } = useTheme()
     switch (component) {
         case 'TOOLTIP':
@@ -214,6 +226,8 @@ export const useComponentToken = (
             return componentTokens.TABLE
         case 'CALENDAR':
             return componentTokens.CALENDAR
+        case 'TIME_PICKER':
+            return componentTokens.TIME_PICKER
         case 'ACCORDION':
             return componentTokens.ACCORDION
         case 'UNIT_INPUT':
@@ -242,6 +256,10 @@ export const useComponentToken = (
             return componentTokens.CARDV2
         case 'SKELETON':
             return componentTokens.SKELETON
+        case 'SPINNER':
+            return componentTokens.SPINNER
+        case 'EMPTY_STATE':
+            return componentTokens.EMPTY_STATE
         case 'TOPBAR':
             return componentTokens.TOPBAR
         case 'TOPBARV2':
@@ -256,6 +274,8 @@ export const useComponentToken = (
             return componentTokens.UPLOAD
         case 'CODE_BLOCK':
             return componentTokens.CODE_BLOCK
+        case 'BUTTON_GROUP':
+            return componentTokens.BUTTON_GROUP
         case 'MOBILE_NAVIGATION':
             return componentTokens.MOBILE_NAVIGATION
         case 'MOBILE_NAVIGATION_V2':
@@ -312,6 +332,10 @@ export const useComponentToken = (
             return componentTokens.BREADCRUMBV2
         case 'CODEEDITORV2':
             return componentTokens.CODEEDITORV2
+        case 'SLIDER':
+            return componentTokens.SLIDER
+        case 'SELECT':
+            return componentTokens.SELECT
         case 'PROGRESS_BARV2':
             return componentTokens.PROGRESS_BARV2
         case 'MULTI_VALUE_INPUT_V2':

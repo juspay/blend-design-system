@@ -33,6 +33,11 @@ import {
     Archive,
     Users,
 } from 'lucide-react'
+import {
+    createControlledAsyncSearchPlay,
+    mockAsyncSearchItems,
+    useMockAsyncSearch,
+} from '../../selectAsyncSearchStory'
 
 // Local types for reference
 type SelectMenuItemType = {
@@ -1388,5 +1393,60 @@ export const WithMenuFooter: Story = {
                 story: 'Renders custom content (e.g. a "Create new" button) pinned at the bottom of the menu via the `menuFooter` prop. The footer is not selectable and stays visible even when the list is empty.',
             },
         },
+    },
+}
+
+const ControlledAsyncSearchExample = () => {
+    const [selected, setSelected] = useState('')
+    const search = useMockAsyncSearch()
+
+    return (
+        <SingleSelect
+            label="Find a person"
+            placeholder="Select a person"
+            selected={selected}
+            onSelect={setSelected}
+            {...search}
+        />
+    )
+}
+
+export const ControlledAsyncSearch: Story = {
+    render: () => <ControlledAsyncSearchExample />,
+    play: createControlledAsyncSearchPlay(
+        'button',
+        /select a person/i,
+        /alan turing/i
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Controlled search debounces a mock API request. The consumer owns the query and supplies already-filtered items.',
+            },
+        },
+    },
+}
+
+export const ControlledSearchLoading: Story = {
+    args: {
+        label: 'Find a person',
+        placeholder: 'Select a person',
+        items: mockAsyncSearchItems,
+        selected: '',
+        onSelect: () => {},
+        searchText: 'ada',
+        isSearchLoading: true,
+    },
+}
+
+export const ControlledSearchEmpty: Story = {
+    args: {
+        label: 'Find a person',
+        placeholder: 'Select a person',
+        items: [],
+        selected: '',
+        onSelect: () => {},
+        searchText: '',
+        emptyStateText: 'Start typing to search',
     },
 }

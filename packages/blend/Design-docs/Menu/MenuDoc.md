@@ -4,8 +4,8 @@
 
 The Blend design system provides two Menu components:
 
-- **Menu (v1)** – Original component; uses internal or controlled open state; flat props for alignment, side, dimensions, and virtualization; optional `MENU` tokens; some hardcoded styles (e.g. content background, z-index); typo in prop name `collisonBoundaryRef`.
-- **MenuV2** – Refactored API with **token-driven styling** (no hardcoded colors/z-index/dimensions; content z-index from tokens), **grouped virtual config** (`virtualScrolling?: { itemHeight?, overscan?, threshold? }`), a **single leading slot on the item label** (`label.leftSlot`), optional `id` on groups and items; correct `collisionBoundaryRef`; TanStack Virtual for large lists; theme via `getMenuV2Tokens(foundationToken, theme)` from `menuV2.tokens`.
+- **Menu (v1)** – Original component; uses internal or controlled open state; flat props for alignment, side, dimensions, and virtualization; optional `MENU` tokens; controlled item-selection parity with MenuV2; some hardcoded styles (e.g. content background, z-index); typo in prop name `collisonBoundaryRef`.
+- **MenuV2** – Refactored API with **token-driven styling** (no hardcoded colors/z-index/dimensions; content z-index from tokens), controlled item selection, **grouped virtual config** (`virtualScrolling?: { itemHeight?, overscan?, threshold? }`), a **single leading slot on the item label** (`label.leftSlot`), optional `id` on groups and items; correct `collisionBoundaryRef`; TanStack Virtual for large lists; theme via `getMenuV2Tokens(foundationToken, theme)` from `menuV2.tokens`.
 
 Both support: trigger, grouped items with labels and separators, search, submenus with optional submenu search, item variants (default/action), action types (primary/danger), a leading slot, tooltips, virtualization, controlled open state, and Radix-based positioning (alignment, side, offsets, collision boundary).
 
@@ -22,7 +22,8 @@ Both support: trigger, grouped items with labels and separators, search, submenu
 - **Positioning**: `alignment`, `side`, `sideOffset`, `alignOffset`, `collisionBoundaryRef` (V1 had typo `collisonBoundaryRef`).
 - **Dimensions**: `maxHeight`, `minHeight`, `maxWidth`, `minWidth`; V2 falls back to tokens when min/max width omitted.
 - **State**: `open`, `onOpenChange` for controlled open; `asModal`.
-- **Accessibility**: Radix menu roles and keyboard navigation; focus management; `data-status="disabled"` on disabled items; `_focusVisible` from tokens for focus ring.
+- **Controlled selection (V1 and V2)**: Set `selected: boolean` on selectable items. `selectionStyle` controls checkmark or highlight visuals, `selectionMode` controls single/radio or multiple/checkbox semantics, and `closeOnSelect` defaults to `true`. Selection state remains fully controlled by the consumer; omitting `selected` preserves the legacy action item.
+- **Accessibility**: Radix menu roles and keyboard navigation; selectable V1 and V2 items expose `menuitemradio` or `menuitemcheckbox` with `aria-checked`; focus management; `data-status="disabled"` on disabled items; `_focusVisible` from tokens for focus ring.
 - **Theme**: V1 uses `MENU` tokens; V2 uses `MENU_V2` via `getMenuV2Tokens(foundationToken, theme)` exported from `menuV2.tokens` (light/dark).
 
 ---
@@ -59,7 +60,7 @@ Menu (dropdown):
 
 ### V1: flat props
 
-V1 uses flat props: `alignment`, `side`, `sideOffset`, `alignOffset`, `maxHeight`, `minHeight`, `maxWidth`, `minWidth`, `enableSearch`, `searchPlaceholder`, `enableVirtualScrolling`, `virtualItemHeight`, `virtualOverscan`, `virtualScrollThreshold`, `open`, `onOpenChange`, `asModal`, `collisonBoundaryRef`, `skeleton`.
+V1 uses flat props: `alignment`, `side`, `sideOffset`, `alignOffset`, `maxHeight`, `minHeight`, `maxWidth`, `minWidth`, `enableSearch`, `searchPlaceholder`, `enableVirtualScrolling`, `virtualItemHeight`, `virtualOverscan`, `virtualScrollThreshold`, `open`, `onOpenChange`, `asModal`, `selectionStyle`, `selectionMode`, `closeOnSelect`, `collisonBoundaryRef`, `skeleton`.
 
 ### V2: virtual config and tokens
 
@@ -81,6 +82,7 @@ V2 keeps flat props for positioning and dimensions but:
 | enableSearch, searchPlaceholder                              | ✓                                 | ✓                                     |
 | open, onOpenChange                                           | ✓                                 | ✓                                     |
 | asModal                                                      | ✓                                 | ✓                                     |
+| selectionStyle, selectionMode, closeOnSelect                 | ✓                                 | ✓                                     |
 | alignment, side, sideOffset, alignOffset                     | MenuAlignment, MenuSide           | MenuV2Alignment, MenuV2Side           |
 | collisionBoundaryRef                                         | collisonBoundaryRef (typo)        | collisionBoundaryRef                  |
 | enableVirtualScrolling                                       | ✓                                 | ✓                                     |
@@ -91,7 +93,9 @@ V2 keeps flat props for positioning and dimensions but:
 | Item: variant, actionType, disabled, onClick                 | ✓                                 | ✓                                     |
 | Item: subMenu, enableSubMenuSearch, subMenuSearchPlaceholder | ✓                                 | ✓                                     |
 | Item: tooltip, tooltipProps                                  | ✓                                 | ✓                                     |
+| Item: selected                                               | optional controlled boolean       | optional controlled boolean           |
 | Group: label, items, showSeparator                           | ✓                                 | ✓                                     |
+| Group: selectionStyle, selectionMode                         | optional overrides                | optional overrides                    |
 | Group/Item id                                                | —                                 | optional id                           |
 
 ### V1-only
@@ -101,12 +105,33 @@ V2 keeps flat props for positioning and dimensions but:
 - **skeleton**: V1 supports `skeleton`; V2 does not (removed until implemented).
 - **collisonBoundaryRef** (typo) – same behavior as V2’s `collisionBoundaryRef`.
 
-### V2-only
+### V2-specific APIs
 
 - **slot**: Leading slot prop; `slot1` still supported for compatibility. `getItemSlots(item)` returns `[slot ?? slot1, slot2, slot3, slot4]` (slot takes priority when both set).
 - **virtualScrolling**: Single config object `{ itemHeight?, overscan?, threshold? }`.
 - **id** on `MenuV2GroupType` and `MenuV2ItemType`.
 - **Token export**: `getMenuV2Tokens` is exported from **`menuV2.tokens`**; content z-index from `menuTokens.content.zIndex` (no SelectV2 constant).
+
+Controlled selection is shared by V1 and V2. The selection prop names and semantics match, but item/group data types remain generation-specific: V1 uses string labels and `slot1`–`slot4`, while V2 uses object labels and its label-slot shape. MenuV2 remains the recommended target for new code; this V1 surface is compatibility parity.
+
+### Manual V2 → V1 selection mapping
+
+The selection state can be reused directly; only the item shape changes:
+
+```tsx
+// Shared consumer state
+const items = [{
+    items: options.map((option) => ({
+        label: option.label, // V1 string label; V2: label: { text: option.label }
+        selected: selectedId === option.id,
+        onClick: () => setSelectedId(option.id),
+    })),
+}]
+
+<Menu selectionStyle="checkmark" selectionMode="single" items={items} />
+```
+
+There is no V1/V2 item-shape adapter or codemod in this compatibility change. Keep stable domain ids in consumer state because V1 item types do not expose the V2 `id` field.
 
 ### Naming and structure differences
 
@@ -117,13 +142,20 @@ V2 keeps flat props for positioning and dimensions but:
 ### Item and group types
 
 - **V1**: `MenuItemType`, `MenuGroupType` (no `id`; `slot1`–`slot4` only).
-- **V2**: `MenuV2ItemType`, `MenuV2GroupType` – optional `id`; `slot` (or `slot1`), `slot2`, `slot3`, `slot4`; same shape otherwise (label, subLabel, variant, actionType, disabled, onClick, subMenu, search, tooltip).
+- **V2**: `MenuV2ItemType`, `MenuV2GroupType` – optional `id`; item-level controlled `selected`; group-level `selectionStyle` and `selectionMode`; same action, submenu, search, and tooltip capabilities otherwise.
 
 ### Internal / utils (V2)
 
 - **getItemSlots(item)**: Returns `[leading, slot2, slot3, slot4]` with `leading = item.slot ?? item.slot1` (slot takes priority over slot1).
 - **flattenMenuV2Groups(groups)**: Flattens groups into `MenuV2FlatRow[]` (label | separator | item) for virtual list.
 - **filterMenuItem**, **filterMenuGroups**: Search filtering; shared with V1-style logic.
+
+### Shared selection internals
+
+`Menu/selection.ts` contains the neutral selection types, context, and pure
+resolver used by both renderers. `MenuV2SelectionContext` re-exports that
+provider and hook under the existing V2 names, so V1 and V2 share selection
+semantics without sharing their token or layout implementations.
 
 ---
 
@@ -137,10 +169,23 @@ Tokens are defined in `menuV2.tokens.ts`. Theme is selected via **`getMenuV2Toke
 
 - **content**: backgroundColor, border, borderRadius, boxShadow, **zIndex**, **minWidth**, **maxWidth**, padding (top/right/bottom/left). Used for main menu Content (z-index from tokens) and submenu panel; no hardcoded z-index or dimensions in components.
 - **item**: padding, margin, borderRadius, gap; **backgroundColor** by variant (default/action) × actionType (primary/danger) × enabled/disabled × state (default, hover, active, focus, focusVisible, disabled, selected); **optionsLabel** (fontSize, fontWeight, color, padding, margin); **option** (fontSize, fontWeight, color by variant/actionType/enabled/disabled/state); **description** (sublabel; same color structure); **separator** (color, height, margin).
+- **checkmark**: optional `position` (`leading` or `trailing`), `width`, and `color` for `selectionStyle="checkmark"`.
 
 **Helper types**: `MenuV2ItemStates` (from SelectV2); `StateToken<T>` for state-keyed values.
 
 Usage: `tokens.content.zIndex`, `tokens.content.minWidth`, `tokens.content.maxWidth`, `tokens.item.backgroundColor[variant].enabled[state]`, etc. Submenu and content use the same content tokens for layout and stacking.
+
+---
+
+## Token Structure (V1 selection additions)
+
+V1 keeps its existing `MENU` token namespace and slot layout. Generated V1 tokens include:
+
+- `item.backgroundColor[variant].enabled|disabled.selected` for highlight backgrounds.
+- `item.option.color[variant].enabled|disabled.selected` and matching `item.description.color` values for selected text.
+- `item.checkmark.position` (`leading` or `trailing`), `item.checkmark.width`, and `item.checkmark.color` for checkmark selection.
+
+These are additive fields. Existing custom `MENU` overrides that predate selection may omit the new fields; V1 falls back to the default state, a trailing position, and a 16px checkmark width/color rather than requiring a token migration. V1 values use the existing foundation-backed `MENU` palette; MenuV2 remains the theme-aware token implementation.
 
 ---
 
@@ -182,6 +227,12 @@ Usage: `tokens.content.zIndex`, `tokens.content.minWidth`, `tokens.content.maxWi
 
 **Rationale**: Stable keys for lists and submenus; better a11y and testing.
 
+### 7. Controlled selection (V1 and V2)
+
+**Decision**: Selection is opt-in per item through `selected?: boolean` and is never stored internally. `selectionStyle` controls visual treatment, while `selectionMode` independently controls `menuitemradio` or `menuitemcheckbox` semantics. Both can be overridden per group. `closeOnSelect` defaults to `true` and may be disabled for multi-select workflows. The contract is shared by Menu and MenuV2 even though their item data shapes and token namespaces remain different.
+
+**Rationale**: Consumers can build accessible sort pickers and view switchers without faking checkmarks through slots or coupling visual treatment to selection cardinality. Items that omit `selected` retain the existing action-menu behavior, and consumers can move between Menu generations without remapping selection prop names.
+
 ---
 
 ## Summary Table: When to Use Which
@@ -193,6 +244,7 @@ Usage: `tokens.content.zIndex`, `tokens.content.minWidth`, `tokens.content.maxWi
 | Grouped virtual config and TanStack Virtual                            | MenuV2                                 |
 | Simple single-slot API                                                 | MenuV2                                 |
 | Correct `collisionBoundaryRef` spelling                                | MenuV2                                 |
+| Controlled single- or multiple-selection menu                          | Either; MenuV2 preferred for new code  |
 | Per-item virtual height function                                       | Menu (v1)                              |
 | Existing V1 usage with no breaking changes                             | Menu (v1)                              |
 | Same core behavior (trigger, groups, search, submenus, virtualization) | Either; API and tokens differ as above |

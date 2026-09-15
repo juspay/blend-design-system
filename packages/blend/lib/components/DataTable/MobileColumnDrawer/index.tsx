@@ -20,6 +20,8 @@ import {
 import { ChevronRight } from 'lucide-react'
 import { Button } from '../../Button'
 import { ButtonType, ButtonSize, ButtonSubType } from '../../Button/types'
+import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
+import type { TableTokenType } from '../dataTable.tokens'
 
 export interface MobileColumnDrawerProps<T extends Record<string, unknown>> {
     isOpen: boolean
@@ -44,6 +46,7 @@ const MobileColumnDrawer: React.FC<
     onFieldChange,
     rowActions,
 }) => {
+    const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
     const [nestedDrawerOpen, setNestedDrawerOpen] = useState(false)
     const [selectedDropdownColumn, setSelectedDropdownColumn] = useState<{
         column: ColumnDefinition<Record<string, unknown>>
@@ -128,7 +131,7 @@ const MobileColumnDrawer: React.FC<
                 <PrimitiveText
                     fontSize={FOUNDATION_THEME.font.size.body.md.fontSize}
                     fontWeight={FOUNDATION_THEME.font.weight[400]}
-                    color={FOUNDATION_THEME.colors.gray[500]}
+                    color={tableToken.header.description.color}
                 >
                     {column.header}
                 </PrimitiveText>
@@ -150,7 +153,7 @@ const MobileColumnDrawer: React.FC<
                                 FOUNDATION_THEME.font.size.body.md.fontSize
                             }
                             fontWeight={FOUNDATION_THEME.font.weight[500]}
-                            color={FOUNDATION_THEME.colors.gray[700]}
+                            color={tableToken.dataTable.table.body.cell.color}
                             style={{
                                 wordBreak: 'break-word',
                                 textAlign: 'right',
@@ -165,7 +168,10 @@ const MobileColumnDrawer: React.FC<
                     {isDropdown && (
                         <ChevronRight
                             size={16}
-                            color={FOUNDATION_THEME.colors.gray[400]}
+                            color={
+                                tableToken.dataTable.table.header.filter
+                                    .sortOption.iconColor
+                            }
                         />
                     )}
                 </Block>
@@ -201,7 +207,7 @@ const MobileColumnDrawer: React.FC<
                                     fontWeight={
                                         FOUNDATION_THEME.font.weight[600]
                                     }
-                                    color={FOUNDATION_THEME.colors.gray[900]}
+                                    color={tableToken.header.title.color}
                                 >
                                     Insights
                                 </PrimitiveText>
@@ -229,7 +235,10 @@ const MobileColumnDrawer: React.FC<
                                             marginTop={
                                                 FOUNDATION_THEME.unit[16]
                                             }
-                                            borderTop={`1px solid ${FOUNDATION_THEME.colors.gray[200]}`}
+                                            borderTop={
+                                                tableToken.dataTable.table
+                                                    .footer.borderTop
+                                            }
                                         >
                                             {rowActions.slot1 &&
                                                 !(

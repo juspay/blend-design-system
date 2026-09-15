@@ -3355,6 +3355,66 @@ const DataTableDemo = () => {
                         ))}
                     </div>
                 </div>
+                <div
+                    style={{
+                        marginTop: '16px',
+                        padding: '16px',
+                        backgroundColor: 'white',
+                        borderRadius: '6px',
+                        border: '1px solid #e5e7eb',
+                    }}
+                >
+                    <strong
+                        style={{
+                            display: 'block',
+                            marginBottom: '12px',
+                            color: '#6b7280',
+                            fontSize: '12px',
+                            textTransform: 'uppercase',
+                        }}
+                    >
+                        Activity Log (Nested DataTable)
+                    </strong>
+                    <DataTable
+                        data={activities.map((activity, idx) => ({
+                            id: idx + 1,
+                            activity,
+                            timestamp: `${idx + 1}h ago`,
+                        }))}
+                        columns={[
+                            {
+                                field: 'id',
+                                header: 'ID',
+                                type: ColumnType.NUMBER,
+                                isSortable: false,
+                                isEditable: false,
+                                minWidth: '60px',
+                                maxWidth: '80px',
+                            },
+                            {
+                                field: 'activity',
+                                header: 'Activity',
+                                type: ColumnType.TEXT,
+                                isSortable: false,
+                                isEditable: false,
+                                minWidth: '200px',
+                                maxWidth: '400px',
+                            },
+                            {
+                                field: 'timestamp',
+                                header: 'When',
+                                type: ColumnType.TEXT,
+                                isSortable: false,
+                                isEditable: false,
+                                minWidth: '100px',
+                                maxWidth: '140px',
+                            },
+                        ]}
+                        showHeader={true}
+                        isLoading={false}
+                        idField="id"
+                    />
+                </div>
 
                 {userRow.role === 'Admin' && (
                     <div

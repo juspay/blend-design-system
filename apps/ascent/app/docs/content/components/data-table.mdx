@@ -795,6 +795,68 @@ function CompactTable() {
         ],
         [
             {
+                content: 'error',
+                hintText:
+                    'When true, replaces table rows with an error state while preserving the table header, toolbar, filters, and footer. Loading takes precedence when isLoading is also true. Defaults to false.',
+            },
+            {
+                content: 'boolean',
+                hintText:
+                    'true shows the error state, false shows normal content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'renderErrorState',
+                hintText:
+                    'Optional renderer for custom error content in the table body area. Receives onRetry when one is provided.',
+            },
+            {
+                content: '(retry?: () => void) => ReactNode',
+                hintText: 'Function that returns custom error-state content',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onRetry',
+                hintText:
+                    'Optional callback passed to renderErrorState and wired to the Retry button in the default error state.',
+            },
+            {
+                content: '() => void',
+                hintText:
+                    'Function called when the user retries the failed load',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'showEmptyState',
+                hintText:
+                    'When true, displays the default empty state when data has no rows and loading is complete. Defaults to false to preserve the legacy empty-body presentation.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'true enables the default empty state',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'renderEmptyState',
+                hintText:
+                    'Optional renderer for custom empty content in the table body area. A custom renderer is used whenever data is empty and loading is complete, independently of showEmptyState.',
+            },
+            {
+                content: '() => ReactNode',
+                hintText: 'Function that returns custom empty-state content',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'showSkeleton',
                 hintText:
                     'When true, displays skeleton loading placeholders in all table cells (including checkboxes and expansion buttons). Provides granular control over skeleton display separate from isLoading. Can be overridden at the column level via column.showSkeleton or at the row level via isRowLoading. Defaults to false.',
@@ -1107,6 +1169,21 @@ function CompactTable() {
             },
             {
                 content: 'BulkActionsConfig: see BulkActionsConfig props below',
+            },
+        ],
+        [
+            {
+                content: 'exportConfig',
+                hintText:
+                    'Optional whole-table export configuration. Set enabled to true to show an Export action for the visible columns. formats accepts csv and xlsx and defaults to csv; scope accepts currentPage or allLoaded and defaults to currentPage. Use onExport to asynchronously return rows for server-backed tables; it receives the current visible columns, column and advanced filters, search, sort, and scope. Returning undefined cancels the download.',
+            },
+            {
+                content: 'DataTableExportConfig<T>',
+                hintText:
+                    "{ enabled: boolean; fileName?: string; formats?: ('csv' | 'xlsx')[]; scope?: 'currentPage' | 'allLoaded'; onExport?: (context: DataTableExportContext<T>) => T[] | void | Promise<T[] | void> }",
+            },
+            {
+                content: 'CSV, current page',
             },
         ],
         [
@@ -1471,7 +1548,7 @@ Each column in the `columns` array should have the following structure:
             {
                 content: 'filterOptions',
                 hintText:
-                    'Optional array of FilterOption objects that provide predefined filter choices for this column. Used when filterType is SELECT or MULTISELECT. Each option should have a label and value. Users can select from these options instead of typing custom values.',
+                    'Optional array of FilterOption objects that provide predefined filter choices for this column. Used when the resolved filter UI is select or multiselect, whether that comes from filterType (SELECT or MULTISELECT) or from the column type itself (e.g. SELECT, MULTISELECT, TAG, DROPDOWN). Each option should have a label and value. Users can select from these options instead of typing custom values.',
             },
             {
                 content: 'FilterOption[]',
@@ -1548,7 +1625,7 @@ Each column in the `columns` array should have the following structure:
             {
                 content: 'filterType',
                 hintText:
-                    'Optional FilterType enum value that overrides the default filter type for this column. If not provided, the filter type is inferred from the column type. Specifying this allows custom filter behavior even when using a different column type for rendering.',
+                    'Optional FilterType enum value that explicitly selects the filter UI for this column, overriding what the column type would infer. SELECT and MULTISELECT work on any column whose cell values are strings or numbers. DATE requires cell values that can be parsed as dates; rows whose value cannot be parsed are filtered out rather than shown. SLIDER additionally requires a sliderConfig, which the column type union only provides when type is ColumnType.SLIDER, so SLIDER is effectively limited to slider columns today. TEXT, NUMBER, and BOOLEAN have no filter component, so the column falls back to its type-derived filter behavior instead of disabling filtering.',
             },
             {
                 content: 'FilterType',

@@ -62,44 +62,18 @@ const MultiSelectDemoV2 = () => {
     const [menuFooterEmptySelected, setMenuFooterEmptySelected] = useState<
         string[]
     >([])
-    const handleMenuFooterChange = (value: string | string[]) => {
-        setMenuFooterSelected((prev) =>
-            Array.isArray(value)
-                ? value
-                : prev.includes(value)
-                  ? prev.filter((v) => v !== value)
-                  : [...prev, value]
-        )
+    const handleMenuFooterSelectionChange = (values: string[]) => {
+        setMenuFooterSelected(values)
     }
-    const handleMenuFooterEmptyChange = (value: string | string[]) => {
-        setMenuFooterEmptySelected((prev) =>
-            Array.isArray(value)
-                ? value
-                : prev.includes(value)
-                  ? prev.filter((v) => v !== value)
-                  : [...prev, value]
-        )
+    const handleMenuFooterEmptySelectionChange = (values: string[]) => {
+        setMenuFooterEmptySelected(values)
     }
-    const handleActionButtonsChange = (value: string | string[]) => {
-        if (Array.isArray(value)) {
-            setActionButtonsSelected(value)
-        } else {
-            setActionButtonsSelected((prev) =>
-                prev.includes(value)
-                    ? prev.filter((v) => v !== value)
-                    : [...prev, value]
-            )
-        }
+    const handleActionButtonsSelectionChange = (values: string[]) => {
+        setActionButtonsSelected(values)
     }
 
-    const handlePlaygroundChange = (value: string | string[]) => {
-        setPlaygroundSelected((prev) =>
-            Array.isArray(value)
-                ? value
-                : prev.includes(value)
-                  ? prev.filter((v) => v !== value)
-                  : [...prev, value]
-        )
+    const handlePlaygroundSelectionChange = (values: string[]) => {
+        setPlaygroundSelected(values)
     }
 
     const groupedItems: MultiSelectV2GroupType[] = [
@@ -459,7 +433,7 @@ const MultiSelectDemoV2 = () => {
                             }
                             items={groupedItems}
                             selectedValues={playgroundSelected}
-                            onChange={handlePlaygroundChange}
+                            onSelectionChange={handlePlaygroundSelectionChange}
                             disabled={playgroundDisabled}
                             search={{ show: playgroundEnableSearch }}
                             enableSelectAll={playgroundEnableSelectAll}
@@ -512,7 +486,7 @@ const MultiSelectDemoV2 = () => {
                         placeholder="Select permissions..."
                         items={groupedItems}
                         selectedValues={actionButtonsSelected}
-                        onChange={handleActionButtonsChange}
+                        onSelectionChange={handleActionButtonsSelectionChange}
                         search={{ show: true }}
                         enableSelectAll
                         selectAllText="Select All"
@@ -547,7 +521,7 @@ const MultiSelectDemoV2 = () => {
                             placeholder="Select options..."
                             items={groupedItems}
                             selectedValues={menuFooterSelected}
-                            onChange={handleMenuFooterChange}
+                            onSelectionChange={handleMenuFooterSelectionChange}
                             search={{ show: true }}
                             menuDimensions={{ maxHeight: 320 }}
                             menuFooter={
@@ -583,7 +557,9 @@ const MultiSelectDemoV2 = () => {
                             placeholder="No items available..."
                             items={[]}
                             selectedValues={menuFooterEmptySelected}
-                            onChange={handleMenuFooterEmptyChange}
+                            onSelectionChange={
+                                handleMenuFooterEmptySelectionChange
+                            }
                             search={{ show: true }}
                             menuDimensions={{ maxHeight: 320 }}
                             menuFooter={

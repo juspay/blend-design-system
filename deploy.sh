@@ -60,9 +60,17 @@ if [ ! -d "node_modules" ]; then
     pnpm install
 fi
 
-# Sync changelog before building
-echo "📝 Syncing changelog..."
-pnpm sync-changelog --latest || echo "⚠️ Changelog sync failed, continuing with existing files"
+# Sync changelog before building (needs GROQ_API_KEY; skip cleanly if not configured)
+if [ -z "$GROQ_API_KEY" ]; then
+    echo "⚠️ GROQ_API_KEY not set, skipping changelog sync"
+else
+    echo "📝 Syncing changelog..."
+    SYNC_LOG=$(node scripts/sync-changelog.mjs --latest 2>&1) || {
+        echo "⚠️ Changelog sync failed, continuing with existing files"
+        echo "$SYNC_LOG"
+    }
+    [ -z "$SYNC_LOG" ] || echo "$SYNC_LOG"
+fi
 
 # Format newly generated changelog files
 echo "✨ Formatting changelog files..."
@@ -122,6 +130,9 @@ if ! git diff --staged --quiet; then
         || echo "⚠️ PR creation failed, check manually"
 
     git checkout $CURRENT_BRANCH
+    # Restore the changelog files for this build; PR keeps them for repo history.
+    git checkout $PR_BRANCH -- apps/ascent/app/changelog/content/
+    git reset HEAD -- apps/ascent/app/changelog/content/ 2>/dev/null || true
     git branch -D $PR_BRANCH
 fi
 

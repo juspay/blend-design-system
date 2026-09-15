@@ -1,0 +1,115 @@
+---
+title: Breadcrumb v1 to v2
+description: Migrate the Breadcrumb component from v1 to BreadcrumbV2, including skeleton removal and overflow configuration.
+---
+
+## Overview
+
+`Breadcrumb` is deprecated in favor of `BreadcrumbV2`. Existing item arrays,
+labels, links, slots, and client-side navigation handlers carry over. The key
+changes are the renamed item type, removal of the built-in skeleton API, and a
+configurable overflow threshold.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Breadcrumb,
+    BreadcrumbItemType,
+} from '@juspay/blend-design-system'
+
+const items: BreadcrumbItemType[] = [
+    { label: 'Home', href: '/' },
+    { label: 'Products', href: '/products' },
+    { label: 'Phones', href: '/products/phones' },
+]
+
+<Breadcrumb items={items} />
+```
+
+```tsx
+// v2
+import {
+    BreadcrumbV2,
+    BreadcrumbV2ItemType,
+} from '@juspay/blend-design-system'
+
+const items: BreadcrumbV2ItemType[] = [
+    { label: 'Home', href: '/' },
+    { label: 'Products', href: '/products' },
+    { label: 'Phones', href: '/products/phones' },
+]
+
+<BreadcrumbV2 items={items} />
+```
+
+## Breaking changes
+
+### Rename the component and item type
+
+**v1:** `Breadcrumb` and `BreadcrumbItemType`
+
+**v2:** `BreadcrumbV2` and `BreadcrumbV2ItemType`
+
+The renamed exports let v1 and v2 coexist during an incremental rollout.
+Rename the component and item type together. The standard item fields—`label`,
+`href`, `leftSlot`, `rightSlot`, and `onClick`—are unchanged.
+
+### Remove the built-in skeleton API
+
+**v1:** `Breadcrumb` and each item accept a `skeleton` configuration.
+
+**v2:** Neither `BreadcrumbV2` nor `BreadcrumbV2ItemType` accepts `skeleton`.
+
+Remove these props when migrating. For loading states, render a page-level or
+layout-level placeholder until breadcrumb data is available, then render
+`BreadcrumbV2`. Do not pass v1 skeleton configuration to v2 items.
+
+### Configure overflow explicitly when needed
+
+**v1:** The overflow threshold is fixed at four items.
+
+**v2:** `maxItems` controls the threshold and defaults to four.
+
+No change is needed to preserve the default behavior. Set `maxItems` when a
+specific layout needs more or fewer visible crumbs. Values below one disable
+overflow, while values of one or more keep the first crumb and at least the
+current trailing crumb visible when the trail collapses.
+
+### Add stable item IDs for repeated links
+
+V2 adds an optional `id` field to item objects. It is not required for a
+standard migration, but add one when breadcrumb entries can share the same
+`href`—for example, dynamic or repeated routes—so React keys remain stable.
+
+### Update custom Breadcrumb tokens
+
+**v1:** `BREADCRUMB` token contract
+
+**v2:** `BREADCRUMBV2` token contract
+
+The shared item token structure remains familiar. V2 adds explicit `ellipsis`
+and `separator` token groups to style its configurable overflow menu and
+separators. Update custom theme overrides to target `BREADCRUMBV2`.
+
+## Optional compound API
+
+V2 also supports composing the trail with `BreadcrumbV2.Item`,
+`BreadcrumbV2.Page`, `BreadcrumbV2.Icon`, and `BreadcrumbV2.Separator`. This
+is optional: keep the `items` array when it already describes your breadcrumb
+cleanly, and use compound components only when a route needs custom markup or
+separator content.
+
+## What continues to work
+
+`onClick` continues to prevent default anchor navigation so client-side routers
+can handle the route change. Leading and trailing slots remain available on
+item objects, and the last item remains the current page. V2 renders that
+current page as non-link content, making its non-navigable state explicit.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/breadcrumb#component-tokens) with the [V2 component token reference](/docs/components/breadcrumb-v2#component-tokens).

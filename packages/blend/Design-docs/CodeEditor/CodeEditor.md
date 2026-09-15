@@ -178,6 +178,12 @@ export function DiffExample() {
 
 **Rationale**: A single `variant` choice should not leave the editor in single-file mode by mistake; `isDiffEditorMode` in `utils.ts` combines the two flags before passing to `MonacoEditorWrapper`.
 
+### 4. Local Monaco runtime
+
+**Decision**: Both CodeEditor versions load Monaco from the installed `monaco-editor` package and configure `@monaco-editor/react` before mounting the editor. They do not load Monaco from a public CDN.
+
+**Rationale**: Applications can use the editors on networks that block public CDNs. The application bundler includes Monaco as a local chunk.
+
 ## Testing
 
 - **Unit tests**: `packages/blend/__tests__/components/CodeEditorV2/CodeEditorV2.test.tsx`

@@ -40,11 +40,11 @@ The responsive architecture operates on a carefully crafted breakpoint system wi
 
 The design system encompasses **over 30 production-ready components** organized into logical categories:
 
-**Form Components** include essential input elements like Button, ButtonGroup, Checkbox, Radio, Switch, and comprehensive input variants including TextInput, NumberInput, OTPInput, SearchInput, TextArea, UnitInput, DropdownInput, and MultiValueInput. Advanced form components include Select, MultiSelect, and DateRangePicker for complex data entry scenarios.
+**Form Components** include essential input elements like Button, ButtonGroup, Checkbox, Radio, Switch, and comprehensive input variants including TextInput, NumberInput, OTPInput, SearchInput, TextArea, UnitInput, DropdownInput, and MultiValueInput. Advanced form components include Select, MultiSelect, SelectListV2, MultiSelectListV2, DateRangePicker, SingleDatePicker, and TimePicker for complex data entry scenarios.
 
 **Layout Components** provide structural elements such as Accordion, Alert, Avatar, AvatarGroup, Breadcrumb, Modal, Popover, Sidebar, and Tabs. The sophisticated DataTable component offers advanced features for data presentation, while Directory components handle hierarchical navigation.
 
-**Display Components** focus on data visualization and content presentation, including Charts powered by Recharts, StatCard for metrics display, Tags and SplitTag for categorization, Text components with comprehensive typography support, Tooltip for contextual information, and specialized components like GradientBlur for visual effects.
+**Display Components** focus on data visualization and content presentation, including Charts powered by Recharts, StatCard for metrics display, Tags and SplitTag for categorization, Text components with comprehensive typography support, and Tooltip for contextual information.
 
 **Navigation Components** encompass Menu systems and interactive elements that facilitate user movement through applications.
 
@@ -68,7 +68,11 @@ This monorepo is built with **Turborepo** and **pnpm workspaces**, providing opt
 
 **`packages/blend`** houses the complete design system library published as `@juspay/blend-design-system`. This package includes all React components with full TypeScript definitions, comprehensive styling systems, custom hooks for responsive behavior and theme management, design tokens and foundation systems, accessibility features, and performance optimizations.
 
-**`packages/eslint-config`** provides shared ESLint configurations ensuring consistent code quality and style across the entire monorepo.
+**`packages/token-engine`** provides the private token resolution engine bundled into the Blend package and re-exported through the `/tokens` entry point.
+
+**`packages/cli`** provides the `blend-studio` command-line tools for initializing, branding, and synchronizing design tokens.
+
+**`packages/blend-telemetry`** scans consumer projects for Blend component usage across TypeScript and ReScript codebases.
 
 **`packages/typescript-config`** contains shared TypeScript configurations with optimized compiler settings for both development and production builds.
 
@@ -82,7 +86,11 @@ This monorepo is built with **Turborepo** and **pnpm workspaces**, providing opt
 
 **`apps/site`** offers a demo application showcasing real-world usage patterns built with **Vite and React**. This application demonstrates complete component implementations, integration patterns, theming examples, responsive behavior demonstrations, and performance benchmarks. It serves as a reference implementation for developers adopting the design system.
 
-**`apps/blend-monitor`** provides analytics and monitoring capabilities for design system adoption. This Next.js application tracks component usage patterns, monitors NPM download statistics, provides insights into design system health, tracks integration success metrics, and offers administrative tools for design system maintenance. The application includes PostgreSQL integration for data persistence and Firebase authentication for secure access.
+**`apps/blend-studio`** provides the Vite-based Token Studio interface and its Express API for editing and managing design tokens.
+
+**`apps/backend`** provides the Express and Prisma API used by Blend Token Studio, including its approval and persistence workflows.
+
+**`apps/tokenizer-sandbox`** is a small Vite consumer used to exercise token initialization, branding, validation, and synchronization flows.
 
 ---
 
@@ -90,7 +98,7 @@ This monorepo is built with **Turborepo** and **pnpm workspaces**, providing opt
 
 ### Prerequisites & Setup
 
-The development environment requires **Node.js version 18 or higher** and **pnpm version 10.12.4 or higher** for optimal package management and workspace handling. The monorepo structure leverages pnpm's efficient dependency management and Turborepo's intelligent caching for enhanced development experience.
+The development environment requires **Node.js version 18 or higher** and uses **pnpm version 10.21.0** for package management and workspace handling. The monorepo structure leverages pnpm's efficient dependency management and Turborepo's intelligent caching for enhanced development experience.
 
 **Quick Setup:**
 
@@ -139,7 +147,7 @@ The responsive design system operates on **mobile-first principles** with carefu
 
 ### Theming Flexibility
 
-The theming system supports **extensive customization capabilities** with hierarchical token organization, runtime theme switching, brand-specific adaptations, and custom component styling. Organizations can implement their brand identity while maintaining the structural integrity and accessibility features of the design system.
+The theming system supports **extensive customization capabilities** with hierarchical token organization, runtime theme switching, brand-specific adaptations, and custom component styling. DateRangePicker also resolves dark-theme tokens through `ThemeProvider theme={Theme.DARK}` across its trigger, calendar, presets, time controls, footer, and mobile drawer. Organizations can implement their brand identity while maintaining the structural integrity and accessibility features of the design system.
 
 ### Developer Experience
 

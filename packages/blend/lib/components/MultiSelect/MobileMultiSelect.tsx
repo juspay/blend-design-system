@@ -22,7 +22,12 @@ import { map, filterMenuGroups } from './utils'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
+import { useSelectSearchController } from '../Select/useSelectSearchController'
+import SelectSearchStatus, {
+    SELECT_SEARCH_STATUS_HEIGHT,
+} from '../Select/SelectSearchStatus'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { MultiSelectTokensType } from './multiSelect.tokens'
 import type {
@@ -45,6 +50,12 @@ import VirtualList from '../VirtualList/VirtualList'
 import type { VirtualListItem } from '../VirtualList/types'
 import Skeleton from '../Skeleton/Skeleton'
 import { setupAccessibility } from '../SingleSelect/utils'
+import {
+    clampScopeToMaxSelections,
+    emitLegacyScopeChanges,
+    getNextSelectionAfterToggle,
+    getNextSelectionForScope,
+} from '../shared/multiSelectSelection'
 
 type MobileMultiSelectProps = MultiSelectProps
 
@@ -104,12 +115,16 @@ const SelectAllItem = ({
     items,
     selectedValues,
     onChange,
+    onSelectionChange,
     selectAllText,
+    maxSelections,
 }: {
     items: MultiSelectMenuGroupType[]
     selectedValues: string[]
-    onChange: (value: string) => void
+    onChange?: (value: string) => void
+    onSelectionChange?: (selectedValues: string[]) => void
     selectAllText: string
+    maxSelections?: number
 }) => {
     const allValues = items.flatMap((group) =>
         group.items
@@ -126,19 +141,27 @@ const SelectAllItem = ({
     )
 
     const handleSelectAll = (checked: boolean | 'indeterminate') => {
-        if (checked === true || checked === 'indeterminate') {
-            allValues.forEach((value) => {
-                if (!selectedValues.includes(value)) {
-                    onChange(value)
-                }
-            })
-        } else {
-            selectedValues.forEach((value) => {
-                if (allValues.includes(value)) {
-                    onChange(value)
-                }
-            })
-        }
+        const selectAll = checked === true || checked === 'indeterminate'
+        const scopedValues = selectAll
+            ? clampScopeToMaxSelections(
+                  selectedValues,
+                  allValues,
+                  maxSelections
+              )
+            : allValues
+        const nextSelection = getNextSelectionForScope(
+            selectedValues,
+            scopedValues,
+            selectAll
+        )
+
+        emitLegacyScopeChanges(
+            selectAll,
+            scopedValues,
+            selectedValues,
+            onChange
+        )
+        onSelectionChange?.(nextSelection)
     }
 
     const getCheckboxState = (): boolean | 'indeterminate' => {
@@ -288,6 +311,7 @@ const MultiSelectItem = ({
 const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     selectedValues,
     onChange,
+    onSelectionChange,
     items = [],
     label,
     sublabel,
@@ -303,6 +327,10 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     size = MultiSelectMenuSize.MEDIUM,
     enableSearch = true,
     searchPlaceholder = 'Search options...',
+    searchText: controlledSearchText,
+    onSearchChange,
+    isSearchLoading,
+    emptyStateText,
     enableSelectAll = false,
     selectAllText = 'Select All',
     maxSelections,
@@ -343,7 +371,21 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
     const [drawerOpen, setDrawerOpen] = useState(false)
-    const [searchText, setSearchText] = useState('')
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: controlledSearchText,
+        onValueChange: onSearchChange,
+        explicitShow: enableSearch,
+        existingSurfaceDefault: true,
+    })
+    const isActiveSearchLoading = isSearchEnabled && Boolean(isSearchLoading)
     const valueLabelMap = map(items)
 
     const generatedId = useId()
@@ -360,19 +402,21 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
         })
 
     const hasMatch = React.useMemo(
-        () => checkExactMatch(searchText, items),
-        [searchText, items]
+        () => checkExactMatch(valueForSearchBehavior, items),
+        [valueForSearchBehavior, items]
     )
 
     const filteredItems = React.useMemo(() => {
-        const baseFilteredItems = filterMenuGroups(items, searchText)
+        const baseFilteredItems = shouldFilterInternally
+            ? filterMenuGroups(items, searchText)
+            : items
 
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
             allowCustomValue,
-            enableSearch,
+            isSearchEnabled && !isSearchLoading,
             customValueLabel
         )
     }, [
@@ -380,14 +424,46 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
         searchText,
         allowCustomValue,
         hasMatch,
-        enableSearch,
+        isSearchEnabled,
+        isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
+    const searchStatusHeight =
+        isActiveSearchLoading && hasRenderableItems
+            ? SELECT_SEARCH_STATUS_HEIGHT
+            : 0
+    const selectAllItems = isSearchControlled ? items : filteredItems
 
     const flattenedItems = useMemo(
         () => flattenMobileMultiSelectGroups(filteredItems, enableSelectAll),
         [filteredItems, enableSelectAll]
     )
+
+    const handleItemSelect = (value: string) => {
+        const nextSelection = getNextSelectionAfterToggle(selectedValues, value)
+        onChange?.(value)
+        onSelectionChange?.(nextSelection)
+    }
+
+    const handleTriggerChange = (value: string) => {
+        if (value === '') {
+            onChange?.('')
+            onSelectionChange?.([])
+            return
+        }
+
+        handleItemSelect(value)
+    }
 
     return (
         <Block
@@ -426,8 +502,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                 undefined as unknown as React.FocusEvent<HTMLButtonElement>
                             )
                         }
-                        if (enableSearch) {
-                            setSearchText('')
+                        if (isSearchEnabled) {
+                            resetUncontrolled()
                         }
                     }
                     onOpenChange?.(isOpen)
@@ -438,7 +514,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                         <MultiSelectTrigger
                             maxTriggerWidth={maxTriggerWidth}
                             minTriggerWidth={minTriggerWidth}
-                            onChange={onChange}
+                            onChange={handleTriggerChange}
                             name={uniqueName}
                             label={label}
                             placeholder={placeholder}
@@ -534,7 +610,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                         role="listbox"
                                         aria-multiselectable="true"
                                     >
-                                        {enableSearch && (
+                                        {isSearchEnabled && (
                                             <Block
                                                 paddingX={
                                                     multiSelectTokens.drawer
@@ -561,7 +637,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     }
                                                     value={searchText}
                                                     onChange={(e) =>
-                                                        setSearchText(
+                                                        dispatchUserValue(
                                                             e.target.value
                                                         )
                                                     }
@@ -573,7 +649,23 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             </Block>
                                         )}
 
-                                        {items.length === 0 ? (
+                                        <SelectSearchStatus
+                                            isControlled={
+                                                isSearchControlled &&
+                                                isSearchEnabled
+                                            }
+                                            isLoading={isActiveSearchLoading}
+                                            isEmpty={!hasRenderableItems}
+                                            emptyStateText={
+                                                emptyStateText ||
+                                                (!hasSourceItems
+                                                    ? 'No items available'
+                                                    : 'No results found')
+                                            }
+                                        />
+
+                                        {isActiveSearchLoading &&
+                                        !hasRenderableItems ? null : showEmptyState ? (
                                             <Block
                                                 display="flex"
                                                 justifyContent="center"
@@ -592,37 +684,19 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     }
                                                     textAlign="center"
                                                 >
-                                                    No items available
-                                                </Text>
-                                            </Block>
-                                        ) : filteredItems.length === 0 &&
-                                          searchText.length > 0 ? (
-                                            <Block
-                                                display="flex"
-                                                justifyContent="center"
-                                                alignItems="center"
-                                                padding={
-                                                    multiSelectTokens.menu.item
-                                                        .padding
-                                                }
-                                            >
-                                                <Text
-                                                    variant="body.md"
-                                                    color={
-                                                        multiSelectTokens.menu
-                                                            .item.optionsLabel
-                                                            .color.default
-                                                    }
-                                                    textAlign="center"
-                                                >
-                                                    No results found
+                                                    {emptyStateText ||
+                                                        (!hasSourceItems
+                                                            ? 'No items available'
+                                                            : 'No results found')}
                                                 </Text>
                                             </Block>
                                         ) : enableVirtualization &&
                                           flattenedItems.length > 0 ? (
                                             <VirtualList
                                                 items={flattenedItems}
-                                                height={600}
+                                                height={
+                                                    600 - searchStatusHeight
+                                                }
                                                 itemHeight={
                                                     virtualListItemHeight
                                                 }
@@ -652,7 +726,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                             >
                                                                 <SelectAllItem
                                                                     items={
-                                                                        filteredItems
+                                                                        selectAllItems
                                                                     }
                                                                     selectedValues={
                                                                         selectedValues
@@ -660,8 +734,14 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                                     onChange={
                                                                         onChange
                                                                     }
+                                                                    onSelectionChange={
+                                                                        onSelectionChange
+                                                                    }
                                                                     selectAllText={
                                                                         selectAllText
+                                                                    }
+                                                                    maxSelections={
+                                                                        maxSelections
                                                                     }
                                                                 />
                                                             </Block>
@@ -749,7 +829,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                                     isSelected
                                                                 }
                                                                 onChange={
-                                                                    onChange
+                                                                    handleItemSelect
                                                                 }
                                                                 maxSelections={
                                                                     maxSelections
@@ -779,13 +859,19 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             >
                                                 {enableSelectAll && (
                                                     <SelectAllItem
-                                                        items={filteredItems}
+                                                        items={selectAllItems}
                                                         selectedValues={
                                                             selectedValues
                                                         }
                                                         onChange={onChange}
+                                                        onSelectionChange={
+                                                            onSelectionChange
+                                                        }
                                                         selectAllText={
                                                             selectAllText
+                                                        }
+                                                        maxSelections={
+                                                            maxSelections
                                                         }
                                                     />
                                                 )}
@@ -858,7 +944,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                                                         isSelected
                                                                                     }
                                                                                     onChange={
-                                                                                        onChange
+                                                                                        handleItemSelect
                                                                                     }
                                                                                     maxSelections={
                                                                                         maxSelections

@@ -24,20 +24,29 @@ export enum TooltipV2Size {
     LG = 'lg',
 }
 
-export type TooltipV2Props = {
-    children: ReactNode
-    content: ReactNode | string
+/**
+ * The platform-neutral core of `TooltipV2Props` — scalars, enums and neutral
+ * callbacks only, so `@juspay/blend-design-system/node` can export it for
+ * the React Native package. ReactNode content and the CSS-string `maxWidth`
+ * stay in `TooltipV2Props`.
+ */
+export type TooltipBaseProps = {
     open?: boolean
     onOpenChange?: (open: boolean) => void
     side?: TooltipV2Side
     align?: TooltipV2Align
     showArrow?: boolean
     size?: TooltipV2Size
-    slot?: ReactNode
     slotDirection?: TooltipV2SlotDirection
     delayDuration?: number
     offset?: number
-    maxWidth?: string
     fullWidth?: boolean
     disableInteractive?: boolean
+}
+
+export type TooltipV2Props = TooltipBaseProps & {
+    children: ReactNode
+    content: ReactNode | string
+    slot?: ReactNode
+    maxWidth?: string
 }

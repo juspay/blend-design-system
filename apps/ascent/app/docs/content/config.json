@@ -1,3 +1,9 @@
 {
-    "order": ["intro", "getting-started", "contributing", "components"]
+    "order": [
+        "intro",
+        "getting-started",
+        "contributing",
+        "migration",
+        "components"
+    ]
 }

@@ -189,6 +189,30 @@ describe('SearchInputV2', () => {
             expect(onChange.mock.calls[0]?.[0].target.value).toBe('')
         })
 
+        it('clears from the keyboard when the clear area has focus', async () => {
+            const onClear = vi.fn()
+            const { user } = render(
+                <SearchInputV2
+                    {...defaultProps}
+                    value="text"
+                    onChange={() => {}}
+                    onClear={onClear}
+                    allowClear
+                    leftSlot={<Search size={16} aria-hidden />}
+                />
+            )
+            const clearButton = screen.getByRole('button', {
+                name: 'Clear search',
+            })
+
+            expect(clearButton).toHaveAttribute('tabindex', '0')
+            clearButton.focus()
+            await user.keyboard('{Enter}')
+            await user.keyboard(' ')
+
+            expect(onClear).toHaveBeenCalledTimes(2)
+        })
+
         it('does not show built-in clear when allowClear is false', () => {
             render(
                 <SearchInputV2

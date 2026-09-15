@@ -1,7 +1,7 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import Text from '../Text/Text'
 import styled from 'styled-components'
-import { FOUNDATION_THEME } from '../../tokens'
+import type { CSSObject } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import { ChevronRightIcon, Check } from 'lucide-react'
 import React, { useState } from 'react'
@@ -12,77 +12,47 @@ import {
     type SelectMenuProps,
     SelectMenuSide,
 } from './types'
-import SearchInput from '../Inputs/SearchInput/SearchInput'
+import { SearchInputV2 } from '../InputsV2/SearchInputV2'
+import type { SelectTokensType } from './select.tokens.types'
+import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useTheme } from '../../context/ThemeContext'
 
-const Content = styled(RadixMenu.Content)(() => ({
-    backgroundColor: 'white',
-    color: 'black',
-    borderRadius: 8,
-    padding: '8px 6px',
-    boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 49,
-    minWidth: 200,
-    width: 'var(--radix-dropdown-menu-trigger-width)',
-    scrollbarWidth: 'none',
-    scrollbarColor: 'transparent transparent',
-    border: `1px solid ${FOUNDATION_THEME.colors.gray[200]}`,
-    overflowY: 'auto',
-}))
+type TokenizedProps = {
+    $tokens: SelectTokensType
+    $boxShadow?: CSSObject['boxShadow']
+}
 
-const StyledItem = styled(RadixMenu.Item)<{ selected: boolean }>(
-    ({ selected }) => ({
-        alignItems: 'center',
-        gap: 8,
+const Content = styled(RadixMenu.Content)<TokenizedProps>(
+    ({ $tokens, $boxShadow }) => ({
+        backgroundColor: $tokens.container.backgroundColor,
+        color: $tokens.subContent.color,
+        borderRadius: 8,
         padding: '8px 6px',
-        borderRadius: 4,
-        cursor: 'pointer',
-        userSelect: 'none',
-        backgroundColor: selected
-            ? FOUNDATION_THEME.colors.gray[50]
-            : 'transparent',
-        '&:hover': {
-            backgroundColor: FOUNDATION_THEME.colors.gray[50],
-        },
-
-        '&[data-disabled]': {
-            opacity: 0.5,
-            cursor: 'not-allowed',
-        },
-
-        '&[data-highlighted]': {
-            border: 'none',
-            outline: 'none',
-            backgroundColor: FOUNDATION_THEME.colors.gray[50],
-        },
+        boxShadow: $boxShadow,
+        zIndex: 49,
+        minWidth: 200,
+        width: 'var(--radix-dropdown-menu-trigger-width)',
+        scrollbarWidth: 'none',
+        scrollbarColor: 'transparent transparent',
+        border: $tokens.container.border,
+        overflowY: 'auto',
     })
 )
 
-const Sub = styled(RadixMenu.Sub)(() => ({
-    padding: 0,
-    margin: 0,
-    listStyle: 'none',
-}))
-
-const SubContent = styled(RadixMenu.SubContent)(() => ({
-    backgroundColor: 'white',
-    color: 'black',
-    borderRadius: 6,
-    padding: '8px 6px',
-    boxShadow: FOUNDATION_THEME.shadows.lg,
-    zIndex: 49,
-    minWidth: 200,
-    maxWidth: 280,
-}))
-
-const SubTrigger = styled(RadixMenu.SubTrigger)(() => ({
+const StyledItem = styled(RadixMenu.Item)<
+    { selected: boolean } & TokenizedProps
+>(({ selected, $tokens }) => ({
     alignItems: 'center',
     gap: 8,
-    padding: '6px 8px',
+    padding: '8px 6px',
     borderRadius: 4,
     cursor: 'pointer',
     userSelect: 'none',
+    backgroundColor: selected
+        ? $tokens.item.selectedBackgroundColor
+        : 'transparent',
     '&:hover': {
-        backgroundColor: FOUNDATION_THEME.colors.gray[50],
+        backgroundColor: $tokens.item.hoverBackgroundColor,
     },
 
     '&[data-disabled]': {
@@ -93,9 +63,53 @@ const SubTrigger = styled(RadixMenu.SubTrigger)(() => ({
     '&[data-highlighted]': {
         border: 'none',
         outline: 'none',
-        backgroundColor: FOUNDATION_THEME.colors.gray[50],
+        backgroundColor: $tokens.item.highlightedBackgroundColor,
     },
 }))
+
+const Sub = styled(RadixMenu.Sub)(() => ({
+    padding: 0,
+    margin: 0,
+    listStyle: 'none',
+}))
+
+const SubContent = styled(RadixMenu.SubContent)<TokenizedProps>(
+    ({ $tokens, $boxShadow }) => ({
+        backgroundColor: $tokens.subContent.backgroundColor,
+        color: $tokens.subContent.color,
+        borderRadius: 6,
+        padding: '8px 6px',
+        boxShadow: $boxShadow,
+        zIndex: 49,
+        minWidth: 200,
+        maxWidth: 280,
+    })
+)
+
+const SubTrigger = styled(RadixMenu.SubTrigger)<TokenizedProps>(
+    ({ $tokens }) => ({
+        alignItems: 'center',
+        gap: 8,
+        padding: '6px 8px',
+        borderRadius: 4,
+        cursor: 'pointer',
+        userSelect: 'none',
+        '&:hover': {
+            backgroundColor: $tokens.subTrigger.hoverBackgroundColor,
+        },
+
+        '&[data-disabled]': {
+            opacity: 0.5,
+            cursor: 'not-allowed',
+        },
+
+        '&[data-highlighted]': {
+            border: 'none',
+            outline: 'none',
+            backgroundColor: $tokens.subTrigger.highlightedBackgroundColor,
+        },
+    })
+)
 
 const SubMenu = ({
     item,
@@ -103,16 +117,20 @@ const SubMenu = ({
     selectedValue,
     allowMultiSelect = false,
     onSelect,
+    tokens,
 }: {
     item: SelectMenuItemType
     idx: number
     selectedValue: string | string[] | undefined
     allowMultiSelect?: boolean
     onSelect?: (value: string | string[]) => void
+    tokens: SelectTokensType
 }) => {
+    const { foundationTokens } = useTheme()
+
     return (
         <Sub key={idx}>
-            <SubTrigger data-gg="sub menu trigger" asChild>
+            <SubTrigger data-gg="sub menu trigger" asChild $tokens={tokens}>
                 <Block
                     padding="6px"
                     display="flex"
@@ -140,7 +158,7 @@ const SubMenu = ({
                         >
                             <Text
                                 variant="body.md"
-                                color={FOUNDATION_THEME.colors.gray[600]}
+                                color={tokens.subTrigger.color}
                                 fontWeight={500}
                                 truncate
                             >
@@ -171,7 +189,7 @@ const SubMenu = ({
                         <Block display="flex" alignItems="center" width="100%">
                             <Text
                                 variant="body.sm"
-                                color={FOUNDATION_THEME.colors.gray[400]}
+                                color={tokens.subTrigger.subLabelColor}
                                 fontWeight={400}
                             >
                                 {item.subLabel}
@@ -181,7 +199,11 @@ const SubMenu = ({
                 </Block>
             </SubTrigger>
             <RadixMenu.Portal>
-                <SubContent avoidCollisions>
+                <SubContent
+                    avoidCollisions
+                    $tokens={tokens}
+                    $boxShadow={foundationTokens.shadows.lg}
+                >
                     {item.subMenu &&
                         item.subMenu.map((subItem, subIdx) => (
                             <Item
@@ -191,6 +213,7 @@ const SubMenu = ({
                                 selectedValue={selectedValue}
                                 allowMultiSelect={allowMultiSelect}
                                 onSelect={onSelect}
+                                tokens={tokens}
                             />
                         ))}
                 </SubContent>
@@ -199,13 +222,15 @@ const SubMenu = ({
     )
 }
 
-const Separator = styled(RadixMenu.Separator)(() => ({
-    height: 1,
-    backgroundColor: '#eee',
-    margin: '6px 0',
-    width: 'calc(100% + 12px)',
-    marginLeft: '-6px',
-}))
+const Separator = styled(RadixMenu.Separator)<TokenizedProps>(
+    ({ $tokens }) => ({
+        height: 1,
+        backgroundColor: $tokens.separator.backgroundColor,
+        margin: '6px 0',
+        width: 'calc(100% + 12px)',
+        marginLeft: '-6px',
+    })
+)
 
 const Item = ({
     item,
@@ -213,12 +238,14 @@ const Item = ({
     selectedValue,
     allowMultiSelect = false,
     onSelect,
+    tokens,
 }: {
     item: SelectMenuItemType
     idx: number
     selectedValue: string | string[] | undefined
     allowMultiSelect?: boolean
     onSelect?: (value: string | string[]) => void
+    tokens: SelectTokensType
 }) => {
     if (item.subMenu) {
         return (
@@ -228,6 +255,7 @@ const Item = ({
                 selectedValue={selectedValue}
                 allowMultiSelect={allowMultiSelect}
                 onSelect={onSelect}
+                tokens={tokens}
             />
         )
     }
@@ -268,6 +296,7 @@ const Item = ({
             disabled={item.disabled}
             key={idx}
             selected={isSelected}
+            $tokens={tokens}
             // Prevent Radix from handling the select event in multi-select mode
             onSelect={allowMultiSelect ? (e) => e.preventDefault() : undefined}
         >
@@ -301,8 +330,8 @@ const Item = ({
                             variant="body.md"
                             color={
                                 isSelected
-                                    ? FOUNDATION_THEME.colors.gray[700]
-                                    : FOUNDATION_THEME.colors.gray[600]
+                                    ? tokens.item.selectedColor
+                                    : tokens.item.color
                             }
                             fontWeight={500}
                             truncate
@@ -330,7 +359,7 @@ const Item = ({
                             <Check
                                 strokeWidth={2.5}
                                 size={16}
-                                color={FOUNDATION_THEME.colors.gray[600]}
+                                color={tokens.item.checkmarkColor}
                             />
                         </Block>
                     )}
@@ -339,7 +368,7 @@ const Item = ({
                     <Block display="flex" alignItems="center" width="100%">
                         <Text
                             variant="body.sm"
-                            color={FOUNDATION_THEME.colors.gray[400]}
+                            color={tokens.item.subLabelColor}
                             fontWeight={400}
                         >
                             {item.subLabel}
@@ -444,6 +473,8 @@ const SelectMenu = ({
     enableSearch = false,
     onOpenChange,
 }: SelectMenuProps) => {
+    const { foundationTokens } = useTheme()
+    const tokens = useResponsiveTokens<SelectTokensType>('SELECT')
     const [searchText, setSearchText] = useState<string>('')
 
     // Override onClick for all items
@@ -458,6 +489,8 @@ const SelectMenu = ({
                 alignOffset={alignOffset}
                 side={side}
                 align={alignment}
+                $tokens={tokens}
+                $boxShadow={foundationTokens.shadows.lg}
                 style={{
                     maxHeight: maxHeight ? `${maxHeight}px` : 'auto',
                 }}
@@ -471,7 +504,7 @@ const SelectMenu = ({
                         zIndex={50}
                         paddingBottom={10}
                     >
-                        <SearchInput
+                        <SearchInputV2
                             placeholder="Search"
                             value={searchText}
                             onChange={(e) => {
@@ -488,9 +521,7 @@ const SelectMenu = ({
                                 <Label>
                                     <Text
                                         variant="body.sm"
-                                        color={
-                                            FOUNDATION_THEME.colors.gray[400]
-                                        }
+                                        color={tokens.groupLabel.color}
                                     >
                                         {group.groupLabel}
                                     </Text>
@@ -504,10 +535,13 @@ const SelectMenu = ({
                                     idx={itemIndex}
                                     allowMultiSelect={allowMultiSelect}
                                     onSelect={onSelect}
+                                    tokens={tokens}
                                 />
                             ))}
                             {groupId !== filteredItems.length - 1 &&
-                                group.showSeparator && <Separator />}
+                                group.showSeparator && (
+                                    <Separator $tokens={tokens} />
+                                )}
                         </React.Fragment>
                     ))}
             </Content>

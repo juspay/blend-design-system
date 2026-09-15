@@ -6,7 +6,11 @@ import Text from '../Text/Text'
 // eslint-disable-next-line import-x/no-cycle -- intentional recursion: SubMenu renders MenuItem which renders SubMenu
 import MenuItem from './MenuItem'
 import { ChevronRightIcon, Search } from 'lucide-react'
-import { type MenuItemStates, type MenuTokensType } from './menu.tokens'
+import {
+    getMenuItemStateToken,
+    type MenuItemStates,
+    type MenuTokensType,
+} from './menu.tokens'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import SearchInput from '../Inputs/SearchInput/SearchInput'
@@ -15,6 +19,7 @@ import { filterMenuItem, defaultSearchSortFn } from './utils'
 import React, { useState, useRef, useMemo, useCallback } from 'react'
 import { submenuContentAnimations } from './menu.animations'
 import { VirtualList, type VirtualListItem } from '../VirtualList'
+import type { MenuSelectionMode, MenuSelectionStyle } from './selection'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -30,7 +35,6 @@ const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
 }
 
 const SubContent = styled(RadixMenu.SubContent)`
-    background-color: white;
     box-shadow: ${FOUNDATION_THEME.shadows.sm};
     z-index: 101;
     overflow-y: auto;
@@ -39,7 +43,6 @@ const SubContent = styled(RadixMenu.SubContent)`
     scrollbar-color: transparent transparent;
     padding-bottom: 6px;
     border-radius: 8px;
-    border: 1px solid ${FOUNDATION_THEME.colors.gray[200]};
 
     ${submenuContentAnimations}
 `
@@ -57,9 +60,9 @@ const getBgColor = (
         (item.subMenu && item.subMenu.length > 0)
     ) {
         if (!item.disabled) {
-            return bg.default.enabled[state]
+            return getMenuItemStateToken(bg.default.enabled, state)
         } else {
-            return bg.default.disabled[state]
+            return getMenuItemStateToken(bg.default.disabled, state)
         }
     } else {
         // check for action type
@@ -68,15 +71,15 @@ const getBgColor = (
         }
         if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
-                return bg.action.primary.enabled[state]
+                return getMenuItemStateToken(bg.action.primary.enabled, state)
             } else {
-                return bg.action.primary.disabled[state]
+                return getMenuItemStateToken(bg.action.primary.disabled, state)
             }
         } else {
             if (!item.disabled) {
-                return bg.action.danger.enabled[state]
+                return getMenuItemStateToken(bg.action.danger.enabled, state)
             } else {
-                return bg.action.danger.disabled[state]
+                return getMenuItemStateToken(bg.action.danger.disabled, state)
             }
         }
     }
@@ -95,9 +98,9 @@ const getLabelColor = (
         (item.subMenu && item.subMenu.length > 0)
     ) {
         if (!item.disabled) {
-            return bg.default.enabled[state]
+            return getMenuItemStateToken(bg.default.enabled, state)
         } else {
-            return bg.default.disabled[state]
+            return getMenuItemStateToken(bg.default.disabled, state)
         }
     } else {
         // check for action type
@@ -106,15 +109,15 @@ const getLabelColor = (
         }
         if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
-                return bg.action.primary.enabled[state]
+                return getMenuItemStateToken(bg.action.primary.enabled, state)
             } else {
-                return bg.action.primary.disabled[state]
+                return getMenuItemStateToken(bg.action.primary.disabled, state)
             }
         } else {
             if (!item.disabled) {
-                return bg.action.danger.enabled[state]
+                return getMenuItemStateToken(bg.action.danger.enabled, state)
             } else {
-                return bg.action.danger.disabled[state]
+                return getMenuItemStateToken(bg.action.danger.disabled, state)
             }
         }
     }
@@ -133,9 +136,9 @@ const getSubLabelColor = (
         (item.subMenu && item.subMenu.length > 0)
     ) {
         if (!item.disabled) {
-            return bg.default.enabled[state]
+            return getMenuItemStateToken(bg.default.enabled, state)
         } else {
-            return bg.default.disabled[state]
+            return getMenuItemStateToken(bg.default.disabled, state)
         }
     } else {
         // check for action type
@@ -144,15 +147,15 @@ const getSubLabelColor = (
         }
         if (item.actionType === MenuItemActionType.PRIMARY) {
             if (!item.disabled) {
-                return bg.action.primary.enabled[state]
+                return getMenuItemStateToken(bg.action.primary.enabled, state)
             } else {
-                return bg.action.primary.disabled[state]
+                return getMenuItemStateToken(bg.action.primary.disabled, state)
             }
         } else {
             if (!item.disabled) {
-                return bg.action.danger.enabled[state]
+                return getMenuItemStateToken(bg.action.danger.enabled, state)
             } else {
-                return bg.action.danger.disabled[state]
+                return getMenuItemStateToken(bg.action.danger.disabled, state)
             }
         }
     }
@@ -162,10 +165,14 @@ export const SubMenu = ({
     item,
     idx,
     maxHeight,
+    selectionStyle,
+    selectionMode,
 }: {
     item: MenuItemType
     idx: number
     maxHeight?: number
+    selectionStyle?: MenuSelectionStyle
+    selectionMode?: MenuSelectionMode
 }) => {
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
     const [searchText, setSearchText] = useState<string>('')
@@ -223,9 +230,17 @@ export const SubMenu = ({
     const renderVirtualItem = useCallback(
         ({ item }: { item: VirtualListItem; index: number }) => {
             const data = item.data as { item: MenuItemType; idx: number }
-            return <MenuItem key={data.idx} item={data.item} idx={data.idx} />
+            return (
+                <MenuItem
+                    key={data.idx}
+                    item={data.item}
+                    idx={data.idx}
+                    selectionStyle={selectionStyle}
+                    selectionMode={selectionMode}
+                />
+            )
         },
-        []
+        [selectionMode, selectionStyle]
     )
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -336,6 +351,7 @@ export const SubMenu = ({
             <RadixMenu.Portal>
                 <SubContent
                     style={{
+                        backgroundColor: menuTokens.backgroundColor,
                         paddingTop: item.enableSubMenuSearch
                             ? 0
                             : menuTokens.padding.y,
@@ -373,7 +389,9 @@ export const SubMenu = ({
                             left={0}
                             right={0}
                             zIndex={101}
-                            backgroundColor="white"
+                            backgroundColor={
+                                menuTokens.backgroundColor as string
+                            }
                         >
                             <SearchInput
                                 ref={searchInputRef}
@@ -432,6 +450,8 @@ export const SubMenu = ({
                                     key={subIdx}
                                     item={subItem}
                                     idx={subIdx}
+                                    selectionStyle={selectionStyle}
+                                    selectionMode={selectionMode}
                                 />
                             ))}
                         </>

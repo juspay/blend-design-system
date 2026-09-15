@@ -38,7 +38,7 @@ export const StyledAvatarWrapper = styled.div<StyledAvatarWrapperProps>`
                     ? `
                 & > div {
                     box-shadow: 0 0 0 ${tokens.avatar.selected.ringWidth} ${tokens.avatar.selected.ringColor};
-                    outline: ${tokens.avatar.selected.ringOffset} solid ${FOUNDATION_THEME.colors.gray[0]};
+                    outline: ${tokens.avatar.selected.ringOffset} solid ${tokens.avatar.selected.outlineColor};
                 }
             `
                     : ''
@@ -90,7 +90,7 @@ export const StyledOverflowCounter = styled.button<StyledOverflowCounterProps>`
 
             ${`
                 box-shadow: 0 0 0 ${tokens.avatar.selected.ringWidth} ${tokens.avatar.selected.ringColor};
-                outline: ${tokens.avatar.selected.ringOffset} solid ${FOUNDATION_THEME.colors.gray[0]};
+                outline: ${tokens.avatar.selected.ringOffset} solid ${tokens.avatar.selected.outlineColor};
             `}
         `
     }}

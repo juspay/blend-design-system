@@ -76,7 +76,9 @@ function MyComponent() {
                     yAxis={{ label: 'Value' }}
                     legendPosition={ChartLegendPosition.TOP}
                     chartHeaderSlot={
-                        <div className="text-black">Monthly Performance</div>
+                        <div className="text-foreground">
+                            Monthly Performance
+                        </div>
                     }
                 />
             </div>

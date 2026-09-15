@@ -45,17 +45,17 @@ function MyComponent() {
     >
       <div className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-900">
+          <label className="block text-sm font-medium mb-1 text-foreground">
             Display Name
           </label>
           <input
             type="text"
             placeholder="Enter your display name"
-            className="w-full px-3 py-2 border rounded-md text-gray-900"
+            className="w-full px-3 py-2 border rounded-md text-foreground"
           />
         </div>
         <div>
-          <label className="flex items-center text-gray-900">
+          <label className="flex items-center text-foreground">
             <input type="checkbox" className="mr-2" />
             Enable email notifications
           </label>
@@ -95,17 +95,17 @@ function MyComponent() {
             >
                 <div className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium mb-1 text-gray-900">
+                        <label className="block text-sm font-medium mb-1 text-foreground">
                             Display Name
                         </label>
                         <input
                             type="text"
                             placeholder="Enter your display name"
-                            className="w-full px-3 py-2 border rounded-md text-gray-900"
+                            className="w-full px-3 py-2 border rounded-md text-foreground"
                         />
                     </div>
                     <div>
-                        <label className="flex items-center text-gray-900">
+                        <label className="flex items-center text-foreground">
                             <input type="checkbox" className="mr-2" />
                             Enable email notifications
                         </label>

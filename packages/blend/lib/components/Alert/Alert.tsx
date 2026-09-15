@@ -306,9 +306,12 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                             <X
                                                                 size={16}
                                                                 color={
-                                                                    FOUNDATION_THEME
-                                                                        .colors
-                                                                        .gray[800]
+                                                                    alertTokens
+                                                                        .button
+                                                                        .closeButton
+                                                                        .color[
+                                                                        variant
+                                                                    ] as string
                                                                 }
                                                                 aria-hidden="true"
                                                             />
@@ -336,7 +339,11 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             >
                                 <X
                                     size={16}
-                                    color={FOUNDATION_THEME.colors.gray[800]}
+                                    color={
+                                        alertTokens.button.closeButton.color[
+                                            variant
+                                        ] as string
+                                    }
                                     aria-hidden="true"
                                 />
                             </AlertCloseButton>

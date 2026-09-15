@@ -50,6 +50,11 @@ export type SidebarV2Props = {
     isExpanded?: boolean
     onExpandedChange?: (isExpanded: boolean) => void
     onSidebarStateChange?: (state: SidebarV2StateChangeType) => void
+    /**
+     * Enables the hover preview shown from the collapsed desktop sidebar.
+     * Disabled by default.
+     */
+    enableIntermediateState?: boolean
     defaultIsExpanded?: boolean
     showMobilePrimaryActionButton?: boolean
     mobilePrimaryActionButtonProps?: Omit<

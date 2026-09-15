@@ -1,0 +1,75 @@
+---
+title: Text Area v1 to v2
+description: Migrate TextArea to TextAreaV2, including size, labels, validation, and responsive layout.
+---
+
+## Overview
+
+`TextArea` is deprecated in favor of `TextAreaV2`. Its controlled value,
+change/focus/blur handlers, placeholder, rows, labels, helper text, required
+state, disabled state, resize mode, and native textarea attributes remain.
+
+V2 adds the shared input size API, groups validation, removes `cols`, and
+standardizes labels and responsive floating-label behavior.
+
+## Quick migration
+
+```tsx
+// v1
+<TextArea
+    label="Notes"
+    sublabel="Visible to your team"
+    helpIconHintText="Do not include payment details"
+    value={notes}
+    placeholder="Add notes"
+    onChange={(event) => setNotes(event.target.value)}
+    cols={40}
+    error={hasError}
+    errorMessage="Notes are required"
+/>
+
+// v2
+<TextAreaV2
+    label="Notes"
+    sublabel="Visible to your team"
+    helpIconText="Do not include payment details"
+    value={notes}
+    placeholder="Add notes"
+    onChange={(event) => setNotes(event.target.value)}
+    size={InputSizeV2.MD}
+    error={{ show: hasError, message: 'Notes are required' }}
+/>
+```
+
+## Breaking changes
+
+### Adopt `InputSizeV2` and grouped errors
+
+V1 has no public size prop. V2 adds `size` and defaults it to
+`InputSizeV2.MD`. Move boolean `error` and `errorMessage` into
+`error={{ show, message }}`.
+
+### Rename help text and remove `cols`
+
+Use `helpIconText` rather than `helpIconHintText`. `cols` is removed from the
+V2 type; the textarea always fills its container. Control width with the parent
+layout and use `rows` to express the desired minimum text area height.
+
+### Review responsive labels and token overrides
+
+V2 renders labels as floating labels on small screens and calculates a minimum
+height from `rows` plus V2 typography/padding. Rebuild `TEXT_AREA` overrides
+against `TEXT_AREA_V2`; V2 uses top/bottom containers, per-side padding,
+line-height, and shared input states.
+
+## What continues to work
+
+`value`, `placeholder`, `onChange`, `onFocus`, `onBlur`, `rows`, `label`,
+`sublabel`, `hintText`, `required`, `disabled`, `autoFocus`, `resize`, `name`,
+and supported native textarea attributes retain their purpose.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/textarea#component-tokens) with the [V2 component token reference](/docs/components/text-area-v2#component-tokens).

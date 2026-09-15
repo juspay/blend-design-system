@@ -84,6 +84,11 @@ function MyComponent() {
 
 ## API Reference
 
+For controlled selection, pass `selected` on each selectable item and update
+that value from the item's `onClick` handler. `selectionStyle` defaults to
+`checkmark`, `selectionMode` defaults to `single`, and `closeOnSelect` defaults
+to `true`. Omitting `selected` preserves the legacy action-item behavior.
+
 <DocsTypeTable
     data={[
         [
@@ -103,7 +108,7 @@ function MyComponent() {
             {
                 content: 'Menu.items',
                 hintText:
-                    'Optional array of MenuGroupType objects that define the menu structure. Each group can contain multiple MenuItemType items organized under an optional label. Groups can be separated with visual separators. If not provided, the menu will be empty. Each MenuGroupType contains: label (optional group label), items (required array of MenuItemType), and showSeparator (optional boolean). Defaults to an empty array.',
+                    'Optional array of MenuGroupType objects that define the menu structure. Each group can contain multiple MenuItemType items organized under an optional label. Groups can be separated with visual separators. If not provided, the menu will be empty. Each MenuGroupType contains: label (optional group label), items (required array of MenuItemType), showSeparator (optional boolean), selectionStyle (optional visual treatment override), and selectionMode (optional accessibility cardinality override). Defaults to an empty array.',
             },
             {
                 content: 'MenuGroupType[]',
@@ -112,8 +117,42 @@ function MyComponent() {
             },
             {
                 content:
-                    'MenuGroupType: { label?: string, items: MenuItemType[], showSeparator?: boolean }',
+                    "MenuGroupType: { label?: string, items: MenuItemType[], showSeparator?: boolean, selectionStyle?: 'checkmark' | 'highlight', selectionMode?: 'single' | 'multiple' }",
             },
+        ],
+        [
+            {
+                content: 'Menu.selectionStyle',
+                hintText: 'Visual treatment for controlled selected items.',
+            },
+            {
+                content: "'checkmark' | 'highlight'",
+                hintText: 'Defaults to checkmark for selectable items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Menu.selectionMode',
+                hintText:
+                    'Selection cardinality used for accessible radio or checkbox semantics.',
+            },
+            {
+                content: "'single' | 'multiple'",
+                hintText: 'Defaults to single for selectable items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'Menu.closeOnSelect',
+                hintText: 'Whether activating an item closes the menu.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Defaults to true',
+            },
+            { content: '' },
         ],
         [
             {
@@ -379,6 +418,29 @@ function MyComponent() {
         ],
         [
             {
+                content: 'MenuGroupType.selectionStyle',
+                hintText: 'Overrides the Menu-level selected-item treatment.',
+            },
+            {
+                content: "'checkmark' | 'highlight'",
+                hintText: 'Visual treatment for this group',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MenuGroupType.selectionMode',
+                hintText:
+                    'Overrides the Menu-level accessible selection cardinality.',
+            },
+            {
+                content: "'single' | 'multiple'",
+                hintText: 'Radio or checkbox semantics for this group',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'MenuItemType.label',
                 hintText:
                     'Required string representing the main text label displayed for the menu item. This is the primary text users see and click. Should be concise and action-oriented, clearly describing what the menu item does (e.g., "Profile", "Settings", "Sign Out").',
@@ -487,6 +549,18 @@ function MyComponent() {
                 content: 'boolean',
                 hintText:
                     'true disables menu item, false allows normal interaction',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'MenuItemType.selected',
+                hintText:
+                    'Controlled selection state. The consumer owns all selection updates.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Adds aria-checked and the selected visual treatment',
             },
             { content: '' },
         ],
@@ -672,6 +746,11 @@ export type MenuTokensType = {
             }
         }
         gap: CSSObject['gap']
+        checkmark?: {
+            position?: 'leading' | 'trailing'
+            width?: CSSObject['width']
+            color?: CSSObject['color']
+        }
         optionsLabel: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
@@ -755,4 +834,5 @@ export type MenuItemStates =
     | 'focus'
     | 'focusVisible'
     | 'disabled'
+    | 'selected'
 ```

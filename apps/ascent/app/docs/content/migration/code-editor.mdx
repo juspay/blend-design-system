@@ -1,0 +1,136 @@
+---
+title: Code Editor v1 to v2
+description: Migrate CodeEditor to CodeEditorV2, including the grouped header API and new diff editor capabilities.
+---
+
+## Overview
+
+`CodeEditor` is deprecated in favor of `CodeEditorV2`. The editor remains a
+Monaco-based controlled component, so `value`, `onChange`, language, editing
+state, focus callbacks, and height controls carry over. The main migration is
+grouping the header configuration and accounting for the removed default header
+icon.
+
+## Quick migration
+
+```tsx
+// v1
+import { CodeEditor, CodeEditorVariant } from '@juspay/blend-design-system'
+import { FileCode } from 'lucide-react'
+;<CodeEditor
+    value={code}
+    onChange={setCode}
+    variant={CodeEditorVariant.DEFAULT}
+    language="typescript"
+    showHeader
+    header="main.ts"
+    headerLeftSlot={<FileCode size={16} />}
+    headerRightSlot={<StatusBadge />}
+    showCopyButton
+    minHeight="320px"
+/>
+```
+
+```tsx
+// v2
+import { CodeEditorV2, CodeEditorV2Variant } from '@juspay/blend-design-system'
+import { FileCode } from 'lucide-react'
+;<CodeEditorV2
+    value={code}
+    onChange={setCode}
+    variant={CodeEditorV2Variant.DEFAULT}
+    language="typescript"
+    header={{
+        showHeader: true,
+        title: 'main.ts',
+        leftSlot: <FileCode size={16} />,
+        rightSlot: <StatusBadge />,
+        showCopyButton: true,
+    }}
+    minHeight="320px"
+/>
+```
+
+## Breaking changes
+
+### Rename the component and variant enum
+
+**v1:** `CodeEditor` and `CodeEditorVariant`
+
+**v2:** `CodeEditorV2` and `CodeEditorV2Variant`
+
+Rename both imports together. `DEFAULT` and `NO_GUTTER` retain the same values
+and behavior. V2 adds `DIFF` as a new variant.
+
+### Group all header props under `header`
+
+**v1:** `showHeader`, `header`, `headerLeftSlot`, `headerRightSlot`, and
+`showCopyButton` are top-level props.
+
+**v2:** `header={{ showHeader, title, leftSlot, rightSlot, showCopyButton }}`.
+
+Move every header setting into the `header` object and rename `header` to
+`title`, `headerLeftSlot` to `leftSlot`, and `headerRightSlot` to `rightSlot`.
+Omitting the object preserves the v2 defaults: a visible `Editor` header with a
+copy button.
+
+### Replace the default file icon when needed
+
+**v1:** the header shows a FileCode icon by default; `showLeftIcon={false}`
+hides it.
+
+**v2:** no default left icon is rendered, and `showLeftIcon` is removed.
+
+If the icon is part of the current editor’s visual language, pass it explicitly
+through `header.leftSlot`. Otherwise remove `showLeftIcon`; there is no v2 prop
+for toggling a built-in icon.
+
+### Move `className` styling to a wrapper
+
+**v1:** `className` is accepted by the editor container.
+
+**v2:** `className` and `style` are not accepted by `CodeEditorV2`.
+
+Move layout or visual styling to a wrapper element. Use v2’s `width`,
+`minWidth`, `maxWidth`, `height`, `minHeight`, and `maxHeight` props for editor
+dimensions rather than a style override.
+
+### Update custom editor tokens
+
+**v1:** the editor uses the `CODE_BLOCK` token contract.
+
+**v2:** the editor uses the dedicated `CODEEDITORV2` token contract.
+
+V2 has separate tokens for the editor shell, header padding by side, Monaco
+body, gutter, diff lines, syntax, and focus behavior. Rebuild custom theme
+overrides against `CODEEDITORV2` instead of copying `CODE_BLOCK` token paths.
+
+## What continues to work
+
+`value`, `onChange`, `showLineNumbers`, `language`, `placeholder`, `readOnly`,
+`disabled`, `minHeight`, `maxHeight`, `height`, `onFocus`, `onBlur`, and
+`autoFocus` keep the same purpose and defaults. `CodeEditorV2Language` supports
+the same Monaco language IDs as v1, including custom Monaco language strings.
+
+## New diff mode
+
+V2 adds a Monaco diff editor. Set `variant={CodeEditorV2Variant.DIFF}` or
+`diff` and provide `originalValue` for the left-hand source. Use
+`renderSideBySide={false}` for an inline diff, and control unchanged-region
+folding with `isDiffUnchangedCollapsed`, `diffContextLines`, and
+`diffExpandChunk`.
+
+```tsx
+<CodeEditorV2
+    variant={CodeEditorV2Variant.DIFF}
+    originalValue={previousCode}
+    value={updatedCode}
+    language="typescript"
+/>
+```
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/codeblock#component-tokens) with the [V2 component token reference](/docs/components/code-editor-v2#component-tokens).

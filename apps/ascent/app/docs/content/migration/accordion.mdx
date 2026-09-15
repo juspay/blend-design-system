@@ -1,0 +1,114 @@
+---
+title: Accordion v1 to v2
+description: Migrate the Accordion component from v1 to AccordionV2, including renamed exports and removed custom-trigger props.
+---
+
+## Overview
+
+`Accordion` and `AccordionItem` are deprecated in favor of `AccordionV2` and
+`AccordionV2Item`. The controlled and uncontrolled expansion APIs carry over,
+so standard accordions only need import and component-name updates. Review
+custom trigger slots and theme overrides before migrating.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Accordion,
+    AccordionChevronPosition,
+    AccordionItem,
+    AccordionType,
+} from '@juspay/blend-design-system'
+;<Accordion accordionType={AccordionType.BORDER} defaultValue="details">
+    <AccordionItem
+        value="details"
+        title="Order details"
+        chevronPosition={AccordionChevronPosition.RIGHT}
+    >
+        <OrderDetails />
+    </AccordionItem>
+</Accordion>
+```
+
+```tsx
+// v2
+import {
+    AccordionV2,
+    AccordionV2ChevronPosition,
+    AccordionV2Item,
+    AccordionV2Type,
+} from '@juspay/blend-design-system'
+;<AccordionV2 accordionType={AccordionV2Type.BORDER} defaultValue="details">
+    <AccordionV2Item
+        value="details"
+        title="Order details"
+        chevronPosition={AccordionV2ChevronPosition.RIGHT}
+    >
+        <OrderDetails />
+    </AccordionV2Item>
+</AccordionV2>
+```
+
+## Breaking changes
+
+### Rename the component and its enums
+
+**v1:** `Accordion`, `AccordionItem`, `AccordionType`, and
+`AccordionChevronPosition`
+
+**v2:** `AccordionV2`, `AccordionV2Item`, `AccordionV2Type`, and
+`AccordionV2ChevronPosition`
+
+The renamed exports let v1 and v2 coexist while consumers migrate gradually.
+Rename the component, item, and enum imports together. The enum values and
+defaults are unchanged: `NO_BORDER` remains the default accordion type, and
+the chevron remains on the right by default.
+
+### Remove custom trigger slots
+
+**v1:** `AccordionItem` supports `triggerSlot` and `triggerSlotWidth`. A
+`triggerSlot` can be a React node or a render function that receives expanded
+state and a `toggle` function.
+
+**v2:** `AccordionV2Item` does not accept `triggerSlot` or
+`triggerSlotWidth`.
+
+V2 standardizes the trigger and chevron composition for consistent interaction
+and accessibility behavior. Remove these props for standard accordion items.
+If a call site depends on a custom or interactive trigger, keep that item on v1
+until an equivalent v2 extension point is available; do not pass the removed
+props to `AccordionV2Item`.
+
+### Update custom Accordion tokens
+
+**v1:** `ACCORDION` token contract
+
+**v2:** `ACCORDIONV2` token contract
+
+V2 makes trigger content, chevron styling, and text metrics explicit. Update
+custom theme overrides to target `ACCORDIONV2`. The v1 optional
+`trigger.slot.maxWidth` is replaced by `trigger.slot.height`; v2 also adds
+`trigger.content.gap`, `trigger.text.gap`, title and subtext line-height,
+subtext font weight, and `chevron.height`/`chevron.color` tokens.
+
+## What continues to work
+
+`accordionType`, `defaultValue`, `value`, `isMultiple`, and `onValueChange`
+retain the same behavior and value types. On the item, `value`, `title`,
+`children`, `subtext`, `leftSlot`, `rightSlot`, `subtextSlot`, `isDisabled`,
+and `chevronPosition` continue to work after their component and enum names
+are updated.
+
+## New sizing controls
+
+`AccordionV2` adds `width`, `minWidth`, and `maxWidth`. V1 accordions use the
+full width of their container; keep that behavior by omitting the new props.
+Use the new sizing controls only when the accordion itself needs an explicit
+layout constraint.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/accordion#component-tokens) with the [V2 component token reference](/docs/components/accordion-v2#component-tokens).

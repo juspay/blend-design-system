@@ -87,6 +87,16 @@ export type MenuV2TokensType = {
                     maxHeight: CSSObject['maxHeight']
                 }
 
+                /**
+                 * Checkmark indicator for `selectionStyle="checkmark"`.
+                 * `position` controls leading vs trailing placement.
+                 */
+                checkmark?: {
+                    position: 'leading' | 'trailing'
+                    width: CSSObject['width']
+                    color: CSSObject['color']
+                }
+
                 rightChevron: {
                     color: CSSObject['color']
                     width: CSSObject['width']

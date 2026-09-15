@@ -117,7 +117,7 @@ function MyComponent() {
             {
                 content: 'addSnackbar.duration',
                 hintText:
-                    'Optional duration in milliseconds that the snackbar remains visible before auto-dismissing. After this duration, the snackbar automatically closes. Set to 0 or Infinity to prevent auto-dismissal. Useful for controlling how long users have to read and act on the notification. Defaults to 4000 milliseconds (4 seconds).',
+                    'Optional duration in milliseconds that the snackbar remains visible before auto-dismissing. After this duration, the snackbar automatically closes. Set to Infinity to prevent auto-dismissal — note that 0 does NOT work, because it is falsy and falls through to the 4000ms default. Defaults to 4000 milliseconds (4 seconds).',
             },
             {
                 content: 'number',

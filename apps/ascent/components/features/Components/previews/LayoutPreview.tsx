@@ -3,7 +3,7 @@ import PreviewCursorIcon from '@/icons/PreviewCursorIcon'
 const LayoutPreview = () => (
     <div className="relative flex flex-col items-center justify-center gap-2.5 w-full">
         {/* Top card - smaller */}
-        <div className="w-48 flex items-center justify-between p-3 bg-background rounded-xl border border-border shadow-[0_2px_8px_rgb(0,0,0,0.06)]">
+        <div className="w-48 flex items-center justify-between p-3 bg-background rounded-xl border border-border shadow-card">
             <div className="flex-1 h-1.5 bg-border rounded-full" />
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -20,7 +20,7 @@ const LayoutPreview = () => (
             </svg>
         </div>
         {/* Middle card - larger */}
-        <div className="w-full max-w-56 flex flex-col gap-2 p-3 bg-background rounded-xl border border-border shadow-[0_2px_8px_rgb(0,0,0,0.06)]">
+        <div className="w-full max-w-56 flex flex-col gap-2 p-3 bg-background rounded-xl border border-border shadow-card">
             <div className="flex items-center justify-between">
                 <div className="flex-1 h-1.5 bg-border rounded-full" />
                 <svg
@@ -41,7 +41,7 @@ const LayoutPreview = () => (
             <div className="w-1/2 h-1.5 bg-border rounded-full" />
         </div>
         {/* Bottom card - smaller */}
-        <div className="w-48 flex items-center justify-between p-3 bg-background rounded-xl border border-border shadow-[0_2px_8px_rgb(0,0,0,0.06)]">
+        <div className="w-48 flex items-center justify-between p-3 bg-background rounded-xl border border-border shadow-card">
             <div className="flex-1 h-1.5 bg-border rounded-full" />
             <svg
                 xmlns="http://www.w3.org/2000/svg"

@@ -1,4 +1,4 @@
-import type { CSSObject } from 'styled-components'
+import type { CSSProperties } from 'react'
 import {
     ButtonV2Size,
     ButtonV2State,
@@ -9,18 +9,26 @@ import {
 import { BreakpointType } from '../../breakpoints/breakPoints'
 
 export type ButtonV2TokensType = Readonly<{
-    gap: CSSObject['gap']
+    gap: CSSProperties['gap']
+    slotMaxHeight: {
+        [key in ButtonV2Size]: NonNullable<CSSProperties['maxHeight']>
+    }
+    focusRing: {
+        [key in ButtonV2Type]: {
+            [key in ButtonV2SubType]: CSSProperties['boxShadow']
+        }
+    }
     backgroundColor: {
         [key in ButtonV2Type]: {
             [key in ButtonV2SubType]: {
-                [key in ButtonV2State]: CSSObject['background']
+                [key in ButtonV2State]: CSSProperties['background']
             }
         }
     }
     borderRadius: {
         [key in ButtonV2Size]: {
             [key in ButtonV2Type]: {
-                [key in ButtonV2SubType]: CSSObject['borderRadius']
+                [key in ButtonV2SubType]: CSSProperties['borderRadius']
             }
         }
     }
@@ -28,7 +36,7 @@ export type ButtonV2TokensType = Readonly<{
         [key in PaddingDirection]: {
             [key in ButtonV2Size]: {
                 [key in ButtonV2Type]: {
-                    [key in ButtonV2SubType]: CSSObject['padding']
+                    [key in ButtonV2SubType]: CSSProperties['padding']
                 }
             }
         }
@@ -36,14 +44,14 @@ export type ButtonV2TokensType = Readonly<{
     border: {
         [key in ButtonV2Type]: {
             [key in ButtonV2SubType]: {
-                [key in ButtonV2State]: CSSObject['border']
+                [key in ButtonV2State]: CSSProperties['border']
             }
         }
     }
     shadow: {
         [key in ButtonV2Type]: {
             [key in ButtonV2SubType]: {
-                [key in ButtonV2State]: CSSObject['boxShadow']
+                [key in ButtonV2State]: CSSProperties['boxShadow']
             }
         }
     }
@@ -51,18 +59,18 @@ export type ButtonV2TokensType = Readonly<{
         color: {
             [key in ButtonV2Type]: {
                 [key in ButtonV2SubType]: {
-                    [key in ButtonV2State]: CSSObject['color']
+                    [key in ButtonV2State]: CSSProperties['color']
                 }
             }
         }
         fontSize: {
-            [key in ButtonV2Size]: CSSObject['fontSize']
+            [key in ButtonV2Size]: CSSProperties['fontSize']
         }
         fontWeight: {
-            [key in ButtonV2Size]: CSSObject['fontWeight']
+            [key in ButtonV2Size]: CSSProperties['fontWeight']
         }
         lineHeight: {
-            [key in ButtonV2Size]: CSSObject['lineHeight']
+            [key in ButtonV2Size]: CSSProperties['lineHeight']
         }
     }
 }>

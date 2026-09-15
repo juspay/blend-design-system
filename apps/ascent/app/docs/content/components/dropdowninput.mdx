@@ -175,6 +175,19 @@ function MyComponent() {
         ],
         [
             {
+                content: 'dropDownPlaceholder',
+                hintText:
+                    'Optional placeholder text string displayed in the dropdown when no option is selected. Falls back to placeholder when omitted, so existing usage is unchanged. Use it to keep the two halves distinct — e.g. "Code" on a dial-code select next to "Enter your mobile number" on the input.',
+            },
+            {
+                content: 'string',
+                hintText:
+                    'Placeholder text shown in the dropdown when nothing is selected',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'size',
                 hintText:
                     'Optional TextInputSize enum value that controls the physical dimensions of the input field and dropdown. SMALL creates a compact input, MEDIUM provides standard sizing, LARGE creates a more prominent input. Size affects padding, font size, and overall height. Defaults to MEDIUM.',

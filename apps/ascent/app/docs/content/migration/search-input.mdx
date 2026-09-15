@@ -1,0 +1,64 @@
+---
+title: Search Input v1 to v2
+description: Migrate SearchInput to SearchInputV2 and account for the narrower form-field API.
+---
+
+## Search Input v1 to v2
+
+`SearchInputV2` preserves the familiar controlled search field and clear action, while standardising accessibility, disabled behavior, and design tokens.
+
+### Quick migration
+
+```tsx
+// v1
+import { SearchInput } from '@juspay/blend-design-system'
+;<SearchInput
+    value={query}
+    placeholder="Search users"
+    allowClear
+    onChange={handleQueryChange}
+    onClear={clearQuery}
+/>
+
+// v2
+import { SearchInputV2 } from '@juspay/blend-design-system'
+;<SearchInputV2
+    value={query}
+    placeholder="Search users"
+    allowClear
+    onChange={handleQueryChange}
+    onClear={clearQuery}
+/>
+```
+
+## Breaking changes
+
+### Rename the component
+
+Replace `SearchInput` with `SearchInputV2`. The controlled `value`, `onChange`, `onClear`, `placeholder`, `allowClear`, `leftSlot`, and `rightSlot` props retain their existing shapes.
+
+### Remove `placeholderStyles`
+
+`placeholderStyles` is not supported in v2. Use the v2 token contract for shared placeholder styling; use a component wrapper only when a call site genuinely requires a one-off presentation.
+
+### Do not use Search Input for native required validation
+
+`required` is omitted from the v2 Search Input API. Keep required-search validation in the surrounding form or use `TextInputV2` when the field needs native required semantics.
+
+### Disabled fields no longer expose a clear action
+
+In v2 the clear button is hidden when the input is disabled. This prevents a disabled control from presenting an interactive-looking action; no replacement is needed in most cases.
+
+### Update theme overrides
+
+Move custom overrides from `SEARCH_INPUT` to `SEARCH_INPUT_V2`. v2 provides separate tokens for the input, clear affordance, focus state, and responsive layout.
+
+## What continues to work
+
+`value`, `onChange`, `onClear`, `placeholder`, `allowClear`, `disabled`, `onBlur`, `onFocus`, `leftSlot`, `rightSlot`, `aria-label`, and other supported native input attributes continue to work. The v2 clear control also supports keyboard activation.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/searchinput#component-tokens) with the [V2 component token reference](/docs/components/search-input-v2#component-tokens).

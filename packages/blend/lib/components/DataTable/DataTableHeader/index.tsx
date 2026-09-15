@@ -23,7 +23,13 @@ import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import Tooltip from '../../Tooltip/Tooltip'
 import { TooltipSize, TooltipSide, TooltipAlign } from '../../Tooltip/types'
 
-const SearchCloseButton = ({ onClose }: { onClose: () => void }) => (
+const SearchCloseButton = ({
+    onClose,
+    tableToken,
+}: {
+    onClose: () => void
+    tableToken: TableTokenType
+}) => (
     <PrimitiveButton
         onClick={onClose}
         contentCentered
@@ -35,12 +41,15 @@ const SearchCloseButton = ({ onClose }: { onClose: () => void }) => (
         aria-label="Close search"
         type="button"
         _hover={{
-            backgroundColor: FOUNDATION_THEME.colors.gray[100],
+            backgroundColor:
+                tableToken.dataTable.table.header.filter.hoverBackground,
         }}
     >
         <X
             size={16}
-            color={FOUNDATION_THEME.colors.gray[600]}
+            color={
+                tableToken.dataTable.table.header.filter.sortOption.iconColor
+            }
             aria-hidden="true"
         />
     </PrimitiveButton>
@@ -51,11 +60,13 @@ const MobileSearchInput = ({
     searchConfig,
     onSearch,
     onClose,
+    tableToken,
 }: {
     searchPlaceholder: string
     searchConfig: { query: string }
     onSearch: (query: string) => void
     onClose: () => void
+    tableToken: TableTokenType
 }) => (
     <Block style={{ minWidth: '150px', maxWidth: '200px' }}>
         <TextInput
@@ -74,7 +85,9 @@ const MobileSearchInput = ({
                     onClose()
                 }
             }}
-            rightSlot={<SearchCloseButton onClose={onClose} />}
+            rightSlot={
+                <SearchCloseButton onClose={onClose} tableToken={tableToken} />
+            }
             autoFocus
         />
     </Block>
@@ -214,6 +227,7 @@ const DataTableHeader = forwardRef<
             headerSlot1,
             headerSlot2,
             headerSlot3,
+            mobileToolbarSlot,
             descriptionTooltipProps,
         },
         ref
@@ -235,7 +249,8 @@ const DataTableHeader = forwardRef<
                 enableAdvancedFilter ||
                 headerSlot1 ||
                 headerSlot2 ||
-                headerSlot3)
+                headerSlot3 ||
+                mobileToolbarSlot)
 
         if (!title && !description && !hasToolbarContent) {
             return null
@@ -272,7 +287,7 @@ const DataTableHeader = forwardRef<
                                         .fontSize
                                 }
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
-                                color={FOUNDATION_THEME.colors.gray[800]}
+                                color={tableToken.header.title.color}
                                 style={{
                                     minWidth: 0,
                                     lineHeight: '1.2',
@@ -297,6 +312,7 @@ const DataTableHeader = forwardRef<
                                         searchConfig={searchConfig}
                                         onSearch={onSearch}
                                         onClose={() => setIsSearchOpen(false)}
+                                        tableToken={tableToken}
                                     />
                                 )}
 
@@ -320,6 +336,8 @@ const DataTableHeader = forwardRef<
                                         onClick={() => setIsSearchOpen(true)}
                                     />
                                 )}
+
+                                {mobileToolbarSlot}
 
                                 {(enableAdvancedFilter ||
                                     headerSlot1 ||
@@ -366,7 +384,7 @@ const DataTableHeader = forwardRef<
                                 fontSize={
                                     FOUNDATION_THEME.font.size.body.md.fontSize
                                 }
-                                color={FOUNDATION_THEME.colors.gray[500]}
+                                color={tableToken.header.description.color}
                                 style={{
                                     lineHeight: '1.4',
                                     minWidth: 0,
@@ -463,8 +481,8 @@ const DataTableHeader = forwardRef<
                                                             .weight[600]
                                                     }
                                                     color={
-                                                        FOUNDATION_THEME.colors
-                                                            .gray[800]
+                                                        tableToken.header.title
+                                                            .color
                                                     }
                                                     style={{
                                                         marginBottom:

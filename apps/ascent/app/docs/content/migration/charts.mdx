@@ -1,0 +1,181 @@
+---
+title: Charts v1 to v2
+description: Migrate from the Recharts-based Charts component to the Highcharts-powered ChartV2 component.
+---
+
+## Overview
+
+`Charts` is deprecated in favor of `ChartV2`. This is a chart-engine migration,
+not a prop rename: v1 is built on Recharts and receives Blend’s nested data
+model, while v2 renders native Highcharts options. Plan to rewrite the chart
+configuration and validate the visual output, interactions, and accessibility
+of every chart type.
+
+## Quick migration: a line chart
+
+```tsx
+// v1: Blend nested data + component props
+import { AxisType, Charts, ChartType } from '@juspay/blend-design-system'
+;<Charts
+    chartType={ChartType.LINE}
+    chartHeaderSlot={<h3>Monthly sales</h3>}
+    data={[
+        {
+            name: 'Jan',
+            data: { sales: { primary: { label: 'Sales', val: 4000 } } },
+        },
+        {
+            name: 'Feb',
+            data: { sales: { primary: { label: 'Sales', val: 3000 } } },
+        },
+    ]}
+    yAxis={{ label: 'Revenue', type: AxisType.CURRENCY }}
+/>
+```
+
+```tsx
+// v2: Highcharts options
+import { ChartV2, type ChartV2Options } from '@juspay/blend-design-system'
+import Highcharts from 'highcharts'
+
+const options: ChartV2Options = {
+    chart: { type: 'line' },
+    title: { text: 'Monthly sales' },
+    xAxis: { categories: ['Jan', 'Feb'] },
+    yAxis: { title: { text: 'Revenue' } },
+    series: [
+        {
+            type: 'line',
+            name: 'Sales',
+            data: [4000, 3000],
+        },
+    ],
+}
+
+<ChartV2
+    highcharts={Highcharts}
+    options={options}
+    containerProps={{ 'aria-label': 'Monthly sales chart' }}
+/>
+```
+
+## Breaking changes
+
+### Replace `Charts` and `ChartType` with `ChartV2` and `options`
+
+**v1:** `Charts`, `chartType`, and `NewNestedDataPoint[]` data.
+
+**v2:** `ChartV2` and `ChartV2Options` (the Highcharts `Options` type).
+
+V1 creates chart series from its nested data shape. V2 expects each Highcharts
+series, category, axis, tooltip, and plot option to be defined in `options`.
+There is no automatic data converter, so transform the source data before
+rendering and give each series its own `type`, `name`, and `data` array.
+
+For v1 `LINE_BAR` charts, create a Highcharts series list with a line type for
+line series and column or bar types for bar series. Do the same for any
+v1 `lineSeriesKeys` configuration; series type now lives on each Highcharts
+series rather than in a separate prop.
+
+### Rewrite axes and value formatting
+
+**v1:** `xAxis`/`yAxis` use `AxisConfig` with `AxisType`, `tickFormatter`,
+custom ticks, and Recharts-specific rendering options.
+
+**v2:** Configure native Highcharts `xAxis`, `yAxis`, and `tooltip` options.
+
+Map an axis label to `axis.title.text`, visibility to `axis.visible`, and a
+fixed tick interval to `axis.tickInterval` when its unit matches Highcharts.
+Rewrite `tickFormatter` as `axis.labels.formatter` and tooltip formatters as
+Highcharts formatter functions; their callback context and return values are
+not compatible with Recharts.
+
+For a v1 date-time axis, provide numeric timestamps and use
+`xAxis.type: 'datetime'`. Currency, percentage, smart date formatting, custom
+ticks, and custom tick components need an intentional Highcharts formatter or
+label configuration—there is no direct `AxisType` equivalent.
+
+### Move header, collapse, and fullscreen UI outside `ChartV2`
+
+**v1:** `chartHeaderSlot`, `slot1`, `slot2`, `slot3`, `showHeader`,
+`showCollapseIcon`, `isExpanded`, and `onExpandedChange` are built into
+`Charts`.
+
+**v2:** `ChartV2` only renders the chart surface. Use `ChartContainerV2` and
+`ChartHeaderV2` to compose a surrounding layout; manage collapse state in your
+own component. `ChartV2Fullscreen` is available when fullscreen behavior is
+needed.
+
+```tsx
+<ChartContainerV2>
+    <ChartHeaderV2>
+        <h3>Monthly sales</h3>
+    </ChartHeaderV2>
+    <ChartV2 highcharts={Highcharts} options={options} />
+</ChartContainerV2>
+```
+
+### Replace the built-in v1 legend API
+
+**v1:** `legendPosition`, `stackedLegends`, `stackedLegendsData`, `legends`,
+and `showAllLegends` manage a Blend legend.
+
+**v2:** Use Highcharts `legend` options for the native legend, or use
+`ChartV2Legend` with a chart ref or `customLegendItems` when a custom,
+interactive legend is required.
+
+The v1 stacked legend data shape has no direct v2 prop equivalent. Recreate
+the required legend content with `ChartV2Legend.renderItem` or product-level
+UI. Review legend placement, overflow, filtering, and hover interactions; they
+are now controlled by Highcharts or the separate legend component.
+
+### Change empty and loading detection
+
+Both versions accept `noData` with `title`, `subtitle`, `slot`, and an optional
+Button configuration. V1 shows it when its `data` array is empty. V2 shows it
+when `options.series` has no series containing data, so build `options.series`
+before rendering and test empty data explicitly.
+
+Both versions use `skeleton={{ show, variant }}`. V2 additionally accepts
+`skeleton.height`; unlike v1, the skeleton variant is optional and defaults to
+`pulse`. Set chart height in `options.chart.height`, not through a top-level
+`ChartV2` `height` prop.
+
+### Review advanced chart types individually
+
+V1 supports `AREA`, `PIE`, `SCATTER`, `SANKEY`, and `FUNNEL` through its own
+Recharts and custom renderers. In v2, define the relevant Highcharts series in
+`options`. Sankey support is registered by ChartV2, but its v1 node/link shape
+must be rewritten as Highcharts Sankey series options. The v2 public series
+aliases cover line, column, bar, pie, scatter, area, sankey, and xrange; they
+do not include a Funnel alias. Validate Funnel and any module-dependent chart
+types in your application before scheduling the migration.
+
+### Replace chart-level customization hooks
+
+V1 props such as `colors`, `barsize`, `tooltip`, `funnelConfig`,
+`CustomizedDot`, and `chartName` do not have like-for-like v2 props. Configure
+series colors, point markers, plot options, tooltip behavior, and accessibility
+through Highcharts options. Pass an accessible chart label through
+`containerProps`, for example `containerProps={{ 'aria-label': 'Sales by month' }}`.
+
+V2 exposes the initialized chart through the Highcharts React `callback` prop
+and a forwarded Highcharts React ref. Use these APIs for imperative chart work
+instead of v1’s component-specific interactions.
+
+### Update custom Charts tokens
+
+**v1:** `CHARTS` token contract
+
+**v2:** `CHARTSV2` token contract
+
+V2 tokens style the chart container, skeleton, empty state, and optional header
+wrapper. Highcharts handles the plotting surface, series, axes, tooltips, and
+legend internally. Rebuild custom token overrides against `CHARTSV2` and move
+plot styling into Highcharts options.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/charts#component-tokens) with the [V2 component token reference](/docs/components/charts-v2#component-tokens).

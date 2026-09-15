@@ -14,6 +14,7 @@ import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import { useSectionScroll } from '../../hooks/useSectionScroll'
+import { getItemPathSegment } from './utils'
 
 type SectionStateContextValue = {
     sectionStates: Map<number, boolean>
@@ -57,6 +58,8 @@ const Section = ({
     iconOnlyMode = false,
     showHierarchyLines = false,
     hierarchyLineBorderRadius = 0,
+    enableParentSelection = false,
+    highlightActivePath = false,
 }: SectionProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const sectionStateContext = useSectionState()
@@ -259,7 +262,7 @@ const Section = ({
                             key={itemIdx}
                             item={item}
                             index={itemIdx}
-                            itemPath={item.label}
+                            itemPath={getItemPathSegment(item)}
                             iconOnlyMode={iconOnlyMode}
                             showHierarchyLines={showHierarchyLines}
                             hierarchyLineBorderRadius={
@@ -268,6 +271,8 @@ const Section = ({
                             isLast={
                                 itemIdx === (section.items?.length || 0) - 1
                             }
+                            enableParentSelection={enableParentSelection}
+                            highlightActivePath={highlightActivePath}
                             onNavigate={handleItemNavigation}
                         />
                     ))}

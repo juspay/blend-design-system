@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import ThemeProvider from '../../lib/context/ThemeProvider'
 import { useTheme } from '../../lib/context/ThemeContext'
+import { Theme } from '../../lib/context/theme.enum'
 
 vi.mock('../../lib/context/initComponentTokens', () => ({
     default: vi.fn(() => ({ MOCK_TOKENS: true })),
@@ -69,5 +70,16 @@ describe('ThemeProvider', () => {
             initCallsAfterMount
         )
         expect(contextSnapshots.at(-1)).toBe(contextValueAfterMount)
+    })
+
+    it('passes the dark theme to component token initialization', () => {
+        render(
+            <ThemeProvider theme={Theme.DARK}>
+                <ThemeConsumer />
+            </ThemeProvider>
+        )
+
+        const lastCall = vi.mocked(initTokens).mock.calls.at(-1)
+        expect(lastCall?.[2]).toBe(Theme.DARK)
     })
 })

@@ -61,7 +61,7 @@ function MyComponent() {
       placeholder="Choose technologies you're familiar with"
       items={skillOptions}
       selectedValues={selectedSkills}
-      onChange={setSelectedSkills}
+      onSelectionChange={setSelectedSkills}
       enableSearch={false}
       size={MultiSelectMenuSize.MEDIUM}
       variant={MultiSelectVariant.CONTAINER}
@@ -118,15 +118,7 @@ function MyComponent() {
                     placeholder="Choose technologies you're familiar with"
                     items={skillOptions}
                     selectedValues={selectedSkills}
-                    onChange={(value: string) => {
-                        if (selectedSkills.includes(value)) {
-                            setSelectedSkills(
-                                selectedSkills.filter((v) => v !== value)
-                            )
-                        } else {
-                            setSelectedSkills([...selectedSkills, value])
-                        }
-                    }}
+                    onSelectionChange={setSelectedSkills}
                     enableSearch={false}
                     size={MultiSelectMenuSize.MEDIUM}
                     variant={MultiSelectVariant.CONTAINER}

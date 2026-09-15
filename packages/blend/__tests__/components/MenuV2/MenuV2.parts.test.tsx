@@ -94,6 +94,42 @@ describe('MenuV2 parts', () => {
         expect(slotWrapper).toBeInTheDocument()
     })
 
+    it('positions a selected checkmark from the design token', () => {
+        const leadingItemTokens: MenuV2TokensType['group']['item'] = {
+            ...menuTokens.group.item,
+            text: {
+                ...menuTokens.group.item.text,
+                checkmark: {
+                    ...menuTokens.group.item.text.checkmark!,
+                    position: 'leading',
+                },
+            },
+        }
+
+        render(
+            <RadixMenu.Root open>
+                <RadixMenu.Content>
+                    <MenuV2Item
+                        item={{
+                            label: { text: 'Leading check' },
+                            selected: true,
+                        }}
+                        index={0}
+                        itemTokens={leadingItemTokens}
+                    />
+                </RadixMenu.Content>
+            </RadixMenu.Root>
+        )
+
+        expect(
+            screen
+                .getByRole('menuitemradio', { name: /leading check/i })
+                .querySelector(
+                    '[data-element="menu-item-checkmark"][data-position="leading"]'
+                )
+        ).toBeInTheDocument()
+    })
+
     it('renders MenuV2SubMenu parent item', () => {
         const item: MenuV2ItemType = {
             label: { text: 'Parent menu' },

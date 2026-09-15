@@ -9,6 +9,7 @@ import {
 import { Search } from 'lucide-react'
 import { ComponentGrid } from '@/components/ui/ComponentGrid'
 import { ChangelogCard, VersionHeader } from './components/changelog'
+import { MigrationCodeDiff } from './components/docs/MigrationCodeDiff'
 
 const components = {
     // Core MDX components (headings, paragraphs, links, etc.)
@@ -24,6 +25,7 @@ const components = {
     DocsTypeTable,
     Preview,
     ComponentGrid,
+    MigrationCodeDiff,
     // Changelog components
     VersionHeader,
     ChangelogCard,

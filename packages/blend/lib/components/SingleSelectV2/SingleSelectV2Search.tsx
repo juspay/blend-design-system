@@ -1,5 +1,5 @@
 import Block from '../Primitives/Block/Block'
-import { SearchInput } from '../Inputs'
+import { SearchInputV2 } from '../InputsV2/SearchInputV2'
 import type { MenuSearchProps } from './singleSelectV2.types'
 
 const SingleSelectV2Search = ({
@@ -25,7 +25,7 @@ const SingleSelectV2Search = ({
             backgroundColor={backgroundColor}
             flexShrink={0}
         >
-            <SearchInput
+            <SearchInputV2
                 ref={searchInputRef}
                 placeholder={searchPlaceholder}
                 value={searchText}

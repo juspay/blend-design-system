@@ -1,0 +1,76 @@
+---
+title: Checkbox v1 to v2
+description: Migrate Checkbox to CheckboxV2 with controlled state, v2 selector sizes, and structured content.
+---
+
+## Checkbox v1 to v2
+
+`CheckboxV2` standardises selector content and sizing. It retains checked, indeterminate, disabled, required, and error states, but uses explicit label props and a controlled checked value.
+
+### Quick migration
+
+```tsx
+// v1
+import { Checkbox, CheckboxSize } from '@juspay/blend-design-system'
+;<Checkbox
+    defaultChecked
+    size={CheckboxSize.MEDIUM}
+    subtext="Receive product updates"
+    slot={<InfoIcon />}
+>
+    Subscribe
+</Checkbox>
+
+// v2
+import { CheckboxV2, SelectorV2Size } from '@juspay/blend-design-system'
+;<CheckboxV2
+    checked={subscribed}
+    onCheckedChange={setSubscribed}
+    size={SelectorV2Size.MD}
+    label="Subscribe"
+    subLabel="Receive product updates"
+    slot={{ slot: <InfoIcon /> }}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and selector size enum
+
+Replace `Checkbox` with `CheckboxV2`. Map `CheckboxSize.SMALL` and `.MEDIUM` to `SelectorV2Size.SM` and `.MD`; v2 also adds `SelectorV2Size.LG`.
+
+### Replace children and `subtext`
+
+v1 uses `children` as the visible label and `subtext` as supporting text. v2 uses `label` and `subLabel`:
+
+```tsx
+// v1
+<Checkbox subtext="Optional details">Subscribe</Checkbox>
+
+// v2
+<CheckboxV2 label="Subscribe" subLabel="Optional details" />
+```
+
+Update `maxLength.subtext` to `maxLength.subLabel` as well.
+
+### Use controlled checked state
+
+`defaultChecked` is not a `CheckboxV2` prop. Store the initial value in application state, pass it through `checked`, and update it from `onCheckedChange`. The callback still receives `boolean | 'indeterminate'`.
+
+### Wrap the slot
+
+v1 `slot` accepts a `ReactNode`. v2 requires `{ slot: ReactElement; maxHeight?: string | number }`, so wrap existing content as `slot={{ slot: <InfoIcon /> }}`.
+
+### Update theme overrides
+
+Move custom overrides from `CHECKBOX` to `CHECKBOXV2`. v2 separates selector, content, slot, label, and sub-label treatment.
+
+## What continues to work
+
+`checked`, `onCheckedChange`, `id`, `name`, `disabled`, `required`, `error`, and the indeterminate state continue to work. The default visual size remains medium (`MD`).
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/checkbox#component-tokens) with the [V2 component token reference](/docs/components/checkbox-v2#component-tokens).

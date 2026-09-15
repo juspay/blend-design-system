@@ -33,9 +33,7 @@ function MyComponent() {
             selectedValues={selected}
             items={items}
             selectionTagType={MultiSelectV2SelectionTagType.TEXT}
-            onChange={(value) =>
-                setSelected(Array.isArray(value) ? value : [value])
-            }
+            onSelectionChange={setSelected}
         />
     )
 }`
@@ -61,20 +59,14 @@ let make = () => {
     selectedValues={selected}
     items={items}
     selectionTagType=#text
-    onChange={value =>
-      setSelected(
-        Belt.Array.isArray(value)
-          ? Obj.magic(value)
-          : [Obj.magic(value)]
-      )
-    }
+    onSelectionChange={setSelected}
   />
 }`
 
     const bindingCode = `@module("@juspay/blend-design-system") @react.component
 external make: (
   ~selectedValues: array<string>,
-  ~onChange: string | array<string> => unit,
+  ~onSelectionChange: array<string> => unit,
   ~items: array<'a>,
   ~label: string,
   ~placeholder: string,
@@ -108,9 +100,7 @@ external make: (
                     selectedValues={selected}
                     items={items}
                     selectionTagType={MultiSelectV2SelectionTagType.TEXT}
-                    onChange={(value) =>
-                        setSelected(Array.isArray(value) ? value : [value])
-                    }
+                    onSelectionChange={setSelected}
                 />
             </div>
         </ComponentPreview>

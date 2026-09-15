@@ -7,30 +7,42 @@ import React, {
     useRef,
     useLayoutEffect,
 } from 'react'
-import type { NavItemProps } from './types'
+import type { DirectoryExpandedItems, NavItemProps, NavbarItem } from './types'
 import { ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import styled from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
-import { handleKeyDown } from './utils'
+import {
+    getItemPathSegment,
+    getItemVisualState,
+    handleKeyDown,
+    isActiveAncestorPath,
+    normalizeExpandedItems,
+    resolveItemColors,
+} from './utils'
+import type { DirectoryItemVisualState } from './directory.tokens.types'
 import { TooltipV2 } from '../TooltipV2/TooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
 import { useSectionScroll } from '../../hooks/useSectionScroll'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
+import { MenuV2 } from '../MenuV2'
+import {
+    MenuV2Alignment,
+    MenuV2Side,
+    type MenuV2ItemType,
+} from '../MenuV2/menuV2.types'
 
 const StyledElement = styled(Block)<{
     $isLink?: boolean
-    $isActive?: boolean
+    $visualState: DirectoryItemVisualState
     $tokens: DirectoryTokenType
     $iconOnlyMode?: boolean
     $hasHierarchyLineInset?: boolean
 }>`
-    background-color: ${({ $isActive, $tokens }) =>
-        $isActive
-            ? $tokens.section.itemList.item.backgroundColor.active
-            : $tokens.section.itemList.item.backgroundColor.default};
+    background-color: ${({ $visualState, $tokens }) =>
+        resolveItemColors($tokens, $visualState).backgroundColor};
     border: none;
     width: ${({ $hasHierarchyLineInset, $tokens }) =>
         $hasHierarchyLineInset
@@ -57,28 +69,29 @@ const StyledElement = styled(Block)<{
                             .itemPaddingLeft
                       : $tokens.section.itemList.item.padding.x
               }`};
-    color: ${({ $isActive, $tokens }) =>
-        $isActive
-            ? $tokens.section.itemList.item.color.active
-            : $tokens.section.itemList.item.color.default};
+    color: ${({ $visualState, $tokens }) =>
+        resolveItemColors($tokens, $visualState).color};
     font-weight: ${({ $tokens }) => $tokens.section.itemList.item.fontWeight};
     font-size: ${({ $tokens }) =>
         addPxToValue($tokens.section.itemList.item.fontSize)};
     border-radius: ${({ $tokens }) =>
         $tokens.section.itemList.item.borderRadius};
     transition: ${({ $tokens }) => $tokens.section.itemList.item.transition};
+    text-align: left;
     user-select: none;
     cursor: pointer;
     overflow: hidden;
 
+    /* muted rows lift to the hover tier here, so a de-emphasised row regains
+       full contrast the moment it is hovered or keyboard-focused */
     &:hover,
     &:focus-visible {
-        background-color: ${({ $isActive, $tokens }) =>
-            $isActive
+        background-color: ${({ $visualState, $tokens }) =>
+            $visualState === 'active'
                 ? $tokens.section.itemList.item.backgroundColor.active
                 : $tokens.section.itemList.item.backgroundColor.hover};
-        color: ${({ $isActive, $tokens }) =>
-            $isActive
+        color: ${({ $visualState, $tokens }) =>
+            $visualState === 'active'
                 ? $tokens.section.itemList.item.color.active
                 : $tokens.section.itemList.item.color.hover};
         outline: none;
@@ -150,6 +163,10 @@ const NavListItem = styled.li<{
     $isLast?: boolean
     $tokens: DirectoryTokenType
     $hierarchyLineBorderRadius: React.CSSProperties['borderRadius']
+    // ::before (vertical guide) is on the active path
+    $verticalActive?: boolean
+    // ::after (elbow) is on the active path
+    $elbowActive?: boolean
 }>`
     width: 100%;
     display: flex;
@@ -158,10 +175,28 @@ const NavListItem = styled.li<{
     align-items: stretch;
     position: relative;
 
-    ${({ $showHierarchyLines, $isLast, $tokens, $hierarchyLineBorderRadius }) =>
-        $showHierarchyLines &&
-        `
-            --directory-connector-elbow-top: ${$tokens.section.itemList.nested.connector.elbowTop};
+    ${({
+        $showHierarchyLines,
+        $isLast,
+        $tokens,
+        $hierarchyLineBorderRadius,
+        $verticalActive,
+        $elbowActive,
+    }) => {
+        if (!$showHierarchyLines) return ''
+        const nested = $tokens.section.itemList.nested
+        const activeColor = nested.border.activeColor ?? nested.border.color
+        // Vertical and elbow are fully decoupled (z-index model):
+        // - The ::before vertical guide is painted ON TOP of the ::after elbow,
+        //   so an above-sibling's active guide covers the elbow's default nub —
+        //   the vertical stays continuous with no recolouring of the elbow.
+        // - The elbow (::after) is therefore coloured as ONE piece by elbowColor:
+        //   default for every off-path row (no active bleed onto the horizontal
+        //   or the rounded corner), active only for the on-path child.
+        const guideColor = $verticalActive ? activeColor : nested.border.color
+        const elbowColor = $elbowActive ? activeColor : nested.border.color
+        return `
+            --directory-connector-elbow-top: ${nested.connector.elbowTop};
 
             padding-bottom: ${$isLast ? '0' : $tokens.section.itemList.gap};
 
@@ -170,33 +205,70 @@ const NavListItem = styled.li<{
                 content: '';
                 position: absolute;
                 pointer-events: none;
-                border-color: ${$tokens.section.itemList.nested.border.color};
-            }
-
-            &::before {
-                left: calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset});
-                top: calc(-1 * ${$tokens.section.itemList.gap});
-                bottom: ${$isLast ? 'calc(100% - var(--directory-connector-elbow-top))' : `calc(-1 * ${$tokens.section.itemList.gap})`};
-                border-left: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
             }
 
             &::after {
-                left: calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset});
+                /* Crisp full elbow (vertical drop + horizontal + rounded
+                   corner), coloured as ONE piece by elbowColor.
+                   Off-path (z 0): sits under the guide, so the active guide
+                   covers its default vertical drop and the vertical stays
+                   continuous; its corner stays default (no active bleed).
+                   On-path (z 2): sits above the guide so the whole active
+                   elbow renders crisply and connects to the active stub. */
+                z-index: ${$elbowActive ? 2 : 0};
+                left: calc(-1 * ${nested.paddingLeft} + ${nested.border.leftOffset});
                 top: var(--directory-connector-elbow-top);
-                width: calc(${$tokens.section.itemList.nested.paddingLeft} - ${$tokens.section.itemList.nested.border.leftOffset} + ${$tokens.section.itemList.nested.connector.elbowWidthOffset});
-                height: ${$tokens.section.itemList.nested.connector.elbowHeight};
-                border-left: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
-                border-bottom: ${$tokens.section.itemList.nested.border.width} solid ${$tokens.section.itemList.nested.border.color};
+                width: calc(${nested.paddingLeft} - ${nested.border.leftOffset} + ${nested.connector.elbowWidthOffset});
+                height: ${nested.connector.elbowHeight};
+                border-left: ${nested.border.width} solid ${elbowColor};
+                border-bottom: ${nested.border.width} solid ${elbowColor};
                 border-bottom-left-radius: ${addPxToValue($hierarchyLineBorderRadius)};
             }
-        `}
+
+            &::before {
+                z-index: 1;
+                left: calc(-1 * ${nested.paddingLeft} + ${nested.border.leftOffset});
+                top: calc(-1 * ${$tokens.section.itemList.gap});
+                bottom: ${
+                    $isLast
+                        ? 'calc(100% - var(--directory-connector-elbow-top))'
+                        : `calc(-1 * ${$tokens.section.itemList.gap})`
+                };
+                border-left: ${nested.border.width} solid ${guideColor};
+            }
+        `
+    }}
+`
+
+// Highlighted vertical stub for the on-path child: an active guide that runs
+// from the gap above the row down to exactly where the elbow's curve begins.
+// It sits above the (default) ::before guide and the elbow, so the active path
+// reaches the corner without recolouring the full-height guide line below it.
+const ActivePathStub = styled.span<{ $tokens: DirectoryTokenType }>`
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    left: ${({ $tokens }) =>
+        `calc(-1 * ${$tokens.section.itemList.nested.paddingLeft} + ${$tokens.section.itemList.nested.border.leftOffset})`};
+    top: ${({ $tokens }) => `calc(-1 * ${$tokens.section.itemList.gap})`};
+    /* from the gap above the row down to the top of the elbow's vertical drop,
+       where the on-path elbow's own (active) border-left takes over */
+    height: ${({ $tokens }) =>
+        `calc(${$tokens.section.itemList.gap} + ${$tokens.section.itemList.nested.connector.elbowTop})`};
+    border-left: ${({ $tokens }) =>
+        `${$tokens.section.itemList.nested.border.width} solid ${
+            $tokens.section.itemList.nested.border.activeColor ??
+            $tokens.section.itemList.nested.border.color
+        }`};
 `
 
 const NavItemContentFrame = styled.div<{
     $showHierarchyLines?: boolean
 }>`
     position: relative;
-    z-index: ${({ $showHierarchyLines }) => ($showHierarchyLines ? 1 : 'auto')};
+    /* above the connector layers (elbow 0, guide 1, active stub 2) so the row's
+       background/label always paints over the hierarchy lines */
+    z-index: ${({ $showHierarchyLines }) => ($showHierarchyLines ? 3 : 'auto')};
 `
 
 const NestedListFrame = styled.div`
@@ -257,11 +329,11 @@ export const ActiveItemProvider: React.FC<ActiveItemProviderProps> = ({
 
     const setActiveItem = useCallback(
         (item: string | null) => {
-            if (isControlled) {
-                onActiveItemChange?.(item)
-            } else {
+            if (!isControlled) {
                 setInternalActiveItem(item)
             }
+            // fired in both modes, matching the virtualized renderer
+            onActiveItemChange?.(item)
         },
         [isControlled, onActiveItemChange]
     )
@@ -282,26 +354,154 @@ export const ActiveItemProvider: React.FC<ActiveItemProviderProps> = ({
     )
 }
 
+type ExpandedItemsContextValue = {
+    isItemExpanded: (itemPath: string) => boolean
+    setItemExpanded: (item: NavbarItem, itemPath: string, next: boolean) => void
+}
+
+const ExpandedItemsContext = createContext<ExpandedItemsContextValue | null>(
+    null
+)
+
+const useExpandedItemsContext = () => {
+    const context = useContext(ExpandedItemsContext)
+    if (!context) {
+        throw new Error(
+            'useExpandedItemsContext must be used within ExpandedItemsProvider'
+        )
+    }
+    return context
+}
+
+type ExpandedItemsProviderProps = {
+    children: React.ReactNode
+    /**
+     * Controlled mode: parent owns the expanded item paths.
+     * If provided, internal state is ignored.
+     */
+    expandedItems?: DirectoryExpandedItems
+    defaultExpandedItems?: DirectoryExpandedItems
+    onExpandedItemsChange?: (items: string[]) => void
+    onItemExpand?: (item: NavbarItem, itemPath: string) => void | Promise<void>
+}
+
+export const ExpandedItemsProvider: React.FC<ExpandedItemsProviderProps> = ({
+    children,
+    expandedItems,
+    defaultExpandedItems,
+    onExpandedItemsChange,
+    onItemExpand,
+}) => {
+    const isControlled = expandedItems !== undefined
+    const [internalExpandedItems, setInternalExpandedItems] = useState<
+        Set<string>
+    >(() => normalizeExpandedItems(defaultExpandedItems))
+    const currentExpandedItems = useMemo(
+        () =>
+            isControlled
+                ? normalizeExpandedItems(expandedItems)
+                : internalExpandedItems,
+        [expandedItems, internalExpandedItems, isControlled]
+    )
+
+    const setItemExpanded = useCallback(
+        (item: NavbarItem, itemPath: string, next: boolean) => {
+            const nextExpandedItems = new Set(currentExpandedItems)
+            if (next) {
+                nextExpandedItems.add(itemPath)
+                void onItemExpand?.(item, itemPath)
+            } else {
+                nextExpandedItems.delete(itemPath)
+            }
+
+            if (!isControlled) {
+                setInternalExpandedItems(nextExpandedItems)
+            }
+            onExpandedItemsChange?.(Array.from(nextExpandedItems))
+        },
+        [
+            currentExpandedItems,
+            isControlled,
+            onExpandedItemsChange,
+            onItemExpand,
+        ]
+    )
+
+    const isItemExpanded = useCallback(
+        (itemPath: string) => currentExpandedItems.has(itemPath),
+        [currentExpandedItems]
+    )
+
+    const contextValue = useMemo<ExpandedItemsContextValue>(
+        () => ({ isItemExpanded, setItemExpanded }),
+        [isItemExpanded, setItemExpanded]
+    )
+
+    return (
+        <ExpandedItemsContext.Provider value={contextValue}>
+            {children}
+        </ExpandedItemsContext.Provider>
+    )
+}
+
 const NavItem = ({
     item,
     index,
     onNavigate,
-    itemPath = item.label,
+    itemPath = getItemPathSegment(item),
     iconOnlyMode = false,
     showHierarchyLines = false,
     hierarchyLineBorderRadius = 0,
     isLast = false,
     isNested = false,
+    enableParentSelection = false,
+    highlightActivePath = false,
+    pathVerticalActive = false,
+    pathElbowActive = false,
 }: NavItemProps) => {
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
-    const [isExpanded, setIsExpanded] = React.useState(false)
+    const { isItemExpanded, setItemExpanded } = useExpandedItemsContext()
+    const isExpanded = isItemExpanded(itemPath)
+    const setIsExpanded = (value: boolean) =>
+        setItemExpanded(item, itemPath, value)
     const { activeItem, setActiveItem } = useActiveItemContext()
     const hasChildren = item.items && item.items.length > 0
+    const isIconOnlyMenuTrigger = iconOnlyMode && hasChildren
+    const isSelectable = enableParentSelection || !hasChildren
+    // bare-label matching is a backward-compat fallback for id-less items
+    // only, so a label-valued activeItem can't co-select id'd duplicates
     const isActive =
         item.isSelected !== undefined
-            ? item.isSelected && !hasChildren
-            : !hasChildren &&
-              (activeItem === itemPath || activeItem === item.label)
+            ? item.isSelected && isSelectable
+            : isSelectable &&
+              (activeItem === itemPath ||
+                  (!item.id && activeItem === item.label))
+
+    const visualState = getItemVisualState({
+        isActive,
+        itemPath,
+        activeItem,
+        highlightActivePath,
+    })
+    const itemColors = resolveItemColors(tokens, visualState)
+    // Icons use a neutral colour (design), falling back to the row text colour
+    // when the token doesn't define one.
+    const iconColor =
+        tokens.section.itemList.item.icon.color ?? itemColors.color
+
+    // Index of this item's child that lies on the active path (the selected
+    // node or one of its ancestors). Its vertical guide highlights from the top
+    // of the column down to that child; children below it stay default.
+    const activeChildIndex =
+        highlightActivePath && activeItem && item.items
+            ? item.items.findIndex((childItem) => {
+                  const childPath = `${itemPath}/${getItemPathSegment(childItem)}`
+                  return (
+                      activeItem === childPath ||
+                      isActiveAncestorPath(childPath, activeItem)
+                  )
+              })
+            : -1
 
     const itemRef = React.useRef<HTMLButtonElement | HTMLAnchorElement>(null)
     const nestedListRef = useRef<HTMLUListElement>(null)
@@ -328,12 +528,29 @@ const NavItem = ({
     }, [isExpanded, iconOnlyMode, scrollIntoView])
 
     const activateItem = () => {
+        if (isIconOnlyMenuTrigger) {
+            return
+        }
+
         if (hasChildren && !iconOnlyMode) {
-            setIsExpanded(!isExpanded)
+            if (enableParentSelection) {
+                setActiveItem(itemPath)
+                if (!isExpanded) setIsExpanded(true)
+            } else {
+                setIsExpanded(!isExpanded)
+            }
+            item.onClick?.()
         } else {
             setActiveItem(itemPath)
             item.onClick?.()
         }
+    }
+
+    // Chevron toggles disclosure only; stop the row click from also selecting.
+    const toggleExpanded = (event: React.MouseEvent<HTMLElement>) => {
+        event.stopPropagation()
+        event.preventDefault()
+        setIsExpanded(!isExpanded)
     }
 
     const handleClick = (
@@ -356,8 +573,58 @@ const NavItem = ({
         activateItem()
     }
 
-    const Element = item.href ? 'a' : 'button'
-    const elementProps = item.href ? { href: item.href } : {}
+    const Element = item.href && !isIconOnlyMenuTrigger ? 'a' : 'button'
+    const elementProps =
+        item.href && !isIconOnlyMenuTrigger ? { href: item.href } : {}
+
+    const iconOnlyMenuItems = useMemo((): MenuV2ItemType[] => {
+        const toMenuItems = (
+            items: NavbarItem[],
+            parentPath: string
+        ): MenuV2ItemType[] =>
+            items.map((nestedItem) => {
+                const nestedItemPath = `${parentPath}/${getItemPathSegment(nestedItem)}`
+                const nestedHasChildren = !!nestedItem.items?.length
+                const nestedIsSelectable =
+                    enableParentSelection || !nestedHasChildren
+                const nestedIsSelected =
+                    nestedItem.isSelected !== undefined
+                        ? nestedItem.isSelected && nestedIsSelectable
+                        : nestedIsSelectable &&
+                          (activeItem === nestedItemPath ||
+                              (!nestedItem.id &&
+                                  activeItem === nestedItem.label))
+
+                return {
+                    id: nestedItemPath,
+                    label: {
+                        text: nestedItem.label,
+                        leftSlot: React.isValidElement(nestedItem.leftSlot)
+                            ? nestedItem.leftSlot
+                            : undefined,
+                    },
+                    selected: nestedIsSelected,
+                    onClick: () => {
+                        if (nestedIsSelectable) {
+                            setActiveItem(nestedItemPath)
+                        }
+                        nestedItem.onClick?.()
+                    },
+                    subMenu: nestedHasChildren
+                        ? toMenuItems(nestedItem.items!, nestedItemPath)
+                        : undefined,
+                }
+            })
+
+        return hasChildren ? toMenuItems(item.items!, itemPath) : []
+    }, [
+        activeItem,
+        enableParentSelection,
+        hasChildren,
+        item.items,
+        itemPath,
+        setActiveItem,
+    ])
 
     const renderContent = () => {
         if (iconOnlyMode) {
@@ -366,13 +633,7 @@ const NavItem = ({
                     <Block
                         width={tokens.section.itemList.item.icon.width}
                         height={tokens.section.itemList.item.icon.width}
-                        backgroundColor={
-                            isActive
-                                ? tokens.section.itemList.item.backgroundColor
-                                      .active
-                                : tokens.section.itemList.item.backgroundColor
-                                      .default
-                        }
+                        backgroundColor={itemColors.backgroundColor}
                         borderRadius={tokens.section.itemList.item.borderRadius}
                         style={{
                             opacity: 0.3,
@@ -389,12 +650,7 @@ const NavItem = ({
                                     size?: number
                                 }
                             >,
-                            {
-                                color: isActive
-                                    ? tokens.section.itemList.item.color.active
-                                    : tokens.section.itemList.item.color
-                                          .default,
-                            }
+                            { color: iconColor }
                         )}
                     </IconWrapper>
                 )
@@ -420,13 +676,7 @@ const NavItem = ({
                                         size?: number
                                     }
                                 >,
-                                {
-                                    color: isActive
-                                        ? tokens.section.itemList.item.color
-                                              .active
-                                        : tokens.section.itemList.item.color
-                                              .default,
-                                }
+                                { color: iconColor }
                             )}
                         </IconWrapper>
                     )}
@@ -453,7 +703,9 @@ const NavItem = ({
                     <ChevronWrapper
                         $isExpanded={isExpanded}
                         $tokens={tokens}
+                        onClick={toggleExpanded}
                         aria-hidden="true"
+                        style={{ cursor: 'pointer' }}
                     >
                         <ChevronDown
                             color={tokens.section.itemList.item.chevron.color}
@@ -468,22 +720,25 @@ const NavItem = ({
         <StyledElement
             as={Element}
             $isLink={!!item.href}
-            $isActive={isActive}
+            $visualState={visualState}
             $tokens={tokens}
             $iconOnlyMode={iconOnlyMode}
             $hasHierarchyLineInset={showHierarchyLines && isNested}
             {...elementProps}
             ref={refCallback}
             onClick={handleClick}
-            onKeyDown={(e: React.KeyboardEvent) =>
-                handleKeyDown(e, {
-                    hasChildren,
-                    isExpanded,
-                    setIsExpanded,
-                    handleClick: activateItem,
-                    index,
-                    onNavigate,
-                })
+            onKeyDown={
+                isIconOnlyMenuTrigger
+                    ? undefined
+                    : (e: React.KeyboardEvent) =>
+                          handleKeyDown(e, {
+                              hasChildren,
+                              isExpanded,
+                              setIsExpanded,
+                              handleClick: activateItem,
+                              index,
+                              onNavigate,
+                          })
             }
             aria-expanded={
                 hasChildren && !iconOnlyMode
@@ -498,8 +753,9 @@ const NavItem = ({
                 hasChildren && !iconOnlyMode ? isExpanded : undefined
             }
             data-element="sidebar-sub-section"
-            data-id={item.label}
+            data-id={getItemPathSegment(item)}
             data-status={isActive ? 'selected' : 'not selected'}
+            data-path-state={visualState}
         >
             {renderContent()}
         </StyledElement>
@@ -511,12 +767,30 @@ const NavItem = ({
             $isLast={isLast}
             $tokens={tokens}
             $hierarchyLineBorderRadius={hierarchyLineBorderRadius}
+            $verticalActive={pathVerticalActive}
+            $elbowActive={pathElbowActive}
             data-directory-hierarchy-item={
                 showHierarchyLines && isNested ? 'true' : undefined
             }
         >
+            {showHierarchyLines && isNested && pathElbowActive && (
+                <ActivePathStub $tokens={tokens} aria-hidden="true" />
+            )}
             <NavItemContentFrame $showHierarchyLines={showHierarchyLines}>
-                {iconOnlyMode && item.leftSlot ? (
+                {isIconOnlyMenuTrigger ? (
+                    <MenuV2
+                        trigger={itemElement}
+                        items={[{ items: iconOnlyMenuItems }]}
+                        alignment={MenuV2Alignment.START}
+                        side={MenuV2Side.RIGHT}
+                        sideOffset={8}
+                        dimensions={{ minWidth: 200 }}
+                        triggerProps={{
+                            'aria-haspopup': 'menu',
+                            'aria-label': `${item.label} menu`,
+                        }}
+                    />
+                ) : iconOnlyMode && item.leftSlot ? (
                     <TooltipV2 content={item.label} side={TooltipV2Side.RIGHT}>
                         {itemElement}
                     </TooltipV2>
@@ -544,7 +818,7 @@ const NavItem = ({
                                     key={childIdx}
                                     item={childItem}
                                     index={childIdx}
-                                    itemPath={`${itemPath}/${childItem.label}`}
+                                    itemPath={`${itemPath}/${getItemPathSegment(childItem)}`}
                                     iconOnlyMode={iconOnlyMode}
                                     showHierarchyLines={showHierarchyLines}
                                     hierarchyLineBorderRadius={
@@ -555,6 +829,17 @@ const NavItem = ({
                                         (item.items?.length || 0) - 1
                                     }
                                     isNested
+                                    enableParentSelection={
+                                        enableParentSelection
+                                    }
+                                    highlightActivePath={highlightActivePath}
+                                    pathVerticalActive={
+                                        activeChildIndex >= 0 &&
+                                        childIdx < activeChildIndex
+                                    }
+                                    pathElbowActive={
+                                        childIdx === activeChildIndex
+                                    }
                                     onNavigate={(direction, currentIndex) => {
                                         if (
                                             direction === 'up' &&

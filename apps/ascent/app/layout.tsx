@@ -54,8 +54,8 @@ export default function RootLayout({
                     name="viewport"
                     content="width=device-width, initial-scale=1"
                 />
-                <link rel="icon" href="/favicon.ico" />
-                <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+                {/* Tab/touch icons are emitted by Next from app/{favicon.ico,icon.svg,apple-icon.png};
+                    public/icon.png is the 512px PWA icon referenced by manifest.json */}
                 <link rel="manifest" href="/manifest.json" />
                 <meta name="theme-color" content="#000000" />
             </head>

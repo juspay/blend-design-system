@@ -66,6 +66,7 @@ export type SubMenuProps = {
     selected: string
     onSelect: (value: string) => void
     singleSelectTokens: SingleSelectV2TokensType
+    focusIdentityEnabled?: boolean
 }
 
 export const SubMenu = ({
@@ -73,6 +74,7 @@ export const SubMenu = ({
     onSelect,
     selected,
     singleSelectTokens,
+    focusIdentityEnabled,
 }: SubMenuProps) => {
     const sub = singleSelectTokens.menu.submenu
     const triggerPadding = [
@@ -173,6 +175,7 @@ export const SubMenu = ({
                         onSelect={onSelect}
                         selected={selected}
                         singleSelectTokens={singleSelectTokens}
+                        focusIdentityEnabled={focusIdentityEnabled}
                     />
                 ))}
             </SubContent>
@@ -186,6 +189,7 @@ export type MenuItemProps = {
     onSelect: (value: string) => void
     singleSelectTokens?: SingleSelectV2TokensType
     index?: number
+    focusIdentityEnabled?: boolean
 }
 
 export const MenuItem = ({
@@ -194,6 +198,7 @@ export const MenuItem = ({
     selected,
     singleSelectTokens,
     index,
+    focusIdentityEnabled,
 }: MenuItemProps) => {
     if (item.subMenu) {
         if (!singleSelectTokens) {
@@ -208,6 +213,7 @@ export const MenuItem = ({
                 onSelect={onSelect}
                 selected={selected}
                 singleSelectTokens={singleSelectTokens}
+                focusIdentityEnabled={focusIdentityEnabled}
             />
         )
     }
@@ -223,6 +229,7 @@ export const MenuItem = ({
             itemTokens={singleSelectTokens.menu.item}
             index={index}
             showCheckmark
+            focusIdentityValue={focusIdentityEnabled ? item.value : undefined}
         />
     )
 }

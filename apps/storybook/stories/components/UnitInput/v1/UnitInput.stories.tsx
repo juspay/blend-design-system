@@ -4,6 +4,8 @@ import {
     UnitInput,
     UnitInputSize,
     UnitPosition,
+    ThemeProvider,
+    Theme,
 } from '@juspay/blend-design-system'
 import { DollarSign, Percent, Clock, Weight } from 'lucide-react'
 import {
@@ -667,5 +669,97 @@ export const WithLabelsAndHints: Story = {
                 story: 'UnitInput with comprehensive labeling: main label, sublabel, hint text, and help tooltip.',
             },
         },
+    },
+}
+
+// ———————————————————————————————————————————————————————————————————————
+// Dark theme: default / focus / error / disabled states
+export const DarkThemeStates: Story = {
+    render: () => {
+        const Row = ({
+            title,
+            children,
+        }: {
+            title: string
+            children: React.ReactNode
+        }) => (
+            <div
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 8,
+                    maxWidth: 320,
+                }}
+            >
+                <span style={{ fontSize: 11, color: '#aaa' }}>{title}</span>
+                {children}
+            </div>
+        )
+
+        return (
+            <ThemeProvider theme={Theme.DARK}>
+                <div
+                    style={{
+                        padding: 24,
+                        background: '#0f172a',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+                        gap: 24,
+                    }}
+                >
+                    <Row title="Default">
+                        <UnitInput
+                            label="Price"
+                            unit="$"
+                            unitPosition={UnitPosition.LEFT}
+                            value={50}
+                            onChange={() => {}}
+                            placeholder="0.00"
+                        />
+                    </Row>
+                    <Row title="Focus / value">
+                        <UnitInput
+                            label="Weight"
+                            unit="kg"
+                            unitPosition={UnitPosition.RIGHT}
+                            value={42}
+                            onChange={() => {}}
+                            placeholder="0.00"
+                        />
+                    </Row>
+                    <Row title="Error">
+                        <UnitInput
+                            label="Quantity"
+                            unit="%"
+                            unitPosition={UnitPosition.RIGHT}
+                            value={150}
+                            onChange={() => {}}
+                            placeholder="0.00"
+                            error
+                            errorMessage="Out of range (max 100)"
+                        />
+                    </Row>
+                    <Row title="Disabled">
+                        <UnitInput
+                            label="Currency"
+                            unit="USD"
+                            unitPosition={UnitPosition.LEFT}
+                            value={100}
+                            onChange={() => {}}
+                            placeholder="0.00"
+                            disabled
+                        />
+                    </Row>
+                </div>
+            </ThemeProvider>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'UnitInput under `ThemeProvider theme={Theme.DARK}` covering default / focus / error / disabled states.',
+            },
+        },
+        chromatic: CHROMATIC_CONFIG,
     },
 }

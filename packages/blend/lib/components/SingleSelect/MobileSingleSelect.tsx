@@ -32,7 +32,10 @@ import { setupAccessibility } from './utils'
 import {
     hasExactMatch as checkExactMatch,
     getFilteredItemsWithCustomValue,
+    hasRenderableSelectItems,
 } from '../Select/selectUtils'
+import { useSelectSearchController } from '../Select/useSelectSearchController'
+import SelectSearchStatus from '../Select/SelectSearchStatus'
 
 type MobileSingleSelectProps = SingleSelectProps
 
@@ -217,8 +220,12 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     disabled,
     selected,
     onSelect,
-    enableSearch = false,
+    enableSearch,
     searchPlaceholder = 'Search options...',
+    searchText: controlledSearchText,
+    onSearchChange,
+    isSearchLoading,
+    emptyStateText,
     slot,
     customTrigger,
     inline = false,
@@ -238,23 +245,39 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
     const [drawerOpen, setDrawerOpen] = useState(false)
-    const [searchText, setSearchText] = useState('')
+    const {
+        value: searchText,
+        isControlled: isSearchControlled,
+        isSearchEnabled,
+        shouldFilterInternally,
+        valueForSearchBehavior,
+        dispatchUserValue,
+        resetUncontrolled,
+    } = useSelectSearchController({
+        controlledValue: controlledSearchText,
+        onValueChange: onSearchChange,
+        explicitShow: enableSearch,
+        existingSurfaceDefault: false,
+    })
+    const isActiveSearchLoading = isSearchEnabled && Boolean(isSearchLoading)
     const valueLabelMap = map(items)
 
     const hasMatch = React.useMemo(
-        () => checkExactMatch(searchText, items),
-        [searchText, items]
+        () => checkExactMatch(valueForSearchBehavior, items),
+        [valueForSearchBehavior, items]
     )
 
     const filteredItems = React.useMemo(() => {
-        const baseFilteredItems = filterMenuGroups(items, searchText)
+        const baseFilteredItems = shouldFilterInternally
+            ? filterMenuGroups(items, searchText)
+            : items
 
         return getFilteredItemsWithCustomValue(
             baseFilteredItems,
             searchText,
             hasMatch,
             allowCustomValue,
-            enableSearch || false,
+            isSearchEnabled && !isSearchLoading,
             customValueLabel
         )
     }, [
@@ -262,9 +285,20 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
         searchText,
         allowCustomValue,
         hasMatch,
-        enableSearch,
+        isSearchEnabled,
+        isSearchLoading,
+        shouldFilterInternally,
         customValueLabel,
     ])
+    const hasSourceItems = isSearchControlled
+        ? hasRenderableSelectItems(items)
+        : items.length > 0
+    const hasRenderableItems = isSearchControlled
+        ? hasRenderableSelectItems(filteredItems)
+        : filteredItems.length > 0
+    const showEmptyState = isSearchControlled
+        ? !hasRenderableItems
+        : !hasSourceItems || (!hasRenderableItems && searchText.length > 0)
 
     const isItemSelected = selected.length > 0
 
@@ -325,8 +359,8 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                 undefined as unknown as React.FocusEvent<HTMLButtonElement>
                             )
                         }
-                        if (enableSearch) {
-                            setSearchText('')
+                        if (isSearchEnabled) {
+                            resetUncontrolled()
                         }
                     }
                 }}
@@ -416,7 +450,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                         overflow="auto"
                                         flexGrow={1}
                                     >
-                                        {enableSearch && (
+                                        {isSearchEnabled && (
                                             <Block
                                                 padding="16px 16px 8px 16px"
                                                 backgroundColor={
@@ -432,7 +466,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                     }
                                                     value={searchText}
                                                     onChange={(e) =>
-                                                        setSearchText(
+                                                        dispatchUserValue(
                                                             e.target.value
                                                         )
                                                     }
@@ -444,7 +478,23 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                             </Block>
                                         )}
 
-                                        {items.length === 0 ? (
+                                        <SelectSearchStatus
+                                            isControlled={
+                                                isSearchControlled &&
+                                                isSearchEnabled
+                                            }
+                                            isLoading={isActiveSearchLoading}
+                                            isEmpty={!hasRenderableItems}
+                                            emptyStateText={
+                                                emptyStateText ||
+                                                (!hasSourceItems
+                                                    ? 'No items available'
+                                                    : 'No results found')
+                                            }
+                                        />
+
+                                        {isActiveSearchLoading &&
+                                        !hasRenderableItems ? null : showEmptyState ? (
                                             <Block
                                                 display="flex"
                                                 justifyContent="center"
@@ -463,30 +513,10 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                     }
                                                     textAlign="center"
                                                 >
-                                                    No items available
-                                                </Text>
-                                            </Block>
-                                        ) : filteredItems.length === 0 &&
-                                          searchText.length > 0 ? (
-                                            <Block
-                                                display="flex"
-                                                justifyContent="center"
-                                                alignItems="center"
-                                                padding={
-                                                    singleSelectTokens.menu.item
-                                                        .padding
-                                                }
-                                            >
-                                                <Text
-                                                    variant="body.md"
-                                                    color={
-                                                        singleSelectTokens.menu
-                                                            .item.optionsLabel
-                                                            .color.default
-                                                    }
-                                                    textAlign="center"
-                                                >
-                                                    No results found
+                                                    {emptyStateText ||
+                                                        (!hasSourceItems
+                                                            ? 'No items available'
+                                                            : 'No results found')}
                                                 </Text>
                                             </Block>
                                         ) : (

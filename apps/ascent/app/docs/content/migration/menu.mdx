@@ -1,0 +1,235 @@
+---
+title: Menu v1 to v2
+description: Migrate Menu to MenuV2, including structured items, dimensions, virtualization, and controlled selection.
+---
+
+## Overview
+
+`Menu` is deprecated in favor of `MenuV2`. The familiar dropdown structure,
+grouping, search, submenus, positioning, tooltips, disabled items, and
+controlled open state remain. V2 makes the item model more intentional,
+consolidates configuration objects, and adds accessible controlled selection.
+
+The biggest migration work is converting every item from a string label and
+four positional slots to a label object with one leading slot. Review any
+trailing slot content before moving it—there is not a like-for-like v2 slot for
+it.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Menu,
+    MenuAlignment,
+    MenuItemActionType,
+    MenuItemVariant,
+    MenuSide,
+    Button,
+} from '@juspay/blend-design-system'
+;<Menu
+    trigger={<Button text="Actions" />}
+    alignment={MenuAlignment.END}
+    side={MenuSide.BOTTOM}
+    minWidth={240}
+    maxHeight={320}
+    items={[
+        {
+            label: 'Account',
+            items: [
+                {
+                    label: 'Edit profile',
+                    slot1: <UserIcon />,
+                    onClick: openProfile,
+                },
+                {
+                    label: 'Delete account',
+                    variant: MenuItemVariant.ACTION,
+                    actionType: MenuItemActionType.DANGER,
+                    onClick: deleteAccount,
+                },
+            ],
+        },
+    ]}
+/>
+```
+
+```tsx
+// v2
+import {
+    MenuV2,
+    MenuV2Alignment,
+    MenuV2ItemActionType,
+    MenuV2ItemVariant,
+    MenuV2Side,
+    ButtonV2,
+} from '@juspay/blend-design-system'
+;<MenuV2
+    trigger={<ButtonV2 text="Actions" />}
+    alignment={MenuV2Alignment.END}
+    side={MenuV2Side.BOTTOM}
+    dimensions={{ minWidth: 240, maxHeight: 320 }}
+    items={[
+        {
+            id: 'account',
+            label: 'Account',
+            items: [
+                {
+                    id: 'edit-profile',
+                    label: {
+                        text: 'Edit profile',
+                        leftSlot: <UserIcon aria-hidden="true" />,
+                    },
+                    onClick: openProfile,
+                },
+                {
+                    id: 'delete-account',
+                    label: { text: 'Delete account' },
+                    variant: MenuV2ItemVariant.ACTION,
+                    actionType: MenuV2ItemActionType.DANGER,
+                    onClick: deleteAccount,
+                },
+            ],
+        },
+    ]}
+/>
+```
+
+## Breaking changes
+
+### Rename the component, enums, and item types
+
+**v1:** `Menu`, `MenuAlignment`, `MenuSide`, `MenuItemVariant`,
+`MenuItemActionType`, `MenuProps`, `MenuGroupType`, and `MenuItemType`.
+
+**v2:** `MenuV2`, `MenuV2Alignment`, `MenuV2Side`, `MenuV2ItemVariant`,
+`MenuV2ItemActionType`, `MenuV2Props`, `MenuV2GroupType`, and
+`MenuV2ItemType`.
+
+The enum values stay the same: alignment remains `start`, `center`, or `end`;
+side remains `top`, `right`, `bottom`, or `left`; and item variants remain
+`default` or `action`, with `primary` and `danger` action types. Rename the
+imports and type annotations together so v1 and v2 menus can coexist during an
+incremental rollout.
+
+### Convert each item label to an object
+
+**v1:** every item has `label: string`.
+
+**v2:** every item has `label: { text: string; leftSlot?: ReactElement }`.
+
+Wrap the existing string in `{ text: ... }`. Give items and groups an `id` when
+their order can change, when the menu is virtualized, or when the same label
+can appear more than once. V2 can generate fallback IDs, but stable IDs prevent
+state and rendering from being tied to array position.
+
+### Replace four positional slots with one leading slot
+
+**v1:** `slot1` is leading, while `slot2`, `slot3`, and `slot4` render after
+the label.
+
+**v2:** `label.leftSlot` is the only general-purpose item slot.
+
+Move `slot1` to `label.leftSlot`. There is no direct v2 equivalent for
+`slot2`, `slot3`, or `slot4`; do not silently drop badges, counters, or action
+icons that use them. For selected items, use the new selection API so v2 can
+render its checkmark. For submenu items, v2 supplies the disclosure chevron.
+If the trailing content is essential to the interaction, retain that call site
+on v1 until a supported v2 item layout exists.
+
+### Use a single-element trigger and `triggerProps`
+
+**v1:** `trigger` accepts a `ReactNode`.
+
+**v2:** `trigger` must be a single `ReactElement`, because v2 clones it before
+passing it to the Radix trigger. Button attributes that need to be added or
+changed belong in `triggerProps`.
+
+Replace a text, fragment, or multiple-child trigger with one concrete button
+or element. `triggerProps` intentionally excludes `className` and `style`, so
+keep visual styling on the trigger element itself.
+
+### Group dimensions and virtual-scrolling options
+
+**v1:** `minWidth`, `maxWidth`, `minHeight`, and `maxHeight` are top-level
+numeric props. Virtualization uses top-level `virtualItemHeight`,
+`virtualOverscan`, and `virtualScrollThreshold`.
+
+**v2:** dimensions move to `dimensions`, and virtual configuration moves to
+`virtualScrolling`.
+
+```tsx
+<MenuV2
+    dimensions={{ minWidth: 240, maxWidth: 320, maxHeight: 400 }}
+    enableVirtualScrolling
+    virtualScrolling={{ itemHeight: 40, overscan: 5, threshold: 20 }}
+    {...props}
+/>
+```
+
+Copy the existing numeric values into those objects to preserve behavior. V2
+uses a threshold of 30 and overscan of 2 when configuration is omitted, versus
+v1’s 20 and 5. V2 only accepts a numeric `itemHeight`; replace a v1
+`virtualItemHeight` callback with a stable estimated number. The per-submenu
+virtual-scrolling props are removed, so test large nested menus without that
+optimization.
+
+### Fix the collision-boundary prop name
+
+**v1:** the prop is misspelled `collisonBoundaryRef`.
+
+**v2:** use `collisionBoundaryRef`.
+
+Rename the prop and keep the existing boundary element or elements. This is a
+spelling correction that makes the positioning API match Radix terminology.
+
+### Replace menu skeleton loading UI
+
+**v1:** `skeleton={{ show, count, variant }}` renders an in-menu loading
+placeholder.
+
+**v2:** the `skeleton` prop is removed.
+
+Render a `Skeleton` or other loading placeholder around the menu trigger while
+data is loading, then mount `MenuV2` when its item groups are ready. Do not
+pass the v1 skeleton object to v2.
+
+### Make selection controlled when it is meaningful
+
+**v1:** items only expose click behavior; the menu has no selection state.
+
+**v2:** set `selected` on items and optionally configure `selectionStyle`
+(`checkmark` or `highlight`), `selectionMode` (`single` or `multiple`), and
+`closeOnSelect`.
+
+Selection is fully controlled by the consumer—update the items you pass after
+an item’s `onClick`. V2 defaults to a checkmark and single-select semantics
+once an item uses `selected`. Set `closeOnSelect={false}` for a multi-select
+menu that should stay open. Groups can override the selection style and mode
+for their own items.
+
+### Update custom tokens
+
+**v1:** the component reads `MENU` tokens.
+
+**v2:** it reads the dedicated `MENU_V2` token contract.
+
+Rebuild token overrides for the v2 contract. V2 separates menu content,
+groups, item states, selection treatment, leading slot, chevron, search icon,
+and light/dark values, so copying the old token paths will not style v2
+correctly.
+
+## What continues to work
+
+`items`, `enableSearch`, `searchPlaceholder`, `searchSortFn`, `onEnter`,
+`open`, `onOpenChange`, `asModal`, `alignment`, `side`, `sideOffset`,
+`alignOffset`, `disabled`, `subLabel`, `variant`, `actionType`, `onClick`,
+`subMenu`, submenu search, `tooltip`, and `tooltipProps` retain their purpose.
+Search still clears when the menu closes, and a menu still closes after a normal
+item selection unless `closeOnSelect={false}` is set in v2.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/menu#component-tokens) with the [V2 component token reference](/docs/components/menu-v2#component-tokens).

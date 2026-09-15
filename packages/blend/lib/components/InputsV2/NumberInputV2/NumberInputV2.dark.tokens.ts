@@ -140,7 +140,15 @@ const bottomContainer = (foundationToken: FoundationTokenType) => ({
     },
 })
 
-const darkInputContainer = (foundationToken: FoundationTokenType) => ({
+const darkInputContainer = (
+    foundationToken: FoundationTokenType,
+    padding: {
+        paddingTop: ResponsiveNumberInputV2Tokens['sm']['inputContainer']['paddingTop']
+        paddingRight: ResponsiveNumberInputV2Tokens['sm']['inputContainer']['paddingRight']
+        paddingBottom: ResponsiveNumberInputV2Tokens['sm']['inputContainer']['paddingBottom']
+        paddingLeft: ResponsiveNumberInputV2Tokens['sm']['inputContainer']['paddingLeft']
+    }
+) => ({
     slot: {
         left: {
             width: {
@@ -205,26 +213,10 @@ const darkInputContainer = (foundationToken: FoundationTokenType) => ({
         error: foundationToken.colors.red[400],
         disabled: foundationToken.colors.gray[500],
     },
-    paddingTop: {
-        sm: foundationToken.unit[6],
-        md: foundationToken.unit[8],
-        lg: foundationToken.unit[14],
-    },
-    paddingRight: {
-        sm: foundationToken.unit[10],
-        md: foundationToken.unit[12],
-        lg: foundationToken.unit[14],
-    },
-    paddingBottom: {
-        sm: foundationToken.unit[6],
-        md: foundationToken.unit[8],
-        lg: foundationToken.unit[14],
-    },
-    paddingLeft: {
-        sm: foundationToken.unit[10],
-        md: foundationToken.unit[12],
-        lg: foundationToken.unit[14],
-    },
+    paddingTop: padding.paddingTop,
+    paddingRight: padding.paddingRight,
+    paddingBottom: padding.paddingBottom,
+    paddingLeft: padding.paddingLeft,
     border: {
         default: `1px solid ${foundationToken.colors.gray[800]}`,
         hover: `1px solid ${foundationToken.colors.gray[700]}`,
@@ -277,7 +269,28 @@ export const getNumberInputV2DarkTokens = (
         sm: {
             gap: foundationToken.unit[8],
             topContainer: labelTopContainer(foundationToken),
-            inputContainer: darkInputContainer(foundationToken),
+            inputContainer: darkInputContainer(foundationToken, {
+                paddingTop: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[7],
+                    lg: foundationToken.unit[15],
+                },
+                paddingRight: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[12],
+                },
+                paddingBottom: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[7],
+                    lg: foundationToken.unit[15],
+                },
+                paddingLeft: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[12],
+                },
+            }),
             bottomContainer: bottomContainer(foundationToken),
             floatingLabels: {
                 placeholder: inputPlaceholder(foundationToken),
@@ -298,23 +311,23 @@ export const getNumberInputV2DarkTokens = (
                 },
                 paddingTop: {
                     sm: foundationToken.unit[6],
-                    md: foundationToken.unit[7],
-                    lg: foundationToken.unit[15],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
                 },
                 paddingRight: {
-                    sm: foundationToken.unit[12],
+                    sm: foundationToken.unit[10],
                     md: foundationToken.unit[12],
                     lg: foundationToken.unit[14],
                 },
                 paddingBottom: {
                     sm: foundationToken.unit[6],
-                    md: foundationToken.unit[7],
-                    lg: foundationToken.unit[15],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
                 },
                 paddingLeft: {
-                    sm: foundationToken.unit[12],
+                    sm: foundationToken.unit[10],
                     md: foundationToken.unit[12],
-                    lg: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
                 },
                 borderRadius: {
                     sm: foundationToken.unit[10],
@@ -340,7 +353,28 @@ export const getNumberInputV2DarkTokens = (
         lg: {
             gap: foundationToken.unit[8],
             topContainer: labelTopContainer(foundationToken),
-            inputContainer: darkInputContainer(foundationToken),
+            inputContainer: darkInputContainer(foundationToken, {
+                paddingTop: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[7],
+                    lg: foundationToken.unit[9],
+                },
+                paddingRight: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
+                },
+                paddingBottom: {
+                    sm: foundationToken.unit[6],
+                    md: foundationToken.unit[7],
+                    lg: foundationToken.unit[9],
+                },
+                paddingLeft: {
+                    sm: foundationToken.unit[12],
+                    md: foundationToken.unit[12],
+                    lg: foundationToken.unit[14],
+                },
+            }),
             bottomContainer: bottomContainer(foundationToken),
             floatingLabels: {
                 placeholder: inputPlaceholder(foundationToken),
@@ -361,21 +395,21 @@ export const getNumberInputV2DarkTokens = (
                 },
                 paddingTop: {
                     sm: foundationToken.unit[6],
-                    md: foundationToken.unit[7],
-                    lg: foundationToken.unit[9],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
                 },
                 paddingRight: {
-                    sm: foundationToken.unit[12],
+                    sm: foundationToken.unit[10],
                     md: foundationToken.unit[12],
                     lg: foundationToken.unit[14],
                 },
                 paddingBottom: {
                     sm: foundationToken.unit[6],
-                    md: foundationToken.unit[7],
-                    lg: foundationToken.unit[9],
+                    md: foundationToken.unit[8],
+                    lg: foundationToken.unit[14],
                 },
                 paddingLeft: {
-                    sm: foundationToken.unit[12],
+                    sm: foundationToken.unit[10],
                     md: foundationToken.unit[12],
                     lg: foundationToken.unit[14],
                 },

@@ -140,11 +140,11 @@ const data = [
 \`\`\`
 
 ## Features
-- Multiple chart types (Line, Bar, Pie)
+- Multiple chart types (Line, Bar, Pie, Funnel)
 - Interactive legends with hover and click functionality
 - Customizable colors and styling
 - Flexible data structure supporting nested data points
-- Custom tooltips with detailed information
+- Custom tooltips with detailed information and formatter callbacks
 - Header slots for additional content
 - Responsive design with container queries
 - Legend positioning options (top, right)
@@ -446,6 +446,33 @@ const generateCategoryData = (): NewNestedDataPoint[] => [
     },
 ]
 
+const generateFunnelData = (): NewNestedDataPoint[] => [
+    {
+        name: 'Visited landing page',
+        data: {
+            visitors: { primary: { label: 'Visitors', val: 10000 } },
+        },
+    },
+    {
+        name: 'Started checkout',
+        data: {
+            visitors: { primary: { label: 'Visitors', val: 6200 } },
+        },
+    },
+    {
+        name: 'Entered payment details',
+        data: {
+            visitors: { primary: { label: 'Visitors', val: 4100 } },
+        },
+    },
+    {
+        name: 'Completed purchase',
+        data: {
+            visitors: { primary: { label: 'Visitors', val: 2750 } },
+        },
+    },
+]
+
 // Default story
 export const Default: Story = {
     render: () => (
@@ -617,6 +644,109 @@ export const PieChartExample: Story = {
         docs: {
             description: {
                 story: 'Pie chart showing proportional data distribution.',
+            },
+        },
+    },
+}
+
+// Funnel charts
+export const FunnelChartPreviousBase: Story = {
+    render: () => (
+        <div className="w-200 h-135">
+            <Charts
+                chartType={ChartType.FUNNEL}
+                data={generateFunnelData()}
+                funnelConfig={{ percentageBase: 'previous' }}
+                colors={[
+                    { key: 'Visited landing page', color: '#00C951' },
+                    { key: 'Started checkout', color: '#2B7FFF' },
+                    { key: 'Entered payment details', color: '#FF8904' },
+                    { key: 'Completed purchase', color: '#AD46FF' },
+                ]}
+                chartHeaderSlot={
+                    <span className="text-lg font-bold">
+                        Conversion Funnel · Previous Stage
+                    </span>
+                }
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Conversion funnel with each stage showing drop-off relative to the immediately previous stage.',
+            },
+        },
+    },
+}
+
+export const FunnelChartFirstBase: Story = {
+    render: () => (
+        <div className="w-200 h-135">
+            <Charts
+                chartType={ChartType.FUNNEL}
+                data={generateFunnelData()}
+                funnelConfig={{ percentageBase: 'first' }}
+                colors={[
+                    { key: 'Visited landing page', color: '#00C951' },
+                    { key: 'Started checkout', color: '#2B7FFF' },
+                    { key: 'Entered payment details', color: '#FF8904' },
+                    { key: 'Completed purchase', color: '#AD46FF' },
+                ]}
+                chartHeaderSlot={
+                    <span className="text-lg font-bold">
+                        Conversion Funnel · First Stage
+                    </span>
+                }
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Conversion funnel with each stage showing total drop-off relative to the first stage.',
+            },
+        },
+    },
+}
+
+export const CustomTooltipFormatter: Story = {
+    render: () => (
+        <div className="w-200 h-135">
+            <Charts
+                chartType={ChartType.LINE}
+                data={generateMonthlyData()}
+                tooltip={{
+                    labelFormatter: (axisValue) => `Period: ${axisValue}`,
+                    formatter: ({ seriesName, value, dataIndex }) => (
+                        <span
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 2,
+                            }}
+                        >
+                            <span>
+                                {String(seriesName)} · point {dataIndex + 1}
+                            </span>
+                            <span>Value: {String(value)}</span>
+                        </span>
+                    ),
+                }}
+                xAxis={{ label: 'Month', show: true }}
+                yAxis={{ label: 'Amount', show: true }}
+                chartHeaderSlot={
+                    <span className="text-lg font-bold">
+                        Custom Multi-line Tooltip
+                    </span>
+                }
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Customizes the existing tooltip chrome with a ReactNode formatter and a formatted header.',
             },
         },
     },

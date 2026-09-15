@@ -1,0 +1,181 @@
+---
+title: Stepper v1 to v2
+description: Migrate Stepper to StepperV2, including step statuses, substeps, custom content, expansion, and tokens.
+---
+
+## Overview
+
+`Stepper` is deprecated in favor of `StepperV2`. It continues to support
+horizontal and vertical orientation, zero-based step click indices, clickable
+steps, descriptions, custom icons, disabled and skipped states, substeps, and
+expandable vertical steps.
+
+V2 renames the public component and status types, removes the arbitrary step
+and substep slots, and gives `isExpanded` reliable controlled behavior. The
+substep callback remains 1-based at runtime, but V2 documents that contract
+explicitly so applications should preserve it deliberately.
+
+## Quick migration
+
+```tsx
+// v1
+import { Stepper, StepperType, StepState } from '@juspay/blend-design-system'
+;<Stepper
+    steps={[
+        { id: 1, title: 'Account', status: StepState.COMPLETED },
+        {
+            id: 2,
+            title: 'Verification',
+            status: StepState.CURRENT,
+            description: 'Confirm your email address',
+            substeps: [{ id: 21, title: 'Email', status: StepState.CURRENT }],
+            isExpandable: true,
+            isExpanded: true,
+        },
+    ]}
+    stepperType={StepperType.VERTICAL}
+    clickable
+    onStepClick={(index) => setCurrentStep(index)}
+    onSubstepClick={(stepId, index) => setCurrentSubstep(stepId, index)}
+/>
+```
+
+```tsx
+// v2
+import {
+    StepperV2,
+    StepperV2StepStatus,
+    StepperV2Type,
+} from '@juspay/blend-design-system'
+;<StepperV2
+    steps={[
+        { id: 1, title: 'Account', status: StepperV2StepStatus.COMPLETED },
+        {
+            id: 2,
+            title: 'Verification',
+            status: StepperV2StepStatus.CURRENT,
+            description: 'Confirm your email address',
+            substeps: [
+                {
+                    id: 21,
+                    title: 'Email',
+                    status: StepperV2StepStatus.CURRENT,
+                },
+            ],
+            isExpandable: true,
+            isExpanded: true,
+        },
+    ]}
+    stepperType={StepperV2Type.VERTICAL}
+    clickable
+    onStepClick={(index) => setCurrentStep(index)}
+    onSubstepClick={(stepId, oneBasedIndex) =>
+        setCurrentSubstep(stepId, oneBasedIndex)
+    }
+/>
+```
+
+## Breaking changes
+
+### Rename the component and type exports
+
+**v1:** `Stepper`, `StepperType`, and `StepState`.
+
+**v2:** `StepperV2`, `StepperV2Type`, and `StepperV2StepStatus`.
+
+Rename imports, annotations, and every status reference together. Existing
+status values map directly: `COMPLETED`, `CURRENT`, `PENDING`, `DISABLED`, and
+`SKIPPED` retain their values. V2 also adds `DEFAULT`; omit `status` when the
+step should continue to derive its state from its position relative to the
+current step.
+
+### Remove `slot` from steps and substeps
+
+**v1:** vertical steps and substeps accept `slot?: ReactNode`, rendered at the
+right edge of their row.
+
+**v2:** `StepperV2Step` and `StepperV2SubStep` do not accept `slot`.
+
+Remove slot content from the step data. Place contextual actions beside the
+stepper, or compose an application-owned vertical workflow layout when every
+step needs an inline action. Do not rely on unsupported object properties: V2
+does not render them.
+
+### Keep substep callback indices 1-based
+
+The public V2 callback is:
+
+```tsx
+onSubstepClick?: (stepId: number, substepIndex: number) => void
+```
+
+`substepIndex` starts at `1`, not `0`. The v1 vertical renderer already called
+the consumer with `index + 1`, although its older type documentation could make
+that easy to miss. Keep existing handlers that expect one-based positions, and
+subtract one only at the boundary if application state is stored in a
+zero-based array.
+
+```tsx
+onSubstepClick={(stepId, oneBasedIndex) => {
+    const zeroBasedIndex = oneBasedIndex - 1
+    selectSubstep(stepId, zeroBasedIndex)
+}}
+```
+
+### Treat `isExpanded` as controlled when you provide it
+
+**v1:** `isExpanded` initializes an expandable vertical step and opens it when
+it becomes `true`, but a later `false` does not reliably close internal state.
+
+**v2:** when `isExpanded` is provided, V2 synchronizes its expanded state in
+both directions. There is no expansion-change callback; update the `steps`
+array yourself when application state needs to control expansion.
+
+This can change a call site that previously relied on an initial `true` value
+and then mutated data in place. Keep `steps` immutable and pass a new step
+object whenever `isExpanded` changes.
+
+### Review orientation-specific keyboard navigation
+
+Both versions use `ArrowRight`/`ArrowLeft` in a horizontal stepper and
+`ArrowDown`/`ArrowUp` in a vertical stepper, with Home and End moving to the
+ends. V2 limits ArrowRight substep expansion/navigation to the vertical layout
+so horizontal workflows maintain predictable left/right navigation.
+
+No prop migration is needed, but test click and keyboard interaction separately
+for horizontal and vertical steppers, including disabled steps and expanded
+substeps.
+
+### Update custom tokens
+
+**v1:** the component reads `STEPPER` tokens, with separate active/inactive
+connector paths and a flat step/title structure.
+
+**v2:** it reads `STEPPERV2`, whose contract nests visual values under
+`container` and adds explicit sub-connector, dot, expander, description, and
+per-side spacing entries.
+
+Rebuild overrides against `STEPPERV2` rather than copying paths. Review all
+step statuses and interaction states, as well as horizontal and vertical
+indicator sizes. V2's dedicated substep token paths replace v1's mix of
+component tokens and fixed visual values.
+
+## What continues to work
+
+`steps`, `clickable`, `onStepClick`, and `stepperType` retain their purpose and
+defaults: steps are non-clickable and the layout is horizontal unless specified.
+`onStepClick` still receives a zero-based step index. Step IDs and titles,
+descriptions, icons, disabled state, substep IDs/titles/statuses/disabled state,
+and `isExpandable` continue to work. A step with substeps still defaults to
+expandable and initially expanded unless its data explicitly says otherwise.
+
+V2 also keeps the same current-step derivation: it uses the first step marked
+`CURRENT`, or the first step when none is marked current. That derived state
+still determines completed/current/pending presentation for steps without an
+explicit status.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/stepper#component-tokens) with the [V2 component token reference](/docs/components/stepper-v2#component-tokens).

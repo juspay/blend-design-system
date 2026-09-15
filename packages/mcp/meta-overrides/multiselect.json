@@ -6,7 +6,7 @@
         "Two selection tag display types: COUNT (shows number of selected) and TEXT (shows selected labels)",
         "Select All option with customizable label",
         "Max selections limit",
-        "Built-in search",
+        "Built-in client-side search or controlled server-side search",
         "Action buttons in footer (primaryAction/secondaryAction) for apply/cancel patterns",
         "Clear All button",
         "Virtualization for large lists",
@@ -14,22 +14,27 @@
         "Mobile drawer mode",
         "Allow custom value entry"
     ],
-    "compositionPattern": "Items follow the same SelectMenuGroupType[] shape as SingleSelect. selectedValues is a string[] of currently selected item values. Pass onChange to receive the updated string[] on every selection change.",
+    "compositionPattern": "Items follow the same SelectMenuGroupType[] shape as SingleSelect. selectedValues is a string[] of currently selected item values. Pass onSelectionChange to receive the complete updated string[] once per user gesture, and feed that array straight back through selectedValues. The legacy onChange callback is per-item and receives a single toggled value string, so it fires once per item during Select All.",
     "usageExamples": [
         {
             "title": "Tag/category multi-select",
             "description": "Multi-select for assigning categories to a post.",
-            "code": "<MultiSelect\n  label=\"Categories\"\n  placeholder=\"Select categories\"\n  selectedValues={selectedCategories}\n  onChange={setSelectedCategories}\n  enableSearch\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      items: categories.map(c => ({ label: c.name, value: c.id }))\n    }\n  ]}\n/>"
+            "code": "<MultiSelect\n  label=\"Categories\"\n  placeholder=\"Select categories\"\n  selectedValues={selectedCategories}\n  onSelectionChange={setSelectedCategories}\n  enableSearch\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      items: categories.map(c => ({ label: c.name, value: c.id }))\n    }\n  ]}\n/>"
         },
         {
             "title": "Permission selector with select all",
             "description": "Multi-select for assigning permissions with a select all option and max limit.",
-            "code": "<MultiSelect\n  label=\"Permissions\"\n  placeholder=\"Select permissions\"\n  selectedValues={permissions}\n  onChange={setPermissions}\n  enableSelectAll\n  selectAllText=\"All permissions\"\n  maxSelections={10}\n  selectionTagType={MultiSelectSelectionTagType.COUNT}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      groupLabel: 'Read',\n      items: readPermissions.map(p => ({ label: p.label, value: p.value }))\n    },\n    {\n      groupLabel: 'Write',\n      items: writePermissions.map(p => ({ label: p.label, value: p.value }))\n    }\n  ]}\n/>"
+            "code": "<MultiSelect\n  label=\"Permissions\"\n  placeholder=\"Select permissions\"\n  selectedValues={permissions}\n  onSelectionChange={setPermissions}\n  enableSelectAll\n  selectAllText=\"All permissions\"\n  maxSelections={10}\n  selectionTagType={MultiSelectSelectionTagType.COUNT}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[\n    {\n      groupLabel: 'Read',\n      items: readPermissions.map(p => ({ label: p.label, value: p.value }))\n    },\n    {\n      groupLabel: 'Write',\n      items: writePermissions.map(p => ({ label: p.label, value: p.value }))\n    }\n  ]}\n/>"
         },
         {
             "title": "Filter panel multi-select with action buttons",
             "description": "Multi-select where changes are applied via an explicit 'Apply' button instead of immediately.",
-            "code": "<MultiSelect\n  label=\"Filter by status\"\n  placeholder=\"All statuses\"\n  selectedValues={pendingFilters}\n  onChange={setPendingFilters}\n  showActionButtons\n  primaryAction={{ label: 'Apply', onClick: handleApplyFilters }}\n  secondaryAction={{ label: 'Clear', onClick: handleClearFilters }}\n  showClearButton\n  onClearAllClick={handleClearAll}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[{ items: statuses.map(s => ({ label: s.label, value: s.value })) }]}\n/>"
+            "code": "<MultiSelect\n  label=\"Filter by status\"\n  placeholder=\"All statuses\"\n  selectedValues={pendingFilters}\n  onSelectionChange={setPendingFilters}\n  showActionButtons\n  primaryAction={{ label: 'Apply', onClick: handleApplyFilters }}\n  secondaryAction={{ label: 'Clear', onClick: handleClearFilters }}\n  showClearButton\n  onClearAllClick={handleClearAll}\n  size={MultiSelectMenuSize.MEDIUM}\n  items={[{ items: statuses.map(s => ({ label: s.label, value: s.value })) }]}\n/>"
+        },
+        {
+            "title": "Controlled server-side search",
+            "description": "The consumer debounces requests and supplies already-filtered results. Providing searchText disables internal filtering.",
+            "code": "<MultiSelect\n  label=\"Assignees\"\n  placeholder=\"Select people\"\n  selectedValues={assignees}\n  onSelectionChange={setAssignees}\n  items={searchResults}\n  searchText={query}\n  onSearchChange={setQuery}\n  isSearchLoading={isSearching}\n  emptyStateText={query ? 'No people found' : 'Start typing to search'}\n/>"
         }
     ],
     "propOverrides": {
@@ -45,13 +50,33 @@
             "llmContext": "Required. Array of currently selected value strings. Each string must match a value in your items array. Manage with useState initialized to [] for empty selection.",
             "propDescription": "Required. Array of currently selected item values"
         },
+        "onSelectionChange": {
+            "llmContext": "Recommended. Callback fired once per user gesture with the complete resulting string[]. Replace your selectedValues state with the received array. Select All emits a single call containing every newly selected value.",
+            "propDescription": "Recommended. Called once per gesture with the full resulting selection"
+        },
         "onChange": {
-            "llmContext": "Required. Callback fired with the complete updated string[] when any selection changes. Replace your selectedValues state with the received array.",
-            "propDescription": "Required. Called with full updated selected values array"
+            "llmContext": "Legacy and optional. Fired once per toggled item with that item's value string, not an array. Select All invokes it once per value. Prefer onSelectionChange for form state.",
+            "propDescription": "Legacy optional per-item toggle callback"
         },
         "items": {
             "llmContext": "Required. Same SelectMenuGroupType[] structure as SingleSelect. Each group has optional groupLabel, items array, and showSeparator. Each item: { label, value, subLabel?, slot1?, disabled? }.",
             "propDescription": "Required. Grouped array of selectable items"
+        },
+        "searchText": {
+            "llmContext": "Providing this prop, including an empty string, enables controlled server-side search and disables internal filtering. Always pass already-filtered items. Debounce API calls in the consumer.",
+            "propDescription": "Controlled search query; disables internal filtering when present"
+        },
+        "onSearchChange": {
+            "llmContext": "Called for every user input change. Update searchText immediately and debounce only the API request. Optional: omitting it creates a read-only controlled query.",
+            "propDescription": "Called with the next controlled search query"
+        },
+        "isSearchLoading": {
+            "llmContext": "Use only for the controlled search request. This renders a loading state in the results region and is separate from hasMore/loadingComponent pagination.",
+            "propDescription": "Shows search-specific loading feedback in the menu"
+        },
+        "emptyStateText": {
+            "llmContext": "Custom menu message when no result items are supplied, such as 'Start typing to search' or 'No people found'.",
+            "propDescription": "Custom empty search-results message"
         },
         "selectionTagType": {
             "llmContext": "COUNT shows a number badge (e.g., '3 selected') — use when labels are long or space is limited, or when the exact selections aren't important to see at a glance. TEXT shows the labels inline — use when the user needs to see which specific items are selected in the trigger.",

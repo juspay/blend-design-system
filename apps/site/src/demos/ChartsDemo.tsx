@@ -9867,6 +9867,482 @@ xAxis={{
                 </div>
             </div>
 
+            {/* Custom Tooltip Content Example */}
+            <div className="chart-example-container mb-12">
+                <h3 className="chart-header-title mb-6">
+                    🎨 Custom Tooltip Content
+                </h3>
+                <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="text-blue-800 font-semibold mb-2">
+                        ✨ tooltip.content — Render Your Own Tooltip
+                    </h4>
+                    <p className="text-blue-700 text-sm">
+                        Pass a renderer to <code>tooltip.content</code> to fully
+                        control the tooltip layout. It receives chart context (
+                        <code>active</code>, <code>label</code>,{' '}
+                        <code>payload</code>, <code>originalData</code>,{' '}
+                        <code>chartType</code>, <code>selectedKeys</code>,{' '}
+                        <code>xAxis</code>, <code>yAxis</code>). When omitted,
+                        the default tooltip is used — fully backward compatible.
+                    </p>
+                </div>
+
+                <div className="flex flex-col gap-12">
+                    {/* Bar chart with compact custom tooltip */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            📊 Compact Metric Tooltip (Bar)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            <strong>Hover over bars:</strong> A compact tooltip
+                            with colored metric indicators and right-aligned
+                            values.
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: 'Mon',
+                                    data: {
+                                        Impressions: {
+                                            primary: {
+                                                label: 'Impressions',
+                                                val: 48200,
+                                            },
+                                        },
+                                        Clicks: {
+                                            primary: {
+                                                label: 'Clicks',
+                                                val: 3120,
+                                            },
+                                        },
+                                        Conversions: {
+                                            primary: {
+                                                label: 'Conversions',
+                                                val: 428,
+                                            },
+                                        },
+                                    },
+                                },
+                                {
+                                    name: 'Tue',
+                                    data: {
+                                        Impressions: {
+                                            primary: {
+                                                label: 'Impressions',
+                                                val: 52100,
+                                            },
+                                        },
+                                        Clicks: {
+                                            primary: {
+                                                label: 'Clicks',
+                                                val: 3410,
+                                            },
+                                        },
+                                        Conversions: {
+                                            primary: {
+                                                label: 'Conversions',
+                                                val: 502,
+                                            },
+                                        },
+                                    },
+                                },
+                                {
+                                    name: 'Wed',
+                                    data: {
+                                        Impressions: {
+                                            primary: {
+                                                label: 'Impressions',
+                                                val: 61800,
+                                            },
+                                        },
+                                        Clicks: {
+                                            primary: {
+                                                label: 'Clicks',
+                                                val: 3980,
+                                            },
+                                        },
+                                        Conversions: {
+                                            primary: {
+                                                label: 'Conversions',
+                                                val: 611,
+                                            },
+                                        },
+                                    },
+                                },
+                                {
+                                    name: 'Thu',
+                                    data: {
+                                        Impressions: {
+                                            primary: {
+                                                label: 'Impressions',
+                                                val: 57400,
+                                            },
+                                        },
+                                        Clicks: {
+                                            primary: {
+                                                label: 'Clicks',
+                                                val: 3650,
+                                            },
+                                        },
+                                        Conversions: {
+                                            primary: {
+                                                label: 'Conversions',
+                                                val: 547,
+                                            },
+                                        },
+                                    },
+                                },
+                                {
+                                    name: 'Fri',
+                                    data: {
+                                        Impressions: {
+                                            primary: {
+                                                label: 'Impressions',
+                                                val: 67300,
+                                            },
+                                        },
+                                        Clicks: {
+                                            primary: {
+                                                label: 'Clicks',
+                                                val: 4290,
+                                            },
+                                        },
+                                        Conversions: {
+                                            primary: {
+                                                label: 'Conversions',
+                                                val: 683,
+                                            },
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.BAR}
+                            chartHeaderSlot={
+                                <div className="chart-header">
+                                    <h4 style={{ margin: 0 }}>
+                                        Weekly Campaign Performance
+                                    </h4>
+                                </div>
+                            }
+                            tooltip={{
+                                content: ({ active, label, payload }) => {
+                                    if (!active || !payload?.length) {
+                                        return null
+                                    }
+                                    return (
+                                        <div
+                                            style={{
+                                                background:
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[0],
+                                                border: `1px solid ${FOUNDATION_THEME.colors.gray[150]}`,
+                                                borderRadius: 8,
+                                                padding: 12,
+                                                minWidth: 200,
+                                                boxShadow:
+                                                    '0 4px 12px rgba(0,0,0,0.08)',
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontSize: 12,
+                                                    fontWeight: 600,
+                                                    color: FOUNDATION_THEME
+                                                        .colors.gray[700],
+                                                    marginBottom: 8,
+                                                    textTransform: 'uppercase',
+                                                    letterSpacing: 0.5,
+                                                }}
+                                            >
+                                                {label}
+                                            </div>
+                                            {payload.map((item) => (
+                                                <div
+                                                    key={item.dataKey as string}
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: 8,
+                                                        fontSize: 13,
+                                                        color: FOUNDATION_THEME
+                                                            .colors.gray[800],
+                                                        padding: '2px 0',
+                                                    }}
+                                                >
+                                                    <span
+                                                        style={{
+                                                            display:
+                                                                'inline-block',
+                                                            width: 8,
+                                                            height: 8,
+                                                            borderRadius: 2,
+                                                            background:
+                                                                item.color,
+                                                        }}
+                                                    />
+                                                    <span style={{ flex: 1 }}>
+                                                        {item.name}
+                                                    </span>
+                                                    <span
+                                                        style={{
+                                                            fontWeight: 600,
+                                                            fontVariantNumeric:
+                                                                'tabular-nums',
+                                                        }}
+                                                    >
+                                                        {typeof item.value ===
+                                                        'number'
+                                                            ? item.value.toLocaleString()
+                                                            : item.value}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )
+                                },
+                            }}
+                        />
+                        <div className="mt-2 text-xs text-gray-500">
+                            💡 Custom renderer receives <code>active</code>,{' '}
+                            <code>label</code>, <code>payload</code> (with{' '}
+                            <code>color</code>, <code>name</code>,{' '}
+                            <code>value</code>, <code>dataKey</code>), plus
+                            chart context.
+                        </div>
+                    </div>
+
+                    {/* Line chart with custom tooltip using chart context */}
+                    <div>
+                        <h4 className="text-lg font-semibold mb-3">
+                            📈 Themed Tooltip with Chart Context (Line)
+                        </h4>
+                        <p className="text-sm text-gray-600 mb-3">
+                            <strong>Hover over points:</strong> This tooltip
+                            uses <code>chartType</code> and{' '}
+                            <code>selectedKeys</code> from the renderer args to
+                            adapt its layout. Works alongside{' '}
+                            <code>position</code> and{' '}
+                            <code>allowEscapeViewBox</code>.
+                        </p>
+                        <Charts
+                            data={[
+                                {
+                                    name: 'Jan',
+                                    data: {
+                                        Revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 42000,
+                                            },
+                                        },
+                                        Cost: {
+                                            primary: {
+                                                label: 'Cost',
+                                                val: 28000,
+                                            },
+                                        },
+                                    },
+                                },
+                                {
+                                    name: 'Feb',
+                                    data: {
+                                        Revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 48500,
+                                            },
+                                        },
+                                        Cost: {
+                                            primary: {
+                                                label: 'Cost',
+                                                val: 30100,
+                                            },
+                                        },
+                                    },
+                                },
+                                {
+                                    name: 'Mar',
+                                    data: {
+                                        Revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 53200,
+                                            },
+                                        },
+                                        Cost: {
+                                            primary: {
+                                                label: 'Cost',
+                                                val: 31800,
+                                            },
+                                        },
+                                    },
+                                },
+                                {
+                                    name: 'Apr',
+                                    data: {
+                                        Revenue: {
+                                            primary: {
+                                                label: 'Revenue',
+                                                val: 61800,
+                                            },
+                                        },
+                                        Cost: {
+                                            primary: {
+                                                label: 'Cost',
+                                                val: 34200,
+                                            },
+                                        },
+                                    },
+                                },
+                            ]}
+                            chartType={ChartType.LINE}
+                            chartHeaderSlot={
+                                <div className="chart-header">
+                                    <h4 style={{ margin: 0 }}>
+                                        Revenue vs Cost
+                                    </h4>
+                                </div>
+                            }
+                            tooltip={{
+                                position: { y: -10 },
+                                allowEscapeViewBox: { y: true },
+                                content: ({
+                                    active,
+                                    label,
+                                    payload,
+                                    chartType: ct,
+                                    selectedKeys: keys,
+                                }) => {
+                                    if (!active || !payload?.length) {
+                                        return null
+                                    }
+                                    const revenue = payload.find(
+                                        (p) => p.dataKey === 'Revenue'
+                                    )
+                                    const cost = payload.find(
+                                        (p) => p.dataKey === 'Cost'
+                                    )
+                                    const profit =
+                                        revenue && cost
+                                            ? Number(revenue.value) -
+                                              Number(cost.value)
+                                            : 0
+                                    return (
+                                        <div
+                                            style={{
+                                                background:
+                                                    FOUNDATION_THEME.colors
+                                                        .gray[900],
+                                                color: FOUNDATION_THEME.colors
+                                                    .gray[0],
+                                                borderRadius: 6,
+                                                padding: 12,
+                                                minWidth: 180,
+                                            }}
+                                        >
+                                            <div
+                                                style={{
+                                                    fontSize: 11,
+                                                    opacity: 0.7,
+                                                    marginBottom: 6,
+                                                }}
+                                            >
+                                                {String(ct)} · {keys.length} key
+                                                {keys.length === 1 ? '' : 's'}
+                                            </div>
+                                            <div
+                                                style={{
+                                                    fontSize: 14,
+                                                    fontWeight: 600,
+                                                    marginBottom: 8,
+                                                }}
+                                            >
+                                                {label}
+                                            </div>
+                                            {payload.map((item) => (
+                                                <div
+                                                    key={item.dataKey as string}
+                                                    style={{
+                                                        display: 'flex',
+                                                        justifyContent:
+                                                            'space-between',
+                                                        gap: 16,
+                                                        fontSize: 13,
+                                                        padding: '1px 0',
+                                                    }}
+                                                >
+                                                    <span
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems:
+                                                                'center',
+                                                            gap: 6,
+                                                        }}
+                                                    >
+                                                        <span
+                                                            style={{
+                                                                display:
+                                                                    'inline-block',
+                                                                width: 6,
+                                                                height: 6,
+                                                                borderRadius:
+                                                                    '50%',
+                                                                background:
+                                                                    item.color,
+                                                            }}
+                                                        />
+                                                        {item.name}
+                                                    </span>
+                                                    <span
+                                                        style={{
+                                                            fontVariantNumeric:
+                                                                'tabular-nums',
+                                                            fontWeight: 600,
+                                                        }}
+                                                    >
+                                                        $
+                                                        {Number(
+                                                            item.value
+                                                        ).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                            <div
+                                                style={{
+                                                    marginTop: 8,
+                                                    paddingTop: 8,
+                                                    borderTop: `1px solid ${FOUNDATION_THEME.colors.gray[700]}`,
+                                                    display: 'flex',
+                                                    justifyContent:
+                                                        'space-between',
+                                                    fontSize: 13,
+                                                    fontWeight: 700,
+                                                    color:
+                                                        profit >= 0
+                                                            ? '#4ade80'
+                                                            : '#f87171',
+                                                }}
+                                            >
+                                                <span>Profit</span>
+                                                <span>
+                                                    ${profit.toLocaleString()}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )
+                                },
+                            }}
+                        />
+                        <div className="mt-2 text-xs text-gray-500">
+                            💡 Uses <code>chartType</code> and{' '}
+                            <code>selectedKeys</code> from the renderer args,
+                            and combines with <code>position</code> +{' '}
+                            <code>allowEscapeViewBox</code>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* Configuration Summary */}
             <div className="chart-example-container mb-12">
                 <h3 className="chart-header-title mb-6">

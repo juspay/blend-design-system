@@ -3,18 +3,18 @@ import { generatePickerData, createSelectionHandler } from '../utils'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import {
-    Tabs,
-    TabsList,
-    TabsTrigger,
-    TabsContent,
-    TabsVariant,
-    TabsSize,
-} from '../../Tabs'
+    TabsV2,
+    TabsV2List,
+    TabsV2Trigger,
+    TabsV2Content,
+    TabsV2Variant,
+    TabsV2Size,
+} from '../../TabsV2'
 import ScrollablePicker from './ScrollablePicker'
 import type { DatePickerComponentProps } from '../types'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { getMobileToken } from './mobile.tokens'
-import { FOUNDATION_THEME } from '../../../tokens'
+import { useTheme } from '../../../context'
 
 const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
     selectedRange,
@@ -30,8 +30,10 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
     maxYearOffset,
 }) => {
     const { innerWidth } = useBreakpoints()
-    const tokens =
-        getMobileToken(FOUNDATION_THEME)[innerWidth >= 1024 ? 'lg' : 'sm']
+    const { foundationTokens, theme } = useTheme()
+    const tokens = getMobileToken(foundationTokens, theme)[
+        innerWidth >= 1024 ? 'lg' : 'sm'
+    ]
 
     const renderTabContent = (tabType: 'start' | 'end') => {
         const data = generatePickerData(
@@ -249,41 +251,41 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                 pointerEvents: isDisabled ? 'none' : 'auto',
             }}
         >
-            <Tabs
+            <TabsV2
                 defaultValue="start"
-                variant={TabsVariant.BOXED}
-                size={TabsSize.MD}
+                variant={TabsV2Variant.BOXED}
+                size={TabsV2Size.MD}
             >
-                <TabsList
-                    variant={TabsVariant.BOXED}
-                    size={TabsSize.MD}
+                <TabsV2List
+                    variant={TabsV2Variant.BOXED}
+                    size={TabsV2Size.MD}
                     expanded={true}
                 >
-                    <TabsTrigger
+                    <TabsV2Trigger
                         value="start"
-                        variant={TabsVariant.BOXED}
-                        size={TabsSize.MD}
+                        variant={TabsV2Variant.BOXED}
+                        size={TabsV2Size.MD}
                     >
                         Start Date
-                    </TabsTrigger>
-                    <TabsTrigger
+                    </TabsV2Trigger>
+                    <TabsV2Trigger
                         value="end"
-                        variant={TabsVariant.BOXED}
-                        size={TabsSize.MD}
+                        variant={TabsV2Variant.BOXED}
+                        size={TabsV2Size.MD}
                     >
                         End Date
-                    </TabsTrigger>
-                </TabsList>
+                    </TabsV2Trigger>
+                </TabsV2List>
 
                 <Block marginTop={32}>
-                    <TabsContent value="start">
+                    <TabsV2Content value="start">
                         {renderTabContent('start')}
-                    </TabsContent>
-                    <TabsContent value="end">
+                    </TabsV2Content>
+                    <TabsV2Content value="end">
                         {renderTabContent('end')}
-                    </TabsContent>
+                    </TabsV2Content>
                 </Block>
-            </Tabs>
+            </TabsV2>
         </Block>
     )
 }

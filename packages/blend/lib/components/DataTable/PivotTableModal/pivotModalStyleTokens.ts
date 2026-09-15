@@ -1,3 +1,4 @@
+import { Theme } from '../../../context/theme.enum'
 import type { FoundationTokenType } from '../../../tokens/theme.token'
 import type { TableTokenType } from '../dataTable.tokens'
 
@@ -124,8 +125,34 @@ export type PivotModalStyleTokens = {
  */
 export const getPivotModalStyleTokens = (
     f: FoundationTokenType,
-    tableToken: TableTokenType
+    tableToken: TableTokenType,
+    theme: Theme | string = Theme.LIGHT
 ): PivotModalStyleTokens => {
+    // The foundation is theme-neutral, so the grey rung has to be chosen here
+    // or the modal stays light inside a dark table.
+    const isDark = theme === Theme.DARK || theme === 'dark'
+    const GRAY_DARK: Record<number, number> = {
+        0: 900,
+        25: 800,
+        50: 800,
+        100: 700,
+        150: 700,
+        200: 700,
+        300: 500,
+        400: 400,
+        500: 300,
+        600: 200,
+        700: 100,
+        800: 50,
+        900: 0,
+    }
+    const gray = new Proxy({} as Record<number, string>, {
+        get: (_t, key) => {
+            const rung = Number(key)
+            const resolved = isDark ? (GRAY_DARK[rung] ?? rung) : rung
+            return (f.colors.gray as Record<number, string>)[resolved]
+        },
+    })
     const { dataTable, header } = tableToken
     const cell = dataTable.table.body.cell
 
@@ -142,8 +169,8 @@ export const getPivotModalStyleTokens = (
         rightPanel: {
             width: rightPanelMinWidth,
             padding: f.unit[20],
-            background: f.colors.gray[0] as string,
-            border: `${f.border.width[1]} solid ${f.colors.gray[200]}`,
+            background: gray[0] as string,
+            border: `${f.border.width[1]} solid ${gray[200]}`,
             borderRadius: f.border.radius[8],
         },
         shell: {
@@ -158,22 +185,22 @@ export const getPivotModalStyleTokens = (
             fallbackColumns: `minmax(0, 1fr) ${rightPanelMinWidth}`,
         },
         panelPadding: f.unit[16],
-        configPanelBackground: f.colors.gray[50] as string,
+        configPanelBackground: gray[50] as string,
         previewPanelBackground: dataTable.table.body.backgroundColor as string,
         text: {
             sectionTitle: {
                 fontSize: f.font.size.body.md.fontSize,
                 fontWeight: f.font.weight[600],
-                color: f.colors.gray[800] as string,
+                color: gray[800] as string,
             },
             fieldLabel: {
                 fontSize: f.font.size.body.md.fontSize,
                 fontWeight: f.font.weight[500],
-                color: f.colors.gray[800] as string,
+                color: gray[800] as string,
             },
             checkboxLabel: {
                 fontSize: f.font.size.body.sm.fontSize,
-                color: f.colors.gray[600] as string,
+                color: gray[600] as string,
             },
         },
         spacing: {
@@ -188,8 +215,8 @@ export const getPivotModalStyleTokens = (
             emptyMinHeight: f.unit[80],
             padding: f.unit[12],
             borderRadius: f.border.radius[8],
-            border: `2px dashed ${f.colors.gray[200]}`,
-            background: f.colors.gray[0] as string,
+            border: `2px dashed ${gray[200]}`,
+            background: gray[0] as string,
         },
         chip: {
             borderRadius: f.border.radius[6],
@@ -212,29 +239,29 @@ export const getPivotModalStyleTokens = (
         },
         sectionCount: {
             fontSize: f.font.size.body.sm.fontSize,
-            color: f.colors.gray[600] as string,
+            color: gray[600] as string,
         },
         emptyState: {
             titleFontSize: f.font.size.body.md.fontSize,
-            titleColor: f.colors.gray[800] as string,
+            titleColor: gray[800] as string,
             exampleFontSize: f.font.size.body.sm.fontSize,
-            exampleColor: f.colors.gray[400] as string,
+            exampleColor: gray[400] as string,
             padding: f.unit[16],
             titleMarginBottom: f.unit[8],
         },
         fieldRowLabel: {
             fontSize: f.font.size.body.sm.fontSize,
-            color: f.colors.gray[600] as string,
+            color: gray[600] as string,
             marginBottom: f.unit[8],
         },
         removeButton: {
             minWidth: f.unit[28],
             padding: f.unit[4],
             borderRadius: f.border.radius[4],
-            border: `${f.border.width[1]} solid ${f.colors.gray[300]}`,
-            background: f.colors.gray[0] as string,
-            hoverBackground: f.colors.gray[100] as string,
-            iconColor: f.colors.gray[600] as string,
+            border: `${f.border.width[1]} solid ${gray[300]}`,
+            background: gray[0] as string,
+            hoverBackground: gray[100] as string,
+            iconColor: gray[600] as string,
             iconSize: Number.parseInt(String(f.unit[14]), 10) || 14,
         },
         menuCheckIconSize: Number.parseInt(String(f.unit[16]), 10) || 16,

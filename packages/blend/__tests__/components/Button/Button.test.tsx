@@ -8,6 +8,29 @@ import {
     ButtonSubType,
 } from '../../../lib/components/Button/types'
 import { MockIcon } from '../../test-utils'
+import FOUNDATION_THEME from '../../../lib/tokens/theme.token'
+
+describe('Button disabled label color (regression #1703)', () => {
+    it('mutes the Secondary label text in the disabled state', () => {
+        render(
+            <Button
+                buttonType={ButtonType.SECONDARY}
+                text="Disabled"
+                disabled
+            />
+        )
+        expect(screen.getByText('Disabled')).toHaveStyle({
+            color: FOUNDATION_THEME.colors.gray[300],
+        })
+    })
+
+    it('does not apply the disabled color to an enabled Secondary label', () => {
+        render(<Button buttonType={ButtonType.SECONDARY} text="Enabled" />)
+        expect(screen.getByText('Enabled')).not.toHaveStyle({
+            color: FOUNDATION_THEME.colors.gray[300],
+        })
+    })
+})
 
 describe.skip('Button Component', () => {
     describe('Rendering', () => {

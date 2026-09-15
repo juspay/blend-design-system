@@ -8,6 +8,7 @@ import MultiSelectV2SelectAllItem from './MultiSelectV2SelectAllItem'
 export type MultiSelectV2MenuHeaderProps = {
     tokens: MultiSelectV2TokensType
     showSearch: boolean
+    showSearchWhenEmpty?: boolean
     itemsCount: number
     searchValue: string
     searchPlaceholder?: string
@@ -29,6 +30,7 @@ export type MultiSelectV2MenuHeaderProps = {
 const MultiSelectV2MenuHeader = ({
     tokens,
     showSearch,
+    showSearchWhenEmpty,
     itemsCount,
     searchValue,
     searchPlaceholder,
@@ -55,7 +57,7 @@ const MultiSelectV2MenuHeader = ({
                 header?.backgroundColor ?? tokens.menu.backgroundColor
             }
         >
-            {showSearch && itemsCount > 0 && (
+            {showSearch && (showSearchWhenEmpty || itemsCount > 0) && (
                 <MultiSelectV2MenuSearch
                     inputRef={searchInputRef}
                     value={searchValue}

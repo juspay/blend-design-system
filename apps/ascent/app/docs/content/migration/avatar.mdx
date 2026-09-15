@@ -1,0 +1,147 @@
+---
+title: Avatar v1 to v2
+description: Migrate the Avatar component from v1 to AvatarV2, including fallback, status, slot, and skeleton changes.
+---
+
+## Overview
+
+`Avatar` is deprecated in favor of `AvatarV2`. The core image, alt text, size,
+shape, click handling, and initials fallback behavior remain available. The
+main migration work is replacing flexible fallback content and the boolean
+online indicator with more explicit v2 APIs.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    Avatar,
+    AvatarOnlinePosition,
+    AvatarShape,
+    AvatarSize,
+} from '@juspay/blend-design-system'
+;<Avatar
+    src="https://example.com/avatar.jpg"
+    alt="Jane Doe"
+    fallback="JD"
+    size={AvatarSize.MD}
+    shape={AvatarShape.CIRCULAR}
+    online
+    onlinePosition={AvatarOnlinePosition.BOTTOM}
+    leadingSlot={<TeamIcon />}
+/>
+```
+
+```tsx
+// v2
+import {
+    AvatarV2,
+    AvatarV2Shape,
+    AvatarV2Size,
+    AvatarV2Status,
+    AvatarV2StatusPosition,
+} from '@juspay/blend-design-system'
+;<AvatarV2
+    src="https://example.com/avatar.jpg"
+    alt="Jane Doe"
+    fallbackText="JD"
+    size={AvatarV2Size.MD}
+    shape={AvatarV2Shape.CIRCULAR}
+    status={{
+        type: AvatarV2Status.ONLINE,
+        position: AvatarV2StatusPosition.BOTTOM_RIGHT,
+    }}
+    leftSlot={<TeamIcon />}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and its enums
+
+**v1:** `Avatar`, `AvatarSize`, `AvatarShape`, and `AvatarOnlinePosition`
+
+**v2:** `AvatarV2`, `AvatarV2Size`, `AvatarV2Shape`, and
+`AvatarV2StatusPosition`
+
+The renamed exports let v1 and v2 coexist while consumers migrate gradually.
+Rename the component and its enum imports together. Size and shape values are
+unchanged, and the default remains a medium circular avatar.
+
+### Replace `fallback` with `fallbackText`
+
+**v1:** `fallback` accepts a string or any React node.
+
+**v2:** `fallbackText` accepts a string only.
+
+For string fallbacks, rename `fallback` to `fallbackText`; both versions show
+at most two characters. If the v1 fallback is an icon or custom React content,
+there is no v2 fallback prop equivalent—use a text fallback or compose that
+custom presentation outside `AvatarV2`.
+
+V1 derives the fallback background from a string `fallback` when one is
+provided. V2 derives it from `alt` instead. Set `backgroundColor` on
+`AvatarV2` when preserving the fallback color is important.
+
+### Replace online props with `status`
+
+**v1:** `online` and `onlinePosition`, where the indicator is either top-right
+or bottom-right.
+
+**v2:** `status={{ type, position }}`.
+
+Replace `online` with `status={{ type: AvatarV2Status.ONLINE }}`. Map
+`AvatarOnlinePosition.TOP` to `AvatarV2StatusPosition.TOP_RIGHT` and
+`BOTTOM` to `BOTTOM_RIGHT`. V2 adds offline, away, and busy states plus
+top-left and bottom-left positions; omit `status` to preserve the v1 default
+of no indicator.
+
+### Rename surrounding slots
+
+**v1:** `leadingSlot` and `trailingSlot` accept a `ReactNode`.
+
+**v2:** `leftSlot` and `rightSlot` accept a `ReactElement`.
+
+Rename the props and pass the existing element directly. V2 requires an actual
+React element, so wrap text or other non-element slot content in an element
+before passing it.
+
+### Review skeleton variants
+
+**v1:** `skeleton.variant` uses the shared `SkeletonVariant` type.
+
+**v2:** `skeleton.variant` accepts only `pulse` or `wave`.
+
+The `skeleton` object and its `show` flag are retained. Replace a v1
+`shimmer` variant with the closest v2 option, `wave`, and visually review the
+loading state.
+
+### Move custom styles out of the component
+
+V1 forwards `className` and `style` as standard div attributes. V2 does not
+accept either prop. Move those layout or visual overrides to a wrapper, or use
+the dedicated v2 props such as `width`, `height`, and `backgroundColor`.
+
+### Update custom Avatar tokens
+
+**v1:** `AVATAR` token contract
+
+**v2:** `AVATARV2` token contract
+
+V2 separates image, fallback-text, and status styling under `container`; it
+also replaces slot spacing and colors with fixed slot width and height tokens.
+Update custom theme overrides to target `AVATARV2`, and map online indicator
+styles to the v2 status tokens.
+
+## What continues to work
+
+`src`, `alt`, `size`, `shape`, `skeleton.show`, and `onClick` remain
+available. When neither image nor fallback text is provided, both versions
+derive initials from `alt`. V2 also adds `disabled`, image load/error
+callbacks, explicit width and height, and a fallback `backgroundColor`.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/avatar#component-tokens) with the [V2 component token reference](/docs/components/avatar-v2#component-tokens).

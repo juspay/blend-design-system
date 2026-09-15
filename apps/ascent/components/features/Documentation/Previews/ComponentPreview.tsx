@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import * as Tabs from '@radix-ui/react-tabs'
 import { highlight } from 'sugar-high'
+import BlendThemeProvider from '@/components/providers/BlendThemeProvider'
 
 type ComponentPreviewProps = {
     ts: string
@@ -50,7 +51,7 @@ const ComponentPreview = ({
         return (
             <div className="w-full min-h-80 border-code-border border rounded-md my-4 flex flex-col items-center justify-center">
                 <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 p-6">
-                    {children}
+                    <BlendThemeProvider>{children}</BlendThemeProvider>
                 </div>
             </div>
         )
@@ -62,7 +63,7 @@ const ComponentPreview = ({
             className="w-full min-h-80 border-code-border border rounded-2xl my-10 flex flex-col items-center justify-center overflow-clip"
         >
             <div className="w-full flex flex-1 min-h-60 items-center justify-center gap-4 bg-background p-6">
-                {children}
+                <BlendThemeProvider>{children}</BlendThemeProvider>
             </div>
             <div className="w-full border-t border-code-border bg-code-background">
                 <Tabs.Root
@@ -78,7 +79,7 @@ const ComponentPreview = ({
                                     value={tab.id}
                                     className="px-2 sm:px-3 h-7 rounded-lg cursor-pointer text-sm font-medium shrink-0 snap-start
         data-[state=active]:bg-background data-[state=active]:text-foreground
-        data-[state=inactive]:text-gray-500 data-[state=inactive]:hover:text-gray-700
+        data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:text-foreground
         focus:outline-none transition-colors whitespace-nowrap"
                                     data-nav-content
                                 >

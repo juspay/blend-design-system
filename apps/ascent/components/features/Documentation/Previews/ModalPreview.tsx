@@ -77,7 +77,12 @@ function MyComponent() {
                     }}
                 >
                     <div style={{ padding: '0 0 16px 0' }}>
-                        <p style={{ color: '#6b7280', lineHeight: '1.5' }}>
+                        <p
+                            style={{
+                                color: 'var(--muted-foreground)',
+                                lineHeight: '1.5',
+                            }}
+                        >
                             Are you sure you want to save these changes? This
                             action cannot be undone.
                         </p>

@@ -1,0 +1,80 @@
+---
+title: Chat Input v1 to v2
+description: Migrate ChatInput to ChatInputV2 with application-owned actions and auto-growing textarea behavior.
+---
+
+## Chat Input v1 to v2
+
+`ChatInputV2` makes the chat composer easier to compose with application-owned actions. It keeps the controlled text, attachments, top queries, and file callbacks, but changes how sending, actions, and resizing are handled.
+
+### Quick migration
+
+```tsx
+// v1
+import { ChatInput } from '@juspay/blend-design-system'
+;<ChatInput
+    value={message}
+    onChange={setMessage}
+    onSend={(nextMessage, files) => sendMessage(nextMessage, files)}
+    slot2={<ContextBanner />}
+    slot1={<VoiceButton onClick={startRecording} />}
+    attachedFiles={files}
+    onAttachFiles={appendFiles}
+    onFileRemove={removeFile}
+/>
+
+// v2
+import { ChatInputV2 } from '@juspay/blend-design-system'
+;<ChatInputV2
+    value={message}
+    onChange={setMessage}
+    onEnter={() => sendMessage(message, files)}
+    topContent={<ContextBanner />}
+    secondaryAction={<VoiceButton onClick={startRecording} />}
+    attachedFiles={files}
+    onAttachFiles={appendFiles}
+    onFileRemove={removeFile}
+/>
+```
+
+## Breaking changes
+
+### Rename the component and make `onChange` required
+
+Replace `ChatInput` with `ChatInputV2`. v1 allows an omitted `onChange`; v2 requires it so the composer has one predictable controlled-update path.
+
+### Replace `onSend` with `onEnter`
+
+v1 calls `onSend(message, files)`. v2 calls `onEnter()` without arguments. Keep the current message and attachments in the parent, then read that state in `onEnter`:
+
+```tsx
+onEnter={() => sendMessage(message, files)}
+```
+
+This makes dispatching a send action application-owned and keeps the input independent of a particular send workflow.
+
+### Rename composition slots
+
+Use `topContent` instead of `slot2` for full-width content above the field. Use `secondaryAction` instead of `slot1` for an action near the attach control, and `onSecondaryActionClick` when the surrounding action should handle its click.
+
+### Replace built-in action customisation
+
+`onVoiceRecord`, `attachButtonIcon`, `voiceButtonIcon`, `sendButtonIcon`, and `overflowMenuProps` are not v2 props. Render an application-owned `secondaryAction` for custom voice or send behavior. The v2 attachment control and attachment overflow treatment use the component’s standard design.
+
+### Use `textareaMaxHeight` instead of `autoResize`
+
+v2 uses ChatGPT-style auto-growing textarea behavior. `autoResize` is removed; set `textareaMaxHeight` when the default maximum height needs to change.
+
+### Update theme overrides
+
+Rebuild custom tokens from `CHAT_INPUT` against `CHAT_INPUTV2` (and `CHAT_INPUTV2_MOBILE` for mobile-specific overrides). The v2 token contract separates the desktop and mobile layouts.
+
+## What continues to work
+
+`value`, `placeholder`, `disabled`, `maxLength`, `attachedFiles`, `onAttachFiles`, `onFileRemove`, `onFileClick`, `topQueries`, `onTopQuerySelect`, `topQueriesMaxHeight`, and supported native textarea attributes continue to work. Attachment and query item objects keep the same fields.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/chatinput#component-tokens) with the [V2 component token reference](/docs/components/chat-input-v2#component-tokens).

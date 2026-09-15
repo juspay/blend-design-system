@@ -34,6 +34,7 @@ export type DropdownInputProps = {
     slot?: ReactNode
     size?: TextInputSize
     dropDownValue?: string
+    dropDownPlaceholder?: string
     onDropDownChange?: (value: string) => void
     dropDownItems: SelectMenuGroupType[]
     dropdownName?: string

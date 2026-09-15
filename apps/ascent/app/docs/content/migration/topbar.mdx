@@ -1,0 +1,80 @@
+---
+title: Topbar v1 to v2
+description: Migrate Topbar to TopbarV2 and replace left-panel metadata with secondary-sidebar metadata.
+---
+
+## Topbar v1 to v2
+
+`TopbarV2` retains the topbar’s content slots, visibility control, mobile back action, and merchant selector. It replaces the v1 left-panel selector with v2 secondary-sidebar metadata.
+
+### Quick migration
+
+```tsx
+// v1
+import { Topbar } from '@juspay/blend-design-system'
+;<Topbar
+    leftPanel={{
+        items: tenants,
+        selected: tenant,
+        onSelect: setTenant,
+        tenantFooter: <SettingsLink />,
+    }}
+    merchantInfo={merchantInfo}
+    rightActions={<Actions />}
+/>
+
+// v2
+import { TopbarV2 } from '@juspay/blend-design-system'
+;<TopbarV2
+    secondarySidebar={{
+        items: tenants,
+        selected: tenant,
+        onSelect: setTenant,
+        footerSlot: <SettingsLink />,
+    }}
+    merchantInfo={merchantInfo}
+    rightActions={<Actions />}
+/>
+```
+
+## Breaking changes
+
+### Rename the component
+
+Replace `Topbar` with `TopbarV2`. `children`, `sidebarTopSlot`, `topbar`, `leftAction`, `rightActions`, `showBackButton`, and `onBackClick` retain their purpose.
+
+### Replace `leftPanel` with `secondarySidebar`
+
+The v1 `leftPanel` prop becomes `secondarySidebar`:
+
+```tsx
+// v1
+leftPanel={{ items, selected, onSelect, tenantFooter }}
+
+// v2
+secondarySidebar={{ items, selected, onSelect, footerSlot }}
+```
+
+`tenantSlot1` and `tenantSlot2` have no TopbarV2 equivalent. Move those custom visuals into a secondary-sidebar item, its `buttonProps`, a footer slot, or the surrounding layout.
+
+### Update merchant selector types
+
+Use `MerchantInfoV2` for `merchantInfo`. Its item shape remains `{ label, value, icon? }`, with the same selected value and `onSelect` callback, so existing data can normally be reused unchanged.
+
+### Treat expansion-control props as reserved
+
+`isExpanded`, `onToggleExpansion`, `showToggleButton`, `panelOnlyMode`, and `ariaControls` remain accepted for API compatibility, but TopbarV2 does not currently render an in-topbar expansion control from them. Keep the actual expansion behavior in `SidebarV2` or surrounding layout state.
+
+### Update theme overrides
+
+Move custom overrides from `TOPBAR` to `TOPBARV2`. Review desktop and mobile token paths, especially secondary-sidebar and merchant-selector layout.
+
+## What continues to work
+
+`isVisible`, `onVisibilityChange`, `defaultIsVisible`, `children`, action slots, `showBackButton`, `onBackClick`, and the merchant selection flow continue to work. Visibility still defaults to `true`.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/topbar#component-tokens) with the [V2 component token reference](/docs/components/topbar-v2#component-tokens).

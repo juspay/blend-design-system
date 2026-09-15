@@ -3,7 +3,7 @@ import PreviewCursorIcon from '@/icons/PreviewCursorIcon'
 const FeedbackPreview = () => (
     <div className="relative flex items-center justify-center w-full max-w-44">
         {/* Card container */}
-        <div className="w-full flex flex-col items-center gap-3 px-6 py-5 bg-background rounded-xl border border-border shadow-[0_2px_8px_rgb(0,0,0,0.06)]">
+        <div className="w-full flex flex-col items-center gap-3 px-6 py-5 bg-background rounded-xl border border-border shadow-card">
             {/* Avatar circle */}
             <div className="w-8 h-8 rounded-full bg-border" />
             {/* Text lines */}

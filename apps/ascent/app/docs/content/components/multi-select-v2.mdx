@@ -41,9 +41,7 @@ function MyComponent() {
             label="Select Fruits"
             placeholder="Choose fruits..."
             selectedValues={selected}
-            onChange={(value) =>
-                setSelected(Array.isArray(value) ? value : [value])
-            }
+            onSelectionChange={setSelected}
             items={items}
             selectionTagType={MultiSelectV2SelectionTagType.TEXT}
             enableSelectAll={true}
@@ -51,6 +49,58 @@ function MyComponent() {
     )
 }
 ```
+
+`MultiSelectV2` is controlled: pass the array from `onSelectionChange` back to
+`selectedValues`. The callback is the recommended API because it fires once per
+user gesture with the complete resulting selection. Existing selection order is
+retained, and newly selected filtered values are appended in item order.
+
+### Migrating from `onChange`
+
+Replace toggle reducers or debounce logic attached to `onChange` with direct
+array assignment through `onSelectionChange`. The legacy `onChange` callback
+remains supported with its existing per-item payloads and callback counts.
+
+## Server-side search
+
+Put `searchText` in the `search` config to make search controlled. The component
+renders that value, calls `onSearchChange` for every input change, and does not
+filter `items`; the consumer supplies already-filtered API results.
+
+```tsx
+<MultiSelectV2
+    label="Find people"
+    placeholder="Select people"
+    items={apiResults}
+    selectedValues={selected}
+    onSelectionChange={setSelected}
+    search={{
+        searchText: query,
+        onSearchChange: setQuery,
+        isSearchLoading: isSearching,
+        emptyStateText: query ? 'No people found' : 'Start typing to search',
+    }}
+/>
+```
+
+Controlled mode is selected by the presence of `search.searchText`, including an
+empty string. Omitting `onSearchChange` creates a read-only search input.
+`show: false` hides the input but still disables internal filtering. Debouncing,
+request cancellation, caching, and errors remain consumer responsibilities;
+search loading is independent from pagination via `hasMore`/`loadingComponent`.
+
+The controlled query persists when the menu closes and reopens. Clear it in
+your own lifecycle handler only when that is the experience you want, for
+example with `onOpenChange={(open) => !open && setQuery('')}`. With remote
+results, Select All applies only to the items currently supplied to the
+component; it does not select every match on the server.
+
+| `MultiSelectV2` search field | Legacy `MultiSelect` equivalent |
+| ---------------------------- | ------------------------------- |
+| `search.searchText`          | `searchText`                    |
+| `search.onSearchChange`      | `onSearchChange`                |
+| `search.isSearchLoading`     | `isSearchLoading`               |
+| `search.emptyStateText`      | `emptyStateText`                |
 
 ## API Reference
 
@@ -70,13 +120,25 @@ function MyComponent() {
         ],
         [
             {
+                content: 'onSelectionChange',
+                hintText:
+                    'Recommended optional callback fired once per accepted user gesture with the complete resulting selection.',
+            },
+            {
+                content: '(selectedValues: string[]) => void',
+                hintText: 'Complete selection callback',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'onChange',
                 hintText:
-                    'Required. Callback fired when selection changes. Receives selected values array.',
+                    'Legacy optional per-item toggle callback. Select All may invoke it multiple times. Prefer onSelectionChange.',
             },
             {
                 content: '(value: string | string[]) => void',
-                hintText: 'Selection change handler',
+                hintText: 'Legacy toggle callback',
             },
             { content: '' },
         ],
@@ -199,8 +261,9 @@ function MyComponent() {
                 hintText: 'Configuration for search functionality in dropdown.',
             },
             {
-                content: 'MultiSelectV2SearchConfig',
-                hintText: 'Object with show and placeholder',
+                content: 'SelectV2SearchConfig',
+                hintText:
+                    'Object with show, placeholder, searchText, onSearchChange, isSearchLoading, and emptyStateText.',
             },
             { content: '' },
         ],
@@ -229,7 +292,8 @@ function MyComponent() {
         [
             {
                 content: 'maxSelections',
-                hintText: 'Maximum number of items that can be selected.',
+                hintText:
+                    'Maximum number of items that can be selected. Select All stops at the limit, so the emitted selection never exceeds it.',
             },
             {
                 content: 'number',
@@ -545,11 +609,13 @@ function MyComponent() {
         [
             {
                 content: 'onClearAllClick',
-                hintText: 'Custom callback for the clear button click.',
+                hintText:
+                    'Custom callback for the clear button click. When provided it fully replaces the default clear, so neither onChange nor onSelectionChange fires and you decide the resulting selection.',
             },
             {
                 content: '() => void',
-                hintText: 'Clear handler, defaults to onChange([])',
+                hintText:
+                    'Clear handler, defaults to onChange([]) plus onSelectionChange([])',
             },
             { content: '' },
         ],

@@ -11,6 +11,13 @@ import {
     CustomRangeConfig,
 } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
+import {
+    formatTimeValue,
+    generateTimeSlots,
+    getDateTimeParts,
+    timeValueFromDate,
+    timeValueToString,
+} from '../shared/datetime/timeCore'
 import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
 
 /**
@@ -29,30 +36,7 @@ export const getDatePartsInTimezone = (
     hours: number
     minutes: number
     seconds: number
-} => {
-    const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-    })
-
-    const parts = formatter.formatToParts(date)
-
-    return {
-        year: parseInt(parts.find((p) => p.type === 'year')?.value || '2024'),
-        month:
-            parseInt(parts.find((p) => p.type === 'month')?.value || '1') - 1,
-        day: parseInt(parts.find((p) => p.type === 'day')?.value || '1'),
-        hours: parseInt(parts.find((p) => p.type === 'hour')?.value || '0'),
-        minutes: parseInt(parts.find((p) => p.type === 'minute')?.value || '0'),
-        seconds: parseInt(parts.find((p) => p.type === 'second')?.value || '0'),
-    }
-}
+} => getDateTimeParts(date, timezone)
 
 /**
  * Creates a Date object representing a specific moment in a timezone
@@ -266,13 +250,8 @@ export const isControlledDateRange = (
  * @param date The date to format
  * @returns The formatted time string
  */
-export const formatTimeIn12Hour = (date: Date): string => {
-    const hours = date.getHours()
-    const minutes = date.getMinutes()
-    const period = hours >= 12 ? 'PM' : 'AM'
-    const displayHours = hours % 12 === 0 ? 12 : hours % 12
-    return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
-}
+export const formatTimeIn12Hour = (date: Date): string =>
+    formatTimeValue(timeValueFromDate(date), { format: '12h' })
 
 /**
  * Formats a date range for display
@@ -2319,48 +2298,52 @@ export const calculateDayCellProps = (
         maxRangeDays
     )
 
+    const dayTokens = calendarToken.calendar.calendarGrid.day
+
     const getCellStyles = () => {
-        // Base cell styles - hardcoded values for consistent styling
         let styles: Record<string, unknown> = {
             cursor: 'pointer',
             textAlign: 'center',
-            padding: '10px 8px',
+            padding: `${dayTokens.cell.padding.y} ${dayTokens.cell.padding.x}`,
             position: 'relative',
-            fontWeight: '500',
+            fontWeight: dayTokens.cell.fontWeight,
             boxSizing: 'border-box',
             outline: '1px solid transparent',
-            fontSize: '16px',
-            lineHeight: '20px',
+            fontSize: dayTokens.cell.fontSize,
+            lineHeight: dayTokens.cell.lineHeight,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
         }
 
-        // Apply state-specific styles with hardcoded values
         if (dateStates.isSingleDate) {
             styles = {
                 ...styles,
-                backgroundColor: '#3b82f6',
-                borderRadius: '8px',
+                backgroundColor: dayTokens.states.singleDate.backgroundColor,
+                borderRadius: dayTokens.states.singleDate.borderRadius,
             }
         } else if (dateStates.isStart) {
             styles = {
                 ...styles,
-                backgroundColor: '#3b82f6',
-                borderTopLeftRadius: '8px',
-                borderBottomLeftRadius: '8px',
+                backgroundColor: dayTokens.states.startDate.backgroundColor,
+                borderTopLeftRadius:
+                    dayTokens.states.startDate.borderRadius.topLeft,
+                borderBottomLeftRadius:
+                    dayTokens.states.startDate.borderRadius.bottomLeft,
             }
         } else if (dateStates.isEnd) {
             styles = {
                 ...styles,
-                backgroundColor: '#3b82f6',
-                borderTopRightRadius: '8px',
-                borderBottomRightRadius: '8px',
+                backgroundColor: dayTokens.states.endDate.backgroundColor,
+                borderTopRightRadius:
+                    dayTokens.states.endDate.borderRadius.topRight,
+                borderBottomRightRadius:
+                    dayTokens.states.endDate.borderRadius.bottomRight,
             }
         } else if (dateStates.isRangeDay) {
             styles = {
                 ...styles,
-                backgroundColor: '#dbeafe',
+                backgroundColor: dayTokens.states.rangeDay.backgroundColor,
             }
         }
 
@@ -2486,14 +2469,9 @@ export const generatePickerData = (
     const dateOptions = Array.from({ length: daysInMonth }, (_, i) => i + 1)
     const monthOptions = Array.from({ length: 12 }, (_, i) => i)
 
-    const allTimes = []
-    for (let h = 0; h < 24; h++) {
-        for (let m = 0; m < 60; m += 15) {
-            allTimes.push(
-                `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
-            )
-        }
-    }
+    const allTimes = generateTimeSlots({ stepMinutes: 15 }).map((slot) =>
+        timeValueToString(slot)
+    )
 
     const yearIndex = yearOptions.indexOf(safeDate.getFullYear())
     const resolvedYearIndex =
@@ -2615,14 +2593,9 @@ export const createSelectionHandler = (
                 break
             }
             case 'time': {
-                const times = []
-                for (let h = 0; h < 24; h++) {
-                    for (let m = 0; m < 60; m += 15) {
-                        times.push(
-                            `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`
-                        )
-                    }
-                }
+                const times = generateTimeSlots({ stepMinutes: 15 }).map(
+                    (slot) => timeValueToString(slot)
+                )
                 const time = times[index]
                 if (tabType === 'start') {
                     handleStartTimeChange(time)

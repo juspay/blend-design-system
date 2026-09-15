@@ -1,4 +1,5 @@
 export { default as SelectItemV2 } from './SelectItemV2'
+export { default as SelectItemIndicator } from './SelectItemIndicator'
 export type {
     SelectItemV2Props,
     SingleSelectItemV2Props,

@@ -7,68 +7,26 @@ import type {
 } from 'react'
 import type { DropdownMenuContentProps } from '@radix-ui/react-dropdown-menu'
 import type { SkeletonVariant } from '../Skeleton/types'
-import type { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
-export enum SelectV2Alignment {
-    START = 'start',
-    CENTER = 'center',
-    END = 'end',
-}
-
-export enum SelectV2Variant {
-    CONTAINER = 'container',
-    NO_CONTAINER = 'no-container',
-}
-
-export enum SelectV2Size {
-    SM = 'sm',
-    MD = 'md',
-    LG = 'lg',
-}
-
-export enum SelectV2Side {
-    TOP = 'top',
-    LEFT = 'left',
-    RIGHT = 'right',
-    BOTTOM = 'bottom',
-}
+// Moved to the leaf `selectV2.base.types.ts` (see its header) and
+// re-exported here so existing consumers keep importing from this module.
+export {
+    SelectV2Alignment,
+    SelectV2Variant,
+    SelectV2Size,
+    SelectV2Side,
+} from './selectV2.base.types'
+export type {
+    SelectV2TooltipProps,
+    SelectV2BaseItemType,
+    SelectV2FlattenedItemBase,
+    SelectV2ErrorState,
+} from './selectV2.base.types'
+import { SelectV2Alignment, SelectV2Side } from './selectV2.base.types'
 export type SelectV2SkeletonProps = {
     count?: number
     show?: boolean
     variant?: SkeletonVariant
-}
-
-export type SelectV2TooltipProps = {
-    side?: TooltipSide
-    align?: TooltipAlign
-    size?: TooltipSize
-    showArrow?: boolean
-    delayDuration?: number
-    offset?: number
-}
-
-export type SelectV2BaseItemType = {
-    label: string
-    value: string
-    checked?: boolean
-    subLabel?: string
-    slot1?: ReactNode
-    slot2?: ReactNode
-    slot3?: ReactNode
-    slot4?: ReactNode
-    disabled?: boolean
-    onClick?: () => void
-    tooltip?: string | ReactNode
-    tooltipProps?: SelectV2TooltipProps
-    disableTruncation?: boolean
-}
-
-export type SelectV2FlattenedItemBase<T = unknown> = {
-    id: string
-    type: 'item' | 'label' | 'separator'
-    item?: T
-    label?: string
-    groupId?: number
 }
 
 export type SelectV2PopoverPositioningProps = {

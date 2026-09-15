@@ -10,6 +10,16 @@ export type MenuItemStates =
     | 'focus'
     | 'focusVisible'
     | 'disabled'
+export type MenuItemSelectionStates = MenuItemStates | 'selected'
+
+export type MenuItemStateTokens<T> = {
+    [key in MenuItemStates]: T
+} & { selected?: T }
+
+export const getMenuItemStateToken = <T>(
+    stateTokens: MenuItemStateTokens<T>,
+    state: MenuItemSelectionStates
+) => stateTokens[state] ?? stateTokens.default
 
 export type MenuTokensType = {
     boxShadow: CSSObject['boxShadow']
@@ -33,25 +43,22 @@ export type MenuTokensType = {
         borderRadius: CSSObject['borderRadius']
         backgroundColor: {
             [MenuItemVariant.DEFAULT]: {
-                enabled: {
-                    [key in MenuItemStates]: CSSObject['backgroundColor']
-                }
-                disabled: {
-                    [key in MenuItemStates]: CSSObject['backgroundColor']
-                }
+                enabled: MenuItemStateTokens<CSSObject['backgroundColor']>
+                disabled: MenuItemStateTokens<CSSObject['backgroundColor']>
             }
             [MenuItemVariant.ACTION]: {
                 [key in MenuItemActionType]: {
-                    enabled: {
-                        [key in MenuItemStates]: CSSObject['backgroundColor']
-                    }
-                    disabled: {
-                        [key in MenuItemStates]: CSSObject['backgroundColor']
-                    }
+                    enabled: MenuItemStateTokens<CSSObject['backgroundColor']>
+                    disabled: MenuItemStateTokens<CSSObject['backgroundColor']>
                 }
             }
         }
         gap: CSSObject['gap']
+        checkmark?: {
+            position?: 'leading' | 'trailing'
+            width?: CSSObject['width']
+            color?: CSSObject['color']
+        }
         optionsLabel: {
             fontSize: CSSObject['fontSize']
             fontWeight: CSSObject['fontWeight']
@@ -70,21 +77,13 @@ export type MenuTokensType = {
             fontWeight: CSSObject['fontWeight']
             color: {
                 [MenuItemVariant.DEFAULT]: {
-                    enabled: {
-                        [key in MenuItemStates]: CSSObject['color']
-                    }
-                    disabled: {
-                        [key in MenuItemStates]: CSSObject['color']
-                    }
+                    enabled: MenuItemStateTokens<CSSObject['color']>
+                    disabled: MenuItemStateTokens<CSSObject['color']>
                 }
                 [MenuItemVariant.ACTION]: {
                     [key in MenuItemActionType]: {
-                        enabled: {
-                            [key in MenuItemStates]: CSSObject['color']
-                        }
-                        disabled: {
-                            [key in MenuItemStates]: CSSObject['color']
-                        }
+                        enabled: MenuItemStateTokens<CSSObject['color']>
+                        disabled: MenuItemStateTokens<CSSObject['color']>
                     }
                 }
             }
@@ -94,21 +93,13 @@ export type MenuTokensType = {
             fontWeight: CSSObject['fontWeight']
             color: {
                 [MenuItemVariant.DEFAULT]: {
-                    enabled: {
-                        [key in MenuItemStates]: CSSObject['color']
-                    }
-                    disabled: {
-                        [key in MenuItemStates]: CSSObject['color']
-                    }
+                    enabled: MenuItemStateTokens<CSSObject['color']>
+                    disabled: MenuItemStateTokens<CSSObject['color']>
                 }
                 [MenuItemVariant.ACTION]: {
                     [key in MenuItemActionType]: {
-                        enabled: {
-                            [key in MenuItemStates]: CSSObject['color']
-                        }
-                        disabled: {
-                            [key in MenuItemStates]: CSSObject['color']
-                        }
+                        enabled: MenuItemStateTokens<CSSObject['color']>
+                        disabled: MenuItemStateTokens<CSSObject['color']>
                     }
                 }
             }
@@ -128,10 +119,153 @@ export type ResponsiveMenuTokensType = {
     [key in keyof BreakpointType]: MenuTokensType
 }
 
+const withSelectionTokens = (
+    tokens: MenuTokensType,
+    foundationToken: FoundationTokenType
+): MenuTokensType => ({
+    ...tokens,
+    item: {
+        ...tokens.item,
+        checkmark: {
+            position: 'trailing',
+            width: foundationToken.unit[16],
+            color: foundationToken.colors.gray[600],
+            ...tokens.item.checkmark,
+        },
+        backgroundColor: {
+            ...tokens.item.backgroundColor,
+            default: {
+                ...tokens.item.backgroundColor.default,
+                enabled: {
+                    ...tokens.item.backgroundColor.default.enabled,
+                    selected: foundationToken.colors.gray[50],
+                },
+                disabled: {
+                    ...tokens.item.backgroundColor.default.disabled,
+                    selected: foundationToken.colors.gray[0],
+                },
+            },
+            action: {
+                ...tokens.item.backgroundColor.action,
+                primary: {
+                    ...tokens.item.backgroundColor.action.primary,
+                    enabled: {
+                        ...tokens.item.backgroundColor.action.primary.enabled,
+                        selected: foundationToken.colors.primary[50],
+                    },
+                    disabled: {
+                        ...tokens.item.backgroundColor.action.primary.disabled,
+                        selected: foundationToken.colors.gray[0],
+                    },
+                },
+                danger: {
+                    ...tokens.item.backgroundColor.action.danger,
+                    enabled: {
+                        ...tokens.item.backgroundColor.action.danger.enabled,
+                        selected: foundationToken.colors.red[50],
+                    },
+                    disabled: {
+                        ...tokens.item.backgroundColor.action.danger.disabled,
+                        selected: foundationToken.colors.gray[0],
+                    },
+                },
+            },
+        },
+        option: {
+            ...tokens.item.option,
+            color: {
+                ...tokens.item.option.color,
+                default: {
+                    ...tokens.item.option.color.default,
+                    enabled: {
+                        ...tokens.item.option.color.default.enabled,
+                        selected: foundationToken.colors.gray[600],
+                    },
+                    disabled: {
+                        ...tokens.item.option.color.default.disabled,
+                        selected: foundationToken.colors.gray[400],
+                    },
+                },
+                action: {
+                    ...tokens.item.option.color.action,
+                    primary: {
+                        ...tokens.item.option.color.action.primary,
+                        enabled: {
+                            ...tokens.item.option.color.action.primary.enabled,
+                            selected: foundationToken.colors.primary[600],
+                        },
+                        disabled: {
+                            ...tokens.item.option.color.action.primary.disabled,
+                            selected: foundationToken.colors.primary[400],
+                        },
+                    },
+                    danger: {
+                        ...tokens.item.option.color.action.danger,
+                        enabled: {
+                            ...tokens.item.option.color.action.danger.enabled,
+                            selected: foundationToken.colors.red[600],
+                        },
+                        disabled: {
+                            ...tokens.item.option.color.action.danger.disabled,
+                            selected: foundationToken.colors.red[400],
+                        },
+                    },
+                },
+            },
+        },
+        description: {
+            ...tokens.item.description,
+            color: {
+                ...tokens.item.description.color,
+                default: {
+                    ...tokens.item.description.color.default,
+                    enabled: {
+                        ...tokens.item.description.color.default.enabled,
+                        selected: foundationToken.colors.gray[400],
+                    },
+                    disabled: {
+                        ...tokens.item.description.color.default.disabled,
+                        selected: foundationToken.colors.gray[400],
+                    },
+                },
+                action: {
+                    ...tokens.item.description.color.action,
+                    primary: {
+                        ...tokens.item.description.color.action.primary,
+                        enabled: {
+                            ...tokens.item.description.color.action.primary
+                                .enabled,
+                            selected: foundationToken.colors.primary[400],
+                        },
+                        disabled: {
+                            ...tokens.item.description.color.action.primary
+                                .disabled,
+                            selected: foundationToken.colors.primary[400],
+                        },
+                    },
+                    danger: {
+                        ...tokens.item.description.color.action.danger,
+                        enabled: {
+                            ...tokens.item.description.color.action.danger
+                                .enabled,
+                            selected: foundationToken.colors.red[400],
+                        },
+                        disabled: {
+                            ...tokens.item.description.color.action.danger
+                                .disabled,
+                            selected: foundationToken.colors.red[400],
+                        },
+                    },
+                },
+            },
+        },
+    },
+})
+
 export const getMenuTokens = (
     foundationToken: FoundationTokenType
 ): ResponsiveMenuTokensType => {
-    return {
+    const tokens: ResponsiveMenuTokensType = {
         sm: {
             boxShadow: foundationToken.shadows.md,
             backgroundColor: foundationToken.colors.gray[0],
@@ -613,5 +747,10 @@ export const getMenuTokens = (
                 },
             },
         },
+    }
+
+    return {
+        sm: withSelectionTokens(tokens.sm, foundationToken),
+        lg: withSelectionTokens(tokens.lg, foundationToken),
     }
 }

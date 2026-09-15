@@ -324,7 +324,10 @@ export const GlobalKeyboardNavigationProvider = ({
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             // Don't interfere with search modal
-            if (isSearchModalOpen || document.querySelector('[cmdk-dialog]')) {
+            if (
+                isSearchModalOpen ||
+                document.querySelector('[data-cmd-open]')
+            ) {
                 return
             }
 

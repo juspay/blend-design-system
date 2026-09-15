@@ -9,7 +9,8 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint . --max-warnings 0",
-        "lint:fix": "eslint . --fix"
+        "lint:fix": "eslint . --fix",
+        "gen:dark-tokens": "node scripts/gen-dark-tokens.mjs"
     },
     "dependencies": {
         "@juspay/blend-design-system": "workspace:*",
@@ -54,6 +55,7 @@
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "@types/three": "^0.182.0",
+        "jiti": "^2.7.0",
         "tailwindcss": "^4",
         "typescript": "^5"
     }

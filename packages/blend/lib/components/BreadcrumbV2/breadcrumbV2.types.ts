@@ -11,6 +11,36 @@ export type BreadcrumbV2ItemType = {
     onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
 }
 
+/**
+ * Platform-neutral crumb model — the native (`blend-native`) port derives
+ * its item type from this. `href` is omitted (RN apps own navigation; the
+ * caller wires it through `onPress`) and there are no DOM event shapes.
+ */
+export type BreadcrumbBaseItemType = {
+    id?: string | number
+    label: string
+    leftSlot?: React.ReactNode
+    rightSlot?: React.ReactNode
+}
+
+/**
+ * Platform-neutral root props — the native port derives its props from
+ * these. Web's compound-children API (`Item`/`Icon`/`Page`/`Separator`
+ * statics) is web-only; native takes the `items` array alone.
+ */
+export type BreadcrumbBaseProps = {
+    /** Flat crumb list, first-to-last; the last entry is the current page. */
+    items?: BreadcrumbBaseItemType[]
+    /**
+     * When the number of items is **greater than** this value, the bar
+     * collapses to first crumb + ellipsis + trailing segment(s). At least
+     * one trailing segment stays visible when overflow is active (so the
+     * current page is not menu-only). Use a finite integer ≥ 1; values
+     * below 1 or non-finite values disable overflow (all crumbs inline).
+     */
+    maxItems?: number
+}
+
 export type BreadcrumbCompoundIconProps = {
     children: React.ReactNode
 }

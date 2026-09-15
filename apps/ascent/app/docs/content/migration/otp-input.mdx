@@ -1,0 +1,70 @@
+---
+title: OTP Input v1 to v2
+description: Migrate OTPInput to OTPInputV2 with safer length handling and improved paste support.
+---
+
+## OTP Input v1 to v2
+
+`OTPInputV2` is a direct replacement for one-time-password entry. The public API is deliberately close to v1, while v2 improves keyboard, paste, and autofill behavior.
+
+### Quick migration
+
+```tsx
+// v1
+import { OTPInput } from '@juspay/blend-design-system'
+;<OTPInput
+    label="Verification code"
+    length={6}
+    value={code}
+    onChange={setCode}
+    error={hasError}
+    errorMessage="Enter the complete code"
+/>
+
+// v2
+import { OTPInputV2 } from '@juspay/blend-design-system'
+;<OTPInputV2
+    label="Verification code"
+    length={6}
+    value={code}
+    onChange={setCode}
+    error={hasError}
+    errorMessage="Enter the complete code"
+/>
+```
+
+## Breaking changes
+
+### Rename the component
+
+Replace `OTPInput` with `OTPInputV2`. The supported label, help text, error, value, and callback props retain their v1 names and types.
+
+### Do not rely on `placeholder`
+
+`placeholder` is not part of the `OTPInputV2` API. OTP cells use the component’s fixed visual treatment, so remove custom placeholders from migrated call sites.
+
+### Validate custom lengths
+
+v2 safely constrains `length` to between 1 and 32 cells. If an application previously supplied a calculated value outside that range, clamp or validate it before rendering so the intended length remains explicit.
+
+### Review per-cell native handlers
+
+v1 spread unrecognised native input props onto every OTP cell. v2 applies these rest props to the first cell only, which prevents duplicated accessibility metadata and handlers. Move behavior that must apply to every cell into the supported OTP callbacks or wrap the component.
+
+### Update theme overrides
+
+Move custom token overrides from `OTP_INPUT` to `OTP_INPUTV2`. The v2 contract separates cell, label, hint, and error styling for more precise state treatment.
+
+## What improves in v2
+
+Pasting or autofilling multiple digits fills consecutive cells in v2. v2 also retains the expected keyboard navigation and provides a single one-time-code autofill target, which is more reliable with browser and device OTP suggestions.
+
+## What continues to work
+
+`value`, `onChange`, `length`, `label`, `sublabel`, `hintText`, `helpIconHintText`, `error`, `errorMessage`, `required`, `disabled`, `autoFocus`, `onBlur`, and `onFocus` continue to work. Error handling remains the v1 boolean-plus-message pair.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/otpinput#component-tokens) with the [V2 component token reference](/docs/components/otp-input-v2#component-tokens).

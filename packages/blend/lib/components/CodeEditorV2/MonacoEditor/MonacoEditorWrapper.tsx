@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Editor, { DiffEditor, OnMount, DiffOnMount } from '@monaco-editor/react'
+import Editor, {
+    DiffEditor,
+    loader,
+    OnMount,
+    DiffOnMount,
+} from '@monaco-editor/react'
 import type * as Monaco from 'monaco-editor'
 import Block from '../../Primitives/Block/Block'
 import type { CodeEditorV2Tokens } from '../codeEditorV2.tokens'
@@ -124,6 +129,41 @@ export function MonacoEditorWrapper({
     const readOnlyRef = useRef(readOnly)
     const disabledRef = useRef(disabled)
     const [isEditorReady, setIsEditorReady] = useState(false)
+    const [isMonacoLoaded, setIsMonacoLoaded] = useState(false)
+
+    useEffect(() => {
+        let cancelled = false
+
+        Promise.all([
+            import('../../shared/monacoEnvironment'),
+            import('../../shared/monacoStyles'),
+            import(
+                // @ts-expect-error Monaco does not publish types for this ESM entry.
+                'monaco-editor/esm/vs/editor/editor.main.js'
+            ),
+        ])
+            .then(([env, styles, monaco]) => {
+                if (cancelled) return
+                // Wire the bundled language workers before configuring the
+                // loader, so a self-hosted Monaco can spawn them (#1734), and
+                // inject the editor stylesheet so it renders styled without a
+                // global Blend stylesheet import (#1744).
+                env.configureMonacoEnvironment()
+                styles.injectMonacoStyles()
+                loader.config({ monaco: monaco as typeof Monaco })
+                setIsMonacoLoaded(true)
+            })
+            .catch((error) => {
+                if (cancelled) return
+                // Surface the failure instead of an unhandled rejection; the
+                // wrapper stays in its loading state.
+                console.error('Failed to load the code editor (Monaco).', error)
+            })
+
+        return () => {
+            cancelled = true
+        }
+    }, [])
 
     onChangeRef.current = onChange
     readOnlyRef.current = readOnly
@@ -348,7 +388,9 @@ export function MonacoEditorWrapper({
             style={{ ...containerStyle, overflow: 'visible' }}
             onKeyDown={handleKeyDown}
         >
-            {diff ? (
+            {!isMonacoLoaded ? (
+                <EditorLoading minHeight={minHeight} tokens={tokens} />
+            ) : diff ? (
                 <div ref={diffContainerRef}>
                     <DiffEditor
                         original={originalValue}

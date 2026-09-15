@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { expect, userEvent, within } from '@storybook/test'
 import {
     Menu,
     MenuAlignment,
@@ -59,12 +60,18 @@ import {
     Code,
     Terminal,
 } from 'lucide-react'
+import {
+    getA11yConfig,
+    CHROMATIC_CONFIG,
+} from '../../../../.storybook/a11y.config'
 
 const meta: Meta<typeof Menu> = {
     title: 'Components/Menu',
     component: Menu,
     parameters: {
         layout: 'centered',
+        a11y: getA11yConfig('navigation'),
+        chromatic: CHROMATIC_CONFIG,
         docsSubtitle:
             "A versatile dropdown menu component built on top of Radix UI's DropdownMenu primitive.",
         docs: {
@@ -94,6 +101,9 @@ import { Menu, MenuAlignment, MenuSide, MenuItemVariant, MenuItemActionType } fr
 - Disabled state support
 - Sub-menu support for nested navigation
 - Virtual scrolling for large lists
+- Controlled item selection with checkmark or highlight styles
+- Single-select radio or multi-select checkbox accessibility semantics
+- \`closeOnSelect\` (default \`true\`) for controlled multi-select menus
 - Modal mode for focus trapping
 - Customizable dimensions (min/max width/height)
 - Keyboard navigation and accessibility
@@ -119,7 +129,15 @@ Built on Radix UI's DropdownMenu primitive for robust accessibility.
 **ARIA Attributes:**
 - Trigger: aria-haspopup, aria-expanded, aria-controls
 - Menu: role="menu", aria-orientation
-- Items: role="menuitem", aria-disabled
+- Items without \`selected\`: role="menuitem", aria-disabled
+- Selectable single-mode items: role="menuitemradio" with \`aria-checked\`
+- Selectable multiple-mode items: role="menuitemcheckbox" with \`aria-checked\`
+- Checkmark icons are decorative; submenu parents remain triggers and only leaves participate
+
+**Controlled selection:**
+- Set \`selected\` on every item that participates; omitting it preserves the legacy action item.
+- \`Menu\` never changes \`selected\`. Rebuild the \`items\` array from consumer state in each \`onClick\` callback.
+- \`closeOnSelect={false}\` is a menu-wide policy intended for multi-select workflows.
 
 **Screen Readers:**
 - Announces open/close state
@@ -176,6 +194,37 @@ Built on Radix UI's DropdownMenu primitive for robust accessibility.
                 type: { summary: 'boolean' },
                 defaultValue: { summary: 'false' },
                 category: 'Behavior',
+            },
+        },
+        selectionStyle: {
+            control: { type: 'inline-radio' },
+            options: ['checkmark', 'highlight'],
+            description:
+                'How selected items are indicated. Group-level selectionStyle overrides this value.',
+            table: {
+                type: { summary: "'checkmark' | 'highlight'" },
+                category: 'Selection',
+            },
+        },
+        selectionMode: {
+            control: { type: 'inline-radio' },
+            options: ['single', 'multiple'],
+            description:
+                'Accessibility cardinality for selected items. Group-level selectionMode overrides this value.',
+            table: {
+                type: { summary: "'single' | 'multiple'" },
+                defaultValue: { summary: 'single' },
+                category: 'Selection',
+            },
+        },
+        closeOnSelect: {
+            control: { type: 'boolean' },
+            description:
+                'When false, activating any leaf keeps this menu open. Defaults to true.',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'true' },
+                category: 'Selection',
             },
         },
         alignment: {
@@ -955,6 +1004,165 @@ export const ControlledState: Story = {
         docs: {
             description: {
                 story: 'Menu with controlled open state. External buttons can control whether the menu is open or closed.',
+            },
+        },
+    },
+}
+
+export const SingleSelectCheckmark: Story = {
+    render: function SingleSelectCheckmarkRender() {
+        const [sortBy, setSortBy] = useState('name-asc')
+
+        const options = [
+            { id: 'name-asc', label: 'Name (A–Z)' },
+            { id: 'name-desc', label: 'Name (Z–A)' },
+            { id: 'date-newest', label: 'Date (newest)' },
+            { id: 'date-oldest', label: 'Date (oldest)' },
+        ]
+
+        const items: MenuGroupType[] = [
+            {
+                label: 'Sort by',
+                items: options.map((option) => ({
+                    label: option.label,
+                    selected: sortBy === option.id,
+                    onClick: () => setSortBy(option.id),
+                })),
+            },
+        ]
+
+        return (
+            <div className="flex flex-col gap-3">
+                <Menu
+                    trigger={
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            text={`Sort: ${options.find((option) => option.id === sortBy)?.label}`}
+                        />
+                    }
+                    items={items}
+                    selectionStyle="checkmark"
+                    selectionMode="single"
+                />
+                <p className="text-xs text-gray-600">
+                    Controlled single-select sort picker. The consumer owns
+                    <code>selected</code>; the menu closes by default after a
+                    keyboard or pointer selection.
+                </p>
+            </div>
+        )
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const trigger = canvas.getByRole('button', { name: /sort:/i })
+
+        await userEvent.click(trigger)
+
+        const nameDesc = await canvas.findByRole('menuitemradio', {
+            name: /name \(z–a\)/i,
+        })
+        await expect(nameDesc).toHaveAttribute('aria-checked', 'false')
+
+        const nameAsc = canvas.getByRole('menuitemradio', {
+            name: /name \(a–z\)/i,
+        })
+        await expect(nameAsc).toHaveAttribute('aria-checked', 'true')
+
+        await userEvent.keyboard('{ArrowDown}')
+        await expect(nameDesc).toHaveFocus()
+        await userEvent.keyboard('{Enter}')
+        await expect(trigger).toHaveTextContent(/name \(z–a\)/i)
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Controlled single-select menu with \`selectionStyle="checkmark"\` and \`selectionMode="single"\`. Each item maps \`selected\` from consumer state; the default \`closeOnSelect\` behavior closes the menu after activation.`,
+            },
+        },
+    },
+}
+
+export const MultiSelectHighlight: Story = {
+    render: function MultiSelectHighlightRender() {
+        const [views, setViews] = useState<string[]>(['grid', 'preview'])
+
+        const options = [
+            { id: 'list', label: 'List' },
+            { id: 'grid', label: 'Grid' },
+            { id: 'preview', label: 'Preview pane' },
+            { id: 'sidebar', label: 'Sidebar' },
+        ]
+
+        const toggle = (id: string) => {
+            setViews((previous) =>
+                previous.includes(id)
+                    ? previous.filter((value) => value !== id)
+                    : [...previous, id]
+            )
+        }
+
+        const items: MenuGroupType[] = [
+            {
+                label: 'Visible panels',
+                items: options.map((option) => ({
+                    label: option.label,
+                    selected: views.includes(option.id),
+                    onClick: () => toggle(option.id),
+                })),
+            },
+        ]
+
+        return (
+            <div className="flex flex-col gap-3">
+                <Menu
+                    trigger={
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            text="View options"
+                        />
+                    }
+                    items={items}
+                    selectionStyle="highlight"
+                    selectionMode="multiple"
+                    closeOnSelect={false}
+                />
+                <p className="text-xs text-gray-600">
+                    Controlled multi-select view switcher with{' '}
+                    <code>selectionStyle="highlight"</code>. The menu remains
+                    open because <code>closeOnSelect</code> is false.
+                </p>
+                <div className="text-xs text-gray-600">
+                    Active: <strong>{views.join(', ') || 'none'}</strong>
+                </div>
+            </div>
+        )
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const trigger = canvas.getByRole('button', { name: /view options/i })
+
+        await userEvent.click(trigger)
+
+        const list = await canvas.findByRole('menuitemcheckbox', {
+            name: /^list$/i,
+        })
+        const grid = canvas.getByRole('menuitemcheckbox', { name: /^grid$/i })
+
+        await expect(list).toHaveAttribute('aria-checked', 'false')
+        await expect(grid).toHaveAttribute('aria-checked', 'true')
+
+        await userEvent.click(list)
+        await expect(
+            await canvas.findByRole('menuitemcheckbox', { name: /^list$/i })
+        ).toHaveAttribute('aria-checked', 'true')
+        await expect(
+            canvas.getByRole('menuitemcheckbox', { name: /^grid$/i })
+        ).toBeInTheDocument()
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: `Controlled multi-select menu with \`selectionStyle="highlight"\`, \`selectionMode="multiple"\`, and \`closeOnSelect={false}\`. Selection state remains fully controlled by the consumer.`,
             },
         },
     },

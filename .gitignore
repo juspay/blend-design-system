@@ -182,3 +182,13 @@ packages/blend/dist/*
 .blend-telemetry/
 # Generated route tree
 routeTree.gen.ts
+# Expo build artifacts (machine-local)
+.expo/
+.expo-shared/
+
+# builder-bob output
+packages/blend-native/lib/
+
+# Expo prebuild output — generated native projects, never committed
+apps/*/android/
+apps/*/ios/

@@ -2,12 +2,13 @@
 
 ## Overview
 
-The Blend design system provides two MultiSelect components:
+The Blend design system provides two dropdown MultiSelect components and an inline MultiSelectListV2:
 
 - **MultiSelect (v1)** – Original component; open state is internal; uses `useDrawerOnMobile`; flat props for menu dimensions (`minMenuWidth` / `maxMenuWidth` / `maxMenuHeight`), alignment, side, error, search, trigger dimensions; `onChange(selectedValue: string)` (single value toggle; clear via `onChange('')` or `onClearAllClick`).
 - **MultiSelectV2** – Refactored API with controlled open state (`open` / `onOpenChange`), **grouped props** for menu dimensions, trigger dimensions, menu position, search, and error (same shapes as SingleSelectV2); extends `ButtonHTMLAttributes`; `onChange(value: string | string[])` for type-safe clear via `onChange([])`; theme-driven tokens (light/dark). UI, accessibility, and data attributes match v1 for parity.
+- **MultiSelectListV2** – Always-visible V2 listbox for filter panels, settings surfaces, and drawer bodies; supports grouped items, controlled or local search, Select All/Clear All, max-selection caps, keyboard navigation, pagination, and automatic virtualization for lists above 20 options.
 
-Both support: label/sublabel, hint text, required, help icon, placeholder, sizes (sm/md/lg), variants (container / no-container), selection display (count badge or text tags), grouped items, search, Select All, virtualization, infinite scroll, action buttons, custom trigger, clear button, and mobile panel/drawer.
+The dropdown components support: label/sublabel, hint text, required, help icon, placeholder, sizes (sm/md/lg), variants (container / no-container), selection display (count badge or text tags), grouped items, search, Select All, virtualization, infinite scroll, action buttons, custom trigger, clear button, and mobile panel/drawer. MultiSelectListV2 shares the V2 item model but renders inline instead of behind a trigger.
 
 ---
 

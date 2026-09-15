@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
+import { expect, userEvent, within } from '@storybook/test'
 import {
     DataTable,
     ColumnDefinition,
@@ -13,6 +14,8 @@ import {
     Button,
     ButtonType,
     ButtonSize,
+    Theme,
+    ThemeProvider,
     TooltipSide,
     TooltipAlign,
     TooltipSize,
@@ -83,7 +86,7 @@ const columns: ColumnDefinition<User>[] = [
 - Column management (show/hide columns)
 - Bulk actions support
 - Custom cell rendering
-- Loading states and empty states
+- Loading, empty, and error states
 - Multiple column types (Text, Number, Date, Avatar, Tag, Select, etc.)
 
 ## Accessibility
@@ -386,6 +389,50 @@ const columns: ColumnDefinition<User>[] = [
                 category: 'UI State',
             },
         },
+        error: {
+            control: { type: 'boolean' },
+            description: 'Show an error state instead of table rows',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'UI State',
+            },
+        },
+        renderErrorState: {
+            control: false,
+            description: 'Custom renderer for the table error state',
+            table: {
+                type: {
+                    summary: '(retry?: () => void) => React.ReactNode',
+                },
+                category: 'UI State',
+            },
+        },
+        onRetry: {
+            action: 'retry',
+            description: 'Callback invoked by the default error Retry button',
+            table: {
+                type: { summary: '() => void' },
+                category: 'UI State',
+            },
+        },
+        showEmptyState: {
+            control: { type: 'boolean' },
+            description: 'Show the default empty state when there are no rows',
+            table: {
+                type: { summary: 'boolean' },
+                defaultValue: { summary: 'false' },
+                category: 'UI State',
+            },
+        },
+        renderEmptyState: {
+            control: false,
+            description: 'Custom renderer used when there are no rows',
+            table: {
+                type: { summary: '() => React.ReactNode' },
+                category: 'UI State',
+            },
+        },
         showToolbar: {
             control: { type: 'boolean' },
             description: 'Show the header toolbar with search and actions',
@@ -514,6 +561,15 @@ const columns: ColumnDefinition<User>[] = [
             table: {
                 type: { summary: 'BulkActionsConfig' },
                 category: 'Selection',
+            },
+        },
+        exportConfig: {
+            control: false,
+            description:
+                'Configures whole-table CSV/XLSX export for the current page or all loaded rows. The optional onExport callback can asynchronously return server-side rows using the current visible columns, filters, search, and sort context.',
+            table: {
+                type: { summary: 'DataTableExportConfig<T>' },
+                category: 'Export',
             },
         },
     },
@@ -721,6 +777,178 @@ export const WithSearchAndFiltering: Story = {
         docs: {
             description: {
                 story: 'DataTable with search and column filtering enabled for finding specific records.',
+            },
+        },
+    },
+}
+
+export const ClientSideExport: Story = {
+    args: {
+        data: sampleUsers as any[],
+        columns: userColumns as any[],
+        idField: 'id',
+        title: 'Exportable Users',
+        description:
+            'Search, sort, filter, or manage columns before exporting the current view.',
+        enableSearch: true,
+        enableFiltering: true,
+        enableColumnManager: true,
+        exportConfig: {
+            enabled: true,
+            fileName: 'users',
+            formats: ['csv', 'xlsx'],
+            scope: 'allLoaded',
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Client-side export serializes all filtered and sorted rows using only the columns currently visible in the column manager.',
+            },
+        },
+    },
+}
+
+const ServerBackedExportDataTable: React.FC = () => {
+    const currentPageRows = sampleUsers.slice(0, 10)
+
+    return (
+        <DataTable
+            data={currentPageRows as any[]}
+            columns={userColumns as any[]}
+            idField="id"
+            title="Server-Backed User Export"
+            description="The table shows one server page; export requests every matching row."
+            enableSearch
+            serverSideSearch
+            serverSidePagination
+            pagination={{
+                currentPage: 1,
+                pageSize: 10,
+                totalRows: sampleUsers.length,
+                pageSizeOptions: [10, 20, 50],
+            }}
+            exportConfig={{
+                enabled: true,
+                fileName: 'all-users',
+                formats: ['csv', 'xlsx'],
+                scope: 'allLoaded',
+                onExport: async (context) => {
+                    await new Promise((resolve) => setTimeout(resolve, 600))
+                    const query = context.search.query.trim().toLowerCase()
+                    if (!query) return sampleUsers as any[]
+
+                    return sampleUsers.filter((row) =>
+                        context.visibleColumns.some((column) =>
+                            String(row[column.field])
+                                .toLowerCase()
+                                .includes(query)
+                        )
+                    ) as any[]
+                },
+            }}
+        />
+    )
+}
+
+export const ServerBackedExport: Story = {
+    render: () => <ServerBackedExportDataTable />,
+    parameters: {
+        docs: {
+            description: {
+                story: '`onExport` receives the visible columns, filters, search, sort, and scope so a server-paginated consumer can return the complete matching dataset asynchronously.',
+            },
+        },
+    },
+}
+
+type AsyncFilterRow = {
+    id: number
+    team: string
+}
+
+const asyncFilterRows: AsyncFilterRow[] = [
+    { id: 1, team: 'eng' },
+    { id: 2, team: 'ops' },
+]
+
+const AsyncFilterOptionsDataTable: React.FC = () => {
+    const [filterOptions, setFilterOptions] = useState<
+        NonNullable<ColumnDefinition<AsyncFilterRow>['filterOptions']>
+    >([])
+
+    React.useEffect(() => {
+        const timer = window.setTimeout(() => {
+            setFilterOptions([
+                { id: 'engineering', label: 'Engineering', value: 'eng' },
+                { id: 'operations', label: 'Operations', value: 'ops' },
+            ])
+        }, 600)
+
+        return () => window.clearTimeout(timer)
+    }, [])
+
+    const columns = React.useMemo<ColumnDefinition<AsyncFilterRow>[]>(
+        () => [
+            {
+                field: 'team',
+                header: 'Team',
+                type: ColumnType.TEXT,
+                filterType: FilterType.MULTISELECT,
+                filterOptions,
+                isSortable: false,
+            },
+        ],
+        [filterOptions]
+    )
+
+    return (
+        <DataTable
+            data={asyncFilterRows}
+            columns={columns as any[]}
+            idField="id"
+            title="Async Filter Options"
+            description="Filter options replace row-derived values without remounting the table."
+            enableFiltering
+        />
+    )
+}
+
+export const WithAsyncFilterOptions: Story = {
+    render: () => <AsyncFilterOptionsDataTable />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+        const filterTrigger = canvas.getByRole('button', {
+            name: /filter team/i,
+        })
+        await userEvent.click(filterTrigger)
+
+        // The popover content renders in a portal outside canvasElement,
+        // so query document.body rather than the canvas.
+        const body = within(document.body)
+        const filterMenuItem = await body.findByRole('menuitem', {
+            name: /^filter$/i,
+        })
+        await userEvent.click(filterMenuItem)
+
+        // Options load 600ms after mount; wait for them rather than
+        // assuming they're already there.
+        const engineeringOption = await body.findByRole('menuitemcheckbox', {
+            name: /engineering/i,
+        })
+        await expect(engineeringOption).toBeInTheDocument()
+        await expect(
+            body.getByRole('menuitemcheckbox', { name: /operations/i })
+        ).toBeInTheDocument()
+    },
+    parameters: {
+        chromatic: {
+            ...CHROMATIC_CONFIG,
+            delay: 1000,
+        },
+        docs: {
+            description: {
+                story: 'A text column explicitly uses the multiselect filter UI. While options load, an empty `filterOptions` array preserves the existing row-derived fallback (`eng`, `ops`). The loaded array is replaced immutably, updating the labels to “Engineering” and “Operations” without remounting DataTable.',
             },
         },
     },
@@ -1002,6 +1230,117 @@ export const ServerSideOperations: Story = {
     },
 }
 
+const darkSurfaceColumns: ColumnDefinition<Record<string, unknown>>[] = [
+    ...(userColumns.slice(0, 5) as ColumnDefinition<Record<string, unknown>>[]),
+    {
+        field: 'progress',
+        header: 'Progress',
+        type: ColumnType.PROGRESS,
+        minWidth: '140px',
+        isSortable: true,
+    },
+    {
+        field: 'assignment',
+        header: 'Assignment',
+        type: ColumnType.DROPDOWN,
+        minWidth: '160px',
+        isSortable: true,
+        dropdownOptions: [
+            { id: 'core', label: 'Core platform', value: 'core' },
+            { id: 'growth', label: 'Growth', value: 'growth' },
+            { id: 'infra', label: 'Infrastructure', value: 'infra' },
+        ],
+    },
+]
+
+const darkSurfaceData = sampleUsers.slice(0, 8).map((user, index) => ({
+    ...user,
+    progress: 20 + index * 9,
+    assignment: {
+        options: [
+            { id: 'core', label: 'Core platform', value: 'core' },
+            { id: 'growth', label: 'Growth', value: 'growth' },
+            { id: 'infra', label: 'Infrastructure', value: 'infra' },
+        ],
+        selectedValue: index % 2 === 0 ? 'core' : 'growth',
+    },
+}))
+
+const DarkThemeFullSurfaceDataTable: React.FC = () => (
+    <ThemeProvider theme={Theme.DARK}>
+        <div
+            style={{
+                display: 'grid',
+                gap: 32,
+                padding: 32,
+                background: '#111827',
+            }}
+        >
+            <DataTable
+                data={darkSurfaceData as Record<string, unknown>[]}
+                columns={darkSurfaceColumns}
+                idField="id"
+                title="Dark theme DataTable"
+                description="Filters, selection, expansion, bulk actions, tags, progress, and dropdown cells"
+                enableSearch
+                enableFiltering
+                enableColumnManager
+                enableRowSelection
+                enableRowExpansion
+                isHoverable
+                renderExpandedRow={({ row }) => (
+                    <div style={{ padding: 16 }}>
+                        Expanded details for {String(row.name)}
+                    </div>
+                )}
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 8,
+                    totalRows: darkSurfaceData.length,
+                    pageSizeOptions: [8, 16, 24],
+                }}
+            />
+            <DataTable
+                data={darkSurfaceData as Record<string, unknown>[]}
+                columns={darkSurfaceColumns}
+                idField="id"
+                title="Dark theme loading state"
+                isLoading
+                showSkeleton
+                pagination={{
+                    currentPage: 1,
+                    pageSize: 8,
+                    totalRows: darkSurfaceData.length,
+                }}
+            />
+        </div>
+    </ThemeProvider>
+)
+
+export const DarkThemeFullSurface: Story = {
+    render: () => <DarkThemeFullSurfaceDataTable />,
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement)
+
+        await userEvent.click(
+            canvas.getByRole('checkbox', { name: /Select row 1/ })
+        )
+        await userEvent.click(
+            canvas.getByRole('button', { name: 'Expand row' })
+        )
+        await userEvent.click(
+            canvas.getByRole('button', { name: 'Filter Role' })
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Full DataTable surface rendered through ThemeProvider theme=dark. The play interaction leaves a row selected, expanded, and the Role filter open while a second table shows dark loading skeletons.',
+            },
+        },
+    },
+}
+
 // Loading state
 export const LoadingState: Story = {
     args: {
@@ -1030,11 +1369,64 @@ export const EmptyState: Story = {
         description: 'No users found',
         enableSearch: true,
         searchPlaceholder: 'Search users...',
+        showEmptyState: true,
     },
     parameters: {
         docs: {
             description: {
                 story: 'DataTable with no data showing empty state.',
+            },
+        },
+    },
+}
+
+export const CustomEmptyState: Story = {
+    args: {
+        data: [],
+        columns: userColumns as any[],
+        idField: 'id',
+        title: 'User Management',
+        enableSearch: true,
+        renderEmptyState: () => (
+            <div style={{ textAlign: 'center' }}>
+                <strong>No users match your filters</strong>
+                <p style={{ margin: '8px 0 0' }}>
+                    Try changing or clearing your search criteria.
+                </p>
+            </div>
+        ),
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DataTable with custom content rendered in the empty body area.',
+            },
+        },
+    },
+}
+
+const ErrorStateDataTable: React.FC = () => {
+    const [hasError, setHasError] = useState(true)
+
+    return (
+        <DataTable
+            data={hasError ? [] : (sampleUsers.slice(0, 5) as any[])}
+            columns={userColumns as any[]}
+            idField="id"
+            title="User Management"
+            enableSearch
+            error={hasError}
+            onRetry={() => setHasError(false)}
+        />
+    )
+}
+
+export const ErrorState: Story = {
+    render: () => <ErrorStateDataTable />,
+    parameters: {
+        docs: {
+            description: {
+                story: 'DataTable with the default error state and a working Retry action.',
             },
         },
     },

@@ -132,10 +132,15 @@ const scanDirectory = (dirPath: string, basePath: string = ''): DocItem[] => {
                 const { title, version, category } =
                     extractFrontmatter(fullPath)
                 // Strip "V2" suffix from title so v1/v2 peers share the same name
-                const cleanTitle = title?.replace(/\s*[Vv]2\s*$/, '') ?? slug
+                const isMigrationDoc = relativePath
+                    .split(path.sep)
+                    .includes('migration')
+                const cleanTitle = isMigrationDoc
+                    ? title?.replace(/\s+[Vv]1\s+to\s+[Vv]2\s*$/, '')
+                    : title?.replace(/\s*[Vv]2\s*$/, '')
                 items.push({
                     slug,
-                    name: cleanTitle,
+                    name: cleanTitle ?? slug,
                     path: relativePath.replace(/\.mdx$/, ''),
                     version,
                     category,

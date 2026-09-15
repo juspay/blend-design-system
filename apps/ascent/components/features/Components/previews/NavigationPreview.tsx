@@ -1,6 +1,6 @@
 const NavigationPreview = () => (
     <div className="flex items-center justify-center w-full max-w-64">
-        <div className="w-full flex items-center gap-2 px-3 py-2.5 bg-background rounded-xl border border-border shadow-[0_2px_8px_rgb(0,0,0,0.06)]">
+        <div className="w-full flex items-center gap-2 px-3 py-2.5 bg-background rounded-xl border border-border shadow-card">
             {/* Home icon */}
             <svg
                 xmlns="http://www.w3.org/2000/svg"

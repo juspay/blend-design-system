@@ -72,17 +72,24 @@ Understanding the monorepo structure:
 ```
 blend-design-system/
 ├── packages/
-│   └── blend/                 # Main design system package
-│       ├── lib/
-│       │   ├── components/    # React components
-│       │   ├── tokens/        # Design tokens
-│       │   ├── hooks/         # Custom hooks
-│       │   └── context/       # Theme context and providers
+│   ├── blend/                 # Main design system package
+│   │   └── lib/
+│   │       ├── components/    # React components
+│   │       ├── tokens/        # Design tokens
+│   │       ├── hooks/         # Custom hooks
+│   │       └── context/       # Theme context and providers
+│   ├── token-engine/          # Token resolution engine
+│   ├── cli/                   # Blend Studio CLI
+│   ├── mcp/                   # Component metadata tooling
+│   ├── blend-telemetry/       # Component usage scanner
+│   └── typescript-config/     # Shared TypeScript configs
 ├── apps/
 │   ├── ascent/               # Documentation site
 │   ├── storybook/            # Component playground
 │   ├── site/                 # Marketing / main site
-│   └── blend-monitor/        # Monitoring / analytics app
+│   ├── blend-studio/         # Token Studio web app
+│   ├── backend/              # Token Studio API
+│   └── tokenizer-sandbox/    # Token workflow demo
 ```
 
 ---

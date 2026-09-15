@@ -6,17 +6,19 @@ import React, {
     useEffect,
 } from 'react'
 import Block from '../Primitives/Block/Block'
-import TextInput from '../Inputs/TextInput/TextInput'
-import { TextInputSize } from '../Inputs/TextInput/types'
-import Menu from '../Menu/Menu'
-import {
-    MenuItemType,
-    MenuGroupType,
-    MenuAlignment,
-    MenuSide,
-} from '../Menu/types'
+import { TextInputV2, InputSizeV2 } from '../InputsV2/TextInputV2'
+import { MenuV2, MenuV2Alignment, MenuV2GroupType, MenuV2Side } from '../MenuV2'
 import { isDateToday, getDatePartsInTimezone } from './utils'
 import { DateRange } from './types'
+import {
+    type TimeValue,
+    createTimeValue,
+    formatTimeValue,
+    generateTimeSlots,
+    parseTimeInput,
+    timeValueFromString,
+    timeValueToString,
+} from '../shared/datetime/timeCore'
 
 type TimeSelectorProps = {
     value: string
@@ -34,126 +36,33 @@ type TimeSelectorProps = {
     'aria-label'?: string
 }
 
-const formatTimeFor12Hour = (hour: number, minute: number): string => {
-    const period = hour >= 12 ? 'PM' : 'AM'
-    const displayHour = hour % 12 === 0 ? 12 : hour % 12
-    return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`
-}
+/**
+ * DateRangePicker's time field is minute-granularity, 15-minute stepped and
+ * always displayed in 12-hour form. It delegates all of that to the shared
+ * time core (`components/shared/datetime/timeCore`) so `TimePicker` and
+ * `SingleDatePicker` parse and format identically.
+ */
+const TIME_SELECTOR_STEP_MINUTES = 15
 
 const formatTimeStringFor12Hour = (timeString: string): string => {
-    const [hour, minute] = timeString.split(':').map(Number)
-    return formatTimeFor12Hour(hour, minute)
-}
-
-const parseTimeInput = (
-    input: string,
-    minHour: number,
-    minMunite: number,
-    maxHour: number,
-    maxMinute: number
-): {
-    hour: number
-    minute: number
-    isValid: boolean
-    originalInput: string
-} => {
-    const originalInput = input.trim()
-    if (!originalInput) {
-        return { hour: 0, minute: 0, isValid: false, originalInput }
-    }
-
-    const cleanInput = input.replace(/\s+/g, ' ').trim().toUpperCase()
-
-    const timePatterns = [
-        /^(\d{1,2})(?::(\d{1,2}))?\s*(AM|PM)$/i, // 12:30 PM, 12 PM
-        /^(\d{1,2})(?::(\d{1,2}))$/, // 12:30, 12
-        /^(\d{3,4})$/, // 1230, 130
-    ]
-
-    for (const pattern of timePatterns) {
-        const match = cleanInput.match(pattern)
-        if (!match) continue
-
-        let hour: number
-        let minute: number
-        const period = match[3]?.toUpperCase()
-
-        if (pattern === timePatterns[2]) {
-            const digits = match[1]
-            if (digits.length === 3) {
-                hour = parseInt(digits.slice(0, 1), 10)
-                minute = parseInt(digits.slice(1), 10)
-            } else {
-                hour = parseInt(digits.slice(0, 2), 10)
-                minute = parseInt(digits.slice(2), 10)
-            }
-        } else {
-            hour = parseInt(match[1], 10)
-            minute = parseInt(match[2] || '0', 10)
-        }
-
-        if (minute < 0 || minute > 59) continue
-
-        if (period) {
-            if (hour < 1 || hour > 12) continue
-            if (period === 'PM' && hour !== 12) {
-                hour += 12
-            } else if (period === 'AM' && hour === 12) {
-                hour = 0
-            }
-        } else {
-            // 24-hour format or ambiguous
-            if (hour > 23) continue
-
-            if (hour >= 1 && hour <= 12) {
-                const currentHour = new Date().getHours()
-                const defaultToPM = currentHour >= 12
-                if (defaultToPM && hour !== 12) {
-                    hour += 12
-                } else if (!defaultToPM && hour === 12) {
-                    hour = 0
-                }
-            }
-        }
-
-        if (
-            hour < minHour ||
-            hour > maxHour ||
-            minute < (hour === minHour ? minMunite : 0) ||
-            minute > (hour === maxHour ? maxMinute : 59)
-        )
-            continue
-
-        return { hour, minute, isValid: true, originalInput }
-    }
-
-    return { hour: 0, minute: 0, isValid: false, originalInput }
+    const parsed = timeValueFromString(timeString)
+    if (!parsed) return ''
+    return formatTimeValue(parsed, { format: '12h' })
 }
 
 const generateTimeOptions = (
     onSelect: (timeValue: string) => void,
-    minHour: number,
-    minMunite: number,
-    maxHour: number,
-    maxMinute: number
-): MenuGroupType[] => {
-    const options: MenuItemType[] = []
-
-    for (let hour = minHour; hour <= maxHour; hour++) {
-        for (
-            let minute = hour === minHour ? minMunite : 0;
-            minute <= (hour === maxHour ? maxMinute : 59);
-            minute += 15
-        ) {
-            const timeValue = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-            const displayText = formatTimeFor12Hour(hour, minute)
-
-            options.push({
-                label: displayText,
-                onClick: () => onSelect(timeValue),
-            })
-        }
-    }
+    minTime: TimeValue,
+    maxTime: TimeValue
+): MenuV2GroupType[] => {
+    const options = generateTimeSlots({
+        stepMinutes: TIME_SELECTOR_STEP_MINUTES,
+        minTime,
+        maxTime,
+    }).map((slot) => ({
+        label: { text: formatTimeValue(slot, { format: '12h' }) },
+        onClick: () => onSelect(timeValueToString(slot)),
+    }))
 
     return [{ items: options }]
 }
@@ -241,6 +150,26 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 ? [today.getHours(), today.getMinutes()]
                 : [23, 59]
 
+        const minTime = useMemo(
+            () => createTimeValue(minHour, minMunite),
+            [minHour, minMunite]
+        )
+        const maxTime = useMemo(
+            () => createTimeValue(maxHour, maxMinute),
+            [maxHour, maxMinute]
+        )
+
+        const parseInput = useCallback(
+            (input: string) =>
+                parseTimeInput(input, {
+                    minTime,
+                    maxTime,
+                    // Minute-granularity field: reject "12:30:45".
+                    allowSeconds: false,
+                }),
+            [minTime, maxTime]
+        )
+
         useEffect(() => {
             if (value) {
                 const displayValue = formatTimeStringFor12Hour(value)
@@ -265,15 +194,8 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
         )
 
         const timeOptions = useMemo(
-            () =>
-                generateTimeOptions(
-                    handleTimeSelect,
-                    minHour,
-                    minMunite,
-                    maxHour,
-                    maxMinute
-                ),
-            [handleTimeSelect, minHour, minMunite, maxHour, maxMinute]
+            () => generateTimeOptions(handleTimeSelect, minTime, maxTime),
+            [handleTimeSelect, minTime, maxTime]
         )
 
         const handleOpenChange = useCallback(
@@ -296,16 +218,10 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 // Allow better typing experience
                 setInputValue(newValue)
 
-                const parsed = parseTimeInput(
-                    newValue,
-                    minHour,
-                    minMunite,
-                    maxHour,
-                    maxMinute
-                )
-                setIsValidTime(parsed.isValid || newValue.trim() === '')
+                const parsed = parseInput(newValue)
+                setIsValidTime(parsed !== null || newValue.trim() === '')
             },
-            [maxHour, maxMinute, minHour, minMunite]
+            [parseInput]
         )
 
         const handleInputFocus = useCallback(() => {}, [])
@@ -325,16 +241,10 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                         return
                     }
 
-                    const parsed = parseTimeInput(
-                        trimmedInput,
-                        minHour,
-                        minMunite,
-                        maxHour,
-                        maxMinute
-                    )
+                    const parsed = parseInput(trimmedInput)
 
-                    if (parsed.isValid) {
-                        const finalTimeValue = `${parsed.hour.toString().padStart(2, '0')}:${parsed.minute.toString().padStart(2, '0')}`
+                    if (parsed) {
+                        const finalTimeValue = timeValueToString(parsed)
                         const finalDisplayValue =
                             formatTimeStringFor12Hour(finalTimeValue)
 
@@ -353,10 +263,7 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
             onChange,
             isOpen,
             isProcessingSelection,
-            maxHour,
-            maxMinute,
-            minHour,
-            minMunite,
+            parseInput,
         ])
 
         const handleInputKeyDown = useCallback(
@@ -398,7 +305,7 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                 tabIndex={-1}
                 style={{ width: '118px', flexShrink: 0 }}
             >
-                <TextInput
+                <TextInputV2
                     id={id}
                     type="text"
                     disabled={
@@ -413,8 +320,8 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
                     onClick={handleInputClick}
                     onKeyDown={handleInputKeyDown}
                     placeholder="12:00 PM"
-                    size={TextInputSize.SMALL}
-                    error={!isValidTime}
+                    size={InputSizeV2.SM}
+                    error={{ show: !isValidTime, message: '' }}
                     tabIndex={tabIndex}
                     label=""
                     aria-label={ariaLabel}
@@ -424,17 +331,19 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
 
         return (
             <Block ref={ref} style={{ width: '118px', flexShrink: 0 }}>
-                <Menu
+                <MenuV2
                     trigger={triggerElement}
                     items={timeOptions}
                     open={isOpen && !isProcessingSelection}
                     onOpenChange={handleOpenChange}
-                    side={MenuSide.BOTTOM}
-                    alignment={MenuAlignment.START}
+                    side={MenuV2Side.BOTTOM}
+                    alignment={MenuV2Alignment.START}
                     sideOffset={4}
-                    maxHeight={200}
-                    minWidth={120}
-                    maxWidth={120}
+                    dimensions={{
+                        maxHeight: 200,
+                        minWidth: 120,
+                        maxWidth: 120,
+                    }}
                 />
             </Block>
         )

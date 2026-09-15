@@ -3,11 +3,10 @@ import { ChevronDown, Check } from 'lucide-react'
 import { DateRangePreset, HapticFeedbackType } from '../types'
 import { getPresetDisplayLabel, triggerHapticFeedback } from '../utils'
 import { PresetItemProps } from '../types'
-import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
-import type { SingleSelectTokensType } from '../../SingleSelect/singleSelect.tokens'
-import { FOUNDATION_THEME } from '../../../tokens'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
+import { useTheme } from '../../../context'
+import { getMobileToken } from './mobile.tokens'
 
 const PresetItem: React.FC<PresetItemProps> = ({
     preset,
@@ -19,7 +18,8 @@ const PresetItem: React.FC<PresetItemProps> = ({
     isDisabled = false,
 }) => {
     const isCustom = preset === DateRangePreset.CUSTOM
-    const tokens = useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
+    const { foundationTokens, theme } = useTheme()
+    const tokens = getMobileToken(foundationTokens, theme).sm
 
     const handleClick = () => {
         if (isDisabled) return
@@ -42,21 +42,23 @@ const PresetItem: React.FC<PresetItemProps> = ({
     const handleTouchStart = (e: React.TouchEvent) => {
         if (isDisabled) return
         const target = e.currentTarget as HTMLElement
-        target.style.backgroundColor = String(FOUNDATION_THEME.colors.gray[50])
+        target.style.backgroundColor = String(
+            tokens.presets.hoverBackgroundColor
+        )
         target.style.transform = 'scale(0.98)'
     }
 
     const handleTouchEnd = (e: React.TouchEvent) => {
         if (isDisabled) return
         const target = e.currentTarget as HTMLElement
-        target.style.backgroundColor = 'transparent'
+        target.style.backgroundColor = String(tokens.presets.backgroundColor)
         target.style.transform = 'scale(1)'
     }
 
     const handleTouchCancel = (e: React.TouchEvent) => {
         if (isDisabled) return
         const target = e.currentTarget as HTMLElement
-        target.style.backgroundColor = 'transparent'
+        target.style.backgroundColor = String(tokens.presets.backgroundColor)
         target.style.transform = 'scale(1)'
     }
 
@@ -66,10 +68,10 @@ const PresetItem: React.FC<PresetItemProps> = ({
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            padding={`${FOUNDATION_THEME.unit[12]} ${FOUNDATION_THEME.unit[16]}`}
-            borderBottom={`1px solid ${FOUNDATION_THEME.colors.gray[150]}`}
+            padding={`${tokens.presets.padding.y} ${tokens.presets.padding.x}`}
+            borderBottom={tokens.presets.borderBottom}
             cursor={isDisabled ? 'not-allowed' : 'pointer'}
-            backgroundColor="transparent"
+            backgroundColor={tokens.presets.backgroundColor}
             style={{
                 transition: 'background-color 0.15s ease, transform 0.1s ease',
                 touchAction: 'manipulation',
@@ -82,18 +84,18 @@ const PresetItem: React.FC<PresetItemProps> = ({
             onTouchCancel={handleTouchCancel}
         >
             <PrimitiveText
-                fontSize={tokens?.menu?.item?.option?.fontSize}
+                fontSize={foundationTokens.font.size.body.md.fontSize}
                 fontWeight={
                     isActive
-                        ? tokens?.menu?.item?.option?.fontWeight
-                        : tokens?.menu?.item?.option?.fontWeight
+                        ? foundationTokens.font.weight[600]
+                        : foundationTokens.font.weight[400]
                 }
                 color={
                     isDisabled
-                        ? tokens?.menu?.item?.option?.color?.disabled
+                        ? tokens.presets.text.disabled
                         : isActive
-                          ? tokens?.menu?.item?.option?.color?.selected
-                          : tokens?.menu?.item?.option?.color?.default
+                          ? tokens.presets.text.selected
+                          : tokens.presets.text.default
                 }
             >
                 {getPresetDisplayLabel(preset)}
@@ -109,8 +111,8 @@ const PresetItem: React.FC<PresetItemProps> = ({
                         size={16}
                         color={
                             isDisabled
-                                ? tokens?.menu?.item?.option?.color?.disabled
-                                : tokens?.menu?.item?.option?.color?.selected
+                                ? tokens.presets.text.disabled
+                                : tokens.presets.text.selected
                         }
                     />
                 </Block>
@@ -121,8 +123,8 @@ const PresetItem: React.FC<PresetItemProps> = ({
                     size={16}
                     color={
                         isDisabled
-                            ? tokens?.menu?.item?.option?.color?.disabled
-                            : tokens?.menu?.item?.option?.color?.default
+                            ? tokens.presets.text.disabled
+                            : tokens.presets.text.default
                     }
                     style={{
                         transform: isCustomExpanded

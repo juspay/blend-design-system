@@ -15,13 +15,7 @@ import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { SearchInput } from '../../Inputs/SearchInput'
 import Slider from '../../Slider/Slider'
 import { SliderSize, SliderValueType } from '../../Slider/types'
-import {
-    ColumnDefinition,
-    ColumnType,
-    FilterType,
-    SortDirection,
-} from '../types'
-import { getColumnTypeConfig } from '../columnTypes'
+import { ColumnDefinition, FilterType, SortDirection } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
 import {
     SortHandlers,
@@ -34,9 +28,11 @@ import {
     getSelectMenuItems,
     getMultiSelectMenuItems,
     filterItemsBySearch,
+    getColumnTypeConfigForColumn,
 } from './utils'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
+import { useTheme } from '../../../context/ThemeContext'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { Popover } from '../../Popover'
 import MobileFilterDrawer from './MobileFilterDrawer'
@@ -57,6 +53,8 @@ type FilterComponentsProps = {
     filterHandlers: FilterHandlers
     filterState: FilterState
     sortState: SortState
+    /** When false, no filter UI is offered — a filter here could not affect rows. */
+    enableFiltering?: boolean
     onColumnFilter?: ColumnFilterHandler
     onRenameHeader?: () => void
     onOperations?: () => void
@@ -96,6 +94,11 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
         },
         ref
     ) => {
+        const { theme } = useTheme()
+        const destructiveColor =
+            theme === 'dark'
+                ? FOUNDATION_THEME.colors.red[400]
+                : FOUNDATION_THEME.colors.red[500]
         const interactiveHandlers = onClick
             ? {
                   onClick: (e: React.MouseEvent<HTMLDivElement>) => {
@@ -157,7 +160,7 @@ const MenuItem = React.forwardRef<HTMLDivElement, MenuItemProps>(
                                 tableToken.dataTable.table.header.filter
                                     .sortOption.fontSize,
                             color: isDestructive
-                                ? FOUNDATION_THEME.colors.red[500]
+                                ? destructiveColor
                                 : tableToken.dataTable.table.header.filter
                                       .sortOption.textColor,
                             fontWeight: isDestructive
@@ -215,7 +218,9 @@ const renderSortOption = (
         role="menuitem"
         _focus={{ outline: 'none' }}
         _focusVisible={{
-            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+            outline:
+                tableToken.header.actionIcons.columnManagerTrigger?.focusVisible
+                    .outline,
             outlineOffset: '2px',
         }}
     >
@@ -238,7 +243,11 @@ const renderSortOption = (
         {isActive && (
             <Check
                 size={FOUNDATION_THEME.unit[16]}
-                color={checkColor || FOUNDATION_THEME.colors.gray[900]}
+                color={
+                    checkColor ||
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .textColor
+                }
             />
         )}
     </Block>
@@ -308,7 +317,7 @@ export const SortOptions: React.FC<{
                     onPopoverClose?.()
                 },
                 isPrimaryAscendingActive,
-                FOUNDATION_THEME.colors.gray[900]
+                tableToken.dataTable.table.header.filter.sortOption.textColor
             )}
             {renderSortOption(
                 tableToken,
@@ -326,13 +335,16 @@ export const SortOptions: React.FC<{
                     onPopoverClose?.()
                 },
                 isPrimaryDescendingActive,
-                FOUNDATION_THEME.colors.green[900]
+                tableToken.dataTable.table.header.filter.sortOption.textColor
             )}
             {hasDeltaSort && (
                 <>
                     <Block
                         height="1px"
-                        backgroundColor={FOUNDATION_THEME.colors.gray[200]}
+                        backgroundColor={
+                            tableToken.dataTable.table.header.filter
+                                .separatorColor
+                        }
                         marginY={FOUNDATION_THEME.unit[4]}
                     />
                     <PrimitiveText
@@ -366,7 +378,8 @@ export const SortOptions: React.FC<{
                             onPopoverClose?.()
                         },
                         isDeltaAscendingActive,
-                        FOUNDATION_THEME.colors.gray[900]
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .textColor
                     )}
                     {renderSortOption(
                         tableToken,
@@ -384,7 +397,8 @@ export const SortOptions: React.FC<{
                             onPopoverClose?.()
                         },
                         isDeltaDescendingActive,
-                        FOUNDATION_THEME.colors.green[900]
+                        tableToken.dataTable.table.header.filter.sortOption
+                            .textColor
                     )}
                 </>
             )}
@@ -600,7 +614,10 @@ export const SingleSelectItems: React.FC<{
                                         aria-checked={isSelected}
                                         _focus={{ outline: 'none' }}
                                         _focusVisible={{
-                                            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                            outline:
+                                                tableToken.header.actionIcons
+                                                    .columnManagerTrigger
+                                                    ?.focusVisible.outline,
                                             outlineOffset: '2px',
                                         }}
                                     >
@@ -628,8 +645,9 @@ export const SingleSelectItems: React.FC<{
                                             <Check
                                                 size={FOUNDATION_THEME.unit[16]}
                                                 color={
-                                                    FOUNDATION_THEME.colors
-                                                        .gray[600]
+                                                    tableToken.dataTable.table
+                                                        .header.filter
+                                                        .sortOption.textColor
                                                 }
                                             />
                                         )}
@@ -808,7 +826,10 @@ export const MultiSelectItems: React.FC<{
                                         aria-checked={isSelected}
                                         _focus={{ outline: 'none' }}
                                         _focusVisible={{
-                                            outline: `1px solid ${FOUNDATION_THEME.colors.primary[500]}`,
+                                            outline:
+                                                tableToken.header.actionIcons
+                                                    .columnManagerTrigger
+                                                    ?.focusVisible.outline,
                                             outlineOffset: '2px',
                                         }}
                                     >
@@ -1104,6 +1125,11 @@ export const DateFilter: React.FC<{
     filterState: FilterState
     onColumnFilter?: ColumnFilterHandler
 }> = ({ column, fieldKey, tableToken, filterState, onColumnFilter }) => {
+    const { theme } = useTheme()
+    const destructiveColor =
+        theme === 'dark'
+            ? FOUNDATION_THEME.colors.red[400]
+            : FOUNDATION_THEME.colors.red[600]
     const selectedValue = filterState.columnSelectedValues[fieldKey]
     const selectedRange = Array.isArray(selectedValue)
         ? selectedValue
@@ -1185,7 +1211,7 @@ export const DateFilter: React.FC<{
                     icon={
                         <TrashSimpleIcon
                             size={FOUNDATION_THEME.unit[16]}
-                            color={FOUNDATION_THEME.colors.red[600]}
+                            color={destructiveColor}
                             weight="bold"
                         />
                     }
@@ -1216,6 +1242,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     filterHandlers,
     filterState,
     sortState,
+    enableFiltering = true,
     onColumnFilter,
     onRenameHeader,
     onOperations,
@@ -1225,12 +1252,24 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     onPopoverClose,
     onFilterApplied,
 }) => {
+    const { theme } = useTheme()
+    const destructiveColor =
+        theme === 'dark'
+            ? FOUNDATION_THEME.colors.red[400]
+            : FOUNDATION_THEME.colors.red[600]
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isMobile = breakPointLabel === 'sm'
-    const columnConfig = getColumnTypeConfig(column.type || ColumnType.TEXT)
+    const columnConfig = getColumnTypeConfigForColumn(column)
     const fieldKey = String(column.field)
     const [nestedFilterOpen, setNestedFilterOpen] = useState(false)
-    const hasFiltering = columnConfig.supportsFiltering
+    const hasFiltering = columnConfig.supportsFiltering && enableFiltering
+    const selectedFilterValue = filterState.columnSelectedValues[fieldKey]
+    // An applied value can be absent from the current option list (async or
+    // server-driven options), so the clear affordance is driven by the filter
+    // state rather than by what the dropdown happens to render.
+    const hasActiveSelection = Array.isArray(selectedFilterValue)
+        ? selectedFilterValue.length > 0
+        : selectedFilterValue !== undefined && selectedFilterValue !== ''
     const menuRef = useRef<HTMLDivElement>(null)
     const [focusedIndex, setFocusedIndex] = useState<number>(-1)
 
@@ -1311,6 +1350,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                 filterHandlers={filterHandlers}
                 filterState={filterState}
                 sortState={sortState}
+                enableFiltering={enableFiltering}
                 onColumnFilter={onColumnFilter}
                 onPopoverClose={onPopoverClose}
             />
@@ -1446,6 +1486,33 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                 </Popover>
             )}
 
+            {hasFiltering &&
+                columnConfig.filterComponent !== 'dateRange' &&
+                hasActiveSelection && (
+                    <MenuItem
+                        icon={
+                            <TrashSimpleIcon
+                                size={iconSize}
+                                color={destructiveColor}
+                                weight="bold"
+                            />
+                        }
+                        label="Clear Filter"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setNestedFilterOpen(false)
+                            onColumnFilter?.(
+                                String(column.field),
+                                columnConfig.filterType,
+                                [],
+                                'equals'
+                            )
+                        }}
+                        isDestructive
+                        tableToken={tableToken}
+                    />
+                )}
+
             {onOperations && (
                 <MenuItem
                     icon={
@@ -1534,7 +1601,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                     icon={
                         <TrashSimpleIcon
                             size={iconSize}
-                            color={FOUNDATION_THEME.colors.red[600]}
+                            color={destructiveColor}
                             weight="bold"
                         />
                     }

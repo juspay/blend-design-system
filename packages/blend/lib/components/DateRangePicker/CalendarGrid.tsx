@@ -121,7 +121,7 @@ const StyledDayCell = styled(MotionBlock)<{
         !props.$isDisabled &&
         `
     &:focus-visible {
-      outline: 1px solid ${FOUNDATION_THEME.colors.primary[500]};
+      outline: ${props.$calendarToken.calendar.calendarGrid.day.cell.border.active};
       border-radius: ${props.$calendarToken.calendar.calendarGrid.day.cell.borderRadius};
     }
   `}

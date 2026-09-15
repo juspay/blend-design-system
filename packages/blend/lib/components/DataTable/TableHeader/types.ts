@@ -14,6 +14,13 @@ export type TableHeaderProps<T extends Record<string, unknown>> = {
     sortConfig?: SortConfig | null
     enableInlineEdit?: boolean
     showActionsColumn?: boolean
+    /**
+     * Whether filtering is available at all. When false no filter affordance is
+     * rendered, because a filter the user set would be stored and reported
+     * through `onFilterChange` without ever changing the rows. Defaults to true
+     * so rendering TableHeader directly keeps its previous behaviour.
+     */
+    enableFiltering?: boolean
     enableColumnManager?: boolean
     enableColumnReordering?: boolean
     showSkeleton?: boolean

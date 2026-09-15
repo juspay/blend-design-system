@@ -2,16 +2,16 @@ import { useMemo } from 'react'
 import { BREAKPOINTS, type BreakpointType } from '../breakpoints/breakPoints'
 import { FOUNDATION_THEME, type ThemeType } from '../tokens'
 import initTokens from './initComponentTokens'
-import ThemeContext, { type ComponentTokenType } from './ThemeContext'
+import ThemeContext, { type ComponentTokenOverrides } from './ThemeContext'
 import { Theme } from './theme.enum'
 import { AutofillStyles } from '../components/Inputs/AutofillStyles/AutofillStyles'
 import ShadowAware from './ShadowAware'
 
-const EMPTY_COMPONENT_TOKENS: ComponentTokenType = {}
+const EMPTY_COMPONENT_TOKENS: ComponentTokenOverrides = {}
 
 type ThemeProviderProps = {
     foundationTokens?: ThemeType
-    componentTokens?: ComponentTokenType
+    componentTokens?: ComponentTokenOverrides
     breakpoints?: BreakpointType
     theme?: Theme | string
     children: React.ReactNode

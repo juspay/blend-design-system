@@ -23,14 +23,22 @@ export type RadioV2ContentProps = {
     subLabelId?: string
 }
 
-export type RadioV2Props = {
+/**
+ * Platform-neutral core of the RadioV2 API. `onCheckedChange` stays out of
+ * the base — web types it with a DOM `ChangeEvent`; `@juspay/blend-native`
+ * declares its own callback shape.
+ */
+export type RadioBaseProps = {
     checked?: boolean
-    onCheckedChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     required?: boolean
     error?: boolean
     label?: string
     subLabel?: string
     size?: SelectorV2Size
+}
+
+export type RadioV2Props = RadioBaseProps & {
+    onCheckedChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
     slot?: {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
@@ -40,6 +48,6 @@ export type RadioV2Props = {
         subLabel?: number
     }
 } & Omit<
-    InputHTMLAttributes<HTMLInputElement>,
-    'className' | 'style' | 'slot' | 'size' | 'maxLength' | 'children'
->
+        InputHTMLAttributes<HTMLInputElement>,
+        'className' | 'style' | 'slot' | 'size' | 'maxLength' | 'children'
+    >

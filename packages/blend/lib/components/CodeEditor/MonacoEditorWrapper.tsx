@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import Editor, { OnMount } from '@monaco-editor/react'
+import Editor, { loader, OnMount } from '@monaco-editor/react'
 import type * as Monaco from 'monaco-editor'
 import Block from '../Primitives/Block/Block'
 import type { CodeBlockTokenType } from '../CodeBlock/codeBlock.token'
-import './monaco-editor.css'
 
 // Monaco registers only `javascript`/`typescript` (VS Code's
 // `javascriptreact`/`typescriptreact` IDs are not registered, so they would
@@ -348,7 +347,42 @@ export const MonacoEditorWrapper = ({
     const shortcutDisposables = useRef<Monaco.IDisposable[]>([])
     const focusTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
     const [isEditorReady, setIsEditorReady] = useState(false)
+    const [isMonacoLoaded, setIsMonacoLoaded] = useState(false)
     const monacoLanguage = useMemo(() => mapLanguage(language), [language])
+
+    useEffect(() => {
+        let cancelled = false
+
+        Promise.all([
+            import('../shared/monacoEnvironment'),
+            import('../shared/monacoStyles'),
+            import(
+                // @ts-expect-error Monaco does not publish types for this ESM entry.
+                'monaco-editor/esm/vs/editor/editor.main.js'
+            ),
+        ])
+            .then(([env, styles, monaco]) => {
+                if (cancelled) return
+                // Wire the bundled language workers before configuring the
+                // loader, so a self-hosted Monaco can spawn them (#1734), and
+                // inject the editor stylesheet so it renders styled without a
+                // global Blend stylesheet import (#1744).
+                env.configureMonacoEnvironment()
+                styles.injectMonacoStyles()
+                loader.config({ monaco: monaco as typeof Monaco })
+                setIsMonacoLoaded(true)
+            })
+            .catch((error) => {
+                if (cancelled) return
+                // Surface the failure instead of an unhandled rejection; the
+                // wrapper stays in its loading state.
+                console.error('Failed to load the code editor (Monaco).', error)
+            })
+
+        return () => {
+            cancelled = true
+        }
+    }, [])
 
     const editorTheme = useMemo(() => createEditorTheme(tokens), [tokens])
 
@@ -559,62 +593,76 @@ export const MonacoEditorWrapper = ({
                     `}
             </style>
 
-            <Editor
-                value={value}
-                language={monacoLanguage}
-                onChange={handleChange}
-                onMount={handleEditorDidMount}
-                theme="blend-code-theme"
-                beforeMount={(monacoInstance) => {
-                    monacoRef.current = monacoInstance
-                    try {
-                        configureLanguageDefaults(monacoInstance)
-                        monacoInstance.editor.defineTheme(
-                            'blend-code-theme',
-                            editorTheme
-                        )
-                    } catch (error) {
-                        console.warn(
-                            'Failed to initialise Monaco theme:',
-                            error
-                        )
+            {isMonacoLoaded ? (
+                <Editor
+                    value={value}
+                    language={monacoLanguage}
+                    onChange={handleChange}
+                    onMount={handleEditorDidMount}
+                    theme="blend-code-theme"
+                    beforeMount={(monacoInstance) => {
+                        monacoRef.current = monacoInstance
+                        try {
+                            configureLanguageDefaults(monacoInstance)
+                            monacoInstance.editor.defineTheme(
+                                'blend-code-theme',
+                                editorTheme
+                            )
+                        } catch (error) {
+                            console.warn(
+                                'Failed to initialise Monaco theme:',
+                                error
+                            )
+                        }
+                    }}
+                    options={{
+                        automaticLayout: true,
+                        wordWrap: 'on',
+                        wrappingIndent: 'indent',
+                        readOnly: readOnly || disabled,
+                        domReadOnly: disabled,
+                        minimap: { enabled: false },
+                        scrollBeyondLastLine: false,
+                        fontSize: metrics.fontSize,
+                        fontFamily: tokens.body.code.fontFamily,
+                        lineHeight: metrics.lineHeight,
+                        lineNumbers: showLineNumbers ? 'on' : 'off',
+                        renderLineHighlight: 'none',
+                        renderWhitespace: 'none',
+                        guides: { indentation: false },
+                        scrollbar: {
+                            vertical: 'auto',
+                            horizontal: 'auto',
+                            alwaysConsumeMouseWheel: false,
+                        },
+                    }}
+                    loading={
+                        <Block
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            width="100%"
+                            style={{ minHeight: toCssValue(minHeight) }}
+                            color={tokens.body.syntax.comment}
+                            fontSize={tokens.body.code.fontSize}
+                        >
+                            Loading editor...
+                        </Block>
                     }
-                }}
-                options={{
-                    automaticLayout: true,
-                    wordWrap: 'on',
-                    wrappingIndent: 'indent',
-                    readOnly: readOnly || disabled,
-                    domReadOnly: disabled,
-                    minimap: { enabled: false },
-                    scrollBeyondLastLine: false,
-                    fontSize: metrics.fontSize,
-                    fontFamily: tokens.body.code.fontFamily,
-                    lineHeight: metrics.lineHeight,
-                    lineNumbers: showLineNumbers ? 'on' : 'off',
-                    renderLineHighlight: 'none',
-                    renderWhitespace: 'none',
-                    guides: { indentation: false },
-                    scrollbar: {
-                        vertical: 'auto',
-                        horizontal: 'auto',
-                        alwaysConsumeMouseWheel: false,
-                    },
-                }}
-                loading={
-                    <Block
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        width="100%"
-                        style={{ minHeight: toCssValue(minHeight) }}
-                        color={tokens.body.syntax.comment}
-                        fontSize={tokens.body.code.fontSize}
-                    >
-                        Loading editor...
-                    </Block>
-                }
-            />
+                />
+            ) : (
+                <Block
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    width="100%"
+                    style={{ minHeight: toCssValue(minHeight) }}
+                    color={tokens.body.syntax.comment}
+                    fontSize={tokens.body.code.fontSize}
+                >
+                    Loading editor...
+                </Block>
+            )}
 
             {!value && placeholder && isEditorReady && (
                 <Block

@@ -49,21 +49,11 @@ function MyComponent() {
                     padding: '24px',
                     width: '100%',
                     maxWidth: '500px',
-                    backgroundColor: '#ffffff',
+                    backgroundColor: 'var(--surface)',
                     borderRadius: '8px',
                     minHeight: '120px',
                 }}
             >
-                <style>
-                    {`
-                    .multi-value-input-preview input {
-                        color: #374151 !important;
-                    }
-                    .multi-value-input-preview input::placeholder {
-                        color: #9CA3AF !important;
-                    }
-                `}
-                </style>
                 <div className="multi-value-input-preview">
                     <MultiValueInput
                         label="Technologies"

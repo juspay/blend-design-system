@@ -1,5 +1,6 @@
 import React from 'react'
 import type { SkeletonVariant } from '../Skeleton/types'
+import type { SelectSearchControlProps } from '../Select/search.types'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../Tooltip/types'
 
 export enum SelectMenuAlignment {
@@ -79,7 +80,7 @@ export type SelectMenuItemType = {
     disableTruncation?: boolean
 }
 
-export type SingleSelectProps = {
+export type SingleSelectProps = SelectSearchControlProps & {
     label?: string
     subLabel?: string
     hintText?: string

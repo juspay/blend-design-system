@@ -192,6 +192,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
                         role={
                             showClearButton && !rightSlot ? 'button' : undefined
                         }
+                        tabIndex={showClearButton && !rightSlot ? 0 : undefined}
                         aria-label={
                             showClearButton && !rightSlot
                                 ? 'Clear search'
@@ -210,6 +211,17 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
                                 ? handleClear
                                 : undefined
                         }
+                        onKeyDown={(event) => {
+                            if (
+                                !showClearButton ||
+                                rightSlot ||
+                                (event.key !== 'Enter' && event.key !== ' ')
+                            ) {
+                                return
+                            }
+                            event.preventDefault()
+                            handleClear()
+                        }}
                         style={{
                             ...slotWrapperStyle,
                             cursor:

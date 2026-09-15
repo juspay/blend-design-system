@@ -12,12 +12,12 @@ export const getCheckboxV2DarkTokens = (
                 width: {
                     sm: foundationToken.unit[16],
                     md: foundationToken.unit[20],
-                    lg: foundationToken.unit[20],
+                    lg: foundationToken.unit[24],
                 },
                 height: {
                     sm: foundationToken.unit[16],
                     md: foundationToken.unit[20],
-                    lg: foundationToken.unit[20],
+                    lg: foundationToken.unit[24],
                 },
                 opacity: foundationToken.opacity[70],
                 backgroundColor: {
@@ -88,12 +88,12 @@ export const getCheckboxV2DarkTokens = (
                     width: {
                         sm: foundationToken.unit[12],
                         md: foundationToken.unit[14],
-                        lg: foundationToken.unit[14],
+                        lg: foundationToken.unit[16],
                     },
                     height: {
                         sm: foundationToken.unit[12],
                         md: foundationToken.unit[14],
-                        lg: foundationToken.unit[14],
+                        lg: foundationToken.unit[16],
                     },
                     strokeWidth: {
                         sm: 2.5,
@@ -133,7 +133,7 @@ export const getCheckboxV2DarkTokens = (
                         maxHeight: {
                             sm: foundationToken.unit[12],
                             md: foundationToken.unit[14],
-                            lg: foundationToken.unit[14],
+                            lg: foundationToken.unit[16],
                         },
                     },
                 },
@@ -148,7 +148,7 @@ export const getCheckboxV2DarkTokens = (
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
-                        lg: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[16],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],
@@ -173,13 +173,13 @@ export const getCheckboxV2DarkTokens = (
                 width: {
                     sm: foundationToken.unit[14],
                     md: foundationToken.unit[16],
-                    lg: foundationToken.unit[20],
+                    lg: foundationToken.unit[24],
                 },
 
                 height: {
                     sm: foundationToken.unit[14],
                     md: foundationToken.unit[16],
-                    lg: foundationToken.unit[20],
+                    lg: foundationToken.unit[24],
                 },
                 opacity: foundationToken.opacity[70],
                 backgroundColor: {
@@ -245,12 +245,12 @@ export const getCheckboxV2DarkTokens = (
                     width: {
                         sm: foundationToken.unit[10],
                         md: foundationToken.unit[12],
-                        lg: foundationToken.unit[14],
+                        lg: foundationToken.unit[16],
                     },
                     height: {
                         sm: foundationToken.unit[10],
                         md: foundationToken.unit[12],
-                        lg: foundationToken.unit[14],
+                        lg: foundationToken.unit[16],
                     },
                     strokeWidth: {
                         sm: 2.5,
@@ -273,7 +273,7 @@ export const getCheckboxV2DarkTokens = (
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
-                        lg: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[16],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[500],
@@ -289,7 +289,7 @@ export const getCheckboxV2DarkTokens = (
                         maxHeight: {
                             sm: foundationToken.unit[12],
                             md: foundationToken.unit[14],
-                            lg: foundationToken.unit[14],
+                            lg: foundationToken.unit[16],
                         },
                     },
                 },
@@ -305,7 +305,7 @@ export const getCheckboxV2DarkTokens = (
                     fontSize: {
                         sm: foundationToken.font.fontSize[12],
                         md: foundationToken.font.fontSize[14],
-                        lg: foundationToken.font.fontSize[14],
+                        lg: foundationToken.font.fontSize[16],
                     },
                     fontWeight: {
                         sm: foundationToken.font.weight[400],

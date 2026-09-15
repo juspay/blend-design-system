@@ -1,18 +1,19 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { styled } from 'styled-components'
-import { FOUNDATION_THEME } from '../../../tokens'
 
-const HeaderWrapper = styled.th<{ $isDragging: boolean; $isDisabled: boolean }>`
+const HeaderWrapper = styled.th<{
+    $isDragging: boolean
+    $isDisabled: boolean
+    $hoverBackground?: string
+}>`
     opacity: ${(props) => (props.$isDragging ? 0.5 : 1)};
     transition: all 0.2s ease;
     user-select: none;
 
     &:hover {
         background-color: ${(props) =>
-            props.$isDisabled
-                ? 'transparent'
-                : FOUNDATION_THEME.colors.gray[100]};
+            props.$isDisabled ? 'transparent' : props.$hoverBackground};
     }
 `
 
@@ -27,6 +28,7 @@ type DraggableColumnHeaderProps = Omit<
     }) => React.ReactNode
     style?: React.CSSProperties
     disabled?: boolean
+    hoverBackground?: string
     'data-table-column-heading'?: string
 }
 
@@ -35,6 +37,7 @@ export const DraggableColumnHeader: React.FC<DraggableColumnHeaderProps> = ({
     children,
     style,
     disabled = false,
+    hoverBackground,
     ...props
 }) => {
     const {
@@ -60,6 +63,7 @@ export const DraggableColumnHeader: React.FC<DraggableColumnHeaderProps> = ({
             style={{ ...style, ...dragStyle }}
             $isDragging={isDragging}
             $isDisabled={disabled}
+            $hoverBackground={hoverBackground}
             {...attributes}
             {...props}
         >

@@ -22,11 +22,13 @@ const MultiSelectSubMenu = ({
     onSelect,
     selected,
     maxSelections,
+    focusIdentityEnabled,
 }: {
     item: MultiSelectMenuItemType
     onSelect: (value: string) => void
     selected: string[]
     maxSelections?: number
+    focusIdentityEnabled?: boolean
 }) => {
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
@@ -117,7 +119,9 @@ const MultiSelectSubMenu = ({
             </RadixMenu.SubTrigger>
             <RadixMenu.SubContent avoidCollisions sideOffset={8} asChild>
                 <Block
-                    backgroundColor="white"
+                    backgroundColor={
+                        multiSelectTokens.menu.backgroundColor as string
+                    }
                     borderRadius={8}
                     padding="8px 0px"
                     boxShadow={FOUNDATION_THEME.shadows.sm}
@@ -130,6 +134,7 @@ const MultiSelectSubMenu = ({
                             onSelect={onSelect}
                             selected={selected}
                             maxSelections={maxSelections}
+                            focusIdentityEnabled={focusIdentityEnabled}
                         />
                     ))}
                 </Block>

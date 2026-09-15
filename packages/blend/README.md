@@ -61,6 +61,8 @@ export default App
 - **Slider** - Range and value sliders
 - **SingleSelect** - Dropdown selection
 - **MultiSelect** - Multiple option selection
+- **SelectListV2** - Always-visible single-selection list with search and virtualization
+- **MultiSelectListV2** - Always-visible multi-selection list with bulk controls and pagination
 
 ### Navigation
 
@@ -71,7 +73,7 @@ export default App
 
 ### Data Display
 
-- **DataTable** - Feature-rich data tables with sorting, filtering
+- **DataTable** - Feature-rich data tables with sorting, filtering, and light/dark theme support
 - **StatCard** - Statistical information cards
 - **Charts** - Data visualization components
 - **Avatar** - User profile pictures
@@ -90,7 +92,9 @@ export default App
 ### Layout
 
 - **Accordion** - Collapsible content sections
-- **DateRangePicker** - Date range selection
+- **DateRangePicker** - Day or month range selection
+- **SingleDatePicker** - Day, month, or year selection, with optional time for day selection
+- **TimePicker** - Time-of-day selection, 12h or 24h display
 
 ## 🎨 Design Tokens
 

@@ -1,11 +1,11 @@
 import React from 'react'
 import Block from '../../Primitives/Block/Block'
-import { ButtonType, ButtonSize, Button } from '../../Button'
-import { Tooltip } from '../../Tooltip'
+import { ButtonV2, ButtonV2Size, ButtonV2Type } from '../../ButtonV2'
+import { TooltipV2 } from '../../TooltipV2'
 import type { ActionButtonsProps } from '../types'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { getMobileToken } from './mobile.tokens'
-import { FOUNDATION_THEME } from '../../../tokens'
+import { useTheme } from '../../../context'
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
     onCancel,
@@ -15,8 +15,10 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
     applyDisabledMessage,
 }) => {
     const { innerWidth } = useBreakpoints()
-    const tokens =
-        getMobileToken(FOUNDATION_THEME)[innerWidth >= 1024 ? 'lg' : 'sm']
+    const { foundationTokens, theme } = useTheme()
+    const tokens = getMobileToken(foundationTokens, theme)[
+        innerWidth >= 1024 ? 'lg' : 'sm'
+    ]
 
     return (
         <Block
@@ -25,7 +27,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
             paddingX={tokens.footer.padding.x}
             paddingY={tokens.footer.padding.y}
             borderTop={tokens.footer.borderTop}
-            backgroundColor="white"
+            backgroundColor={tokens.footer.backgroundColor}
         >
             <Block
                 flexGrow={1}
@@ -33,10 +35,10 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
                 flexBasis={0}
                 style={{ minWidth: 0 }}
             >
-                <Button
-                    buttonType={ButtonType.SECONDARY}
-                    size={ButtonSize.LARGE}
-                    fullWidth={true}
+                <ButtonV2
+                    buttonType={ButtonV2Type.SECONDARY}
+                    size={ButtonV2Size.LARGE}
+                    width="100%"
                     disabled={isDisabled}
                     onClick={onCancel}
                     text="Cancel"
@@ -49,21 +51,21 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
                 style={{ minWidth: 0 }}
             >
                 {isApplyDisabled ? (
-                    <Tooltip content={applyDisabledMessage}>
-                        <Button
-                            buttonType={ButtonType.PRIMARY}
-                            size={ButtonSize.LARGE}
-                            fullWidth={true}
+                    <TooltipV2 content={applyDisabledMessage || ''}>
+                        <ButtonV2
+                            buttonType={ButtonV2Type.PRIMARY}
+                            size={ButtonV2Size.LARGE}
+                            width="100%"
                             disabled={true}
                             onClick={onApply}
                             text="Apply Date"
                         />
-                    </Tooltip>
+                    </TooltipV2>
                 ) : (
-                    <Button
-                        buttonType={ButtonType.PRIMARY}
-                        size={ButtonSize.LARGE}
-                        fullWidth={true}
+                    <ButtonV2
+                        buttonType={ButtonV2Type.PRIMARY}
+                        size={ButtonV2Size.LARGE}
+                        width="100%"
                         disabled={isDisabled}
                         onClick={onApply}
                         text="Apply Date"

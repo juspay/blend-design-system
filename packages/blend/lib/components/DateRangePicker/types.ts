@@ -323,6 +323,27 @@ export type DateRangePickerProps = {
     maxDate?: Date
     maxRangeDays?: number
     dateFormat?: string
+    /**
+     * Selection resolution. `'day'` (the default) is the original behaviour and
+     * is untouched by this prop's existence.
+     *
+     * `'month'` swaps the day calendar for a month grid with year navigation
+     * and selects a **month range**: `startDate` becomes the first day of the
+     * start month and `endDate` the last day of the end month, both at local
+     * midnight — the same midnight convention a day-granularity range uses.
+     * `minDate` / `maxDate` are compared at month resolution, so a `minDate`
+     * half-way through September still leaves September selectable.
+     *
+     * Month mode also suppresses three surfaces that only have day semantics,
+     * regardless of what you pass: the preset quick-selector (`showPresets`),
+     * the free-text DD/MM/YYYY start/end inputs (`showDateInput`) and the
+     * mobile drawer (`useDrawerOnMobile`), whose scroll-wheel picker has no
+     * month-range mode. The desktop popover renders on mobile instead.
+     *
+     * Mirrors `SingleDatePicker`'s `granularity`, which additionally supports
+     * `'year'`; a year *range* has no consumer and is deliberately absent here.
+     */
+    granularity?: 'day' | 'month'
     allowSingleDateSelection?: boolean
     isSingleDatePicker?: boolean
     disableFutureDates?: boolean

@@ -173,6 +173,40 @@ function MyComponent() {
         ],
         [
             {
+                content: 'selectionStyle',
+                hintText: 'Visual treatment for controlled selected items.',
+            },
+            {
+                content: "'checkmark' | 'highlight'",
+                hintText: 'Defaults to checkmark for selectable items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'selectionMode',
+                hintText:
+                    'Selection cardinality used for accessible radio or checkbox semantics.',
+            },
+            {
+                content: "'single' | 'multiple'",
+                hintText: 'Defaults to single for selectable items',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'closeOnSelect',
+                hintText: 'Whether activating an item closes the menu.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Defaults to true',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'alignment',
                 hintText:
                     'Horizontal alignment of the menu relative to trigger.',
@@ -328,6 +362,18 @@ function MyComponent() {
         ],
         [
             {
+                content: 'selected',
+                hintText:
+                    'Controlled selection state. The consumer owns all selection updates.',
+            },
+            {
+                content: 'boolean',
+                hintText: 'Adds aria-checked and the selected visual treatment',
+            },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'onClick',
                 hintText: 'Callback fired when item is clicked.',
             },
@@ -389,6 +435,42 @@ function MyComponent() {
             {
                 content: 'string',
                 hintText: 'Search placeholder text',
+            },
+            { content: '' },
+        ],
+    ]}
+    className="mb-8"
+    emptyMessage="No props available"
+    loadingMessage="Loading props..."
+/>
+
+## Menu Group Types
+
+Groups can override the Menu-level selection configuration, allowing one menu
+to contain independent single- and multiple-selection groups.
+
+<DocsTypeTable
+    data={[
+        [
+            {
+                content: 'selectionStyle',
+                hintText: 'Overrides the Menu-level selected-item treatment.',
+            },
+            {
+                content: "'checkmark' | 'highlight'",
+                hintText: 'Visual treatment for this group',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'selectionMode',
+                hintText:
+                    'Overrides the Menu-level accessible selection cardinality.',
+            },
+            {
+                content: "'single' | 'multiple'",
+                hintText: 'Radio or checkbox semantics for this group',
             },
             { content: '' },
         ],
@@ -477,6 +559,11 @@ export type MenuV2TokensType = {
                 leftSlot: {
                     maxWidth: CSSObject['maxWidth']
                     maxHeight: CSSObject['maxHeight']
+                }
+                checkmark?: {
+                    position: 'leading' | 'trailing'
+                    width: CSSObject['width']
+                    color: CSSObject['color']
                 }
                 rightChevron: {
                     color: CSSObject['color']

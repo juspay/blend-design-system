@@ -28,7 +28,7 @@ function MyComponent() {
                         Confirm Action
                     </h3>
 
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                         Are you sure you want to proceed with this action?
                     </p>
                 </div>
@@ -65,7 +65,7 @@ let make = () => {
           {"Confirm Action"->React.string}
         </h3>
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-muted-foreground">
           {"Are you sure you want to proceed?"->React.string}
         </p>
       </div>
@@ -132,7 +132,7 @@ external make: (
                             Confirm Action
                         </h3>
 
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-muted-foreground">
                             Are you sure you want to proceed with this action?
                         </p>
                     </div>

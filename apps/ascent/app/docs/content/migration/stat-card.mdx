@@ -1,0 +1,224 @@
+---
+title: Stat Card v1 to v2
+description: Migrate StatCard to StatCardV2, including chart configuration, values, change indicators, layout, and tokens.
+---
+
+## Overview
+
+`StatCard` is deprecated in favor of `StatCardV2`. Titles, subtitles, help and
+value tooltips, title and action icons, progress, skeletons, dropdown data,
+border control, and responsive rendering remain available.
+
+The main migration is charting: v1 has separate Recharts `LINE` and `BAR`
+variants fed by `chartData`; V2 has one `CHART` variant fed by Highcharts
+`options`. V2 also changes the value and change contracts, removes the layout
+direction and data-display switches, and uses a full-width card by default.
+
+## Quick migration
+
+```tsx
+// v1
+import {
+    ChangeType,
+    StatCard,
+    StatCardArrowDirection,
+    StatCardVariant,
+} from '@juspay/blend-design-system'
+;<StatCard
+    title="Monthly revenue"
+    value={48352}
+    subtitle="Compared with last month"
+    variant={StatCardVariant.LINE}
+    chartData={[
+        { name: 'Jan', value: 42000 },
+        { name: 'Feb', value: 48352 },
+    ]}
+    change={{
+        value: 15.12,
+        valueType: ChangeType.INCREASE,
+        arrowDirection: StatCardArrowDirection.UP,
+    }}
+    direction="vertical"
+/>
+```
+
+```tsx
+// v2
+import {
+    StatCardV2,
+    StatCardV2ArrowDirection,
+    StatCardV2ChangeType,
+    StatCardV2Variant,
+} from '@juspay/blend-design-system'
+;<StatCardV2
+    title="Monthly revenue"
+    value="48,352"
+    subtitle="Compared with last month"
+    variant={StatCardV2Variant.CHART}
+    options={{
+        chart: { type: 'areaspline' },
+        xAxis: { categories: ['Jan', 'Feb'] },
+        series: [{ name: 'Revenue', data: [42000, 48352] }],
+    }}
+    change={{
+        value: '15.12',
+        rightSymbol: '%',
+        changeType: StatCardV2ChangeType.INCREASE,
+        arrowDirection: StatCardV2ArrowDirection.UP,
+    }}
+/>
+```
+
+## Breaking changes
+
+### Rename the component, variants, and change types
+
+**v1:** `StatCard`, `StatCardVariant`, `ChangeType`, and
+`StatCardArrowDirection`.
+
+**v2:** `StatCardV2`, `StatCardV2Variant`, `StatCardV2ChangeType`, and
+`StatCardV2ArrowDirection`.
+
+Map `PROGRESS_BAR` to `StatCardV2Variant.PROGRESS_BAR` and `NUMBER` to
+`StatCardV2Variant.NUMBER`. Both `LINE` and `BAR` map to the single
+`StatCardV2Variant.CHART`; choose the Highcharts series and chart type that
+recreates the intended visual. V2 defaults to `NUMBER`, while v1 requires a
+variant, so explicitly set `CHART` or `PROGRESS_BAR` when a supporting visual
+is required.
+
+### Rewrite Recharts `chartData` as Highcharts `options`
+
+**v1:** `LINE` and `BAR` accept `chartData: Array<{ name, value }>` and use
+Recharts internally. `xAxis`, `yAxis`, and `valueFormatter` configure the
+v1-specific formatter layer.
+
+**v2:** `CHART` accepts `options: ChartV2Options` and renders through
+Highcharts. There are no `chartData`, `xAxis`, `yAxis`, or `valueFormatter`
+props.
+
+There is no automatic data or configuration conversion. Build categories and
+series from the original points, then express axes, tooltip formatting, colors,
+and interaction settings using the Charts V2/Highcharts API.
+
+```tsx
+const categories = chartData.map((point) => point.name)
+const data = chartData.map((point) => point.value)
+
+;<StatCardV2
+    variant={StatCardV2Variant.CHART}
+    options={{
+        chart: { type: 'column' },
+        xAxis: { categories },
+        series: [{ name: 'Orders', data }],
+    }}
+    {...statProps}
+/>
+```
+
+V2 supplies compact stat-card defaults for margins, hidden axes and legend, and
+marker behavior, but passed top-level option objects replace those defaults at
+that level. Include the configuration your chart requires and visually test
+line/area fills, column geometry, tooltip formatters, dates, and accessibility.
+
+### Convert the main value to a string
+
+**v1:** `value` accepts `string | number`, and `valueFormatter` can format a
+numeric value.
+
+**v2:** `value` is an optional `string`; formatting belongs to the caller.
+
+Format values before passing them to V2:
+
+```tsx
+// v1
+value={48352}
+valueFormatter={AxisType.CURRENCY}
+
+// v2
+value={formatCurrency(48352)}
+```
+
+This also fixes an old edge case: v1 treats numeric `0` as missing in several
+rendering paths. Pass `'0'` to V2 to display a zero value deliberately.
+
+### Replace the change object and set decrease arrows explicitly
+
+**v1:** `change` uses a numeric `value` and `valueType`:
+
+```tsx
+change={{ value: 12.5, valueType: ChangeType.DECREASE }}
+```
+
+**v2:** `change` uses a display-ready string and `changeType`. It can add
+`leftSymbol` and `rightSymbol`:
+
+```tsx
+change={{
+    value: '12.5',
+    rightSymbol: '%',
+    changeType: StatCardV2ChangeType.DECREASE,
+    arrowDirection: StatCardV2ArrowDirection.DOWN,
+}}
+```
+
+V1 derives an omitted arrow direction from `valueType` and can calculate a
+percentage change from chart data when `change` is absent. V2 does neither: its
+fallback arrow points up, and a chart does not create a change indicator. Compute
+and format the delta in application code, then provide both `changeType` and
+`arrowDirection`, especially for decreases.
+
+### Use the V2 layout rather than `direction` or `dataDisplay`
+
+**v1:** `direction` selects `VERTICAL` or `HORIZONTAL` content layout, and
+`dataDisplay={false}` hides the chart/progress region while retaining the
+variant.
+
+**v2:** neither prop exists. Number cards use V2's centered desktop layout;
+chart and progress cards use its fixed stat-card layout. Choose `NUMBER` when
+no supporting visual should be rendered.
+
+Remove both props. If a v1 layout is essential, compose the title, metric, and
+chart in an application-owned layout instead of forcing unsupported overrides
+onto the V2 card.
+
+### Review dimensions and no-data rendering
+
+**v1:** the card has no `width` prop, defaults to `minWidth="auto"`,
+`maxWidth="auto"`, and an auto desktop height.
+
+**v2:** adds `width`, which defaults to `100%`, and uses token defaults for
+width constraints and desktop height when values are omitted. `height` is still
+token-controlled on small screens.
+
+Set explicit `width`, `minWidth`, `maxWidth`, and `height` in grid layouts
+where v1's intrinsic sizing was important. V2 also uses a dedicated no-data
+state when there is no value, change, progress value, or chart series; test
+loading and empty metrics separately from skeleton state.
+
+### Update custom tokens
+
+**v1:** the component reads `STAT_CARD` tokens, including Recharts-specific
+chart, axis, tooltip, and direction-oriented layout entries.
+
+**v2:** it reads `STATCARDV2`, with separate light and dark sets and a focused
+card-layout contract.
+
+Rebuild overrides against `STATCARDV2`; do not copy v1 chart paths. Padding is
+defined per side, V2 introduces width and line-height tokens, and the new
+contract only covers card content. Style Highcharts through its V2 options and
+chart tokens rather than Stat Card's old Recharts token entries.
+
+## What continues to work
+
+`title`, `subtitle`, `titleIcon`, `actionIcon`, `helpIconText`, `valueTooltip`,
+`progressValue`, `dropdownProps`, `skeleton`, `showBorder`, `minWidth`,
+`maxWidth`, and `height` retain their role. V2 also forwards supported standard
+HTML div attributes and a ref to its card container. Progress cards continue to
+use a small segmented progress bar; unlike v1, a `progressValue` of `0` is
+treated as a valid value rather than falling back to `--`.
+
+## V2 token migration
+
+V2 uses a distinct token contract. Treat custom token overrides as a new API: move them to the V2 token contract, then review renamed, removed, and newly nested entries instead of copying V1 paths unchanged.
+
+The component-specific token changes are called out above. For reference, compare the [V1 component tokens](/docs/components/stat-card#component-tokens) with the [V2 component token reference](/docs/components/stat-card-v2#component-tokens).

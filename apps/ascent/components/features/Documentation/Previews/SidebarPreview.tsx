@@ -170,7 +170,7 @@ external make: (
                 style={{
                     width: '100%',
                     height: '300px',
-                    border: '1px solid #e5e7eb',
+                    border: '1px solid var(--border)',
                     borderRadius: '8px',
                     overflow: 'hidden',
                 }}
@@ -185,7 +185,7 @@ external make: (
                                 justifyContent: 'space-between',
                                 width: '100%',
                                 fontSize: '14px',
-                                color: '#374151',
+                                color: 'var(--foreground)',
                             }}
                         >
                             <span style={{ fontWeight: '600' }}>
@@ -194,7 +194,7 @@ external make: (
                             <button
                                 style={{
                                     padding: '4px 8px',
-                                    border: '1px solid #d1d5db',
+                                    border: '1px solid var(--border)',
                                     borderRadius: '4px',
                                     background: 'white',
                                     fontSize: '12px',
@@ -212,7 +212,7 @@ external make: (
                                 alignItems: 'center',
                                 gap: '8px',
                                 fontSize: '12px',
-                                color: '#6b7280',
+                                color: 'var(--muted-foreground)',
                             }}
                         >
                             <div
@@ -220,7 +220,7 @@ external make: (
                                     width: '24px',
                                     height: '24px',
                                     borderRadius: '50%',
-                                    background: '#e5e7eb',
+                                    background: 'var(--border)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
@@ -241,7 +241,7 @@ external make: (
                             justifyContent: 'center',
                             alignItems: 'center',
                             textAlign: 'center',
-                            color: '#6b7280',
+                            color: 'var(--muted-foreground)',
                         }}
                     >
                         <h3
@@ -249,7 +249,7 @@ external make: (
                                 margin: '0 0 8px 0',
                                 fontSize: '16px',
                                 fontWeight: '600',
-                                color: '#111827',
+                                color: 'var(--foreground)',
                             }}
                         >
                             Main Content Area
