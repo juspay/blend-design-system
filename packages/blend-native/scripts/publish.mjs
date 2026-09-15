@@ -181,19 +181,19 @@ const branch = capture('git', [
     '--abbrev-ref',
     'HEAD',
 ]).stdout.trim()
-if (!opts.force) {
-    if (tag === 'latest' && branch !== 'main') {
-        fail(
-            `Stable (latest) publishes should run from main (got "${branch}"). ` +
-                `Use --force to override.`
-        )
+const branchOk =
+    (tag === 'latest' && branch === 'main') ||
+    (tag === 'beta' && ['dev', 'staging'].includes(branch))
+if (!branchOk && !opts.force) {
+    const expected = tag === 'latest' ? 'main' : 'dev or staging'
+    const warning =
+        `${tag} publishes normally run from ${expected} ` + `(got "${branch}")`
+    if (!process.stdin.isTTY) {
+        fail(`${warning}. Use --force to override.`)
     }
-    if (tag === 'beta' && !['dev', 'staging'].includes(branch)) {
-        fail(
-            `Beta publishes should run from dev or staging (got "${branch}"). ` +
-                `Use --force to override.`
-        )
-    }
+    console.log(`⚠ ${warning}`)
+    const answer = await ask('Continue anyway? (y/N)')
+    if (!/^y(es)?$/i.test(answer)) fail('Aborted')
 }
 
 const dirty = capture('git', [
