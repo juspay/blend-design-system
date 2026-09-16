@@ -35,6 +35,8 @@ import {
     lightenHexColor,
     transformScatterData,
     generateConsistentDateTimeTicks,
+    getCategoryLabelInterval,
+    DEFAULT_MAX_CATEGORY_LABELS,
 } from './ChartUtils'
 import { parseTimestamp } from './DateTimeFormatter'
 import { CustomTooltip } from './CustomTooltip'
@@ -127,6 +129,36 @@ export const renderChart = ({
         finalXAxis.interval = isSmallScreen
             ? AxisIntervalType.PRESERVE_START_END
             : 0
+    }
+
+    // Thin crowded x-axis labels for category-style axes. DATE_TIME axes
+    // are handled by the smart tick generation above; SCATTER axes are
+    // numeric, so flattenedData.length is a point count, not a tick count.
+    const isCategoryLabelChart =
+        !isDateTimeAxis &&
+        (chartType === ChartType.LINE ||
+            chartType === ChartType.BAR ||
+            chartType === ChartType.LINE_BAR ||
+            chartType === ChartType.AREA)
+
+    if (
+        isCategoryLabelChart &&
+        finalXAxis.interval === undefined &&
+        !finalXAxis.ticks &&
+        flattenedData.length > 0
+    ) {
+        const maxLabels = isSmallScreen
+            ? Math.max(
+                  3,
+                  Math.floor(
+                      (finalXAxis.maxTicks ?? DEFAULT_MAX_CATEGORY_LABELS) / 2
+                  )
+              )
+            : (finalXAxis.maxTicks ?? DEFAULT_MAX_CATEGORY_LABELS)
+        finalXAxis.interval = getCategoryLabelInterval(
+            flattenedData.length,
+            maxLabels
+        )
     }
 
     const getColor = (key: string, chartType: ChartType) => {
