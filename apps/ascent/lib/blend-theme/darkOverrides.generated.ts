@@ -608,6 +608,15 @@ export const generatedDarkOverrides = {
             required: {
                 color: '#FB2C36',
             },
+            passwordToggle: {
+                color: {
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    error: '#FFC9C9',
+                    disabled: '#6B6B6B',
+                },
+            },
             inputContainer: {
                 color: {
                     default: '#F2F2F2',
@@ -675,6 +684,15 @@ export const generatedDarkOverrides = {
             },
             required: {
                 color: '#FB2C36',
+            },
+            passwordToggle: {
+                color: {
+                    default: '#F2F2F2',
+                    hover: '#F2F2F2',
+                    focus: '#F2F2F2',
+                    error: '#FFC9C9',
+                    disabled: '#6B6B6B',
+                },
             },
             inputContainer: {
                 color: {

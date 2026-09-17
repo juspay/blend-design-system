@@ -283,6 +283,15 @@ export type TextInputTokensType = {
     required: {
         color: CSSObject['color']
     }
+    // Built-in show/hide button rendered when `passwordToggle` is set
+    passwordToggle: {
+        iconSize: {
+            [key in TextInputSize]: CSSObject['width']
+        }
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+    }
     inputContainer: {
         fontSize: {
             [key in TextInputSize]: CSSObject['fontSize']
