@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React, { useState } from 'react'
-import { TextInput, TextInputSize } from '@juspay/blend-design-system'
+import {
+    TextInput,
+    TextInputSize,
+    ThemeProvider,
+    FOUNDATION_THEME,
+    getTextInputTokens,
+} from '@juspay/blend-design-system'
 import { User, Mail, Lock, Eye, EyeOff, AlertCircle, Check } from 'lucide-react'
 import {
     getA11yConfig,
@@ -497,6 +503,77 @@ export const DisabledState: Story = {
         docs: {
             description: {
                 story: 'TextInput in disabled state, both empty and with content.',
+            },
+        },
+    },
+}
+
+// Built-in password toggle, default and themed
+const PasswordToggleDemo = () => {
+    const [values, setValues] = useState({ plain: '', themed: '' })
+    const themedTokens = getTextInputTokens(FOUNDATION_THEME)
+    const withSmallGrayToggle = (block: (typeof themedTokens)['sm']) => ({
+        ...block,
+        passwordToggle: {
+            iconSize: {
+                [TextInputSize.SMALL]: FOUNDATION_THEME.unit[14],
+                [TextInputSize.MEDIUM]: FOUNDATION_THEME.unit[16],
+                [TextInputSize.LARGE]: FOUNDATION_THEME.unit[16],
+            },
+            color: {
+                default: FOUNDATION_THEME.colors.gray[400],
+                hover: FOUNDATION_THEME.colors.gray[600],
+                focus: FOUNDATION_THEME.colors.gray[600],
+                error: FOUNDATION_THEME.colors.red[600],
+                disabled: FOUNDATION_THEME.colors.gray[300],
+            },
+        },
+    })
+
+    return (
+        <div className="flex flex-col gap-5">
+            <TextInput
+                label="Password (default toggle)"
+                placeholder="Enter your password"
+                type="password"
+                passwordToggle
+                value={values.plain}
+                onChange={(e) =>
+                    setValues({ ...values, plain: e.target.value })
+                }
+                leftSlot={<Lock size={16} />}
+            />
+            <ThemeProvider
+                componentTokens={{
+                    TEXT_INPUT: {
+                        sm: withSmallGrayToggle(themedTokens.sm),
+                        lg: withSmallGrayToggle(themedTokens.lg),
+                    },
+                }}
+            >
+                <TextInput
+                    label="Password (16px gray toggle via tokens)"
+                    placeholder="Enter your password"
+                    type="password"
+                    passwordToggle
+                    size={TextInputSize.LARGE}
+                    value={values.themed}
+                    onChange={(e) =>
+                        setValues({ ...values, themed: e.target.value })
+                    }
+                    leftSlot={<Lock size={16} />}
+                />
+            </ThemeProvider>
+        </div>
+    )
+}
+
+export const PasswordToggle: Story = {
+    render: () => <PasswordToggleDemo />,
+    parameters: {
+        docs: {
+            description: {
+                story: 'Set `passwordToggle` instead of hand-rolling an eye icon in `rightSlot` (both together render two toggles). Icon size and colour come from the `passwordToggle` component tokens and can be themed through `ThemeProvider`.',
             },
         },
     },
