@@ -6976,6 +6976,14 @@ export const generatedDarkOverrides = {
                         disabled: '#6B6B6B',
                     },
                 },
+                passwordToggle: {
+                    color: {
+                        default: '#C8C8C8',
+                        hover: '#F2F2F2',
+                        focus: '#F2F2F2',
+                        disabled: '#6B6B6B',
+                    },
+                },
                 border: {
                     default: '1px solid #1F1F1F',
                     hover: '1px solid #292929',
@@ -7039,6 +7047,14 @@ export const generatedDarkOverrides = {
                 inputText: {
                     color: {
                         default: '#F2F2F2',
+                        hover: '#F2F2F2',
+                        focus: '#F2F2F2',
+                        disabled: '#6B6B6B',
+                    },
+                },
+                passwordToggle: {
+                    color: {
+                        default: '#C8C8C8',
                         hover: '#F2F2F2',
                         focus: '#F2F2F2',
                         disabled: '#6B6B6B',

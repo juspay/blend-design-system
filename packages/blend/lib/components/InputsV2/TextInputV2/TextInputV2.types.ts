@@ -48,6 +48,15 @@ export type TextInputV2Props = TextInputBaseProps & {
         slot: ReactElement
         maxHeight?: CSSObject['maxHeight']
     }
+    /**
+     * Render Blend's built-in show/hide password button in the right slot and
+     * drive the input `type` between `password` and `text`. Use this instead of
+     * wiring an eye icon into `rightSlot` yourself. Icon size and colour come
+     * from the `inputContainer.passwordToggle` tokens. Any `rightSlot` you pass
+     * renders beside the toggle. Ignored when an embedded `dropdown` is set,
+     * because dropdowns take over both slot positions.
+     */
+    passwordToggle?: boolean
 } & Omit<
         React.InputHTMLAttributes<HTMLInputElement>,
         'size' | 'style' | 'className' | 'dropdown'
