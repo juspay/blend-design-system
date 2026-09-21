@@ -95,7 +95,7 @@ export type AxisConfig = {
     showYear?: boolean
     ticks?: (number | string)[] // Custom tick values for consistent intervals
     autoConsistentTicks?: boolean // Automatically generate consistent ticks for DATE_TIME axes (default: true)
-    maxTicks?: number // Maximum number of ticks to generate (default: 10)
+    maxTicks?: number // Maximum number of ticks/labels to render. DATE_TIME axes: default 10 (smart tick generation). Category axes (line/bar/lineBar/area): default 12 labels, halved (min 3) on small screens
     smartDateTimeFormat?: boolean // Alternates between showing date and time like Highcharts (default: true for DATE_TIME)
 }
 

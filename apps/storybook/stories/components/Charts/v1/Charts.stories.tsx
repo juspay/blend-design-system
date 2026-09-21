@@ -266,7 +266,7 @@ const data = [
   showYear?: boolean;               // Show year in labels
   ticks?: (number | string)[];      // Custom tick values
   autoConsistentTicks?: boolean;    // Auto-generate consistent ticks
-  maxTicks?: number;                // Maximum number of ticks
+  maxTicks?: number;                // Max ticks/labels (category axes: default 12, halved on small screens)
   smartDateTimeFormat?: boolean;    // Smart date/time formatting
 }`,
                 },
@@ -294,7 +294,7 @@ const data = [
   showYear?: boolean;               // Show year in labels
   ticks?: (number | string)[];      // Custom tick values
   autoConsistentTicks?: boolean;    // Auto-generate consistent ticks
-  maxTicks?: number;                // Maximum number of ticks
+  maxTicks?: number;                // Max ticks/labels (category axes: default 12, halved on small screens)
   smartDateTimeFormat?: boolean;    // Smart date/time formatting
 }`,
                 },
@@ -445,6 +445,14 @@ const generateCategoryData = (): NewNestedDataPoint[] => [
         },
     },
 ]
+
+const generateDenseCategoryData = (count = 30): NewNestedDataPoint[] =>
+    Array.from({ length: count }, (_, i) => ({
+        name: `Item ${i + 1}`,
+        data: {
+            revenue: { primary: { label: 'Revenue', val: 400 + i * 37 } },
+        },
+    }))
 
 const generateFunnelData = (): NewNestedDataPoint[] => [
     {
@@ -604,6 +612,85 @@ export const BarChartExample: Story = {
         docs: {
             description: {
                 story: 'Bar chart for comparing values across categories.',
+            },
+        },
+    },
+}
+
+// Dense Bar Chart — x-axis labels are automatically thinned to 12
+export const DenseBarChartExample: Story = {
+    render: () => (
+        <div className="w-200 h-135">
+            <Charts
+                chartType={ChartType.BAR}
+                data={generateDenseCategoryData(30)}
+                xAxis={{
+                    label: 'Category',
+                    showLabel: true,
+                    show: true,
+                }}
+                yAxis={{
+                    label: 'Amount ($)',
+                    showLabel: true,
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                colors={[{ key: 'revenue', color: '#8b5cf6' }]}
+                chartHeaderSlot={
+                    <div className="flex items-center gap-2">
+                        <BarChart3 size={20} />
+                        <span className="text-lg font-bold">
+                            30 Categories (auto-thinned)
+                        </span>
+                    </div>
+                }
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Dense bar chart (30 categories) — x-axis labels are automatically thinned to at most 12 via `maxTicks`.',
+            },
+        },
+    },
+}
+
+// Dense Bar Chart with a custom label budget
+export const DenseBarChartMaxTicksExample: Story = {
+    render: () => (
+        <div className="w-200 h-135">
+            <Charts
+                chartType={ChartType.BAR}
+                data={generateDenseCategoryData(30)}
+                xAxis={{
+                    label: 'Category',
+                    showLabel: true,
+                    show: true,
+                    maxTicks: 5,
+                }}
+                yAxis={{
+                    label: 'Amount ($)',
+                    showLabel: true,
+                    show: true,
+                    type: AxisType.CURRENCY,
+                }}
+                colors={[{ key: 'revenue', color: '#06b6d4' }]}
+                chartHeaderSlot={
+                    <div className="flex items-center gap-2">
+                        <BarChart3 size={20} />
+                        <span className="text-lg font-bold">
+                            30 Categories (maxTicks: 5)
+                        </span>
+                    </div>
+                }
+            />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Dense bar chart with `xAxis.maxTicks: 5` — only 5 x-axis labels are rendered.',
             },
         },
     },
