@@ -166,7 +166,6 @@ const OTPInput = forwardRef<RNView, OTPInputNativeProps>(function OTPInput(
                                 color={String(
                                     input.color?.[state] ?? '#000000'
                                 )}
-                                textAlign="center"
                                 accessibilityLabel={buildCellLabel(
                                     label,
                                     index,
@@ -197,9 +196,12 @@ const OTPInput = forwardRef<RNView, OTPInputNativeProps>(function OTPInput(
                                         : undefined
                                 }
                                 style={{
-                                    flex: 0,
+                                    flexGrow: 0,
+                                    flexShrink: 0,
+                                    flexBasis: 'auto',
                                     width: cellWidth,
                                     height: cellHeight,
+                                    textAlign: 'center',
                                 }}
                             />
                         </View>
