@@ -28,6 +28,7 @@ import snackbar from './snackbar.spec'
 import statCard from './statCard.spec'
 import switchSpec from './switch.spec'
 import spinner from './spinner.spec'
+import stepper from './stepper.spec'
 import tabs from './tabs.spec'
 import tag from './tag.spec'
 import textArea from './textArea.spec'
@@ -91,6 +92,7 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
             asAnySpec(outageChart),
             asAnySpec(sankeyChart),
             asAnySpec(statCard),
+            asAnySpec(stepper),
             asAnySpec(tabs),
             asAnySpec(accordion),
         ],
