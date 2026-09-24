@@ -98,6 +98,7 @@ describe('public API surface', () => {
             'OTPInput',
             'ProgressBar',
             'Radio',
+            'Stepper',
             'SankeyChart',
             'SearchInput',
             'SideDrawer',
@@ -155,7 +156,9 @@ describe('public API surface', () => {
         // compounds, SankeyChart, OutageChart), then to 124 for the
         // select rework (select/menu enums and helpers), then to 125 for
         // Breadcrumb, then to 127 for Sidebar (+ SideDrawer, its drawer
-        // primitive counterpart to BottomSheet).
-        expect(exported.size).toBeLessThanOrEqual(127)
+        // primitive counterpart to BottomSheet), then to 130 for Stepper
+        // (+ StepperStepStatus, StepperType and the StepperStep/
+        // StepperSubStep types).
+        expect(exported.size).toBeLessThanOrEqual(130)
     })
 })
