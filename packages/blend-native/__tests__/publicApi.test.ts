@@ -98,6 +98,7 @@ describe('public API surface', () => {
             'OTPInput',
             'ProgressBar',
             'Radio',
+            'Stepper',
             'SankeyChart',
             'SearchInput',
             'Sparkline',
@@ -152,7 +153,8 @@ describe('public API surface', () => {
         // BadgeSize), then to 122 for the chart wave (Chart and its
         // compounds, SankeyChart, OutageChart), then to 124 for the
         // select rework (select/menu enums and helpers), then to 125 for
-        // Breadcrumb.
-        expect(exported.size).toBeLessThanOrEqual(125)
+        // Breadcrumb, then to 128 for Stepper (+ StepperStepStatus,
+        // StepperType and the StepperStep/StepperSubStep types).
+        expect(exported.size).toBeLessThanOrEqual(128)
     })
 })

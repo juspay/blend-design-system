@@ -269,6 +269,24 @@ export type { TooltipBaseProps } from './components/TooltipV2/tooltipV2.types'
 export { getTimePickerTokens } from './components/TimePicker/timePicker.tokens'
 export { getCalendarToken } from './components/DateRangePicker/dateRangePicker.tokens'
 
+// StepperV2 — the step-status-circle step indicator, ported to native.
+// Types and enums live in the React-free `stepperV2.base.types` module;
+// web's `stepperV2.types.ts` extends these with `HTMLAttributes`.
+export { getStepperV2Tokens } from './components/StepperV2/stepperV2.tokens'
+export type {
+    StepperV2TokensType,
+    ResponsiveStepperV2Tokens,
+} from './components/StepperV2/stepperV2.tokens'
+export {
+    StepperV2StepStatus,
+    StepperV2Type,
+} from './components/StepperV2/stepperV2.base.types'
+export type {
+    StepperV2Step,
+    StepperV2SubStep,
+    StepperV2InteractionState,
+} from './components/StepperV2/stepperV2.base.types'
+
 // Component enums and base prop types — needed by react-native consumers
 // (`@juspay/blend-native`) that re-use the web token system via this entry.
 // These are pure string constants / type-only exports, so they add zero
