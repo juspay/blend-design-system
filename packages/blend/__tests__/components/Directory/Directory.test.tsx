@@ -536,6 +536,53 @@ describe('Directory active-path highlighting', () => {
         }
     )
 
+    it('stops the virtualized active guide at the on-path elbow (#1783)', () => {
+        const { container } = render(
+            <Directory
+                directoryData={hierarchyData}
+                defaultExpandedItems={expanded}
+                activeItem={deepSelection}
+                highlightActivePath
+                showHierarchyLines
+                enableVirtualization
+                virtualization={{
+                    threshold: 0,
+                    rowHeight: 32,
+                    viewportHeight: 512,
+                    overscan: 4,
+                }}
+            />
+        )
+
+        const connectorsOf = (label: string) => {
+            const row = Array.from(
+                container.querySelectorAll('[data-directory-hierarchy-item]')
+            ).find((el) => el.textContent?.includes(label))
+            return Array.from(
+                row?.querySelectorAll('[aria-hidden="true"] > span') ?? []
+            ).map((el) => getComputedStyle(el))
+        }
+        const colorOf = (style: CSSStyleDeclaration) => style.borderLeftColor
+
+        // Helix Network is on-path with a sibling (Quanta) below it: the
+        // guide through its row must stay default below the elbow, with only
+        // a stub down to elbowTop and the elbow itself active.
+        const [helixGuide, helixStub, helixElbow] =
+            connectorsOf('Helix Network')
+        expect(helixGuide.height).toBe('100%')
+        expect(helixStub.height).not.toBe('100%')
+        expect(colorOf(helixStub)).toBe(colorOf(helixElbow))
+        expect(colorOf(helixGuide)).not.toBe(colorOf(helixStub))
+
+        // Rows between an on-path parent and child still carry the active
+        // guide the full height (Orbit Pharma sits between Helix and Orion).
+        // (its own guide + elbow come last, after the ancestor guide at column 0)
+        const [orbitGuide, orbitElbow] = connectorsOf('Orbit Pharma').slice(-2)
+        expect(orbitGuide.height).toBe('100%')
+        expect(colorOf(orbitGuide)).toBe(colorOf(helixStub))
+        expect(colorOf(orbitElbow)).not.toBe(colorOf(helixStub))
+    })
+
     it('leaves every row in the default tier when the flag is off', () => {
         render(
             <Directory

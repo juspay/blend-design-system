@@ -99,6 +99,24 @@ const ConnectorVerticalLine = styled.span<{
         `${$tokens.section.itemList.nested.border.width} solid ${connectorColor($tokens, $active)}`};
 `
 
+// On an on-path child's own row, only the top of the parent's guide (down to
+// where the elbow's vertical drop begins) is active; the rest of the guide
+// below the elbow stays default. Mirrors NavItem's ActivePathStub.
+const ConnectorActiveStub = styled.span<{
+    $tokens: DirectoryTokenType
+    $column: number
+}>`
+    position: absolute;
+    z-index: 2;
+    left: ${({ $tokens, $column }) =>
+        `calc(${$tokens.section.itemList.nested.paddingLeft} * ${$column} + ${$tokens.section.itemList.nested.border.leftOffset})`};
+    top: 0;
+    height: ${({ $tokens }) =>
+        $tokens.section.itemList.nested.connector.elbowTop};
+    border-left: ${({ $tokens }) =>
+        `${$tokens.section.itemList.nested.border.width} solid ${connectorColor($tokens, true)}`};
+`
+
 const ConnectorElbow = styled.span<{
     $tokens: DirectoryTokenType
     $column: number
@@ -310,8 +328,10 @@ const VirtualizedDirectory = ({
     )
     // Active-path connector highlighting for the flat row model. For each
     // parent→child pair on the path we light the guide column that connects
-    // them across every row it spans; the elbow into an on-path row lights on
-    // its own. Mirrors the NavItem behaviour for the virtualized renderer.
+    // them across the rows between them. On the child's own row only the elbow
+    // and a stub down to it light (ConnectorActiveStub), so the guide doesn't
+    // run on past the curve. Mirrors the NavItem behaviour for the virtualized
+    // renderer.
     const { activeColumnsByRow, elbowActiveRows } = useMemo(() => {
         const activeColumnsByRow = new Map<number, Set<number>>()
         const elbowActiveRows = new Set<number>()
@@ -334,7 +354,7 @@ const VirtualizedDirectory = ({
             const child = pathNodes[i + 1]
             if (child.depth !== parent.depth + 1) continue
             const column = parent.depth // child's connector column
-            for (let r = parent.rowIndex + 1; r <= child.rowIndex; r++) {
+            for (let r = parent.rowIndex + 1; r < child.rowIndex; r++) {
                 let set = activeColumnsByRow.get(r)
                 if (!set) {
                     set = new Set<number>()
@@ -597,6 +617,12 @@ const VirtualizedDirectory = ({
                             $isLast={row.isLast}
                             $active={rowActiveColumns?.has(currentLineColumn)}
                         />
+                        {isElbowActive && (
+                            <ConnectorActiveStub
+                                $tokens={tokens}
+                                $column={currentLineColumn}
+                            />
+                        )}
                         <ConnectorElbow
                             $tokens={tokens}
                             $column={currentLineColumn}
