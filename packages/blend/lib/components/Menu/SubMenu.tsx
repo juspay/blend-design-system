@@ -268,7 +268,7 @@ export const SubMenu = ({
                     marginX={menuTokens.item.margin.x}
                     borderRadius={menuTokens.item.borderRadius}
                     color={getLabelColor('default', menuTokens, item)}
-                    _hover={{
+                    _highlighted={{
                         backgroundColor: getBgColor('hover', menuTokens, item),
                     }}
                     _focus={{
