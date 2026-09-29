@@ -218,7 +218,7 @@ const MenuV2Item = forwardRef<HTMLDivElement, MenuV2ItemProps>(
                     style={{
                         ...itemStyle,
                     }}
-                    _hover={{ backgroundColor: bgHover }}
+                    _highlighted={{ backgroundColor: bgHover }}
                     _focus={{ backgroundColor: bgFocus }}
                     _active={{ backgroundColor: bgActive }}
                     _focusVisible={{ backgroundColor: bgFocusVisible }}

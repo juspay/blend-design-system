@@ -5,6 +5,8 @@ type SpacingValue = string | number
 
 export type StateStyles = {
     _hover?: StyledBlockProps
+    /** Radix roving highlight (`[data-highlighted]`), e.g. menu items */
+    _highlighted?: StyledBlockProps
     _focus?: StyledBlockProps
     _active?: StyledBlockProps
     _disabled?: StyledBlockProps
@@ -202,6 +204,7 @@ const blockedProps = [
     'opacity',
     // Pseudo states
     '_hover',
+    '_highlighted',
     '_focus',
     '_active',
     '_disabled',
@@ -389,6 +392,7 @@ const getStyles = (props: StyledBlockProps): CSSObject => {
 
 const stateToSelector: Record<keyof StateStyles, string> = {
     _hover: '&:hover',
+    _highlighted: '&[data-highlighted]',
     _focus: '&:focus',
     _active: '&:active',
     _disabled: '&:disabled',
