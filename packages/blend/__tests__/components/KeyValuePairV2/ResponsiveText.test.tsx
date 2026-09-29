@@ -2,21 +2,12 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { act, render, screen, waitFor } from '../../test-utils'
 import { ResponsiveText } from '../../../lib/components/KeyValuePairV2/ResponsiveText'
-import * as selectItemUtils from '../../../lib/components/Select/SelectItem/utils'
 
-vi.mock(
-    '../../../lib/components/Select/SelectItem/utils',
-    async (importOriginal) => {
-        const actual =
-            await importOriginal<
-                typeof import('../../../lib/components/Select/SelectItem/utils')
-            >()
-        return {
-            ...actual,
-            checkIfTruncated: vi.fn(actual.checkIfTruncated),
-        }
-    }
-)
+vi.mock('../../../lib/hooks/useTruncationDetection', () => ({
+    default: vi.fn(() => false),
+}))
+
+import useTruncationDetection from '../../../lib/hooks/useTruncationDetection'
 
 const defaultProps = {
     children: 'Sample text',
@@ -134,18 +125,11 @@ describe('ResponsiveText', () => {
         })
         afterEach(() => {
             vi.useRealTimers()
-            vi.mocked(selectItemUtils.checkIfTruncated).mockReset()
+            vi.mocked(useTruncationDetection).mockReturnValue(false)
         })
 
-        it('wraps in Tooltip when checkIfTruncated returns true', async () => {
-            vi.mocked(selectItemUtils.checkIfTruncated).mockReturnValue(true)
-
-            const rafStub = vi
-                .spyOn(global, 'requestAnimationFrame')
-                .mockImplementation((cb: FrameRequestCallback) => {
-                    cb(0)
-                    return 0
-                })
+        it('uses TruncatedTextWithTooltipV2 when truncate overflow is enabled', async () => {
+            vi.mocked(useTruncationDetection).mockReturnValue(true)
 
             render(
                 <ResponsiveText
@@ -160,8 +144,7 @@ describe('ResponsiveText', () => {
             })
 
             expect(screen.getByText('Sample text')).toBeInTheDocument()
-            expect(selectItemUtils.checkIfTruncated).toHaveBeenCalled()
-            rafStub.mockRestore()
+            expect(useTruncationDetection).toHaveBeenCalled()
         })
     })
 
