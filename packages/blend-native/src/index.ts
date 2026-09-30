@@ -102,6 +102,12 @@ export { Radio } from './components/Radio'
 export type { RadioNativeProps } from './components/Radio'
 export { ProgressBar } from './components/ProgressBar'
 export type { ProgressBarNativeProps } from './components/ProgressBar'
+export { Stepper } from './components/Stepper'
+export type {
+    StepperNativeProps,
+    StepperStep,
+    StepperSubStep,
+} from './components/Stepper'
 export { Spinner } from './components/Spinner'
 export type { SpinnerNativeProps } from './components/Spinner'
 export { Sparkline } from './components/Sparkline'
@@ -325,6 +331,8 @@ export {
     StatCardV2Variant as StatCardVariant,
     StatCardV2ChangeType as StatCardChangeType,
     StatCardV2ArrowDirection as StatCardArrowDirection,
+    StepperV2StepStatus as StepperStepStatus,
+    StepperV2Type as StepperType,
     TagV2Type as TagType,
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,

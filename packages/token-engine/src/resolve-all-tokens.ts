@@ -49,6 +49,7 @@ import {
     getMobileNavigationTokens,
     getSpinnerTokens,
     getEmptyStateTokens,
+    getStepperV2Tokens,
 } from '@juspay/blend-design-system/node'
 import type { FoundationTokenType } from '@juspay/blend-design-system/node'
 
@@ -90,6 +91,7 @@ const V2_RESOLVERS: Record<
     MOBILE_NAVIGATION_V2: getMobileNavigationTokens,
     SPINNER: getSpinnerTokens,
     EMPTY_STATE: getEmptyStateTokens,
+    STEPPERV2: getStepperV2Tokens,
 }
 
 // ---------------------------------------------------------------------------

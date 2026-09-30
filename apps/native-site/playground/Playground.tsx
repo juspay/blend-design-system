@@ -8,6 +8,35 @@ import {
     View,
 } from 'react-native'
 import Animated from 'react-native-reanimated'
+import React from 'react'
+
+// TEMP: surface the real error until we find it
+class SpecErrorBoundary extends React.Component<
+    { children: React.ReactNode; name: string },
+    { error: string | null }
+> {
+    state = { error: null as string | null }
+    static getDerivedStateFromError(e: unknown) {
+        return {
+            error: e instanceof Error ? e.message + '\n' + e.stack : String(e),
+        }
+    }
+    componentDidCatch(e: unknown) {
+        console.error(`[StepperBoundary]`, e)
+    }
+    render() {
+        if (this.state.error) {
+            return (
+                <View style={{ padding: 12, backgroundColor: '#fee' }}>
+                    <Text style={{ color: '#900', fontSize: 11 }}>
+                        {this.state.error}
+                    </Text>
+                </View>
+            )
+        }
+        return this.props.children
+    }
+}
 import { Accordion, AccordionItem, AccordionType } from 'blend-native'
 import { RotateCcw } from 'lucide-react-native'
 import { MONO_FONT, useChrome } from './chrome'
@@ -96,7 +125,9 @@ export default function Playground({
                     </Pressable>
                 ) : null}
 
-                {spec.render(props, { open, setOpen })}
+                <SpecErrorBoundary name={spec.name}>
+                    {spec.render(props, { open, setOpen })}
+                </SpecErrorBoundary>
             </View>
 
             <Animated.ScrollView

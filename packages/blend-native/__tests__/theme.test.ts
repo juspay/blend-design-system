@@ -74,6 +74,7 @@ describe('nativeTokenRegistry', () => {
             'SNACKBARV2',
             'SPINNER',
             'STATCARDV2',
+            'STEPPERV2',
             'SWITCHV2',
             'TABSV2',
             'TAGV2',
