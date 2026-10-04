@@ -1,0 +1,369 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+@import '../styles/ascent-docs.css';
+
+:root {
+    --blend-background: oklch(1 0 0);
+    --blend-surface: oklch(0.9913 0.0013 286.38);
+    --blend-foreground: oklch(0.32 0.03 257);
+    --blend-primary: oklch(0.24 0 0);
+    --blend-muted: oklch(0.7476 0 0);
+    --blend-border: oklch(0.951 0.0063 255.48);
+    --blend-code-background: #fcfcfd;
+    --blend-code-border: #e0e0e0;
+
+    --color-fd-background: var(--blend-background);
+    --color-fd-foreground: var(--blend-foreground);
+    --color-fd-muted: oklch(0.96 0.01 260);
+    --color-fd-muted-foreground: var(--blend-muted);
+    --color-fd-popover: var(--blend-background);
+    --color-fd-popover-foreground: var(--blend-foreground);
+    --color-fd-card: var(--blend-surface);
+    --color-fd-card-foreground: var(--blend-foreground);
+    --color-fd-border: var(--blend-border);
+    --color-fd-primary: var(--blend-primary);
+    --color-fd-primary-foreground: oklch(1 0 0);
+    --color-fd-secondary: oklch(0.96 0.01 260);
+    --color-fd-secondary-foreground: var(--blend-foreground);
+    --color-fd-accent: oklch(0.9668 0.0058 264.53);
+    --color-fd-accent-foreground: var(--blend-primary);
+}
+
+html.dark {
+    --blend-background: oklch(0.12 0 0);
+    --blend-surface: oklch(0.142 0 0);
+    --blend-foreground: oklch(0.85 0 0);
+    --blend-primary: oklch(0.9 0 0);
+    --blend-muted: oklch(0.6 0 0);
+    --blend-border: oklch(0.25 0 0);
+    --blend-code-background: oklch(0.15 0 0);
+    --blend-code-border: oklch(0.25 0 0);
+}
+
+@theme inline {
+    --font-sans: var(--font-geist-sans);
+    --font-manrope: var(--font-manrope);
+}
+
+body {
+    font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Blend's documentation shell, layered over Fumadocs' routing and page tree. */
+.blend-docs-layout {
+    --fd-header-height: 3.75rem !important;
+    --fd-layout-width: 90rem;
+    --fd-sidebar-width: 14rem;
+    --fd-toc-width: 14rem;
+    background: var(--blend-background);
+}
+
+.blend-header {
+    grid-area: header;
+    position: sticky;
+    top: var(--fd-docs-row-1);
+    z-index: 30;
+    height: var(--fd-header-height);
+    border-bottom: 1px solid var(--blend-border);
+    background: color-mix(in srgb, var(--blend-background) 94%, transparent);
+    backdrop-filter: blur(12px);
+}
+
+.blend-header-inner {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0 1.5rem;
+}
+
+.blend-brand {
+    color: var(--blend-primary);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+}
+
+.blend-primary-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.blend-primary-nav a,
+.blend-header-actions a {
+    color: var(--blend-muted);
+    font-size: 0.875rem;
+    transition: color 120ms ease;
+}
+
+.blend-primary-nav a:first-child {
+    color: var(--blend-primary);
+}
+.blend-primary-nav a:hover,
+.blend-header-actions a:hover {
+    color: var(--blend-foreground);
+}
+
+.blend-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-left: auto;
+    border: 1px solid var(--blend-border);
+    padding: 0.25rem 0.5rem;
+}
+
+#nd-sidebar {
+    border-inline-end: 1px solid var(--blend-border);
+    border-radius: 0;
+    background: var(--blend-background);
+}
+
+/* The original Ascent sidebar starts directly with navigation, without a second brand/search header. */
+#nd-sidebar > div:first-child {
+    display: none;
+}
+
+#nd-sidebar [data-sidebar-viewport] {
+    padding: 0.75rem 0.5rem;
+}
+
+#nd-sidebar [data-sidebar-item],
+#nd-sidebar [data-sidebar-folder-link],
+#nd-sidebar [data-sidebar-folder-trigger] {
+    border-radius: 0.5rem;
+    color: color-mix(in srgb, var(--blend-foreground) 66%, transparent);
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+    padding: 0.5rem 0.75rem;
+}
+
+#nd-sidebar [data-sidebar-item][data-active='true'],
+#nd-sidebar [data-sidebar-folder-link][data-active='true'] {
+    background: oklch(0.9668 0.0058 264.53);
+    color: var(--blend-foreground);
+}
+
+#nd-sidebar [data-sidebar-item]:hover,
+#nd-sidebar [data-sidebar-folder-link]:hover,
+#nd-sidebar [data-sidebar-folder-trigger]:hover {
+    background: oklch(0.96 0.01 260);
+    color: var(--blend-foreground);
+}
+
+#nd-sidebar [data-sidebar-folder-content]::before {
+    display: none;
+}
+
+#nd-page.blend-docs-page {
+    border-inline-end: 1px solid var(--blend-border);
+    border-inline-start: 0;
+    margin-inline: 0;
+    max-width: none;
+    min-height: calc(100dvh - var(--fd-header-height));
+    padding: 0;
+}
+
+.blend-docs-page + [data-toc] {
+    padding-inline: 1.25rem;
+}
+
+#nd-toc {
+    padding-inline-start: 1.5rem;
+}
+
+@media (max-width: 767px) {
+    .blend-docs-layout {
+        --fd-toc-width: 0rem;
+    }
+    .blend-header-inner {
+        padding: 0 1rem;
+    }
+    .blend-primary-nav a:nth-child(n + 3),
+    .blend-header-actions {
+        display: none;
+    }
+    .blend-docs-title,
+    .blend-docs-intro {
+        width: calc(100% - 3rem);
+    }
+}
+
+.blend-docs-page {
+    gap: 0;
+    max-width: 900px;
+    padding: 0;
+}
+
+.blend-docs-page > [data-slot='breadcrumb'] {
+    display: none;
+}
+
+.blend-docs-header {
+    border-bottom: 1px solid var(--blend-border);
+    padding: 2.75rem 0;
+}
+
+.blend-docs-title {
+    display: block;
+    margin-inline: auto;
+    width: min(calc(100% - 5rem), 860px);
+    color: var(--blend-primary);
+    font-family: var(--font-manrope), sans-serif;
+    font-size: clamp(2.25rem, 7vw, 5.375rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
+}
+
+.blend-docs-intro {
+    margin-inline: auto;
+    padding: 2rem 0;
+    width: min(calc(100% - 5rem), 860px);
+}
+
+.blend-docs-description,
+.blend-docs-body p,
+.blend-docs-body li {
+    color: var(--blend-foreground);
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+    line-height: 1.75rem;
+}
+
+.blend-docs-description {
+    margin: 0;
+}
+
+.blend-docs-body {
+    max-width: none;
+}
+
+.blend-docs-body h1 {
+    display: none;
+}
+
+.blend-docs-body h2 {
+    color: var(--blend-primary);
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin: 2.5rem 0 0.5rem;
+    scroll-margin-top: 7rem;
+}
+
+.blend-docs-body h3 {
+    color: var(--blend-primary);
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    margin: 2.5rem 0 0;
+    scroll-margin-top: 8rem;
+}
+
+.blend-docs-body h4 {
+    color: var(--blend-primary);
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 2.5rem;
+}
+
+.blend-docs-body p {
+    margin: 0.5rem 0 0;
+}
+
+.blend-docs-body ul,
+.blend-docs-body ol {
+    margin: 0.75rem 0 0;
+    padding-left: 1.25rem;
+}
+
+.blend-docs-body ul {
+    list-style: disc;
+}
+.blend-docs-body ol {
+    list-style: decimal;
+}
+.blend-docs-body li {
+    padding-left: 0.25rem;
+}
+
+.blend-docs-body a {
+    color: #3b82f6;
+}
+
+.blend-docs-body a:hover {
+    color: #1d4ed8;
+}
+
+.blend-docs-body :not(pre) > code {
+    background: var(--blend-code-background);
+    border: 1px solid var(--blend-code-border);
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    padding: 0.125rem 0.375rem;
+}
+
+.blend-docs-body .blend-code-block {
+    background: var(--blend-code-background);
+    border: 1px solid var(--blend-code-border);
+    border-radius: 0.75rem;
+    box-shadow: none;
+    color: var(--blend-foreground);
+    margin: 1.25rem 0;
+    overflow: hidden;
+}
+
+.blend-docs-body .blend-code-block > div:first-child {
+    align-items: center;
+    background: color-mix(in srgb, var(--blend-surface) 70%, transparent);
+    border-bottom-color: var(--blend-code-border);
+    color: var(--blend-muted);
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.blend-docs-body .blend-code-block button {
+    border-radius: 0.375rem;
+    color: var(--blend-muted);
+}
+
+.blend-docs-body .blend-code-block button:hover {
+    background: oklch(0.96 0.01 260);
+    color: var(--blend-foreground);
+}
+
+.blend-docs-body .blend-code-viewport {
+    max-height: 32rem;
+    overflow: auto;
+    padding: 1rem 1.25rem;
+    scrollbar-color: var(--blend-code-border) transparent;
+}
+
+.blend-docs-body .blend-code-block pre,
+.blend-docs-body .blend-code-block code {
+    color: var(--blend-foreground);
+    font-family: var(--font-geist-mono), 'SFMono-Regular', Consolas, monospace;
+    font-size: 0.8125rem;
+    line-height: 1.65;
+}
+
+.blend-docs-body blockquote {
+    border-left-color: var(--blend-code-border);
+    color: var(--blend-foreground);
+}
+
+@media (min-width: 768px) {
+    .blend-docs-header {
+        padding-block: 2.75rem;
+    }
+    .blend-docs-intro {
+        padding-block: 2rem;
+    }
+}
