@@ -92,6 +92,12 @@ export { Switch } from './components/Switch'
 export type { SwitchNativeProps } from './components/Switch'
 export { SearchInput } from './components/SearchInput'
 export type { SearchInputNativeProps } from './components/SearchInput'
+export { Sidebar } from './components/Sidebar'
+export type {
+    SidebarNativeProps,
+    SidebarNavItem,
+    SidebarSectionData,
+} from './components/Sidebar'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
 export { NumberInput } from './components/NumberInput'
@@ -261,6 +267,12 @@ export type { BottomSheetProps } from './overlay/sheet/BottomSheet'
 // Makes a scrollable inside a sheet cooperate with the sheet drag: the list
 // scrolls until it hits its top, then the sheet follows the finger.
 export { BottomSheetScrollable } from './overlay/sheet/SheetScrollable'
+
+// The horizontal counterpart of BottomSheet — an edge-anchored slide-in
+// drawer. `Sidebar`'s mobile presentation is built on it; also public for
+// consumer-built drawers.
+export { SideDrawer } from './overlay/drawer/SideDrawer'
+export type { SideDrawerProps } from './overlay/drawer/SideDrawer'
 
 // The toast host: the provider mounts the outlet, this pair drives it;
 // `addSnackbar` layers the SNACKBARV2 token styling on top.
