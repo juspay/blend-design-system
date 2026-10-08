@@ -22,6 +22,7 @@ import progressBar from './progressBar.spec'
 import radio from './radio.spec'
 import sankeyChart from './sankeyChart.spec'
 import searchInput from './searchInput.spec'
+import sidebar from './sidebar.spec'
 import singleSelect from './singleSelect.spec'
 import skeleton from './skeleton.spec'
 import snackbar from './snackbar.spec'
@@ -112,6 +113,10 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
             asAnySpec(popover),
             asAnySpec(tooltip),
         ],
+    },
+    {
+        title: 'Navigation',
+        specs: [asAnySpec(sidebar)],
     },
 ]
 
