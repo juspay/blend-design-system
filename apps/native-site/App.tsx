@@ -301,7 +301,6 @@ export default function App() {
                                             ]}
                                         />
                                     }
-                                    showMobileBottomNav
                                     activeItem={componentName}
                                     onActiveItemChange={(name) => {
                                         if (name) selectComponent(name)
