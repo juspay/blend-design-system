@@ -38,6 +38,7 @@ import SidebarMobileBottomNav, {
 import { getSidebarPalette, SIDEBAR_METRICS } from './sidebar.theme'
 import SidebarSection from './SidebarSection'
 import { flattenMobileNavItems } from './sidebar.utils'
+import { X } from 'lucide-react-native'
 import type { SidebarNativeProps } from './sidebar.types'
 
 /**
@@ -233,6 +234,22 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
         [footerHeight]
     )
 
+    const closeButton = (
+        <Pressable
+            onPress={() => setOpen(false)}
+            paddingTop={SIDEBAR_METRICS.toggleButtonPadding}
+            paddingBottom={SIDEBAR_METRICS.toggleButtonPadding}
+            paddingLeft={SIDEBAR_METRICS.toggleButtonPadding}
+            paddingRight={SIDEBAR_METRICS.toggleButtonPadding}
+            borderRadius={SIDEBAR_METRICS.toggleButtonRadius}
+            activeBackground={palette.controlHoverBackground}
+            accessibilityRole="button"
+            accessibilityLabel="Close sidebar"
+        >
+            <X size={16} color={palette.controlForeground} />
+        </Pressable>
+    )
+
     const toggleButton = !hideToggleButton && (
         <Pressable
             onPress={() => setIsExpanded(!isExpanded)}
@@ -296,9 +313,11 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                         iconOnlyMode ? 'no-hide-descendants' : 'auto'
                     }
                 >
-                    {headerContent}
+                    <View style={{ flex: 1, minWidth: 0, marginLeft: -10 }}>
+                        {headerContent}
+                    </View>
                 </Animated.View>
-                {!isSmallScreen && toggleButton}
+                {isSmallScreen ? closeButton : toggleButton}
                 {/* Scroll shadow — a hairline that only appears once the nav
                     list below has scrolled past its top (`isScrolled`).
                     Absolute + opacity so toggling it never reflows the
@@ -455,6 +474,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         overflow: 'hidden',
+        flex: 1,
     },
     footerSlot: {
         overflow: 'hidden',
