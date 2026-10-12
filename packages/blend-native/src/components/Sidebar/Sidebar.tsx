@@ -221,7 +221,6 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
     const headerSlotStyle = useAnimatedStyle(
         () => ({
             width: expandProgress.value * RAIL_GROWTH,
-            marginRight: expandProgress.value * SIDEBAR_METRICS.headerGap,
             opacity: expandProgress.value,
         }),
         []
