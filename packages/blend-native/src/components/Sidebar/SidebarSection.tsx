@@ -134,13 +134,12 @@ export default function SidebarSection({
                                     SIDEBAR_METRICS.groupLabelFontWeight
                                 }
                                 color={palette.mutedForeground}
-                                style={styles.groupLabelText}
                             >
                                 {section.label}
                             </Text>
                             <Animated.View style={chevronStyle}>
                                 <ChevronDown
-                                    size={14}
+                                    size={16}
                                     color={palette.mutedForeground}
                                 />
                             </Animated.View>
@@ -150,17 +149,13 @@ export default function SidebarSection({
                             fontSize={SIDEBAR_METRICS.groupLabelFontSize}
                             fontWeight={SIDEBAR_METRICS.groupLabelFontWeight}
                             color={palette.mutedForeground}
-                            style={[
-                                styles.groupLabelText,
-                                {
-                                    minHeight: SIDEBAR_METRICS.groupLabelHeight,
-                                    paddingLeft:
-                                        SIDEBAR_METRICS.groupLabelPaddingX,
-                                    paddingRight:
-                                        SIDEBAR_METRICS.groupLabelPaddingX,
-                                    textAlignVertical: 'center',
-                                },
-                            ]}
+                            style={{
+                                minHeight: SIDEBAR_METRICS.groupLabelHeight,
+                                paddingLeft: SIDEBAR_METRICS.groupLabelPaddingX,
+                                paddingRight:
+                                    SIDEBAR_METRICS.groupLabelPaddingX,
+                                textAlignVertical: 'center',
+                            }}
                         >
                             {section.label}
                         </Text>
@@ -189,9 +184,5 @@ SidebarSection.displayName = 'SidebarSection'
 const styles = StyleSheet.create({
     headerArea: {
         overflow: 'hidden',
-    },
-    groupLabelText: {
-        textTransform: 'uppercase',
-        letterSpacing: 0.4,
     },
 })

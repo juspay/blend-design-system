@@ -7,24 +7,37 @@ import {
     useState,
 } from 'react'
 import { ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native'
-import type { LayoutChangeEvent, View as RNView } from 'react-native'
+import type {
+    LayoutChangeEvent,
+    NativeScrollEvent,
+    NativeSyntheticEvent,
+    View as RNView,
+} from 'react-native'
 import Animated, {
     Easing,
     useAnimatedStyle,
     useSharedValue,
     withTiming,
 } from 'react-native-reanimated'
-import { ChevronLeft, ChevronRight } from 'lucide-react-native'
+import { PanelsTopLeft } from 'lucide-react-native'
+import { SelectV2Size, SelectV2Variant } from '@juspay/blend-design-system/node'
 import { useControllableState } from '../../hooks/useControllableState'
 import { useReduceMotion } from '../../motion/useReduceMotion'
 import { BlendNativeThemeContext } from '../../theme/BlendNativeProvider'
+import { Portal } from '../../overlay/portal'
 import { SideDrawer } from '../../overlay/drawer/SideDrawer'
 import Block from '../../primitives/Block'
 import Pressable from '../../primitives/Pressable'
+import SingleSelect from '../SingleSelect/SingleSelect'
 import { SidebarContext } from './sidebar.context'
 import type { SidebarContextValue } from './sidebar.context'
+import SidebarSecondaryPanel from './SidebarSecondaryPanel'
+import SidebarMobileBottomNav, {
+    SidebarMobileMoreSheet,
+} from './SidebarMobileBottomNav'
 import { getSidebarPalette, SIDEBAR_METRICS } from './sidebar.theme'
 import SidebarSection from './SidebarSection'
+import { flattenMobileNavItems } from './sidebar.utils'
 import type { SidebarNativeProps } from './sidebar.types'
 
 /**
@@ -51,12 +64,22 @@ import type { SidebarNativeProps } from './sidebar.types'
  * - Nested items expand in place rather than flying out on hover — shadcn's
  *   own `Sidebar` makes the same call for its icon-only mode (hides nested
  *   items rather than a flyout), avoiding a popover-positioning engine for
- *   what is fundamentally a nav tree.
- * - Mobile presents as a slide-in drawer with the full nav tree, not an
- *   adaptive floating dock.
- * - No topbar, no tenant-switcher rail, no keyboard-shortcut toggle.
- * - No tooltip on collapsed-rail items yet (shadcn shows one on hover) —
- *   worth adding in a follow-up.
+ *   what is fundamentally a nav tree. A collapsed-rail item with children is
+ *   therefore unreachable until the rail re-expands — a known gap, not yet
+ *   closed with web's icon-only flyout menu.
+ * - Mobile's default presentation is a slide-in drawer with the full nav
+ *   tree, not web's adaptive floating dock; `showMobileBottomNav` adds a
+ *   floating bar alongside it (primary items + a "More" button opening a
+ *   bottom sheet for the rest) rather than replacing the drawer outright —
+ *   see `SidebarMobileBottomNav`'s docblock for why that one isn't a literal
+ *   port of web's mechanics.
+ * - No topbar or keyboard-shortcut toggle (`sidebarCollapseKey`) — both are
+ *   app-shell concerns the host composes around `Sidebar`, not things this
+ *   component owns on web either in spirit (web's topbar lives in
+ *   `SidebarV2`'s own layout shell, which this component deliberately isn't
+ *   — see above).
+ * - Collapsed-rail tooltips use long-press (`Tooltip`'s own touch
+ *   substitution for hover — see its docblock), not a hover delay.
  */
 
 /** How much wider the rail gets going from collapsed to expanded. */
@@ -67,7 +90,12 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
     {
         data,
         header,
+        merchantInfo,
         footer,
+        secondarySidebar,
+        highlightActivePath = false,
+        showHierarchyLines = false,
+        showMobileBottomNav = false,
         isExpanded: isExpandedProp,
         onExpandedChange,
         defaultIsExpanded = true,
@@ -117,6 +145,23 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
         if (height > 0) setFooterHeight((current) => Math.max(current, height))
     }, [])
 
+    // Mirrors web's `isScrolled` — a hairline under the header once the nav
+    // list has scrolled past its top, so a long tree doesn't look like it
+    // bleeds straight into the header with no boundary.
+    const [isScrolled, setIsScrolled] = useState(false)
+    const onNavScroll = useCallback(
+        (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            setIsScrolled(event.nativeEvent.contentOffset.y > 0)
+        },
+        []
+    )
+
+    const mobileBottomNavItems = useMemo(
+        () => (showMobileBottomNav ? flattenMobileNavItems(data) : []),
+        [showMobileBottomNav, data]
+    )
+    const [moreSheetOpen, setMoreSheetOpen] = useState(false)
+
     const iconOnlyMode = !isSmallScreen && !isExpanded
     // Rows read this for label opacity/width, so its target must track
     // "content should be visible" (`!iconOnlyMode`), not `isExpanded` on its
@@ -144,6 +189,8 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
             setActiveItem,
             reduceMotion,
             expandProgress,
+            highlightActivePath,
+            showHierarchyLines,
         }),
         [
             palette,
@@ -152,6 +199,8 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
             setActiveItem,
             reduceMotion,
             expandProgress,
+            highlightActivePath,
+            showHierarchyLines,
         ]
     )
 
@@ -188,25 +237,42 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
     const toggleButton = !hideToggleButton && (
         <Pressable
             onPress={() => setIsExpanded(!isExpanded)}
-            paddingTop={6}
-            paddingBottom={6}
-            paddingLeft={6}
-            paddingRight={6}
-            borderRadius={SIDEBAR_METRICS.itemRadius}
-            activeBackground={palette.accent}
+            paddingTop={SIDEBAR_METRICS.toggleButtonPadding}
+            paddingBottom={SIDEBAR_METRICS.toggleButtonPadding}
+            paddingLeft={SIDEBAR_METRICS.toggleButtonPadding}
+            paddingRight={SIDEBAR_METRICS.toggleButtonPadding}
+            borderRadius={SIDEBAR_METRICS.toggleButtonRadius}
+            activeBackground={palette.controlHoverBackground}
             accessibilityRole="button"
             accessibilityLabel={
                 isExpanded ? 'Collapse sidebar' : 'Expand sidebar'
             }
             accessibilityState={{ expanded: isExpanded }}
         >
-            {isExpanded ? (
-                <ChevronLeft size={16} color={palette.mutedForeground} />
-            ) : (
-                <ChevronRight size={16} color={palette.mutedForeground} />
-            )}
+            <PanelsTopLeft size={16} color={palette.controlForeground} />
         </Pressable>
     )
+
+    const headerContent =
+        header ??
+        (merchantInfo ? (
+            <SingleSelect
+                placeholder="Select workspace"
+                variant={SelectV2Variant.NO_CONTAINER}
+                size={SelectV2Size.SM}
+                items={[
+                    {
+                        items: merchantInfo.items.map((item) => ({
+                            label: item.label,
+                            value: item.value,
+                            slot1: item.icon,
+                        })),
+                    },
+                ]}
+                selected={merchantInfo.selected}
+                onSelect={merchantInfo.onSelect}
+            />
+        ) : null)
 
     const navContent = (
         <SidebarContext.Provider value={contextValue}>
@@ -214,10 +280,11 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                 flexDirection="row"
                 alignItems="center"
                 justifyContent="space-between"
-                paddingTop={SIDEBAR_METRICS.headerPadding}
-                paddingBottom={SIDEBAR_METRICS.headerPadding}
-                paddingLeft={SIDEBAR_METRICS.headerPadding}
-                paddingRight={SIDEBAR_METRICS.headerPadding}
+                paddingTop={SIDEBAR_METRICS.headerPaddingY}
+                paddingBottom={SIDEBAR_METRICS.headerPaddingY}
+                paddingLeft={SIDEBAR_METRICS.headerPaddingX}
+                paddingRight={SIDEBAR_METRICS.headerPaddingX}
+                style={{ position: 'relative' }}
             >
                 {/* Always mounted, width/opacity synced to the rail's own
                     tween — see `SidebarItem`'s `labelAreaStyle` for why an
@@ -230,11 +297,27 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                         iconOnlyMode ? 'no-hide-descendants' : 'auto'
                     }
                 >
-                    {header}
+                    {headerContent}
                 </Animated.View>
                 {!isSmallScreen && toggleButton}
+                {/* Scroll shadow — a hairline that only appears once the nav
+                    list below has scrolled past its top (`isScrolled`).
+                    Absolute + opacity so toggling it never reflows the
+                    header, unlike a conditional `borderBottomWidth`. */}
+                <View
+                    pointerEvents="none"
+                    testID="sidebar-scroll-shadow"
+                    style={[
+                        styles.scrollShadow,
+                        {
+                            backgroundColor: palette.border,
+                            opacity: isScrolled ? 1 : 0,
+                        },
+                    ]}
+                />
             </Block>
             <ScrollView
+                testID="sidebar-nav-scroll"
                 style={{ flex: 1 }}
                 contentContainerStyle={{
                     gap: SIDEBAR_METRICS.sectionGap,
@@ -243,6 +326,8 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                     paddingLeft: 4,
                     paddingRight: 4,
                 }}
+                onScroll={onNavScroll}
+                scrollEventThrottle={16}
             >
                 {data.map((section, index) => (
                     <SidebarSection key={index} section={section} />
@@ -261,8 +346,10 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                         style={[
                             styles.footerContent,
                             {
-                                paddingLeft: SIDEBAR_METRICS.headerPadding,
-                                paddingRight: SIDEBAR_METRICS.headerPadding,
+                                paddingLeft: SIDEBAR_METRICS.footerPaddingX,
+                                paddingRight: SIDEBAR_METRICS.footerPaddingX,
+                                paddingTop: SIDEBAR_METRICS.footerPaddingY,
+                                paddingBottom: SIDEBAR_METRICS.footerPaddingY,
                             },
                         ]}
                     >
@@ -273,45 +360,92 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
         </SidebarContext.Provider>
     )
 
+    const mobileBottomNav = showMobileBottomNav && isSmallScreen && (
+        <Portal>
+            <SidebarMobileBottomNav
+                items={mobileBottomNavItems}
+                activeItem={activeItem}
+                onSelect={(id) => {
+                    setActiveItem(id)
+                    setOpen(false)
+                }}
+                palette={palette}
+                onOpenMore={() => setMoreSheetOpen(true)}
+            />
+            <SidebarMobileMoreSheet
+                items={mobileBottomNavItems}
+                activeItem={activeItem}
+                onSelect={(id) => {
+                    setActiveItem(id)
+                    setMoreSheetOpen(false)
+                }}
+                palette={palette}
+                open={moreSheetOpen}
+                onClose={() => setMoreSheetOpen(false)}
+            />
+        </Portal>
+    )
+
     if (isSmallScreen) {
         return (
-            <SideDrawer
-                open={open}
-                onClose={() => setOpen(false)}
-                width={drawerWidth}
-                backgroundColor={palette.background}
-                accessibilityLabel={accessibilityLabel ?? 'Sidebar navigation'}
+            <>
+                <SideDrawer
+                    open={open}
+                    onClose={() => setOpen(false)}
+                    width={drawerWidth}
+                    backgroundColor={palette.background}
+                    accessibilityLabel={
+                        accessibilityLabel ?? 'Sidebar navigation'
+                    }
+                    testID={testID}
+                >
+                    <View ref={ref} style={{ flex: 1 }}>
+                        {navContent}
+                    </View>
+                </SideDrawer>
+                {mobileBottomNav}
+            </>
+        )
+    }
+
+    // Web renders the secondary rail as a flex sibling of the main panel
+    // inside one row (not nested inside it) — but it still collapses in
+    // lockstep with the primary panel (`SecondarySidebar`'s own
+    // `isExpanded` prop is literally the same flag the primary panel's
+    // icon-only mode comes from), so `expandProgress` is threaded into it
+    // below rather than treating it as width-fixed.
+    return (
+        <View style={{ flexDirection: 'row', height: '100%' }}>
+            {secondarySidebar && (
+                <SidebarSecondaryPanel
+                    info={secondarySidebar}
+                    palette={palette}
+                    expandProgress={expandProgress}
+                    iconOnlyMode={iconOnlyMode}
+                />
+            )}
+            <Animated.View
+                style={[
+                    {
+                        backgroundColor: palette.background,
+                        borderRightWidth: 1,
+                        borderRightColor: palette.border,
+                        overflow: 'hidden',
+                    },
+                    railStyle,
+                ]}
+                accessibilityRole="none"
+                accessibilityLabel={
+                    accessibilityLabel ??
+                    `Sidebar navigation, ${isExpanded ? 'expanded' : 'collapsed'}`
+                }
                 testID={testID}
             >
                 <View ref={ref} style={{ flex: 1 }}>
                     {navContent}
                 </View>
-            </SideDrawer>
-        )
-    }
-
-    return (
-        <Animated.View
-            style={[
-                {
-                    backgroundColor: palette.background,
-                    borderRightWidth: 1,
-                    borderRightColor: palette.border,
-                    overflow: 'hidden',
-                },
-                railStyle,
-            ]}
-            accessibilityRole="none"
-            accessibilityLabel={
-                accessibilityLabel ??
-                `Sidebar navigation, ${isExpanded ? 'expanded' : 'collapsed'}`
-            }
-            testID={testID}
-        >
-            <View ref={ref} style={{ flex: 1 }}>
-                {navContent}
-            </View>
-        </Animated.View>
+            </Animated.View>
+        </View>
     )
 })
 
@@ -331,6 +465,13 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
+    },
+    scrollShadow: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: 1,
     },
 })
 

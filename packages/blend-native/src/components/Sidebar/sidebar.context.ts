@@ -22,6 +22,10 @@ export type SidebarContextValue = {
      * container — the "text wraps then snaps" jitter that mismatch caused.
      */
     expandProgress: SharedValue<number>
+    /** @see `SidebarNativeProps.highlightActivePath` */
+    highlightActivePath: boolean
+    /** @see `SidebarNativeProps.showHierarchyLines` */
+    showHierarchyLines: boolean
 }
 
 export const SidebarContext = createContext<SidebarContextValue | null>(null)
