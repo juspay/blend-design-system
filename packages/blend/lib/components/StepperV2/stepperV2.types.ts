@@ -1,24 +1,9 @@
-import { HTMLAttributes, ReactNode } from 'react'
+import type { HTMLAttributes } from 'react'
+import type { StepperV2Step, StepperV2Type } from './stepperV2.base.types'
 
-export enum StepperV2StepStatus {
-    DEFAULT = 'default',
-    COMPLETED = 'completed',
-    CURRENT = 'current',
-    PENDING = 'pending',
-    DISABLED = 'disabled',
-    SKIPPED = 'skipped',
-}
-
-export type StepperV2InteractionState =
-    | 'default'
-    | 'hover'
-    | 'focus'
-    | 'disabled'
-
-export enum StepperV2Type {
-    HORIZONTAL = 'horizontal',
-    VERTICAL = 'vertical',
-}
+export type { StepperV2Step, StepperV2SubStep } from './stepperV2.base.types'
+export { StepperV2StepStatus, StepperV2Type } from './stepperV2.base.types'
+export type { StepperV2InteractionState } from './stepperV2.base.types'
 
 export type StepperV2Props = {
     steps: StepperV2Step[]
@@ -31,25 +16,6 @@ export type StepperV2Props = {
     onSubstepClick?: (stepId: number, substepIndex: number) => void
     clickable?: boolean
     stepperType?: StepperV2Type
-} & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'id'>
-
-export type StepperV2SubStep = {
-    id: number
-    title: string
-    status?: StepperV2StepStatus
-    disabled?: boolean
-}
-
-export type StepperV2Step = {
-    id: number
-    title: string
-    status?: StepperV2StepStatus
-    disabled?: boolean
-    description?: string
-    icon?: ReactNode
-    substeps?: StepperV2SubStep[]
-    isExpandable?: boolean
-    isExpanded?: boolean
 } & Omit<HTMLAttributes<HTMLDivElement>, 'className' | 'style' | 'id'>
 
 export type StepperV2StepProps = {
