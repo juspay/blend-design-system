@@ -2,11 +2,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
     isControlledDateRange,
     detectPresetFromRange,
+    getPresetDateRange,
+    getFilteredPresets,
     processCustomPresets,
     getPresetLabelWithCustom,
     handleCalendarDateClick,
+    handleEnhancedCalendarDateClick,
     handleCustomRangeCalendarDateClick,
     calculateDayCellProps,
+    getDateCellStates,
 } from '../../../lib/components/DateRangePicker/utils'
 import { DateRangePreset } from '../../../lib/components/DateRangePicker/types'
 import type {
@@ -660,5 +664,106 @@ describe('handleCustomRangeCalendarDateClick - minDate/maxDate/customDisableDate
                 7
             )
         ).toBeNull()
+    })
+})
+
+describe('disablePastDates does not disable today itself (#1789, #1790)', () => {
+    // The bug: `today` is frequently "now" rather than midnight (e.g.
+    // getTodayInTimezone's no-timezone path doesn't truncate), while a
+    // clicked/rendered calendar cell for today is midnight. Comparing those
+    // two raw made `clickedDate < today` true for today's own cell, so it
+    // read as a past date and got disabled. `now` here deliberately is not
+    // midnight, to reproduce exactly that mismatch.
+    const now = new Date('2026-06-15T14:30:00')
+    const todayCell = new Date(2026, 5, 15) // today's calendar cell, midnight
+    const yesterdayCell = new Date(2026, 5, 14)
+
+    it('handleCalendarDateClick: today is clickable with disablePastDates on', () => {
+        expect(
+            handleCalendarDateClick(
+                todayCell,
+                false,
+                now,
+                false,
+                true // disablePastDates
+            )
+        ).not.toBeNull()
+    })
+
+    it('handleCalendarDateClick: yesterday is still blocked with disablePastDates on', () => {
+        expect(
+            handleCalendarDateClick(yesterdayCell, false, now, false, true)
+        ).toBeNull()
+    })
+
+    it('handleEnhancedCalendarDateClick: today is clickable with disablePastDates on', () => {
+        const selectedRange: DateRange = { startDate: todayCell }
+        expect(
+            handleEnhancedCalendarDateClick(
+                todayCell,
+                selectedRange,
+                true,
+                now,
+                false,
+                true
+            )
+        ).not.toBeNull()
+    })
+
+    it('handleCustomRangeCalendarDateClick: today is clickable with disablePastDates on', () => {
+        expect(
+            handleCustomRangeCalendarDateClick(
+                todayCell,
+                false,
+                now,
+                false,
+                true
+            )
+        ).not.toBeNull()
+    })
+
+    it('getDateCellStates: today is not disabled with disablePastDates on', () => {
+        const states = getDateCellStates(todayCell, undefined, now, false, true)
+        expect(states.isDisabled).toBe(false)
+    })
+
+    it('getDateCellStates: yesterday is still disabled with disablePastDates on', () => {
+        const states = getDateCellStates(
+            yesterdayCell,
+            undefined,
+            now,
+            false,
+            true
+        )
+        expect(states.isDisabled).toBe(true)
+    })
+
+    it('#1790: the Today preset range never renders as disabled under disablePastDates', () => {
+        // getPresetDateRange(TODAY) returns 00:00 today -> now — the exact
+        // shape that used to trip the #1789 comparison bug. Confirms the
+        // preset's own output is fully consistent with the grid's own
+        // disabling rule, not just an arbitrary clicked cell.
+        const range = getPresetDateRange(DateRangePreset.TODAY)
+        const startStates = getDateCellStates(
+            range.startDate,
+            range,
+            now,
+            false,
+            true
+        )
+        expect(startStates.isDisabled).toBe(false)
+    })
+
+    it('#1790: the Today preset stays available in the preset list under disablePastDates', () => {
+        // Deliberately not added to getFilteredPresets' pastPresets list —
+        // today is not a past date, so hiding the preset would be removing
+        // a perfectly valid option rather than fixing anything.
+        const configs: CustomPresetConfig[] = [
+            { preset: DateRangePreset.TODAY },
+            { preset: DateRangePreset.YESTERDAY },
+        ]
+        const visible = getFilteredPresets(configs, false, true)
+        expect(visible).toContain(DateRangePreset.TODAY)
+        expect(visible).not.toContain(DateRangePreset.YESTERDAY)
     })
 })

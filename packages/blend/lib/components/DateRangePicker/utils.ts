@@ -1104,10 +1104,14 @@ export const handleCalendarDateClick = (
     customDisableDates?: (date: Date, currentRange?: DateRange) => boolean,
     maxRangeDays?: number
 ): DateRange | null => {
-    // Validate date is not disabled
+    // Validate date is not disabled. Day-level comparison (matching the
+    // minDate/maxDate checks below): `today` can be "now" rather than
+    // midnight (getTodayInTimezone's no-timezone path doesn't truncate —
+    // see its own docblock), so comparing raw Date objects made today
+    // itself fail `clickedDate < today` and read as disabled.
     if (
-        (disableFutureDates && clickedDate > today) ||
-        (disablePastDates && clickedDate < today)
+        (disableFutureDates && startOfDay(clickedDate) > startOfDay(today)) ||
+        (disablePastDates && startOfDay(clickedDate) < startOfDay(today))
     ) {
         return null
     }
@@ -1530,8 +1534,11 @@ export const getDateCellStates = (
     }
 
     const isDisabled = Boolean(
-        (disableFutureDates && date > today) ||
-        (disablePastDates && date < today) ||
+        // Day-level comparison, matching minDate/maxDate below — `today`
+        // can be "now" rather than midnight (see the comment on the
+        // equivalent check in handleCalendarDateClick).
+        (disableFutureDates && startOfDay(date) > startOfDay(today)) ||
+        (disablePastDates && startOfDay(date) < startOfDay(today)) ||
         (minDate && startOfDay(date) < startOfDay(minDate)) ||
         (maxDate && startOfDay(date) > startOfDay(maxDate)) ||
         (customDisableDates && customDisableDates(date, selectedRange)) ||
@@ -3504,8 +3511,8 @@ export const handleEnhancedCalendarDateClick = (
 ): DateRange | null => {
     // Validate date is not disabled
     if (
-        (disableFutureDates && clickedDate > today) ||
-        (disablePastDates && clickedDate < today)
+        (disableFutureDates && startOfDay(clickedDate) > startOfDay(today)) ||
+        (disablePastDates && startOfDay(clickedDate) < startOfDay(today))
     ) {
         return null
     }
@@ -3626,10 +3633,14 @@ export const handleCustomRangeCalendarDateClick = (
     customDisableDates?: (date: Date, currentRange?: DateRange) => boolean,
     maxRangeDays?: number
 ): DateRange | null => {
-    // Validate date is not disabled
+    // Validate date is not disabled. Day-level comparison (matching the
+    // minDate/maxDate checks below): `today` can be "now" rather than
+    // midnight (getTodayInTimezone's no-timezone path doesn't truncate —
+    // see its own docblock), so comparing raw Date objects made today
+    // itself fail `clickedDate < today` and read as disabled.
     if (
-        (disableFutureDates && clickedDate > today) ||
-        (disablePastDates && clickedDate < today)
+        (disableFutureDates && startOfDay(clickedDate) > startOfDay(today)) ||
+        (disablePastDates && startOfDay(clickedDate) < startOfDay(today))
     ) {
         return null
     }
