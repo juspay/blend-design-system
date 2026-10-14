@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
     isControlledDateRange,
     detectPresetFromRange,
+    getPresetDateRange,
     processCustomPresets,
     getPresetLabelWithCustom,
     handleCalendarDateClick,
@@ -255,6 +256,115 @@ describe('detectPresetFromRange - custom presets', () => {
         expect(detectPresetFromRange(range, undefined, presetConfigs)).toBe(
             DateRangePreset.CUSTOM
         )
+    })
+})
+
+describe('detectPresetFromRange - month-span and Tomorrow regressions (#1733, #1792)', () => {
+    // Mid-month so none of these collide with the "sub-day range on the
+    // 1st" case covered separately below.
+    beforeEach(() => {
+        vi.useFakeTimers()
+        vi.setSystemTime(new Date(2026, 5, 15, 12, 0, 0))
+    })
+
+    afterEach(() => {
+        vi.useRealTimers()
+    })
+
+    const roundTripPresets = [
+        DateRangePreset.TODAY,
+        DateRangePreset.YESTERDAY,
+        DateRangePreset.TOMORROW,
+        DateRangePreset.LAST_30_MINUTES,
+        DateRangePreset.LAST_1_HOUR,
+        DateRangePreset.LAST_6_HOURS,
+        DateRangePreset.LAST_24_HOURS,
+        DateRangePreset.LAST_7_DAYS,
+        DateRangePreset.LAST_30_DAYS,
+        DateRangePreset.THIS_MONTH,
+        DateRangePreset.LAST_MONTH,
+        DateRangePreset.LAST_3_MONTHS,
+        DateRangePreset.LAST_12_MONTHS,
+        DateRangePreset.NEXT_7_DAYS,
+        DateRangePreset.NEXT_30_DAYS,
+        DateRangePreset.NEXT_3_MONTHS,
+        DateRangePreset.NEXT_12_MONTHS,
+    ]
+
+    it.each(roundTripPresets)(
+        'detects %s from the range getPresetDateRange itself builds',
+        (preset) => {
+            const range = getPresetDateRange(preset)
+            expect(detectPresetFromRange(range)).toBe(preset)
+        }
+    )
+
+    it('does not label an arbitrary ~90-day span as Last 3 months unless it actually starts 3 months ago (#1733)', () => {
+        const now = new Date()
+        // 90 days ago lands ~2.5 days short of the real "3 calendar months
+        // ago" anchor (March 15 vs March 17-ish) — well outside the 25-hour
+        // tolerance, so the anchored check must reject it even though the
+        // old `Math.round(daysDiff / 30) === 3` heuristic accepted anything
+        // in the 75-104 day range.
+        const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000)
+        const range = { startDate: ninetyDaysAgo, endDate: now }
+
+        expect(detectPresetFromRange(range)).not.toBe(
+            DateRangePreset.LAST_3_MONTHS
+        )
+    })
+
+    it('does not label an arbitrary ~12-month span as Last 12 months unless it actually starts 12 months ago', () => {
+        const now = new Date()
+        const threeHundredDaysAgo = new Date(
+            now.getTime() - 300 * 24 * 60 * 60 * 1000
+        )
+        const range = { startDate: threeHundredDaysAgo, endDate: now }
+
+        expect(detectPresetFromRange(range)).not.toBe(
+            DateRangePreset.LAST_12_MONTHS
+        )
+    })
+})
+
+describe('detectPresetFromRange - sub-day ranges on the 1st of the month (#1743)', () => {
+    // Pinned to the 1st, mid-afternoon — exactly the window
+    // matchesThisMonthPreset's 25-hour start-of-month tolerance used to
+    // swallow before the time-based checks ran first.
+    beforeEach(() => {
+        vi.useFakeTimers()
+        vi.setSystemTime(new Date(2026, 5, 1, 14, 0, 0))
+    })
+
+    afterEach(() => {
+        vi.useRealTimers()
+    })
+
+    it('still detects Last 30 minutes on the 1st instead of This month', () => {
+        const range = getPresetDateRange(DateRangePreset.LAST_30_MINUTES)
+        expect(detectPresetFromRange(range)).toBe(
+            DateRangePreset.LAST_30_MINUTES
+        )
+    })
+
+    it('still detects Last 1 hour on the 1st instead of This month', () => {
+        const range = getPresetDateRange(DateRangePreset.LAST_1_HOUR)
+        expect(detectPresetFromRange(range)).toBe(DateRangePreset.LAST_1_HOUR)
+    })
+
+    it('still detects Last 24 hours on the 1st instead of This month', () => {
+        const range = getPresetDateRange(DateRangePreset.LAST_24_HOURS)
+        expect(detectPresetFromRange(range)).toBe(DateRangePreset.LAST_24_HOURS)
+    })
+
+    // Not pinned to the 1st: on the 1st, THIS_MONTH's own range (1st@00:00
+    // → now) is byte-identical to TODAY's, so TODAY winning that specific
+    // tie is correct, pre-existing behaviour — not something this fix
+    // changes. A few days in, the two are distinguishable again.
+    it('still detects a genuine multi-day This month range correctly', () => {
+        vi.setSystemTime(new Date(2026, 5, 3, 14, 0, 0))
+        const range = getPresetDateRange(DateRangePreset.THIS_MONTH)
+        expect(detectPresetFromRange(range)).toBe(DateRangePreset.THIS_MONTH)
     })
 })
 
