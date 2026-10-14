@@ -158,7 +158,7 @@ describe('public API surface', () => {
         // Breadcrumb, then to 127 for Sidebar (+ SideDrawer, its drawer
         // primitive counterpart to BottomSheet), then to 130 for Stepper
         // (+ StepperStepStatus, StepperType and the StepperStep/
-        // StepperSubStep types).
-        expect(exported.size).toBeLessThanOrEqual(130)
+        // StepperSubStep types), then to 131 for BottomNavigation.
+        expect(exported.size).toBeLessThanOrEqual(131)
     })
 })

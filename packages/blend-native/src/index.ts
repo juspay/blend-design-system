@@ -98,6 +98,13 @@ export type {
     SidebarNavItem,
     SidebarSectionData,
 } from './components/Sidebar'
+export { BottomNavigation } from './components/BottomNavigation'
+export type {
+    BottomNavigationNativeProps,
+    BottomNavigationItem,
+    BottomNavigationTokens,
+    BottomNavigationCenterAction,
+} from './components/BottomNavigation'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
 export { NumberInput } from './components/NumberInput'
