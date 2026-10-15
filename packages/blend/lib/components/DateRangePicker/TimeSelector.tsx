@@ -4,6 +4,8 @@ import React, {
     useMemo,
     useCallback,
     useEffect,
+    useImperativeHandle,
+    useRef,
 } from 'react'
 import Block from '../Primitives/Block/Block'
 import { TextInputV2, InputSizeV2 } from '../InputsV2/TextInputV2'
@@ -37,6 +39,22 @@ type TimeSelectorProps = {
 }
 
 /**
+ * Imperative escape hatch for callers that need the field's typed value
+ * *right now* rather than waiting for its own blur/debounce cycle — see
+ * `commitPendingInput`'s own docs below for why that's needed at all.
+ */
+export type TimeSelectorHandle = {
+    /**
+     * Synchronously parses and commits whatever is currently typed (calling
+     * `onChange` immediately, the same way the field's own blur handler
+     * eventually would), and returns the committed value — or `undefined`
+     * if there's nothing pending (empty/invalid/unchanged input), in which
+     * case the caller should keep using its own last-known value.
+     */
+    commitPendingInput: () => string | undefined
+}
+
+/**
  * DateRangePicker's time field is minute-granularity, 15-minute stepped and
  * always displayed in 12-hour form. It delegates all of that to the shared
  * time core (`components/shared/datetime/timeCore`) so `TimePicker` and
@@ -67,7 +85,7 @@ const generateTimeOptions = (
     return [{ items: options }]
 }
 
-const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
+const TimeSelector = forwardRef<TimeSelectorHandle, TimeSelectorProps>(
     (
         {
             value,
@@ -226,44 +244,79 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
 
         const handleInputFocus = useCallback(() => {}, [])
 
+        const pendingBlurTimeoutRef = useRef<ReturnType<
+            typeof setTimeout
+        > | null>(null)
+
+        // Shared by the blur handler (debounced, see below) and the
+        // imperative `commitPendingInput` (synchronous). Parses whatever is
+        // currently typed and, if valid, commits it via `onChange` —
+        // returning the committed value, or `undefined` when there was
+        // nothing to commit (empty, unchanged, or unparseable input).
+        const commitTypedInput = useCallback((): string | undefined => {
+            const trimmedInput = inputValue.trim()
+
+            if (!trimmedInput) {
+                setInputValue(formatTimeStringFor12Hour(value))
+                setIsValidTime(true)
+                return undefined
+            }
+
+            const parsed = parseInput(trimmedInput)
+
+            if (!parsed) {
+                setInputValue(formatTimeStringFor12Hour(value))
+                setIsValidTime(true)
+                return undefined
+            }
+
+            const finalTimeValue = timeValueToString(parsed)
+            setInputValue(formatTimeStringFor12Hour(finalTimeValue))
+            setIsValidTime(true)
+
+            // Unchanged from the committed value — nothing to flush.
+            if (finalTimeValue === value) {
+                return undefined
+            }
+
+            onChange(finalTimeValue)
+            return finalTimeValue
+        }, [inputValue, value, parseInput, onChange])
+
         const handleInputBlur = useCallback(() => {
             if (isProcessingSelection) {
                 return
             }
 
-            setTimeout(() => {
+            // Debounced rather than immediate: clicking a dropdown option
+            // also blurs this input (focus moves to the option) before the
+            // option's own click handler runs and flips
+            // `isProcessingSelection`, so committing immediately here would
+            // win that race and overwrite the selection with a re-parse of
+            // the stale typed text. Waiting lets that flag land first.
+            // `commitPendingInput` (below) exists for callers that can't
+            // afford this delay — e.g. clicking Apply immediately after
+            // typing, which blurs this field but must see the typed value
+            // applied right away, not 150ms later after the popover has
+            // already closed (#1787).
+            pendingBlurTimeoutRef.current = setTimeout(() => {
+                pendingBlurTimeoutRef.current = null
                 if (!isOpen && !isProcessingSelection) {
-                    const trimmedInput = inputValue.trim()
-
-                    if (!trimmedInput) {
-                        setInputValue(formatTimeStringFor12Hour(value))
-                        setIsValidTime(true)
-                        return
-                    }
-
-                    const parsed = parseInput(trimmedInput)
-
-                    if (parsed) {
-                        const finalTimeValue = timeValueToString(parsed)
-                        const finalDisplayValue =
-                            formatTimeStringFor12Hour(finalTimeValue)
-
-                        setInputValue(finalDisplayValue)
-                        setIsValidTime(true)
-                        onChange(finalTimeValue)
-                    } else {
-                        setInputValue(formatTimeStringFor12Hour(value))
-                        setIsValidTime(true)
-                    }
+                    commitTypedInput()
                 }
             }, 150)
-        }, [
-            inputValue,
-            value,
-            onChange,
-            isOpen,
-            isProcessingSelection,
-            parseInput,
+        }, [isOpen, isProcessingSelection, commitTypedInput])
+
+        const commitPendingInput = useCallback((): string | undefined => {
+            if (pendingBlurTimeoutRef.current) {
+                clearTimeout(pendingBlurTimeoutRef.current)
+                pendingBlurTimeoutRef.current = null
+            }
+            return commitTypedInput()
+        }, [commitTypedInput])
+
+        useImperativeHandle(ref, () => ({ commitPendingInput }), [
+            commitPendingInput,
         ])
 
         const handleInputKeyDown = useCallback(
@@ -330,7 +383,7 @@ const TimeSelector = forwardRef<HTMLDivElement, TimeSelectorProps>(
         )
 
         return (
-            <Block ref={ref} style={{ width: '118px', flexShrink: 0 }}>
+            <Block style={{ width: '118px', flexShrink: 0 }}>
                 <MenuV2
                     trigger={triggerElement}
                     items={timeOptions}
