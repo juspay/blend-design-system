@@ -1,7 +1,8 @@
 import React from 'react'
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, waitFor } from '../../test-utils'
+import { describe, it, expect, vi, afterEach } from 'vitest'
+import { render, screen, waitFor, fireEvent } from '../../test-utils'
 import TimeSelector from '../../../lib/components/DateRangePicker/TimeSelector'
+import type { TimeSelectorHandle } from '../../../lib/components/DateRangePicker/TimeSelector'
 import type { DateRange } from '../../../lib/components/DateRangePicker/types'
 
 if (typeof PointerEvent === 'undefined') {
@@ -166,6 +167,143 @@ describe('TimeSelector (DateRangePicker behaviour lock)', () => {
             await waitFor(() => {
                 expect(onChange).toHaveBeenCalledWith('00:00')
             })
+        })
+    })
+
+    describe('commitPendingInput (#1787: typed time ignored if Apply clicked immediately)', () => {
+        afterEach(() => {
+            vi.useRealTimers()
+        })
+
+        it('synchronously commits a typed value without waiting for the blur debounce', () => {
+            const onChange = vi.fn()
+            const ref = React.createRef<TimeSelectorHandle>()
+            render(
+                <TimeSelector
+                    ref={ref}
+                    value="09:00"
+                    onChange={onChange}
+                    disablePastDates={false}
+                    disableFutureDates={false}
+                    today={TODAY}
+                    isStart={true}
+                    selectedRange={range}
+                    aria-label="Start time"
+                />
+            )
+
+            const input = screen.getByRole('textbox', { name: 'Start time' })
+            fireEvent.change(input, { target: { value: '3:45 PM' } })
+            // Deliberately not blurring or waiting — this is exactly the
+            // "clicked Apply before the 150ms debounce landed" scenario.
+
+            expect(ref.current?.commitPendingInput()).toBe('15:45')
+            expect(onChange).toHaveBeenCalledWith('15:45')
+        })
+
+        it('returns undefined and does not call onChange when the typed value is unchanged', () => {
+            const onChange = vi.fn()
+            const ref = React.createRef<TimeSelectorHandle>()
+            render(
+                <TimeSelector
+                    ref={ref}
+                    value="09:00"
+                    onChange={onChange}
+                    disablePastDates={false}
+                    disableFutureDates={false}
+                    today={TODAY}
+                    isStart={true}
+                    selectedRange={range}
+                    aria-label="Start time"
+                />
+            )
+
+            const input = screen.getByRole('textbox', { name: 'Start time' })
+            // Re-type the same value the field already displays.
+            fireEvent.change(input, { target: { value: '9:00 AM' } })
+
+            expect(ref.current?.commitPendingInput()).toBeUndefined()
+            expect(onChange).not.toHaveBeenCalled()
+        })
+
+        it('returns undefined and does not call onChange when the field is cleared', () => {
+            const onChange = vi.fn()
+            const ref = React.createRef<TimeSelectorHandle>()
+            render(
+                <TimeSelector
+                    ref={ref}
+                    value="09:00"
+                    onChange={onChange}
+                    disablePastDates={false}
+                    disableFutureDates={false}
+                    today={TODAY}
+                    isStart={true}
+                    selectedRange={range}
+                    aria-label="Start time"
+                />
+            )
+
+            const input = screen.getByRole('textbox', { name: 'Start time' })
+            fireEvent.change(input, { target: { value: '' } })
+
+            expect(ref.current?.commitPendingInput()).toBeUndefined()
+            expect(onChange).not.toHaveBeenCalled()
+        })
+
+        it('returns undefined for unparseable input and leaves the field unchanged', () => {
+            const onChange = vi.fn()
+            const ref = React.createRef<TimeSelectorHandle>()
+            render(
+                <TimeSelector
+                    ref={ref}
+                    value="09:00"
+                    onChange={onChange}
+                    disablePastDates={false}
+                    disableFutureDates={false}
+                    today={TODAY}
+                    isStart={true}
+                    selectedRange={range}
+                    aria-label="Start time"
+                />
+            )
+
+            const input = screen.getByRole('textbox', { name: 'Start time' })
+            fireEvent.change(input, { target: { value: 'not a time' } })
+
+            expect(ref.current?.commitPendingInput()).toBeUndefined()
+            expect(onChange).not.toHaveBeenCalled()
+        })
+
+        it("does not double-commit when the field's own debounced blur later fires", () => {
+            vi.useFakeTimers()
+            const onChange = vi.fn()
+            const ref = React.createRef<TimeSelectorHandle>()
+            render(
+                <TimeSelector
+                    ref={ref}
+                    value="09:00"
+                    onChange={onChange}
+                    disablePastDates={false}
+                    disableFutureDates={false}
+                    today={TODAY}
+                    isStart={true}
+                    selectedRange={range}
+                    aria-label="Start time"
+                />
+            )
+
+            const input = screen.getByRole('textbox', { name: 'Start time' })
+            fireEvent.change(input, { target: { value: '3:45 PM' } })
+            fireEvent.blur(input) // schedules the 150ms debounced commit
+
+            expect(ref.current?.commitPendingInput()).toBe('15:45')
+            expect(onChange).toHaveBeenCalledTimes(1)
+
+            // If the pending blur timeout weren't cancelled, this would fire
+            // a second, redundant (if harmless) onChange call.
+            vi.advanceTimersByTime(200)
+
+            expect(onChange).toHaveBeenCalledTimes(1)
         })
     })
 })
