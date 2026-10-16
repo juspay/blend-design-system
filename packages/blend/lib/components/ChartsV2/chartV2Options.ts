@@ -14,6 +14,65 @@ const LEGEND_DEFAULTS = {
     squareSymbol: true,
 } as const
 
+// Cap on the number of x-axis labels rendered for category-style axes
+// before labels are thinned (matches the V1 DEFAULT_MAX_CATEGORY_LABELS).
+const DEFAULT_MAX_X_LABELS = 12
+
+/**
+ * Computes the Highcharts `labels.step` (show only labels at indices where
+ * index % step === 0) needed to cap rendered x-axis labels for dense
+ * category-style axes. Returns `undefined` when thinning does not apply, so
+ * Highcharts' native auto behavior is preserved.
+ */
+const getXAxisLabelStep = (options: Highcharts.Options): number | undefined => {
+    const { chart, series, xAxis } = options
+    const xAxisOpt = Array.isArray(xAxis) ? xAxis[0] : xAxis
+
+    // Consumer wins: explicit step or tick controls opt out entirely.
+    if (
+        xAxisOpt?.labels?.step !== undefined ||
+        xAxisOpt?.tickInterval !== undefined ||
+        xAxisOpt?.tickPixelInterval !== undefined
+    ) {
+        return undefined
+    }
+
+    const axisType = xAxisOpt?.type
+    if (
+        axisType === 'datetime' ||
+        axisType === 'linear' ||
+        axisType === 'logarithmic'
+    ) {
+        return undefined
+    }
+
+    // Category-style axis: explicit 'category' type, or bar/column series
+    // with the axis type unset (Highcharts defaults to category for those).
+    const isBarLike =
+        chart?.type === 'bar' ||
+        chart?.type === 'column' ||
+        (series ?? []).some((s) => s?.type === 'bar' || s?.type === 'column')
+    const isCategoryAxis =
+        axisType === 'category' || (axisType === undefined && isBarLike)
+    if (!isCategoryAxis) {
+        return undefined
+    }
+
+    const seriesPointCount = (s: Highcharts.SeriesOptionsType): number => {
+        const data = (s as { data?: unknown[] }).data
+        return Array.isArray(data) ? data.length : 0
+    }
+    const pointCount =
+        xAxisOpt?.categories?.length ??
+        (series ?? []).reduce<number>(
+            (max, s) => Math.max(max, s ? seriesPointCount(s) : 0),
+            0
+        )
+    if (pointCount <= DEFAULT_MAX_X_LABELS) return undefined
+
+    return Math.ceil(pointCount / DEFAULT_MAX_X_LABELS)
+}
+
 type AxisStyleTokens = {
     fontSize: string | number | undefined
     color: string | undefined
@@ -46,6 +105,8 @@ export const mergeChartOptions = (
 
     const xAxisOpt = Array.isArray(xAxis) ? xAxis[0] : xAxis
     const yAxisOpt = Array.isArray(yAxis) ? yAxis[0] : yAxis
+
+    const xAxisLabelStep = getXAxisLabelStep(options)
 
     return {
         ...options,
@@ -83,6 +144,7 @@ export const mergeChartOptions = (
             labels: {
                 ...xAxisOpt?.labels,
                 enabled: xAxisOpt?.labels?.enabled ?? true,
+                step: xAxisOpt?.labels?.step ?? xAxisLabelStep,
                 y: 40,
                 style: toAxisStyle(chartTokens.xAxis.labels),
             },
