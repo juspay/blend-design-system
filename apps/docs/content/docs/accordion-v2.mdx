@@ -1,0 +1,37 @@
+---
+title: Accordion V2
+description: An interactive preview of an expandable content pattern in the new documentation layout.
+---
+
+## Preview
+
+<AccordionV2Demo />
+
+## Usage
+
+```tsx
+import {
+    AccordionV2,
+    AccordionV2Item,
+    AccordionV2Type,
+} from '@juspay/blend-design-system'
+
+export function SettingsHelp() {
+    return (
+        <AccordionV2 accordionType={AccordionV2Type.BORDER}>
+            <AccordionV2Item value="overview" title="Overview">
+                Content for the first section.
+            </AccordionV2Item>
+            <AccordionV2Item value="details" title="Details">
+                Content for the second section.
+            </AccordionV2Item>
+        </AccordionV2>
+    )
+}
+```
+
+## Notes
+
+- Use concise, descriptive section titles.
+- Keep the default state intentional: open the most helpful section first.
+- Prefer a standard page section when all content should remain visible.
