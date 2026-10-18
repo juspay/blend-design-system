@@ -10,7 +10,7 @@ const DEFAULT_BEZIER = 'cubic-bezier(0.32, 0.72, 0, 1)'
 export const ROW_ANIMATION_WARNINGS = {
     bezier: `transitionType is 'bezier' but 'bezier' is not a tuple of four finite numbers — falling back to the default curve.`,
     duration: `'duration' must be a finite number — falling back to the default.`,
-    spring: `transitionType 'spring' is not implemented — 'stiffness', 'damping' and 'mass' are ignored and rows animate with the default curve.`,
+    spring: `'stiffness', 'damping' and 'mass' must all be positive finite numbers — falling back to the default curve.`,
     enter: `'enterDuration' and 'enterOffset' must both be finite numbers — falling back to defaults.`,
 } as const
 
@@ -20,6 +20,41 @@ function toFiniteNumber(value: unknown, fallback: number): number {
     return typeof value === 'number' && Number.isFinite(value)
         ? value
         : fallback
+}
+
+function isPositiveFiniteNumber(value: unknown): value is number {
+    return typeof value === 'number' && Number.isFinite(value) && value > 0
+}
+
+function calculateSpringTransition(
+    stiffness: number,
+    damping: number,
+    mass: number
+): { duration: number; bezier: string } {
+    const w0 = Math.sqrt(stiffness / mass)
+    const zeta = damping / (2 * Math.sqrt(stiffness * mass))
+
+    let settlingTime: number
+    if (zeta < 1) {
+        // Underdamped envelope decay for threshold epsilon = 0.001 (ln(1000) ~ 6.9078)
+        settlingTime = 6.907755 / (zeta * w0)
+    } else {
+        // Critically damped or overdamped
+        const lambda = w0 * (zeta - Math.sqrt(zeta * zeta - 1))
+        settlingTime = 6.907755 / Math.max(lambda, 0.001)
+    }
+
+    const duration = Math.min(Math.max(Number(settlingTime.toFixed(3)), 0.1), 3.0)
+
+    // Cubic bezier curve approximation for spring response
+    const x1 = Math.min(Math.max(0.45 / (1 + 0.5 * zeta), 0.1), 0.5)
+    const y1 = 0
+    const x2 = Math.min(Math.max(0.6 - 0.2 * Math.min(zeta, 1), 0.2), 0.8)
+    const overshoot = zeta < 1 ? Math.exp((-Math.PI * zeta) / Math.sqrt(1 - zeta * zeta)) : 0
+    const y2 = Math.min(Math.max(1 + overshoot, 1), 1.6)
+
+    const bezier = `cubic-bezier(${x1.toFixed(3)}, ${y1}, ${x2.toFixed(3)}, ${y2.toFixed(3)})`
+    return { duration, bezier }
 }
 
 function isBezierTuple(
@@ -70,7 +105,17 @@ function toCssTransition(
 
         warn(ROW_ANIMATION_WARNINGS.bezier)
     } else if (config.transitionType === 'spring') {
-        // `stiffness`/`damping`/`mass` are declared but read nowhere.
+        const { stiffness, damping, mass } = config
+        if (
+            isPositiveFiniteNumber(stiffness) &&
+            isPositiveFiniteNumber(damping) &&
+            isPositiveFiniteNumber(mass)
+        ) {
+            const { duration: springDuration, bezier: springBezier } =
+                calculateSpringTransition(stiffness, damping, mass)
+            return buildTransition(springDuration, springBezier)
+        }
+
         warn(ROW_ANIMATION_WARNINGS.spring)
     }
 
