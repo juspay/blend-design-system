@@ -44,13 +44,17 @@ function calculateSpringTransition(
         settlingTime = 6.907755 / Math.max(lambda, 0.001)
     }
 
-    const duration = Math.min(Math.max(Number(settlingTime.toFixed(3)), 0.1), 3.0)
+    const duration = Math.min(
+        Math.max(Number(settlingTime.toFixed(3)), 0.1),
+        3.0
+    )
 
     // Cubic bezier curve approximation for spring response
     const x1 = Math.min(Math.max(0.45 / (1 + 0.5 * zeta), 0.1), 0.5)
     const y1 = 0
     const x2 = Math.min(Math.max(0.6 - 0.2 * Math.min(zeta, 1), 0.2), 0.8)
-    const overshoot = zeta < 1 ? Math.exp((-Math.PI * zeta) / Math.sqrt(1 - zeta * zeta)) : 0
+    const overshoot =
+        zeta < 1 ? Math.exp((-Math.PI * zeta) / Math.sqrt(1 - zeta * zeta)) : 0
     const y2 = Math.min(Math.max(1 + overshoot, 1), 1.6)
 
     const bezier = `cubic-bezier(${x1.toFixed(3)}, ${y1}, ${x2.toFixed(3)}, ${y2.toFixed(3)})`
