@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { Platform, View } from 'react-native'
 import { fireEvent, render, screen } from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { BottomNavigation } from '../src/components/BottomNavigation'
@@ -51,6 +51,19 @@ describe('BottomNavigation', () => {
             'tabbar'
         )
         expect(screen.getAllByRole('tab')).toHaveLength(ITEMS.length)
+    })
+
+    it('uses the tablist role on Android, which has no tabbar role', () => {
+        const os = Platform.OS
+        Platform.OS = 'android'
+        try {
+            renderNav()
+            expect(
+                screen.getByTestId('bottom-nav').props.accessibilityRole
+            ).toBe('tablist')
+        } finally {
+            Platform.OS = os
+        }
     })
 
     it('marks the active item selected and swaps in its activeIcon', () => {

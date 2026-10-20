@@ -1,5 +1,5 @@
 import { forwardRef, useContext, useMemo } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { Platform, StyleSheet, View } from 'react-native'
 import type { View as RNView } from 'react-native'
 import { BadgeSize } from '@juspay/blend-design-system/node'
 import { useControllableState } from '../../hooks/useControllableState'
@@ -101,7 +101,8 @@ const BottomNavigation = forwardRef<RNView, BottomNavigationNativeProps>(
                         paddingBottom: metrics.paddingY + (insets?.bottom ?? 0),
                     },
                 ]}
-                accessibilityRole="tabbar"
+                // Android has no tab bar role and throws on 'tabbar'.
+                accessibilityRole={Platform.OS === 'ios' ? 'tabbar' : 'tablist'}
                 accessibilityLabel={accessibilityLabel}
                 testID={testID}
             >
