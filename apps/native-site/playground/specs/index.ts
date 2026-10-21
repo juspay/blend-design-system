@@ -4,6 +4,7 @@ import accordion from './accordion.spec'
 import alert from './alert.spec'
 import avatar from './avatar.spec'
 import badge from './badge.spec'
+import bottomNavigation from './bottomNavigation.spec'
 import bottomSheet from './bottomSheet.spec'
 import breadcrumb from './breadcrumb.spec'
 import button from './button.spec'
@@ -118,7 +119,7 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
     },
     {
         title: 'Navigation',
-        specs: [asAnySpec(sidebar)],
+        specs: [asAnySpec(sidebar), asAnySpec(bottomNavigation)],
     },
 ]
 
