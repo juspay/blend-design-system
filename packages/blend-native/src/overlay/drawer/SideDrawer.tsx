@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import {
     BackHandler,
     Platform,
@@ -96,15 +96,13 @@ export function SideDrawer({
     testID,
     style,
 }: SideDrawerProps) {
-    // Mounted outlives `open` by one exit animation.
-    const [mounted, setMounted] = useState(open)
+    // Always mounted, inert while closed: mounting a large drawer on open can
+    // take longer than the enter animation, so it would appear fully open.
     const progress = useSharedValue(0)
     const dragX = useSharedValue(0)
     const drawerWidth = useSharedValue(width)
     const insets = useContext(SafeAreaInsetsContext)
     const reduceMotion = useReduceMotion()
-
-    const unmount = useCallback(() => setMounted(false), [])
 
     useEffect(() => {
         drawerWidth.value = width
@@ -112,15 +110,12 @@ export function SideDrawer({
 
     useEffect(() => {
         if (open) {
-            setMounted(true)
             progress.value = withTiming(1, ENTER)
         } else {
             dragX.value = withTiming(0, EXIT)
-            progress.value = withTiming(0, EXIT, (finished) => {
-                if (finished) runOnJS(unmount)()
-            })
+            progress.value = withTiming(0, EXIT)
         }
-    }, [open, progress, dragX, unmount])
+    }, [open, progress, dragX])
 
     // Android hardware back closes the drawer instead of the screen.
     // BackHandler is a no-op stub on web that logs a warning if touched.
@@ -198,11 +193,10 @@ export function SideDrawer({
         opacity: progress.value,
     }))
 
-    if (!mounted) return null
-
     return (
-        <Portal modal>
+        <Portal modal={open}>
             <Animated.View
+                pointerEvents={open ? 'auto' : 'none'}
                 style={[
                     StyleSheet.absoluteFill,
                     { backgroundColor: backdropColor },
@@ -221,7 +215,12 @@ export function SideDrawer({
             <GestureDetector gesture={pan}>
                 <Animated.View
                     onLayout={onDrawerLayout}
-                    accessibilityViewIsModal
+                    pointerEvents={open ? 'auto' : 'none'}
+                    accessibilityElementsHidden={!open}
+                    importantForAccessibility={
+                        open ? 'auto' : 'no-hide-descendants'
+                    }
+                    accessibilityViewIsModal={open}
                     onAccessibilityEscape={onClose}
                     accessibilityLabel={accessibilityLabel}
                     testID={testID}
