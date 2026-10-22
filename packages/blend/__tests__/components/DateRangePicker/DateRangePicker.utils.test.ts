@@ -574,16 +574,14 @@ describe('handleCalendarDateClick - minDate/maxDate/customDisableDates/maxRangeD
         expect(spy).toHaveBeenCalledWith(clicked, range)
     })
 
-    it('maxRangeDays blocks clicks beyond start + maxRangeDays when range is half-selected', () => {
+    it('maxRangeDays counts calendar days inclusive of the start (#1737)', () => {
         const start = new Date('2026-06-10')
         const selectedRange: DateRange = { startDate: start }
         const maxRangeDays = 7
 
-        // within window — allowed
-        const within = new Date('2026-06-17') // 7 days away (== maxRangeDays, allowed)
-        expect(
+        const clickAt = (d: Date) =>
             handleCalendarDateClick(
-                within,
+                d,
                 false,
                 today,
                 false,
@@ -597,13 +595,21 @@ describe('handleCalendarDateClick - minDate/maxDate/customDisableDates/maxRangeD
                 undefined,
                 maxRangeDays
             )
-        ).not.toBeNull()
 
-        // beyond window — blocked
-        const beyond = new Date('2026-06-19') // 9 days away
-        expect(
+        // 7 calendar days = start + 6 days is the furthest allowed end.
+        expect(clickAt(new Date('2026-06-16'))).not.toBeNull() // diffDays 6
+        // The off-by-one: diffDays === maxRangeDays is now blocked (was the
+        // 8th day before the fix).
+        expect(clickAt(new Date('2026-06-17'))).toBeNull() // diffDays 7
+        expect(clickAt(new Date('2026-06-19'))).toBeNull() // diffDays 9
+    })
+
+    it('maxRangeDays={1} caps the range to a single day (#1737)', () => {
+        const start = new Date('2026-06-10')
+        const selectedRange: DateRange = { startDate: start }
+        const clickAt = (d: Date) =>
             handleCalendarDateClick(
-                beyond,
+                d,
                 false,
                 today,
                 false,
@@ -615,7 +621,33 @@ describe('handleCalendarDateClick - minDate/maxDate/customDisableDates/maxRangeD
                 undefined,
                 undefined,
                 undefined,
-                maxRangeDays
+                1
+            )
+
+        expect(clickAt(new Date('2026-06-10'))).not.toBeNull() // same day
+        expect(clickAt(new Date('2026-06-11'))).toBeNull() // next day blocked
+    })
+
+    it('maxRangeDays={0} is honoured rather than read as "no cap" (#1737)', () => {
+        const start = new Date('2026-06-10')
+        const selectedRange: DateRange = { startDate: start }
+        // 0 is falsy; the old `if (maxRangeDays && …)` guard silently treated
+        // it as "no cap". It must now block even the start day as an end.
+        expect(
+            handleCalendarDateClick(
+                new Date('2026-06-10'),
+                false,
+                today,
+                false,
+                false,
+                false,
+                undefined,
+                selectedRange,
+                false,
+                undefined,
+                undefined,
+                undefined,
+                0
             )
         ).toBeNull()
     })
@@ -750,14 +782,12 @@ describe('handleCustomRangeCalendarDateClick - minDate/maxDate/customDisableDate
         ).toBeNull()
     })
 
-    it('maxRangeDays blocks clicks beyond start + maxRangeDays when half-selected', () => {
+    it('maxRangeDays counts calendar days inclusive of the start (#1737)', () => {
         const start = new Date('2026-06-10')
         const selectedRange: DateRange = { startDate: start }
-        const beyond = new Date('2026-06-25') // 15 days away
-
-        expect(
+        const clickAt = (d: Date) =>
             handleCustomRangeCalendarDateClick(
-                beyond,
+                d,
                 false,
                 today,
                 false,
@@ -772,7 +802,36 @@ describe('handleCustomRangeCalendarDateClick - minDate/maxDate/customDisableDate
                 undefined,
                 7
             )
-        ).toBeNull()
+
+        expect(clickAt(new Date('2026-06-16'))).not.toBeNull() // diffDays 6
+        expect(clickAt(new Date('2026-06-17'))).toBeNull() // diffDays 7
+        expect(clickAt(new Date('2026-06-25'))).toBeNull() // diffDays 15
+    })
+})
+
+describe('getDateCellStates - maxRangeDays cell disabling (#1737)', () => {
+    const today = new Date('2026-06-15')
+
+    it('disables the cell at diffDays === maxRangeDays, matching the click guard', () => {
+        const start = new Date('2026-06-10')
+        const selectedRange: DateRange = { startDate: start }
+        const cellStates = (d: Date) =>
+            getDateCellStates(
+                d,
+                selectedRange,
+                today,
+                false,
+                false,
+                undefined,
+                undefined,
+                false,
+                undefined,
+                undefined,
+                7
+            )
+
+        expect(cellStates(new Date('2026-06-16')).isDisabled).toBe(false) // diffDays 6
+        expect(cellStates(new Date('2026-06-17')).isDisabled).toBe(true) // diffDays 7
     })
 })
 
