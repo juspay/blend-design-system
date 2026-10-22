@@ -101,6 +101,25 @@ import type { SidebarNativeProps } from './sidebar.types'
 const RAIL_GROWTH =
     SIDEBAR_METRICS.expandedWidth - SIDEBAR_METRICS.collapsedWidth
 
+const RAIL_BORDER_WIDTH = 1
+const NAV_PADDING_Y = 4
+/** Puts the item icons' column in the middle of the collapsed rail (to the
+ *  nearest whole pixel), as web's icon-only sidebar does. */
+const NAV_PADDING_X = Math.floor(
+    (SIDEBAR_METRICS.collapsedWidth - RAIL_BORDER_WIDTH) / 2 -
+        SIDEBAR_METRICS.itemPaddingX -
+        SIDEBAR_METRICS.itemIconWidth / 2
+)
+const TOGGLE_ICON_SIZE = 16
+/** Centres the toggle's icon on that same column; the right padding stays
+ *  `headerPaddingX`. */
+const HEADER_PADDING_LEFT =
+    NAV_PADDING_X +
+    SIDEBAR_METRICS.itemPaddingX +
+    SIDEBAR_METRICS.itemIconWidth / 2 -
+    SIDEBAR_METRICS.toggleButtonPadding -
+    TOGGLE_ICON_SIZE / 2
+
 const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
     {
         data,
@@ -288,7 +307,10 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
             accessibilityState={{ expanded: isExpanded }}
             {...webDataSet(SIDEBAR_TOGGLE_DATA_SET)}
         >
-            <PanelsTopLeft size={16} color={palette.controlForeground} />
+            <PanelsTopLeft
+                size={TOGGLE_ICON_SIZE}
+                color={palette.controlForeground}
+            />
         </Pressable>
     )
 
@@ -321,7 +343,7 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                 justifyContent="space-between"
                 paddingTop={SIDEBAR_METRICS.headerPaddingY}
                 paddingBottom={SIDEBAR_METRICS.headerPaddingY}
-                paddingLeft={SIDEBAR_METRICS.headerPaddingX}
+                paddingLeft={HEADER_PADDING_LEFT}
                 paddingRight={SIDEBAR_METRICS.headerPaddingX}
                 style={{ position: 'relative' }}
             >
@@ -336,7 +358,16 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                         iconOnlyMode ? 'no-hide-descendants' : 'auto'
                     }
                 >
-                    <View style={{ flex: 1, minWidth: 0, marginLeft: -10 }}>
+                    <View
+                        style={{
+                            flex: 1,
+                            minWidth: 0,
+                            marginLeft:
+                                SIDEBAR_METRICS.headerPaddingX -
+                                HEADER_PADDING_LEFT -
+                                10,
+                        }}
+                    >
                         {headerContent}
                     </View>
                 </Animated.View>
@@ -362,10 +393,10 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                 style={{ flex: 1 }}
                 contentContainerStyle={{
                     gap: SIDEBAR_METRICS.sectionGap,
-                    paddingTop: 4,
-                    paddingBottom: 4,
-                    paddingLeft: 4,
-                    paddingRight: 4,
+                    paddingTop: NAV_PADDING_Y,
+                    paddingBottom: NAV_PADDING_Y,
+                    paddingLeft: NAV_PADDING_X,
+                    paddingRight: NAV_PADDING_X,
                 }}
                 onScroll={onNavScroll}
                 scrollEventThrottle={16}
@@ -477,7 +508,7 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                 style={[
                     {
                         backgroundColor: palette.background,
-                        borderRightWidth: 1,
+                        borderRightWidth: RAIL_BORDER_WIDTH,
                         borderRightColor: palette.border,
                         overflow: 'hidden',
                     },
