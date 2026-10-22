@@ -1122,8 +1122,13 @@ export const handleCalendarDateClick = (
     // customDisableDates honoured in the click path
     if (customDisableDates && customDisableDates(clickedDate, selectedRange))
         return null
-    // maxRangeDays: block clicks on days beyond start + maxRangeDays
-    if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
+    // maxRangeDays counts calendar days inclusive of the start, matching the
+    // presets (LAST_30_DAYS === 30 days === diffDays 0..29).
+    if (
+        maxRangeDays != null &&
+        selectedRange?.startDate &&
+        !selectedRange.endDate
+    ) {
         const diffDays = Math.abs(
             Math.floor(
                 (startOfDay(clickedDate).getTime() -
@@ -1131,7 +1136,7 @@ export const handleCalendarDateClick = (
                     (1000 * 60 * 60 * 24)
             )
         )
-        if (diffDays > maxRangeDays) return null
+        if (diffDays >= maxRangeDays) return null
     }
 
     // Create clean date without time components for comparison
@@ -1526,11 +1531,15 @@ export const getDateCellStates = (
     // end not yet chosen). Once both start and end are set, a new click resets
     // to a fresh start, so capping is not needed there.
     let isBeyondMaxRange = false
-    if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
+    if (
+        maxRangeDays != null &&
+        selectedRange?.startDate &&
+        !selectedRange.endDate
+    ) {
         const start = selectedRange.startDate
         const diffMs = startOfDay(date).getTime() - startOfDay(start).getTime()
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-        isBeyondMaxRange = Math.abs(diffDays) > maxRangeDays
+        isBeyondMaxRange = Math.abs(diffDays) >= maxRangeDays
     }
 
     const isDisabled = Boolean(
@@ -3651,8 +3660,13 @@ export const handleCustomRangeCalendarDateClick = (
     // customDisableDates honoured in the click path
     if (customDisableDates && customDisableDates(clickedDate, selectedRange))
         return null
-    // maxRangeDays: block clicks on days beyond start + maxRangeDays
-    if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
+    // maxRangeDays counts calendar days inclusive of the start (see
+    // handleCalendarDateClick).
+    if (
+        maxRangeDays != null &&
+        selectedRange?.startDate &&
+        !selectedRange.endDate
+    ) {
         const diffDays = Math.abs(
             Math.floor(
                 (startOfDay(clickedDate).getTime() -
@@ -3660,7 +3674,7 @@ export const handleCustomRangeCalendarDateClick = (
                     (1000 * 60 * 60 * 24)
             )
         )
-        if (diffDays > maxRangeDays) return null
+        if (diffDays >= maxRangeDays) return null
     }
 
     // If no custom range config, use standard logic
