@@ -3962,9 +3962,22 @@ export const matchesTomorrowPreset = (range: DateRange): boolean => {
     // Check if it's a full day range for tomorrow
     const startIsTomorrow = isSameCalendarDay(range.startDate, tomorrow)
     const endIsTomorrow = isSameCalendarDay(range.endDate, tomorrow)
-    const isFullDay = isFullDayRange(range.startDate, range.endDate)
 
-    return startIsTomorrow && endIsTomorrow && isFullDay
+    // More flexible check for full day - allow for slight variations in
+    // milliseconds. Mirrors matchesYesterdayPreset's identical fallback:
+    // getPresetDateRange/createSingleDateRange build this preset's own end
+    // at 23:59:59 without setting milliseconds, so isFullDayRange's strict
+    // .999 requirement never matches the preset's own output otherwise.
+    const isFullDayOrClose =
+        isFullDayRange(range.startDate, range.endDate) ||
+        (startIsTomorrow &&
+            endIsTomorrow &&
+            range.startDate.getHours() === 0 &&
+            range.startDate.getMinutes() === 0 &&
+            range.endDate.getHours() === 23 &&
+            range.endDate.getMinutes() === 59)
+
+    return startIsTomorrow && endIsTomorrow && isFullDayOrClose
 }
 
 /**
@@ -4067,15 +4080,6 @@ export const detectPresetFromRange = (
         return DateRangePreset.TOMORROW
     }
 
-    if (matchesThisMonthPreset(matchRange)) {
-        return DateRangePreset.THIS_MONTH
-    }
-
-    if (matchesLastMonthPreset(matchRange)) {
-        return DateRangePreset.LAST_MONTH
-    }
-
-    // Check time-based presets with tolerance
     const now = new Date()
     const timeDiff = Math.abs(range.endDate.getTime() - now.getTime())
     const tolerance = DATE_RANGE_PICKER_CONSTANTS.PRESET_DETECTION_TOLERANCE_MS
@@ -4104,6 +4108,14 @@ export const detectPresetFromRange = (
         if (Math.abs(durationMs - twentyFourHours) <= tolerance) {
             return DateRangePreset.LAST_24_HOURS
         }
+    }
+
+    if (matchesThisMonthPreset(matchRange)) {
+        return DateRangePreset.THIS_MONTH
+    }
+
+    if (matchesLastMonthPreset(matchRange)) {
+        return DateRangePreset.LAST_MONTH
     }
 
     // Check multi-day presets
@@ -4169,23 +4181,52 @@ export const detectPresetFromRange = (
         return DateRangePreset.NEXT_30_DAYS
     }
 
-    // Check month-based presets (approximate)
-    const monthsDiff = Math.round(daysDiff / 30)
+    // Check month-based presets. Anchored to the actual calendar date N
+    // months away from "now" (matching how getPresetDateRange builds these
+    // ranges),
+    const monthTolerance =
+        DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS * 60 * 60 * 1000
 
-    if (monthsDiff === 3) {
+    const threeMonthsAgo = new Date(now)
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+    threeMonthsAgo.setHours(0, 0, 0, 0)
+    if (
+        Math.abs(range.startDate.getTime() - threeMonthsAgo.getTime()) <=
+        monthTolerance
+    ) {
         return DateRangePreset.LAST_3_MONTHS
     }
 
-    if (monthsDiff === 12) {
+    const twelveMonthsAgo = new Date(now)
+    twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1)
+    twelveMonthsAgo.setHours(0, 0, 0, 0)
+    if (
+        Math.abs(range.startDate.getTime() - twelveMonthsAgo.getTime()) <=
+        monthTolerance
+    ) {
         return DateRangePreset.LAST_12_MONTHS
     }
 
-    if (startIsToday && monthsDiff === 3) {
-        return DateRangePreset.NEXT_3_MONTHS
-    }
+    if (startIsToday) {
+        const threeMonthsLater = new Date(now)
+        threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3)
+        threeMonthsLater.setHours(23, 59, 59, 999)
+        if (
+            Math.abs(range.endDate.getTime() - threeMonthsLater.getTime()) <=
+            monthTolerance
+        ) {
+            return DateRangePreset.NEXT_3_MONTHS
+        }
 
-    if (startIsToday && monthsDiff === 12) {
-        return DateRangePreset.NEXT_12_MONTHS
+        const twelveMonthsLater = new Date(now)
+        twelveMonthsLater.setFullYear(twelveMonthsLater.getFullYear() + 1)
+        twelveMonthsLater.setHours(23, 59, 59, 999)
+        if (
+            Math.abs(range.endDate.getTime() - twelveMonthsLater.getTime()) <=
+            monthTolerance
+        ) {
+            return DateRangePreset.NEXT_12_MONTHS
+        }
     }
 
     // Check custom preset definitions (from customPresets prop) before giving up.
