@@ -4,6 +4,9 @@ import { render, screen, waitFor } from '../../test-utils'
 import { axe } from 'jest-axe'
 import { ModalV2 } from '../../../lib/components/ModalV2'
 import { ButtonV2Type } from '../../../lib/components/ButtonV2'
+import { getModalV2Tokens } from '../../../lib/components/ModalV2/modalV2.tokens'
+import FOUNDATION_THEME from '../../../lib/tokens/theme.token'
+import { Theme } from '../../../lib/context/theme.enum'
 
 const setViewportWidth = (width: number) => {
     Object.defineProperty(window, 'innerWidth', {
@@ -639,5 +642,19 @@ describe('ModalV2', () => {
             expect(ref.current?.getAttribute('role')).toBe('dialog')
             expect(ref.current).toHaveTextContent('Mobile Ref Test')
         })
+    })
+
+    describe('overlay.backdropFilter token (#1701)', () => {
+        // Opt-in frosted backdrop. Defaulting to 'none' keeps every existing
+        // modal visually identical — the value is only non-'none' when a
+        // consumer overrides the token.
+        it.each([Theme.LIGHT, Theme.DARK])(
+            'defaults to "none" across both breakpoints in the %s theme',
+            (theme) => {
+                const tokens = getModalV2Tokens(FOUNDATION_THEME, theme)
+                expect(tokens.sm.overlay.backdropFilter).toBe('none')
+                expect(tokens.lg.overlay.backdropFilter).toBe('none')
+            }
+        )
     })
 })
