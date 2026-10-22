@@ -28,6 +28,7 @@ import { Portal } from '../../overlay/portal'
 import { SideDrawer } from '../../overlay/drawer/SideDrawer'
 import Block from '../../primitives/Block'
 import Pressable from '../../primitives/Pressable'
+import { webDataSet } from '../../primitives/dataSet'
 import SingleSelect from '../SingleSelect/SingleSelect'
 import { SidebarContext } from './sidebar.context'
 import type { SidebarContextValue } from './sidebar.context'
@@ -37,7 +38,12 @@ import SidebarMobileBottomNav, {
 } from './SidebarMobileBottomNav'
 import { getSidebarPalette, SIDEBAR_METRICS } from './sidebar.theme'
 import SidebarSection from './SidebarSection'
-import { flattenMobileNavItems } from './sidebar.utils'
+import {
+    flattenMobileNavItems,
+    getSidebarRootDataSet,
+    getSidebarStatus,
+    SIDEBAR_TOGGLE_DATA_SET,
+} from './sidebar.utils'
 import { X } from 'lucide-react-native'
 import type { SidebarNativeProps } from './sidebar.types'
 
@@ -62,6 +68,8 @@ import type { SidebarNativeProps } from './sidebar.types'
  *
  * Other deliberate divergences from web's `SidebarV2`:
  * - No hover-triggered "intermediate" preview state (desktop has no hover).
+ *   A host that previews the rail on hover itself (react-native-web) passes
+ *   `isPreviewing`, which is only reported, never drawn.
  * - Nested items expand in place rather than flying out on hover — shadcn's
  *   own `Sidebar` makes the same call for its icon-only mode (hides nested
  *   items rather than a flyout), avoiding a popover-positioning engine for
@@ -81,6 +89,12 @@ import type { SidebarNativeProps } from './sidebar.types'
  *   — see above).
  * - Collapsed-rail tooltips use long-press (`Tooltip`'s own touch
  *   substitution for hover — see its docblock), not a hover delay.
+ *
+ * On react-native-web the root, toggle, sections and rows carry the same
+ * `data-*` attributes as web's `Sidebar`/`Directory` (`data-sidebar`,
+ * `data-status`, `data-element`, `data-id`, …), so selectors and automation
+ * written against the web sidebar work unchanged; see `sidebar.utils.ts`.
+ * Consumers can add their own per section/row via `dataSet`.
  */
 
 /** How much wider the rail gets going from collapsed to expanded. */
@@ -101,6 +115,7 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
         onExpandedChange,
         defaultIsExpanded = true,
         hideToggleButton = false,
+        isPreviewing = false,
         activeItem: activeItemProp,
         onActiveItemChange,
         defaultActiveItem = null,
@@ -164,6 +179,13 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
     const [moreSheetOpen, setMoreSheetOpen] = useState(false)
 
     const iconOnlyMode = !isSmallScreen && !isExpanded
+    // The drawer is either open or not; only the rail has a preview state.
+    const status = isSmallScreen
+        ? getSidebarStatus(open, false)
+        : getSidebarStatus(isExpanded, isPreviewing)
+    // Applied to the view that wraps `navContent`, which both layouts (rail
+    // and drawer) render, so every section and row sits inside it.
+    const rootDataSet = useMemo(() => getSidebarRootDataSet(status), [status])
     // Rows read this for label opacity/width, so its target must track
     // "content should be visible" (`!iconOnlyMode`), not `isExpanded` on its
     // own — in the mobile drawer `iconOnlyMode` is always false regardless
@@ -264,6 +286,7 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                 isExpanded ? 'Collapse sidebar' : 'Expand sidebar'
             }
             accessibilityState={{ expanded: isExpanded }}
+            {...webDataSet(SIDEBAR_TOGGLE_DATA_SET)}
         >
             <PanelsTopLeft size={16} color={palette.controlForeground} />
         </Pressable>
@@ -348,7 +371,11 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                 scrollEventThrottle={16}
             >
                 {data.map((section, index) => (
-                    <SidebarSection key={index} section={section} />
+                    <SidebarSection
+                        key={index}
+                        section={section}
+                        index={index}
+                    />
                 ))}
             </ScrollView>
             {footer ? (
@@ -417,7 +444,11 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                     }
                     testID={testID}
                 >
-                    <View ref={ref} style={{ flex: 1 }}>
+                    <View
+                        ref={ref}
+                        style={{ flex: 1 }}
+                        {...webDataSet(rootDataSet)}
+                    >
                         {navContent}
                     </View>
                 </SideDrawer>
@@ -452,14 +483,19 @@ const Sidebar = forwardRef<RNView, SidebarNativeProps>(function Sidebar(
                     },
                     railStyle,
                 ]}
-                accessibilityRole="none"
+                // Renders <nav> on web, like web Sidebar.
+                role="navigation"
                 accessibilityLabel={
                     accessibilityLabel ??
                     `Sidebar navigation, ${isExpanded ? 'expanded' : 'collapsed'}`
                 }
                 testID={testID}
             >
-                <View ref={ref} style={{ flex: 1 }}>
+                <View
+                    ref={ref}
+                    style={{ flex: 1 }}
+                    {...webDataSet(rootDataSet)}
+                >
                     {navContent}
                 </View>
             </Animated.View>

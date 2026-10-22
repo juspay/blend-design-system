@@ -56,7 +56,7 @@ describe('Sidebar — desktop rail', () => {
                 <Sidebar data={DATA} testID="sidebar" />
             </BlendNativeProvider>
         )
-        expect(screen.getByText('Workspace')).toBeTruthy()
+        expect(screen.getByText('WORKSPACE')).toBeTruthy()
         expect(screen.getByText('Home')).toBeTruthy()
         expect(screen.getByText('Reports')).toBeTruthy()
         expect(screen.queryByTestId('sidebar-backdrop')).toBeNull()
@@ -76,7 +76,7 @@ describe('Sidebar — desktop rail', () => {
         expect(screen.getByLabelText('Expand sidebar')).toBeTruthy()
         // Icon-only mode hides labels; the icon-less items have nothing to
         // query by text, so absence of the group label is the signal.
-        expect(screen.queryByText('Workspace')).toBeNull()
+        expect(screen.queryByText('WORKSPACE')).toBeNull()
     })
 
     it('is controllable via isExpanded/onExpandedChange', () => {
@@ -94,7 +94,7 @@ describe('Sidebar — desktop rail', () => {
         fireEvent.press(screen.getByLabelText('Collapse sidebar'))
         expect(onExpandedChange).toHaveBeenCalledWith(false)
         // Controlled: stays expanded until the owner flips the prop.
-        expect(screen.getByText('Workspace')).toBeTruthy()
+        expect(screen.getByText('WORKSPACE')).toBeTruthy()
 
         rerender(
             <BlendNativeProvider>
@@ -106,7 +106,7 @@ describe('Sidebar — desktop rail', () => {
                 />
             </BlendNativeProvider>
         )
-        expect(screen.queryByText('Workspace')).toBeNull()
+        expect(screen.queryByText('WORKSPACE')).toBeNull()
     })
 
     it('hides the toggle button when asked', () => {
@@ -163,7 +163,7 @@ describe('Sidebar — mobile drawer', () => {
                 <Sidebar data={DATA} open={false} testID="sidebar" />
             </BlendNativeProvider>
         )
-        expect(screen.queryByText('Workspace')).toBeNull()
+        expect(screen.queryByText('WORKSPACE')).toBeNull()
     })
 
     it('presents the full nav tree when open', () => {
@@ -172,7 +172,7 @@ describe('Sidebar — mobile drawer', () => {
                 <Sidebar data={DATA} open testID="sidebar" />
             </BlendNativeProvider>
         )
-        expect(screen.getByText('Workspace')).toBeTruthy()
+        expect(screen.getByText('WORKSPACE')).toBeTruthy()
         expect(screen.getByTestId('sidebar')).toBeTruthy()
         expect(
             screen.getByTestId('sidebar-backdrop', {
@@ -208,7 +208,7 @@ describe('Sidebar — mobile drawer', () => {
                 <Sidebar data={DATA} testID="sidebar" />
             </BlendNativeProvider>
         )
-        expect(screen.queryByText('Workspace')).toBeNull()
+        expect(screen.queryByText('WORKSPACE')).toBeNull()
     })
 })
 
@@ -235,7 +235,7 @@ describe('Sidebar — isSmallScreen override', () => {
                 <Sidebar data={DATA} isSmallScreen testID="sidebar" />
             </BlendNativeProvider>
         )
-        expect(screen.queryByText('Workspace')).toBeNull()
+        expect(screen.queryByText('WORKSPACE')).toBeNull()
         expect(screen.queryByLabelText('Collapse sidebar')).toBeNull()
     })
 
@@ -246,7 +246,7 @@ describe('Sidebar — isSmallScreen override', () => {
                 <Sidebar data={DATA} isSmallScreen={false} testID="sidebar" />
             </BlendNativeProvider>
         )
-        expect(screen.getByText('Workspace')).toBeTruthy()
+        expect(screen.getByText('WORKSPACE')).toBeTruthy()
         expect(screen.getByLabelText('Collapse sidebar')).toBeTruthy()
     })
 })

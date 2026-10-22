@@ -10,13 +10,16 @@ import Animated, {
 import { ChevronDown } from 'lucide-react-native'
 import Pressable from '../../primitives/Pressable'
 import Text from '../../primitives/Text'
+import { webDataSet } from '../../primitives/dataSet'
 import { useSidebarContext } from './sidebar.context'
 import { SIDEBAR_METRICS } from './sidebar.theme'
 import SidebarItem from './SidebarItem'
+import { getSectionDataSet } from './sidebar.utils'
 import type { SidebarSectionData } from './sidebar.types'
 
 export type SidebarSectionProps = {
     section: SidebarSectionData
+    index?: number
     testID?: string
 }
 
@@ -27,6 +30,7 @@ export type SidebarSectionProps = {
  */
 export default function SidebarSection({
     section,
+    index = 0,
     testID,
 }: SidebarSectionProps) {
     const { palette, iconOnlyMode, reduceMotion, expandProgress } =
@@ -106,7 +110,11 @@ export default function SidebarSection({
     )
 
     return (
-        <View style={{ gap: 4 }} testID={testID}>
+        <View
+            style={{ gap: 4 }}
+            testID={testID}
+            {...webDataSet(getSectionDataSet({ section, index, isOpen }))}
+        >
             {section.label ? (
                 <Animated.View
                     style={[styles.headerArea, headerAreaStyle]}
@@ -135,7 +143,7 @@ export default function SidebarSection({
                                 }
                                 color={palette.mutedForeground}
                             >
-                                {section.label}
+                                {section.label.toUpperCase()}
                             </Text>
                             <Animated.View style={chevronStyle}>
                                 <ChevronDown
@@ -157,7 +165,7 @@ export default function SidebarSection({
                                 textAlignVertical: 'center',
                             }}
                         >
-                            {section.label}
+                            {section.label.toUpperCase()}
                         </Text>
                     )}
                 </Animated.View>
