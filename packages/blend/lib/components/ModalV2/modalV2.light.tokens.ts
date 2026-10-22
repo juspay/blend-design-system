@@ -15,6 +15,7 @@ export const getModalV2LightToken = (
             backgroundColor: foundationToken.colors.gray[0],
             overlay: {
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                backdropFilter: 'none',
                 offset: foundationToken.unit[16],
             },
             skeleton: {
@@ -102,6 +103,7 @@ export const getModalV2LightToken = (
             borderRadius: foundationToken.border.radius[16],
             overlay: {
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                backdropFilter: 'none',
                 offset: foundationToken.unit[16],
             },
             divider: {

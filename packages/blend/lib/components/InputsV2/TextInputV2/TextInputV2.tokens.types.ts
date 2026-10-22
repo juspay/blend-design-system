@@ -75,6 +75,15 @@ export type TextInputV2TokensType = {
                 [key in InputStateV2]: CSSObject['color']
             }
         }
+        /** Built-in show/hide password button rendered when `passwordToggle` is set. */
+        passwordToggle: {
+            iconSize: {
+                [key in InputSizeV2]: CSSObject['width']
+            }
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+        }
         borderRadius: {
             [key in InputSizeV2]: CSSObject['borderRadius']
         }

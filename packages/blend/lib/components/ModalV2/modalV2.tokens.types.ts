@@ -8,6 +8,7 @@ export type ModalV2TokensType = {
     borderRadius: CSSObject['borderRadius']
     overlay: {
         backgroundColor: CSSObject['backgroundColor']
+        backdropFilter: CSSObject['backdropFilter']
         offset: CSSObject['offset']
     }
     paddingTop: CSSObject['paddingTop']

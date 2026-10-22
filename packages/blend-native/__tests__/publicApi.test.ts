@@ -98,8 +98,11 @@ describe('public API surface', () => {
             'OTPInput',
             'ProgressBar',
             'Radio',
+            'Stepper',
             'SankeyChart',
             'SearchInput',
+            'SideDrawer',
+            'Sidebar',
             'Sparkline',
             'SingleSelect',
             'Spinner',
@@ -152,7 +155,10 @@ describe('public API surface', () => {
         // BadgeSize), then to 122 for the chart wave (Chart and its
         // compounds, SankeyChart, OutageChart), then to 124 for the
         // select rework (select/menu enums and helpers), then to 125 for
-        // Breadcrumb.
-        expect(exported.size).toBeLessThanOrEqual(125)
+        // Breadcrumb, then to 127 for Sidebar (+ SideDrawer, its drawer
+        // primitive counterpart to BottomSheet), then to 130 for Stepper
+        // (+ StepperStepStatus, StepperType and the StepperStep/
+        // StepperSubStep types), then to 131 for BottomNavigation.
+        expect(exported.size).toBeLessThanOrEqual(131)
     })
 })

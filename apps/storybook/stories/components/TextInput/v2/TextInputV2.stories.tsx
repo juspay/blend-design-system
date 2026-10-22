@@ -63,6 +63,7 @@ const meta: Meta<typeof TextInputV2> = {
 - Error state with \`{ show, message }\`
 - Required field indication
 - **Slots**: \`leftSlot\` / \`rightSlot\` as \`{ slot, maxHeight? }\` (icons, buttons)
+- **Password toggle** (\`passwordToggle\`): built-in show/hide button in the right slot, themed via \`inputContainer.passwordToggle\` tokens. Use it instead of a hand-rolled eye icon in \`rightSlot\`
 - **Inline embeds** (\`dropdown\`): \`SingleSelectV2Props\` + \`position: TextInputV2DropdownPosition\` (left or right). Pass one object or an array of two (one per side). If **any** embed is set, **neither** \`leftSlot\` nor \`rightSlot\` is shown
 - Disabled state (shared for input and embedded selects)
 - Autofill detection for floating label behavior
@@ -189,6 +190,12 @@ Use \`TextInputV2DropdownPosition.RIGHT\` for a right embed, or pass an **array*
             description:
                 'Right slot: { slot: ReactElement, maxHeight?: … }. Ignored when `dropdown` is set.',
             table: { type: { summary: 'object' }, category: 'Slots' },
+        },
+        passwordToggle: {
+            control: 'boolean',
+            description:
+                'Render the built-in show/hide password button and switch `type` between password and text. Ignored when `dropdown` is set.',
+            table: { type: { summary: 'boolean' }, category: 'Slots' },
         },
         dropdown: {
             control: false,
@@ -611,6 +618,49 @@ export const DisabledState: Story = {
         docs: {
             description: {
                 story: 'TextInputV2 disabled, empty and with value.',
+            },
+        },
+    },
+}
+
+export const PasswordToggle: Story = {
+    render: function PasswordToggleStory() {
+        const [value, setValue] = useState('')
+        const [error, setError] = useState('')
+        return (
+            <div className="flex flex-col gap-5">
+                <TextInputV2
+                    label="Password"
+                    placeholder="Enter your password"
+                    passwordToggle
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    leftSlot={{ slot: <Lock size={16} /> }}
+                    hintText="At least 8 characters"
+                />
+                <TextInputV2
+                    label="Password with error"
+                    placeholder="Enter your password"
+                    passwordToggle
+                    value={error}
+                    onChange={(e) => setError(e.target.value)}
+                    error={{ show: true, message: 'Password is too short' }}
+                />
+                <TextInputV2
+                    label="Disabled"
+                    placeholder="Enter your password"
+                    passwordToggle
+                    value="hunter2"
+                    onChange={() => {}}
+                    disabled
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Set `passwordToggle` to get the built-in show/hide button. The input `type` switches between password and text, and the button colour follows the field state via `inputContainer.passwordToggle` tokens (light and dark). Do not also add an eye icon to `rightSlot`.',
             },
         },
     },

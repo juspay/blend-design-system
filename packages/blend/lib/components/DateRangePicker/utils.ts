@@ -1104,10 +1104,14 @@ export const handleCalendarDateClick = (
     customDisableDates?: (date: Date, currentRange?: DateRange) => boolean,
     maxRangeDays?: number
 ): DateRange | null => {
-    // Validate date is not disabled
+    // Validate date is not disabled. Day-level comparison (matching the
+    // minDate/maxDate checks below): `today` can be "now" rather than
+    // midnight (getTodayInTimezone's no-timezone path doesn't truncate —
+    // see its own docblock), so comparing raw Date objects made today
+    // itself fail `clickedDate < today` and read as disabled.
     if (
-        (disableFutureDates && clickedDate > today) ||
-        (disablePastDates && clickedDate < today)
+        (disableFutureDates && startOfDay(clickedDate) > startOfDay(today)) ||
+        (disablePastDates && startOfDay(clickedDate) < startOfDay(today))
     ) {
         return null
     }
@@ -1118,8 +1122,13 @@ export const handleCalendarDateClick = (
     // customDisableDates honoured in the click path
     if (customDisableDates && customDisableDates(clickedDate, selectedRange))
         return null
-    // maxRangeDays: block clicks on days beyond start + maxRangeDays
-    if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
+    // maxRangeDays counts calendar days inclusive of the start, matching the
+    // presets (LAST_30_DAYS === 30 days === diffDays 0..29).
+    if (
+        maxRangeDays != null &&
+        selectedRange?.startDate &&
+        !selectedRange.endDate
+    ) {
         const diffDays = Math.abs(
             Math.floor(
                 (startOfDay(clickedDate).getTime() -
@@ -1127,7 +1136,7 @@ export const handleCalendarDateClick = (
                     (1000 * 60 * 60 * 24)
             )
         )
-        if (diffDays > maxRangeDays) return null
+        if (diffDays >= maxRangeDays) return null
     }
 
     // Create clean date without time components for comparison
@@ -1522,16 +1531,23 @@ export const getDateCellStates = (
     // end not yet chosen). Once both start and end are set, a new click resets
     // to a fresh start, so capping is not needed there.
     let isBeyondMaxRange = false
-    if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
+    if (
+        maxRangeDays != null &&
+        selectedRange?.startDate &&
+        !selectedRange.endDate
+    ) {
         const start = selectedRange.startDate
         const diffMs = startOfDay(date).getTime() - startOfDay(start).getTime()
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-        isBeyondMaxRange = Math.abs(diffDays) > maxRangeDays
+        isBeyondMaxRange = Math.abs(diffDays) >= maxRangeDays
     }
 
     const isDisabled = Boolean(
-        (disableFutureDates && date > today) ||
-        (disablePastDates && date < today) ||
+        // Day-level comparison, matching minDate/maxDate below — `today`
+        // can be "now" rather than midnight (see the comment on the
+        // equivalent check in handleCalendarDateClick).
+        (disableFutureDates && startOfDay(date) > startOfDay(today)) ||
+        (disablePastDates && startOfDay(date) < startOfDay(today)) ||
         (minDate && startOfDay(date) < startOfDay(minDate)) ||
         (maxDate && startOfDay(date) > startOfDay(maxDate)) ||
         (customDisableDates && customDisableDates(date, selectedRange)) ||
@@ -3504,8 +3520,8 @@ export const handleEnhancedCalendarDateClick = (
 ): DateRange | null => {
     // Validate date is not disabled
     if (
-        (disableFutureDates && clickedDate > today) ||
-        (disablePastDates && clickedDate < today)
+        (disableFutureDates && startOfDay(clickedDate) > startOfDay(today)) ||
+        (disablePastDates && startOfDay(clickedDate) < startOfDay(today))
     ) {
         return null
     }
@@ -3626,10 +3642,14 @@ export const handleCustomRangeCalendarDateClick = (
     customDisableDates?: (date: Date, currentRange?: DateRange) => boolean,
     maxRangeDays?: number
 ): DateRange | null => {
-    // Validate date is not disabled
+    // Validate date is not disabled. Day-level comparison (matching the
+    // minDate/maxDate checks below): `today` can be "now" rather than
+    // midnight (getTodayInTimezone's no-timezone path doesn't truncate —
+    // see its own docblock), so comparing raw Date objects made today
+    // itself fail `clickedDate < today` and read as disabled.
     if (
-        (disableFutureDates && clickedDate > today) ||
-        (disablePastDates && clickedDate < today)
+        (disableFutureDates && startOfDay(clickedDate) > startOfDay(today)) ||
+        (disablePastDates && startOfDay(clickedDate) < startOfDay(today))
     ) {
         return null
     }
@@ -3640,8 +3660,13 @@ export const handleCustomRangeCalendarDateClick = (
     // customDisableDates honoured in the click path
     if (customDisableDates && customDisableDates(clickedDate, selectedRange))
         return null
-    // maxRangeDays: block clicks on days beyond start + maxRangeDays
-    if (maxRangeDays && selectedRange?.startDate && !selectedRange.endDate) {
+    // maxRangeDays counts calendar days inclusive of the start (see
+    // handleCalendarDateClick).
+    if (
+        maxRangeDays != null &&
+        selectedRange?.startDate &&
+        !selectedRange.endDate
+    ) {
         const diffDays = Math.abs(
             Math.floor(
                 (startOfDay(clickedDate).getTime() -
@@ -3649,7 +3674,7 @@ export const handleCustomRangeCalendarDateClick = (
                     (1000 * 60 * 60 * 24)
             )
         )
-        if (diffDays > maxRangeDays) return null
+        if (diffDays >= maxRangeDays) return null
     }
 
     // If no custom range config, use standard logic
@@ -3951,9 +3976,22 @@ export const matchesTomorrowPreset = (range: DateRange): boolean => {
     // Check if it's a full day range for tomorrow
     const startIsTomorrow = isSameCalendarDay(range.startDate, tomorrow)
     const endIsTomorrow = isSameCalendarDay(range.endDate, tomorrow)
-    const isFullDay = isFullDayRange(range.startDate, range.endDate)
 
-    return startIsTomorrow && endIsTomorrow && isFullDay
+    // More flexible check for full day - allow for slight variations in
+    // milliseconds. Mirrors matchesYesterdayPreset's identical fallback:
+    // getPresetDateRange/createSingleDateRange build this preset's own end
+    // at 23:59:59 without setting milliseconds, so isFullDayRange's strict
+    // .999 requirement never matches the preset's own output otherwise.
+    const isFullDayOrClose =
+        isFullDayRange(range.startDate, range.endDate) ||
+        (startIsTomorrow &&
+            endIsTomorrow &&
+            range.startDate.getHours() === 0 &&
+            range.startDate.getMinutes() === 0 &&
+            range.endDate.getHours() === 23 &&
+            range.endDate.getMinutes() === 59)
+
+    return startIsTomorrow && endIsTomorrow && isFullDayOrClose
 }
 
 /**
@@ -4056,15 +4094,6 @@ export const detectPresetFromRange = (
         return DateRangePreset.TOMORROW
     }
 
-    if (matchesThisMonthPreset(matchRange)) {
-        return DateRangePreset.THIS_MONTH
-    }
-
-    if (matchesLastMonthPreset(matchRange)) {
-        return DateRangePreset.LAST_MONTH
-    }
-
-    // Check time-based presets with tolerance
     const now = new Date()
     const timeDiff = Math.abs(range.endDate.getTime() - now.getTime())
     const tolerance = DATE_RANGE_PICKER_CONSTANTS.PRESET_DETECTION_TOLERANCE_MS
@@ -4093,6 +4122,14 @@ export const detectPresetFromRange = (
         if (Math.abs(durationMs - twentyFourHours) <= tolerance) {
             return DateRangePreset.LAST_24_HOURS
         }
+    }
+
+    if (matchesThisMonthPreset(matchRange)) {
+        return DateRangePreset.THIS_MONTH
+    }
+
+    if (matchesLastMonthPreset(matchRange)) {
+        return DateRangePreset.LAST_MONTH
     }
 
     // Check multi-day presets
@@ -4158,23 +4195,52 @@ export const detectPresetFromRange = (
         return DateRangePreset.NEXT_30_DAYS
     }
 
-    // Check month-based presets (approximate)
-    const monthsDiff = Math.round(daysDiff / 30)
+    // Check month-based presets. Anchored to the actual calendar date N
+    // months away from "now" (matching how getPresetDateRange builds these
+    // ranges),
+    const monthTolerance =
+        DATE_RANGE_PICKER_CONSTANTS.TIMEZONE_TOLERANCE_HOURS * 60 * 60 * 1000
 
-    if (monthsDiff === 3) {
+    const threeMonthsAgo = new Date(now)
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3)
+    threeMonthsAgo.setHours(0, 0, 0, 0)
+    if (
+        Math.abs(range.startDate.getTime() - threeMonthsAgo.getTime()) <=
+        monthTolerance
+    ) {
         return DateRangePreset.LAST_3_MONTHS
     }
 
-    if (monthsDiff === 12) {
+    const twelveMonthsAgo = new Date(now)
+    twelveMonthsAgo.setFullYear(twelveMonthsAgo.getFullYear() - 1)
+    twelveMonthsAgo.setHours(0, 0, 0, 0)
+    if (
+        Math.abs(range.startDate.getTime() - twelveMonthsAgo.getTime()) <=
+        monthTolerance
+    ) {
         return DateRangePreset.LAST_12_MONTHS
     }
 
-    if (startIsToday && monthsDiff === 3) {
-        return DateRangePreset.NEXT_3_MONTHS
-    }
+    if (startIsToday) {
+        const threeMonthsLater = new Date(now)
+        threeMonthsLater.setMonth(threeMonthsLater.getMonth() + 3)
+        threeMonthsLater.setHours(23, 59, 59, 999)
+        if (
+            Math.abs(range.endDate.getTime() - threeMonthsLater.getTime()) <=
+            monthTolerance
+        ) {
+            return DateRangePreset.NEXT_3_MONTHS
+        }
 
-    if (startIsToday && monthsDiff === 12) {
-        return DateRangePreset.NEXT_12_MONTHS
+        const twelveMonthsLater = new Date(now)
+        twelveMonthsLater.setFullYear(twelveMonthsLater.getFullYear() + 1)
+        twelveMonthsLater.setHours(23, 59, 59, 999)
+        if (
+            Math.abs(range.endDate.getTime() - twelveMonthsLater.getTime()) <=
+            monthTolerance
+        ) {
+            return DateRangePreset.NEXT_12_MONTHS
+        }
     }
 
     // Check custom preset definitions (from customPresets prop) before giving up.

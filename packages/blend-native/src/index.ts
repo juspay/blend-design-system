@@ -92,6 +92,22 @@ export { Switch } from './components/Switch'
 export type { SwitchNativeProps } from './components/Switch'
 export { SearchInput } from './components/SearchInput'
 export type { SearchInputNativeProps } from './components/SearchInput'
+export { Sidebar } from './components/Sidebar'
+export type {
+    SidebarDataSet,
+    SidebarItemVisualState,
+    SidebarNativeProps,
+    SidebarNavItem,
+    SidebarSectionData,
+    SidebarStatus,
+} from './components/Sidebar'
+export { BottomNavigation } from './components/BottomNavigation'
+export type {
+    BottomNavigationNativeProps,
+    BottomNavigationItem,
+    BottomNavigationTokens,
+    BottomNavigationCenterAction,
+} from './components/BottomNavigation'
 export { Skeleton } from './components/Skeleton'
 export type { SkeletonNativeProps } from './components/Skeleton'
 export { NumberInput } from './components/NumberInput'
@@ -102,6 +118,12 @@ export { Radio } from './components/Radio'
 export type { RadioNativeProps } from './components/Radio'
 export { ProgressBar } from './components/ProgressBar'
 export type { ProgressBarNativeProps } from './components/ProgressBar'
+export { Stepper } from './components/Stepper'
+export type {
+    StepperNativeProps,
+    StepperStep,
+    StepperSubStep,
+} from './components/Stepper'
 export { Spinner } from './components/Spinner'
 export type { SpinnerNativeProps } from './components/Spinner'
 export { Sparkline } from './components/Sparkline'
@@ -262,6 +284,12 @@ export type { BottomSheetProps } from './overlay/sheet/BottomSheet'
 // scrolls until it hits its top, then the sheet follows the finger.
 export { BottomSheetScrollable } from './overlay/sheet/SheetScrollable'
 
+// The horizontal counterpart of BottomSheet — an edge-anchored slide-in
+// drawer. `Sidebar`'s mobile presentation is built on it; also public for
+// consumer-built drawers.
+export { SideDrawer } from './overlay/drawer/SideDrawer'
+export type { SideDrawerProps } from './overlay/drawer/SideDrawer'
+
 // The toast host: the provider mounts the outlet, this pair drives it;
 // `addSnackbar` layers the SNACKBARV2 token styling on top.
 export { showToast, dismissToast } from './overlay/toast/toastStore'
@@ -325,6 +353,8 @@ export {
     StatCardV2Variant as StatCardVariant,
     StatCardV2ChangeType as StatCardChangeType,
     StatCardV2ArrowDirection as StatCardArrowDirection,
+    StepperV2StepStatus as StepperStepStatus,
+    StepperV2Type as StepperType,
     TagV2Type as TagType,
     TagV2Size as TagSize,
     TagV2SubType as TagSubType,

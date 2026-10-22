@@ -193,3 +193,37 @@ export const ActivePathHighlightDark: Story = {
         chromatic: { ...CHROMATIC_CONFIG, delay: 400 },
     },
 }
+
+export const ActivePathHighlightVirtualized: Story = {
+    name: 'Active path highlight (virtualized)',
+    args: {
+        ...ActivePathHighlight.args,
+        enableVirtualization: true,
+    },
+    render: (args) => (
+        <div style={{ width: 300, height: 400 }}>
+            <Directory {...args} />
+        </div>
+    ),
+    parameters: {
+        docs: {
+            description: {
+                story: 'Same tree with `enableVirtualization`. The active guide into each on-path row stops at its elbow, matching the non-virtualized renderer.',
+            },
+        },
+    },
+}
+
+export const ActivePathHighlightVirtualizedDark: Story = {
+    ...ActivePathHighlightDark,
+    name: 'Active path highlight (virtualized, dark)',
+    args: {
+        ...ActivePathHighlightDark.args,
+        enableVirtualization: true,
+    },
+    render: (args) => (
+        <div style={{ height: 400 }}>
+            <Directory {...args} />
+        </div>
+    ),
+}

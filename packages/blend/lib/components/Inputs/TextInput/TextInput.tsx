@@ -27,6 +27,8 @@ const Wrapper = styled(Block)`
     ${errorShakeAnimation}
 `
 
+const DEFAULT_PASSWORD_TOGGLE_ICON_SIZE = 18
+
 const TextInput = ({
     size = TextInputSize.MEDIUM,
     leftSlot,
@@ -121,10 +123,20 @@ const TextInput = ({
         [handleTogglePassword]
     )
 
+    // Component-token overrides written before `passwordToggle` tokens existed
+    // omit the block entirely; keep the historical look for them.
+    const toggleColorTokens =
+        textInputTokens.passwordToggle?.color ??
+        textInputTokens.inputContainer.color
+    const toggleIconSize = toPixels(
+        textInputTokens.passwordToggle?.iconSize?.[size] ??
+            DEFAULT_PASSWORD_TOGGLE_ICON_SIZE
+    )
+
     const getToggleButtonColor = () => {
-        if (disabled) return textInputTokens.inputContainer.color.disabled
-        if (error) return textInputTokens.inputContainer.color.error
-        return textInputTokens.inputContainer.color.default
+        if (disabled) return toggleColorTokens.disabled
+        if (error) return toggleColorTokens.error
+        return toggleColorTokens.default
     }
 
     const passwordToggleButton = passwordToggle ? (
@@ -156,8 +168,8 @@ const TextInput = ({
             transition="color 200ms ease-in-out"
             _hover={{
                 color: disabled
-                    ? textInputTokens.inputContainer.color.disabled
-                    : textInputTokens.inputContainer.color.hover,
+                    ? toggleColorTokens.disabled
+                    : toggleColorTokens.hover,
             }}
             _focusVisible={{
                 outline: `2px solid ${FOUNDATION_THEME.colors.primary[500]}`,
@@ -168,9 +180,9 @@ const TextInput = ({
             tabIndex={disabled ? -1 : 0}
         >
             {showPassword ? (
-                <EyeOff size={18} aria-hidden="true" />
+                <EyeOff size={toggleIconSize} aria-hidden="true" />
             ) : (
-                <Eye size={18} aria-hidden="true" />
+                <Eye size={toggleIconSize} aria-hidden="true" />
             )}
         </PrimitiveButton>
     ) : null

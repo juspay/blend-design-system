@@ -128,6 +128,20 @@ export const getTextInputV2DarkTokens = (
                         disabled: foundationTokens.colors.gray[500],
                     },
                 },
+                passwordToggle: {
+                    iconSize: {
+                        sm: foundationTokens.unit[16],
+                        md: foundationTokens.unit[16],
+                        lg: foundationTokens.unit[16],
+                    },
+                    color: {
+                        default: foundationTokens.colors.gray[300],
+                        hover: foundationTokens.colors.gray[100],
+                        focus: foundationTokens.colors.gray[100],
+                        error: foundationTokens.colors.red[400],
+                        disabled: foundationTokens.colors.gray[500],
+                    },
+                },
                 borderRadius: {
                     sm: foundationTokens.unit[10],
                     md: foundationTokens.unit[10],
@@ -331,6 +345,20 @@ export const getTextInputV2DarkTokens = (
                     },
                     color: {
                         default: foundationTokens.colors.gray[100],
+                        hover: foundationTokens.colors.gray[100],
+                        focus: foundationTokens.colors.gray[100],
+                        error: foundationTokens.colors.red[400],
+                        disabled: foundationTokens.colors.gray[500],
+                    },
+                },
+                passwordToggle: {
+                    iconSize: {
+                        sm: foundationTokens.unit[16],
+                        md: foundationTokens.unit[16],
+                        lg: foundationTokens.unit[16],
+                    },
+                    color: {
+                        default: foundationTokens.colors.gray[300],
                         hover: foundationTokens.colors.gray[100],
                         focus: foundationTokens.colors.gray[100],
                         error: foundationTokens.colors.red[400],
