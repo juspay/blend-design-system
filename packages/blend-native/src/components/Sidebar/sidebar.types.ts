@@ -2,6 +2,32 @@ import type { ReactNode } from 'react'
 import type { BadgeColor } from '@juspay/blend-design-system/node'
 
 /**
+ * Extra `data-*` attributes for a row or section, keyed in camelCase the way
+ * react-native-web's `dataSet` expects (`{ sidebarSelected: 'true' }` renders
+ * `data-sidebar-selected="true"`). Web only; ignored on iOS/Android. The
+ * sidebar's own attributes (`data-element`, `data-id`, `data-status`, …) are
+ * applied after these, so a consumer key can't override them.
+ */
+export type SidebarDataSet = Record<string, string>
+
+/**
+ * The sidebar panel's state as reported in `data-status` on web, matching
+ * web `Sidebar`'s `SidebarStateChangeType`: `intermediate` is the
+ * hover-preview state (see `SidebarNativeProps.isPreviewing`).
+ */
+export type SidebarStatus = 'expanded' | 'collapsed' | 'intermediate'
+
+/**
+ * A row's visual tier, reported in `data-path-state` on web. Same values as
+ * web `Directory`'s `DirectoryItemVisualState`.
+ */
+export type SidebarItemVisualState =
+    | 'active'
+    | 'activePath'
+    | 'muted'
+    | 'default'
+
+/**
  * One row in the nav tree. Mirrors the shape of web's `NavbarItem`
  * (`SidebarV2`/`Directory`), adapted to RN naming (`onPress`, not
  * `onClick`) and to this package's scope: no `href` (RN has no anchor
@@ -27,6 +53,7 @@ export type SidebarNavItem = {
      * web's `NavbarItem.showOnMobile`.
      */
     showOnMobile?: boolean
+    dataSet?: SidebarDataSet
 }
 
 /** One item in the secondary (tenant/workspace-switcher) icon rail. */
@@ -76,6 +103,7 @@ export type SidebarSectionData = {
     isCollapsible?: boolean
     /** @default true */
     defaultOpen?: boolean
+    dataSet?: SidebarDataSet
 }
 
 export type SidebarNativeProps = {
@@ -128,6 +156,14 @@ export type SidebarNativeProps = {
     defaultIsExpanded?: boolean
     /** Hides the built-in collapse/expand toggle button. */
     hideToggleButton?: boolean
+    /**
+     * The current expansion is a temporary preview rather than a pinned
+     * state — e.g. a host that expands a collapsed rail while the pointer
+     * hovers it. Changes nothing visually; it is only reported, as web
+     * `Sidebar`'s hover state is: `data-status="intermediate"` on web.
+     * @default false
+     */
+    isPreviewing?: boolean
 
     activeItem?: string | null
     onActiveItemChange?: (item: string | null) => void

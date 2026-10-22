@@ -94,9 +94,12 @@ export { SearchInput } from './components/SearchInput'
 export type { SearchInputNativeProps } from './components/SearchInput'
 export { Sidebar } from './components/Sidebar'
 export type {
+    SidebarDataSet,
+    SidebarItemVisualState,
     SidebarNativeProps,
     SidebarNavItem,
     SidebarSectionData,
+    SidebarStatus,
 } from './components/Sidebar'
 export { BottomNavigation } from './components/BottomNavigation'
 export type {

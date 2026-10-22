@@ -11,10 +11,15 @@ import { ChevronDown } from 'lucide-react-native'
 import Pressable from '../../primitives/Pressable'
 import Slot from '../../primitives/Slot'
 import Text from '../../primitives/Text'
+import { webDataSet } from '../../primitives/dataSet'
 import Tooltip from '../Tooltip/Tooltip'
 import { useSidebarContext } from './sidebar.context'
 import { SIDEBAR_METRICS } from './sidebar.theme'
-import { isActiveAncestorPath } from './sidebar.utils'
+import {
+    getItemDataSet,
+    getItemVisualState,
+    isActiveAncestorPath,
+} from './sidebar.utils'
 import type { SidebarNavItem } from './sidebar.types'
 
 /** Opacity applied to a disabled row. */
@@ -149,10 +154,14 @@ export default function SidebarItem({
     // and `muted` only come into play once `highlightActivePath` is on AND
     // something is selected, so the feature is off by default and degrades
     // to the plain two-state (selected/default) behaviour otherwise.
-    const isOnActivePath =
-        highlightActivePath && isActiveAncestorPath(itemPath, activeItem)
-    const isMuted =
-        highlightActivePath && !isSelected && !isOnActivePath && !!activeItem
+    const visualState = getItemVisualState({
+        isSelected,
+        itemPath,
+        activeItem,
+        highlightActivePath,
+    })
+    const isOnActivePath = visualState === 'activePath'
+    const isMuted = visualState === 'muted'
 
     const textColor = isSelected
         ? palette.selectedForeground
@@ -192,6 +201,16 @@ export default function SidebarItem({
             }}
             accessibilityLabel={item.label}
             testID={testID}
+            {...webDataSet(
+                getItemDataSet({
+                    item,
+                    isSelected,
+                    visualState,
+                    hasChildren,
+                    iconOnlyMode,
+                    isExpanded: expanded,
+                })
+            )}
         >
             {item.leftSlot && (
                 <Slot
