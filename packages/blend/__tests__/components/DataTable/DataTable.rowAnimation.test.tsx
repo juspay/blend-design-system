@@ -285,7 +285,7 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
         })
     })
 
-    it('warns that a valid spring config is not implemented', () => {
+    it('applies a well-formed spring config, computing duration and curve without warning', () => {
         const config: RowAnimationConfig = {
             enterDuration: 0.32,
             enterOffset: 12,
@@ -297,16 +297,34 @@ describe('useRowFlip malformed rowAnimationConfig', () => {
 
         const el = reorderAndCapture(config)
 
-        expect(el.style.transition).toContain(DEFAULT_CURVE)
-        expect(warnSpy).toHaveBeenCalledWith(
+        expect(el.style.transition).toContain('cubic-bezier(')
+        expect(el.style.transition).toContain('0.461s')
+        expect(warnSpy).not.toHaveBeenCalledWith(
             expect.stringContaining(ROW_ANIMATION_WARNINGS.spring)
         )
         expect(warnSpy).not.toHaveBeenCalledWith(
             expect.stringContaining(ROW_ANIMATION_WARNINGS.bezier)
         )
-        // The spring arm does not declare `duration`.
         expect(warnSpy).not.toHaveBeenCalledWith(
             expect.stringContaining(ROW_ANIMATION_WARNINGS.duration)
+        )
+    })
+
+    it('warns when spring parameters are not positive finite numbers and falls back to default curve', () => {
+        const invalidConfig = {
+            enterDuration: 0.32,
+            enterOffset: 12,
+            transitionType: 'spring',
+            stiffness: -100,
+            damping: 30,
+            mass: 1,
+        } as unknown as RowAnimationConfig
+
+        const el = reorderAndCapture(invalidConfig)
+
+        expect(el.style.transition).toContain(DEFAULT_CURVE)
+        expect(warnSpy).toHaveBeenCalledWith(
+            expect.stringContaining(ROW_ANIMATION_WARNINGS.spring)
         )
     })
 
