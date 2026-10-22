@@ -148,6 +148,11 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
                         position="absolute"
                         inset={0}
                         backgroundColor={modalTokens.overlay.backgroundColor}
+                        style={{
+                            backdropFilter: modalTokens.overlay.backdropFilter,
+                            WebkitBackdropFilter:
+                                modalTokens.overlay.backdropFilter,
+                        }}
                         pointerEvents="auto"
                         role="presentation"
                         aria-hidden="true"
