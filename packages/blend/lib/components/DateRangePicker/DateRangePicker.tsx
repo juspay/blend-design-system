@@ -30,6 +30,7 @@ import {
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
+import type { TimeSelectorHandle } from './TimeSelector'
 import MobileDrawerPresets from './MobileDrawerPresets'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
@@ -65,6 +66,11 @@ type DateInputsSectionProps = {
     disableFutureDates: boolean
     today: Date
     timezone?: string
+    // Let the caller (handleApply) pull a just-typed-but-not-yet-blurred
+    // time synchronously instead of racing the field's own debounce — see
+    // TimeSelectorHandle.commitPendingInput's docs.
+    startTimeSelectorRef?: React.RefObject<TimeSelectorHandle | null>
+    endTimeSelectorRef?: React.RefObject<TimeSelectorHandle | null>
 }
 
 const DateInputsSection: React.FC<DateInputsSectionProps> = ({
@@ -87,6 +93,8 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     disableFutureDates,
     today,
     timezone,
+    startTimeSelectorRef,
+    endTimeSelectorRef,
 }) => {
     const startDateId = React.useId()
     const endDateId = React.useId()
@@ -150,6 +158,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                         </Block>
                         {showDateTimePicker && (
                             <TimeSelector
+                                ref={startTimeSelectorRef}
                                 id={startTimeId}
                                 value={startTime || ''}
                                 onChange={onStartTimeChange}
@@ -232,6 +241,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 </Block>
                                 {showDateTimePicker && (
                                     <TimeSelector
+                                        ref={endTimeSelectorRef}
                                         id={endTimeId}
                                         value={endTime || ''}
                                         onChange={onEndTimeChange}
@@ -472,6 +482,14 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             end: number | null
             dateFormat: string
         } | null>(null)
+
+        // See TimeSelectorHandle.commitPendingInput's docs (#1787): lets
+        // handleApply pull a just-typed time synchronously instead of
+        // reading the startTime/endTime state below, which can still be
+        // one blur-debounce cycle stale if Apply is clicked immediately
+        // after typing.
+        const startTimeSelectorRef = React.useRef<TimeSelectorHandle>(null)
+        const endTimeSelectorRef = React.useRef<TimeSelectorHandle>(null)
 
         const [activePreset, setActivePreset] = useState<DateRangePreset>(
             DateRangePreset.CUSTOM
@@ -872,20 +890,34 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         )
 
         const handleApply = useCallback(() => {
+            // Clicking Apply blurs whichever time field was focused, but
+            // that field's own blur handler debounces its commit by 150ms
+            // (see TimeSelector's handleInputBlur) to coexist with its
+            // dropdown's click-vs-blur race. Reading `startTime`/`endTime`
+            // state here would still see the pre-edit value in that window
+            // — flushing each field synchronously first closes it (#1787).
+            const flushedStartTime =
+                startTimeSelectorRef.current?.commitPendingInput()
+            const flushedEndTime =
+                endTimeSelectorRef.current?.commitPendingInput()
+            const effectiveStartTime = flushedStartTime ?? startTime
+            const effectiveEndTime = flushedEndTime ?? endTime
+
             if (
-                !startTime ||
+                !effectiveStartTime ||
                 !selectedRange ||
-                (!isSingleDatePicker && (!endTime || !selectedRange.endDate))
+                (!isSingleDatePicker &&
+                    (!effectiveEndTime || !selectedRange.endDate))
             )
                 return
 
             // Apply time from time selectors to the selected range
             const result = handleCalendarDateSelect(
                 selectedRange,
-                startTime,
+                effectiveStartTime,
                 dateFormat,
                 timezone,
-                endTime
+                effectiveEndTime
             )
 
             // Update the input fields to match the applied range
@@ -895,7 +927,15 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             setIsOpen(false)
             setDrawerOpen(false)
             setPopoverKey((prev) => prev + 1)
-        }, [selectedRange, startTime, endTime, dateFormat, onChange, timezone])
+        }, [
+            selectedRange,
+            startTime,
+            endTime,
+            isSingleDatePicker,
+            dateFormat,
+            onChange,
+            timezone,
+        ])
 
         const handleCancel = useCallback(() => {
             resetValues(value)
@@ -1215,6 +1255,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                                 disableFutureDates={disableFutureDates}
                                 today={today}
                                 timezone={timezone}
+                                startTimeSelectorRef={startTimeSelectorRef}
+                                endTimeSelectorRef={endTimeSelectorRef}
                             />
                         )}
 
