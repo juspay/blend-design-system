@@ -139,6 +139,9 @@ const MobileModalV2 = forwardRef<HTMLDivElement, MobileModalV2Props>(
                         style={{
                             backgroundColor:
                                 modalTokens.overlay.backgroundColor,
+                            backdropFilter: modalTokens.overlay.backdropFilter,
+                            WebkitBackdropFilter:
+                                modalTokens.overlay.backdropFilter,
                         }}
                     />
                     <DrawerV2Content

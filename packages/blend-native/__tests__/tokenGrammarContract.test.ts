@@ -47,6 +47,19 @@ const EXCEPTIONS: { pattern: RegExp; handler: string }[] = [
         handler: 'skeleton.utils.ts resolveSkeletonRadius',
     },
     {
+        // '50%' — the step circle and substep dot tokens carry a percentage
+        // radius; Stepper's StepCircle computes a numeric half-size radius
+        // and SubstepRows a half-dot radius instead of parsing the token.
+        pattern:
+            /^STEPPERV2\.\w+\.\w+\.container\.step\.circle\.[^.]+\.[^.]+\.borderRadius$/,
+        handler: 'Stepper.tsx StepCircle (numeric half-size radius)',
+    },
+    {
+        pattern:
+            /^STEPPERV2\.\w+\.\w+\.container\.subConnector\.dot\.borderRadius$/,
+        handler: 'Stepper.tsx SubstepRows (numeric half-dot radius)',
+    },
+    {
         // 'calc(100vw - 32px)' — screen-relative width comes from the toast
         // outlet's horizontal insets; calc()/vw are unsupported by design
         // and the native snackbar never consumes this token.

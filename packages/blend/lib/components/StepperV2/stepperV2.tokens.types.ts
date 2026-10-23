@@ -3,7 +3,7 @@ import type { BreakpointType } from '../../breakpoints/breakPoints'
 import type {
     StepperV2InteractionState,
     StepperV2StepStatus,
-} from './stepperV2.types'
+} from './stepperV2.base.types'
 
 export type StepperV2TokensType = {
     container: {

@@ -6,9 +6,11 @@ import {
     useRef,
     useState,
 } from 'react'
+import { Eye, EyeOff } from 'lucide-react'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useInputSlotPadding } from '../../../hooks/useInputSlotPadding'
 import Block from '../../Primitives/Block/Block'
+import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import InputLabelsV2 from '../utils/InputLabels/InputLabelsV2'
 import { AnyRef, InputSizeV2, InputStateV2 } from '../inputV2.types'
 import type { TextInputV2TokensType } from './TextInputV2.tokens'
@@ -70,6 +72,8 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
             dropdown,
             leftSlot,
             rightSlot,
+            passwordToggle = false,
+            type: providedType,
             onFocus,
             onBlur,
             ...rest
@@ -106,7 +110,6 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         const showRightSelect = Boolean(rightSelect)
         const hasEmbeddedSelect = showLeftSelect || showRightSelect
         const effectiveLeftSlot = hasEmbeddedSelect ? undefined : leftSlot
-        const effectiveRightSlot = hasEmbeddedSelect ? undefined : rightSlot
 
         const inputRef = useRef<HTMLInputElement>(null)
         const leftSlotRef = useRef<HTMLDivElement>(null)
@@ -160,6 +163,84 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
 
         const container = tokens.inputContainer
         const padding = container.padding
+
+        const [showPassword, setShowPassword] = useState(false)
+        const inputType = passwordToggle
+            ? showPassword
+                ? 'text'
+                : 'password'
+            : providedType
+
+        const toggleTokens = container.passwordToggle
+        // A disabled field should read as disabled even while it has an error.
+        const toggleColor =
+            toggleTokens.color[disabled ? InputStateV2.DISABLED : inputState]
+        const toggleIconSize = toPixels(toggleTokens.iconSize[size])
+        const toggleButtonId = `${inputId}-password-toggle`
+
+        const passwordToggleButton =
+            passwordToggle && !hasEmbeddedSelect ? (
+                <PrimitiveButton
+                    id={toggleButtonId}
+                    type="button"
+                    aria-label={
+                        showPassword ? 'Hide password' : 'Show password'
+                    }
+                    aria-pressed={showPassword}
+                    aria-controls={inputId}
+                    data-element="password-toggle"
+                    onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        setShowPassword((prev) => !prev)
+                    }}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    backgroundColor="transparent"
+                    border="none"
+                    padding={0}
+                    cursor={disabled ? 'not-allowed' : 'pointer'}
+                    color={toggleColor}
+                    transition="color 200ms ease-in-out"
+                    _hover={{
+                        color: disabled
+                            ? toggleTokens.color[InputStateV2.DISABLED]
+                            : toggleTokens.color[InputStateV2.HOVER],
+                    }}
+                    _focusVisible={{
+                        ...FOCUS_RING_STYLES,
+                        borderRadius: container.borderRadius[size],
+                    }}
+                    disabled={disabled}
+                    tabIndex={disabled ? -1 : 0}
+                >
+                    {showPassword ? (
+                        <EyeOff size={toggleIconSize} aria-hidden="true" />
+                    ) : (
+                        <Eye size={toggleIconSize} aria-hidden="true" />
+                    )}
+                </PrimitiveButton>
+            ) : null
+
+        const consumerRightSlot = hasEmbeddedSelect ? undefined : rightSlot
+        const effectiveRightSlot = passwordToggleButton
+            ? {
+                  maxHeight: consumerRightSlot?.maxHeight,
+                  slot: consumerRightSlot ? (
+                      <Block
+                          display="flex"
+                          alignItems="center"
+                          gap={container.gap}
+                      >
+                          {consumerRightSlot.slot}
+                          {passwordToggleButton}
+                      </Block>
+                  ) : (
+                      passwordToggleButton
+                  ),
+              }
+            : consumerRightSlot
         const inputContainerPaddingTop = toPixels(padding.top[size])
         const inputContainerPaddingBottom = toPixels(padding.bottom[size])
         const inputContainerPaddingLeft = toPixels(padding.left[size])
@@ -318,6 +399,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                         aria-describedby={ariaDescribedBy}
                         id={inputId}
                         name={name}
+                        type={inputType}
                         value={value}
                         onChange={onChange}
                         placeholder={

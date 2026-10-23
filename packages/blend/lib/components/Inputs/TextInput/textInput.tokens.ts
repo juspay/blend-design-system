@@ -44,6 +44,19 @@ export type TextInputTokensType = {
     required: {
         color: CSSObject['color']
     }
+    /**
+     * Built-in show/hide password button rendered when `passwordToggle` is set.
+     * Older component-token overrides may omit this block; the component then
+     * falls back to `inputContainer.color` and an 18px icon.
+     */
+    passwordToggle: {
+        iconSize: {
+            [key in TextInputSize]: CSSObject['width']
+        }
+        color: {
+            [key in TextInputState]: CSSObject['color']
+        }
+    }
     inputContainer: {
         fontSize: {
             [key in TextInputSize]: CSSObject['fontSize']
@@ -139,6 +152,20 @@ export const getTextInputTokens = (
             },
             required: {
                 color: foundationTokens.colors.red[600],
+            },
+            passwordToggle: {
+                iconSize: {
+                    sm: foundationTokens.unit[18],
+                    md: foundationTokens.unit[18],
+                    lg: foundationTokens.unit[18],
+                },
+                color: {
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
+                    error: foundationTokens.colors.red[800],
+                    disabled: foundationTokens.colors.gray[300],
+                },
             },
             inputContainer: {
                 borderRadius: {
@@ -248,6 +275,20 @@ export const getTextInputTokens = (
             },
             required: {
                 color: foundationTokens.colors.red[600],
+            },
+            passwordToggle: {
+                iconSize: {
+                    sm: foundationTokens.unit[18],
+                    md: foundationTokens.unit[18],
+                    lg: foundationTokens.unit[18],
+                },
+                color: {
+                    default: foundationTokens.colors.gray[700],
+                    hover: foundationTokens.colors.gray[700],
+                    focus: foundationTokens.colors.gray[700],
+                    error: foundationTokens.colors.red[800],
+                    disabled: foundationTokens.colors.gray[300],
+                },
             },
             inputContainer: {
                 borderRadius: {

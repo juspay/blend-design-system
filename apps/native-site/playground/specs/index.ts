@@ -4,6 +4,7 @@ import accordion from './accordion.spec'
 import alert from './alert.spec'
 import avatar from './avatar.spec'
 import badge from './badge.spec'
+import bottomNavigation from './bottomNavigation.spec'
 import bottomSheet from './bottomSheet.spec'
 import breadcrumb from './breadcrumb.spec'
 import button from './button.spec'
@@ -22,12 +23,14 @@ import progressBar from './progressBar.spec'
 import radio from './radio.spec'
 import sankeyChart from './sankeyChart.spec'
 import searchInput from './searchInput.spec'
+import sidebar from './sidebar.spec'
 import singleSelect from './singleSelect.spec'
 import skeleton from './skeleton.spec'
 import snackbar from './snackbar.spec'
 import statCard from './statCard.spec'
 import switchSpec from './switch.spec'
 import spinner from './spinner.spec'
+import stepper from './stepper.spec'
 import tabs from './tabs.spec'
 import tag from './tag.spec'
 import textArea from './textArea.spec'
@@ -91,6 +94,7 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
             asAnySpec(outageChart),
             asAnySpec(sankeyChart),
             asAnySpec(statCard),
+            asAnySpec(stepper),
             asAnySpec(tabs),
             asAnySpec(accordion),
         ],
@@ -112,6 +116,10 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
             asAnySpec(popover),
             asAnySpec(tooltip),
         ],
+    },
+    {
+        title: 'Navigation',
+        specs: [asAnySpec(sidebar), asAnySpec(bottomNavigation)],
     },
 ]
 

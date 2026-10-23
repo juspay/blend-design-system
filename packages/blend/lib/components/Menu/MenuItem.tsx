@@ -250,7 +250,7 @@ const MenuItem = ({
                 gap={menuTokens.item.gap}
                 backgroundColor={getBgColor(defaultState, menuTokens, item)}
                 color={getColor(defaultState, menuTokens, item)}
-                _hover={{
+                _highlighted={{
                     backgroundColor: getBgColor('hover', menuTokens, item),
                 }}
                 _focus={{

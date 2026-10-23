@@ -220,6 +220,15 @@ import { TextInputV2 } from '@juspay/blend-design-system'
         ],
         [
             {
+                content: 'passwordToggle',
+                hintText:
+                    'Renders the built-in show/hide password button and switches the input type between password and text. Ignored when dropdown is set.',
+            },
+            { content: 'boolean', hintText: 'Enable built-in toggle' },
+            { content: '' },
+        ],
+        [
+            {
                 content: 'dropdown',
                 hintText:
                     'Embedded SingleSelectV2 configuration for dropdown input.',
@@ -309,6 +318,15 @@ export type TextInputV2TokensType = {
             }
             lineHeight: {
                 [key in InputSizeV2]: CSSObject['lineHeight']
+            }
+            color: {
+                [key in InputStateV2]: CSSObject['color']
+            }
+        }
+        // Built-in show/hide button rendered when `passwordToggle` is set
+        passwordToggle: {
+            iconSize: {
+                [key in InputSizeV2]: CSSObject['width']
             }
             color: {
                 [key in InputStateV2]: CSSObject['color']
