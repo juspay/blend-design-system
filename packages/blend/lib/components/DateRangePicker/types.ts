@@ -308,6 +308,21 @@ export type PresetSelectionData = {
     formattedEndTime: string
 }
 
+/**
+ * Per-day render config passed to `renderDay`.
+ *
+ * `date` is local midnight, the same convention as `minDate`/`maxDate`.
+ */
+export type RenderDayConfig = {
+    date: Date
+    isStart: boolean
+    isEnd: boolean
+    isSingleDate: boolean
+    isRangeDay: boolean
+    isTodayDay: boolean
+    isDisabled: boolean
+}
+
 export type DateRangePickerProps = {
     value?: DateRange
     onChange?: (range: DateRange) => void
@@ -372,6 +387,43 @@ export type DateRangePickerProps = {
      */
     timezone?: string
     maxYearOffset?: number
+    /**
+     * Renders custom content inside each calendar day cell — e.g. a
+     * per-day badge (dispute counts). Day granularity only; it is ignored
+     * when `granularity='month'` and on the mobile drawer, whose scroll
+     * wheel picker has no day cells (the desktop popover renders instead
+     * only when `useDrawerOnMobile` is disabled or month granularity is
+     * active).
+     *
+     * Content is painted inside an absolutely-positioned overlay covering
+     * the cell with `pointer-events: none`, so it can never change the
+     * calendar's flow layout (month heights are precomputed for the
+     * virtualized scroll) and it can never steal the cell's click/keyboard
+     * semantics — opt back in per element (tooltips etc.) by setting
+     * `pointer-events: auto` on it. Position freely within the overlay
+     * (e.g. `top-right`); note the today-indicator dot already occupies
+     * bottom-center, so offset badges away from it.
+     *
+     * The cell's `aria-label` is unchanged — day content is decorative
+     * from the grid's a11y tree; attach your own labels/`aria-hidden` to
+     * what you render.
+     *
+     * Not called for empty grid slots or hidden dates. Performance: the
+     * render window holds roughly 3 months x 42 cells; memoize the
+     * callback and keep per-date lookups O(1).
+     */
+    renderDay?: (day: RenderDayConfig) => ReactNode
+    /**
+     * Reports which calendar months are visible in the popover's scroll
+     * viewport, deduped by month set. Fires on mount (the initial
+     * scroll-to-selected month) and on scroll. Day granularity only; it
+     * is ignored when `granularity='month'` and never fires on the mobile
+     * drawer, which renders wheel pickers instead of the calendar grid.
+     *
+     * Use it to lazily fetch per-month data for `renderDay` instead of
+     * tracking the scrolled-to month yourself.
+     */
+    onVisibleMonthsChange?: (months: CalendarMonth[]) => void
 }
 
 export type PresetItemProps = {

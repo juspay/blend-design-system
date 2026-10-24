@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { DateRangePicker } from '../../../../packages/blend/lib/components/DateRangePicker'
+import { SingleDatePicker } from '../../../../packages/blend/lib/components/SingleDatePicker'
 import {
     DateRange,
     DateRangePreset,
@@ -7,6 +8,8 @@ import {
     DateFormatConfig,
     TriggerConfig,
     DateRangePickerSize,
+    RenderDayConfig,
+    CalendarMonth,
 } from '../../../../packages/blend/lib/components/DateRangePicker/types'
 
 // Custom Button Component for triggers
@@ -420,6 +423,135 @@ const DateRangePickerDemo = () => {
                 return undefined
         }
     }
+
+    // ---- Per-day content + visible months (renderDay / onVisibleMonthsChange) ----
+
+    // Deterministic pseudo-counts so badges are stable across re-renders.
+    const getSeededDayCount = (date: Date) =>
+        (date.getDate() * 7 + date.getMonth() * 3) % 10
+
+    const [staticBadgeRange, setStaticBadgeRange] = useState<
+        DateRange | undefined
+    >({
+        startDate: new Date(),
+        endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    })
+
+    const renderStaticDayBadge = useCallback(
+        ({ date, isDisabled }: RenderDayConfig) => {
+            const count = getSeededDayCount(date)
+            if (!count || isDisabled) return null
+            return (
+                <span
+                    className="absolute top-0.5 right-1 text-[10px] font-semibold leading-4 text-red-900 bg-red-100 rounded-full px-1 select-none"
+                    aria-label={`${count} events on this day`}
+                >
+                    {count}
+                </span>
+            )
+        },
+        []
+    )
+
+    // Lazy per-month "fetch": simulated 500ms API latency per month, merged
+    // into a flat YYYY-M-D keyed map for O(1) renderDay lookups — the
+    // dispute-dashboard pattern.
+    const [dashboardRange, setDashboardRange] = useState<DateRange | undefined>(
+        {
+            startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            endDate: new Date(),
+        }
+    )
+    const [disputeCounts, setDisputeCounts] = useState<Record<string, number>>(
+        {}
+    )
+    const [loadedMonthKeys, setLoadedMonthKeys] = useState<string[]>([])
+    const [visibleMonthLabels, setVisibleMonthLabels] = useState<string[]>([])
+    const fetchedMonthsRef = useRef<Set<string>>(new Set())
+    const fetchTimersRef = useRef<number[]>([])
+
+    const getMonthKey = ({ year, month }: CalendarMonth) =>
+        `${year}-${String(month + 1).padStart(2, '0')}`
+    const getMonthLabel = ({ year, month }: CalendarMonth) =>
+        new Date(year, month, 1).toLocaleDateString('en-US', {
+            month: 'short',
+            year: 'numeric',
+        })
+
+    const handleVisibleMonthsChange = useCallback((months: CalendarMonth[]) => {
+        setVisibleMonthLabels(months.map(getMonthLabel))
+        for (const monthInfo of months) {
+            const { year, month } = monthInfo
+            const key = getMonthKey(monthInfo)
+            if (fetchedMonthsRef.current.has(key)) continue
+            fetchedMonthsRef.current.add(key)
+            // Simulated per-month API call
+            const timer = window.setTimeout(() => {
+                const counts: Record<string, number> = {}
+                const daysInMonth = new Date(year, month + 1, 0).getDate()
+                for (let day = 1; day <= daysInMonth; day++) {
+                    counts[`${year}-${month}-${day}`] =
+                        (day * 7 + month * 3) % 9
+                }
+                setDisputeCounts((prev) => ({ ...prev, ...counts }))
+                setLoadedMonthKeys((prev) => [...prev, key].sort())
+            }, 500)
+            fetchTimersRef.current.push(timer)
+        }
+    }, [])
+
+    useEffect(
+        () => () => {
+            fetchTimersRef.current.forEach((t) => window.clearTimeout(t))
+        },
+        []
+    )
+
+    const renderDisputeBadge = useCallback(
+        ({ date, isDisabled }: RenderDayConfig) => {
+            const count =
+                disputeCounts[
+                    `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+                ]
+            if (!count || isDisabled) return null
+            return (
+                <span
+                    className="absolute top-0.5 right-1 text-[10px] font-semibold leading-4 text-red-900 bg-red-100 rounded-full px-1 select-none"
+                    aria-label={`${count} disputes on this day`}
+                >
+                    {count}
+                </span>
+            )
+        },
+        [disputeCounts]
+    )
+
+    // SingleDatePicker accepts the same two props — the picked day reports
+    // isSingleDate (with isStart) instead of start/end range flags.
+    const [singleDateValue, setSingleDateValue] = useState<Date | undefined>(
+        new Date()
+    )
+    const [singleDateVisible, setSingleDateVisible] = useState<string[]>([])
+
+    const renderSingleDayBadge = useCallback(
+        ({ date, isDisabled, isSingleDate }: RenderDayConfig) => {
+            const count = getSeededDayCount(date)
+            if (!count || isDisabled) return null
+            return (
+                <span
+                    className={`absolute top-0.5 right-1 text-[10px] font-semibold leading-4 rounded-full px-1 select-none ${
+                        isSingleDate
+                            ? 'text-blue-900 bg-blue-100'
+                            : 'text-red-900 bg-red-100'
+                    }`}
+                    aria-label={`${count} events on this day`}
+                >
+                    {count}
+                </span>
+            )
+        },
+        []
+    )
 
     return (
         <div className="max-w-6xl mx-auto p-8">
@@ -4399,6 +4531,121 @@ const DateRangePickerDemo = () => {
                         showDateTimePicker={false}
                         showPresets={false}
                     />
+                </div>
+            </div>
+
+            {/* Per-Day Content + Month Visibility */}
+            <div className="space-y-6">
+                <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+                    Per-Day Content &amp; Month Visibility
+                </h2>
+                <p className="text-base text-gray-600 mb-6">
+                    <code className="bg-gray-100 px-1 rounded">renderDay</code>{' '}
+                    annotates day cells (badges, dots, counts) and{' '}
+                    <code className="bg-gray-100 px-1 rounded">
+                        onVisibleMonthsChange
+                    </code>{' '}
+                    reports which months are on screen — the dashboard pattern
+                    for lazy per-month data loading. Custom content renders
+                    inside an absolute, click-through overlay, so the calendar's
+                    virtualized scroll, cell clicks and keyboard navigation are
+                    untouched. Day granularity only.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Per-Day Badges */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Per-Day Badges (renderDay)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Count badges rendered from a memoized lookup keyed
+                            by date. Badges sit top-right, clear of the
+                            today-indicator dot (bottom-center). The overlay is
+                            click-through, so selecting a day works exactly as
+                            without badges.
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={staticBadgeRange}
+                                onChange={setStaticBadgeRange}
+                                renderDay={renderStaticDayBadge}
+                                showDateTimePicker={false}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Lazy Month Loading */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            Lazy Month Loading (renderDay +
+                            onVisibleMonthsChange)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            Counts are "fetched" per visible month (simulated
+                            500ms latency) and merged into an O(1) lookup map.
+                            Scroll the calendar — new months load as they come
+                            into view, deduped by month set.
+                        </p>
+                        <div className="overflow-hidden">
+                            <DateRangePicker
+                                value={dashboardRange}
+                                onChange={setDashboardRange}
+                                renderDay={renderDisputeBadge}
+                                onVisibleMonthsChange={
+                                    handleVisibleMonthsChange
+                                }
+                                showDateTimePicker={false}
+                            />
+                        </div>
+                        <div className="mt-3 text-xs text-gray-500 space-y-1">
+                            <div>
+                                <span className="font-semibold text-gray-600">
+                                    Visible:
+                                </span>{' '}
+                                {visibleMonthLabels.join(', ') || '—'}
+                            </div>
+                            <div>
+                                <span className="font-semibold text-gray-600">
+                                    Fetched:
+                                </span>{' '}
+                                {loadedMonthKeys.join(', ') || '—'}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* SingleDatePicker */}
+                    <div className="p-6 bg-white border border-gray-200 rounded-lg min-h-[200px] flex flex-col">
+                        <h3 className="text-lg font-semibold text-gray-700 mb-2">
+                            SingleDatePicker (same props)
+                        </h3>
+                        <p className="text-sm text-gray-600 mb-4 flex-grow">
+                            The single-date picker shares the same calendar
+                            internals, so both props work identically. In
+                            single-date mode the picked day reports{' '}
+                            <code>isSingleDate</code> (with <code>isStart</code>
+                            ) instead of range flags — shown here as a blue
+                            badge on the selected day.
+                        </p>
+                        <div className="overflow-hidden">
+                            <SingleDatePicker
+                                value={singleDateValue}
+                                onChange={setSingleDateValue}
+                                renderDay={renderSingleDayBadge}
+                                onVisibleMonthsChange={(months) =>
+                                    setSingleDateVisible(
+                                        months.map(getMonthLabel)
+                                    )
+                                }
+                            />
+                        </div>
+                        <div className="mt-3 text-xs text-gray-500">
+                            <span className="font-semibold text-gray-600">
+                                Visible:
+                            </span>{' '}
+                            {singleDateVisible.join(', ') || '—'}
+                        </div>
+                    </div>
                 </div>
             </div>
 
