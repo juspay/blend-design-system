@@ -52,65 +52,6 @@ normalized to the first day of the start month and `endDate` to the last day
 of the end month; day-only presets, date/time inputs, and the mobile drawer
 are not shown in this mode.
 
-## Custom Day Content
-
-Use `renderDay` to mount custom content inside each day cell — event counts,
-prices, availability indicators. The content is rendered as a non-interactive
-overlay (`position: absolute; inset: 0; pointer-events: none`) anchored to the
-day cell, so it never changes the calendar's virtualized month heights or
-blocks click and keyboard selection. Return `null` for days without content,
-and anchor your content to a corner of the cell (e.g. a small badge) so it
-does not cover the day number.
-
-```tsx
-import { DateRangePicker } from '@juspay/blend-design-system'
-import type { DateRange, RenderDayConfig } from '@juspay/blend-design-system'
-
-const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
-
-const renderDay = ({ date, isDisabled }: RenderDayConfig) => {
-    const count = eventCounts[dateKey(date)]
-    if (!count || isDisabled) return null
-    return (
-        <span className="day-badge" title={`${count} events on this day`}>
-            {count}
-        </span>
-    )
-}
-
-;<DateRangePicker
-    value={dateRange}
-    onChange={setDateRange}
-    renderDay={renderDay}
-/>
-```
-
-`RenderDayConfig` exposes `date`, `isStart`, `isEnd`, `isSingleDate`,
-`isRangeDay`, `isTodayDay`, and `isDisabled`, so content can react to the
-current selection (for example, restyling the badge on the picked days).
-
-To lazy-load per-day data, combine `renderDay` with `onVisibleMonthsChange`,
-which reports the months currently visible in the calendar grid:
-
-```tsx
-<DateRangePicker
-    value={dateRange}
-    onChange={setDateRange}
-    onVisibleMonthsChange={(months) => {
-        // months: Array<{ year: number; month: number }>, month is zero-based
-        fetchCountsForMonths(months)
-    }}
-    renderDay={renderDay}
-/>
-```
-
-`onVisibleMonthsChange` fires once when the calendar opens and again whenever
-scrolling changes the set of visible months; consecutive firings with the
-same set are deduplicated, so it is safe to fetch each month exactly once.
-
-Both props apply to the popover calendar. The mobile drawer uses wheel
-pickers and does not render per-day content.
-
 ## API Reference
 
 <DocsTypeTable
