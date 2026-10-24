@@ -1,7 +1,10 @@
+import type { ReactNode } from 'react'
 import type {
+    CalendarMonth,
     DateFormatConfig,
     DateRangePickerPopoverConfig,
     DateRangePickerSize,
+    RenderDayConfig,
     TriggerConfig,
 } from '../DateRangePicker/types'
 import type { PickerGranularity } from '../shared/datetime/granularity'
@@ -99,4 +102,26 @@ export type SingleDatePickerProps = {
     size?: DateRangePickerSize
     triggerConfig?: TriggerConfig
     popoverConfig?: DateRangePickerPopoverConfig
+    /**
+     * Renders custom content inside each calendar day cell — the same
+     * `renderDay` contract as `DateRangePicker`: content paints inside an
+     * absolute, click-through overlay (`pointer-events: none`), is not
+     * called for empty grid slots or hidden days, and the cell's
+     * `aria-label` is unchanged. Position freely within the overlay and
+     * offset away from the today-indicator dot (bottom-center). See
+     * `DateRangePickerProps.renderDay` for the full positioning and
+     * performance notes. Day granularity only; ignored for month/year.
+     *
+     * Single-date semantics: the picked day reports `isSingleDate: true`
+     * with `isStart: true`; `isEnd` and `isRangeDay` are always false.
+     */
+    renderDay?: (day: RenderDayConfig) => ReactNode
+    /**
+     * Reports which months are visible in the popover's scroll viewport,
+     * deduped by month set — same contract as
+     * `DateRangePickerProps.onVisibleMonthsChange`. Fires on mount (the
+     * initial scroll-to-selected month) and on scroll. Day granularity
+     * only; never fires for month/year.
+     */
+    onVisibleMonthsChange?: (months: CalendarMonth[]) => void
 }

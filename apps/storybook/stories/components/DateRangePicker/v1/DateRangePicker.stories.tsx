@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { userEvent, within } from '@storybook/test'
 import {
     DateRangePicker,
@@ -7,6 +7,10 @@ import {
     ButtonType,
     Theme,
     ThemeProvider,
+} from '@juspay/blend-design-system'
+import type {
+    CalendarMonth,
+    RenderDayConfig,
 } from '@juspay/blend-design-system'
 import {
     getA11yConfig,
@@ -68,6 +72,7 @@ const [dateRange, setDateRange] = useState({
 - Future/past date restrictions
 - Single date selection mode
 - Custom trigger element support
+- Per-day custom content via \`renderDay\` (badges, prices)
 - Accessible keyboard navigation
 - Customizable date formatting
 - Disabled state support
@@ -394,6 +399,24 @@ const [dateRange, setDateRange] = useState({
             description: 'Advanced range calculation configuration',
             table: {
                 type: { summary: 'CustomRangeConfig' },
+                category: 'Advanced',
+            },
+        },
+        renderDay: {
+            control: false,
+            description:
+                'Renders custom content (badges, prices, indicators) inside each day cell as a non-interactive overlay that never blocks selection',
+            table: {
+                type: { summary: '(day: RenderDayConfig) => ReactNode' },
+                category: 'Advanced',
+            },
+        },
+        onVisibleMonthsChange: {
+            action: 'visible-months-changed',
+            description:
+                'Fired with the months currently visible in the calendar grid; pair with renderDay to lazy-load per-day data',
+            table: {
+                type: { summary: '(months: CalendarMonth[]) => void' },
                 category: 'Advanced',
             },
         },
@@ -1310,6 +1333,134 @@ export const MonthRange: Story = {
         docs: {
             description: {
                 story: 'DateRangePicker with `granularity="month"`, selecting a month range instead of individual days. `startDate` is normalised to the first day of the start month and `endDate` to the last day of the end month; presets, the DD/MM/YYYY text inputs, and the mobile drawer are suppressed in this mode.',
+            },
+        },
+    },
+}
+
+// Per-day content via renderDay
+export const WithDayContent: Story = {
+    render: function WithDayContent() {
+        const [dateRange, setDateRange] = useState<DateRange>({
+            startDate: new Date(),
+            endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+        })
+
+        // Deterministic pseudo-counts keep badges stable across re-renders
+        // and Chromatic snapshots
+        const renderDay = useCallback(
+            ({ date, isDisabled }: RenderDayConfig) => {
+                const count = (date.getDate() * 7 + date.getMonth() * 3) % 10
+                if (!count || isDisabled) return null
+                return (
+                    <span
+                        className="absolute top-0.5 right-1 text-[10px] font-semibold leading-4 text-red-900 bg-red-100 rounded-full px-1 select-none"
+                        title={`${count} events on this day`}
+                    >
+                        {count}
+                    </span>
+                )
+            },
+            []
+        )
+
+        return (
+            <div className="w-100">
+                <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    renderDay={renderDay}
+                />
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'DateRangePicker with `renderDay` mounting an event-count badge inside each day cell. The badge is a non-interactive overlay: it never affects the calendar layout or blocks day selection.',
+            },
+        },
+    },
+}
+
+// Lazy per-month data loading via onVisibleMonthsChange + renderDay
+export const LazyMonthLoading: Story = {
+    render: function LazyMonthLoading() {
+        const [dateRange, setDateRange] = useState<DateRange>({
+            startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            endDate: new Date(),
+        })
+        const [counts, setCounts] = useState<Record<string, number>>({})
+        const [loadedMonths, setLoadedMonths] = useState<string[]>([])
+        const fetchedMonthsRef = useRef<Set<string>>(new Set())
+        const timersRef = useRef<number[]>([])
+
+        useEffect(
+            () => () => {
+                timersRef.current.forEach((timer) => window.clearTimeout(timer))
+            },
+            []
+        )
+
+        const onVisibleMonthsChange = useCallback((months: CalendarMonth[]) => {
+            for (const { year, month } of months) {
+                const key = `${year}-${String(month + 1).padStart(2, '0')}`
+                if (fetchedMonthsRef.current.has(key)) continue
+                fetchedMonthsRef.current.add(key)
+                // Simulated per-month API call
+                const timer = window.setTimeout(() => {
+                    const monthCounts: Record<string, number> = {}
+                    const daysInMonth = new Date(year, month + 1, 0).getDate()
+                    for (let day = 1; day <= daysInMonth; day++) {
+                        monthCounts[`${year}-${month}-${day}`] =
+                            (day * 7 + month * 3) % 9
+                    }
+                    setCounts((prev) => ({ ...prev, ...monthCounts }))
+                    setLoadedMonths((prev) => [...prev, key].sort())
+                }, 500)
+                timersRef.current.push(timer)
+            }
+        }, [])
+
+        const renderDay = useCallback(
+            ({ date, isDisabled }: RenderDayConfig) => {
+                const count =
+                    counts[
+                        `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
+                    ]
+                if (!count || isDisabled) return null
+                return (
+                    <span
+                        className="absolute top-0.5 right-1 text-[10px] font-semibold leading-4 text-red-900 bg-red-100 rounded-full px-1 select-none"
+                        title={`${count} events on this day`}
+                    >
+                        {count}
+                    </span>
+                )
+            },
+            [counts]
+        )
+
+        return (
+            <div className="w-100">
+                <DateRangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
+                    renderDay={renderDay}
+                    onVisibleMonthsChange={onVisibleMonthsChange}
+                />
+                <p className="mt-3 text-xs text-gray-500">
+                    Fetched months:{' '}
+                    {loadedMonths.join(', ') || 'none yet — open the calendar'}
+                </p>
+            </div>
+        )
+    },
+    parameters: {
+        chromatic: { disableSnapshot: true },
+        docs: {
+            description: {
+                story: 'DateRangePicker combining `onVisibleMonthsChange` with `renderDay`: each newly visible month is fetched once (simulated 500ms latency) and its counts are merged into a flat date-keyed map for O(1) day lookups. Snapshots are disabled because badge content depends on timer completion.',
             },
         },
     },
