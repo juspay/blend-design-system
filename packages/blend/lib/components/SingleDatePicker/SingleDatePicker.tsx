@@ -124,6 +124,8 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
             size = DateRangePickerSize.MEDIUM,
             triggerConfig,
             popoverConfig,
+            renderDay,
+            onVisibleMonthsChange,
         },
         ref
     ) => {
@@ -541,6 +543,10 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                                         isSingleDatePicker
                                         minDate={minDate}
                                         maxDate={maxDate}
+                                        renderDay={renderDay}
+                                        onVisibleMonthsChange={
+                                            onVisibleMonthsChange
+                                        }
                                     />
                                 ) : (
                                     <MonthYearGrid
