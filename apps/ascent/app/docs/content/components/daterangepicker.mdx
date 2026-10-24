@@ -414,6 +414,31 @@ are not shown in this mode.
             },
             { content: '' },
         ],
+        [
+            {
+                content: 'renderDay',
+                hintText:
+                    'Optional render function that mounts custom content (event counts, prices, availability indicators) inside each day cell. Receives a RenderDayConfig with date, isStart, isEnd, isSingleDate, isRangeDay, isTodayDay, and isDisabled, and returns a ReactNode, or null to render nothing. The content is rendered as a non-interactive overlay (absolute, pointer-events: none) so it never changes the calendar layout or blocks selection. Not called for placeholder or hidden days, and the mobile drawer (wheel pickers) does not render day content.',
+            },
+            {
+                content: '(day: RenderDayConfig) => ReactNode',
+                hintText:
+                    'Function returning the content for a single day cell',
+            },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'onVisibleMonthsChange',
+                hintText:
+                    "Optional callback fired with the months currently visible in the calendar's virtualized grid, e.g. to lazy-load per-day data for renderDay. Receives an array of CalendarMonth objects ({ year, month }, with a zero-based month). Fired once when the calendar opens and again whenever scrolling changes the visible set; consecutive firings with the same set are deduplicated. Only applies to the popover calendar.",
+            },
+            {
+                content: '(months: CalendarMonth[]) => void',
+                hintText: 'Function called with the currently visible months',
+            },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"

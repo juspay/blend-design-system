@@ -6,6 +6,7 @@ import {
     useCallback,
     useMemo,
     useEffect,
+    ReactNode,
 } from 'react'
 import styled, { CSSObject } from 'styled-components'
 import { motion } from 'framer-motion'
@@ -13,6 +14,8 @@ import {
     DateRange,
     CustomRangeConfig,
     CustomDateDisableFunction,
+    RenderDayConfig,
+    CalendarMonth,
 } from './types'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import Block from '../Primitives/Block/Block'
@@ -50,6 +53,8 @@ type CalendarGridProps = {
     minDate?: Date
     maxDate?: Date
     maxRangeDays?: number
+    renderDay?: (day: RenderDayConfig) => ReactNode
+    onVisibleMonthsChange?: (months: CalendarMonth[]) => void
 }
 
 const CONTAINER_HEIGHT = 340
@@ -249,6 +254,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             minDate,
             maxDate,
             maxRangeDays,
+            renderDay,
+            onVisibleMonthsChange,
         },
         ref
     ) => {
@@ -369,6 +376,29 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 setIsScrollPositioned(true)
             }
         }, [initialScrollTop])
+
+        // Reports the visible month set to the consumer, deduped by
+        // month key: fires once on mount (the initial scroll-to-selected
+        // month) and then only when scrolling changes which months are on
+        // screen. The scroll container fires native scroll events with
+        // scrollTop already updated, so `visibleMonths` (scrollTop ±300
+        // buffer) is current by the time this runs.
+        const lastVisibleMonthsKeyRef = useRef('')
+        useEffect(() => {
+            if (!onVisibleMonthsChange) return
+            const key = visibleMonths
+                .map(({ year, month }) => `${year}-${month}`)
+                .join(',')
+            if (key === lastVisibleMonthsKeyRef.current) return
+            lastVisibleMonthsKeyRef.current = key
+            onVisibleMonthsChange(
+                visibleMonths.map(({ month, year, index }) => ({
+                    month,
+                    year,
+                    index,
+                }))
+            )
+        }, [visibleMonths, onVisibleMonthsChange])
 
         const handleDateClick = useCallback(
             (
@@ -915,6 +945,45 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                                 }}
                                                             />
                                                         )}
+                                                        {renderDay && (
+                                                            <Block
+                                                                data-element="day-content"
+                                                                style={{
+                                                                    position:
+                                                                        'absolute',
+                                                                    inset: 0,
+                                                                    pointerEvents:
+                                                                        'none',
+                                                                }}
+                                                            >
+                                                                {renderDay({
+                                                                    date,
+                                                                    isStart:
+                                                                        cellProps
+                                                                            .dateStates
+                                                                            .isStart,
+                                                                    isEnd: cellProps
+                                                                        .dateStates
+                                                                        .isEnd,
+                                                                    isSingleDate:
+                                                                        cellProps
+                                                                            .dateStates
+                                                                            .isSingleDate,
+                                                                    isRangeDay:
+                                                                        cellProps
+                                                                            .dateStates
+                                                                            .isRangeDay,
+                                                                    isTodayDay:
+                                                                        cellProps
+                                                                            .dateStates
+                                                                            .isTodayDay,
+                                                                    isDisabled:
+                                                                        cellProps
+                                                                            .dateStates
+                                                                            .isDisabled,
+                                                                })}
+                                                            </Block>
+                                                        )}
                                                     </StyledDayCell>
                                                 )
                                             }
@@ -937,6 +1006,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 handleDateClick,
                 calendarToken,
                 timezone,
+                renderDay,
             ]
         )
 

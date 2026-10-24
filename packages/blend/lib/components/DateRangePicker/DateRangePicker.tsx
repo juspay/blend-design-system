@@ -5,6 +5,8 @@ import {
     DateRange,
     DateRangePickerSize,
     PresetSelectionData,
+    RenderDayConfig,
+    CalendarMonth,
 } from './types'
 import {
     formatDate,
@@ -282,6 +284,8 @@ type CalendarSectionProps = {
     maxDate?: Date
     maxRangeDays?: number
     granularity?: 'day' | 'month'
+    renderDay?: (day: RenderDayConfig) => React.ReactNode
+    onVisibleMonthsChange?: (months: CalendarMonth[]) => void
 }
 
 const CalendarSection: React.FC<
@@ -306,6 +310,8 @@ const CalendarSection: React.FC<
     maxDate,
     maxRangeDays,
     granularity = 'day',
+    renderDay,
+    onVisibleMonthsChange,
 }) =>
     granularity === 'month' ? (
         <Block flexGrow={1} minHeight={0} overflow="auto">
@@ -358,6 +364,8 @@ const CalendarSection: React.FC<
                 minDate={minDate}
                 maxDate={maxDate}
                 maxRangeDays={maxRangeDays}
+                renderDay={renderDay}
+                onVisibleMonthsChange={onVisibleMonthsChange}
             />
         </Block>
     )
@@ -450,6 +458,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             showPreset = false,
             timezone,
             maxYearOffset,
+            renderDay,
+            onVisibleMonthsChange,
         },
         ref
     ) => {
@@ -1280,6 +1290,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                             maxDate={maxDate}
                             maxRangeDays={maxRangeDays}
                             granularity={granularity}
+                            renderDay={renderDay}
+                            onVisibleMonthsChange={onVisibleMonthsChange}
                         />
 
                         <FooterControls
