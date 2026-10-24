@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import {
     SingleDatePicker,
     DateRangePickerSize,
@@ -7,6 +7,7 @@ import {
 } from '@juspay/blend-design-system'
 import type {
     DateFormatConfig,
+    RenderDayConfig,
     TriggerConfig,
 } from '@juspay/blend-design-system'
 import {
@@ -46,6 +47,7 @@ const [date, setDate] = useState<Date | undefined>(new Date());
 - **Timezone support**: IANA timezone strings drive "today" and trigger formatting
 - Custom date formatting via \`dateFormat\` or \`formatConfig\`
 - Custom trigger element support via \`triggerConfig.renderTrigger\`
+- Per-day custom content via \`renderDay\` (badges, prices)
 - Inline clear affordance via \`allowClear\`
 - Error state with associated error message
 - Disabled state support
@@ -242,6 +244,24 @@ const [date, setDate] = useState<Date | undefined>(new Date());
                 'Popover placement configuration (side, align, sideOffset)',
             table: {
                 type: { summary: 'DateRangePickerPopoverConfig' },
+                category: 'Advanced',
+            },
+        },
+        renderDay: {
+            control: false,
+            description:
+                'Renders custom content (badges, prices, indicators) inside each day cell as a non-interactive overlay that never blocks selection',
+            table: {
+                type: { summary: '(day: RenderDayConfig) => ReactNode' },
+                category: 'Advanced',
+            },
+        },
+        onVisibleMonthsChange: {
+            action: 'visible-months-changed',
+            description:
+                'Fired with the months currently visible in the calendar grid; pair with renderDay to lazy-load per-day data',
+            table: {
+                type: { summary: '(months: CalendarMonth[]) => void' },
                 category: 'Advanced',
             },
         },
@@ -665,6 +685,55 @@ export const YearPicker: Story = {
         docs: {
             description: {
                 story: 'SingleDatePicker with `granularity="year"`, rendering a year grid. The returned value is always 1 January of the selected year.',
+            },
+        },
+    },
+}
+
+// Per-day content via renderDay
+export const WithDayContent: Story = {
+    render: function WithDayContent() {
+        const [date, setDate] = useState<Date | undefined>(new Date())
+
+        // The picked day reports isSingleDate, so it can be styled differently
+        const renderDay = useCallback(
+            ({ date: day, isDisabled, isSingleDate }: RenderDayConfig) => {
+                const count = (day.getDate() * 7 + day.getMonth() * 3) % 10
+                if (!count || isDisabled) return null
+                return (
+                    <span
+                        className={`absolute top-0.5 right-1 text-[10px] font-semibold leading-4 rounded-full px-1 select-none ${
+                            isSingleDate
+                                ? 'text-blue-900 bg-blue-100'
+                                : 'text-red-900 bg-red-100'
+                        }`}
+                        title={`${count} events on this day`}
+                    >
+                        {count}
+                    </span>
+                )
+            },
+            []
+        )
+
+        return (
+            <div className="w-100">
+                <SingleDatePicker
+                    value={date}
+                    onChange={setDate}
+                    renderDay={renderDay}
+                />
+                <p className="mt-3 text-xs text-gray-500">
+                    The picked day reports <code>isSingleDate</code> and is
+                    highlighted in blue; other days show a neutral badge.
+                </p>
+            </div>
+        )
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'SingleDatePicker with `renderDay` mounting event-count badges. The picked day reports `isSingleDate` (with `isStart`); `isEnd` and `isRangeDay` are always false in single-date mode.',
             },
         },
     },
