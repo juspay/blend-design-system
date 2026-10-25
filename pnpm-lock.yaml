@@ -4,6 +4,13 @@ settings:
     autoInstallPeers: true
     excludeLinksFromLockfile: false
 
+overrides:
+    protobufjs@^7: ^7.6.6
+    websocket-driver@^0.7: ^0.7.5
+    fast-xml-parser@^4: ^4.5.7
+    form-data@^4: ^4.0.6
+    form-data@^2: ^2.5.6
+
 importers:
     .:
         dependencies:
@@ -135,8 +142,8 @@ importers:
                 specifier: ^12.23.2
                 version: 12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             next:
-                specifier: 15.3.6
-                version: 15.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+                specifier: 15.5.28
+                version: 15.5.28(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
             next-mdx-remote:
                 specifier: ^5.0.0
                 version: 5.0.0(@types/react@19.2.7)(react@19.2.3)
@@ -2849,12 +2856,6 @@ packages:
                 integrity: sha512-ewvYlk86xUoGI0zQRNq/mC+16R1QeDlKQy21Ki3oSYXNgLb45GV1P6A0M+/s6nyCuNDqe5VpaY84BzXGwVbwFA==,
             }
 
-    '@emnapi/runtime@1.7.1':
-        resolution:
-            {
-                integrity: sha512-PVtJr5CmLwYAU9PZDMITZoR5iAOShYREoR45EyyLrbntV50mdePTgUn4AmOw90Ifcj+x2kRjdzr1HP3RrNiHGA==,
-            }
-
     '@emnapi/wasi-threads@1.2.1':
         resolution:
             {
@@ -5160,10 +5161,10 @@ packages:
             '@emnapi/core': ^1.7.1
             '@emnapi/runtime': ^1.7.1
 
-    '@next/env@15.3.6':
+    '@next/env@15.5.28':
         resolution:
             {
-                integrity: sha512-/cK+QPcfRbDZxmI/uckT4lu9pHCfRIPBLqy88MhE+7Vg5hKrEYc333Ae76dn/cw2FBP2bR/GoK/4DU+U7by/Nw==,
+                integrity: sha512-xxW5EBI8fMPuVTPBW7LL980IRbuDXlbkUAwp9DDhtb4Lnich3nJ13uYpvrX4VE74hWPf6AvHHAMmGCidcHjbfg==,
             }
 
     '@next/mdx@15.5.9':
@@ -5180,77 +5181,73 @@ packages:
             '@mdx-js/react':
                 optional: true
 
-    '@next/swc-darwin-arm64@15.3.5':
+    '@next/swc-darwin-arm64@15.5.28':
         resolution:
             {
-                integrity: sha512-lM/8tilIsqBq+2nq9kbTW19vfwFve0NR7MxfkuSUbRSgXlMQoJYg+31+++XwKVSXk4uT23G2eF/7BRIKdn8t8w==,
+                integrity: sha512-dPoQYXcfSIqx5o+TOXVXO7kONK5qbtNRDeiTfII0bT3puGIT6VF5e0QwmxNZfEZ5Zety5f3m9P/p4xqwfiLlPg==,
             }
         engines: { node: '>= 10' }
         cpu: [arm64]
         os: [darwin]
 
-    '@next/swc-darwin-x64@15.3.5':
+    '@next/swc-darwin-x64@15.5.28':
         resolution:
             {
-                integrity: sha512-WhwegPQJ5IfoUNZUVsI9TRAlKpjGVK0tpJTL6KeiC4cux9774NYE9Wu/iCfIkL/5J8rPAkqZpG7n+EfiAfidXA==,
+                integrity: sha512-RgCJ7buBivTH+6sddqaVm+/v8kwMHlFkobvdt3DfETutws5HrxnToMIWSN9X3MZ3aAi7BbKrGZZWUDQLEycXqw==,
             }
         engines: { node: '>= 10' }
         cpu: [x64]
         os: [darwin]
 
-    '@next/swc-linux-arm64-gnu@15.3.5':
+    '@next/swc-linux-arm64-gnu@15.5.28':
         resolution:
             {
-                integrity: sha512-LVD6uMOZ7XePg3KWYdGuzuvVboxujGjbcuP2jsPAN3MnLdLoZUXKRc6ixxfs03RH7qBdEHCZjyLP/jBdCJVRJQ==,
+                integrity: sha512-OHXQe13olE59aKe++zHavGcJPh5SLHXi6Anret3BBeq1+qhSuOJDNAli/EDDfxs6UTqA4Qddo4uyYry2slyjiQ==,
             }
         engines: { node: '>= 10' }
         cpu: [arm64]
         os: [linux]
-        libc: [glibc]
 
-    '@next/swc-linux-arm64-musl@15.3.5':
+    '@next/swc-linux-arm64-musl@15.5.28':
         resolution:
             {
-                integrity: sha512-k8aVScYZ++BnS2P69ClK7v4nOu702jcF9AIHKu6llhHEtBSmM2zkPGl9yoqbSU/657IIIb0QHpdxEr0iW9z53A==,
+                integrity: sha512-nTB7bB6vfn4ezCJNYP43ukt2o8L3+WxKF/sTcTxepdXsJh3SM9RhlU7wrZYbH7L4HO5M87dqDTwm8587vAkCiw==,
             }
         engines: { node: '>= 10' }
         cpu: [arm64]
         os: [linux]
-        libc: [musl]
 
-    '@next/swc-linux-x64-gnu@15.3.5':
+    '@next/swc-linux-x64-gnu@15.5.28':
         resolution:
             {
-                integrity: sha512-2xYU0DI9DGN/bAHzVwADid22ba5d/xrbrQlr2U+/Q5WkFUzeL0TDR963BdrtLS/4bMmKZGptLeg6282H/S2i8A==,
+                integrity: sha512-WXCfVI32rW3xCusoUX1RpZKtyChWU2Zwe27JUDmM3KrXwcDNc9vV4zEq0GKFAURnuQ/Ouo/XqPvB0yh445XZCg==,
             }
         engines: { node: '>= 10' }
         cpu: [x64]
         os: [linux]
-        libc: [glibc]
 
-    '@next/swc-linux-x64-musl@15.3.5':
+    '@next/swc-linux-x64-musl@15.5.28':
         resolution:
             {
-                integrity: sha512-TRYIqAGf1KCbuAB0gjhdn5Ytd8fV+wJSM2Nh2is/xEqR8PZHxfQuaiNhoF50XfY90sNpaRMaGhF6E+qjV1b9Tg==,
+                integrity: sha512-Miq+NDb/HWsXuxseYxMM6fuEOQXgTziarkKIRpVKCn8W69cEfhQaQr+90pO+u4q2CbJR2wzXmUuCFyZaJs/Nng==,
             }
         engines: { node: '>= 10' }
         cpu: [x64]
         os: [linux]
-        libc: [musl]
 
-    '@next/swc-win32-arm64-msvc@15.3.5':
+    '@next/swc-win32-arm64-msvc@15.5.28':
         resolution:
             {
-                integrity: sha512-h04/7iMEUSMY6fDGCvdanKqlO1qYvzNxntZlCzfE8i5P0uqzVQWQquU1TIhlz0VqGQGXLrFDuTJVONpqGqjGKQ==,
+                integrity: sha512-5LR79lemgDlgxvG7MQJ+zHCkVcrUoQuO7CiIvq3I58vNW4goSOE2b+19Z6FujRWMouvni4gvudYFuFuNxolGWA==,
             }
         engines: { node: '>= 10' }
         cpu: [arm64]
         os: [win32]
 
-    '@next/swc-win32-x64-msvc@15.3.5':
+    '@next/swc-win32-x64-msvc@15.5.28':
         resolution:
             {
-                integrity: sha512-5fhH6fccXxnX2KhllnGhkYMndhOiLOLEiVGYjP2nizqeGWkN10sA9taATlXwake2E2XMvYZjjz0Uj7T0y+z1yw==,
+                integrity: sha512-GNipvXUYROSTf4PXEyH95FrWImIB5zdaK6uEOg0RP1/X2drnvoMwiBkJ0VWdzX7w3iiBm3y5g2TxkKDGVTOQcg==,
             }
         engines: { node: '>= 10' }
         cpu: [x64]
@@ -5581,34 +5578,28 @@ packages:
                 integrity: sha512-AZkcAA5vnN/v4PDqKyMR5lx7hZttPDgClv83E//FMNhR2TMcLUhfRUBHCmSl0oi9zMgDDqRUJkSxO3wm85+XLg==,
             }
 
-    '@protobufjs/codegen@2.0.4':
+    '@protobufjs/codegen@2.0.5':
         resolution:
             {
-                integrity: sha512-YyFaikqM5sH0ziFZCN3xDC7zeGaB/d0IUb9CATugHWbd1FRFwWwt4ld4OYMPWu5a3Xe01mGAULCdqhMlPl29Jg==,
+                integrity: sha512-zgXFLzW3Ap33e6d0Wlj4MGIm6Ce8O89n/apUaGNB/jx+hw+ruWEp7EwGUshdLKVRCxZW12fp9r40E1mQrf/34g==,
             }
 
-    '@protobufjs/eventemitter@1.1.0':
+    '@protobufjs/eventemitter@1.1.1':
         resolution:
             {
-                integrity: sha512-j9ednRT81vYJ9OfVuXG6ERSTdEL1xVsNgqpkxMsbIabzSo3goCjDIveeGv5d03om39ML71RdmrGNjG5SReBP/Q==,
+                integrity: sha512-vW1GmwMZNnL+gMRaovlh9yZX74kc+TTU3FObkkurpMaRtBfLP3ldjS9KQWlwZgraRE0+dheEEoAxdzcJQ8eXZg==,
             }
 
-    '@protobufjs/fetch@1.1.0':
+    '@protobufjs/fetch@1.1.1':
         resolution:
             {
-                integrity: sha512-lljVXpqXebpsijW71PZaCYeIcE5on1w5DlQy5WH6GLbFryLUrBD4932W/E2BSpfRJWseIL4v/KPgBFxDOIdKpQ==,
+                integrity: sha512-GpptLrs57adMSuHi3VNj0mAF8dwh36LMaYF6XyJ6JMWlVsc+t42tm1HSEDmOs3A8fC9yyeisgLhsTVQokOZ0zw==,
             }
 
     '@protobufjs/float@1.0.2':
         resolution:
             {
                 integrity: sha512-Ddb+kVXlXst9d+R9PfTIxh1EdNkgoRe5tOX6t01f1lYWOvJnSPDBlG241QLzcyPdoNTsblLUdujGSE4RzrTZGQ==,
-            }
-
-    '@protobufjs/inquire@1.1.0':
-        resolution:
-            {
-                integrity: sha512-kdSefcPdruJiFMVSbn801t4vFK7KB/5gd2fYvrxhuJYg8ILrmn9SKSX2tZdV6V+ksulWqS7aXjBcRXl3wHoD9Q==,
             }
 
     '@protobufjs/path@1.1.2':
@@ -5623,10 +5614,10 @@ packages:
                 integrity: sha512-0kELaGSIDBKvcgS4zkjz1PeddatrjYcmMWOlAuAPwAeccUrPHdUqo/J6LiymHHEiJT5NrF1UVwxY14f+fy4WQw==,
             }
 
-    '@protobufjs/utf8@1.1.0':
+    '@protobufjs/utf8@1.1.2':
         resolution:
             {
-                integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==,
+                integrity: sha512-b1UQwcEZ4yCnMCD8DAL1VlbvBJE9/IX4FTIp7BG1xYpf29SLazLSrqUkj4w7Y5y7cCVP6E5tcqqcI0xemPkHug==,
             }
 
     '@radix-ui/number@1.1.1':
@@ -7582,12 +7573,6 @@ packages:
                 integrity: sha512-qMx1nOrzoB+PF+pzb26Q4Tc2sOlrx9Ba2UBNX9hB31Omrq+QoZ2Gly0KLrQWw4Of1AQ4J9lnD+XOdwOdcdXqqw==,
             }
         engines: { node: '>=12.20.0' }
-
-    '@swc/counter@0.1.3':
-        resolution:
-            {
-                integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==,
-            }
 
     '@swc/helpers@0.5.15':
         resolution:
@@ -12310,10 +12295,10 @@ packages:
                 integrity: sha512-iPeeDKJSWf4IEOasVVrknXpaBV0IApz/gp7S2bb7Z4Lljbl2MGJRqInZiUrQwV16cpzw/D3S5j5Julj/gT52AA==,
             }
 
-    fast-xml-parser@4.5.3:
+    fast-xml-parser@4.5.7:
         resolution:
             {
-                integrity: sha512-RKihhV+SHsIUGXObeVy9AXiBbFwkVk7Syp8XgwN5U3JV416+Gwp/GO9i0JYKmikykgz/UHRrrV4ROuZEo/T0ig==,
+                integrity: sha512-a6Qh1RMCNbSrU1+sAyAAZH3rTe+OaWJbNZIq0S+ifZciUUOQtlVxBJwoTUE2bYhysmG/RYyI5WJFIKdBahJdrQ==,
             }
         hasBin: true
 
@@ -12520,17 +12505,17 @@ packages:
             }
         engines: { node: '>=14' }
 
-    form-data@2.5.5:
+    form-data@2.5.6:
         resolution:
             {
-                integrity: sha512-jqdObeR2rxZZbPSGL+3VckHMYtu+f9//KXBsVny6JSX/pa38Fy+bGjuG8eW/H6USNQWhLi8Num++cU2yOCNz4A==,
+                integrity: sha512-Ogz/E85h9tlfJzpI6TuFpGcHZFhLrb9Gw8wq9v40CxSCPnv7ahKr6Xgtkn0KYCDQJ8DNn5VoMO8EXr9V5PadyA==,
             }
         engines: { node: '>= 0.12' }
 
-    form-data@4.0.5:
+    form-data@4.0.6:
         resolution:
             {
-                integrity: sha512-8RipRLol37bNs2bhoV67fiTEvdTrbMUYcFTiy3+wuuOnUog2QBHCZWXDRijWQfAkhBj2Uf5UnVaiWwA5vdd82w==,
+                integrity: sha512-vKatAh4SlVfgbv+YtmhiRjhEMJsYpsG1Y2rMQtR+SVSbytsSD1YGzDIcrAJmdFec88u/+VoGmxnl+80gL1tRCQ==,
             }
         engines: { node: '>= 6' }
 
@@ -13048,6 +13033,13 @@ packages:
         resolution:
             {
                 integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==,
+            }
+        engines: { node: '>= 0.4' }
+
+    hasown@2.0.4:
+        resolution:
+            {
+                integrity: sha512-T2UbfbBEF32wiepXIsMlTW9+dDYC6wMh/t/vYA4tuOMKqWz/n3vr1NFSxQiyP+zk2mXsoMA/i/7qV6LKut1t1A==,
             }
         engines: { node: '>= 0.4' }
 
@@ -16289,17 +16281,16 @@ packages:
             react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
             react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
 
-    next@15.3.6:
+    next@15.5.28:
         resolution:
             {
-                integrity: sha512-oI6D1zbbsh6JzzZFDCSHnnx6Qpvd1fSkVJu/5d8uluqnxzuoqtodVZjYvNovooznUq8udSAiKp7MbwlfZ8Gm6w==,
+                integrity: sha512-JjhLBBY1PNnuwPtcZ7t8yxVeJVYvD2Jyp633J+gRCNbzSt7N0E+xqCf6uQiff3+3qmUkwcF/ksfSsK1xsZ76Tw==,
             }
         engines: { node: ^18.18.0 || ^19.8.0 || >= 20.0.0 }
-        deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/security-update-2025-12-11 for more details.
         hasBin: true
         peerDependencies:
             '@opentelemetry/api': ^1.1.0
-            '@playwright/test': ^1.41.2
+            '@playwright/test': ^1.51.1
             babel-plugin-react-compiler: '*'
             react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
             react-dom: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
@@ -17457,10 +17448,10 @@ packages:
             }
         engines: { node: '>=14.0.0' }
 
-    protobufjs@7.5.4:
+    protobufjs@7.6.6:
         resolution:
             {
-                integrity: sha512-CvexbZtbov6jW2eXAvLukXjXUW1TzFaivC46BpWc/3BpcCysb5Vffu+B3XHMm8lVEuy2Mm4XGex8hBSg1yapPg==,
+                integrity: sha512-dYDWdjSl5RNb7SgPxGQcRU+GtvP7s2fpkrY0r432PcOIaZ0/rBcxEZnQN67iJhFuQiVw754JDoPruPCNdGsbjg==,
             }
         engines: { node: '>=12.0.0' }
 
@@ -21014,10 +21005,10 @@ packages:
                 integrity: sha512-66/V2i5hQanC51vBQKPH4aI8NMAcBW59FVBs+rC7eGHupMyfn34q7rZIE+ETlJ+XTevqfUhVVBgSUNSW2flEUQ==,
             }
 
-    websocket-driver@0.7.4:
+    websocket-driver@0.7.5:
         resolution:
             {
-                integrity: sha512-b17KeDIQVjvb0ssuSDF2cYXSg2iztliJ4B9WdsuB6J952qCPKmnVq4DyW5motImXHDC1cBT/1UezrJVsKw5zjg==,
+                integrity: sha512-ZL2+3c7kMBdIRCMz6l8jQMHyGVxj+UL+xVk74Ombiciboca8rHa15L86B19E5oh1pL9Ii/uj54gtsIrZGMo6zA==,
             }
         engines: { node: '>=0.8.0' }
 
@@ -22877,11 +22868,6 @@ snapshots:
             tslib: 2.8.1
         optional: true
 
-    '@emnapi/runtime@1.7.1':
-        dependencies:
-            tslib: 2.8.1
-        optional: true
-
     '@emnapi/wasi-threads@1.2.1':
         dependencies:
             tslib: 2.8.1
@@ -24223,7 +24209,7 @@ snapshots:
             fast-deep-equal: 3.1.3
             functional-red-black-tree: 1.0.1
             google-gax: 4.6.1
-            protobufjs: 7.5.4
+            protobufjs: 7.6.6
         transitivePeerDependencies:
             - encoding
             - supports-color
@@ -24249,7 +24235,7 @@ snapshots:
             abort-controller: 3.0.0
             async-retry: 1.3.3
             duplexify: 4.1.3
-            fast-xml-parser: 4.5.3
+            fast-xml-parser: 4.5.7
             gaxios: 6.7.1
             google-auth-library: 9.15.1
             html-entities: 2.6.0
@@ -24278,14 +24264,14 @@ snapshots:
         dependencies:
             lodash.camelcase: 4.3.0
             long: 5.3.2
-            protobufjs: 7.5.4
+            protobufjs: 7.6.6
             yargs: 17.7.2
 
     '@grpc/proto-loader@0.8.0':
         dependencies:
             lodash.camelcase: 4.3.0
             long: 5.3.2
-            protobufjs: 7.5.4
+            protobufjs: 7.6.6
             yargs: 17.7.2
         optional: true
 
@@ -24389,7 +24375,7 @@ snapshots:
 
     '@img/sharp-wasm32@0.34.5':
         dependencies:
-            '@emnapi/runtime': 1.7.1
+            '@emnapi/runtime': 1.10.0
         optional: true
 
     '@img/sharp-win32-arm64@0.34.5':
@@ -25102,7 +25088,7 @@ snapshots:
             '@tybys/wasm-util': 0.10.2
         optional: true
 
-    '@next/env@15.3.6': {}
+    '@next/env@15.5.28': {}
 
     '@next/mdx@15.5.9(@mdx-js/loader@3.1.1)(@mdx-js/react@3.1.1(@types/react@19.2.7)(react@19.2.3))':
         dependencies:
@@ -25111,28 +25097,28 @@ snapshots:
             '@mdx-js/loader': 3.1.1
             '@mdx-js/react': 3.1.1(@types/react@19.2.7)(react@19.2.3)
 
-    '@next/swc-darwin-arm64@15.3.5':
+    '@next/swc-darwin-arm64@15.5.28':
         optional: true
 
-    '@next/swc-darwin-x64@15.3.5':
+    '@next/swc-darwin-x64@15.5.28':
         optional: true
 
-    '@next/swc-linux-arm64-gnu@15.3.5':
+    '@next/swc-linux-arm64-gnu@15.5.28':
         optional: true
 
-    '@next/swc-linux-arm64-musl@15.3.5':
+    '@next/swc-linux-arm64-musl@15.5.28':
         optional: true
 
-    '@next/swc-linux-x64-gnu@15.3.5':
+    '@next/swc-linux-x64-gnu@15.5.28':
         optional: true
 
-    '@next/swc-linux-x64-musl@15.3.5':
+    '@next/swc-linux-x64-musl@15.5.28':
         optional: true
 
-    '@next/swc-win32-arm64-msvc@15.3.5':
+    '@next/swc-win32-arm64-msvc@15.5.28':
         optional: true
 
-    '@next/swc-win32-x64-msvc@15.3.5':
+    '@next/swc-win32-x64-msvc@15.5.28':
         optional: true
 
     '@noble/hashes@1.8.0': {}
@@ -25370,24 +25356,21 @@ snapshots:
 
     '@protobufjs/base64@1.1.2': {}
 
-    '@protobufjs/codegen@2.0.4': {}
+    '@protobufjs/codegen@2.0.5': {}
 
-    '@protobufjs/eventemitter@1.1.0': {}
+    '@protobufjs/eventemitter@1.1.1': {}
 
-    '@protobufjs/fetch@1.1.0':
+    '@protobufjs/fetch@1.1.1':
         dependencies:
             '@protobufjs/aspromise': 1.1.2
-            '@protobufjs/inquire': 1.1.0
 
     '@protobufjs/float@1.0.2': {}
-
-    '@protobufjs/inquire@1.1.0': {}
 
     '@protobufjs/path@1.1.2': {}
 
     '@protobufjs/pool@1.1.0': {}
 
-    '@protobufjs/utf8@1.1.0': {}
+    '@protobufjs/utf8@1.1.2': {}
 
     '@radix-ui/number@1.1.1': {}
 
@@ -27221,8 +27204,6 @@ snapshots:
         dependencies:
             apg-lite: 1.0.5
 
-    '@swc/counter@0.1.3': {}
-
     '@swc/helpers@0.5.15':
         dependencies:
             tslib: 2.8.1
@@ -27736,7 +27717,7 @@ snapshots:
             '@types/caseless': 0.12.5
             '@types/node': 22.19.3
             '@types/tough-cookie': 4.0.5
-            form-data: 2.5.5
+            form-data: 2.5.6
         optional: true
 
     '@types/resolve@1.20.6': {}
@@ -27773,7 +27754,7 @@ snapshots:
             '@types/cookiejar': 2.1.5
             '@types/methods': 1.1.4
             '@types/node': 22.19.3
-            form-data: 4.0.5
+            form-data: 4.0.6
 
     '@types/supertest@6.0.3':
         dependencies:
@@ -28605,7 +28586,7 @@ snapshots:
     axios@1.16.0:
         dependencies:
             follow-redirects: 1.16.0
-            form-data: 4.0.5
+            form-data: 4.0.6
             proxy-from-env: 2.1.0
         transitivePeerDependencies:
             - debug
@@ -30708,7 +30689,7 @@ snapshots:
 
     fast-uri@3.1.0: {}
 
-    fast-xml-parser@4.5.3:
+    fast-xml-parser@4.5.7:
         dependencies:
             strnum: 1.1.2
         optional: true
@@ -30723,7 +30704,7 @@ snapshots:
 
     faye-websocket@0.11.4:
         dependencies:
-            websocket-driver: 0.7.4
+            websocket-driver: 0.7.5
 
     fb-dotslash@0.5.8: {}
 
@@ -30909,22 +30890,22 @@ snapshots:
             cross-spawn: 7.0.6
             signal-exit: 4.1.0
 
-    form-data@2.5.5:
+    form-data@2.5.6:
         dependencies:
             asynckit: 0.4.0
             combined-stream: 1.0.8
             es-set-tostringtag: 2.1.0
-            hasown: 2.0.2
+            hasown: 2.0.4
             mime-types: 2.1.35
             safe-buffer: 5.2.1
         optional: true
 
-    form-data@4.0.5:
+    form-data@4.0.6:
         dependencies:
             asynckit: 0.4.0
             combined-stream: 1.0.8
             es-set-tostringtag: 2.1.0
-            hasown: 2.0.2
+            hasown: 2.0.4
             mime-types: 2.1.35
 
     format@0.2.2: {}
@@ -31206,7 +31187,7 @@ snapshots:
             node-fetch: 2.7.0
             object-hash: 3.0.0
             proto3-json-serializer: 2.0.2
-            protobufjs: 7.5.4
+            protobufjs: 7.6.6
             retry-request: 7.0.2
             uuid: 9.0.1
         transitivePeerDependencies:
@@ -31267,6 +31248,10 @@ snapshots:
             has-symbols: 1.1.0
 
     hasown@2.0.2:
+        dependencies:
+            function-bind: 1.1.2
+
+    hasown@2.0.4:
         dependencies:
             function-bind: 1.1.2
 
@@ -32556,7 +32541,7 @@ snapshots:
             cssstyle: 4.6.0
             data-urls: 5.0.0
             decimal.js: 10.6.0
-            form-data: 4.0.5
+            form-data: 4.0.6
             html-encoding-sniffer: 4.0.0
             http-proxy-agent: 7.0.2
             https-proxy-agent: 7.0.6
@@ -33958,26 +33943,24 @@ snapshots:
             react: 19.2.3
             react-dom: 19.2.3(react@19.2.3)
 
-    next@15.3.6(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+    next@15.5.28(@babel/core@7.29.7)(@opentelemetry/api@1.9.0)(@playwright/test@1.59.1)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
         dependencies:
-            '@next/env': 15.3.6
-            '@swc/counter': 0.1.3
+            '@next/env': 15.5.28
             '@swc/helpers': 0.5.15
-            busboy: 1.6.0
-            caniuse-lite: 1.0.30001761
+            caniuse-lite: 1.0.30001809
             postcss: 8.4.31
             react: 19.2.3
             react-dom: 19.2.3(react@19.2.3)
             styled-jsx: 5.1.6(@babel/core@7.29.7)(react@19.2.3)
         optionalDependencies:
-            '@next/swc-darwin-arm64': 15.3.5
-            '@next/swc-darwin-x64': 15.3.5
-            '@next/swc-linux-arm64-gnu': 15.3.5
-            '@next/swc-linux-arm64-musl': 15.3.5
-            '@next/swc-linux-x64-gnu': 15.3.5
-            '@next/swc-linux-x64-musl': 15.3.5
-            '@next/swc-win32-arm64-msvc': 15.3.5
-            '@next/swc-win32-x64-msvc': 15.3.5
+            '@next/swc-darwin-arm64': 15.5.28
+            '@next/swc-darwin-x64': 15.5.28
+            '@next/swc-linux-arm64-gnu': 15.5.28
+            '@next/swc-linux-arm64-musl': 15.5.28
+            '@next/swc-linux-x64-gnu': 15.5.28
+            '@next/swc-linux-x64-musl': 15.5.28
+            '@next/swc-win32-arm64-msvc': 15.5.28
+            '@next/swc-win32-x64-msvc': 15.5.28
             '@opentelemetry/api': 1.9.0
             '@playwright/test': 1.59.1
             babel-plugin-react-compiler: 1.0.0
@@ -34497,7 +34480,7 @@ snapshots:
 
     postcss@8.4.31:
         dependencies:
-            nanoid: 3.3.11
+            nanoid: 3.3.12
             picocolors: 1.1.1
             source-map-js: 1.2.1
 
@@ -34672,21 +34655,20 @@ snapshots:
 
     proto3-json-serializer@2.0.2:
         dependencies:
-            protobufjs: 7.5.4
+            protobufjs: 7.6.6
         optional: true
 
-    protobufjs@7.5.4:
+    protobufjs@7.6.6:
         dependencies:
             '@protobufjs/aspromise': 1.1.2
             '@protobufjs/base64': 1.1.2
-            '@protobufjs/codegen': 2.0.4
-            '@protobufjs/eventemitter': 1.1.0
-            '@protobufjs/fetch': 1.1.0
+            '@protobufjs/codegen': 2.0.5
+            '@protobufjs/eventemitter': 1.1.1
+            '@protobufjs/fetch': 1.1.1
             '@protobufjs/float': 1.0.2
-            '@protobufjs/inquire': 1.1.0
             '@protobufjs/path': 1.1.2
             '@protobufjs/pool': 1.1.0
-            '@protobufjs/utf8': 1.1.0
+            '@protobufjs/utf8': 1.1.2
             '@types/node': 22.19.3
             long: 5.3.2
 
@@ -36175,7 +36157,7 @@ snapshots:
             cookiejar: 2.1.4
             debug: 4.4.3
             fast-safe-stringify: 2.1.1
-            form-data: 4.0.5
+            form-data: 4.0.6
             formidable: 3.5.4
             methods: 1.1.2
             mime: 2.6.0
@@ -37494,7 +37476,7 @@ snapshots:
 
     webpack-virtual-modules@0.6.2: {}
 
-    websocket-driver@0.7.4:
+    websocket-driver@0.7.5:
         dependencies:
             http-parser-js: 0.5.10
             safe-buffer: 5.2.1
