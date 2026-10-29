@@ -37,7 +37,7 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: 22
+                  node-version: 24
                   registry-url: 'https://registry.npmjs.org'
 
             - name: Enable corepack & install deps
@@ -89,7 +89,7 @@ jobs:
             - name: Publish to NPM
               if: steps.check.outputs.already_published != 'true'
               working-directory: packages/blend-telemetry
-              run: npm publish --access public
+              run: npm publish --access public --tag latest
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
