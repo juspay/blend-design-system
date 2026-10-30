@@ -12,7 +12,7 @@
 #   5. Proper PID 1 (tini) + Cloud Run healthcheck.
 # =============================================================================
 
-ARG NODE_VERSION=20-alpine
+ARG NODE_VERSION=24-alpine
 ARG PNPM_VERSION=10.21.0
 
 # -----------------------------------------------------------------------------
@@ -70,7 +70,7 @@ WORKDIR /repo
 RUN pnpm --filter "@blend-design/justbackend" deploy --prod --legacy /deploy
 WORKDIR /deploy
 # Avoid `pnpm exec` here: in some CI runners Corepack may resolve a newer
-# pnpm (v11+) requiring Node 22+, while this image intentionally uses Node 20.
+# pnpm (v11+) than the one pinned for this image.
 # Calling the local binary directly is deterministic and Node-version agnostic.
 RUN ./node_modules/.bin/prisma generate --schema=./prisma/schema.prisma
 
@@ -78,6 +78,10 @@ RUN ./node_modules/.bin/prisma generate --schema=./prisma/schema.prisma
 # 4. runner — minimal runtime image
 # -----------------------------------------------------------------------------
 FROM node:${NODE_VERSION} AS runner
+
+# Refuse to build on a Node below the October 2026 security release
+# (CVE-2026-111497 et al.): 22.23.4 / 24.22.1 / 26.12.1.
+RUN node -e "const [M,m,p]=process.versions.node.split('.').map(Number);const f=M>26?[0,0]:{22:[23,4],24:[22,1],26:[12,1]}[M];if(!f||m<f[0]||(m===f[0]&&p<f[1])){console.error('Node '+process.version+' is unpatched or unsupported');process.exit(1)}"
 
 RUN apk add --no-cache libc6-compat openssl tini wget \
  && addgroup -S appgroup -g 1001 \
