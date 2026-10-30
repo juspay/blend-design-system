@@ -89,7 +89,7 @@ jobs:
             - name: Publish to NPM
               if: steps.check.outputs.already_published != 'true'
               working-directory: packages/blend-telemetry
-              run: npm publish --access public --tag latest
+              run: npm publish --access public
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
