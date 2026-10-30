@@ -2,12 +2,6 @@
     "name": "blend-design-system",
     "packageManager": "pnpm@10.21.0",
     "private": true,
-    "pnpm": {
-        "overrides": {
-            "@firebase/firestore>@grpc/grpc-js": "1.13.7",
-            "google-gax>@grpc/grpc-js": "1.14.7"
-        }
-    },
     "scripts": {
         "dev": "turbo run dev",
         "build": "turbo run build",

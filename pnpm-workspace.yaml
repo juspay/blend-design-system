@@ -1,3 +1,7 @@
 packages:
     - 'apps/*'
     - 'packages/*'
+
+overrides:
+    '@firebase/firestore>@grpc/grpc-js': 1.13.7
+    'google-gax>@grpc/grpc-js': 1.14.7
