@@ -60,6 +60,13 @@ const EXCEPTIONS: { pattern: RegExp; handler: string }[] = [
         handler: 'Stepper.tsx SubstepRows (numeric half-dot radius)',
     },
     {
+        // `border` is a `{ width, color }` struct here, not a shorthand string —
+        // AvatarGroup reads the two leaves directly.
+        pattern:
+            /^AVATAR_GROUP\.\w+\.\w+\.(avatar|overflowCounter)\.border\.(width|color)$/,
+        handler: 'AvatarGroup.tsx (reads border width and color separately)',
+    },
+    {
         // 'calc(100vw - 32px)' — screen-relative width comes from the toast
         // outlet's horizontal insets; calc()/vw are unsupported by design
         // and the native snackbar never consumes this token.
