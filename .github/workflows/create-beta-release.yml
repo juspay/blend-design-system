@@ -18,6 +18,8 @@ on:
                 default: true
                 type: boolean
 
+permissions: {}
+
 concurrency:
     group: create-beta-release-${{ github.ref }}
     cancel-in-progress: true
@@ -27,6 +29,10 @@ jobs:
         name: Create Beta Release (No Publish)
         runs-on: ubuntu-latest
         if: github.ref == 'refs/heads/staging'
+        # contents: tag push + GitHub release; pull-requests: version PR to dev
+        permissions:
+            contents: write
+            pull-requests: write
         outputs:
             version: ${{ steps.bump_version.outputs.new_version }}
             tag: ${{ steps.bump_version.outputs.tag }}
