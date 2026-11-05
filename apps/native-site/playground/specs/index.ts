@@ -3,6 +3,7 @@ import type { AnySpec } from '../types'
 import accordion from './accordion.spec'
 import alert from './alert.spec'
 import avatar from './avatar.spec'
+import avatarGroup from './avatarGroup.spec'
 import badge from './badge.spec'
 import bottomNavigation from './bottomNavigation.spec'
 import bottomSheet from './bottomSheet.spec'
@@ -32,6 +33,7 @@ import switchSpec from './switch.spec'
 import spinner from './spinner.spec'
 import stepper from './stepper.spec'
 import tabs from './tabs.spec'
+import splitTag from './splitTag.spec'
 import tag from './tag.spec'
 import textArea from './textArea.spec'
 import textInput from './textInput.spec'
@@ -54,7 +56,7 @@ export type SpecGroup = {
 export const COMPONENT_GROUPS: readonly SpecGroup[] = [
     {
         title: 'Actions',
-        specs: [asAnySpec(button), asAnySpec(tag)],
+        specs: [asAnySpec(button), asAnySpec(tag), asAnySpec(splitTag)],
     },
     {
         title: 'Inputs',
@@ -86,6 +88,7 @@ export const COMPONENT_GROUPS: readonly SpecGroup[] = [
         title: 'Data display',
         specs: [
             asAnySpec(avatar),
+            asAnySpec(avatarGroup),
             asAnySpec(breadcrumb),
             asAnySpec(badge),
             asAnySpec(card),

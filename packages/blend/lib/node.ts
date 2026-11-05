@@ -49,6 +49,11 @@ export {
     getColorFromText,
     DEFAULT_FALLBACK_COLOR,
 } from './components/AvatarV2/avatarV2.utils'
+export { getAvatarGroupTokens } from './components/AvatarGroup/avatarGroup.tokens'
+export type {
+    AvatarGroupTokensType,
+    ResponsiveAvatarGroupTokens,
+} from './components/AvatarGroup/avatarGroup.tokens'
 export { getBreadcrumbV2Tokens } from './components/BreadcrumbV2/breadcrumbV2.tokens'
 export type {
     BreadcrumbV2TokensType,

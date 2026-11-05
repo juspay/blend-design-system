@@ -3,6 +3,7 @@ import {
     Theme,
     getAccordionV2Tokens,
     getAlertV2Tokens,
+    getAvatarGroupTokens,
     getAvatarV2Tokens,
     getBadgeTokens,
     getButtonV2Tokens,
@@ -53,6 +54,7 @@ import {
 export const NATIVE_TOKEN_REGISTRY = {
     ACCORDIONV2: getAccordionV2Tokens,
     ALERTV2: getAlertV2Tokens,
+    AVATAR_GROUP: getAvatarGroupTokens,
     AVATARV2: getAvatarV2Tokens,
     BADGE: getBadgeTokens,
     BUTTONV2: getButtonV2Tokens,

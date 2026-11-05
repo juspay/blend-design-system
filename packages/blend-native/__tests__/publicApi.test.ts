@@ -75,6 +75,7 @@ describe('public API surface', () => {
             'Accordion',
             'Alert',
             'Avatar',
+            'AvatarGroup',
             'Badge',
             'Button',
             'Breadcrumb',
@@ -106,6 +107,7 @@ describe('public API surface', () => {
             'Sparkline',
             'SingleSelect',
             'Spinner',
+            'SplitTag',
             'StatCard',
             'Switch',
             'Tabs',
@@ -158,7 +160,8 @@ describe('public API surface', () => {
         // Breadcrumb, then to 127 for Sidebar (+ SideDrawer, its drawer
         // primitive counterpart to BottomSheet), then to 130 for Stepper
         // (+ StepperStepStatus, StepperType and the StepperStep/
-        // StepperSubStep types), then to 131 for BottomNavigation.
-        expect(exported.size).toBeLessThanOrEqual(131)
+        // StepperSubStep types), then to 131 for BottomNavigation, then to 133 for AvatarGroup and
+        // SplitTag.
+        expect(exported.size).toBeLessThanOrEqual(133)
     })
 })

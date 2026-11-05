@@ -70,7 +70,7 @@ jobs:
             - name: Setup Node.js 22 and pnpm
               uses: actions/setup-node@v4
               with:
-                  node-version: 22
+                  node-version: 24
                   registry-url: 'https://registry.npmjs.org'
 
             - name: Enable corepack & install deps

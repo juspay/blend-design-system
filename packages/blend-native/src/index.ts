@@ -26,6 +26,11 @@ export type {
 export { Alert } from './components/Alert'
 export { Avatar } from './components/Avatar'
 export type { AvatarNativeProps, AvatarStatus } from './components/Avatar'
+export { AvatarGroup } from './components/AvatarGroup'
+export type {
+    AvatarGroupItem,
+    AvatarGroupNativeProps,
+} from './components/AvatarGroup'
 export { Badge } from './components/Badge'
 export type { BadgeNativeProps } from './components/Badge'
 export { Button } from './components/Button'
@@ -68,6 +73,8 @@ export type {
 } from './components/SingleSelect'
 export { Tag } from './components/Tag'
 export { TagGroup } from './components/Tag'
+export { SplitTag } from './components/SplitTag'
+export type { SplitTagNativeProps, SplitTagSide } from './components/SplitTag'
 export { Modal } from './components/Modal'
 export type { ModalNativeProps, ModalAction } from './components/Modal'
 export { Popover } from './components/Popover'

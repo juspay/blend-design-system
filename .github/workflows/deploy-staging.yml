@@ -38,7 +38,7 @@ env:
     PROJECT_ID: storybook-452807
     REGION: us-central1
     PNPM_VERSION: 10.21.0
-    NODE_VERSION: '20'
+    NODE_VERSION: '24'
     FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
