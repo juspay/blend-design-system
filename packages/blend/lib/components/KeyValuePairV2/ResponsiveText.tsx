@@ -3,8 +3,9 @@ import type { CSSObject } from 'styled-components'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'
 import Tooltip from '../Tooltip/Tooltip'
 import { TooltipSide } from '../Tooltip/types'
+import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
+import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
-import { checkIfTruncated } from '../Select/SelectItem/utils'
 import {
     type KeyValuePairV2TextOverflowMode,
     getTextStyles,
@@ -49,16 +50,16 @@ export const ResponsiveText = ({
 
     const checkTruncation = useCallback(() => {
         const element = textRef.current
-        if (!element || textOverflow === 'wrap' || !showTooltipOnTruncate) {
+        if (
+            !element ||
+            textOverflow !== 'wrap-clamp' ||
+            !showTooltipOnTruncate
+        ) {
             setIsTruncated(false)
             return
         }
-        if (textOverflow === 'truncate') {
-            const textElement = element.firstElementChild as HTMLElement | null
-            setIsTruncated(checkIfTruncated(textElement))
-        } else if (textOverflow === 'wrap-clamp') {
-            setIsTruncated(element.scrollHeight > element.clientHeight)
-        }
+
+        setIsTruncated(element.scrollHeight > element.clientHeight)
     }, [textOverflow, showTooltipOnTruncate])
 
     const handleResize = useCallback(() => {
@@ -68,7 +69,7 @@ export const ResponsiveText = ({
     useResizeObserver(textRef as React.RefObject<HTMLElement>, handleResize)
 
     useEffect(() => {
-        if (textOverflow === 'wrap' || !showTooltipOnTruncate) {
+        if (textOverflow !== 'wrap-clamp' || !showTooltipOnTruncate) {
             setIsTruncated(false)
             return
         }
@@ -82,16 +83,34 @@ export const ResponsiveText = ({
         checkTruncation,
     ])
 
+    const wrapperProps = {
+        className,
+        style: getTextStyles(textOverflow, maxLines, slotPresent),
+        id,
+        role,
+        'aria-label': ariaLabel,
+        'aria-labelledby': ariaLabelledBy,
+    }
+
+    if (textOverflow === 'truncate') {
+        return (
+            <Component {...wrapperProps}>
+                <TruncatedTextWithTooltipV2
+                    text={children}
+                    side={TooltipV2Side.TOP}
+                    disabled={!showTooltipOnTruncate}
+                    style={{
+                        fontSize,
+                        color,
+                        fontWeight,
+                    }}
+                />
+            </Component>
+        )
+    }
+
     const textElement = (
-        <Component
-            ref={textRef}
-            className={className}
-            style={getTextStyles(textOverflow, maxLines, slotPresent)}
-            id={id}
-            role={role}
-            aria-label={ariaLabel}
-            aria-labelledby={ariaLabelledBy}
-        >
+        <Component ref={textRef} {...wrapperProps}>
             <PrimitiveText
                 fontSize={fontSize}
                 color={color}
@@ -105,7 +124,7 @@ export const ResponsiveText = ({
         </Component>
     )
 
-    if (showTooltipOnTruncate && isTruncated) {
+    if (textOverflow === 'wrap-clamp' && showTooltipOnTruncate && isTruncated) {
         return (
             <Tooltip content={children} side={TooltipSide.TOP}>
                 {textElement}
