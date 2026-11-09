@@ -18,7 +18,7 @@ export interface InheritanceResult {
     isClean: boolean
 }
 
-const isUnsafePathSegment = (segment: string): boolean => {
+export const isUnsafePathSegment = (segment: string): boolean => {
     return (
         segment === '__proto__' ||
         segment === 'prototype' ||
@@ -72,6 +72,9 @@ function deepMerge<T extends Record<string, unknown>>(
 ): T {
     const result: Record<string, unknown> = { ...base }
     for (const [key, value] of Object.entries(override)) {
+        if (isUnsafePathSegment(key)) {
+            continue
+        }
         const baseValue = result[key]
         if (
             value &&

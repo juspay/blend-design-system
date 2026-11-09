@@ -16,6 +16,7 @@ import { join } from 'node:path'
 import prompts from 'prompts'
 import ora from 'ora'
 import { logger } from '../utils/logger'
+import { resolveInsideProject } from '../utils/safe-path'
 import type {
     BrandConfig,
     RadiusPreset,
@@ -101,7 +102,7 @@ export async function brandCommand(options: BrandOptions = {}): Promise<void> {
     spinner.succeed('Tokens resolved')
 
     // Write files
-    const outputDir = join(cwd, config.output)
+    const outputDir = resolveInsideProject(cwd, config.output)
     mkdirSync(outputDir, { recursive: true })
 
     const tokensPath = join(outputDir, 'tokens.ts')

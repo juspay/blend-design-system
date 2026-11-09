@@ -9,6 +9,7 @@
  */
 
 import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
+import { toCommentText } from './comment-text'
 
 /**
  * Generate the tokens.ts file content.
@@ -62,10 +63,10 @@ export function generateBrandTokensCode(
 
 import type { ComponentTokenType } from '@juspay/blend-design-system'
 
-/** Light theme tokens for ${brandConfig.name} */
+/** Light theme tokens for ${toCommentText(brandConfig.name)} */
 export const componentTokens: ComponentTokenType = ${lightJson} as ComponentTokenType
 
-/** Dark theme tokens for ${brandConfig.name} */
+/** Dark theme tokens for ${toCommentText(brandConfig.name)} */
 export const darkComponentTokens: ComponentTokenType = ${darkJson} as ComponentTokenType
 `
 }

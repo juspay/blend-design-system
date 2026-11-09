@@ -12,6 +12,7 @@
  */
 
 import {
+    chmodSync,
     existsSync,
     mkdirSync,
     readFileSync,
@@ -176,8 +177,9 @@ export class ApiClient {
     }
 
     private saveAuth(data: AuthData): void {
-        mkdirSync(CONFIG_DIR, { recursive: true })
-        writeFileSync(AUTH_FILE, JSON.stringify(data, null, 2))
+        mkdirSync(CONFIG_DIR, { recursive: true, mode: 0o700 })
+        writeFileSync(AUTH_FILE, JSON.stringify(data, null, 2), { mode: 0o600 })
+        chmodSync(AUTH_FILE, 0o600)
         this.authData = data
     }
 

@@ -1,11 +1,13 @@
 import { Router, type IRouter, type Request, type Response } from 'express'
 import { asyncHandler } from '@/middlewares/errorHandler.js'
+import { authenticate } from '@/middlewares/auth.js'
 import { listGoogleFonts } from './google-fonts.service.js'
 
 const router: IRouter = Router()
 
 router.get(
     '/',
+    authenticate,
     asyncHandler(async (req: Request, res: Response) => {
         const sort = req.query.sort as
             | 'alpha'

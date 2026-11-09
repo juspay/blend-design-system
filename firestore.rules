@@ -27,19 +27,25 @@ service cloud.firestore {
     //   /branches/{branchId}/snapshots/{snapshotId} ← auto-saved drafts
     //
     // Security:
-    //   - Authenticated users can read all branches
+    //   - Owners can read their branches; public branches are readable by any signed-in user
     //   - Branch owner (user uid) can write
     //   - Team members can write based on role (checked via owner.teamId)
     // ────────────────────────────────────────────────────────────────────────
 
-    match /branches/{branchId} {
-      // Read: Any authenticated user
-      allow read: if request.auth != null;
+    function canReadBranch(branch) {
+      return request.auth != null &&
+        (branch.owner.uid == request.auth.uid || branch.get('visibility', 'private') == 'public');
+    }
 
-      // Create: Any authenticated user
+    match /branches/{branchId} {
+      // Read: owner, or anyone signed in when the branch is public
+      allow read: if canReadBranch(resource.data);
+
+      // Create: only as yourself
       allow create: if
         request.auth != null &&
-        request.resource.data.keys().hasAll(['id', 'name', 'owner', 'brandConfig']);
+        request.resource.data.keys().hasAll(['id', 'name', 'owner', 'brandConfig']) &&
+        request.resource.data.owner.uid == request.auth.uid;
 
       // Update: Owner only (team access checked in app layer)
       allow update: if
@@ -53,7 +59,7 @@ service cloud.firestore {
 
       // Published versions (immutable)
       match /versions/{versionId} {
-        allow read: if request.auth != null;
+        allow read: if canReadBranch(get(/databases/$(database)/documents/branches/$(branchId)).data);
         allow create: if
           request.auth != null &&
           get(/databases/$(database)/documents/branches/$(branchId)).data.owner.uid == request.auth.uid;
@@ -62,7 +68,7 @@ service cloud.firestore {
 
       // Auto-saved snapshots
       match /snapshots/{snapshotId} {
-        allow read: if request.auth != null;
+        allow read: if canReadBranch(get(/databases/$(database)/documents/branches/$(branchId)).data);
         allow create, update, delete: if
           request.auth != null &&
           get(/databases/$(database)/documents/branches/$(branchId)).data.owner.uid == request.auth.uid;

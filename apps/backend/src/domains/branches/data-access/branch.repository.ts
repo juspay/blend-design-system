@@ -129,6 +129,7 @@ export const listBranches = async (
         visibility?: BranchVisibility
         search?: string
         tag?: string
+        visibleTo?: { userId: string; organizationIds: string[] }
     } = {}
 ): Promise<{ branches: BranchRow[]; nextCursor?: string }> => {
     const limit = options.limit || 20
@@ -151,6 +152,21 @@ export const listBranches = async (
     }
     if (options.cursor) {
         where.id = { lt: options.cursor }
+    }
+    if (options.visibleTo) {
+        where.AND = [
+            {
+                OR: [
+                    { visibility: 'public' },
+                    { createdBy: options.visibleTo.userId },
+                    {
+                        organizationId: {
+                            in: options.visibleTo.organizationIds,
+                        },
+                    },
+                ],
+            },
+        ]
     }
 
     const branches = await prisma.branch.findMany({

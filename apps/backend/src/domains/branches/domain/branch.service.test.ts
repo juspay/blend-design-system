@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
     updateBranchProtection,
     getBranchApprovalSettings,
+    getBranchForUser,
 } from './branch.service.js'
 
 import * as branchRepository from '../data-access/branch.repository.js'
@@ -161,5 +162,54 @@ describe('branch.service', () => {
         expect(settings.effectivePolicy.requireApproval).toBe(true)
         expect(settings.effectivePolicy.minApprovals).toBe(2)
         expect(settings.isDefaultBranch).toBe(true)
+    })
+
+    describe('getBranchForUser', () => {
+        const branch = {
+            id: 'branch-1',
+            organizationId: 'org-1',
+            createdBy: 'owner-1',
+            visibility: 'private',
+        }
+
+        it("hides another organization's branch as not found", async () => {
+            mockedBranchRepository.getBranchById.mockResolvedValue(
+                branch as any
+            )
+            mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+                null
+            )
+
+            await expect(
+                getBranchForUser('branch-1', 'outsider-1')
+            ).rejects.toThrow('Branch')
+        })
+
+        it('allows organization members, the creator and public branches', async () => {
+            mockedBranchRepository.getBranchById.mockResolvedValue(
+                branch as any
+            )
+            mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+                { organizationId: 'org-1', userId: 'member-1' } as any
+            )
+            await expect(
+                getBranchForUser('branch-1', 'member-1')
+            ).resolves.toMatchObject({ id: 'branch-1' })
+
+            mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+                null
+            )
+            await expect(
+                getBranchForUser('branch-1', 'owner-1')
+            ).resolves.toMatchObject({ id: 'branch-1' })
+
+            mockedBranchRepository.getBranchById.mockResolvedValue({
+                ...branch,
+                visibility: 'public',
+            } as any)
+            await expect(
+                getBranchForUser('branch-1', 'outsider-1')
+            ).resolves.toMatchObject({ id: 'branch-1' })
+        })
     })
 })

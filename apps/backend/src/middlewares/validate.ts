@@ -290,6 +290,7 @@ export const createApiKeySchema = z.object({
 
 export const googleCallbackQuerySchema = z.object({
     code: queryString,
+    state: queryString.optional(),
 })
 
 // ---------------------------------------------------------------------------

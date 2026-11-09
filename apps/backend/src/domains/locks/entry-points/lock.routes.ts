@@ -58,7 +58,7 @@ router.delete(
     asyncHandler(async (req: Request, res: Response) => {
         const result = await lockService.unlockToken(
             req.params.organizationId,
-            decodeURIComponent(req.params.tokenPath),
+            req.params.tokenPath,
             req.user!.id,
             req.user!.email
         )

@@ -16,5 +16,7 @@ functions.http('ping', (req, res) => {
     }
 
     // Your original logic
-    res.send(`Hello ${req.query.name || req.body.name || 'World'}!`)
+    res.type('text/plain').send(
+        `Hello ${req.query.name || req.body?.name || 'World'}!`
+    )
 })
