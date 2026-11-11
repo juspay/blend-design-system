@@ -1,0 +1,220 @@
+---
+title: Internationalization
+description: Localize Blend's built-in strings, dates, times and numbers with a provider-level translate function, per-prop overrides and Intl-based formatting.
+category: documentation
+tags:
+    - i18n
+    - localization
+    - locale
+    - translation
+---
+
+# Internationalization
+
+Blend ships English defaults plus a typed key catalog. It ships no translated
+locale files and takes no i18n library dependency, so you keep ownership of
+your translations and Blend stays out of the way of whatever i18n runtime you
+already use.
+
+If you set nothing, nothing changes: every component renders exactly the
+English it renders today.
+
+## Setup
+
+Pass a `locale` and a `t` function to the `ThemeProvider` you already mount.
+
+```tsx
+import { ThemeProvider } from '@juspay/blend-design-system'
+;<ThemeProvider locale="fr-FR" t={myTranslate}>
+    <App />
+</ThemeProvider>
+```
+
+| Prop             | Type                                                                  | Default   |
+| ---------------- | --------------------------------------------------------------------- | --------- |
+| `locale`         | `string` (BCP 47)                                                     | `'en-US'` |
+| `t`              | `(key: string, vars?: Record<string, string>) => string \| undefined` | —         |
+| `firstDayOfWeek` | `0`–`6`, where `0` is Sunday                                          | `1`       |
+
+`locale` drives every `Intl` formatter in the library — dates, times, numbers
+and plural selection. It defaults to the explicit string `'en-US'` rather than
+`undefined`, so `Intl` never falls through to the end user's machine locale and
+change your rendered output without you asking.
+
+### Wiring up an existing i18n runtime
+
+Any function with the right shape works, so i18next, FormatJS and friends drop
+straight in:
+
+```tsx
+const { t: i18nextT } = useTranslation()
+
+<ThemeProvider locale={i18n.language} t={(key, vars) => i18nextT(key, vars)}>
+```
+
+Returning `undefined`, an empty string, or the key itself all mean "I don't
+have this", and Blend falls back to its own English default. That last case
+matters: many runtimes echo an unknown key back rather than returning nothing,
+and without the rule you would ship raw `upload-v2.action.browse-files` text to
+users.
+
+### Without an i18n runtime
+
+If you just have a dictionary, use `createTranslator`:
+
+```tsx
+import { createTranslator, ThemeProvider } from '@juspay/blend-design-system'
+
+const french = {
+    'upload-v2.action.browse-files': 'Parcourir les fichiers',
+    'common.action.cancel': 'Annuler',
+}
+
+;<ThemeProvider locale="fr-FR" t={createTranslator(french)}>
+```
+
+It accepts several layers, applied left to right, which is useful for a
+base translation plus a per-brand override:
+
+```tsx
+createTranslator(frenchBase, frenchBrandOverrides)
+```
+
+A key explicitly set to `undefined` in a later layer does **not** erase an
+earlier value, so a partially-filled override object is safe to pass.
+
+## How a string is chosen
+
+For any one string, in order:
+
+1. **An explicit prop**, if you passed one. `browseFilesText="Pick a file"`
+   always wins.
+2. **Your `t(key)`**, if it returned something usable.
+3. **Blend's built-in English default.**
+
+So you can localize everything through `t`, override one-off strings through
+props, or mix the two freely.
+
+## Keys
+
+Keys are flat and dot-delimited:
+
+```
+{component}.{group}.{item}[.{modifier}][.{plural-category}]
+```
+
+`group` comes from a closed list: `action`, `label`, `placeholder`, `status`,
+`empty`, `error`, `preset`, `unit`, `a11y`. The `a11y` group holds accessible
+names — screen-reader text that never appears on screen but is still
+user-facing content.
+
+Every key Blend ships is exported, so you can scaffold a translation file
+against it and get a compile error if you misspell one:
+
+```ts
+import {
+    BLEND_MESSAGES,
+    type BlendMessageKey,
+    type BlendMessageOverrides,
+} from '@juspay/blend-design-system'
+
+const french: BlendMessageOverrides = {
+    /* … */
+}
+```
+
+The key list is a public contract covered by a snapshot test, so a key rename
+shows up in review rather than silently breaking your translation files.
+
+## Plurals
+
+Blend uses `Intl.PluralRules`, so plural selection is correct per locale rather
+than hardcoded to English. Blend's own fragments declare only `.one` and
+`.other`, because that is all English needs:
+
+```
+upload-v2.a11y.show-more-files.one   → "Show {count} more file"
+upload-v2.a11y.show-more-files.other → "Show {count} more files"
+```
+
+In your dictionary, supply whatever categories your language actually uses —
+`.zero`, `.two`, `.few`, `.many`:
+
+```ts
+const polish = {
+    'upload-v2.a11y.show-more-files.one': 'Pokaż jeszcze {count} plik',
+    'upload-v2.a11y.show-more-files.few': 'Pokaż jeszcze {count} pliki',
+    'upload-v2.a11y.show-more-files.many': 'Pokaż jeszcze {count} plików',
+}
+```
+
+Blend asks for `{key}.{category}` and falls back to `.other` when your
+dictionary has no entry for that category.
+
+## Placeholders
+
+Values use named `{placeholder}` spans, and `count` is injected automatically
+for plural keys, already formatted for the locale:
+
+```ts
+'upload-v2.a11y.remove-file': 'Remove {name}'
+```
+
+Blend always runs its own substitution pass over whatever `t` returns, so a `t`
+that ignores `vars` still works. If your runtime handles ICU and substitutes
+first, that is fine too — no placeholders remain for Blend's pass to find.
+
+An unknown placeholder is left visible rather than blanked, so a missing
+variable shows up as `{name}` in development instead of rendering an empty
+label.
+
+## Dates, numbers and the first day of the week
+
+Setting `locale` is enough for dates, times and numbers: calendars show
+localized month and weekday names, and numbers use the locale's grouping and
+decimal separators.
+
+`firstDayOfWeek` is deliberately **not** derived from `locale`. The browser API
+for that (`Intl.Locale.prototype.getWeekInfo()`) is missing in Firefox and
+older Safari, so deriving it by default would make the same props render
+differently per browser. Set it yourself, or opt into CLDR behaviour
+explicitly:
+
+```tsx
+import { resolveFirstDayOfWeek } from '@juspay/blend-design-system'
+
+;<ThemeProvider locale="en-US" firstDayOfWeek={resolveFirstDayOfWeek('en-US')}>
+```
+
+Note that `0` is Sunday here, which is **not** the CLDR numbering —
+`resolveFirstDayOfWeek` converts for you.
+
+### Currency is a prop, not a locale derivation
+
+Locale does not determine currency. Blend never reformats an amount's currency
+because you changed `locale`, because silently rendering an INR amount as USD
+would be a data bug rather than a display one. Set currency explicitly where a
+component accepts it.
+
+## What is out of scope
+
+Two things Blend does **not** do yet, stated plainly so you can plan around
+them:
+
+- **Right-to-left layout.** Setting `locale="ar-EG"` localizes strings, dates
+  and numbers, but does not mirror the component layout.
+- **Localized input parsing.** Components render localized dates but still
+  parse only the formats they parse today. A date typed as `11/12/2025` is not
+  reinterpreted per locale, and non-Latin digits are not accepted as input.
+
+## Finding unlocalized strings
+
+Blend's Storybook has a **Locale** toolbar with a pseudo-locale that brackets
+and accents every string resolved through the catalog — `⟦Brówsé Fílés⟧`.
+Anything still rendering plain unbracketed English is a hardcoded literal that
+has not been migrated yet. It is also the fastest way to spot layout that only
+fits English, since the accented text is wider.
+
+Migration is proceeding one component family at a time, so some families still
+contain hardcoded English. Those components keep working; they just ignore `t`
+until migrated.
