@@ -1,6 +1,10 @@
 import { memo, useCallback } from 'react'
-import { Check, Minus } from 'lucide-react-native'
-import { type MultiSelectV2TokensType } from '@juspay/blend-design-system/node'
+import { View } from 'react-native'
+import {
+    SelectorV2Size,
+    type MultiSelectV2TokensType,
+} from '@juspay/blend-design-system/node'
+import { Checkbox } from '../Checkbox'
 import { Pressable } from '../../primitives/Pressable'
 import { Text } from '../../primitives/Text'
 import { Block } from '../../primitives/Block'
@@ -25,8 +29,8 @@ function parseBottomBorder(
 }
 
 /**
- * Header row for the MultiSelect dropdown: optional select-all checkbox
- * row + optional search input. The parent only mounts this header when at
+ * Header row for the MultiSelect dropdown: optional search input + optional
+ * select-all checkbox row. The parent only mounts this header when at
  * least one of the two is enabled, but each row is gated independently so
  * search alone doesn't imply select-all (and vice versa).
  */
@@ -64,75 +68,18 @@ function MultiSelectMenuHeaderImpl({
         onSelectAllToggle()
     }, [onSelectAllToggle])
 
-    return (
-        <Block
-            width="100%"
-            background={String(headerTokens.backgroundColor)}
-            style={{
-                paddingTop: 8,
-                ...parseBottomBorder(headerTokens.borderBottom),
-            }}
-        >
-            {enableSelectAll ? (
-                <Pressable
-                    flexDirection="row"
-                    alignItems="center"
-                    gap={8}
-                    width="100%"
-                    paddingTop={selectAllTokens.paddingTop}
-                    paddingRight={
-                        headerTokens.selectAllRowPaddingRight ??
-                        selectAllTokens.paddingRight
-                    }
-                    paddingBottom={selectAllTokens.paddingBottom}
-                    paddingLeft={
-                        headerTokens.selectAllRowPaddingLeft ??
-                        selectAllTokens.paddingLeft
-                    }
-                    onPress={handlePress}
-                    accessibilityRole="checkbox"
-                    accessibilityState={{
-                        checked: allSelected
-                            ? true
-                            : someSelected
-                              ? 'mixed'
-                              : false,
-                    }}
-                    accessibilityLabel={selectAllText}
-                    testID={testID ? `${testID}-select-all` : undefined}
-                >
-                    {/* Checkbox indicator */}
-                    <Block
-                        width={16}
-                        height={16}
-                        borderRadius={4}
-                        background={
-                            allSelected || someSelected
-                                ? '#2563EB'
-                                : 'transparent'
-                        }
-                        style={{
-                            borderWidth: 2,
-                            borderColor:
-                                allSelected || someSelected
-                                    ? '#2563EB'
-                                    : '#D1D5DB',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        {allSelected ? (
-                            <Check size={12} color="#FFFFFF" />
-                        ) : someSelected ? (
-                            <Minus size={12} color="#FFFFFF" />
-                        ) : null}
-                    </Block>
-                    <Text fontSize={14} fontWeight="500" color="#374151">
-                        {selectAllText}
-                    </Text>
-                </Pressable>
-            ) : null}
+    const labelTokens = tokens.menu.item.optionsLabel
+    const checkboxState = allSelected
+        ? true
+        : someSelected
+          ? 'indeterminate'
+          : false
 
+    // As web's MultiSelectV2MenuHeader: the search first, then the select-all
+    // row (upper-case label, checkbox at the end) with the header's border
+    // under it.
+    return (
+        <Block width="100%" background={String(headerTokens.backgroundColor)}>
             {enableSearch ? (
                 <Block
                     paddingTop={8}
@@ -146,6 +93,62 @@ function MultiSelectMenuHeaderImpl({
                         placeholder={searchPlaceholder}
                         testID={testID ? `${testID}-search` : undefined}
                     />
+                </Block>
+            ) : null}
+
+            {enableSelectAll ? (
+                <Block
+                    paddingLeft={headerTokens.selectAllRowPaddingLeft}
+                    paddingRight={headerTokens.selectAllRowPaddingRight}
+                    style={parseBottomBorder(headerTokens.borderBottom)}
+                >
+                    <Pressable
+                        flexDirection="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        gap={8}
+                        width="100%"
+                        paddingTop={selectAllTokens.paddingTop}
+                        paddingRight={selectAllTokens.paddingRight}
+                        paddingBottom={selectAllTokens.paddingBottom}
+                        paddingLeft={selectAllTokens.paddingLeft}
+                        borderRadius={selectAllTokens.borderRadius}
+                        onPress={handlePress}
+                        accessibilityRole="checkbox"
+                        accessibilityState={{
+                            checked: allSelected
+                                ? true
+                                : someSelected
+                                  ? 'mixed'
+                                  : false,
+                        }}
+                        accessibilityLabel={selectAllText}
+                        testID={testID ? `${testID}-select-all` : undefined}
+                    >
+                        <Text
+                            fontSize={labelTokens.fontSize}
+                            fontWeight={labelTokens.fontWeight}
+                            color={String(
+                                allSelected
+                                    ? labelTokens.color.selected
+                                    : labelTokens.color.default
+                            )}
+                            numberOfLines={1}
+                            style={{
+                                textTransform: 'uppercase',
+                                flexShrink: 1,
+                            }}
+                        >
+                            {selectAllText}
+                        </Text>
+                        <View pointerEvents="none">
+                            <Checkbox
+                                checked={checkboxState}
+                                size={SelectorV2Size.SM}
+                                accessibilityLabel={selectAllText}
+                            />
+                        </View>
+                    </Pressable>
                 </Block>
             ) : null}
         </Block>

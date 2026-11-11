@@ -58,11 +58,13 @@ const SingleSelect = forwardRef<SingleSelectRef, SingleSelectNativeProps>(
         {
             label,
             subLabel,
+            helpIconText,
             hintText,
             required = false,
             placeholder,
             size = SelectV2Size.MD,
             variant = SelectV2Variant.CONTAINER,
+            inline = false,
             items,
             selected,
             onSelect,
@@ -81,6 +83,7 @@ const SingleSelect = forwardRef<SingleSelectRef, SingleSelectNativeProps>(
             menuFooter,
             testID,
             accessibilityLabel,
+            menuStyle,
         },
         ref
     ) {
@@ -181,12 +184,14 @@ const SingleSelect = forwardRef<SingleSelectRef, SingleSelectNativeProps>(
                 ref={dropdown.anchorRef}
                 label={label}
                 subLabel={subLabel}
+                helpIconText={helpIconText}
                 hintText={hintText}
                 required={required}
                 placeholder={placeholder}
                 selectedLabel={selectedLabel}
                 size={size}
                 variant={variant}
+                inline={inline}
                 disabled={disabled}
                 state={triggerState}
                 error={error}
@@ -239,6 +244,7 @@ const SingleSelect = forwardRef<SingleSelectRef, SingleSelectNativeProps>(
                         onClose={() => dropdown.setOpen(false)}
                         backgroundColor={contentTokens.backgroundColor}
                         topRadius={16}
+                        style={menuStyle}
                         accessibilityLabel={accessibilityLabel ?? 'Select'}
                         testID={testID ? `${testID}-sheet` : undefined}
                     >
@@ -264,6 +270,7 @@ const SingleSelect = forwardRef<SingleSelectRef, SingleSelectNativeProps>(
                     position={dropdown.position}
                     onContentLayout={dropdown.onContentLayout}
                     tokens={contentTokens}
+                    style={menuStyle}
                     accessibilityLabel={accessibilityLabel ?? 'Select'}
                     testID={testID ? `${testID}-content` : undefined}
                 >

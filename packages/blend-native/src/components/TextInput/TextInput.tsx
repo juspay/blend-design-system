@@ -1,11 +1,14 @@
 import { forwardRef, useCallback, useMemo, useState } from 'react'
 import { useControllableState } from '../../hooks/useControllableState'
+import { View } from 'react-native'
 import type {
     TextInputProps as RNTextInputProps,
     View as RNView,
 } from 'react-native'
 import {
     InputSizeV2,
+    SelectV2Size,
+    SelectV2Variant,
     type TextInputV2TokensType,
 } from '@juspay/blend-design-system/node'
 import { useNativeTokens } from '../../theme/useNativeTokens'
@@ -16,7 +19,20 @@ import { FieldLabels } from '../shared/field/FieldLabels'
 import { FieldFooter } from '../shared/field/FieldFooter'
 import { getFieldState, getFieldVisualState } from '../shared/field/fieldState'
 import { getTextInputNativeStyles } from './textInput.utils'
-import type { TextInputNativeProps } from './textInput.types'
+import { parseDimension } from '../../adapters/cssStringAdapter'
+import { SingleSelect } from '../SingleSelect'
+import {
+    TextInputDropdownPosition,
+    type TextInputDropdown,
+    type TextInputNativeProps,
+} from './textInput.types'
+
+/** Web's TextInputV2 → SingleSelectV2 size mapping for embedded dropdowns. */
+const SELECT_SIZE: Record<InputSizeV2, SelectV2Size> = {
+    [InputSizeV2.SM]: SelectV2Size.SM,
+    [InputSizeV2.MD]: SelectV2Size.MD,
+    [InputSizeV2.LG]: SelectV2Size.LG,
+}
 
 /**
  * TextInput — React Native implementation of web's `TextInputV2`, and the
@@ -37,6 +53,8 @@ const TextInput = forwardRef<RNView, TextInputNativeProps>(function TextInput(
         onChangeText,
         label,
         subLabel,
+        helpIconText,
+        dropdown,
         size = InputSizeV2.SM,
         error,
         hintText,
@@ -91,11 +109,54 @@ const TextInput = forwardRef<RNView, TextInputNativeProps>(function TextInput(
         [onBlur]
     )
 
+    // Embedded selects (web `dropdown`): each takes over its side's slot.
+    const dropdowns: TextInputDropdown[] =
+        dropdown == null ? [] : Array.isArray(dropdown) ? dropdown : [dropdown]
+    const renderDropdown = (position: TextInputDropdownPosition) => {
+        const entry = dropdowns.find((item) => item.position === position)
+        if (entry === undefined) return null
+        // Every field but `position` goes to the select.
+        const select: Omit<TextInputDropdown, 'position'> = { ...entry }
+        delete (select as Partial<TextInputDropdown>).position
+        // Web renders the embedded select `inline`: it sits in the text line
+        // and never grows the field, so the row keeps a plain input's height.
+        return (
+            <View
+                style={{
+                    maxHeight:
+                        parseDimension(
+                            styles.text.lineHeight as string | number
+                        ) ?? 20,
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                }}
+            >
+                <SingleSelect
+                    {...select}
+                    variant={SelectV2Variant.NO_CONTAINER}
+                    inline
+                    size={SELECT_SIZE[size]}
+                    disabled={disabled || select.disabled}
+                    accessibilityLabel={
+                        select.accessibilityLabel ?? label ?? 'Select option'
+                    }
+                    testID={
+                        select.testID ??
+                        (testID ? `${testID}-${position}-dropdown` : undefined)
+                    }
+                />
+            </View>
+        )
+    }
+    const leftDropdown = renderDropdown(TextInputDropdownPosition.LEFT)
+    const rightDropdown = renderDropdown(TextInputDropdownPosition.RIGHT)
+
     return (
         <Block ref={ref} gap={styles.gap} style={style} testID={testID}>
             <FieldLabels
                 label={label}
                 sublabel={subLabel}
+                helpIconText={helpIconText}
                 required={required}
                 size={size}
                 state={fieldState}
@@ -117,17 +178,18 @@ const TextInput = forwardRef<RNView, TextInputNativeProps>(function TextInput(
                 paddingBottom={styles.container.paddingBottom}
                 paddingLeft={styles.container.paddingLeft}
             >
-                {leftSlot?.slot ? (
-                    <Slot
-                        maxHeight={leftSlot.maxHeight}
-                        // Decorative next to the labelled input, matching
-                        // web's aria-hidden on input slots.
-                        hidden
-                        testID={testID ? `${testID}-left-slot` : undefined}
-                    >
-                        {leftSlot.slot}
-                    </Slot>
-                ) : null}
+                {leftDropdown ??
+                    (leftSlot?.slot ? (
+                        <Slot
+                            maxHeight={leftSlot.maxHeight}
+                            // Decorative next to the labelled input, matching
+                            // web's aria-hidden on input slots.
+                            hidden
+                            testID={testID ? `${testID}-left-slot` : undefined}
+                        >
+                            {leftSlot.slot}
+                        </Slot>
+                    ) : null)}
 
                 <PrimitiveInput
                     ref={inputRef}
@@ -147,15 +209,16 @@ const TextInput = forwardRef<RNView, TextInputNativeProps>(function TextInput(
                     {...rest}
                 />
 
-                {rightSlot?.slot ? (
-                    <Slot
-                        maxHeight={rightSlot.maxHeight}
-                        hidden
-                        testID={testID ? `${testID}-right-slot` : undefined}
-                    >
-                        {rightSlot.slot}
-                    </Slot>
-                ) : null}
+                {rightDropdown ??
+                    (rightSlot?.slot ? (
+                        <Slot
+                            maxHeight={rightSlot.maxHeight}
+                            hidden
+                            testID={testID ? `${testID}-right-slot` : undefined}
+                        >
+                            {rightSlot.slot}
+                        </Slot>
+                    ) : null)}
             </Block>
 
             <FieldFooter

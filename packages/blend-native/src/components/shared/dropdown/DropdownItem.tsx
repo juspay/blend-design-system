@@ -46,6 +46,7 @@ const DropdownItemImpl = forwardRef<RNView, DropdownItemProps>(
             leadingSlot,
             leadingAccessory,
             trailingSlot,
+            trailingAccessory,
             disabled,
             isSelected,
             hasSubMenu,
@@ -151,6 +152,8 @@ const DropdownItemImpl = forwardRef<RNView, DropdownItemProps>(
                             color={tokens.text.rightChevron.color}
                         />
                     ) : null}
+
+                    {trailingAccessory}
                 </View>
 
                 {/* Sub-label row */}

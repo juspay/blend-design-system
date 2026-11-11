@@ -33,6 +33,13 @@ export type AnchoredPositionInput = {
     offset?: number
     /** Minimum distance kept from every viewport edge, in points. */
     viewportPadding?: number
+    /**
+     * The caller caps the content at the returned `maxHeight` (a dropdown's
+     * list). Place it at that capped height from the first measurement:
+     * the uncapped height of a long list would clamp the content to the
+     * top of the window for a frame, until the cap lands and it re-measures.
+     */
+    capHeightToAvailable?: boolean
 }
 
 export type AnchoredPosition = {
@@ -104,6 +111,7 @@ export function computeAnchoredPosition(
         alignment = 'start',
         offset = 8,
         viewportPadding = 8,
+        capHeightToAvailable = false,
     } = input
 
     const preferredSpace = spaceOn(
@@ -128,12 +136,24 @@ export function computeAnchoredPosition(
         if (other > preferredSpace) placement = opposite[preferred]
     }
 
+    const available = spaceOn(
+        placement,
+        anchor,
+        viewport,
+        offset,
+        viewportPadding
+    )
+    const contentHeight =
+        capHeightToAvailable && (placement === 'top' || placement === 'bottom')
+            ? Math.min(content.height, Math.max(0, available))
+            : content.height
+
     // ---- Main axis ------------------------------------------------------
     let x = 0
     let y = 0
     switch (placement) {
         case 'top':
-            y = anchor.y - offset - content.height
+            y = anchor.y - offset - contentHeight
             break
         case 'bottom':
             y = anchor.y + anchor.height + offset
@@ -173,16 +193,9 @@ export function computeAnchoredPosition(
     y = clamp(
         y,
         viewportPadding,
-        viewport.height - viewportPadding - content.height
+        viewport.height - viewportPadding - contentHeight
     )
 
-    const available = spaceOn(
-        placement,
-        anchor,
-        viewport,
-        offset,
-        viewportPadding
-    )
     const maxHeight =
         placement === 'top' || placement === 'bottom'
             ? Math.max(0, available)

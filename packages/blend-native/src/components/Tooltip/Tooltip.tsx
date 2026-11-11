@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react'
 import { Pressable, View } from 'react-native'
 import {
     TooltipV2Align,
@@ -18,7 +19,7 @@ import type { TooltipNativeProps } from './tooltip.types'
  * Tooltip — the native port of web's `TooltipV2`.
  *
  * Anchored at every size (web parity — TooltipV2 has no mobile branch).
- * Long-press shows it; a tap anywhere (the transparent backdrop) or the
+ * Long-press (or a hovering pointer, on web and iPad) shows it; a tap anywhere (the transparent backdrop) or the
  * Android back button dismisses. String content doubles as the trigger's
  * `accessibilityHint` and is announced when shown.
  */
@@ -60,6 +61,17 @@ export function Tooltip({
         onOpenChange
     )
 
+    // A hover-opened tooltip draws no backdrop: a touch-capturing layer
+    // under the pointer would end the hover and close it again.
+    // The ref is what the hover handlers read: react-native-web's Pressable
+    // can keep the handlers from an earlier render, so state would be stale.
+    const [openedByHover, setOpenedByHover] = useState(false)
+    const openedByHoverRef = useRef(false)
+    const setHoverOpened = (value: boolean) => {
+        openedByHoverRef.current = value
+        setOpenedByHover(value)
+    }
+
     const stringContent = typeof content === 'string' ? content : undefined
     useLiveRegionAnnounce(stringContent, isOpen)
 
@@ -81,7 +93,7 @@ export function Tooltip({
                     ? String(tokens.background ?? '#181B25')
                     : 'transparent'
             }
-            backdrop="transparent"
+            backdrop={openedByHover ? false : 'transparent'}
             testID={testID}
             contentStyle={[
                 {
@@ -103,8 +115,19 @@ export function Tooltip({
             ]}
             trigger={
                 <Pressable
-                    onLongPress={() => setOpen(true)}
+                    onLongPress={() => {
+                        setHoverOpened(false)
+                        setOpen(true)
+                    }}
                     delayLongPress={delayDuration}
+                    // Web and iPad pointers hover, as web's TooltipV2 opens on.
+                    onHoverIn={() => {
+                        setHoverOpened(true)
+                        setOpen(true)
+                    }}
+                    onHoverOut={() => {
+                        if (openedByHoverRef.current) setOpen(false)
+                    }}
                     accessibilityHint={stringContent}
                     style={fullWidth ? { alignSelf: 'stretch' } : undefined}
                     testID={testID ? `${testID}-trigger` : undefined}

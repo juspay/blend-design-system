@@ -5,16 +5,16 @@ import {
 } from '@juspay/blend-design-system/node'
 import { Block } from '../../../primitives/Block'
 import { Text } from '../../../primitives/Text'
+import { parseDimension } from '../../../adapters/cssStringAdapter'
+import { HelpIcon } from './HelpIcon'
 
 /**
- * Label row above a field: label, required marker, sublabel.
+ * Label row above a field: label, required marker, sublabel, help icon.
  *
- * Ports web's `InputLabelsV2` against the same `topContainer` token shape,
- * with two deliberate omissions:
+ * Ports web's `InputLabelsV2` against the same `topContainer` token shape
+ * (`helpIconText` shows its text in a `Tooltip`), with one deliberate
+ * omission:
  *
- * - `helpIconText` — web wraps a help icon in `Tooltip`; native has no
- *   tooltip yet, so the prop does not exist rather than silently doing
- *   nothing (the `skeleton` precedent).
  * - `as="label"`/`htmlFor` — no DOM. The field component instead puts the
  *   label text into the input's `accessibilityLabel`.
  */
@@ -22,6 +22,8 @@ import { Text } from '../../../primitives/Text'
 export type FieldLabelsProps = {
     label?: string
     sublabel?: string
+    /** Text for the help icon after the label (web `helpIconText`). */
+    helpIconText?: string
     required?: boolean
     size?: InputSizeV2
     state?: InputStateV2
@@ -32,6 +34,7 @@ export type FieldLabelsProps = {
 export function FieldLabels({
     label,
     sublabel,
+    helpIconText,
     required = false,
     size = InputSizeV2.SM,
     state = InputStateV2.DEFAULT,
@@ -78,6 +81,18 @@ export function FieldLabels({
                 >
                     ({sublabel})
                 </Text>
+            ) : null}
+            {helpIconText ? (
+                <HelpIcon
+                    text={helpIconText}
+                    size={
+                        parseDimension(
+                            tokens.helpIcon?.width?.[size] as string | number
+                        ) ?? 14
+                    }
+                    color={String(tokens.helpIcon?.color?.[state] ?? '#99A0AE')}
+                    testID={testID ? `${testID}-help` : undefined}
+                />
             ) : null}
         </Block>
     )
