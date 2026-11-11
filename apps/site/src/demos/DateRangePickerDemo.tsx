@@ -565,6 +565,44 @@ const DateRangePickerDemo = () => {
                 </p>
             </div>
 
+            <div className="mb-6 rounded-lg border border-gray-300 bg-white p-4 text-sm text-gray-600">
+                <p className="font-semibold text-gray-700">Localization</p>
+                <p className="mt-1">
+                    Switch <strong>Locale</strong> in the topbar. These change
+                    together across DateRangePicker, SingleDatePicker and
+                    TimePicker: all 18 <strong>preset labels</strong>, the{' '}
+                    <strong>Cancel</strong> and <strong>Apply Date</strong>{' '}
+                    buttons, the trigger placeholders, the{' '}
+                    <strong>month and weekday names</strong> in the calendar and
+                    month grid, and the TimePicker column headings and AM/PM
+                    labels.
+                </p>
+                <p className="mt-1">
+                    The calendar previously drew its month names from{' '}
+                    <strong>three separate English tables</strong> that had
+                    drifted, so a picker could show a translated month in the
+                    trigger and an English one in the grid. They now all derive
+                    from <code>Intl</code>.
+                </p>
+                <p className="mt-1">
+                    Worth checking: pick <strong>Deutsch</strong> and look for a
+                    wrapped calendar header — &ldquo;September&rdquo; is the
+                    longest month name and <code>getMonthHeight</code> still
+                    uses hardcoded pixel math. Pick <strong>日本語</strong> to
+                    check CJK weekday widths. Weekday headings are also wider
+                    than before, since <code>Intl</code>&apos;s short form is
+                    three letters (&ldquo;Mon&rdquo;) where the old hardcoded
+                    table was two (&ldquo;Mo&rdquo;).
+                </p>
+                <p className="mt-1">
+                    Two things deliberately do <strong>not</strong> change: the{' '}
+                    <code>data-datepicker</code> attribute stays locale-stable
+                    because consumer selectors match on it, and the calendar
+                    stays Monday-first regardless of locale because the
+                    grid&apos;s cell-offset math is still hardcoded to Monday.
+                </p>
+            </div>
+
             {/* Main Configuration Playground */}
             <div className="mb-8 p-6 rounded-lg bg-gray-50 border border-gray-200">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

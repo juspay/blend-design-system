@@ -18,6 +18,12 @@ const UploadV2Demo = () => {
     )
     // UploadV2 files state
     const [uploadV2Files, setUploadV2Files] = useState<UploadFileV2[]>([])
+
+    // Tier 1 of the three-tier string resolution. When set, this beats both
+    // the provider's translation and Blend's English default, so toggling it
+    // against the Locale picker in the topbar shows all three tiers:
+    // prop wins -> provider t() -> built-in English.
+    const [browseFilesOverride, setBrowseFilesOverride] = useState('')
     const successDummyFiles: UploadFileV2[] = [
         {
             file: new File(['dummy success content'], 'sample_file.csv', {
@@ -105,6 +111,45 @@ const UploadV2Demo = () => {
                                 )
                             }
                         />
+                        <Switch
+                            label='browseFilesText="Pick a file"'
+                            checked={!!browseFilesOverride}
+                            onChange={() =>
+                                setBrowseFilesOverride((prev) =>
+                                    prev ? '' : 'Pick a file'
+                                )
+                            }
+                        />
+                    </div>
+                    <div className="rounded-lg border border-gray-300 bg-white p-4 text-sm text-gray-600">
+                        <p className="font-semibold text-gray-700">
+                            Localization
+                        </p>
+                        <p className="mt-1">
+                            Switch <strong>Locale</strong> in the topbar to see
+                            these strings change: the{' '}
+                            <strong>Browse Files</strong> and{' '}
+                            <strong>Replace File</strong> buttons, the drop
+                            hint, the uploading status, the selected-file label,
+                            every validation message, and the{' '}
+                            <em>Remove {'{name}'}</em> accessible name on each
+                            file tag.
+                        </p>
+                        <p className="mt-1">
+                            Turn on{' '}
+                            <code>browseFilesText=&quot;Pick a file&quot;</code>{' '}
+                            and the button stops following the locale — an
+                            explicit prop always wins. Pick the{' '}
+                            <strong>Pseudo-locale</strong> and anything still
+                            rendering plain English has not been migrated yet.
+                        </p>
+                        <p className="mt-1">
+                            With more than four files selected, the overflow
+                            button&apos;s accessible name uses{' '}
+                            <code>Intl.PluralRules</code>, so it reads
+                            &ldquo;Show 1 more file&rdquo; at one and
+                            &ldquo;Show 2 more files&rdquo; at two.
+                        </p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                         <Block width="100%">
@@ -112,6 +157,9 @@ const UploadV2Demo = () => {
                                 UploadV2 Idle State
                             </h2>
                             <UploadV2
+                                browseFilesText={
+                                    browseFilesOverride || undefined
+                                }
                                 label="Upload Files"
                                 subLabel="Max 8MB"
                                 helpIconText={playgroundHelpIconText}
@@ -159,6 +207,9 @@ const UploadV2Demo = () => {
                                 Error State - Single File
                             </h2>
                             <UploadV2
+                                browseFilesText={
+                                    browseFilesOverride || undefined
+                                }
                                 label="Upload Files"
                                 subLabel="Max 8MB"
                                 helpIconText={playgroundHelpIconText}
@@ -210,6 +261,9 @@ const UploadV2Demo = () => {
                                 Error State - Multiple Files
                             </h2>
                             <UploadV2
+                                browseFilesText={
+                                    browseFilesOverride || undefined
+                                }
                                 label="Upload Files"
                                 subLabel="Max 8MB"
                                 helpIconText={playgroundHelpIconText}
@@ -261,6 +315,9 @@ const UploadV2Demo = () => {
                                 UploadV2 Success State - Single File
                             </h2>
                             <UploadV2
+                                browseFilesText={
+                                    browseFilesOverride || undefined
+                                }
                                 label="Upload Files"
                                 subLabel="Max 10MB"
                                 helpIconText={playgroundHelpIconText}
@@ -312,6 +369,9 @@ const UploadV2Demo = () => {
                                 UploadV2 Success State - Multiple Files
                             </h2>
                             <UploadV2
+                                browseFilesText={
+                                    browseFilesOverride || undefined
+                                }
                                 label="Upload Files"
                                 subLabel="Max 10MB"
                                 helpIconText={playgroundHelpIconText}
@@ -363,6 +423,9 @@ const UploadV2Demo = () => {
                                 UploadV2 with Progress Bar
                             </h2>
                             <UploadV2
+                                browseFilesText={
+                                    browseFilesOverride || undefined
+                                }
                                 label="Upload Files"
                                 subLabel="Max 10MB"
                                 helpIconText={playgroundHelpIconText}

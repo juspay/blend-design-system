@@ -40,6 +40,13 @@ import {
     SearchIcon,
 } from 'lucide-react'
 import { ThemeProvider, Theme } from '../../../../packages/blend/lib/context'
+import {
+    DEMO_LOCALES,
+    PSEUDO_LOCALE,
+    getTranslatorForLocale,
+    resolveIntlLocale,
+    type DemoLocale,
+} from '../i18n/translations'
 import { SidebarV2 } from '../../../../packages/blend/lib/components/SidebarV2'
 import type { SecondarySidebarInfo } from '../../../../packages/blend/lib/components/SidebarV2/types'
 import type { DirectoryData } from '../../../../packages/blend/lib/components/Directory/types'
@@ -266,6 +273,23 @@ const SidebarV2Demo = () => {
 
     const [brandTheme, setBrandTheme] = useState<'EULER' | 'JUSBIZ'>('EULER')
     const [colorTheme, setColorTheme] = useState<Theme>(Theme.LIGHT)
+
+    // Locale for the whole demo tree. Only the migrated component families
+    // (Upload, UploadV2, DateRangePicker, SingleDatePicker, TimePicker)
+    // respond to this; everything else still renders hardcoded English, which
+    // the pseudo-locale option makes obvious at a glance.
+    const [demoLocale, setDemoLocale] = useState<
+        DemoLocale | typeof PSEUDO_LOCALE
+    >('en-US')
+
+    // Memoized so the provider's i18n context value stays referentially
+    // stable. Rebuilding `t` inline on every render is exactly the case the
+    // separate I18nContext exists to make cheap, but there is no reason for
+    // the demo to exercise the slow path by default.
+    const translate = useMemo(
+        () => getTranslatorForLocale(demoLocale),
+        [demoLocale]
+    )
 
     const tenants = useMemo(
         (): (SecondarySidebarInfo['items'][number] & {
@@ -1525,14 +1549,20 @@ const SidebarV2Demo = () => {
         lg: 1440,
     }
 
+    const i18nProps = {
+        locale: resolveIntlLocale(demoLocale),
+        t: translate,
+    }
+
     const themeProps =
         brandTheme === 'EULER'
-            ? { theme: colorTheme }
+            ? { theme: colorTheme, ...i18nProps }
             : {
                   foundationTokens: ALT_FOUNDATION_TOKENS,
                   componentTokens: HDFC_COMPONENT_TOKENS,
                   breakpoints: breakpoints,
                   theme: colorTheme,
+                  ...i18nProps,
               }
 
     return (
@@ -1784,6 +1814,34 @@ const SidebarV2Demo = () => {
                                         />
                                     )}
                                 </button>
+                                <div>
+                                    <SingleSelect
+                                        label="Locale"
+                                        placeholder="Select Locale"
+                                        minMenuWidth={280}
+                                        alignment={SelectMenuAlignment.END}
+                                        selected={demoLocale}
+                                        onSelect={(value) =>
+                                            setDemoLocale(
+                                                value as
+                                                    | DemoLocale
+                                                    | typeof PSEUDO_LOCALE
+                                            )
+                                        }
+                                        variant={SelectMenuVariant.NO_CONTAINER}
+                                        items={[
+                                            {
+                                                items: DEMO_LOCALES.map(
+                                                    (option) => ({
+                                                        value: option.value,
+                                                        label: option.label,
+                                                        subLabel: option.note,
+                                                    })
+                                                ),
+                                            },
+                                        ]}
+                                    />
+                                </div>
                                 <div>
                                     <SingleSelect
                                         label="Brand"
