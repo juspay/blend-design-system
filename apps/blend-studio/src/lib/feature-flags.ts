@@ -20,9 +20,15 @@ class FeatureFlagStore {
 
     constructor() {
         const stored = localStorage.getItem('blend-feature-flags')
-        this.flags = stored
-            ? { ...DEFAULT_FLAGS, ...JSON.parse(stored) }
-            : DEFAULT_FLAGS
+        const parsed = stored ? JSON.parse(stored) : null
+        const overrides: Partial<FeatureFlags> =
+            parsed && typeof parsed === 'object' ? parsed : {}
+        // Auth bypass and API origin must not be switchable from the browser in production
+        if (!import.meta.env.DEV) {
+            delete overrides.useMockData
+            delete overrides.apiBaseUrl
+        }
+        this.flags = { ...DEFAULT_FLAGS, ...overrides }
     }
 
     get(): FeatureFlags {

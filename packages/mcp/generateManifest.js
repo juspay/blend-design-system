@@ -16,7 +16,9 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { Project } from 'ts-morph'
+import { Node, Project, SyntaxKind } from 'ts-morph'
+
+const SyntaxKindMinus = SyntaxKind.MinusToken
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -778,6 +780,58 @@ function applyMetaOverride(entry, override) {
 // ---------------------------------------------------------------------------
 
 /**
+ * Statically evaluate a plain-data literal (objects, arrays, primitives).
+ * Throws on anything else so source code is never executed.
+ */
+function evaluateLiteral(node) {
+    if (
+        Node.isAsExpression(node) ||
+        Node.isSatisfiesExpression(node) ||
+        Node.isParenthesizedExpression(node) ||
+        Node.isTypeAssertion(node)
+    ) {
+        return evaluateLiteral(node.getExpression())
+    }
+    if (
+        Node.isStringLiteral(node) ||
+        Node.isNoSubstitutionTemplateLiteral(node)
+    ) {
+        return node.getLiteralValue()
+    }
+    if (Node.isNumericLiteral(node)) return node.getLiteralValue()
+    if (Node.isTrueLiteral(node)) return true
+    if (Node.isFalseLiteral(node)) return false
+    if (Node.isNullLiteral(node)) return null
+    if (
+        Node.isPrefixUnaryExpression(node) &&
+        node.getOperatorToken() === SyntaxKindMinus &&
+        Node.isNumericLiteral(node.getOperand())
+    ) {
+        return -node.getOperand().getLiteralValue()
+    }
+    if (Node.isArrayLiteralExpression(node)) {
+        return node.getElements().map(evaluateLiteral)
+    }
+    if (Node.isObjectLiteralExpression(node)) {
+        const result = {}
+        for (const prop of node.getProperties()) {
+            if (!Node.isPropertyAssignment(prop)) {
+                throw new Error(`Unsupported property: ${prop.getKindName()}`)
+            }
+            const nameNode = prop.getNameNode()
+            const key =
+                Node.isStringLiteral(nameNode) ||
+                Node.isNumericLiteral(nameNode)
+                    ? String(nameNode.getLiteralValue())
+                    : nameNode.getText()
+            result[key] = evaluateLiteral(prop.getInitializerOrThrow())
+        }
+        return result
+    }
+    throw new Error(`Unsupported expression: ${node.getKindName()}`)
+}
+
+/**
  * Extract the exported default object from a token file using ts-morph.
  * Falls back to a best-effort regex parse if ts-morph can't resolve initializer.
  */
@@ -805,15 +859,8 @@ function extractTokenObject(filePath) {
             // Must start with an object literal
             if (!initText.trim().startsWith('{')) continue
 
-            // Parse with Function constructor (safe for plain data objects)
             try {
-                // Strip TypeScript type assertions / satisfies syntax
-                const cleaned = initText
-                    .replace(/\s+as\s+\w[\w.<>[\], |&]*?(?=[,}\n])/g, '')
-                    .replace(/\s+satisfies\s+\w[\w.<>[\], |&]*?(?=[,}\n])/g, '')
-
-                // eslint-disable-next-line no-new-func
-                const obj = new Function(`return (${cleaned})`)()
+                const obj = evaluateLiteral(initializer)
                 if (obj && typeof obj === 'object') return obj
             } catch (_) {
                 // Fall through to regex-based approach

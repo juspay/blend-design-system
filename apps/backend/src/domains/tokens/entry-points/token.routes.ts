@@ -1,13 +1,40 @@
 // Token Routes - Express router for token endpoints
 
-import { Router, type IRouter, type Request, type Response } from 'express'
+import {
+    Router,
+    type IRouter,
+    type NextFunction,
+    type Request,
+    type Response,
+} from 'express'
 import multer from 'multer'
 import { authenticate } from '@/middlewares/auth.js'
 import { asyncHandler } from '@/middlewares/errorHandler.js'
 import * as tokenService from '../domain/token.service.js'
+import * as branchService from '@/domains/branches/domain/branch.service.js'
 
 const router: IRouter = Router()
-const upload = multer({ storage: multer.memoryStorage() })
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 1024 * 1024, files: 1 },
+})
+
+const requireBranchRead = asyncHandler(
+    async (req: Request, _res: Response, next: NextFunction) => {
+        await branchService.getBranchForUser(req.params.branchId, req.user!.id)
+        next()
+    }
+)
+
+const requireBranchWrite = asyncHandler(
+    async (req: Request, _res: Response, next: NextFunction) => {
+        await branchService.requireBranchEditor(
+            req.params.branchId,
+            req.user!.id
+        )
+        next()
+    }
+)
 
 /**
  * @openapi
@@ -53,6 +80,7 @@ const upload = multer({ storage: multer.memoryStorage() })
 router.post(
     '/branches/:branchId/tokens/upload',
     authenticate,
+    requireBranchWrite,
     upload.single('file'),
     asyncHandler(async (req: Request, res: Response) => {
         const { branchId } = req.params
@@ -106,6 +134,7 @@ router.post(
 router.get(
     '/branches/:branchId/tokens',
     authenticate,
+    requireBranchRead,
     asyncHandler(async (req: Request, res: Response) => {
         const { branchId } = req.params
 
@@ -152,6 +181,7 @@ router.get(
 router.get(
     '/branches/:branchId/tokens/:tokenId',
     authenticate,
+    requireBranchRead,
     asyncHandler(async (req: Request, res: Response) => {
         const { branchId, tokenId } = req.params
 
@@ -210,6 +240,7 @@ router.get(
 router.get(
     '/branches/:branchId/tokens/:tokenId/download',
     authenticate,
+    requireBranchRead,
     asyncHandler(async (req: Request, res: Response) => {
         const { branchId, tokenId } = req.params
 
@@ -254,6 +285,7 @@ router.get(
 router.delete(
     '/branches/:branchId/tokens/:tokenId',
     authenticate,
+    requireBranchWrite,
     asyncHandler(async (req: Request, res: Response) => {
         const { branchId, tokenId } = req.params
 

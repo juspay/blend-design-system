@@ -2,6 +2,11 @@ import { verifyJwtToken } from '@/domains/auth/domain/auth.service.js'
 import { UnauthorizedError, ForbiddenError } from '@/errors/AppError.js'
 import * as apiKeyRepo from '@/domains/apikeys/data-access/apikey.repository.js'
 import * as userRepo from '@/domains/users/data-access/user.repository.js'
+import type { JwtPayload } from '@/domains/auth/domain/auth.types.js'
+
+// Refresh tokens are only redeemable at /auth/refresh, never as bearer credentials
+const isSessionToken = (type: JwtPayload['type']): boolean =>
+    type === 'access' || type === 'cli_export'
 
 export const authenticate = async (
     req: any,
@@ -34,7 +39,7 @@ export const authenticate = async (
             }
 
             const user = await userRepo.findUserById(apiKey.userId)
-            if (!user) {
+            if (!user || !user.isActive) {
                 throw new UnauthorizedError('API key user not found')
             }
 
@@ -55,12 +60,20 @@ export const authenticate = async (
 
         // 4. JWT path
         const decoded = verifyJwtToken(token)
+        if (!isSessionToken(decoded.type)) {
+            throw new UnauthorizedError('Invalid token type')
+        }
+
+        const user = await userRepo.findUserById(decoded.userId)
+        if (!user || !user.isActive) {
+            throw new UnauthorizedError('User is inactive or no longer exists')
+        }
 
         req.user = {
-            id: decoded.userId,
-            email: decoded.email,
-            role: decoded.role,
-            displayName: (decoded as any).displayName || '',
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            displayName: user.displayName || '',
             authMethod: 'jwt',
         }
 
@@ -109,13 +122,18 @@ export const optionalAuth = async (
 
         if (token && !token.startsWith('bts_')) {
             const decoded = verifyJwtToken(token)
+            const user = isSessionToken(decoded.type)
+                ? await userRepo.findUserById(decoded.userId)
+                : null
 
-            req.user = {
-                id: decoded.userId,
-                email: decoded.email,
-                role: decoded.role,
-                displayName: (decoded as any).displayName || '',
-                authMethod: 'jwt',
+            if (user?.isActive) {
+                req.user = {
+                    id: user.id,
+                    email: user.email,
+                    role: user.role,
+                    displayName: user.displayName || '',
+                    authMethod: 'jwt',
+                }
             }
         }
 

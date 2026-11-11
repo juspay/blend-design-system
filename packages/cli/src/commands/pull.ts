@@ -15,6 +15,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import ora from 'ora'
 import { logger } from '../utils/logger'
+import { resolveInsideProject } from '../utils/safe-path'
 import { resolveStudioApiUrl } from '../constants/studio'
 import {
     parseCliFormat,
@@ -162,7 +163,7 @@ export async function pullCommand(
         resolveSpinner.succeed('Tokens resolved')
     }
 
-    const outputDir = join(cwd, options.output || config.output)
+    const outputDir = resolveInsideProject(cwd, options.output || config.output)
     mkdirSync(outputDir, { recursive: true })
 
     // Determine output language

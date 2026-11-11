@@ -37,6 +37,13 @@ export const errorHandler = (
         if (!normalizedError.isOperational) {
             logger.error(normalizedError, 'Unexpected error occurred')
         }
+    } else if (err.name === 'MulterError') {
+        statusCode =
+            (err as Error & { code?: string }).code === 'LIMIT_FILE_SIZE'
+                ? 413
+                : 400
+        message = err.message
+        code = 'UPLOAD_REJECTED'
     } else if (!isPrismaError(err)) {
         logger.error(err, 'Unhandled error occurred')
     }
@@ -63,12 +70,12 @@ export const asyncHandler = (fn: AsyncHandlerFn) => {
     }
 }
 
-export const notFoundHandler = (req: Request, res: Response) => {
+export const notFoundHandler = (_req: Request, res: Response) => {
     res.status(404).json({
         success: false,
         error: {
             code: 'NOT_FOUND',
-            message: `Route ${req.originalUrl} not found`,
+            message: 'Route not found',
         },
     })
 }
