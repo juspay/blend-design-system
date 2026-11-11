@@ -83,7 +83,11 @@
             "fast-xml-parser@^4": "^4.5.7",
             "form-data@^4": "^4.0.6",
             "form-data@^2": "^2.5.6",
-            "@grpc/grpc-js": "^1.14.5"
+            "@grpc/grpc-js": "^1.14.5",
+            "monaco-editor>dompurify": "3.4.17"
+        },
+        "patchedDependencies": {
+            "monaco-editor@0.54.0": "patches/monaco-editor@0.54.0.patch"
         }
     }
 }

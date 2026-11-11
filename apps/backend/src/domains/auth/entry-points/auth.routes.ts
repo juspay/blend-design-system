@@ -1,10 +1,11 @@
 import { Router, type IRouter } from 'express'
 import { authenticate } from '@/middlewares/auth.js'
 import { asyncHandler } from '@/middlewares/errorHandler.js'
-import { authLimiter } from '@/middlewares/rateLimit.js'
+import { authLimiter, strictLimiter } from '@/middlewares/rateLimit.js'
 import { validate, googleCallbackQuerySchema } from '@/middlewares/validate.js'
 import {
     getGoogleAuthUrl,
+    startGoogleLogin,
     getCsrfToken,
     googleCallback,
     refreshAccessToken,
@@ -42,6 +43,8 @@ const router: IRouter = Router()
  *                       description: Google OAuth authorization URL
  */
 router.get('/google', asyncHandler(getGoogleAuthUrl))
+
+router.get('/google/start', asyncHandler(startGoogleLogin))
 
 router.get('/csrf', asyncHandler(getCsrfToken))
 
@@ -186,6 +189,11 @@ router.get('/me', authenticate, asyncHandler(getCurrentUser))
  * CLI: exposes current access JWT when the user has a valid browser session (cookie).
  * POST avoids treating this as a cacheable GET; client must send credentials (cookies).
  */
-router.post('/cli-token', authenticate, asyncHandler(getCliAccessToken))
+router.post(
+    '/cli-token',
+    authenticate,
+    strictLimiter,
+    asyncHandler(getCliAccessToken)
+)
 
 export default router

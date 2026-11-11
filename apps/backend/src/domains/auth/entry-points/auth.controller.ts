@@ -29,9 +29,40 @@ import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.j
 const REFRESH_TOKEN_EXPIRES_DAYS = 30
 const cookieSameSite = env.NODE_ENV === 'production' ? 'none' : 'lax'
 
+const OAUTH_STATE_COOKIE = 'oauthState'
+const oauthStateCookieOptions = {
+    httpOnly: true,
+    secure: env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/api',
+} as const
+
+const issueGoogleAuthUrl = (res: Response): string => {
+    const state = crypto.randomBytes(32).toString('hex')
+    res.cookie(OAUTH_STATE_COOKIE, state, {
+        ...oauthStateCookieOptions,
+        maxAge: 10 * 60 * 1000,
+    })
+    return generateAuthUrl(state)
+}
+
 export const getGoogleAuthUrl = async (_req: Request, res: Response) => {
-    const url = generateAuthUrl()
-    res.json({ success: true, data: { url } })
+    res.json({ success: true, data: { url: issueGoogleAuthUrl(res) } })
+}
+
+export const startGoogleLogin = async (_req: Request, res: Response) => {
+    res.redirect(issueGoogleAuthUrl(res))
+}
+
+const isValidOAuthState = (req: Request): boolean => {
+    const expected = req.cookies?.[OAUTH_STATE_COOKIE]
+    const received = (req.query as { state?: string }).state
+    if (typeof expected !== 'string' || typeof received !== 'string') {
+        return false
+    }
+    const a = Buffer.from(expected)
+    const b = Buffer.from(received)
+    return a.length === b.length && crypto.timingSafeEqual(a, b)
 }
 
 export const getCsrfToken = async (_req: Request, res: Response) => {
@@ -64,6 +95,16 @@ export const googleCallback = async (req: Request, res: Response) => {
             'Google callback missing authorization code'
         )
         return res.redirect(`${env.FRONTEND_URL}/login?error=no_code`)
+    }
+
+    const stateIsValid = isValidOAuthState(req)
+    res.clearCookie(OAUTH_STATE_COOKIE, oauthStateCookieOptions)
+    if (!stateIsValid) {
+        logger.warn(
+            { ...callbackContext, reason: 'invalid_state' },
+            'Google callback state mismatch'
+        )
+        return res.redirect(`${env.FRONTEND_URL}/login?error=invalid_state`)
     }
 
     try {

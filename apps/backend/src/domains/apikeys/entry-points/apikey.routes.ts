@@ -4,6 +4,7 @@ import { asyncHandler } from '@/middlewares/errorHandler.js'
 import { validate, createApiKeySchema } from '@/middlewares/validate.js'
 import * as apiKeyRepo from '../data-access/apikey.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
+import { requireOrganizationMember } from '@/domains/organizations/domain/org-permissions.service.js'
 
 const router: IRouter = Router()
 
@@ -12,6 +13,8 @@ router.post(
     authenticate,
     validate({ body: createApiKeySchema }),
     asyncHandler(async (req: Request, res: Response) => {
+        await requireOrganizationMember(req.body.organizationId, req.user!.id)
+
         const { apiKey, rawKey } = await apiKeyRepo.createApiKey({
             organizationId: req.body.organizationId,
             userId: req.user!.id,

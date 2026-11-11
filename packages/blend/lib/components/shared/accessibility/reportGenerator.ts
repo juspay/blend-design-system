@@ -476,6 +476,7 @@ export function downloadReport(
         if (mimeType === 'text/html') {
             const newWindow = window.open()
             if (newWindow) {
+                newWindow.opener = null
                 newWindow.document.write(content)
                 newWindow.document.close()
             }

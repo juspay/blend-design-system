@@ -9,7 +9,11 @@ import * as lockService from '@/domains/locks/domain/lock.service.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 import * as orgRepo from '@/domains/organizations/data-access/organization.repository.js'
 import * as userRepo from '@/domains/users/data-access/user.repository.js'
-import type { BrandConfig } from '@/domains/branches/domain/branch.types.js'
+import type {
+    Branch,
+    BrandConfig,
+} from '@/domains/branches/domain/branch.types.js'
+import { canReadBranch } from '@/domains/branches/domain/branch.service.js'
 import {
     requireOrganizationRole,
     requireOrganizationMember,
@@ -196,10 +200,12 @@ export const createMergeRequest = async (
     userEmail: string
 ) => {
     const source = await branchRepo.getBranchById(sourceBranchId)
-    if (!source) throw new NotFoundError('Source branch')
+    if (!source || !(await canReadBranch(source as unknown as Branch, userId)))
+        throw new NotFoundError('Source branch')
 
     const target = await branchRepo.getBranchById(targetBranchId)
-    if (!target) throw new NotFoundError('Target branch')
+    if (!target || !(await canReadBranch(target as unknown as Branch, userId)))
+        throw new NotFoundError('Target branch')
 
     const inferredOrgId = normalizeOrgId(
         source.organizationId,

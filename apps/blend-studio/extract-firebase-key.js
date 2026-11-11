@@ -5,6 +5,7 @@ const fs = require('fs')
 const path = require('path')
 
 const envPath = path.join(__dirname, '.env.local')
+const keyPath = path.join(__dirname, '.firebase-private-key.pem')
 
 try {
     const envContent = fs.readFileSync(envPath, 'utf8')
@@ -18,14 +19,11 @@ try {
         }
         privateKey = privateKey.replace(/\\n/g, '\n')
 
-        console.log('Firebase Private Key extracted successfully!')
-        console.log('Copy the following key (including BEGIN and END lines):')
-        console.log('================================================')
-        console.log(privateKey)
-        console.log('================================================')
+        fs.writeFileSync(keyPath, privateKey, { mode: 0o600 })
+        console.log(`Firebase private key written to ${keyPath}`)
         console.log('\nNow run:')
         console.log(
-            'echo -n "PASTE_KEY_HERE" | gcloud secrets create blend-monitor-firebase-key --data-file=-'
+            `gcloud secrets create blend-monitor-firebase-key --data-file=${keyPath} && rm ${keyPath}`
         )
     } else {
         console.error('Could not find FIREBASE_PRIVATE_KEY in .env.local')

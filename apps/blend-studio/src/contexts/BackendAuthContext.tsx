@@ -118,16 +118,8 @@ export function BackendAuthProvider({
     const signInWithGoogle = async () => {
         if (isMockMode) return
 
-        const response = await fetch(`${API_URL}/api/auth/google`)
-        const data = await response.json().catch(() => ({}))
-
-        if (!response.ok || !data.success || !data.data?.url) {
-            throw new Error(
-                data?.message || 'Failed to initialize Google OAuth login'
-            )
-        }
-
-        const googleAuthUrl = data.data.url
+        // Top-level navigation so the backend can set the OAuth state cookie first-party
+        const googleAuthUrl = `${API_URL}/api/auth/google/start`
         const width = 500
         const height = 600
         const left = window.screenX + (window.outerWidth - width) / 2

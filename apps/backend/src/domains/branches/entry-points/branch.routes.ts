@@ -24,24 +24,25 @@ router.get(
     '/',
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
-        const { branches, nextCursor } = await branchService.listBranches({
-            limit: parseInt(req.query.limit as string) || 20,
-            cursor: req.query.cursor as string,
-            createdBy: req.query.createdBy as string,
-            organizationId: req.query.organizationId as string,
-            status: req.query.status as
-                | 'draft'
-                | 'published'
-                | 'archived'
-                | undefined,
-            visibility: req.query.visibility as
-                | 'private'
-                | 'team'
-                | 'public'
-                | undefined,
-            search: req.query.search as string,
-            tag: req.query.tag as string,
-        })
+        const { branches, nextCursor } =
+            await branchService.listBranchesForUser(req.user!.id, {
+                limit: parseInt(req.query.limit as string) || 20,
+                cursor: req.query.cursor as string,
+                createdBy: req.query.createdBy as string,
+                organizationId: req.query.organizationId as string,
+                status: req.query.status as
+                    | 'draft'
+                    | 'published'
+                    | 'archived'
+                    | undefined,
+                visibility: req.query.visibility as
+                    | 'private'
+                    | 'team'
+                    | 'public'
+                    | undefined,
+                search: req.query.search as string,
+                tag: req.query.tag as string,
+            })
 
         res.json({
             success: true,
@@ -63,7 +64,7 @@ router.post(
             req.user!.id,
             req.user!.displayName || req.user!.email,
             req.user!.email,
-            req.user!.organizationId || req.body.organizationId
+            req.body.organizationId || req.user!.organizationId
         )
         res.status(201).json({
             success: true,
@@ -79,7 +80,10 @@ router.get(
     '/:branchId',
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
-        const branch = await branchService.getBranch(req.params.branchId)
+        const branch = await branchService.getBranchForUser(
+            req.params.branchId,
+            req.user!.id
+        )
         res.json({
             success: true,
             data: { branch },
@@ -94,7 +98,10 @@ router.get(
     '/:branchId/pull',
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
-        const branch = await branchService.getBranch(req.params.branchId)
+        const branch = await branchService.getBranchForUser(
+            req.params.branchId,
+            req.user!.id
+        )
 
         const versionParam =
             typeof req.query.version === 'string'
@@ -188,7 +195,7 @@ router.post(
             req.user!.id,
             req.user!.displayName || req.user!.email,
             req.user!.email,
-            req.user!.organizationId || req.body.organizationId
+            req.body.organizationId || req.user!.organizationId
         )
         res.status(201).json({
             success: true,
@@ -277,7 +284,10 @@ router.get(
     '/:branchId/versions',
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
-        const versions = await branchService.listVersions(req.params.branchId)
+        const versions = await branchService.listVersions(
+            req.params.branchId,
+            req.user!.id
+        )
         res.json({
             success: true,
             data: { versions },
@@ -296,6 +306,7 @@ router.post(
         const { branch, theme, tokenConfig } =
             await branchService.resolveTokens(
                 req.params.branchId,
+                req.user!.id,
                 req.body.theme || 'light'
             )
         res.json({
@@ -316,8 +327,7 @@ router.get(
     '/:branchId/snapshots',
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
-        const { getBranch } = await import('../domain/branch.service.js')
-        await getBranch(req.params.branchId)
+        await branchService.getBranchForUser(req.params.branchId, req.user!.id)
         const { listSnapshots } =
             await import('../data-access/branch.repository.js')
         const snapshots = await listSnapshots(req.params.branchId)
@@ -336,8 +346,10 @@ router.post(
     authenticate,
     validate({ body: createSnapshotSchema }),
     asyncHandler(async (req: Request, res: Response) => {
-        const { getBranch } = await import('../domain/branch.service.js')
-        const branch = await getBranch(req.params.branchId)
+        const branch = await branchService.requireBranchEditor(
+            req.params.branchId,
+            req.user!.id
+        )
         const { createSnapshot } =
             await import('../data-access/branch.repository.js')
         const snapshot = await createSnapshot(req.params.branchId, {

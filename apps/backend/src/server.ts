@@ -45,6 +45,14 @@ const allowedOrigins = isDevelopment
 
 const cookieCsrfProtection = createCookieCsrfProtection(allowedOrigins)
 
+const originOf = (url: string): string => {
+    try {
+        return new URL(url).origin
+    } catch {
+        return ''
+    }
+}
+
 app.use(
     cors({
         origin: (
@@ -86,7 +94,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     const referer = req.get('referer')
     const isAllowedOrigin =
         (origin && allowedOrigins.includes(origin)) ||
-        (referer && allowedOrigins.some((o) => referer.startsWith(o)))
+        (!origin && referer && allowedOrigins.includes(originOf(referer)))
 
     if (!isAllowedOrigin) {
         return res.status(403).json({
@@ -172,6 +180,7 @@ app.use(
         const isReadinessBypassPath =
             req.path === '/health' ||
             req.path === '/auth/google' ||
+            req.path === '/auth/google/start' ||
             req.path === '/google-fonts'
 
         if (isReadinessBypassPath || isDatabaseReady()) {

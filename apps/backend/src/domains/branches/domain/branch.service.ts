@@ -27,8 +27,12 @@ import {
     resolveMergeApprovalPolicy,
     type OrgApprovalSettings,
 } from '@/domains/shared/approval-policy.service.js'
-import { getOrganizationRole } from '@/domains/organizations/domain/org-permissions.service.js'
 import {
+    getOrganizationRole,
+    requireOrganizationMember,
+} from '@/domains/organizations/domain/org-permissions.service.js'
+import {
+    isUnsafePathSegment,
     resolveWithInheritance,
     validateAgainstLocks,
     type TokenLockEntry,
@@ -40,6 +44,9 @@ function deepMergeRecords(
 ): Record<string, unknown> {
     const result: Record<string, unknown> = { ...base }
     for (const [key, value] of Object.entries(override)) {
+        if (isUnsafePathSegment(key)) {
+            continue
+        }
         const baseValue = result[key]
         if (
             value &&
@@ -281,11 +288,10 @@ export const createBranch = async (
         throw new ValidationError('Branch name is required')
     }
 
-    let orgId: string | null = organizationId || dto.organizationId || null
-    if (!orgId) {
-        const membership = await userRepo.findUserMembership(userId)
-        orgId = membership?.organizationId || null
-    }
+    const orgId = await resolveOrganizationForUser(
+        userId,
+        organizationId || dto.organizationId
+    )
 
     const branchSlug = dto.branchSlug
 
@@ -383,6 +389,64 @@ export const getBranch = async (branchId: string): Promise<Branch> => {
     return branch as unknown as Branch
 }
 
+export const canReadBranch = async (
+    branch: Branch,
+    userId: string
+): Promise<boolean> => {
+    if (branch.visibility === 'public' || branch.createdBy === userId) {
+        return true
+    }
+    if (!branch.organizationId) {
+        return false
+    }
+    const membership = await userRepo.findUserMembershipInOrganization(
+        userId,
+        branch.organizationId
+    )
+    return Boolean(membership)
+}
+
+// Unreadable branches surface as 404 so branch ids can't be probed across tenants
+export const getBranchForUser = async (
+    branchId: string,
+    userId: string
+): Promise<Branch> => {
+    const branch = await getBranch(branchId)
+    if (!(await canReadBranch(branch, userId))) {
+        throw new NotFoundError('Branch')
+    }
+    return branch
+}
+
+export const requireBranchEditor = async (
+    branchId: string,
+    userId: string
+): Promise<Branch> => {
+    const branch = await getBranchForUser(branchId, userId)
+    if (branch.createdBy === userId) {
+        return branch
+    }
+    const role = await getRoleForBranchContext(branch, userId)
+    if (role !== 'admin' && role !== 'editor') {
+        throw new ForbiddenError(
+            'You do not have permission to edit this branch'
+        )
+    }
+    return branch
+}
+
+export const resolveOrganizationForUser = async (
+    userId: string,
+    requestedOrganizationId?: string | null
+): Promise<string | null> => {
+    if (requestedOrganizationId) {
+        await requireOrganizationMember(requestedOrganizationId, userId)
+        return requestedOrganizationId
+    }
+    const membership = await userRepo.findUserMembership(userId)
+    return membership?.organizationId || null
+}
+
 export const listBranches = async (
     options: {
         organizationId?: string
@@ -396,6 +460,24 @@ export const listBranches = async (
     } = {}
 ) => {
     return branchRepo.listBranches(options)
+}
+
+export const listBranchesForUser = async (
+    userId: string,
+    options: Parameters<typeof listBranches>[0] = {}
+) => {
+    if (options.organizationId) {
+        await requireOrganizationMember(options.organizationId, userId)
+        return branchRepo.listBranches(options)
+    }
+    const memberships = await userRepo.findUserMemberships(userId)
+    return branchRepo.listBranches({
+        ...options,
+        visibleTo: {
+            userId,
+            organizationIds: memberships.map((m) => m.organizationId),
+        },
+    })
 }
 
 export const updateBranch = async (
@@ -540,15 +622,14 @@ export const forkBranch = async (
     }
 
     const source = await branchRepo.getBranchById(sourceBranchId)
-    if (!source) {
+    if (
+        !source ||
+        !(await canReadBranch(source as unknown as Branch, userId))
+    ) {
         throw new NotFoundError('Source branch')
     }
 
-    let orgId: string | null = organizationId || null
-    if (!orgId) {
-        const membership = await userRepo.findUserMembership(userId)
-        orgId = membership?.organizationId || null
-    }
+    const orgId = await resolveOrganizationForUser(userId, organizationId)
 
     const forked = await branchRepo.forkBranch(sourceBranchId, {
         name: newName,
@@ -788,7 +869,7 @@ export const getBranchApprovalSettings = async (
     userId: string,
     context: 'merge' | 'publish'
 ) => {
-    const branch = await getBranch(branchId)
+    const branch = await getBranchForUser(branchId, userId)
     const organization = branch.organizationId
         ? await orgRepo.getOrganizationById(branch.organizationId)
         : null
@@ -834,16 +915,17 @@ export const getBranchApprovalSettings = async (
 
 export { canDirectlyUpdateBranch } from '@/domains/shared/approval-policy.service.js'
 
-export const listVersions = async (branchId: string) => {
-    await getBranch(branchId)
+export const listVersions = async (branchId: string, userId: string) => {
+    await getBranchForUser(branchId, userId)
     return branchRepo.listVersions(branchId)
 }
 
 export const resolveTokens = async (
     branchId: string,
+    userId: string,
     theme: 'light' | 'dark' = 'light'
 ): Promise<{ branch: Branch; theme: string; tokenConfig: BrandConfig }> => {
-    const branch = await getBranch(branchId)
+    const branch = await getBranchForUser(branchId, userId)
     const effectiveBrandConfig = await resolveEffectiveBrandConfig(
         branch,
         branch.tokenConfig
@@ -859,17 +941,17 @@ export const resolveTokens = async (
 export const addTag = async (
     branchId: string,
     tagId: string,
-    _userId: string
+    userId: string
 ): Promise<void> => {
-    await getBranch(branchId)
+    await requireBranchEditor(branchId, userId)
     await branchRepo.addTagToBranch(branchId, tagId)
 }
 
 export const removeTag = async (
     branchId: string,
     tagId: string,
-    _userId: string
+    userId: string
 ): Promise<void> => {
-    await getBranch(branchId)
+    await requireBranchEditor(branchId, userId)
     await branchRepo.removeTagFromBranch(branchId, tagId)
 }

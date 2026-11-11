@@ -6,6 +6,7 @@
  */
 
 import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
+import { toCommentText } from './comment-text'
 
 function compactJson(value: unknown): string {
     return JSON.stringify(value)
@@ -39,7 +40,7 @@ export function generateBrandTokensRescriptCode(
  *   npx blend-studio generate <brand.json> --language rescript
  *
  * Generated: ${timestamp}
- * Brand: ${brandConfig.name} (${brandConfig.brandId})
+ * Brand: ${toCommentText(brandConfig.name)} (${toCommentText(brandConfig.brandId)})
  *
  * Opaque JSON.t values — decode or narrow in your app as needed.
  */

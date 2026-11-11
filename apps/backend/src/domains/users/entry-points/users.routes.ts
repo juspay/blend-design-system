@@ -112,6 +112,17 @@ router.patch(
             return
         }
 
+        if (role && id === req.user?.id) {
+            res.status(403).json({
+                success: false,
+                error: {
+                    code: 'FORBIDDEN',
+                    message: 'You cannot change your own role',
+                },
+            })
+            return
+        }
+
         let user
         if (role && req.user?.role === 'admin') {
             const previousUser = await findUserById(id)
