@@ -22,7 +22,6 @@ import Block from '../Primitives/Block/Block'
 import Skeleton from '../Skeleton/Skeleton'
 import {
     handleCustomRangeCalendarDateClick,
-    getDayNames,
     getMonthHeight,
     findCurrentMonthIndex,
     createCalendarMonthData,
@@ -33,6 +32,13 @@ import {
 import { FOUNDATION_THEME } from '../../tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../i18n/catalog/dateRangePicker.messages'
+import { useMessages } from '../../i18n/useMessages'
+import { getWeekdayNames } from '../../i18n/format/calendarNames'
+import {
+    getDateTimeFormat,
+    getListFormat,
+} from '../../i18n/format/formatterCache'
 
 type CalendarGridProps = {
     selectedRange: DateRange | undefined
@@ -260,6 +266,7 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
         ref
     ) => {
         const scrollContainerRef = useRef<HTMLDivElement>(null)
+        const { m, locale } = useMessages(DATE_RANGE_PICKER_MESSAGES)
         const cellsRef = useRef<Map<string, HTMLDivElement>>(new Map())
         const activeCellRef = useRef<HTMLDivElement | null>(null)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
@@ -286,7 +293,21 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
             [today, hideFutureDates, hidePastDates, maxYearOffset]
         )
 
-        const dayNames = useMemo(() => getDayNames(), [])
+        // Monday-first is pinned, not taken from the provider's
+        // `firstDayOfWeek`. `generateMonthWeeks` in ./utils computes its
+        // leading blanks with a hardcoded `firstDayOfMonth === 0 ? 6 : - 1`
+        // Monday offset, so rotating only the header would misalign every
+        // cell. Honouring the provider setting means changing that offset
+        // math too, which is a separate change.
+        //
+        // Widths change here: the old hardcoded table was two-letter ('Mo'),
+        // and Intl's 'short' is three ('Mon'). 'narrow' is not a substitute —
+        // it collides in English (T/T, S/S) — and the result must not be
+        // truncated to two characters, which mangles CJK and Cyrillic.
+        const dayNames = useMemo(
+            () => getWeekdayNames(locale, 'short', 1),
+            [locale]
+        )
 
         const monthData = useMemo(() => {
             let cumulativeHeight = 0
@@ -846,7 +867,41 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                                                   ? 0
                                                                   : -1
                                                         }
-                                                        aria-label={`${new Date(year, month, day).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}${isSelected ? ', selected' : ''}${isToday ? ', today' : ''}${isDisabled ? ', disabled' : ''}`}
+                                                        aria-label={getListFormat(
+                                                            locale
+                                                        ).format([
+                                                            getDateTimeFormat(
+                                                                locale,
+                                                                'date-full'
+                                                            ).format(
+                                                                new Date(
+                                                                    year,
+                                                                    month,
+                                                                    day
+                                                                )
+                                                            ),
+                                                            ...(isSelected
+                                                                ? [
+                                                                      m(
+                                                                          'date-range-picker.a11y.state-selected'
+                                                                      ),
+                                                                  ]
+                                                                : []),
+                                                            ...(isToday
+                                                                ? [
+                                                                      m(
+                                                                          'date-range-picker.a11y.state-today'
+                                                                      ),
+                                                                  ]
+                                                                : []),
+                                                            ...(isDisabled
+                                                                ? [
+                                                                      m(
+                                                                          'date-range-picker.a11y.state-disabled'
+                                                                      ),
+                                                                  ]
+                                                                : []),
+                                                        ])}
                                                         aria-selected={
                                                             isSelected
                                                         }

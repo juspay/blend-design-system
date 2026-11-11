@@ -5,6 +5,8 @@ import {
     DateRangePickerSize,
     CustomPresetConfig,
 } from './types'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../i18n/catalog/dateRangePicker.messages'
+import { useMessages } from '../../i18n/useMessages'
 import {
     getPresetLabel,
     getPresetLabelWithCustom,
@@ -54,6 +56,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
         },
         ref
     ) => {
+        const { i18n } = useMessages(DATE_RANGE_PICKER_MESSAGES)
         // Use the already processed presets directly
         const presetConfigs = customPresets || []
 
@@ -72,7 +75,11 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
         const selectItems: SingleSelectV2GroupType[] = [
             {
                 items: presetsToShow.map((preset) => ({
-                    label: getPresetLabelWithCustom(preset, presetConfigs),
+                    label: getPresetLabelWithCustom(
+                        preset,
+                        presetConfigs,
+                        i18n
+                    ),
                     value: preset,
                 })),
             },
@@ -153,7 +160,7 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                 style={getContainerStyle()}
             >
                 <SingleSelectV2
-                    placeholder={getPresetLabel(activePreset)}
+                    placeholder={getPresetLabel(activePreset, i18n)}
                     items={selectItems}
                     selected={activePreset}
                     onSelect={handlePresetSelect}
@@ -185,6 +192,9 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                         >
                             <Block
                                 data-element="placeholder"
+                                // Not localized on purpose: this is a DOM
+                                // identifier that consumer selectors and
+                                // analytics match on.
                                 data-id={
                                     getPresetLabel(activePreset) ||
                                     'placeholder'
@@ -212,7 +222,8 @@ const QuickRangeSelector = forwardRef<HTMLDivElement, QuickRangeSelectorProps>(
                             >
                                 {getPresetLabelWithCustom(
                                     activePreset,
-                                    presetConfigs
+                                    presetConfigs,
+                                    i18n
                                 )}
                             </Block>
                             <ChevronDown

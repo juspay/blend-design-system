@@ -10,6 +10,13 @@ import {
     PresetsConfig,
     CustomRangeConfig,
 } from './types'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../i18n/catalog/dateRangePicker.messages'
+import { getMonthNames, getWeekdayNames } from '../../i18n/format/calendarNames'
+import { DEFAULT_LOCALE } from '../../i18n/constants'
+import type { BlendLocale } from '../../i18n/types'
+import { resolveMessage } from '../../i18n/resolve'
+import type { BlendI18nHandle } from '../../i18n/types'
+import { PRESET_MESSAGE_KEY } from './presetMessageKeys'
 import { CalendarTokenType } from './dateRangePicker.tokens'
 import {
     formatTimeValue,
@@ -680,53 +687,26 @@ export const getPresetDateRange = (
  * @param preset The preset to get the label for
  * @returns The label for the preset
  */
-export const getPresetLabel = (preset: DateRangePreset): string => {
-    // Check if this is a custom preset
+export const getPresetLabel = (
+    preset: DateRangePreset,
+    i18n?: BlendI18nHandle
+): string => {
+    // Tier 1 stays first: a consumer-supplied custom preset label must beat
+    // any translation lookup.
     const customDefinition = getCustomPresetDefinition(preset as string)
     if (customDefinition) {
         return customDefinition.label
     }
 
-    switch (preset) {
-        case DateRangePreset.TODAY:
-            return 'Today'
-        case DateRangePreset.YESTERDAY:
-            return 'Yesterday'
-        case DateRangePreset.TOMORROW:
-            return 'Tomorrow'
-        case DateRangePreset.LAST_30_MINUTES:
-            return 'Last 30 minutes'
-        case DateRangePreset.LAST_1_HOUR:
-            return 'Last 1 hour'
-        case DateRangePreset.LAST_6_HOURS:
-            return 'Last 6 hours'
-        case DateRangePreset.LAST_24_HOURS:
-            return 'Last 24 hours'
-        case DateRangePreset.LAST_7_DAYS:
-            return 'Last 7 days'
-        case DateRangePreset.LAST_30_DAYS:
-            return 'Last 30 days'
-        case DateRangePreset.THIS_MONTH:
-            return 'This month'
-        case DateRangePreset.LAST_MONTH:
-            return 'Last month'
-        case DateRangePreset.LAST_3_MONTHS:
-            return 'Last 3 months'
-        case DateRangePreset.LAST_12_MONTHS:
-            return 'Last 12 months'
-        case DateRangePreset.NEXT_7_DAYS:
-            return 'Next 7 days'
-        case DateRangePreset.NEXT_30_DAYS:
-            return 'Next 30 days'
-        case DateRangePreset.NEXT_3_MONTHS:
-            return 'Next 3 months'
-        case DateRangePreset.NEXT_12_MONTHS:
-            return 'Next 12 months'
-        case DateRangePreset.CUSTOM:
-            return 'Custom'
-        default:
-            return 'Select Range'
-    }
+    // `i18n` is read whole rather than destructured: `tsconfig.json` sets
+    // `noUnusedParameters`, so an unused `locale` binding would not compile.
+    const key =
+        PRESET_MESSAGE_KEY[preset] ??
+        'date-range-picker.placeholder.select-range'
+
+    return resolveMessage(DATE_RANGE_PICKER_MESSAGES, key, {
+        translate: i18n?.translate,
+    })
 }
 
 /**
@@ -1353,33 +1333,42 @@ export const getNextChunkParams = (
 
 /**
  * Gets month name from month index
+ *
+ * Previously held its own English table — one of three in the library, which
+ * had drifted far enough that a picker could show a translated month in its
+ * trigger and an English one in its grid. Now derived from `Intl`.
+ *
  * @param monthIndex Month index (0-based)
+ * @param locale Optional BCP 47 tag; omitted keeps the previous English output
+ * @param width `'long'` (default) or `'short'`. Prefer `'short'` over slicing
+ *   the long name: truncating to three characters mangles CJK and Cyrillic.
  * @returns Month name
  */
-export const getMonthName = (monthIndex: number): string => {
-    const monthNames = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ]
-    return monthNames[monthIndex]
-}
+export const getMonthName = (
+    monthIndex: number,
+    locale: BlendLocale = DEFAULT_LOCALE,
+    width: 'long' | 'short' = 'long'
+): string => getMonthNames(locale, width)[monthIndex]
 
 /**
  * Gets day names for calendar header
+ *
+ * @deprecated Use `getWeekdayNames(locale, width, firstDayOfWeek)` from
+ * `lib/i18n/format/calendarNames` instead. This signature cannot express a
+ * first day of week, and its no-argument form is pinned to the legacy
+ * two-letter English abbreviations for backward compatibility.
+ *
+ * @param locale Optional BCP 47 tag. Omitted returns the original
+ *   `['Mo', 'Tu', …]` array verbatim, so existing callers and tests are
+ *   unaffected. Supplied, returns localized Monday-first short names, which
+ *   are three characters in English (`'Mon'`) rather than two.
  * @returns Array of day names
  */
-export const getDayNames = (): string[] => {
-    return ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+export const getDayNames = (locale?: BlendLocale): string[] => {
+    if (locale === undefined) {
+        return ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']
+    }
+    return [...getWeekdayNames(locale, 'short', 1)]
 }
 
 /**
@@ -2506,7 +2495,9 @@ export const generatePickerData = (
             selectedIndex: resolvedYearIndex,
         },
         months: {
-            items: monthOptions.map((m) => getMonthName(m).slice(0, 3)),
+            items: monthOptions.map((m) =>
+                getMonthName(m, DEFAULT_LOCALE, 'short')
+            ),
             selectedIndex: monthIndex,
         },
         dates: {
@@ -2633,33 +2624,47 @@ export const createSelectionHandler = (
 }
 
 /**
- * Gets preset display label with custom mappings
+ * Gets the display label for a preset, as shown in the preset list.
+ *
+ * This previously carried a three-case override switch that was wrong in two
+ * of the three cases: `LAST_1_HOUR` returned `'Last 6 hours'` and
+ * `LAST_7_DAYS` returned `'Last 2 Days'`, both visible to users via
+ * `components/PresetItem.tsx`. The third case (`LAST_6_HOURS`) returned the
+ * same string `getPresetLabel` already returns, so with the two bugs
+ * corrected the whole switch was redundant.
+ *
+ * Kept as a named export rather than removed, because it is part of the
+ * public surface.
+ *
  * @param preset The preset to get label for
  * @returns Display label for the preset
  */
-export const getPresetDisplayLabel = (preset: DateRangePreset): string => {
-    switch (preset) {
-        case DateRangePreset.LAST_1_HOUR:
-            return 'Last 6 hours'
-        case DateRangePreset.LAST_6_HOURS:
-            return 'Last 6 hours'
-        case DateRangePreset.LAST_7_DAYS:
-            return 'Last 2 Days'
-        default:
-            return getPresetLabel(preset)
-    }
-}
+export const getPresetDisplayLabel = (
+    preset: DateRangePreset,
+    i18n?: BlendI18nHandle
+): string => getPresetLabel(preset, i18n)
 
 /**
  * Enhanced date range formatting with preset patterns
+ *
+ * Locale precedence is `config.locale` -> `i18n.locale` -> `'en-US'`. The
+ * `'en-US'` destructuring default below is retained deliberately: it fires
+ * only when neither of the first two is set, and replacing it with
+ * `undefined` would hand `undefined` to `toLocaleDateString` further down,
+ * which falls through to the host machine locale — the exact silent
+ * behaviour change the explicit default exists to prevent.
+ *
  * @param range The date range to format
  * @param config Format configuration
+ * @param timezone Optional IANA zone
+ * @param i18n Optional provider locale and translate function
  * @returns Formatted date range string
  */
 export const formatDateRangeWithConfig = (
     range: DateRange,
     config: DateFormatConfig = {},
-    timezone?: string
+    timezone?: string,
+    i18n?: BlendI18nHandle
 ): string => {
     if (!range.startDate) {
         return ''
@@ -2671,7 +2676,9 @@ export const formatDateRangeWithConfig = (
         includeTime = false,
         includeYear = true,
         separator = ' - ',
-        locale = 'en-US',
+        // Merged here rather than at the destructuring default so a
+        // per-call `config.locale` still wins over the provider.
+        locale = i18n?.locale ?? 'en-US',
         timeFormat = '12h',
     } = config
 
@@ -2928,16 +2935,27 @@ export const formatTriggerDisplay = (
     range: DateRange | undefined,
     config: DateFormatConfig = {},
     isSingleDatePicker?: boolean,
-    placeholder: string = isSingleDatePicker
-        ? 'Select date'
-        : 'Select date range',
-    timezone?: string
+    placeholder?: string,
+    timezone?: string,
+    i18n?: BlendI18nHandle
 ): string => {
     if (!range || !range.startDate) {
-        return placeholder
+        // The English defaults now come from the catalog rather than from a
+        // default parameter, so they follow the provider's locale while an
+        // explicitly passed `placeholder` still wins.
+        return (
+            placeholder ??
+            resolveMessage(
+                DATE_RANGE_PICKER_MESSAGES,
+                isSingleDatePicker
+                    ? 'date-range-picker.placeholder.select-date'
+                    : 'date-range-picker.placeholder.select-date-range',
+                { translate: i18n?.translate }
+            )
+        )
     }
 
-    return formatDateRangeWithConfig(range, config, timezone)
+    return formatDateRangeWithConfig(range, config, timezone, i18n)
 }
 
 /**
@@ -4422,7 +4440,8 @@ export const getFilteredPresets = (
  */
 export const getPresetLabelWithCustom = (
     preset: DateRangePreset,
-    presetConfigs?: CustomPresetConfig[]
+    presetConfigs?: CustomPresetConfig[],
+    i18n?: BlendI18nHandle
 ): string => {
     if (presetConfigs) {
         const config = presetConfigs.find((config) => config.preset === preset)
@@ -4431,7 +4450,7 @@ export const getPresetLabelWithCustom = (
         }
     }
 
-    return getPresetLabel(preset)
+    return getPresetLabel(preset, i18n)
 }
 
 /**

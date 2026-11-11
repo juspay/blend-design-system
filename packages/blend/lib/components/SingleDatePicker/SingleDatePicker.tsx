@@ -40,6 +40,8 @@ import {
 import TimeColumns from '../TimePicker/TimeColumns'
 import type { TimePickerTokensType } from '../TimePicker/timePicker.tokens.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../i18n/catalog/dateRangePicker.messages'
+import { useMessages } from '../../i18n/useMessages'
 import { useTheme } from '../../context'
 import { FOUNDATION_THEME } from '../../tokens'
 import type { SingleDatePickerProps } from './singleDatePicker.types'
@@ -129,6 +131,10 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
         },
         ref
     ) => {
+        // SingleDatePicker ships no token factory of its own and styles itself
+        // from CALENDAR and TIME_PICKER; it resolves its strings from the
+        // DateRangePicker fragment for the same reason.
+        const { i18n } = useMessages(DATE_RANGE_PICKER_MESSAGES)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
         const { foundationTokens } = useTheme()
         const timePickerToken =
@@ -230,7 +236,8 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                   resolvedFormatConfig,
                   true,
                   resolvedPlaceholder,
-                  timezone
+                  timezone,
+                  i18n
               )
             : committedDate
               ? `${formatDate(committedDate, resolvedDateFormat, timezone)}${

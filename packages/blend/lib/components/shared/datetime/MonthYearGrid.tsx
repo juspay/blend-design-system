@@ -20,6 +20,9 @@ import {
     startOfPeriod,
     type PickerGranularity,
 } from './granularity'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../../i18n/catalog/dateRangePicker.messages'
+import { useMessages } from '../../../i18n/useMessages'
+import { getListFormat } from '../../../i18n/format/formatterCache'
 
 /**
  * The month and year selection surfaces behind `granularity="month"` and
@@ -162,6 +165,7 @@ const MonthYearGrid = ({
     resetScrollPosition,
     maxYearOffset,
 }: MonthYearGridProps) => {
+    const { m, locale } = useMessages(DATE_RANGE_PICKER_MESSAGES)
     const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
     const cellsRef = useRef<HTMLDivElement[]>([])
     const selectedCellRef = useRef<HTMLDivElement | null>(null)
@@ -208,8 +212,10 @@ const MonthYearGrid = ({
         if (granularity === 'month') {
             return Array.from({ length: 12 }, (_, month) => ({
                 date: new Date(viewYear, month, 1),
-                label: getMonthName(month).slice(0, 3),
-                fullLabel: `${getMonthName(month)} ${viewYear}`,
+                // `'short'` rather than slicing the long name: truncating to
+                // three characters mangles CJK and Cyrillic.
+                label: getMonthName(month, locale, 'short'),
+                fullLabel: `${getMonthName(month, locale)} ${viewYear}`,
                 id: `${viewYear}-${month}`,
             }))
         }
@@ -480,7 +486,33 @@ const MonthYearGrid = ({
                                                       ? 0
                                                       : -1
                                             }
-                                            aria-label={`${cell.fullLabel}${isSelected ? ', selected' : ''}${cellProps.dateStates.isTodayDay ? ', today' : ''}${isDisabled ? ', disabled' : ''}`}
+                                            aria-label={getListFormat(
+                                                locale
+                                            ).format([
+                                                cell.fullLabel,
+                                                ...(isSelected
+                                                    ? [
+                                                          m(
+                                                              'date-range-picker.a11y.state-selected'
+                                                          ),
+                                                      ]
+                                                    : []),
+                                                ...(cellProps.dateStates
+                                                    .isTodayDay
+                                                    ? [
+                                                          m(
+                                                              'date-range-picker.a11y.state-today'
+                                                          ),
+                                                      ]
+                                                    : []),
+                                                ...(isDisabled
+                                                    ? [
+                                                          m(
+                                                              'date-range-picker.a11y.state-disabled'
+                                                          ),
+                                                      ]
+                                                    : []),
+                                            ])}
                                             aria-selected={isSelected}
                                             aria-disabled={isDisabled}
                                             onClick={() =>

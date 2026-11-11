@@ -29,6 +29,8 @@ import {
     isControlledDateRange,
     isValidDate,
 } from './utils'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../i18n/catalog/dateRangePicker.messages'
+import { useMessages } from '../../i18n/useMessages'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
@@ -463,6 +465,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         },
         ref
     ) => {
+        const { m, i18n } = useMessages(DATE_RANGE_PICKER_MESSAGES)
         const [isOpen, setIsOpen] = useState(false)
         const [popoverKey, setPopoverKey] = useState(0)
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
@@ -770,7 +773,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 if (onPresetSelection && preset !== DateRangePreset.CUSTOM) {
                     const presetSelectionData: PresetSelectionData = {
                         preset,
-                        label: getPresetLabelWithCustom(preset, presetConfigs),
+                        label: getPresetLabelWithCustom(
+                            preset,
+                            presetConfigs,
+                            i18n
+                        ),
                         dateRange: result.updatedRange,
                         formattedStartDate: result.formattedStartDate,
                         formattedEndDate: result.formattedEndDate,
@@ -1034,7 +1041,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         formatConfig,
                         isSingleDatePicker,
                         triggerConfig?.placeholder,
-                        timezone
+                        timezone,
+                        i18n
                     )
                   : isMonthGranularity
                     ? formatMonthRangeDisplay(displayRange)
@@ -1053,8 +1061,13 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         range,
                         formatConfig,
                         isSingleDatePicker,
-                        isSingleDatePicker ? 'Select date' : 'Select dates',
-                        timezone
+                        m(
+                            isSingleDatePicker
+                                ? 'date-range-picker.placeholder.select-date'
+                                : 'date-range-picker.placeholder.select-dates'
+                        ),
+                        timezone,
+                        i18n
                     )
                 }
 
@@ -1185,6 +1198,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         return (
             <Block
+                // Not localized on purpose: this is a DOM identifier that
+                // consumer selectors and analytics match on, so it must stay
+                // locale-stable.
                 data-datepicker={getPresetLabel(activePreset) || 'datepicker'}
                 ref={ref}
                 display="flex"
