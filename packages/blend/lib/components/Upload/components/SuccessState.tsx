@@ -6,6 +6,8 @@ import { Repeat2 } from 'lucide-react'
 import type { UploadedFileWithStatus } from '../types'
 import type { UploadTokenType } from '../upload.tokens'
 import FileListDisplay from './FileListDisplay'
+import { UPLOAD_MESSAGES } from '../../../i18n/catalog/upload.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 type SuccessStateProps = {
     successfulFiles: UploadedFileWithStatus[]
@@ -15,6 +17,7 @@ type SuccessStateProps = {
     onFileRemove?: (fileId: string) => void
     uploadTokens: UploadTokenType
     maxFiles?: number
+    replaceFileText?: string
 }
 
 const SuccessState: React.FC<SuccessStateProps> = ({
@@ -25,83 +28,96 @@ const SuccessState: React.FC<SuccessStateProps> = ({
     onFileRemove,
     uploadTokens,
     maxFiles,
-}) => (
-    <Block
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={uploadTokens.container.content.slot.gap}
-    >
-        {children && (
-            <Block
-                width={uploadTokens.container.content.slot.width}
-                height={uploadTokens.container.content.slot.width}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-            >
-                {children}
-            </Block>
-        )}
-
+    replaceFileText,
+}) => {
+    const { m, pick } = useMessages(UPLOAD_MESSAGES)
+    return (
         <Block
-            data-element="content"
             display="flex"
             flexDirection="column"
             alignItems="center"
-            gap={uploadTokens.container.content.text.gap}
+            gap={uploadTokens.container.content.slot.gap}
         >
-            <Text
-                as="span"
-                fontSize={uploadTokens.container.content.text.title.fontSize}
-                fontWeight={
-                    uploadTokens.container.content.text.title.fontWeight
-                }
-                color={uploadTokens.container.content.text.title.color}
-                textAlign="center"
-            >
-                {multiple
-                    ? 'Files successfully added'
-                    : 'File successfully added'}
-            </Text>
-
-            <Text
-                as="span"
-                fontSize={uploadTokens.container.content.text.subtitle.fontSize}
-                fontWeight={
-                    uploadTokens.container.content.text.subtitle.fontWeight
-                }
-                color={uploadTokens.container.content.text.subtitle.color}
-                textAlign="center"
-            >
-                {multiple
-                    ? "We've successfully uploaded the following files"
-                    : successfulFiles[0]?.file.name || ''}
-            </Text>
-        </Block>
-
-        <Block gap={uploadTokens.container.content.actionable.gap}>
-            {multiple ? (
-                <FileListDisplay
-                    files={successfulFiles}
-                    onFileRemove={onFileRemove}
-                    uploadTokens={uploadTokens}
-                    maxFiles={maxFiles}
-                />
-            ) : (
-                onReplaceFile && (
-                    <Button
-                        buttonType={ButtonType.SECONDARY}
-                        size={ButtonSize.MEDIUM}
-                        leadingIcon={<Repeat2 />}
-                        text="Replace file"
-                        onClick={onReplaceFile}
-                    />
-                )
+            {children && (
+                <Block
+                    width={uploadTokens.container.content.slot.width}
+                    height={uploadTokens.container.content.slot.width}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    {children}
+                </Block>
             )}
+
+            <Block
+                data-element="content"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                gap={uploadTokens.container.content.text.gap}
+            >
+                <Text
+                    as="span"
+                    fontSize={
+                        uploadTokens.container.content.text.title.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.title.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.title.color}
+                    textAlign="center"
+                >
+                    {m(
+                        multiple
+                            ? 'upload.status.added.other'
+                            : 'upload.status.added.one'
+                    )}
+                </Text>
+
+                <Text
+                    as="span"
+                    fontSize={
+                        uploadTokens.container.content.text.subtitle.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.subtitle.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.subtitle.color}
+                    textAlign="center"
+                >
+                    {multiple
+                        ? m('upload.status.uploaded-multiple')
+                        : successfulFiles[0]?.file.name || ''}
+                </Text>
+            </Block>
+
+            <Block gap={uploadTokens.container.content.actionable.gap}>
+                {multiple ? (
+                    <FileListDisplay
+                        files={successfulFiles}
+                        onFileRemove={onFileRemove}
+                        uploadTokens={uploadTokens}
+                        maxFiles={maxFiles}
+                    />
+                ) : (
+                    onReplaceFile && (
+                        <Button
+                            buttonType={ButtonType.SECONDARY}
+                            size={ButtonSize.MEDIUM}
+                            leadingIcon={<Repeat2 />}
+                            text={pick(
+                                replaceFileText,
+                                'upload.action.replace-file'
+                            )}
+                            onClick={onReplaceFile}
+                        />
+                    )
+                )}
+            </Block>
         </Block>
-    </Block>
-)
+    )
+}
 
 SuccessState.displayName = 'SuccessState'
 

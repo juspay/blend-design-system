@@ -52,6 +52,10 @@ export type UploadV2Props = {
     progressBarValue?: number
     progressBarMaxWidth?: string
     uploadHeaderText?: string
+    /** Overrides the "Browse Files" button label. */
+    browseFilesText?: string
+    /** Overrides the "Replace File" button label. */
+    replaceFileText?: string
 } & Omit<
     React.InputHTMLAttributes<HTMLInputElement>,
     'size' | 'style' | 'className' | 'multiple' | 'slot' | 'onChange'

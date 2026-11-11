@@ -43,7 +43,12 @@ const UploadV2 = forwardRef<HTMLInputElement, UploadV2Props>(
             hintText,
             progressBarValue = 0,
             progressBarMaxWidth = '300px',
-            uploadHeaderText = 'Choose a file or drag & drop it here',
+            // No default here: the catalog supplies the English fallback via
+            // `pick`, so the string is translatable while a consumer-passed
+            // value still wins.
+            uploadHeaderText,
+            browseFilesText,
+            replaceFileText,
             ...rest
         },
         ref
@@ -284,6 +289,8 @@ const UploadV2 = forwardRef<HTMLInputElement, UploadV2Props>(
                         progressBarValue={progressBarValue}
                         progressBarMaxWidth={progressBarMaxWidth}
                         uploadHeaderText={uploadHeaderText}
+                        browseFilesText={browseFilesText}
+                        replaceFileText={replaceFileText}
                         dragState={dragState}
                         maxSize={maxSize}
                         maxFiles={maxFiles}

@@ -42,6 +42,8 @@ import {
     ErrorState,
     DefaultState,
 } from './components'
+import { UPLOAD_MESSAGES } from '../../i18n/catalog/upload.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const Upload: React.FC<UploadProps> = ({
     multiple = false,
@@ -74,8 +76,11 @@ const Upload: React.FC<UploadProps> = ({
     validator,
     progressSpeed = 200,
     onStateChange,
+    browseFilesText,
+    replaceFileText,
     ...rest
 }) => {
+    const { m, mp } = useMessages(UPLOAD_MESSAGES)
     const uploadTokens = useResponsiveTokens<UploadTokenType>('UPLOAD')
     const fileInputRef = useRef<HTMLInputElement>(null)
     const uploadId = useId()
@@ -443,6 +448,7 @@ const Upload: React.FC<UploadProps> = ({
                     onFileRemove={finalOnFileRemove}
                     uploadTokens={uploadTokens}
                     maxFiles={maxFiles}
+                    replaceFileText={replaceFileText}
                 />
             )
         }
@@ -467,6 +473,7 @@ const Upload: React.FC<UploadProps> = ({
                 description={description}
                 disabled={disabled}
                 uploadTokens={uploadTokens}
+                browseFilesText={browseFilesText}
             />
         )
     }
@@ -667,8 +674,11 @@ const Upload: React.FC<UploadProps> = ({
                         {errorText ||
                             (uploadContent.hasErrorFiles &&
                             uploadContent.errorFiles.length > 0
-                                ? `${uploadContent.errorFiles.length} file(s) failed to upload`
-                                : 'Upload failed')}
+                                ? mp(
+                                      'upload.error.failed-to-upload',
+                                      uploadContent.errorFiles.length
+                                  )
+                                : m('upload.error.failed-short'))}
                     </Text>
                 )}
             </Block>

@@ -314,8 +314,11 @@ describe('UploadV2 Component', () => {
             expect(screen.queryByText('file-5.csv')).not.toBeInTheDocument()
             expect(screen.getByText('+ 1')).toBeInTheDocument()
 
+            // Singular. This label used to be unconditionally plural
+            // ("Show 1 more files"); routing it through the message catalog's
+            // Intl.PluralRules-backed keys fixed the grammar.
             await user.click(
-                screen.getByRole('button', { name: 'Show 1 more files' })
+                screen.getByRole('button', { name: 'Show 1 more file' })
             )
 
             expect(await screen.findAllByText('file-5.csv')).not.toHaveLength(0)

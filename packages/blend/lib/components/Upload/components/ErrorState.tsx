@@ -5,6 +5,8 @@ import type { UploadedFileWithStatus } from '../types'
 import type { UploadTokenType } from '../upload.tokens'
 import FileListDisplay from './FileListDisplay'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { UPLOAD_MESSAGES } from '../../../i18n/catalog/upload.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 type ErrorStateProps = {
     errorFiles: UploadedFileWithStatus[]
@@ -24,100 +26,111 @@ const ErrorState: React.FC<ErrorStateProps> = ({
     onFileRemove,
     uploadTokens,
     maxFiles,
-}) => (
-    <Block
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={uploadTokens.container.content.slot.gap}
-    >
-        {children && (
-            <Block
-                width={uploadTokens.container.content.slot.width}
-                height={uploadTokens.container.content.slot.width}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-            >
-                {children}
-            </Block>
-        )}
-
+}) => {
+    const { m } = useMessages(UPLOAD_MESSAGES)
+    return (
         <Block
-            data-element="content"
             display="flex"
             flexDirection="column"
             alignItems="center"
-            gap={uploadTokens.container.content.text.gap}
+            gap={uploadTokens.container.content.slot.gap}
         >
-            <Text
-                as="span"
-                fontSize={uploadTokens.container.content.text.title.fontSize}
-                fontWeight={
-                    uploadTokens.container.content.text.title.fontWeight
-                }
-                color={uploadTokens.container.content.text.title.color}
-                textAlign="center"
-            >
-                {multiple
-                    ? 'Failed to upload multiple files'
-                    : 'File upload failed'}
-            </Text>
+            {children && (
+                <Block
+                    width={uploadTokens.container.content.slot.width}
+                    height={uploadTokens.container.content.slot.width}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    {children}
+                </Block>
+            )}
 
-            <Text
-                as="span"
-                fontSize={uploadTokens.container.content.text.subtitle.fontSize}
-                fontWeight={
-                    uploadTokens.container.content.text.subtitle.fontWeight
-                }
-                color={uploadTokens.container.content.text.subtitle.color}
-                textAlign="center"
+            <Block
+                data-element="content"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                gap={uploadTokens.container.content.text.gap}
             >
+                <Text
+                    as="span"
+                    fontSize={
+                        uploadTokens.container.content.text.title.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.title.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.title.color}
+                    textAlign="center"
+                >
+                    {m(
+                        multiple
+                            ? 'upload.error.failed.other'
+                            : 'upload.error.failed.one'
+                    )}
+                </Text>
+
+                <Text
+                    as="span"
+                    fontSize={
+                        uploadTokens.container.content.text.subtitle.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.subtitle.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.subtitle.color}
+                    textAlign="center"
+                >
+                    {multiple ? (
+                        m('upload.error.files-failed', {
+                            count: String(errorFiles.length),
+                        })
+                    ) : (
+                        <FileListDisplay
+                            files={errorFiles}
+                            onFileRemove={onFileRemove}
+                            uploadTokens={uploadTokens}
+                            maxFiles={maxFiles}
+                        />
+                    )}
+                </Text>
+            </Block>
+
+            <Block gap={FOUNDATION_THEME.unit[10]}>
                 {multiple ? (
-                    `${errorFiles.length} files failed`
-                ) : (
                     <FileListDisplay
                         files={errorFiles}
                         onFileRemove={onFileRemove}
                         uploadTokens={uploadTokens}
                         maxFiles={maxFiles}
                     />
+                ) : (
+                    (errorText || errorFiles[0]?.error) && (
+                        <Text
+                            fontSize={
+                                uploadTokens.container.content.actionable
+                                    .errorText.fontSize
+                            }
+                            fontWeight={
+                                uploadTokens.container.content.actionable
+                                    .errorText.fontWeight
+                            }
+                            color={
+                                uploadTokens.container.content.actionable
+                                    .errorText.color
+                            }
+                            textAlign="center"
+                        >
+                            {errorText || errorFiles[0]?.error}
+                        </Text>
+                    )
                 )}
-            </Text>
+            </Block>
         </Block>
-
-        <Block gap={FOUNDATION_THEME.unit[10]}>
-            {multiple ? (
-                <FileListDisplay
-                    files={errorFiles}
-                    onFileRemove={onFileRemove}
-                    uploadTokens={uploadTokens}
-                    maxFiles={maxFiles}
-                />
-            ) : (
-                (errorText || errorFiles[0]?.error) && (
-                    <Text
-                        fontSize={
-                            uploadTokens.container.content.actionable.errorText
-                                .fontSize
-                        }
-                        fontWeight={
-                            uploadTokens.container.content.actionable.errorText
-                                .fontWeight
-                        }
-                        color={
-                            uploadTokens.container.content.actionable.errorText
-                                .color
-                        }
-                        textAlign="center"
-                    >
-                        {errorText || errorFiles[0]?.error}
-                    </Text>
-                )
-            )}
-        </Block>
-    </Block>
-)
+    )
+}
 
 ErrorState.displayName = 'ErrorState'
 
