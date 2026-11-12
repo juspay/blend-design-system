@@ -22,8 +22,15 @@ import {
 import { join } from 'node:path'
 import { homedir } from 'node:os'
 import type { BrandConfig } from '@juspay/blend-design-system/tokens/server'
-import { normalizeStudioApiUrl } from '../constants/studio'
-import { resolveStudioApiUrlForProject } from './project-api-url'
+import {
+    DEFAULT_STUDIO_DEPLOYMENT,
+    getStudioApiUrlForDeployment,
+    normalizeStudioApiUrl,
+} from '../constants/studio'
+import {
+    UntrustedProjectApiUrlError,
+    resolveStudioApiUrlForProject,
+} from './project-api-url'
 import type {
     Branch,
     BranchListOptions,
@@ -109,14 +116,16 @@ interface ApiResponse<T> {
 }
 
 export class ApiClient {
-    private apiUrl: string
+    private apiUrl!: string
     private authData: AuthData | null = null
+    private apiUrlTrustError: UntrustedProjectApiUrlError | null = null
+    private identityVerified = false
 
     constructor(apiUrl?: string) {
         if (apiUrl != null && apiUrl !== '') {
             this.apiUrl = normalizeStudioApiUrl(apiUrl)
         } else {
-            this.apiUrl = resolveStudioApiUrlForProject(process.cwd())
+            this.setProjectApiUrl(process.cwd())
         }
         this.loadAuth()
     }
@@ -126,37 +135,45 @@ export class ApiClient {
      * Call at the start of commands that talk to the network.
      */
     syncToProject(cwd: string = process.cwd()): void {
-        this.apiUrl = resolveStudioApiUrlForProject(cwd)
+        this.setProjectApiUrl(cwd)
+    }
+
+    private setProjectApiUrl(cwd: string): void {
+        try {
+            this.apiUrl = resolveStudioApiUrlForProject(cwd)
+            this.apiUrlTrustError = null
+        } catch (error) {
+            if (!(error instanceof UntrustedProjectApiUrlError)) {
+                throw error
+            }
+            this.apiUrl = getStudioApiUrlForDeployment(
+                DEFAULT_STUDIO_DEPLOYMENT
+            )
+            this.apiUrlTrustError = error
+        }
+    }
+
+    private ensureApiUrlUsable(): void {
+        if (this.apiUrlTrustError) {
+            throw this.apiUrlTrustError
+        }
     }
 
     private loadAuth(): void {
         try {
-            // Highest precedence: explicit env var for CI/local dev.
+            // Highest precedence: explicit env var for CI/local dev. Treated as an
+            // opaque bearer token — identity and expiry are only learned from the
+            // server (verifyAuthWithServer); the unsigned payload is never trusted.
             const envToken = process.env.BLEND_STUDIO_API_TOKEN
-            if (envToken) {
-                const parts = envToken.split('.')
-                if (parts.length === 3) {
-                    const payload = JSON.parse(
-                        Buffer.from(parts[1], 'base64').toString('utf-8')
-                    )
-                    const email = payload.email
-                    const uid = payload.user_id || payload.sub || payload.userId
-                    const expiresAt =
-                        typeof payload.exp === 'number'
-                            ? payload.exp * 1000
-                            : Date.now() + 60 * 60 * 1000
-
-                    if (email && uid && expiresAt > Date.now()) {
-                        this.authData = {
-                            idToken: envToken,
-                            refreshToken: '',
-                            expiresAt,
-                            email,
-                            uid,
-                        }
-                        return
-                    }
+            if (envToken?.split('.').length === 3) {
+                this.authData = {
+                    idToken: envToken,
+                    refreshToken: '',
+                    expiresAt: Number.POSITIVE_INFINITY,
+                    email: '',
+                    uid: '',
                 }
+                return
             }
 
             if (existsSync(AUTH_FILE)) {
@@ -225,6 +242,7 @@ export class ApiClient {
     async exchangeCliExportTokenForSession(
         studioCliToken: string
     ): Promise<CliTokenExchangeResult> {
+        this.ensureApiUrlUsable()
         const url = `${this.apiUrl}/api/auth/cli-token`
 
         const response = await fetch(url, {
@@ -254,6 +272,39 @@ export class ApiClient {
         }
 
         return parsed.data
+    }
+
+    async fetchCurrentUser(
+        bearerToken: string
+    ): Promise<{ id: string; email: string } | null> {
+        this.ensureApiUrlUsable()
+        try {
+            const response = await fetch(`${this.apiUrl}/api/auth/me`, {
+                headers: { Authorization: `Bearer ${bearerToken}` },
+            })
+            if (!response.ok) return null
+            const parsed = (await response.json()) as ApiResponse<{
+                user?: { id?: string; email?: string }
+            }>
+            const user = parsed.data?.user
+            if (!parsed.success || !user?.id || !user.email) return null
+            return { id: user.id, email: user.email }
+        } catch {
+            return null
+        }
+    }
+
+    async verifyAuthWithServer(): Promise<void> {
+        if (this.identityVerified || !this.authData) return
+        const user = await this.fetchCurrentUser(this.authData.idToken)
+        if (user) {
+            this.authData = {
+                ...this.authData,
+                email: user.email,
+                uid: user.id,
+            }
+        }
+        this.identityVerified = true
     }
 
     private async refreshCliSession(): Promise<void> {
@@ -330,6 +381,16 @@ export class ApiClient {
         path: string,
         body?: unknown
     ): Promise<ApiResponse<T>> {
+        if (this.apiUrlTrustError) {
+            return {
+                success: false,
+                error: {
+                    code: 'UNTRUSTED_API_URL',
+                    message: this.apiUrlTrustError.message,
+                },
+            }
+        }
+
         const url = `${this.apiUrl}/api${path}`
 
         const headers: Record<string, string> = {
