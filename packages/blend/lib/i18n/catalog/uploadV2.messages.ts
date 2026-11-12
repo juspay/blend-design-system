@@ -20,6 +20,7 @@ export const UPLOAD_V2_MESSAGES = {
     'upload-v2.label.partial-result': '{succeeded} succeeded, {failed} failed',
 
     'upload-v2.status.uploading': 'Please wait while uploading',
+    'upload-v2.status.failed': 'Failed',
 
     // Both forms of each validation message are kept, because the bounded
     // variant interpolates a limit the unbounded one does not have.

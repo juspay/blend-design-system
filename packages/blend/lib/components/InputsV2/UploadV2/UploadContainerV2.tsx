@@ -184,7 +184,7 @@ const UploadContainerV2 = ({
                 >
                     {!uploadFile.isValid && (
                         <TagV2
-                            text="Failed"
+                            text={m('upload-v2.status.failed')}
                             size={TagV2Size.SM}
                             type={TagV2Type.SUBTLE}
                             subType={TagV2SubType.ROUNDED}

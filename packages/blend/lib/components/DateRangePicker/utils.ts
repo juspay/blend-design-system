@@ -1791,16 +1791,32 @@ export const isDateInputComplete = (value: string, format: string): boolean => {
  * Formats date display for the trigger button
  * @param selectedRange Current selected date range
  * @param allowSingleDateSelection Whether single date selection is allowed
+ * @param timezone Optional IANA timezone
+ * @param isSingleDatePicker Selects the single-date placeholder
+ * @param i18n Optional handle; omitted keeps the previous `'en-US'` output
  * @returns Formatted display string
  */
 export const formatDateDisplay = (
     selectedRange: DateRange | undefined,
     allowSingleDateSelection: boolean = false,
     timezone?: string,
-    isSingleDatePicker?: boolean
+    isSingleDatePicker?: boolean,
+    i18n?: BlendI18nHandle
 ): string => {
+    // This is the trigger text whenever the consumer passes no `formatConfig`,
+    // which is the default path — `formatTriggerDisplay` only runs when one is
+    // supplied. It was left on `'en-US'`, so a French picker showed French day
+    // names in the grid and an English month in its own trigger.
+    const locale = i18n?.locale ?? DEFAULT_LOCALE
+
     if (!selectedRange || !selectedRange.startDate) {
-        return isSingleDatePicker ? 'Select date' : 'Select date range'
+        return resolveMessage(
+            DATE_RANGE_PICKER_MESSAGES,
+            isSingleDatePicker
+                ? 'date-range-picker.placeholder.select-date'
+                : 'date-range-picker.placeholder.select-date-range',
+            { translate: i18n?.translate }
+        )
     }
 
     const formatOptions: Intl.DateTimeFormatOptions = {
@@ -1813,16 +1829,21 @@ export const formatDateDisplay = (
     const timeFormatOptions: Intl.DateTimeFormatOptions = {
         hour: 'numeric',
         minute: '2-digit',
+        // Clock convention stays pinned to 12-hour while the *language*
+        // follows the locale. It is a format preference, not a translation,
+        // and `DateFormatConfig.timeFormat` is the knob for it; switching it
+        // implicitly with the locale would change a visual contract that no
+        // consumer opted into.
         hour12: true,
         ...(timezone && { timeZone: timezone }),
     }
 
     const startDateStr = selectedRange.startDate.toLocaleDateString(
-        'en-US',
+        locale,
         formatOptions
     )
     const startTimeStr = selectedRange.startDate.toLocaleTimeString(
-        'en-US',
+        locale,
         timeFormatOptions
     )
 
@@ -1836,11 +1857,11 @@ export const formatDateDisplay = (
     }
 
     const endDateStr = selectedRange.endDate.toLocaleDateString(
-        'en-US',
+        locale,
         formatOptions
     )
     const endTimeStr = selectedRange.endDate.toLocaleTimeString(
-        'en-US',
+        locale,
         timeFormatOptions
     )
 
@@ -2237,13 +2258,15 @@ export const handleCalendarScroll = (
  * @param month Month (0-based)
  * @param monthIndex Index in the months array
  * @param monthHeight Height of each month
+ * @param locale Optional BCP 47 tag used for `monthLabel` only
  * @returns Month data for rendering
  */
 export const createCalendarMonthData = (
     year: number,
     month: number,
     monthIndex: number,
-    monthHeight: number
+    monthHeight: number,
+    locale?: BlendLocale
 ) => {
     const weeks = generateMonthWeeks(year, month)
     const topOffset = getMonthOffset(monthIndex, monthHeight)
@@ -2255,7 +2278,18 @@ export const createCalendarMonthData = (
         weeks,
         topOffset,
         monthHeight,
+        // Two month names on purpose, and they are not interchangeable.
+        //
+        // `monthName` stays English whatever the locale: `CalendarGrid` feeds
+        // it into the `data-id` DOM attribute that consumer selectors and
+        // analytics match on, the same reasoning as `data-datepicker` in
+        // `DateRangePicker.tsx`. Localizing it would change those selectors
+        // for every non-English consumer.
+        //
+        // `monthLabel` is the one that renders. It was missing until the
+        // calendar header showed an English month above localized day names.
         monthName: getMonthName(month),
+        monthLabel: getMonthName(month, locale),
     }
 }
 

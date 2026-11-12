@@ -366,7 +366,7 @@ const MonthYearGrid = ({
                 >
                     <NavButton
                         type="button"
-                        aria-label="Previous year"
+                        aria-label={m('date-range-picker.a11y.previous-year')}
                         disabled={!canGoPrevYear}
                         onClick={() =>
                             canGoPrevYear && setViewYear(viewYear - 1)
@@ -397,7 +397,7 @@ const MonthYearGrid = ({
                     </Block>
                     <NavButton
                         type="button"
-                        aria-label="Next year"
+                        aria-label={m('date-range-picker.a11y.next-year')}
                         disabled={!canGoNextYear}
                         onClick={() =>
                             canGoNextYear && setViewYear(viewYear + 1)
@@ -414,9 +414,11 @@ const MonthYearGrid = ({
 
             <Block
                 role="grid"
-                aria-label={
-                    granularity === 'month' ? 'Select month' : 'Select year'
-                }
+                aria-label={m(
+                    granularity === 'month'
+                        ? 'date-range-picker.a11y.select-month'
+                        : 'date-range-picker.a11y.select-year'
+                )}
                 style={{
                     display: 'grid',
                     rowGap: calendarToken.calendar.calendarGrid.week.gap,

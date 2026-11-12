@@ -261,6 +261,11 @@ Plus `browseFilesText?: string` in the component's types file.
 - Never concatenate translated fragments. Whole-sentence keys with placeholders, because word order is not portable.
 - Accessible names get a catalog key under the `a11y` group and **no** new prop. Eighty-eight new props is API bloat nobody asked for, and the provider `t` already gives full override power. One exception: where a visible-text prop already exists and the accessible name mirrors it, derive both from the same resolved string, so a consumer setting the visible prop fixes the accessible name automatically.
 - `role`, `aria-labelledby`, `aria-controls` and `data-*` are identifiers and are never localized.
+- Where one derived value feeds both a `data-*` attribute and visible text, compute it **twice** rather than localizing in place. `createCalendarMonthData` returns `monthName` (pinned English, consumed by the `data-id` on the month heading) alongside `monthLabel` (localized, rendered). Localizing the single field would have silently changed every non-English consumer's selectors; leaving it alone left an English month above localized day names, which is how the gap was reported on PR #1834.
+- Grep for **every** renderer of a string before calling a family done. Two traps surfaced in review:
+    - `DateRangePicker` has two footers — `components/ActionButtons.tsx` (mobile drawer, "Apply Date") and a local `FooterControls` in `DateRangePicker.tsx` (desktop, "Apply"). Both are live.
+    - `formatTriggerDisplay` only runs when the consumer passes a `formatConfig`. The **default** trigger path is `formatDateDisplay`, so migrating only the former left the common case English.
+- A `useCallback` or `useMemo` that resolves a message must list `locale` and `m` in its dependency array, or the first render's language sticks when the provider locale changes.
 
 ## Implementation Plan
 

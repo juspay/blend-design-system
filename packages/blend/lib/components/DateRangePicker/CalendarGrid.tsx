@@ -592,7 +592,8 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                     year,
                     month,
                     0,
-                    height
+                    height,
+                    locale
                 )
 
                 const shouldHideEntireMonth = monthCalendarData.weeks.every(
@@ -650,9 +651,12 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                                         .header.gap,
                             }}
                             data-element="month-year"
+                            // Stable English, unlike the visible text below:
+                            // this attribute is a DOM identifier consumer
+                            // selectors and analytics match on.
                             data-id={`${monthCalendarData.monthName} ${year}`}
                         >
-                            {monthCalendarData.monthName} {year}
+                            {monthCalendarData.monthLabel} {year}
                         </Block>
 
                         {/* Month Grid */}
@@ -1062,6 +1066,11 @@ const CalendarGrid = forwardRef<HTMLDivElement, CalendarGridProps>(
                 calendarToken,
                 timezone,
                 renderDay,
+                // Both the month header and the per-cell accessible names
+                // below resolve through the active locale, so a locale change
+                // has to invalidate this callback.
+                locale,
+                m,
             ]
         )
 

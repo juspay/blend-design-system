@@ -40,6 +40,7 @@ import {
 import TimeColumns from '../TimePicker/TimeColumns'
 import type { TimePickerTokensType } from '../TimePicker/timePicker.tokens.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
 import { DATE_RANGE_PICKER_MESSAGES } from '../../i18n/catalog/dateRangePicker.messages'
 import { useMessages } from '../../i18n/useMessages'
 import { useTheme } from '../../context'
@@ -83,25 +84,38 @@ import type { SingleDatePickerProps } from './singleDatePicker.types'
  * placeholder and in-popover label.
  */
 const GRANULARITY_DEFAULTS = {
+    day: { dateFormat: 'dd/MM/yyyy' },
+    month: { dateFormat: 'MM/yyyy' },
+    year: { dateFormat: 'yyyy' },
+} as const
+
+/**
+ * The display strings that used to sit beside `dateFormat` above, now keys.
+ *
+ * `dateFormat` stays a literal: it is an input/parse pattern consumed by
+ * `formatDate`, not prose, and localized input parsing is an explicit non-goal
+ * of RFC 0008. The other three were rendered English regardless of locale.
+ */
+const GRANULARITY_MESSAGE_KEYS = {
     day: {
-        dateFormat: 'dd/MM/yyyy',
-        placeholder: 'Select date',
-        label: 'Date',
-        ariaLabel: 'Choose date',
+        placeholder: 'date-range-picker.placeholder.select-date',
+        label: 'date-range-picker.label.date',
+        ariaLabel: 'date-range-picker.a11y.choose-date',
     },
     month: {
-        dateFormat: 'MM/yyyy',
-        placeholder: 'Select month',
-        label: 'Month',
-        ariaLabel: 'Choose month',
+        placeholder: 'date-range-picker.placeholder.select-month',
+        label: 'date-range-picker.label.month',
+        ariaLabel: 'date-range-picker.a11y.choose-month',
     },
     year: {
-        dateFormat: 'yyyy',
-        placeholder: 'Select year',
-        label: 'Year',
-        ariaLabel: 'Choose year',
+        placeholder: 'date-range-picker.placeholder.select-year',
+        label: 'date-range-picker.label.year',
+        ariaLabel: 'date-range-picker.a11y.choose-year',
     },
-} as const
+} as const satisfies Record<
+    keyof typeof GRANULARITY_DEFAULTS,
+    Record<string, keyof typeof DATE_RANGE_PICKER_MESSAGES>
+>
 
 const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
     (
@@ -134,18 +148,20 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
         // SingleDatePicker ships no token factory of its own and styles itself
         // from CALENDAR and TIME_PICKER; it resolves its strings from the
         // DateRangePicker fragment for the same reason.
-        const { i18n } = useMessages(DATE_RANGE_PICKER_MESSAGES)
+        const { m, i18n } = useMessages(DATE_RANGE_PICKER_MESSAGES)
+        const { m: mc } = useMessages(COMMON_MESSAGES)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
         const { foundationTokens } = useTheme()
         const timePickerToken =
             useResponsiveTokens<TimePickerTokensType>('TIME_PICKER')
 
         const granularityDefaults = GRANULARITY_DEFAULTS[granularity]
+        const granularityKeys = GRANULARITY_MESSAGE_KEYS[granularity]
         const isDayGranularity = granularity === 'day'
         const showTimeForGranularity = showTime && isDayGranularity
         const resolvedDateFormat = dateFormat ?? granularityDefaults.dateFormat
         const resolvedPlaceholder =
-            placeholder ?? granularityDefaults.placeholder
+            placeholder ?? m(granularityKeys.placeholder)
 
         const [isOpen, setIsOpen] = useState(false)
         // Bumped on every close so `CalendarGrid` re-derives its scroll offset
@@ -418,7 +434,11 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
             foundationTokens,
             triggerConfig,
             onToggle: () => setIsOpen(!isOpen),
-            ariaLabel: `Date picker, ${displayText || 'Select date'}`,
+            ariaLabel: m('date-range-picker.a11y.trigger', {
+                value:
+                    displayText ||
+                    m('date-range-picker.placeholder.select-date'),
+            }),
             dataDatePicker: 'singleDatePicker-Filter',
             hasError: error,
             // Only reserves layout space. The clear control itself is rendered
@@ -475,7 +495,7 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                          */}
                         <Block
                             role="group"
-                            aria-label={granularityDefaults.ariaLabel}
+                            aria-label={m(granularityKeys.ariaLabel)}
                             style={{ ...calendarToken.calendar }}
                             maxHeight="var(--radix-popper-available-height)"
                             display="flex"
@@ -511,7 +531,7 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                                             ?.dateInput?.label?.fontWeight
                                     }
                                 >
-                                    {granularityDefaults.label}
+                                    {m(granularityKeys.label)}
                                 </PrimitiveText>
                                 <PrimitiveText
                                     as="span"
@@ -657,13 +677,13 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                                         buttonType={ButtonType.SECONDARY}
                                         size={ButtonSize.SMALL}
                                         onClick={handleCancel}
-                                        text="Cancel"
+                                        text={mc('common.action.cancel')}
                                     />
                                     <Button
                                         buttonType={ButtonType.PRIMARY}
                                         size={ButtonSize.SMALL}
                                         onClick={handleApply}
-                                        text="Apply"
+                                        text={mc('common.action.apply')}
                                         disabled={!draftDate}
                                     />
                                 </Block>

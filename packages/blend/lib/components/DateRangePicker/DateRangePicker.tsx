@@ -29,6 +29,7 @@ import {
     isControlledDateRange,
     isValidDate,
 } from './utils'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
 import { DATE_RANGE_PICKER_MESSAGES } from '../../i18n/catalog/dateRangePicker.messages'
 import { useMessages } from '../../i18n/useMessages'
 import CalendarGrid from './CalendarGrid'
@@ -100,6 +101,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     startTimeSelectorRef,
     endTimeSelectorRef,
 }) => {
+    const { m } = useMessages(DATE_RANGE_PICKER_MESSAGES)
     const startDateId = React.useId()
     const endDateId = React.useId()
     const startTimeId = React.useId()
@@ -173,7 +175,9 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 isStart={true}
                                 selectedRange={selectedRange}
                                 timezone={timezone}
-                                aria-label="Start time"
+                                aria-label={m(
+                                    'date-range-picker.a11y.start-time'
+                                )}
                             />
                         )}
                     </Block>
@@ -256,7 +260,9 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                         isStart={false}
                                         selectedRange={selectedRange}
                                         timezone={timezone}
-                                        aria-label="End time"
+                                        aria-label={m(
+                                            'date-range-picker.a11y.end-time'
+                                        )}
                                     />
                                 )}
                             </Block>
@@ -380,50 +386,57 @@ type FooterControlsProps = {
     calendarToken: CalendarTokenType
 }
 
+// The desktop footer. `components/ActionButtons.tsx` is the mobile drawer's
+// footer and renders "Apply Date"; this one renders "Apply". Both are live, so
+// localizing only one left the desktop buttons in English.
 const FooterControls: React.FC<FooterControlsProps> = ({
     onCancel,
     onApply,
     isApplyDisabled,
     applyDisabledMessage,
     calendarToken,
-}) => (
-    <Block
-        display="flex"
-        alignItems="center"
-        justifyContent="flex-end"
-        paddingX={calendarToken?.calendar?.footer?.padding?.x}
-        paddingY={calendarToken?.calendar?.footer?.padding?.y}
-        borderTop={calendarToken?.calendar?.footer?.borderTop}
-    >
-        <Block display="flex" gap={calendarToken?.calendar?.footer?.gap}>
-            <ButtonV2
-                buttonType={ButtonV2Type.SECONDARY}
-                size={ButtonV2Size.SMALL}
-                onClick={onCancel}
-                text="Cancel"
-            />
-            {isApplyDisabled ? (
-                <TooltipV2 content={applyDisabledMessage || ''}>
+}) => {
+    const { m } = useMessages(COMMON_MESSAGES)
+
+    return (
+        <Block
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            paddingX={calendarToken?.calendar?.footer?.padding?.x}
+            paddingY={calendarToken?.calendar?.footer?.padding?.y}
+            borderTop={calendarToken?.calendar?.footer?.borderTop}
+        >
+            <Block display="flex" gap={calendarToken?.calendar?.footer?.gap}>
+                <ButtonV2
+                    buttonType={ButtonV2Type.SECONDARY}
+                    size={ButtonV2Size.SMALL}
+                    onClick={onCancel}
+                    text={m('common.action.cancel')}
+                />
+                {isApplyDisabled ? (
+                    <TooltipV2 content={applyDisabledMessage || ''}>
+                        <ButtonV2
+                            buttonType={ButtonV2Type.PRIMARY}
+                            size={ButtonV2Size.SMALL}
+                            onClick={onApply}
+                            text={m('common.action.apply')}
+                            disabled={true}
+                        />
+                    </TooltipV2>
+                ) : (
                     <ButtonV2
                         buttonType={ButtonV2Type.PRIMARY}
                         size={ButtonV2Size.SMALL}
                         onClick={onApply}
-                        text="Apply"
-                        disabled={true}
+                        text={m('common.action.apply')}
+                        disabled={false}
                     />
-                </TooltipV2>
-            ) : (
-                <ButtonV2
-                    buttonType={ButtonV2Type.PRIMARY}
-                    size={ButtonV2Size.SMALL}
-                    onClick={onApply}
-                    text="Apply"
-                    disabled={false}
-                />
-            )}
+                )}
+            </Block>
         </Block>
-    </Block>
-)
+    )
+}
 
 const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     (
@@ -465,7 +478,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         },
         ref
     ) => {
-        const { m, i18n } = useMessages(DATE_RANGE_PICKER_MESSAGES)
+        const { m, i18n, locale } = useMessages(DATE_RANGE_PICKER_MESSAGES)
         const [isOpen, setIsOpen] = useState(false)
         const [popoverKey, setPopoverKey] = useState(0)
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
@@ -1011,7 +1024,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             const formatMonthRangeDisplay = (
                 range: DateRange | undefined
             ): string => {
-                if (!range?.startDate) return 'Select month range'
+                if (!range?.startDate) {
+                    return m('date-range-picker.placeholder.select-month-range')
+                }
 
                 const options: Intl.DateTimeFormatOptions = {
                     month: 'short',
@@ -1019,15 +1034,12 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     ...(timezone && { timeZone: timezone }),
                 }
                 const startStr = range.startDate.toLocaleDateString(
-                    'en-US',
+                    locale,
                     options
                 )
                 if (!range.endDate) return startStr
 
-                const endStr = range.endDate.toLocaleDateString(
-                    'en-US',
-                    options
-                )
+                const endStr = range.endDate.toLocaleDateString(locale, options)
                 return startStr === endStr
                     ? startStr
                     : `${startStr} - ${endStr}`
@@ -1050,7 +1062,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                           displayRange,
                           allowSingleDateSelection,
                           timezone,
-                          isSingleDatePicker
+                          isSingleDatePicker,
+                          i18n
                       )
 
             const formatMobileDateRange = (
@@ -1079,10 +1092,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 }
 
                 const startStr = range
-                    ? range.startDate.toLocaleDateString('en-US', formatOptions)
+                    ? range.startDate.toLocaleDateString(locale, formatOptions)
                     : ''
                 const endStr = range?.endDate
-                    ? range.endDate.toLocaleDateString('en-US', formatOptions)
+                    ? range.endDate.toLocaleDateString(locale, formatOptions)
                     : ''
 
                 if (
@@ -1092,7 +1105,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 ) {
                     return startStr
                 } else if (!range) {
-                    return isSingleDatePicker ? 'Select date' : 'Select dates'
+                    return m(
+                        isSingleDatePicker
+                            ? 'date-range-picker.placeholder.select-date'
+                            : 'date-range-picker.placeholder.select-dates'
+                    )
                 }
 
                 return `${startStr} - ${endStr}`

@@ -42,4 +42,7 @@ export const UPLOAD_MESSAGES = {
     'upload.error.failed-to-upload.one': '{count} file failed to upload',
     'upload.error.failed-to-upload.other': '{count} files failed to upload',
     'upload.error.rejected': 'File rejected',
+
+    'upload.a11y.remove-file': 'Remove {name}',
+    'upload.a11y.uploading-progress': 'Uploading {name}, {progress}% complete',
 } as const

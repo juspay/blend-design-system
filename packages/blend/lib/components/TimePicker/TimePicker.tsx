@@ -18,6 +18,8 @@ import type { CalendarTokenType } from '../DateRangePicker/dateRangePicker.token
 import type { DateRangePickerSize } from '../DateRangePicker/types'
 import type { TimePickerTokensType } from './timePicker.tokens.types'
 import { TimePickerSize, type TimePickerProps } from './timePicker.types'
+import { TIME_PICKER_MESSAGES } from '../../i18n/catalog/timePicker.messages'
+import { useMessages } from '../../i18n/useMessages'
 import {
     type TimeValue,
     clampTimeValue,
@@ -123,6 +125,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
         const { foundationTokens } = useTheme()
         const timeToken =
             useResponsiveTokens<TimePickerTokensType>('TIME_PICKER')
+        const { m } = useMessages(TIME_PICKER_MESSAGES)
 
         const baseId = useId()
         const errorId = `${baseId}-error`
@@ -315,7 +318,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
                      */}
                     <Block
                         role="group"
-                        aria-label="Choose time"
+                        aria-label={m('time-picker.a11y.choose-time')}
                         backgroundColor={timeToken.dropdown.backgroundColor}
                         border={timeToken.dropdown.border}
                         borderRadius={timeToken.dropdown.borderRadius}

@@ -106,6 +106,10 @@ const FRENCH: BlendMessageOverrides = {
         'Nous avons téléversé les fichiers suivants',
     'upload-v2.label.partial-result': '{succeeded} réussis, {failed} échoués',
     'upload-v2.status.uploading': 'Veuillez patienter pendant le téléversement',
+    'upload-v2.status.failed': 'Échec',
+    'upload.a11y.remove-file': 'Supprimer {name}',
+    'upload.a11y.uploading-progress':
+        'Téléversement de {name}, {progress}% terminé',
     'upload-v2.error.oversized': 'Fichier trop volumineux',
     'upload-v2.error.oversized-max':
         'Fichier trop volumineux. Taille maximale : {maxSize}',
@@ -142,10 +146,27 @@ const FRENCH: BlendMessageOverrides = {
     'date-range-picker.placeholder.select-dates': 'Sélectionner des dates',
     'date-range-picker.placeholder.select-date-range':
         'Sélectionner une période',
+    'date-range-picker.placeholder.select-month-range':
+        'Sélectionner une période mensuelle',
+    'date-range-picker.placeholder.select-month': 'Sélectionner un mois',
+    'date-range-picker.placeholder.select-year': 'Sélectionner une année',
+    'date-range-picker.label.date': 'Date',
+    'date-range-picker.label.month': 'Mois',
+    'date-range-picker.label.year': 'Année',
     'date-range-picker.a11y.state-selected': 'sélectionné',
     'date-range-picker.a11y.state-not-selected': 'non sélectionné',
     'date-range-picker.a11y.state-today': "aujourd'hui",
     'date-range-picker.a11y.state-disabled': 'désactivé',
+    'date-range-picker.a11y.start-time': 'Heure de début',
+    'date-range-picker.a11y.end-time': 'Heure de fin',
+    'date-range-picker.a11y.previous-year': 'Année précédente',
+    'date-range-picker.a11y.next-year': 'Année suivante',
+    'date-range-picker.a11y.select-month': 'Sélectionner un mois',
+    'date-range-picker.a11y.select-year': 'Sélectionner une année',
+    'date-range-picker.a11y.choose-date': 'Choisir une date',
+    'date-range-picker.a11y.choose-month': 'Choisir un mois',
+    'date-range-picker.a11y.choose-year': 'Choisir une année',
+    'date-range-picker.a11y.trigger': 'Sélecteur de date, {value}',
 
     'time-picker.label.hours': 'Heures',
     'time-picker.label.minutes': 'Minutes',
@@ -153,6 +174,7 @@ const FRENCH: BlendMessageOverrides = {
     'time-picker.label.period': 'AM/PM',
     'time-picker.label.am': 'AM',
     'time-picker.label.pm': 'PM',
+    'time-picker.a11y.choose-time': "Choisir l'heure",
 }
 
 const JAPANESE: BlendMessageOverrides = {
@@ -201,6 +223,10 @@ const JAPANESE: BlendMessageOverrides = {
     'upload-v2.label.upload-succeeded': '次のファイルをアップロードしました',
     'upload-v2.label.partial-result': '成功 {succeeded} 件、失敗 {failed} 件',
     'upload-v2.status.uploading': 'アップロードが完了するまでお待ちください',
+    'upload-v2.status.failed': '失敗',
+    'upload.a11y.remove-file': '{name} を削除',
+    'upload.a11y.uploading-progress':
+        '{name} をアップロード中、{progress}% 完了',
     'upload-v2.error.oversized': 'ファイルサイズが大きすぎます',
     'upload-v2.error.oversized-max':
         'ファイルサイズが大きすぎます。最大 {maxSize} です',
@@ -240,6 +266,22 @@ const JAPANESE: BlendMessageOverrides = {
     'date-range-picker.a11y.state-not-selected': '未選択',
     'date-range-picker.a11y.state-today': '今日',
     'date-range-picker.a11y.state-disabled': '無効',
+    'date-range-picker.placeholder.select-month-range': '期間（月）を選択',
+    'date-range-picker.placeholder.select-month': '月を選択',
+    'date-range-picker.placeholder.select-year': '年を選択',
+    'date-range-picker.label.date': '日付',
+    'date-range-picker.label.month': '月',
+    'date-range-picker.label.year': '年',
+    'date-range-picker.a11y.start-time': '開始時刻',
+    'date-range-picker.a11y.end-time': '終了時刻',
+    'date-range-picker.a11y.previous-year': '前年',
+    'date-range-picker.a11y.next-year': '翌年',
+    'date-range-picker.a11y.select-month': '月を選択',
+    'date-range-picker.a11y.select-year': '年を選択',
+    'date-range-picker.a11y.choose-date': '日付を選択',
+    'date-range-picker.a11y.choose-month': '月を選択',
+    'date-range-picker.a11y.choose-year': '年を選択',
+    'date-range-picker.a11y.trigger': '日付ピッカー、{value}',
 
     'time-picker.label.hours': '時',
     'time-picker.label.minutes': '分',
@@ -247,6 +289,7 @@ const JAPANESE: BlendMessageOverrides = {
     'time-picker.label.period': '午前/午後',
     'time-picker.label.am': '午前',
     'time-picker.label.pm': '午後',
+    'time-picker.a11y.choose-time': '時刻を選択',
 }
 
 /**

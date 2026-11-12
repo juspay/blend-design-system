@@ -37,6 +37,36 @@ export const DATE_RANGE_PICKER_MESSAGES = {
     'date-range-picker.placeholder.select-date': 'Select date',
     'date-range-picker.placeholder.select-dates': 'Select dates',
     'date-range-picker.placeholder.select-date-range': 'Select date range',
+    'date-range-picker.placeholder.select-month-range': 'Select month range',
+
+    // Calendar chrome shared with SingleDatePicker and the month/year grid.
+    // These keep the `date-range-picker.` prefix rather than gaining a
+    // `single-date-picker.` one: all three pickers resolve against this single
+    // fragment (SingleDatePicker already reads
+    // `date-range-picker.placeholder.select-date` for its own trigger), and a
+    // second prefix inside one fragment would make the override surface look
+    // like two families when it is one.
+    'date-range-picker.a11y.start-time': 'Start time',
+    'date-range-picker.a11y.end-time': 'End time',
+    'date-range-picker.a11y.previous-year': 'Previous year',
+    'date-range-picker.a11y.next-year': 'Next year',
+    'date-range-picker.a11y.select-month': 'Select month',
+    'date-range-picker.a11y.select-year': 'Select year',
+    // SingleDatePicker's granularity defaults. `placeholder.select-month` and
+    // `a11y.select-month` carry the same English text but are deliberately
+    // separate keys: one is a trigger placeholder, the other names the
+    // month/year grid, and a translator may well want different words.
+    'date-range-picker.placeholder.select-month': 'Select month',
+    'date-range-picker.placeholder.select-year': 'Select year',
+    'date-range-picker.label.date': 'Date',
+    'date-range-picker.label.month': 'Month',
+    'date-range-picker.label.year': 'Year',
+    'date-range-picker.a11y.choose-date': 'Choose date',
+    'date-range-picker.a11y.choose-month': 'Choose month',
+    'date-range-picker.a11y.choose-year': 'Choose year',
+    // Whole sentence with a placeholder, not `'Date picker, ' + value`:
+    // word order around an interpolated value is not portable.
+    'date-range-picker.a11y.trigger': 'Date picker, {value}',
 
     // State words appended to a calendar cell's accessible name. Joined with
     // the date by `Intl.ListFormat`, which yields "<date>, selected, today" in

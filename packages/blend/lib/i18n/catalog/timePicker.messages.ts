@@ -18,4 +18,6 @@ export const TIME_PICKER_MESSAGES = {
     'time-picker.label.period': 'AM/PM',
     'time-picker.label.am': 'AM',
     'time-picker.label.pm': 'PM',
+
+    'time-picker.a11y.choose-time': 'Choose time',
 } as const
