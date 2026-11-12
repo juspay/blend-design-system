@@ -822,6 +822,42 @@ export const updateBranchProtection = async (
         updates.protectionMinApprovals = null
     }
 
+    // Approvers gate publishes and merges; every ID must resolve to an active
+    // user and, on organization branches, to a member of that organization —
+    // otherwise cross-tenant users could be minted as approvers (audit #10).
+    // Validated before any write so a bad payload cannot leave the branch
+    // half-updated.
+    const approverIds = [...new Set(dto.allowedApproverIds ?? [])]
+    if (dto.isProtected !== false && hasApproverUpdate) {
+        for (const approverId of approverIds) {
+            const approver = await userRepo.findUserById(approverId)
+            if (!approver || !approver.isActive) {
+                throw new ValidationError(
+                    `Approver ${approverId} is not an active user`
+                )
+            }
+
+            if (branch.organizationId) {
+                const membership =
+                    await userRepo.findUserMembershipInOrganization(
+                        approverId,
+                        branch.organizationId
+                    )
+                if (!membership) {
+                    throw new ValidationError(
+                        `Approver ${approverId} is not a member of this organization`
+                    )
+                }
+            } else if (approverId !== branch.createdBy) {
+                // Personal branches have no membership to check; the owner is
+                // the only legitimate approver.
+                throw new ValidationError(
+                    'Only the branch owner can approve changes on a personal branch'
+                )
+            }
+        }
+    }
+
     const updated = await branchRepo.updateBranch(branchId, updates as any)
     if (!updated) {
         throw new NotFoundError('Branch')
@@ -831,7 +867,6 @@ export const updateBranchProtection = async (
         await branchRepo.setProtectionApproverIds(branchId, [])
         updated.protectionApproverIds = []
     } else if (hasApproverUpdate) {
-        const approverIds = dto.allowedApproverIds ?? []
         await branchRepo.setProtectionApproverIds(branchId, approverIds)
         updated.protectionApproverIds = approverIds
     }

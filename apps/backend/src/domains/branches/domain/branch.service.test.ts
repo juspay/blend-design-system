@@ -212,4 +212,152 @@ describe('branch.service', () => {
             ).resolves.toMatchObject({ id: 'branch-1' })
         })
     })
+
+    describe('updateBranchProtection approver validation', () => {
+        const seedProtectedBranch = () => {
+            mockedBranchRepository.getBranchById.mockResolvedValue({
+                id: 'branch-1',
+                organizationId: 'org-1',
+                createdBy: 'owner-1',
+                isProtected: false,
+                protectionRequireApproval: null,
+                protectionMinApprovals: null,
+                protectionApproverIds: [],
+            } as any)
+
+            mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+                {
+                    id: 'member-1',
+                    organizationId: 'org-1',
+                    userId: 'admin-1',
+                    role: 'admin',
+                    joinedAt: new Date(),
+                }
+            )
+
+            mockedBranchRepository.updateBranch.mockResolvedValue({
+                id: 'branch-1',
+                organizationId: 'org-1',
+                createdBy: 'owner-1',
+                isProtected: true,
+                protectionRequireApproval: true,
+                protectionMinApprovals: 1,
+                protectionApproverIds: [],
+            } as any)
+        }
+
+        it('rejects approver IDs that do not resolve to an active user', async () => {
+            seedProtectedBranch()
+            mockedUserRepository.findUserById.mockResolvedValue(null)
+
+            await expect(
+                updateBranchProtection(
+                    'branch-1',
+                    { isProtected: true, allowedApproverIds: ['ghost-1'] },
+                    'admin-1',
+                    'admin@blend.dev'
+                )
+            ).rejects.toMatchObject({
+                code: 'VALIDATION_ERROR',
+                message: 'Approver ghost-1 is not an active user',
+            })
+
+            expect(mockedBranchRepository.updateBranch).not.toHaveBeenCalled()
+            expect(
+                mockedBranchRepository.setProtectionApproverIds
+            ).not.toHaveBeenCalled()
+        })
+
+        it('rejects approver IDs from outside the organization', async () => {
+            seedProtectedBranch()
+            mockedUserRepository.findUserById.mockResolvedValue({
+                id: 'outsider-1',
+                email: 'outsider@blend.dev',
+                isActive: true,
+            } as any)
+
+            // First membership lookup: the calling admin (allowed).
+            // Second: the approver candidate (not a member).
+            mockedUserRepository.findUserMembershipInOrganization
+                .mockResolvedValueOnce({
+                    id: 'member-1',
+                    organizationId: 'org-1',
+                    userId: 'admin-1',
+                    role: 'admin',
+                    joinedAt: new Date(),
+                })
+                .mockResolvedValueOnce(null)
+
+            await expect(
+                updateBranchProtection(
+                    'branch-1',
+                    { isProtected: true, allowedApproverIds: ['outsider-1'] },
+                    'admin-1',
+                    'admin@blend.dev'
+                )
+            ).rejects.toMatchObject({
+                code: 'VALIDATION_ERROR',
+                message:
+                    'Approver outsider-1 is not a member of this organization',
+            })
+
+            expect(mockedBranchRepository.updateBranch).not.toHaveBeenCalled()
+        })
+
+        it('accepts and dedupes approvers that are active organization members', async () => {
+            seedProtectedBranch()
+            mockedUserRepository.findUserById.mockResolvedValue({
+                id: 'member-2',
+                email: 'member2@blend.dev',
+                isActive: true,
+            } as any)
+
+            await updateBranchProtection(
+                'branch-1',
+                {
+                    isProtected: true,
+                    allowedApproverIds: ['member-2', 'member-2'],
+                },
+                'admin-1',
+                'admin@blend.dev'
+            )
+
+            expect(
+                mockedBranchRepository.setProtectionApproverIds
+            ).toHaveBeenCalledWith('branch-1', ['member-2'])
+        })
+
+        it('restricts personal-branch approvers to the owner', async () => {
+            mockedBranchRepository.getBranchById.mockResolvedValue({
+                id: 'branch-1',
+                organizationId: null,
+                createdBy: 'owner-1',
+                isProtected: false,
+                protectionRequireApproval: null,
+                protectionMinApprovals: null,
+                protectionApproverIds: [],
+            } as any)
+
+            mockedUserRepository.findUserById.mockResolvedValue({
+                id: 'stranger-1',
+                email: 'stranger@blend.dev',
+                isActive: true,
+            } as any)
+
+            await expect(
+                updateBranchProtection(
+                    'branch-1',
+                    { isProtected: true, allowedApproverIds: ['stranger-1'] },
+                    'owner-1',
+                    'owner@blend.dev'
+                )
+            ).rejects.toMatchObject({
+                code: 'VALIDATION_ERROR',
+                message:
+                    'Only the branch owner can approve changes on a personal branch',
+            })
+
+            expect(mockedBranchRepository.updateBranch).not.toHaveBeenCalled()
+        })
+    })
 })
