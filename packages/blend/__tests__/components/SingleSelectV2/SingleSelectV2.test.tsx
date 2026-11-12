@@ -138,9 +138,14 @@ describe('SingleSelectV2', () => {
             await screen.findByPlaceholderText('Search options...')
         await user.type(searchInput, 'Item 499')
 
-        await waitFor(() => {
-            expect(screen.getByText('Item 499')).toBeInTheDocument()
-        })
+        // Per-keystroke refiltering over 500 items is slow under CI worker
+        // contention — the default 1s waitFor window flakes in suite runs.
+        await waitFor(
+            () => {
+                expect(screen.getByText('Item 499')).toBeInTheDocument()
+            },
+            { timeout: 5000 }
+        )
     })
 
     it('keeps search editable with backspace after menu item receives focus', async () => {
