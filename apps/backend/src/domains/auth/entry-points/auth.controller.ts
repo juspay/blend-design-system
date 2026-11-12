@@ -210,11 +210,13 @@ export const googleCallback = async (req: Request, res: Response) => {
         )
         res.redirect(`${env.FRONTEND_URL}/auth-callback?newUser=${isNewUser}`)
     } catch (error: any) {
+        // Log the message only — full stacks raised during token exchange
+        // can embed request context (authorization codes, client ids) that
+        // must not reach the log aggregator (audit #8, CWE-209).
         logger.error(
             {
                 ...callbackContext,
                 error: error.message || error,
-                stack: error.stack,
                 name: error.name,
             },
             'Google auth callback failed'
