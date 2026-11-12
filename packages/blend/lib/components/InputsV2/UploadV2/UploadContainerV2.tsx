@@ -22,6 +22,8 @@ import {
     normalizeUploadErrorReason,
     truncateFileNameForTag,
 } from './utils'
+import { UPLOAD_V2_MESSAGES } from '../../../i18n/catalog/uploadV2.messages'
+import { useMessages } from '../../../i18n/useMessages'
 import { UploadDragState, UploadFileV2, UploadState } from './UploadV2.types'
 import {
     ProgressBarV2,
@@ -46,6 +48,8 @@ const UploadContainerV2 = ({
     progressBarValue,
     progressBarMaxWidth,
     uploadHeaderText,
+    browseFilesText,
+    replaceFileText,
     dragState,
     maxSize,
     maxFiles,
@@ -64,11 +68,14 @@ const UploadContainerV2 = ({
     errorId?: string
     progressBarValue: number
     progressBarMaxWidth: string
-    uploadHeaderText: string
+    uploadHeaderText?: string
+    browseFilesText?: string
+    replaceFileText?: string
     dragState: UploadDragState
     maxSize?: number
     maxFiles?: number
 }) => {
+    const { m, mp, pick, i18n } = useMessages(UPLOAD_V2_MESSAGES)
     const [isOverflowPopoverOpen, setIsOverflowPopoverOpen] = useState(false)
     const isUploading = state === UploadState.UPLOADING
     const isSuccess = state === UploadState.SUCCESS
@@ -84,13 +91,16 @@ const UploadContainerV2 = ({
     const showFilledMultiFileCopy = showMultiFileTags
     const headerText = showFilledMultiFileCopy
         ? invalidFileCount > 0
-            ? 'Files uploaded'
-            : 'Files successfully added'
-        : uploadHeaderText
+            ? m('upload-v2.label.files-uploaded')
+            : m('upload-v2.label.files-added')
+        : pick(uploadHeaderText, 'upload-v2.label.drop-hint')
     const filledMultiFileDescription =
         invalidFileCount > 0
-            ? `${validFileCount} succeeded, ${invalidFileCount} failed`
-            : "We've successfully uploaded the following files"
+            ? m('upload-v2.label.partial-result', {
+                  succeeded: String(validFileCount),
+                  failed: String(invalidFileCount),
+              })
+            : m('upload-v2.label.upload-succeeded')
     const isDragEnter = dragState === UploadDragState.DRAG_ENTER
     const isDragOver = dragState === UploadDragState.DRAG_OVER
     const isDrop = dragState === UploadDragState.DROP
@@ -120,13 +130,16 @@ const UploadContainerV2 = ({
             : `${uploadFile.file.name} - ${getValidationMessage(
                   uploadFile.errorReason,
                   maxSize,
-                  maxFiles
+                  maxFiles,
+                  i18n
               )}`
 
         return (
             <TooltipV2 content={tooltipContent} key={fileId}>
                 <TagV2
-                    aria-label={`Remove ${uploadFile.file.name}`}
+                    aria-label={m('upload-v2.a11y.remove-file', {
+                        name: uploadFile.file.name,
+                    })}
                     rightSlot={{ slot: <XIcon size={14} /> }}
                     text={truncateFileNameForTag(uploadFile.file.name)}
                     size={TagV2Size.SM}
@@ -171,7 +184,7 @@ const UploadContainerV2 = ({
                 >
                     {!uploadFile.isValid && (
                         <TagV2
-                            text="Failed"
+                            text={m('upload-v2.status.failed')}
                             size={TagV2Size.SM}
                             type={TagV2Type.SUBTLE}
                             subType={TagV2SubType.ROUNDED}
@@ -179,7 +192,9 @@ const UploadContainerV2 = ({
                         />
                     )}
                     <PrimitiveButton
-                        aria-label={`Remove ${uploadFile.file.name}`}
+                        aria-label={m('upload-v2.a11y.remove-file', {
+                            name: uploadFile.file.name,
+                        })}
                         onClick={(e) => {
                             if (disabled || isInteractionBlocked) return
                             e.stopPropagation()
@@ -265,7 +280,9 @@ const UploadContainerV2 = ({
                         color={uploadContainer.header.description.color}
                         textAlign="center"
                     >
-                        {'Selected file: ' + files[0].file.name}
+                        {m('upload-v2.label.selected-file', {
+                            name: files[0].file.name,
+                        })}
                     </Text>
                 )}
                 {isUploading && (
@@ -280,7 +297,7 @@ const UploadContainerV2 = ({
                             color={uploadContainer.header.title.color}
                             textAlign="center"
                         >
-                            {'Please wait while uploading'}
+                            {m('upload-v2.status.uploading')}
                         </Text>
                     </Block>
                 )}
@@ -300,7 +317,10 @@ const UploadContainerV2 = ({
                 <ButtonV2
                     buttonType={ButtonV2Type.SECONDARY}
                     size={ButtonV2Size.MEDIUM}
-                    text="Browse Files"
+                    text={pick(
+                        browseFilesText,
+                        'upload-v2.action.browse-files'
+                    )}
                     disabled={disabled}
                     onClick={(e) => {
                         e.stopPropagation()
@@ -312,7 +332,10 @@ const UploadContainerV2 = ({
                 <ButtonV2
                     buttonType={ButtonV2Type.SECONDARY}
                     size={ButtonV2Size.MEDIUM}
-                    text="Replace File"
+                    text={pick(
+                        replaceFileText,
+                        'upload-v2.action.replace-file'
+                    )}
                     disabled={disabled}
                     onClick={(e) => {
                         e.stopPropagation()
@@ -343,7 +366,10 @@ const UploadContainerV2 = ({
                             onOpenChange={setIsOverflowPopoverOpen}
                             trigger={
                                 <PrimitiveButton
-                                    aria-label={`Show ${overflowFiles.length} more files`}
+                                    aria-label={mp(
+                                        'upload-v2.a11y.show-more-files',
+                                        overflowFiles.length
+                                    )}
                                     onClick={(e) => e.stopPropagation()}
                                     display="flex"
                                     backgroundColor="transparent"
@@ -426,7 +452,8 @@ const UploadContainerV2 = ({
                                 getValidationMessage(
                                     'oversized',
                                     maxSize,
-                                    maxFiles
+                                    maxFiles,
+                                    i18n
                                 )
                             )
                         if (hasMaxFiles)
@@ -434,7 +461,8 @@ const UploadContainerV2 = ({
                                 getValidationMessage(
                                     'maxFiles',
                                     maxSize,
-                                    maxFiles
+                                    maxFiles,
+                                    i18n
                                 )
                             )
                         if (hasInvalidType)
@@ -442,12 +470,18 @@ const UploadContainerV2 = ({
                                 getValidationMessage(
                                     'invalidType',
                                     maxSize,
-                                    maxFiles
+                                    maxFiles,
+                                    i18n
                                 )
                             )
                         return errors.length > 0
                             ? `${errors.join(', ')}`
-                            : getValidationMessage(undefined, maxSize, maxFiles)
+                            : getValidationMessage(
+                                  undefined,
+                                  maxSize,
+                                  maxFiles,
+                                  i18n
+                              )
                     })()}
                 </Text>
             )}

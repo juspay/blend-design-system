@@ -29,6 +29,9 @@ import {
     isControlledDateRange,
     isValidDate,
 } from './utils'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../i18n/catalog/dateRangePicker.messages'
+import { useMessages } from '../../i18n/useMessages'
 import CalendarGrid from './CalendarGrid'
 import QuickRangeSelector from './QuickRangeSelector'
 import TimeSelector from './TimeSelector'
@@ -98,6 +101,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
     startTimeSelectorRef,
     endTimeSelectorRef,
 }) => {
+    const { m } = useMessages(DATE_RANGE_PICKER_MESSAGES)
     const startDateId = React.useId()
     const endDateId = React.useId()
     const startTimeId = React.useId()
@@ -134,7 +138,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 ?.fontSize
                         }
                     >
-                        Start
+                        {m('date-range-picker.label.start')}
                     </PrimitiveText>
                     <Block
                         display="flex"
@@ -146,6 +150,10 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             <TextInputV2
                                 id={startDateId}
                                 label=""
+                                // Not localized, deliberately: this is the pattern
+                                // `handleDateInputChange` parses, not prose. Translating the hint
+                                // while the parser still expects DD/MM/YYYY would mislead.
+                                // Localized input parsing is an explicit non-goal of RFC 0008.
                                 placeholder="DD/MM/YYYY"
                                 value={startDate || ''}
                                 onChange={onStartDateChange}
@@ -171,7 +179,9 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 isStart={true}
                                 selectedRange={selectedRange}
                                 timezone={timezone}
-                                aria-label="Start time"
+                                aria-label={m(
+                                    'date-range-picker.a11y.start-time'
+                                )}
                             />
                         )}
                     </Block>
@@ -209,7 +219,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                     minWidth: '30.6px',
                                 }}
                             >
-                                End
+                                {m('date-range-picker.label.end')}
                             </PrimitiveText>
                             <Block
                                 display="flex"
@@ -227,6 +237,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                     <TextInputV2
                                         id={endDateId}
                                         label=""
+                                        // Parse pattern, not prose -- see the start-date field above.
                                         placeholder="DD/MM/YYYY"
                                         value={endDate || ''}
                                         onChange={onEndDateChange}
@@ -254,7 +265,9 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                         isStart={false}
                                         selectedRange={selectedRange}
                                         timezone={timezone}
-                                        aria-label="End time"
+                                        aria-label={m(
+                                            'date-range-picker.a11y.end-time'
+                                        )}
                                     />
                                 )}
                             </Block>
@@ -378,50 +391,57 @@ type FooterControlsProps = {
     calendarToken: CalendarTokenType
 }
 
+// The desktop footer. `components/ActionButtons.tsx` is the mobile drawer's
+// footer and renders "Apply Date"; this one renders "Apply". Both are live, so
+// localizing only one left the desktop buttons in English.
 const FooterControls: React.FC<FooterControlsProps> = ({
     onCancel,
     onApply,
     isApplyDisabled,
     applyDisabledMessage,
     calendarToken,
-}) => (
-    <Block
-        display="flex"
-        alignItems="center"
-        justifyContent="flex-end"
-        paddingX={calendarToken?.calendar?.footer?.padding?.x}
-        paddingY={calendarToken?.calendar?.footer?.padding?.y}
-        borderTop={calendarToken?.calendar?.footer?.borderTop}
-    >
-        <Block display="flex" gap={calendarToken?.calendar?.footer?.gap}>
-            <ButtonV2
-                buttonType={ButtonV2Type.SECONDARY}
-                size={ButtonV2Size.SMALL}
-                onClick={onCancel}
-                text="Cancel"
-            />
-            {isApplyDisabled ? (
-                <TooltipV2 content={applyDisabledMessage || ''}>
+}) => {
+    const { m } = useMessages(COMMON_MESSAGES)
+
+    return (
+        <Block
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            paddingX={calendarToken?.calendar?.footer?.padding?.x}
+            paddingY={calendarToken?.calendar?.footer?.padding?.y}
+            borderTop={calendarToken?.calendar?.footer?.borderTop}
+        >
+            <Block display="flex" gap={calendarToken?.calendar?.footer?.gap}>
+                <ButtonV2
+                    buttonType={ButtonV2Type.SECONDARY}
+                    size={ButtonV2Size.SMALL}
+                    onClick={onCancel}
+                    text={m('common.action.cancel')}
+                />
+                {isApplyDisabled ? (
+                    <TooltipV2 content={applyDisabledMessage || ''}>
+                        <ButtonV2
+                            buttonType={ButtonV2Type.PRIMARY}
+                            size={ButtonV2Size.SMALL}
+                            onClick={onApply}
+                            text={m('common.action.apply')}
+                            disabled={true}
+                        />
+                    </TooltipV2>
+                ) : (
                     <ButtonV2
                         buttonType={ButtonV2Type.PRIMARY}
                         size={ButtonV2Size.SMALL}
                         onClick={onApply}
-                        text="Apply"
-                        disabled={true}
+                        text={m('common.action.apply')}
+                        disabled={false}
                     />
-                </TooltipV2>
-            ) : (
-                <ButtonV2
-                    buttonType={ButtonV2Type.PRIMARY}
-                    size={ButtonV2Size.SMALL}
-                    onClick={onApply}
-                    text="Apply"
-                    disabled={false}
-                />
-            )}
+                )}
+            </Block>
         </Block>
-    </Block>
-)
+    )
+}
 
 const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     (
@@ -463,6 +483,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         },
         ref
     ) => {
+        const { m, i18n, locale } = useMessages(DATE_RANGE_PICKER_MESSAGES)
         const [isOpen, setIsOpen] = useState(false)
         const [popoverKey, setPopoverKey] = useState(0)
         const [isQuickRangeOpen, setIsQuickRangeOpen] = useState(false)
@@ -770,7 +791,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 if (onPresetSelection && preset !== DateRangePreset.CUSTOM) {
                     const presetSelectionData: PresetSelectionData = {
                         preset,
-                        label: getPresetLabelWithCustom(preset, presetConfigs),
+                        label: getPresetLabelWithCustom(
+                            preset,
+                            presetConfigs,
+                            i18n
+                        ),
                         dateRange: result.updatedRange,
                         formattedStartDate: result.formattedStartDate,
                         formattedEndDate: result.formattedEndDate,
@@ -1004,7 +1029,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
             const formatMonthRangeDisplay = (
                 range: DateRange | undefined
             ): string => {
-                if (!range?.startDate) return 'Select month range'
+                if (!range?.startDate) {
+                    return m('date-range-picker.placeholder.select-month-range')
+                }
 
                 const options: Intl.DateTimeFormatOptions = {
                     month: 'short',
@@ -1012,15 +1039,12 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                     ...(timezone && { timeZone: timezone }),
                 }
                 const startStr = range.startDate.toLocaleDateString(
-                    'en-US',
+                    locale,
                     options
                 )
                 if (!range.endDate) return startStr
 
-                const endStr = range.endDate.toLocaleDateString(
-                    'en-US',
-                    options
-                )
+                const endStr = range.endDate.toLocaleDateString(locale, options)
                 return startStr === endStr
                     ? startStr
                     : `${startStr} - ${endStr}`
@@ -1034,7 +1058,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         formatConfig,
                         isSingleDatePicker,
                         triggerConfig?.placeholder,
-                        timezone
+                        timezone,
+                        i18n
                     )
                   : isMonthGranularity
                     ? formatMonthRangeDisplay(displayRange)
@@ -1042,7 +1067,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                           displayRange,
                           allowSingleDateSelection,
                           timezone,
-                          isSingleDatePicker
+                          isSingleDatePicker,
+                          i18n
                       )
 
             const formatMobileDateRange = (
@@ -1053,8 +1079,13 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                         range,
                         formatConfig,
                         isSingleDatePicker,
-                        isSingleDatePicker ? 'Select date' : 'Select dates',
-                        timezone
+                        m(
+                            isSingleDatePicker
+                                ? 'date-range-picker.placeholder.select-date'
+                                : 'date-range-picker.placeholder.select-dates'
+                        ),
+                        timezone,
+                        i18n
                     )
                 }
 
@@ -1066,10 +1097,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 }
 
                 const startStr = range
-                    ? range.startDate.toLocaleDateString('en-US', formatOptions)
+                    ? range.startDate.toLocaleDateString(locale, formatOptions)
                     : ''
                 const endStr = range?.endDate
-                    ? range.endDate.toLocaleDateString('en-US', formatOptions)
+                    ? range.endDate.toLocaleDateString(locale, formatOptions)
                     : ''
 
                 if (
@@ -1079,7 +1110,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
                 ) {
                     return startStr
                 } else if (!range) {
-                    return isSingleDatePicker ? 'Select date' : 'Select dates'
+                    return m(
+                        isSingleDatePicker
+                            ? 'date-range-picker.placeholder.select-date'
+                            : 'date-range-picker.placeholder.select-dates'
+                    )
                 }
 
                 return `${startStr} - ${endStr}`
@@ -1185,6 +1220,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
         return (
             <Block
+                // Not localized on purpose: this is a DOM identifier that
+                // consumer selectors and analytics match on, so it must stay
+                // locale-stable.
                 data-datepicker={getPresetLabel(activePreset) || 'datepicker'}
                 ref={ref}
                 display="flex"

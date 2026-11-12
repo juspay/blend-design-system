@@ -411,3 +411,50 @@ export {
     clampScopeToMaxSelections,
     emitLegacyScopeChanges,
 } from './components/shared/multiSelectSelection'
+
+// ---------------------------------------------------------------------------
+// i18n
+// ---------------------------------------------------------------------------
+// Shared with `@juspay/blend-native`, which resolves strings and formats dates
+// outside React. Imported from leaf modules rather than `./i18n`, whose barrel
+// exports `useMessages` and `I18nContext` and would pull React into this
+// React-free entry.
+export type {
+    BlendLocale,
+    BlendTranslate,
+    BlendFirstDayOfWeek,
+    BlendI18nHandle,
+    BlendI18nValue,
+    MessageFragment,
+    PluralCategory,
+} from './i18n/types'
+export {
+    DEFAULT_LOCALE,
+    DEFAULT_FIRST_DAY_OF_WEEK,
+    MESSAGE_GROUPS,
+} from './i18n/constants'
+export type { MessageGroup } from './i18n/constants'
+export { interpolate } from './i18n/interpolate'
+export { resolveMessage, resetI18nWarnings } from './i18n/resolve'
+export type { ResolveOptions } from './i18n/resolve'
+export { createTranslator } from './i18n/createTranslator'
+export { selectPluralCategory } from './i18n/plural'
+export { resolveFirstDayOfWeek } from './i18n/firstDayOfWeek'
+export {
+    getDateTimeFormat,
+    getNumberFormat,
+    getPluralRules,
+    getListFormat,
+    resetFormatterCache,
+} from './i18n/format/formatterCache'
+export type {
+    DateTimePresetName,
+    NumberPresetName,
+} from './i18n/format/formatterCache'
+export {
+    getMonthNames,
+    getWeekdayNames,
+    resetCalendarNameCache,
+} from './i18n/format/calendarNames'
+export { BLEND_MESSAGES } from './i18n/catalog'
+export type { BlendMessageKey, BlendMessageOverrides } from './i18n/catalog'

@@ -9,6 +9,54 @@ import {
     Controls,
     Stories,
 } from '@storybook/blocks'
+import {
+    BLEND_MESSAGES,
+    ThemeProvider,
+    type BlendTranslate,
+} from '@juspay/blend-design-system'
+
+/**
+ * Not a real BCP 47 tag — a sentinel for the pseudo-locale toolbar entry.
+ * The provider still gets `'en-US'` so `Intl` has real data to format with.
+ */
+const PSEUDO_LOCALE = 'pseudo'
+
+const ACCENTS: Record<string, string> = {
+    a: 'á',
+    e: 'é',
+    i: 'í',
+    o: 'ó',
+    u: 'ú',
+    A: 'Á',
+    E: 'É',
+    I: 'Í',
+    O: 'Ó',
+    U: 'Ú',
+}
+
+/**
+ * Brackets and accents every string Blend resolves through the catalog.
+ *
+ * This is the cheapest way to find unlocalized copy: anything still rendering
+ * plain unbracketed English is a hardcoded literal that has not been migrated
+ * yet. The accents also widen the text, which surfaces layout that only fits
+ * English.
+ *
+ * `{placeholder}` spans are left intact so Blend's own interpolation pass can
+ * still fill them.
+ */
+const pseudoTranslate: BlendTranslate = (key) => {
+    const source = BLEND_MESSAGES[key as keyof typeof BLEND_MESSAGES]
+    if (source === undefined) return undefined
+
+    const accented = source.replace(/[^{}]+|\{[A-Za-z0-9_]+\}/g, (segment) =>
+        segment.startsWith('{')
+            ? segment
+            : segment.replace(/[aeiouAEIOU]/g, (c) => ACCENTS[c] ?? c)
+    )
+
+    return `⟦${accented}⟧`
+}
 
 const preview: Preview = {
     parameters: {
@@ -162,11 +210,20 @@ const preview: Preview = {
         },
     },
     decorators: [
-        (Story) => (
-            <div className="p-5">
-                <Story />
-            </div>
-        ),
+        (Story, context) => {
+            const locale = (context.globals.locale as string) ?? 'en-US'
+
+            return (
+                <ThemeProvider
+                    locale={locale === PSEUDO_LOCALE ? 'en-US' : locale}
+                    t={locale === PSEUDO_LOCALE ? pseudoTranslate : undefined}
+                >
+                    <div className="p-5">
+                        <Story />
+                    </div>
+                </ThemeProvider>
+            )
+        },
     ],
     globalTypes: {
         theme: {
@@ -176,6 +233,24 @@ const preview: Preview = {
                 title: 'Theme',
                 icon: 'circlehollow',
                 items: ['light', 'dark'],
+                dynamicTitle: true,
+            },
+        },
+        locale: {
+            description:
+                'Locale passed to ThemeProvider. "pseudo" accents and brackets every resolved string, so anything still rendering plain English is unlocalized.',
+            defaultValue: 'en-US',
+            toolbar: {
+                title: 'Locale',
+                icon: 'globe',
+                items: [
+                    { value: 'en-US', title: 'English (US)' },
+                    { value: 'de-DE', title: 'German — long words' },
+                    { value: 'fr-FR', title: 'French' },
+                    { value: 'ja-JP', title: 'Japanese — CJK widths' },
+                    { value: 'ar-EG', title: 'Arabic — digits, Sunday-first' },
+                    { value: PSEUDO_LOCALE, title: 'Pseudo-locale' },
+                ],
                 dynamicTitle: true,
             },
         },

@@ -7,6 +7,8 @@ import Block from '../../Primitives/Block/Block'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { useTheme } from '../../../context'
 import { getMobileToken } from './mobile.tokens'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../../i18n/catalog/dateRangePicker.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 const PresetItem: React.FC<PresetItemProps> = ({
     preset,
@@ -17,6 +19,7 @@ const PresetItem: React.FC<PresetItemProps> = ({
     setDrawerOpen,
     isDisabled = false,
 }) => {
+    const { i18n } = useMessages(DATE_RANGE_PICKER_MESSAGES)
     const isCustom = preset === DateRangePreset.CUSTOM
     const { foundationTokens, theme } = useTheme()
     const tokens = getMobileToken(foundationTokens, theme).sm
@@ -98,7 +101,7 @@ const PresetItem: React.FC<PresetItemProps> = ({
                           : tokens.presets.text.default
                 }
             >
-                {getPresetDisplayLabel(preset)}
+                {getPresetDisplayLabel(preset, i18n)}
             </PrimitiveText>
 
             {isActive && !isCustom && (

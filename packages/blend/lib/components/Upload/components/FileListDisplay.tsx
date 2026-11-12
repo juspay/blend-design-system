@@ -10,6 +10,8 @@ import type { UploadedFileWithStatus } from '../types'
 import type { UploadTokenType } from '../upload.tokens'
 import { truncateFileList } from '../utils'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { UPLOAD_MESSAGES } from '../../../i18n/catalog/upload.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 type FileListDisplayProps = {
     files: UploadedFileWithStatus[]
@@ -23,6 +25,7 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
     onFileRemove,
     uploadTokens,
 }) => {
+    const { m } = useMessages(UPLOAD_MESSAGES)
     const [isOpen, setIsOpen] = useState(false)
 
     const sortedFiles = [...files].sort((a, b) => {
@@ -74,7 +77,10 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
                                             onFileRemove(file.id)
                                         }}
                                         style={{ cursor: 'pointer' }}
-                                        aria-label={`Remove ${file.file.name}`}
+                                        aria-label={m(
+                                            'upload.a11y.remove-file',
+                                            { name: file.file.name }
+                                        )}
                                         role="button"
                                         tabIndex={0}
                                         onKeyDown={(e) => {
@@ -212,7 +218,7 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
                                                             .red[600]
                                                     }
                                                 >
-                                                    Failed
+                                                    {m('upload.status.failed')}
                                                 </Text>
                                             </Block>
                                         )}
@@ -227,7 +233,10 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
                                                     cursor: 'pointer',
                                                     flexShrink: 0,
                                                 }}
-                                                aria-label={`Remove ${file.file.name}`}
+                                                aria-label={m(
+                                                    'upload.a11y.remove-file',
+                                                    { name: file.file.name }
+                                                )}
                                                 role="button"
                                                 tabIndex={0}
                                                 onKeyDown={(e) => {

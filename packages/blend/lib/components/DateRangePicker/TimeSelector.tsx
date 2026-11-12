@@ -372,6 +372,9 @@ const TimeSelector = forwardRef<TimeSelectorHandle, TimeSelectorProps>(
                     onFocus={handleInputFocus}
                     onClick={handleInputClick}
                     onKeyDown={handleInputKeyDown}
+                    // Format example for the time parser, not prose. The
+                    // 12h/24h convention is a `DateFormatConfig` concern;
+                    // localized input parsing is a non-goal of RFC 0008.
                     placeholder="12:00 PM"
                     size={InputSizeV2.SM}
                     error={{ show: !isValidTime, message: '' }}

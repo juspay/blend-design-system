@@ -57,6 +57,10 @@ export type UploadProps = {
     description?: string
     className?: string
     errorText?: string
+    /** Overrides the "Browse Files" button label. */
+    browseFilesText?: string
+    /** Overrides the "Replace file" button label. */
+    replaceFileText?: string
 
     // Upload state management
     state?: UploadState

@@ -1,6 +1,23 @@
 import React, { useState } from 'react'
 import type { FileRejection, UploadFile, UploadedFileWithStatus } from './types'
 import { UploadState } from './types'
+import { UPLOAD_MESSAGES } from '../../i18n/catalog/upload.messages'
+import { resolveMessage } from '../../i18n/resolve'
+import type { BlendI18nHandle } from '../../i18n/types'
+
+/**
+ * Resolves an Upload message outside React.
+ *
+ * These helpers are pure and exported, so they take an optional `i18n` handle
+ * rather than becoming hooks. The handle is read whole, never destructured:
+ * `tsconfig.json` sets `noUnusedParameters`.
+ */
+const uploadMessage = (
+    key: string,
+    i18n?: BlendI18nHandle,
+    vars?: Record<string, string>
+): string =>
+    resolveMessage(UPLOAD_MESSAGES, key, { vars, translate: i18n?.translate })
 
 export const useUploadState = () => {
     const [internalDragState, setInternalDragState] = useState({
@@ -277,12 +294,18 @@ export const getUploadContent = (
 
 export const getMainTitle = (
     isDragActive: boolean,
-    isDragAccept: boolean
+    isDragAccept: boolean,
+    i18n?: BlendI18nHandle
 ): string => {
     if (isDragActive) {
-        return isDragAccept ? 'Drop files here' : 'Invalid file type'
+        return uploadMessage(
+            isDragAccept
+                ? 'upload.label.drop-here'
+                : 'upload.label.invalid-type',
+            i18n
+        )
     }
-    return 'Choose a file or drag & drop it here'
+    return uploadMessage('upload.label.drop-hint', i18n)
 }
 
 export const getUploadStateTitle = (
@@ -290,25 +313,35 @@ export const getUploadStateTitle = (
     multiple: boolean,
     hasSuccessfulFiles: boolean,
     hasErrorFiles: boolean,
-    fileName?: string
+    fileName?: string,
+    i18n?: BlendI18nHandle
 ): string => {
     switch (state) {
         case UploadState.UPLOADING:
             return fileName
-                ? `Uploading '${fileName}'...`
-                : 'Uploading files...'
+                ? uploadMessage('upload.status.uploading-named', i18n, {
+                      name: fileName,
+                  })
+                : uploadMessage('upload.status.uploading', i18n)
         case UploadState.SUCCESS:
-            if (multiple && hasSuccessfulFiles) {
-                return 'Files successfully added'
-            }
-            return 'File successfully added'
+            // The plural keys carry the same two sentences the old branches
+            // did, and `*State.tsx` resolves the very same keys so the two
+            // copies cannot drift apart again.
+            return uploadMessage(
+                multiple && hasSuccessfulFiles
+                    ? 'upload.status.added.other'
+                    : 'upload.status.added.one',
+                i18n
+            )
         case UploadState.ERROR:
-            if (multiple && hasErrorFiles) {
-                return 'Failed to upload multiple files'
-            }
-            return 'File upload failed'
+            return uploadMessage(
+                multiple && hasErrorFiles
+                    ? 'upload.error.failed.other'
+                    : 'upload.error.failed.one',
+                i18n
+            )
         default:
-            return getMainTitle(false, false)
+            return getMainTitle(false, false, i18n)
     }
 }
 
@@ -318,21 +351,29 @@ export const getUploadStateDescription = (
     successfulFiles: { id: string; file: File; status: string }[],
     errorFiles: { id: string; file: File; status: string }[],
     userDescription?: string,
-    fileName?: string
+    fileName?: string,
+    i18n?: BlendI18nHandle
 ): string => {
     switch (state) {
         case UploadState.UPLOADING:
-            return userDescription || 'Please wait while uploading your file'
+            return (
+                userDescription ||
+                uploadMessage('upload.status.uploading-description', i18n)
+            )
         case UploadState.SUCCESS:
             if (multiple && successfulFiles.length > 0) {
-                return "We've successfully uploaded the following files"
+                return uploadMessage('upload.status.uploaded-multiple', i18n)
             }
-            return fileName || 'File uploaded successfully'
+            return (
+                fileName || uploadMessage('upload.status.uploaded-single', i18n)
+            )
         case UploadState.ERROR:
             if (multiple && errorFiles.length > 0) {
-                return `${errorFiles.length} files failed`
+                return uploadMessage('upload.error.files-failed', i18n, {
+                    count: String(errorFiles.length),
+                })
             }
-            return 'Upload failed. Please try again.'
+            return uploadMessage('upload.error.retry', i18n)
         default:
             return userDescription || ''
     }
@@ -847,7 +888,9 @@ export const createComplexDropHandler = (
                 id: generateFileId(),
                 file: rejection.file,
                 status: 'error' as const,
-                error: rejection.errors[0]?.message || 'File rejected',
+                error:
+                    rejection.errors[0]?.message ||
+                    uploadMessage('upload.error.rejected'),
             }))
 
             setInternalFailedFiles((prev) => {
