@@ -42,7 +42,17 @@ export const UPLOAD_MESSAGES = {
     'upload.error.failed-to-upload.one': '{count} file failed to upload',
     'upload.error.failed-to-upload.other': '{count} files failed to upload',
     'upload.error.rejected': 'File rejected',
+    // The V1 mixed state's own copies of the two strings UploadV2 already has
+    // under `upload-v2.label.*`. Separate keys rather than shared ones: the
+    // two generations render different layouts and a consumer may migrate one
+    // before the other.
+    'upload.label.files-uploaded': 'Files uploaded',
+    'upload.label.partial-result': '{succeeded} succeeded, {failed} failed',
+    'upload.status.failed': 'Failed',
 
+    // Fallback accessible name for the hidden file input when the consumer
+    // passes no visible `label`.
+    'upload.a11y.file-input': 'File upload',
     'upload.a11y.remove-file': 'Remove {name}',
     'upload.a11y.uploading-progress': 'Uploading {name}, {progress}% complete',
 } as const

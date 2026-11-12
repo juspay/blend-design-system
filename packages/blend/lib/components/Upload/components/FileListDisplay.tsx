@@ -218,7 +218,7 @@ const FileListDisplay: React.FC<FileListDisplayProps> = ({
                                                             .red[600]
                                                     }
                                                 >
-                                                    Failed
+                                                    {m('upload.status.failed')}
                                                 </Text>
                                             </Block>
                                         )}

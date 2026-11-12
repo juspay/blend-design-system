@@ -266,6 +266,7 @@ Plus `browseFilesText?: string` in the component's types file.
     - `DateRangePicker` has two footers — `components/ActionButtons.tsx` (mobile drawer, "Apply Date") and a local `FooterControls` in `DateRangePicker.tsx` (desktop, "Apply"). Both are live.
     - `formatTriggerDisplay` only runs when the consumer passes a `formatConfig`. The **default** trigger path is `formatDateDisplay`, so migrating only the former left the common case English.
 - A `useCallback` or `useMemo` that resolves a message must list `locale` and `m` in its dependency array, or the first render's language sticks when the provider locale changes.
+- **Tier 1 masking is the most likely false bug report.** A caller that passes an explicit prop whose value merely restates Blend's English default pins that string to English under every locale, and the component then looks unmigrated even though the library is correct. The demo app hit exactly this: it passed `uploadHeaderText="Choose a file or drag & drop it here"` on every UploadV2 card, so the drop hint stayed English while its sibling Browse Files button translated. Before filing a string as unmigrated, check whether the call site is overriding it. Conversely, do not pass a `*Text` prop unless you actually want different copy from Blend's.
 
 ## Implementation Plan
 

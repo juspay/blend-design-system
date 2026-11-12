@@ -21,7 +21,7 @@ const DefaultState: React.FC<DefaultStateProps> = ({
     uploadTokens,
     browseFilesText,
 }) => {
-    const { pick } = useMessages(UPLOAD_MESSAGES)
+    const { m, pick } = useMessages(UPLOAD_MESSAGES)
     return (
         <Block
             display="flex"
@@ -59,7 +59,7 @@ const DefaultState: React.FC<DefaultStateProps> = ({
                     color={uploadTokens.container.content.text.title.color}
                     textAlign="center"
                 >
-                    Choose a file or drag & drop it here
+                    {m('upload.label.drop-hint')}
                 </Text>
 
                 {description && (

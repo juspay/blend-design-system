@@ -32,6 +32,9 @@ export const UPLOAD_V2_MESSAGES = {
     'upload-v2.error.invalid-type': 'Invalid file type',
     'upload-v2.error.invalid-file': 'Invalid file',
 
+    // Fallback accessible name for the hidden file input when the consumer
+    // passes no visible `label`.
+    'upload-v2.a11y.file-input': 'File upload',
     'upload-v2.a11y.remove-file': 'Remove {name}',
     'upload-v2.a11y.show-more-files.one': 'Show {count} more file',
     'upload-v2.a11y.show-more-files.other': 'Show {count} more files',

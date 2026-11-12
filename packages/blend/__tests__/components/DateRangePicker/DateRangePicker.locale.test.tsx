@@ -122,6 +122,34 @@ describe('DateRangePicker locale', () => {
         })
     })
 
+    describe('field labels', () => {
+        // Reported from a screenshot: French weekday names in the grid with
+        // English "Start" / "End" above the date inputs. These were bare JSX
+        // text nodes, a shape the first audit's attribute-only grep missed.
+        it('localizes the Start and End field labels', async () => {
+            await openCalendar('fr-FR', (key) =>
+                key === 'date-range-picker.label.start'
+                    ? 'Début'
+                    : key === 'date-range-picker.label.end'
+                      ? 'Fin'
+                      : undefined
+            )
+
+            await waitFor(() => {
+                expect(screen.getByText('Début')).toBeInTheDocument()
+            })
+            expect(screen.queryByText('Start')).not.toBeInTheDocument()
+        })
+
+        it('falls back to English with no translator', async () => {
+            await openCalendar('fr-FR')
+
+            await waitFor(() => {
+                expect(screen.getByText('Start')).toBeInTheDocument()
+            })
+        })
+    })
+
     describe('footer', () => {
         // The desktop footer lives in `FooterControls` inside
         // DateRangePicker.tsx, a different component from the mobile drawer's

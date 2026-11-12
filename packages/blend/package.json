@@ -35,6 +35,7 @@
     },
     "scripts": {
         "lint": "eslint .",
+        "i18n:audit": "node scripts/find-untranslated.mjs",
         "check:circular": "node scripts/check-circular.mjs",
         "check:dist": "node scripts/check-dist.mjs",
         "build": "pnpm lint && vite build && pnpm check:dist",

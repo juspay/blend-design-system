@@ -618,7 +618,7 @@ const Upload: React.FC<UploadProps> = ({
                             .filter(Boolean)
                             .join(' ') || undefined
                     }
-                    aria-label={label ? undefined : 'File upload'}
+                    aria-label={label ? undefined : m('upload.a11y.file-input')}
                     style={{ display: 'none' }}
                 />
                 {description && (

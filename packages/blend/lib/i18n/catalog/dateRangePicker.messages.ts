@@ -61,6 +61,17 @@ export const DATE_RANGE_PICKER_MESSAGES = {
     'date-range-picker.label.date': 'Date',
     'date-range-picker.label.month': 'Month',
     'date-range-picker.label.year': 'Year',
+    // Also the mobile drawer's scroll-picker column headers, which reuse
+    // date/month/year above and add the fourth.
+    'date-range-picker.label.time': 'Time',
+    // The two field labels beside the desktop date inputs, and the mobile
+    // drawer's tab triggers. Separate keys despite the shared English stem:
+    // "Start" labels a field, "Start Date" names a tab, and a translator may
+    // not abbreviate the same way in both.
+    'date-range-picker.label.start': 'Start',
+    'date-range-picker.label.end': 'End',
+    'date-range-picker.label.start-date': 'Start Date',
+    'date-range-picker.label.end-date': 'End Date',
     'date-range-picker.a11y.choose-date': 'Choose date',
     'date-range-picker.a11y.choose-month': 'Choose month',
     'date-range-picker.a11y.choose-year': 'Choose year',

@@ -519,7 +519,11 @@ const SidebarV2Demo = () => {
             case 'upload':
                 return <UploadDemo />
             case 'uploadV2':
-                return <UploadV2Demo />
+                // The only demo given the locale directly. UploadV2 has no
+                // built-in header for its uploading and success states, so
+                // this page supplies that copy itself (tier 1) and has to
+                // localize it itself -- see getDemoCopy.
+                return <UploadV2Demo demoLocale={demoLocale} />
             case 'codeBlock':
                 return <CodeBlockDemo />
             case 'codeEditor':

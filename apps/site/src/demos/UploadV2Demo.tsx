@@ -6,8 +6,22 @@ import { UploadState } from '../../../../packages/blend/lib/components/InputsV2/
 import { Upload as UploadIcon, CheckCircle, AlertCircle } from 'lucide-react'
 import Block from '../../../../packages/blend/lib/components/Primitives/Block/Block'
 import { UploadErrorReason } from '../../../../packages/blend/lib/components/InputsV2/UploadV2/UploadV2.types'
+import {
+    getDemoCopy,
+    PSEUDO_LOCALE,
+    type DemoLocale,
+} from '../i18n/translations'
 
-const UploadV2Demo = () => {
+type UploadV2DemoProps = {
+    /**
+     * Optional because `SidebarDemo` (the V1 sidebar playground) renders this
+     * page too and has no locale picker. Defaulting to `en-US` there keeps the
+     * demo's own sample copy in English, which matches that page's provider.
+     */
+    demoLocale?: DemoLocale | typeof PSEUDO_LOCALE
+}
+
+const UploadV2Demo = ({ demoLocale = 'en-US' }: UploadV2DemoProps) => {
     // Playground state
     const [playgroundMultiple, setPlaygroundMultiple] = useState(false)
     const [playgroundDisabled, setPlaygroundDisabled] = useState(false)
@@ -141,7 +155,20 @@ const UploadV2Demo = () => {
                             and the button stops following the locale — an
                             explicit prop always wins. Pick the{' '}
                             <strong>Pseudo-locale</strong> and anything still
-                            rendering plain English has not been migrated yet.
+                            rendering plain English is either unmigrated or
+                            overridden by a prop.
+                        </p>
+                        <p className="mt-1">
+                            That distinction bites in practice. This page used
+                            to pass <code>uploadHeaderText</code> on every card,
+                            which pinned each header to English under every
+                            locale and made the component look unmigrated. Cards
+                            whose text merely restated Blend&apos;s default now
+                            pass no prop at all. The two states Blend has no
+                            header for — <strong>uploading</strong> and{' '}
+                            <strong>success</strong> — still take app-supplied
+                            copy, so this page translates that copy itself,
+                            exactly as a consuming app would.
                         </p>
                         <p className="mt-1">
                             With more than four files selected, the overflow
@@ -160,8 +187,11 @@ const UploadV2Demo = () => {
                                 browseFilesText={
                                     browseFilesOverride || undefined
                                 }
-                                label="Upload Files"
-                                subLabel="Max 8MB"
+                                label={getDemoCopy(demoLocale, 'field-label')}
+                                subLabel={getDemoCopy(
+                                    demoLocale,
+                                    'field-sublabel'
+                                )}
                                 helpIconText={playgroundHelpIconText}
                                 required={playgroundRequired}
                                 acceptedFileTypes={[
@@ -198,8 +228,10 @@ const UploadV2Demo = () => {
                                 }}
                                 maxSize={8 * 1024 * 1024}
                                 maxFiles={2}
-                                description=".csv only | Max size 8 MB"
-                                uploadHeaderText="Choose a file or drag & drop it here"
+                                description={getDemoCopy(
+                                    demoLocale,
+                                    'field-description'
+                                )}
                             />
                         </Block>
                         <Block width="100%">
@@ -210,8 +242,11 @@ const UploadV2Demo = () => {
                                 browseFilesText={
                                     browseFilesOverride || undefined
                                 }
-                                label="Upload Files"
-                                subLabel="Max 8MB"
+                                label={getDemoCopy(demoLocale, 'field-label')}
+                                subLabel={getDemoCopy(
+                                    demoLocale,
+                                    'field-sublabel'
+                                )}
                                 helpIconText={playgroundHelpIconText}
                                 required={playgroundRequired}
                                 acceptedFileTypes={[
@@ -252,8 +287,10 @@ const UploadV2Demo = () => {
                                 // errorText="File type not supported"
                                 maxSize={8 * 1024 * 1024}
                                 maxFiles={2}
-                                description=".csv only | Max size 8 MB"
-                                uploadHeaderText="Uploading sample_file.csv..."
+                                description={getDemoCopy(
+                                    demoLocale,
+                                    'field-description'
+                                )}
                             />
                         </Block>
                         <Block width="100%">
@@ -264,8 +301,11 @@ const UploadV2Demo = () => {
                                 browseFilesText={
                                     browseFilesOverride || undefined
                                 }
-                                label="Upload Files"
-                                subLabel="Max 8MB"
+                                label={getDemoCopy(demoLocale, 'field-label')}
+                                subLabel={getDemoCopy(
+                                    demoLocale,
+                                    'field-sublabel'
+                                )}
                                 helpIconText={playgroundHelpIconText}
                                 required={playgroundRequired}
                                 acceptedFileTypes={[
@@ -306,8 +346,10 @@ const UploadV2Demo = () => {
                                 // errorText="File type not supported"
                                 maxSize={8 * 1024 * 1024}
                                 maxFiles={2}
-                                description=".csv only | Max size 8 MB"
-                                uploadHeaderText="Uploading sample_file.csv..."
+                                description={getDemoCopy(
+                                    demoLocale,
+                                    'field-description'
+                                )}
                             />
                         </Block>
                         <Block width="100%">
@@ -318,7 +360,7 @@ const UploadV2Demo = () => {
                                 browseFilesText={
                                     browseFilesOverride || undefined
                                 }
-                                label="Upload Files"
+                                label={getDemoCopy(demoLocale, 'field-label')}
                                 subLabel="Max 10MB"
                                 helpIconText={playgroundHelpIconText}
                                 required={playgroundRequired}
@@ -359,9 +401,18 @@ const UploadV2Demo = () => {
                                 state={UploadState.SUCCESS}
                                 maxSize={8 * 1024 * 1024}
                                 maxFiles={2}
-                                description=" Test files uploaded successfully"
+                                description={getDemoCopy(
+                                    demoLocale,
+                                    'field-description-success'
+                                )}
                                 progressBarValue={50}
-                                uploadHeaderText="File uploaded successfully"
+                                // App-supplied copy: UploadV2 has no built-in header
+                                // for this state, so this is tier 1 and the demo has
+                                // to localize it itself.
+                                uploadHeaderText={getDemoCopy(
+                                    demoLocale,
+                                    'upload-succeeded'
+                                )}
                             />
                         </Block>
                         <Block width="100%">
@@ -372,7 +423,7 @@ const UploadV2Demo = () => {
                                 browseFilesText={
                                     browseFilesOverride || undefined
                                 }
-                                label="Upload Files"
+                                label={getDemoCopy(demoLocale, 'field-label')}
                                 subLabel="Max 10MB"
                                 helpIconText={playgroundHelpIconText}
                                 required={playgroundRequired}
@@ -413,9 +464,11 @@ const UploadV2Demo = () => {
                                 state={UploadState.SUCCESS}
                                 maxSize={8 * 1024 * 1024}
                                 maxFiles={2}
-                                description=" Test files uploaded successfully"
+                                description={getDemoCopy(
+                                    demoLocale,
+                                    'field-description-success'
+                                )}
                                 progressBarValue={50}
-                                uploadHeaderText="File uploaded successfully"
                             />
                         </Block>
                         <Block width="100%">
@@ -426,7 +479,7 @@ const UploadV2Demo = () => {
                                 browseFilesText={
                                     browseFilesOverride || undefined
                                 }
-                                label="Upload Files"
+                                label={getDemoCopy(demoLocale, 'field-label')}
                                 subLabel="Max 10MB"
                                 helpIconText={playgroundHelpIconText}
                                 required={playgroundRequired}
@@ -465,8 +518,17 @@ const UploadV2Demo = () => {
                                 // errorText="File type not supported"
                                 maxSize={8 * 1024 * 1024}
                                 maxFiles={2}
-                                description=".csv only | Max size 8 MB"
-                                uploadHeaderText="Uploading sample_file.csv..."
+                                description={getDemoCopy(
+                                    demoLocale,
+                                    'field-description'
+                                )}
+                                // App-supplied copy: UploadV2 has no built-in header
+                                // for this state, so this is tier 1 and the demo has
+                                // to localize it itself.
+                                uploadHeaderText={getDemoCopy(
+                                    demoLocale,
+                                    'uploading-named'
+                                )}
                                 progressBarValue={50}
                             />
                         </Block>

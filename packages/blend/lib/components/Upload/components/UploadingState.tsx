@@ -14,6 +14,20 @@ type UploadingStateProps = {
     uploadTokens: UploadTokenType
 }
 
+/**
+ * Sentinel standing in for the `{name}` slot while the sentence is resolved.
+ *
+ * The filename renders in a different colour from the sentence around it, so
+ * the message cannot simply be interpolated into one string — but it must not
+ * be concatenated either (`'Uploading ' + name + '...'` fixes English word
+ * order). Resolving with a sentinel and splitting on it keeps the translator
+ * in control of both word order and the quotation marks, which differ by
+ * language, while the styled span still wraps only the name.
+ *
+ * NUL cannot occur in a filename on any supported platform.
+ */
+const NAME_SLOT = '\u0000'
+
 const UploadingState: React.FC<UploadingStateProps> = ({
     uploadingFile,
     children,
@@ -21,6 +35,10 @@ const UploadingState: React.FC<UploadingStateProps> = ({
     uploadTokens,
 }) => {
     const { m } = useMessages(UPLOAD_MESSAGES)
+
+    const [beforeName, afterName = ''] = m('upload.status.uploading-named', {
+        name: NAME_SLOT,
+    }).split(NAME_SLOT)
 
     return (
         <Block
@@ -59,7 +77,7 @@ const UploadingState: React.FC<UploadingStateProps> = ({
                     color={uploadTokens.container.content.text.title.color}
                     textAlign="center"
                 >
-                    Uploading{' '}
+                    {beforeName}
                     <Text
                         as="span"
                         fontSize={
@@ -70,9 +88,9 @@ const UploadingState: React.FC<UploadingStateProps> = ({
                         }
                         color={FOUNDATION_THEME.colors.primary[600]}
                     >
-                        '{uploadingFile.file.name}'
+                        {uploadingFile.file.name}
                     </Text>
-                    ...
+                    {afterName}
                 </Text>
 
                 {description && (

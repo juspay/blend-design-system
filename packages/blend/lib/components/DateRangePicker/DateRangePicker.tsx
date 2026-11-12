@@ -138,7 +138,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                 ?.fontSize
                         }
                     >
-                        Start
+                        {m('date-range-picker.label.start')}
                     </PrimitiveText>
                     <Block
                         display="flex"
@@ -150,6 +150,10 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                             <TextInputV2
                                 id={startDateId}
                                 label=""
+                                // Not localized, deliberately: this is the pattern
+                                // `handleDateInputChange` parses, not prose. Translating the hint
+                                // while the parser still expects DD/MM/YYYY would mislead.
+                                // Localized input parsing is an explicit non-goal of RFC 0008.
                                 placeholder="DD/MM/YYYY"
                                 value={startDate || ''}
                                 onChange={onStartDateChange}
@@ -215,7 +219,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                     minWidth: '30.6px',
                                 }}
                             >
-                                End
+                                {m('date-range-picker.label.end')}
                             </PrimitiveText>
                             <Block
                                 display="flex"
@@ -233,6 +237,7 @@ const DateInputsSection: React.FC<DateInputsSectionProps> = ({
                                     <TextInputV2
                                         id={endDateId}
                                         label=""
+                                        // Parse pattern, not prose -- see the start-date field above.
                                         placeholder="DD/MM/YYYY"
                                         value={endDate || ''}
                                         onChange={onEndDateChange}

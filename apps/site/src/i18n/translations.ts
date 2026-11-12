@@ -107,6 +107,11 @@ const FRENCH: BlendMessageOverrides = {
     'upload-v2.label.partial-result': '{succeeded} réussis, {failed} échoués',
     'upload-v2.status.uploading': 'Veuillez patienter pendant le téléversement',
     'upload-v2.status.failed': 'Échec',
+    'upload-v2.a11y.file-input': 'Téléversement de fichier',
+    'upload.label.files-uploaded': 'Fichiers téléversés',
+    'upload.label.partial-result': '{succeeded} réussis, {failed} échoués',
+    'upload.status.failed': 'Échec',
+    'upload.a11y.file-input': 'Téléversement de fichier',
     'upload.a11y.remove-file': 'Supprimer {name}',
     'upload.a11y.uploading-progress':
         'Téléversement de {name}, {progress}% terminé',
@@ -153,6 +158,11 @@ const FRENCH: BlendMessageOverrides = {
     'date-range-picker.label.date': 'Date',
     'date-range-picker.label.month': 'Mois',
     'date-range-picker.label.year': 'Année',
+    'date-range-picker.label.time': 'Heure',
+    'date-range-picker.label.start': 'Début',
+    'date-range-picker.label.end': 'Fin',
+    'date-range-picker.label.start-date': 'Date de début',
+    'date-range-picker.label.end-date': 'Date de fin',
     'date-range-picker.a11y.state-selected': 'sélectionné',
     'date-range-picker.a11y.state-not-selected': 'non sélectionné',
     'date-range-picker.a11y.state-today': "aujourd'hui",
@@ -224,6 +234,11 @@ const JAPANESE: BlendMessageOverrides = {
     'upload-v2.label.partial-result': '成功 {succeeded} 件、失敗 {failed} 件',
     'upload-v2.status.uploading': 'アップロードが完了するまでお待ちください',
     'upload-v2.status.failed': '失敗',
+    'upload-v2.a11y.file-input': 'ファイルのアップロード',
+    'upload.label.files-uploaded': 'ファイルをアップロードしました',
+    'upload.label.partial-result': '成功 {succeeded} 件、失敗 {failed} 件',
+    'upload.status.failed': '失敗',
+    'upload.a11y.file-input': 'ファイルのアップロード',
     'upload.a11y.remove-file': '{name} を削除',
     'upload.a11y.uploading-progress':
         '{name} をアップロード中、{progress}% 完了',
@@ -272,6 +287,11 @@ const JAPANESE: BlendMessageOverrides = {
     'date-range-picker.label.date': '日付',
     'date-range-picker.label.month': '月',
     'date-range-picker.label.year': '年',
+    'date-range-picker.label.time': '時刻',
+    'date-range-picker.label.start': '開始',
+    'date-range-picker.label.end': '終了',
+    'date-range-picker.label.start-date': '開始日',
+    'date-range-picker.label.end-date': '終了日',
     'date-range-picker.a11y.start-time': '開始時刻',
     'date-range-picker.a11y.end-time': '終了時刻',
     'date-range-picker.a11y.previous-year': '前年',
@@ -364,6 +384,86 @@ export const getTranslatorForLocale = (
 
     const dictionary = DICTIONARIES[locale]
     return dictionary ? createTranslator(dictionary) : undefined
+}
+
+/**
+ * Sample copy the demo pages supply themselves, as a consuming app would.
+ *
+ * These are deliberately NOT Blend message keys. UploadV2 has no built-in
+ * header for its uploading and success states, so a real consumer passes
+ * `uploadHeaderText` -- which is tier 1 and therefore beats the provider's
+ * `t`. That is the designed behaviour, but it means a demo that hardcodes an
+ * English `uploadHeaderText` on every card renders English under every locale
+ * and looks unmigrated. Resolving the demo's own copy through its own locale
+ * map keeps the page honest about which tier owns each string.
+ *
+ * Only the cards that genuinely need app-supplied copy use this. Cards whose
+ * text merely restated Blend's default now pass no prop at all, so the
+ * catalog default shows through and follows the locale.
+ */
+const DEMO_SAMPLE_COPY = {
+    'uploading-named': {
+        'en-US': 'Uploading sample_file.csv...',
+        'fr-FR': 'Téléversement de sample_file.csv...',
+        'ja-JP': 'sample_file.csv をアップロード中...',
+        'de-DE': 'sample_file.csv wird hochgeladen...',
+        'ar-EG': 'جارٍ رفع sample_file.csv...',
+    },
+    'field-label': {
+        'en-US': 'Upload Files',
+        'fr-FR': 'Téléverser des fichiers',
+        'ja-JP': 'ファイルをアップロード',
+        'de-DE': 'Dateien hochladen',
+        'ar-EG': 'رفع الملفات',
+    },
+    'field-sublabel': {
+        'en-US': 'Max 8MB',
+        'fr-FR': '8 Mo max',
+        'ja-JP': '最大 8MB',
+        'de-DE': 'Max. 8 MB',
+        'ar-EG': '8 ميغابايت كحد أقصى',
+    },
+    'field-description': {
+        'en-US': '.csv only | Max size 8 MB',
+        'fr-FR': '.csv uniquement | Taille max 8 Mo',
+        'ja-JP': '.csv のみ | 最大 8MB',
+        'de-DE': 'nur .csv | Max. 8 MB',
+        'ar-EG': '.csv فقط | الحجم الأقصى 8 ميغابايت',
+    },
+    'field-description-success': {
+        'en-US': 'Test files uploaded successfully',
+        'fr-FR': 'Fichiers de test téléversés avec succès',
+        'ja-JP': 'テストファイルのアップロードが完了しました',
+        'de-DE': 'Testdateien erfolgreich hochgeladen',
+        'ar-EG': 'تم رفع ملفات الاختبار بنجاح',
+    },
+    'upload-succeeded': {
+        'en-US': 'File uploaded successfully',
+        'fr-FR': 'Fichier téléversé avec succès',
+        'ja-JP': 'ファイルのアップロードが完了しました',
+        'de-DE': 'Datei erfolgreich hochgeladen',
+        'ar-EG': 'تم رفع الملف بنجاح',
+    },
+} as const satisfies Record<string, Record<DemoLocale, string>>
+
+export type DemoCopyKey = keyof typeof DEMO_SAMPLE_COPY
+
+/**
+ * Resolve one piece of the demo's own sample copy for the active locale.
+ *
+ * The pseudo-locale brackets it the same way `pseudoTranslate` brackets a
+ * Blend string, so a reader cannot tell from the page which layer owns which
+ * string -- which is the point: both are "translated by the app".
+ */
+export const getDemoCopy = (
+    locale: DemoLocale | typeof PSEUDO_LOCALE,
+    key: DemoCopyKey
+): string => {
+    const entry = DEMO_SAMPLE_COPY[key]
+    if (locale === PSEUDO_LOCALE) {
+        return `⟦${entry['en-US'].replace(/[aeiouAEIOU]/g, (c) => ACCENTS[c] ?? c)}⟧`
+    }
+    return entry[locale]
 }
 
 /** The real BCP 47 tag to pass to `Intl`, resolving the pseudo sentinel. */

@@ -17,6 +17,8 @@ import UploadContainerV2 from './UploadContainerV2'
 import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 import InputFooterV2 from '../utils/InputFooter/InputFooterV2'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
+import { UPLOAD_V2_MESSAGES } from '../../../i18n/catalog/uploadV2.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 const UploadV2 = forwardRef<HTMLInputElement, UploadV2Props>(
     (
@@ -54,6 +56,7 @@ const UploadV2 = forwardRef<HTMLInputElement, UploadV2Props>(
         ref
     ) => {
         const tokens = useResponsiveTokens<UploadV2TokensType>('UPLOADV2')
+        const { m } = useMessages(UPLOAD_V2_MESSAGES)
         const fileInputRef = useRef<HTMLInputElement>(null)
         const generatedUploadId = useId()
         const uploadId = providedId ?? generatedUploadId
@@ -322,7 +325,9 @@ const UploadV2 = forwardRef<HTMLInputElement, UploadV2Props>(
                     aria-required={required}
                     aria-invalid={hasError}
                     aria-describedby={ariaDescribedBy}
-                    aria-label={label ? undefined : 'File upload'}
+                    aria-label={
+                        label ? undefined : m('upload-v2.a11y.file-input')
+                    }
                     style={{ display: 'none' }}
                 />
                 <InputFooterV2
