@@ -223,8 +223,26 @@ export const googleCallback = async (req: Request, res: Response) => {
     }
 }
 
+const getBodyRefreshToken = (req: Request): string | null => {
+    const value = (req.body as { refreshToken?: unknown } | undefined)
+        ?.refreshToken
+    return typeof value === 'string' && value.length > 0 ? value : null
+}
+
 export const refreshAccessToken = async (req: Request, res: Response) => {
-    const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken
+    // Two disjoint flows (audit #1, CWE-522):
+    // - CLI: presents the refresh token in the request body (no cookie jar)
+    //   and already owns the token value — rotated tokens go back in the body.
+    // - Browser: credentials live in httpOnly cookies only. Cookies are
+    //   rotated and the response carries metadata, never token values, so an
+    //   XSS payload on the Studio origin cannot read a long-lived token out
+    //   of the response body.
+    const bodyRefreshToken = getBodyRefreshToken(req)
+    const cookieRefreshToken =
+        typeof req.cookies?.refreshToken === 'string'
+            ? req.cookies.refreshToken
+            : null
+    const refreshToken = bodyRefreshToken ?? cookieRefreshToken
 
     if (!refreshToken) {
         throw new UnauthorizedError('Refresh token required')
@@ -271,6 +289,40 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
             new Date(refreshExpMs)
         )
 
+        const accessExpiresAt = (() => {
+            const rawAccess = jwt.decode(newTokens.accessToken) as {
+                exp?: number
+            } | null
+            const accessExpSec = rawAccess?.exp
+            return typeof accessExpSec === 'number' ? accessExpSec * 1000 : null
+        })()
+        const accessExpiresInSeconds = (() => {
+            const rawAccess = jwt.decode(newTokens.accessToken) as {
+                exp?: number
+            } | null
+            const accessExpSec = rawAccess?.exp
+            return typeof accessExpSec === 'number'
+                ? Math.max(0, accessExpSec - Math.floor(Date.now() / 1000))
+                : null
+        })()
+
+        if (bodyRefreshToken) {
+            // CLI flow — keep the body-in/body-out contract `blend-studio` relies on.
+            res.json({
+                success: true,
+                data: {
+                    accessToken: newTokens.accessToken,
+                    expiresAt: accessExpiresAt,
+                    expiresInSeconds: accessExpiresInSeconds,
+                    // Return new refresh token so CLI can keep refreshing.
+                    refreshToken: newTokens.refreshToken,
+                    refreshExpiresAt: refreshExpMs,
+                },
+            })
+            return
+        }
+
+        // Browser flow — rotate cookies, return metadata only.
         res.cookie('refreshToken', newTokens.refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === 'production',
@@ -290,31 +342,8 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         res.json({
             success: true,
             data: {
-                accessToken: newTokens.accessToken,
-                expiresAt: (() => {
-                    const rawAccess = jwt.decode(newTokens.accessToken) as {
-                        exp?: number
-                    } | null
-                    const accessExpSec = rawAccess?.exp
-                    return typeof accessExpSec === 'number'
-                        ? accessExpSec * 1000
-                        : null
-                })(),
-                // Remaining seconds to expiry (computed from exp).
-                expiresInSeconds: (() => {
-                    const rawAccess = jwt.decode(newTokens.accessToken) as {
-                        exp?: number
-                    } | null
-                    const accessExpSec = rawAccess?.exp
-                    return typeof accessExpSec === 'number'
-                        ? Math.max(
-                              0,
-                              accessExpSec - Math.floor(Date.now() / 1000)
-                          )
-                        : null
-                })(),
-                // Return new refresh token so CLI can keep refreshing.
-                refreshToken: newTokens.refreshToken,
+                expiresAt: accessExpiresAt,
+                expiresInSeconds: accessExpiresInSeconds,
                 refreshExpiresAt: refreshExpMs,
             },
         })

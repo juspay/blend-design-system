@@ -86,21 +86,11 @@ router.get(
  *       - Authentication
  *     responses:
  *       200:
- *         description: New access token generated
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: object
- *                   properties:
- *                     accessToken:
- *                       type: string
- *                     expiresIn:
- *                       type: number
+ *         description: >
+ *           Cookie-authenticated browsers get rotated httpOnly cookies and
+ *           expiry metadata only (no token values in the body). Non-browser
+ *           clients (CLI) that present the refresh token in the request body
+ *           receive rotated tokens in the body.
  *       401:
  *         description: Invalid or expired refresh token
  */

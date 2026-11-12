@@ -27,6 +27,12 @@ const app = express()
 const API_V1_PREFIX = '/api/v1'
 const LEGACY_API_PREFIX = '/api'
 
+// Cloud Run fronts this app with Google's load balancer. Trust exactly one
+// proxy hop so `req.ip` (used by the rate-limit keyGenerator) resolves to the
+// real client IP — the right-most X-Forwarded-For entry — instead of the load
+// balancer address shared by every client (audit #17, CWE-307).
+app.set('trust proxy', 1)
+
 app.use(helmet())
 
 const allowedOrigins = isDevelopment

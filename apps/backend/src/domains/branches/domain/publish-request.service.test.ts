@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
     approvePublishRequest,
     executePublishRequest,
+    listPublishRequests,
 } from './publish-request.service.js'
 
 import * as publishRequestRepository from '@/domains/branches/data-access/publish-request.repository.js'
@@ -286,5 +287,169 @@ describe('publish-request.service', () => {
             code: 'VALIDATION_ERROR',
             message: 'This publish request requires at least 1 approvals',
         })
+    })
+
+    describe.each(['rejected', 'cancelled', 'published'] as const)(
+        'executePublishRequest with a %s request',
+        (status) => {
+            it('blocks execution even when admin bypass is allowed', async () => {
+                mockedPublishRequestRepository.getPublishRequestById.mockResolvedValue(
+                    {
+                        id: 'pr-1',
+                        organizationId: 'org-1',
+                        branchId: 'branch-1',
+                        branchName: 'Main',
+                        requestedBy: 'requester-1',
+                        requestedByName: 'Requester User',
+                        status,
+                        version: '1.0.0',
+                        changelog: 'release',
+                        isBreaking: false,
+                        isPrerelease: false,
+                        approvals: [],
+                    } as any
+                )
+
+                mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+                    {
+                        id: 'member-1',
+                        organizationId: 'org-1',
+                        userId: 'admin-1',
+                        role: 'admin',
+                        joinedAt: new Date(),
+                    }
+                )
+
+                mockedBranchRepository.getBranchById.mockResolvedValue({
+                    id: 'branch-1',
+                    createdBy: 'owner-1',
+                    tokenConfig: { colors: {} },
+                    isProtected: true,
+                    protectionRequireApproval: null,
+                    protectionMinApprovals: null,
+                    protectionApproverIds: [],
+                } as any)
+
+                mockedOrganizationRepository.getOrganizationById.mockResolvedValue(
+                    {
+                        id: 'org-1',
+                        defaultBranchId: 'branch-1',
+                        requireApprovalForMerge: true,
+                        requireApprovalForPublish: true,
+                        allowedApprovers: 'admins',
+                        minApprovals: 2,
+                        allowAdminBypass: true,
+                    } as any
+                )
+
+                await expect(
+                    executePublishRequest(
+                        'pr-1',
+                        'admin-1',
+                        'Admin User',
+                        'admin@blend.dev'
+                    )
+                ).rejects.toMatchObject({
+                    code: 'VALIDATION_ERROR',
+                    message: `Publish requests with status '${status}' cannot be executed`,
+                })
+
+                expect(
+                    mockedBranchRepository.createVersion
+                ).not.toHaveBeenCalled()
+                expect(
+                    mockedPublishRequestRepository.updatePublishRequestStatus
+                ).not.toHaveBeenCalled()
+            })
+        }
+    )
+})
+
+describe('listPublishRequests scoping', () => {
+    it('rejects unscoped listings', async () => {
+        await expect(listPublishRequests({}, 'user-1')).rejects.toMatchObject({
+            code: 'VALIDATION_ERROR',
+        })
+
+        await expect(
+            listPublishRequests({ status: 'pending' }, 'user-1')
+        ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' })
+
+        expect(
+            mockedPublishRequestRepository.listPublishRequests
+        ).not.toHaveBeenCalled()
+    })
+
+    it('rejects listing another user without organization scope', async () => {
+        await expect(
+            listPublishRequests({ requestedBy: 'user-2' }, 'user-1')
+        ).rejects.toMatchObject({ code: 'FORBIDDEN' })
+    })
+
+    it('allows listing own requests without organization scope', async () => {
+        mockedPublishRequestRepository.listPublishRequests.mockResolvedValue({
+            publishRequests: [],
+            nextCursor: undefined,
+        })
+
+        await listPublishRequests({ requestedBy: 'user-1' }, 'user-1')
+
+        expect(
+            mockedPublishRequestRepository.listPublishRequests
+        ).toHaveBeenCalledWith({ requestedBy: 'user-1' })
+    })
+
+    it('denies branch-only listings for personal branches the requester does not own', async () => {
+        mockedBranchRepository.getBranchById.mockResolvedValue({
+            id: 'branch-1',
+            organizationId: null,
+            createdBy: 'owner-1',
+        } as any)
+
+        await expect(
+            listPublishRequests({ branchId: 'branch-1' }, 'user-1')
+        ).rejects.toMatchObject({ code: 'FORBIDDEN' })
+    })
+
+    it('requires organization membership for branch-only listings', async () => {
+        mockedBranchRepository.getBranchById.mockResolvedValue({
+            id: 'branch-1',
+            organizationId: 'org-1',
+            createdBy: 'owner-1',
+        } as any)
+        mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+            null
+        )
+
+        await expect(
+            listPublishRequests({ branchId: 'branch-1' }, 'user-1')
+        ).rejects.toMatchObject({ code: 'FORBIDDEN' })
+    })
+
+    it('allows branch-only listings for organization members', async () => {
+        mockedBranchRepository.getBranchById.mockResolvedValue({
+            id: 'branch-1',
+            organizationId: 'org-1',
+            createdBy: 'owner-1',
+        } as any)
+        mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+            {
+                id: 'member-1',
+                organizationId: 'org-1',
+                userId: 'user-1',
+                role: 'viewer',
+                joinedAt: new Date(),
+            }
+        )
+        mockedPublishRequestRepository.listPublishRequests.mockResolvedValue({
+            publishRequests: [],
+            nextCursor: undefined,
+        })
+
+        await listPublishRequests({ branchId: 'branch-1' }, 'user-1')
+
+        expect(
+            mockedPublishRequestRepository.listPublishRequests
+        ).toHaveBeenCalledWith({ branchId: 'branch-1' })
     })
 })
