@@ -161,7 +161,7 @@ describe('public API surface', () => {
         // primitive counterpart to BottomSheet), then to 130 for Stepper
         // (+ StepperStepStatus, StepperType and the StepperStep/
         // StepperSubStep types), then to 131 for BottomNavigation, then to 133 for AvatarGroup and
-        // SplitTag.
-        expect(exported.size).toBeLessThanOrEqual(133)
+        // SplitTag, then to 134 for TextInputDropdownPosition (TextInput's embedded selects).
+        expect(exported.size).toBeLessThanOrEqual(134)
     })
 })

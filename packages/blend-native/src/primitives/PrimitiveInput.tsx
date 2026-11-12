@@ -80,6 +80,9 @@ const baseStyle = StyleSheet.create({
         // The field row owns padding; RN inputs default to platform padding
         // that would double up with the container's token padding.
         flex: 1,
+        // Shrink beside slots: a web <input> otherwise keeps its intrinsic
+        // width and pushes the row past the field.
+        minWidth: 0,
         paddingVertical: 0,
         paddingHorizontal: 0,
     },

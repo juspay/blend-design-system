@@ -90,8 +90,9 @@ export type {
 } from './components/Tabs'
 export { TextArea } from './components/TextArea'
 export type { TextAreaNativeProps } from './components/TextArea'
-export { TextInput } from './components/TextInput'
+export { TextInput, TextInputDropdownPosition } from './components/TextInput'
 export type {
+    TextInputDropdown,
     TextInputNativeProps,
     TextInputSlot,
 } from './components/TextInput'

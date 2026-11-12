@@ -291,3 +291,59 @@ describe('computeArrowAlignedPosition (the tooltip contract)', () => {
         expect(r.arrow.x).toBe(0)
     })
 })
+
+describe('computeAnchoredPosition with capHeightToAvailable', () => {
+    const viewport = { width: 1440, height: 900 }
+    const anchor = { x: 60, y: 420, width: 100, height: 32 }
+
+    it('keeps a long list beside its anchor from the first measurement', () => {
+        const first = computeAnchoredPosition({
+            anchor,
+            content: { width: 200, height: 3465 },
+            viewport,
+            capHeightToAvailable: true,
+        })
+        const capped = computeAnchoredPosition({
+            anchor,
+            content: { width: 200, height: first.maxHeight },
+            viewport,
+            capHeightToAvailable: true,
+        })
+        expect(first.y).toBe(anchor.y + anchor.height + 8)
+        expect(capped).toEqual(first)
+    })
+
+    it('stays still when a long list flips above its anchor', () => {
+        const low = { x: 60, y: 700, width: 100, height: 32 }
+        const first = computeAnchoredPosition({
+            anchor: low,
+            content: { width: 200, height: 3465 },
+            viewport,
+            capHeightToAvailable: true,
+        })
+        const capped = computeAnchoredPosition({
+            anchor: low,
+            content: { width: 200, height: first.maxHeight },
+            viewport,
+            capHeightToAvailable: true,
+        })
+        expect(first.placement).toBe('top')
+        expect(capped).toEqual(first)
+    })
+
+    it('leaves content that fits where it was', () => {
+        const input = { anchor, content: { width: 200, height: 100 }, viewport }
+        expect(
+            computeAnchoredPosition({ ...input, capHeightToAvailable: true })
+        ).toEqual(computeAnchoredPosition(input))
+    })
+
+    it('still clamps uncapped content, for callers that do not cap', () => {
+        const p = computeAnchoredPosition({
+            anchor,
+            content: { width: 200, height: 3465 },
+            viewport,
+        })
+        expect(p.y).toBe(8)
+    })
+})

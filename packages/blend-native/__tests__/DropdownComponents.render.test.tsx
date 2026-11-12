@@ -134,6 +134,57 @@ describe('DropdownContent', () => {
         fireEvent.press(screen.getAllByLabelText('Close dropdown')[0])
         expect(onClose).toHaveBeenCalledTimes(1)
     })
+
+    const flatStyle = (node: { props: Record<string, unknown> }) =>
+        Object.assign({}, ...[node.props.style].flat(Infinity).filter(Boolean))
+
+    it('parks the panel invisibly until the position lands', () => {
+        // The hiding must sit outside the animated surface: on the surface,
+        // its animated opacity overrode it and the panel flashed at {0, 0}.
+        wrap(
+            <DropdownContent
+                open
+                onClose={jest.fn()}
+                position={null}
+                onContentLayout={jest.fn()}
+                tokens={fullContentTokens}
+                testID="dropdown-content"
+            >
+                <Text>measuring</Text>
+            </DropdownContent>
+        )
+        const positioner = screen.getByTestId('dropdown-content-positioner', {
+            includeHiddenElements: true,
+        })
+        expect(screen.getByText('measuring')).toBeTruthy()
+        expect(flatStyle(positioner).opacity).toBe(0)
+    })
+
+    it('places the panel at the position once it lands', () => {
+        const position: AnchoredPosition = {
+            x: 10,
+            y: 20,
+            placement: 'bottom',
+            maxHeight: 300,
+            maxWidth: 300,
+        }
+        wrap(
+            <DropdownContent
+                open
+                onClose={jest.fn()}
+                position={position}
+                onContentLayout={jest.fn()}
+                tokens={fullContentTokens}
+                testID="dropdown-content"
+            >
+                <Text>placed</Text>
+            </DropdownContent>
+        )
+        const flat = flatStyle(
+            screen.getByTestId('dropdown-content-positioner')
+        )
+        expect(flat).toMatchObject({ left: 10, top: 20, opacity: 1 })
+    })
 })
 
 describe('DropdownItem', () => {

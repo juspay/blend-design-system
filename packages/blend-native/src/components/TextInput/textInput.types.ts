@@ -6,6 +6,7 @@ import type {
     ViewStyle,
 } from 'react-native'
 import type { TextInputBaseProps } from '@juspay/blend-design-system/node'
+import type { SingleSelectNativeProps } from '../SingleSelect/singleSelect.types'
 
 /**
  * Props for the native `TextInput` — the port of web's `TextInputV2`.
@@ -22,9 +23,6 @@ import type { TextInputBaseProps } from '@juspay/blend-design-system/node'
  * Deliberately omitted rather than accepted-and-ignored (the `skeleton`
  * precedent — passing them should be a compile error, not a no-op):
  *
- * - `dropdown` — the embedded SingleSelect needs the native Select family.
- *   (Web keeps it out of the base type for the same reason.)
- * - `helpIconText` — needs a native Tooltip; `Omit`-ed from the base.
  * - The floating-label mode (web floats the label into `lg` inputs on
  *   phones) — deferred until the field pattern settles on native.
  */
@@ -34,10 +32,32 @@ export type TextInputSlot = {
     maxHeight?: string | number
 }
 
-export type TextInputNativeProps = Omit<
-    TextInputBaseProps,
-    'helpIconText' | 'value'
+/** Where an embedded dropdown sits in the field (web `TextInputV2DropdownPosition`). */
+export enum TextInputDropdownPosition {
+    LEFT = 'left',
+    RIGHT = 'right',
+}
+
+/**
+ * An embedded SingleSelect (web `TextInputV2Dropdown`): drawn inside the
+ * field as a borderless select sized to the input; it takes that side's slot.
+ */
+export type TextInputDropdown = Omit<
+    SingleSelectNativeProps,
+    | 'variant'
+    | 'size'
+    | 'label'
+    | 'subLabel'
+    | 'hintText'
+    | 'required'
+    | 'error'
 > & {
+    position: TextInputDropdownPosition
+}
+
+export type TextInputNativeProps = Omit<TextInputBaseProps, 'value'> & {
+    /** Embedded selects; each replaces the slot on its side (web `dropdown`). */
+    dropdown?: TextInputDropdown | TextInputDropdown[]
     /**
      * Controlled value. Optional since the uncontrolled fix: omit it (with
      * an optional `defaultValue`) and the field manages its own text.
