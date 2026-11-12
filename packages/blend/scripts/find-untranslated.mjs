@@ -78,7 +78,11 @@ for (const file of files) {
         readFileSync(file, 'utf8'),
         ts.ScriptTarget.Latest,
         true,
-        ts.ScriptKind.TSX
+        // Kind by extension, not TSX for everything: a `.ts` file parsed as
+        // TSX mis-reads a generic type parameter (`<T>`) as a JSX element, so
+        // the whole file after it comes back as one giant JSXText node. That
+        // produced 123 bogus hits in `menu.tokens.ts` alone.
+        /\.tsx$/.test(file) ? ts.ScriptKind.TSX : ts.ScriptKind.TS
     )
     const line = (node) =>
         sf.getLineAndCharacterOfPosition(node.getStart(sf)).line + 1
