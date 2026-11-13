@@ -5720,9 +5720,9 @@ const NestedTableDemo = () => {
             volume: '$12,400',
             status: {
                 text: 'Active',
-                color: TagColor.POSITIVE,
-                variant: TagVariant.SOLID,
-                size: TagSize.SMALL,
+                color: TagColor.SUCCESS,
+                variant: TagVariant.SUBTLE,
+                size: TagSize.SM,
             },
         },
         {
@@ -5732,9 +5732,9 @@ const NestedTableDemo = () => {
             volume: '$8,150',
             status: {
                 text: 'Active',
-                color: TagColor.POSITIVE,
-                variant: TagVariant.SOLID,
-                size: TagSize.SMALL,
+                color: TagColor.SUCCESS,
+                variant: TagVariant.SUBTLE,
+                size: TagSize.SM,
             },
         },
         {
@@ -5745,8 +5745,8 @@ const NestedTableDemo = () => {
             status: {
                 text: 'Inactive',
                 color: TagColor.NEUTRAL,
-                variant: TagVariant.SOLID,
-                size: TagSize.SMALL,
+                variant: TagVariant.SUBTLE,
+                size: TagSize.SM,
             },
         },
     ]
