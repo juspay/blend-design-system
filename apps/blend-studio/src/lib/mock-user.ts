@@ -10,6 +10,8 @@
  *   mockUserStore.setRole('viewer')
  */
 
+import { IS_DEMO_BUILD } from '@/lib/feature-flags'
+
 export type MockRole = 'owner' | 'admin' | 'editor' | 'viewer'
 
 export interface MockUser {
@@ -35,8 +37,17 @@ class MockUserStore {
     private role: MockRole
 
     constructor() {
-        const stored = localStorage.getItem(STORAGE_KEY)
-        this.role = (stored as MockRole) || 'owner'
+        // Only demo builds may read/write the persisted mock role
+        // (audit #15, CWE-602). In every other build the store is inert,
+        // never touches localStorage, and defaults to the
+        // least-privileged role.
+        const stored = IS_DEMO_BUILD ? localStorage.getItem(STORAGE_KEY) : null
+        this.role =
+            stored && stored in ROLE_PROFILES
+                ? (stored as MockRole)
+                : IS_DEMO_BUILD
+                  ? 'owner'
+                  : 'viewer'
     }
 
     getRole(): MockRole {
@@ -45,7 +56,9 @@ class MockUserStore {
 
     setRole(role: MockRole): void {
         this.role = role
-        localStorage.setItem(STORAGE_KEY, role)
+        if (IS_DEMO_BUILD) {
+            localStorage.setItem(STORAGE_KEY, role)
+        }
         window.dispatchEvent(
             new CustomEvent('mockRoleChanged', { detail: role })
         )
