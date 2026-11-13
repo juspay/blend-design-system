@@ -73,6 +73,7 @@ import { getTooltipV2Tokens } from '../components/TooltipV2/tooltipV2.tokens'
 import { getRadioV2Tokens } from '../components/SelectorV2/RadioV2/radioV2.tokens'
 import { getPopoverV2Tokens } from '../components/PopoverV2/popoverV2.token'
 import { getSidebarV2Tokens } from '../components/SidebarV2/sidebarV2.tokens'
+import { getSidebarV3Tokens } from '../components/SidebarV3/sidebarV3.tokens'
 import { getTabsV2Tokens } from '../components/TabsV2/tabsV2.tokens'
 import { getMenuV2Tokens } from '../components/MenuV2/menuV2.tokens'
 import { getBreadcrumbV2Tokens } from '../components/BreadcrumbV2/breadcrumbV2.tokens'
@@ -402,6 +403,10 @@ const computeTokens = (
         SIDEBARV2: mergeTokens(
             getSidebarV2Tokens(foundationTokens, theme),
             componentTokens.SIDEBARV2
+        ),
+        SIDEBARV3: mergeTokens(
+            getSidebarV3Tokens(foundationTokens, theme),
+            componentTokens.SIDEBARV3
         ),
         TABSV2: mergeTokens(
             getTabsV2Tokens(foundationTokens, theme),

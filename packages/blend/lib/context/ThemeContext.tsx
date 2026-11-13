@@ -53,6 +53,7 @@ import {
 import type { ResponsiveAvatarTokens } from '../components/Avatar/avatar.tokens'
 import type { ResponsiveAvatarGroupTokens } from '../components/AvatarGroup/avatarGroup.tokens'
 import type { ResponsiveSidebarTokens } from '../components/Sidebar/sidebar.tokens'
+import type { ResponsiveSidebarV3Tokens } from '../components/SidebarV3/sidebarV3.tokens'
 import type { ResponsiveDirectoryTokens } from '../components/Directory/directory.tokens'
 import type { ResponsiveUploadTokens } from '../components/Upload/upload.tokens'
 import type { ResponsiveCodeBlockTokens } from '../components/CodeBlock/codeBlock.token'
@@ -206,6 +207,7 @@ import {
     getSidebarV2Tokens,
     ResponsiveSidebarV2Tokens,
 } from '../components/SidebarV2/sidebarV2.tokens'
+import { getSidebarV3Tokens } from '../components/SidebarV3/sidebarV3.tokens'
 import {
     getTabsV2Tokens,
     ResponsiveTabsV2Tokens,
@@ -344,6 +346,7 @@ export type ComponentTokenType = {
     RADIOV2?: ResponsiveRadioV2Tokens
     POPOVERV2?: ResponsivePopoverV2Tokens
     SIDEBARV2?: ResponsiveSidebarV2Tokens
+    SIDEBARV3?: ResponsiveSidebarV3Tokens
     TABSV2?: ResponsiveTabsV2Tokens
     BREADCRUMBV2?: ResponsiveBreadcrumbV2Tokens
     CODEEDITORV2?: ResponsiveCodeEditorV2Tokens
@@ -459,6 +462,7 @@ const ThemeContext = createContext<ThemeContextType>({
         RADIOV2: getRadioV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         POPOVERV2: getPopoverV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         SIDEBARV2: getSidebarV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
+        SIDEBARV3: getSidebarV3Tokens(FOUNDATION_THEME, Theme.LIGHT),
         TABSV2: getTabsV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         BREADCRUMBV2: getBreadcrumbV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
         CODEEDITORV2: getCodeEditorV2Tokens(FOUNDATION_THEME, Theme.LIGHT),
