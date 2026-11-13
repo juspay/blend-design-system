@@ -10,6 +10,8 @@ import {
 } from '../../../lib/components/DataTable/types'
 import {
     downloadDataTableExport,
+    exportPivotToCSV,
+    generateCSVContent,
     generateDataTableCSV,
 } from '../../../lib/components/DataTable/utils'
 
@@ -260,6 +262,51 @@ describe('DataTable whole-table export', () => {
                 "'@SUM(A1:A2)",
                 "'\t=2+3",
             ].join('\r\n')
+        )
+    })
+
+    it('neutralizes formula payloads in generateCSVContent exports', () => {
+        const formulaColumn: ColumnDefinition<{ value: string }> = {
+            field: 'value',
+            header: 'Value',
+            type: ColumnType.TEXT,
+            isSortable: false,
+        }
+
+        expect(
+            generateCSVContent(
+                [
+                    { value: "=cmd|'/c calc'!A1" },
+                    { value: '+SUM(A1:A2)' },
+                    { value: '-2+1' },
+                    { value: '@SUM(A1:A2)' },
+                    { value: '\t=2+3' },
+                    { value: 'plain' },
+                ],
+                [formulaColumn]
+            )
+        ).toBe(
+            "Value\n'=cmd|'/c calc'!A1\n'+SUM(A1:A2)\n'-2+1\n'@SUM(A1:A2)\n'\t=2+3\nplain\n"
+        )
+    })
+
+    it('neutralizes formula payloads in pivot table CSV exports', async () => {
+        exportPivotToCSV(
+            [
+                { region: "=cmd|'/c calc'!A1", total: '+SUM(A1:A2)' },
+                { region: 'North', total: '100' },
+            ],
+            [
+                { key: 'region', label: 'Region' },
+                { key: 'total', label: '@Total' },
+            ],
+            'pivot.csv'
+        )
+
+        expect(createObjectURL).toHaveBeenCalledOnce()
+        const blob = createObjectURL.mock.calls[0][0] as Blob
+        await expect(readBlob(blob)).resolves.toBe(
+            "Region,'@Total\n'=cmd|'/c calc'!A1,'+SUM(A1:A2)\nNorth,100"
         )
     })
 

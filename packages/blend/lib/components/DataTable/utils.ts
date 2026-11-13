@@ -1529,7 +1529,7 @@ export const getDataTableExportValue = async <
     return serializedRow[0]
 }
 
-const escapeCSVValue = (value: string): string => {
+export const escapeCSVValue = (value: string): string => {
     const safeValue = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
     if (!/[",\r\n]/.test(safeValue)) return safeValue
     return `"${safeValue.replace(/"/g, '""')}"`
@@ -1624,10 +1624,10 @@ export const generateCSVContent = <T extends Record<string, unknown>>(
         throw new Error('No data available for export')
     }
 
-    const headers = columns.map((col) => col.header)
+    const header = columns.map((col) => escapeCSVValue(col.header)).join(',')
     const fields = columns.map((col) => col.field)
 
-    let csvContent = headers.join(',') + '\n'
+    let csvContent = header + '\n'
 
     data.forEach((row) => {
         const rowData = fields.map((field, index) => {
@@ -1635,9 +1635,7 @@ export const generateCSVContent = <T extends Record<string, unknown>>(
             const column = columns[index]
 
             if (value != null) {
-                const exportValue = getExportValue(value, column)
-                const escapedValue = exportValue.replace(/"/g, '""')
-                return `"${escapedValue}"`
+                return escapeCSVValue(getExportValue(value, column))
             }
             return ''
         })
@@ -2035,13 +2033,12 @@ export const exportPivotToCSV = (
         throw new Error('No pivot data available for export')
     }
 
-    const header = columns.map((column) => `"${column.label}"`).join(',')
+    const header = columns
+        .map((column) => escapeCSVValue(column.label))
+        .join(',')
     const lines = rows.map((row) =>
         columns
-            .map(
-                (column) =>
-                    `"${String(row[column.key] ?? '').replace(/"/g, '""')}"`
-            )
+            .map((column) => escapeCSVValue(String(row[column.key] ?? '')))
             .join(',')
     )
 
