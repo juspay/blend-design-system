@@ -66,7 +66,11 @@ app.use(
             origin: string | undefined,
             callback: (error: Error | null, allow?: boolean) => void
         ) => {
-            if (!origin) return callback(null, true)
+            // Requests without an Origin header (CLI, server-to-server) never
+            // need CORS headers — do not hand out credentialed permissive
+            // responses to them (audit #5, CWE-942). callback(null, false)
+            // lets the request proceed without any CORS headers.
+            if (!origin) return callback(null, false)
 
             if (allowedOrigins.indexOf(origin) !== -1 || isDevelopment) {
                 callback(null, true)

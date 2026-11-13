@@ -1,22 +1,15 @@
 import functions from '@google-cloud/functions-framework'
 
+// Simple liveness endpoint (audit #4, CWE-79): static payload only — no
+// request-parameter reflection, no wildcard CORS, explicit content type
+// and nosniff.
 functions.http('ping', (req, res) => {
-    // Set CORS headers
-    res.set('Access-Control-Allow-Origin', '*')
-    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-    res.set(
-        'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, Accept'
-    )
-
-    // Handle preflight requests
     if (req.method === 'OPTIONS') {
-        res.status(200).send('')
+        res.status(204).send('')
         return
     }
 
-    // Your original logic
-    res.type('text/plain').send(
-        `Hello ${req.query.name || req.body?.name || 'World'}!`
-    )
+    res.set('Content-Type', 'text/plain; charset=utf-8')
+    res.set('X-Content-Type-Options', 'nosniff')
+    res.status(200).send('Hello World!')
 })
