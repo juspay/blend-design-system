@@ -81,7 +81,7 @@ const TableRow = styled.tr<{
                     '&:hover'
                 ].backgroundColor} !important;
 
-                td {
+                > td {
                     background-color: ${$tableToken.dataTable.table.body.row[
                         '&:hover'
                     ].backgroundColor} !important;
@@ -131,7 +131,7 @@ const StyledTableCell = styled.td<{
 
         ${!$hasCustomBackground &&
         css`
-            tr:hover & {
+            tr:hover > & {
                 background-color: ${$tableToken.dataTable.table.body.row[
                     '&:hover'
                 ].backgroundColor} !important;

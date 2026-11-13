@@ -4345,6 +4345,8 @@ const DataTableDemo = () => {
 
             <SkeletonLoadingDemo />
 
+            <NestedTableDemo />
+
             <Modal
                 isOpen={isInsertModalOpen}
                 onClose={() => setIsInsertModalOpen(false)}
@@ -5672,6 +5674,202 @@ const SkeletonLoadingDemo = () => {
                     </p>
                 </div>
             </div>
+        </div>
+    )
+}
+
+// Nested Table Demo Component — demonstrates hover scoping (#1788)
+const NestedTableDemo = () => {
+    type MerchantRow = {
+        id: number
+        merchant: string
+        gateway: string
+        volume: string
+        status: TagColumnProps
+    }
+
+    type CurrencyRow = {
+        id: string
+        currency: string
+        transactions: number
+        amount: string
+    }
+
+    const merchantColumns: ColumnDefinition<MerchantRow>[] = [
+        { field: 'merchant', header: 'Merchant', type: ColumnType.TEXT },
+        { field: 'gateway', header: 'Gateway', type: ColumnType.TEXT },
+        { field: 'volume', header: 'Total Volume', type: ColumnType.TEXT },
+        { field: 'status', header: 'Status', type: ColumnType.TAG },
+    ]
+
+    const currencyColumns: ColumnDefinition<CurrencyRow>[] = [
+        { field: 'currency', header: 'Currency', type: ColumnType.TEXT },
+        {
+            field: 'transactions',
+            header: 'Transactions',
+            type: ColumnType.NUMBER,
+        },
+        { field: 'amount', header: 'Amount', type: ColumnType.TEXT },
+    ]
+
+    const merchantData: MerchantRow[] = [
+        {
+            id: 1,
+            merchant: 'Acme Corp',
+            gateway: 'Gateway A',
+            volume: '$12,400',
+            status: {
+                text: 'Active',
+                color: TagColor.POSITIVE,
+                variant: TagVariant.SOLID,
+                size: TagSize.SMALL,
+            },
+        },
+        {
+            id: 2,
+            merchant: 'Globex',
+            gateway: 'Gateway B',
+            volume: '$8,150',
+            status: {
+                text: 'Active',
+                color: TagColor.POSITIVE,
+                variant: TagVariant.SOLID,
+                size: TagSize.SMALL,
+            },
+        },
+        {
+            id: 3,
+            merchant: 'Initech',
+            gateway: 'Gateway A',
+            volume: '$23,980',
+            status: {
+                text: 'Inactive',
+                color: TagColor.NEUTRAL,
+                variant: TagVariant.SOLID,
+                size: TagSize.SMALL,
+            },
+        },
+    ]
+
+    const currencyBreakdown: Record<number, CurrencyRow[]> = {
+        1: [
+            {
+                id: '1-usd',
+                currency: 'USD',
+                transactions: 320,
+                amount: '$8,200',
+            },
+            {
+                id: '1-inr',
+                currency: 'INR',
+                transactions: 145,
+                amount: '₹3,10,000',
+            },
+            {
+                id: '1-eur',
+                currency: 'EUR',
+                transactions: 42,
+                amount: '€1,500',
+            },
+        ],
+        2: [
+            {
+                id: '2-usd',
+                currency: 'USD',
+                transactions: 96,
+                amount: '$5,400',
+            },
+            {
+                id: '2-gbp',
+                currency: 'GBP',
+                transactions: 31,
+                amount: '£2,750',
+            },
+        ],
+        3: [
+            {
+                id: '3-usd',
+                currency: 'USD',
+                transactions: 510,
+                amount: '$23,980',
+            },
+            {
+                id: '3-jpy',
+                currency: 'JPY',
+                transactions: 88,
+                amount: '¥1,20,000',
+            },
+            { id: '3-aud', currency: 'AUD', transactions: 12, amount: 'A$40' },
+        ],
+    }
+
+    const renderExpandedRow = ({
+        row,
+    }: {
+        row: MerchantRow
+        index: number
+        isExpanded: boolean
+        toggleExpansion: () => void
+    }) => {
+        const breakdown = currencyBreakdown[row.id] ?? []
+        return (
+            <div style={{ padding: '12px 8px' }}>
+                <DataTable<CurrencyRow>
+                    data={breakdown}
+                    columns={currencyColumns}
+                    idField="id"
+                    title={`Currency breakdown — ${row.merchant}`}
+                    showFooter={false}
+                />
+            </div>
+        )
+    }
+
+    return (
+        <div style={{ marginTop: '40px' }}>
+            <div
+                style={{
+                    marginBottom: '20px',
+                    padding: '16px',
+                    backgroundColor: '#f0fdf4',
+                    borderRadius: '8px',
+                    border: '1px solid #bbf7d0',
+                }}
+            >
+                <h3
+                    style={{
+                        margin: '0 0 8px 0',
+                        fontSize: '18px',
+                        fontWeight: 600,
+                        color: '#15803d',
+                    }}
+                >
+                    🔄 Nested Table Hover Demo (#1788)
+                </h3>
+                <p
+                    style={{
+                        margin: 0,
+                        fontSize: '14px',
+                        color: '#166534',
+                        lineHeight: 1.5,
+                    }}
+                >
+                    Expand a merchant row to reveal a nested currency breakdown
+                    table. Hover over the nested rows — only the hovered row
+                    should be highlighted, leaving the rest of the nested table
+                    untouched.
+                </p>
+            </div>
+
+            <DataTable<MerchantRow>
+                data={merchantData}
+                columns={merchantColumns}
+                idField="id"
+                title="Merchants"
+                showFooter={false}
+                enableRowExpansion
+                renderExpandedRow={renderExpandedRow}
+            />
         </div>
     )
 }
