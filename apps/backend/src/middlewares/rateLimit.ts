@@ -19,13 +19,15 @@ const keyGenerator = (req: Request): string => {
 
 /**
  * Base configuration shared across all rate limiters
+ *
+ * Trust-proxy validation stays at its default (enabled): server.ts sets
+ * `app.set('trust proxy', 1)` for the Cloud Run load balancer, so client IPs
+ * resolve correctly and the limiter's proxy checks pass (audit #17).
  */
 const baseConfig: Partial<Options> = {
     standardHeaders: 'draft-8', // IETF standard headers
     legacyHeaders: false, // Disable deprecated X-RateLimit-* headers
     keyGenerator,
-    // Trust proxy to get real client IP behind load balancers
-    validate: { trustProxy: false },
 }
 
 /**
