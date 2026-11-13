@@ -116,9 +116,26 @@ export const generateCliExportToken = (payload: TokenPayload): string => {
     )
 }
 
-export const verifyJwtToken = (token: string): JwtPayload => {
+export type AllowedTokenType = NonNullable<JwtPayload['type']>
+
+export interface VerifyJwtTokenOptions {
+    /** Reject tokens whose `type` claim is not this value. */
+    type?: AllowedTokenType
+    /** Reject tokens whose `type` claim is not one of these values. */
+    types?: AllowedTokenType[]
+}
+
+// Token-type checks live here rather than in every caller so no endpoint can
+// forget them (rescan hardening, CWE-347): a refresh or cli_export token can
+// no longer pass as a session credential by relying on callers to check the
+// `type` claim themselves.
+export const verifyJwtToken = (
+    token: string,
+    options?: VerifyJwtTokenOptions
+): JwtPayload => {
+    let decoded: JwtPayload
     try {
-        return jwt.verify(token, env.JWT_SECRET, {
+        decoded = jwt.verify(token, env.JWT_SECRET, {
             algorithms: ['HS256'],
             ...(env.JWT_ISSUER ? { issuer: env.JWT_ISSUER } : {}),
             ...(env.JWT_AUDIENCE ? { audience: env.JWT_AUDIENCE } : {}),
@@ -126,6 +143,18 @@ export const verifyJwtToken = (token: string): JwtPayload => {
     } catch {
         throw new UnauthorizedError('Invalid or expired token')
     }
+
+    if (options?.type && decoded.type !== options.type) {
+        throw new UnauthorizedError('Invalid token type')
+    }
+    if (
+        options?.types &&
+        (!decoded.type || !options.types.includes(decoded.type))
+    ) {
+        throw new UnauthorizedError('Invalid token type')
+    }
+
+    return decoded
 }
 
 export const generateTokens = (payload: TokenPayload): AuthTokens => {

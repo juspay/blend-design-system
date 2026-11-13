@@ -284,6 +284,79 @@ describe('merge-request.service', () => {
             message: 'This merge request requires at least 1 approvals',
         })
     })
+
+    it('does not count the requester own approval toward the approval threshold', async () => {
+        mockedMergeRequestRepository.getMergeRequest.mockResolvedValue({
+            id: 'mr-1',
+            organizationId: 'org-1',
+            sourceBranchId: 'source-1',
+            targetBranchId: 'target-1',
+            requestedBy: 'requester-1',
+            status: 'approved' as const,
+            // Legacy self-approval plus one genuine approval: only one
+            // counts toward minApprovals=2.
+            approvals: [
+                {
+                    id: 'app-0',
+                    mergeRequestId: 'mr-1',
+                    userId: 'requester-1',
+                    userName: 'Requester',
+                    userRole: 'editor',
+                    approvedAt: new Date(),
+                },
+                {
+                    id: 'app-1',
+                    mergeRequestId: 'mr-1',
+                    userId: 'reviewer-1',
+                    userName: 'Reviewer',
+                    userRole: 'admin',
+                    approvedAt: new Date(),
+                },
+            ],
+        } as any)
+
+        mockedBranchRepository.getBranchById
+            .mockResolvedValueOnce({
+                id: 'source-1',
+                tokenConfig: { colors: {} },
+            } as any)
+            .mockResolvedValueOnce({
+                id: 'target-1',
+                createdBy: 'owner-1',
+                tokenConfig: { colors: {} },
+                isProtected: true,
+                protectionRequireApproval: null,
+                protectionMinApprovals: null,
+                protectionApproverIds: [],
+            } as any)
+
+        mockedOrganizationRepository.getOrganizationById.mockResolvedValue({
+            id: 'org-1',
+            defaultBranchId: 'target-1',
+            requireApprovalForMerge: true,
+            requireApprovalForPublish: false,
+            allowedApprovers: 'admins',
+            minApprovals: 2,
+            allowAdminBypass: false,
+        } as any)
+
+        mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+            {
+                id: 'member-1',
+                organizationId: 'org-1',
+                userId: 'admin-1',
+                role: 'admin',
+                joinedAt: new Date(),
+            }
+        )
+
+        await expect(
+            mergeMergeRequest('mr-1', 'admin-1', 'admin@blend.dev')
+        ).rejects.toMatchObject({
+            code: 'VALIDATION_ERROR',
+            message: 'This merge request requires at least 2 approvals',
+        })
+    })
 })
 
 describe('merge-request.service security hardening', () => {

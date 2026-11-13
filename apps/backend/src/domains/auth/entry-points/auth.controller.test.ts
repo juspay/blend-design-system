@@ -29,10 +29,14 @@ const seedStoredToken = () => {
         id: 'rt-1',
         userId: 'user-1',
         tokenHash: 'hash',
+        familyId: 'family-1',
         expiresAt: futureDate(),
         revokedAt: null,
     } as any)
     mockedAuthRepository.revokeRefreshToken.mockResolvedValue(undefined as any)
+    mockedAuthRepository.revokeRefreshTokenFamily.mockResolvedValue(
+        undefined as any
+    )
     mockedAuthRepository.storeRefreshToken.mockResolvedValue(undefined as any)
 }
 
@@ -113,5 +117,55 @@ describe('refreshAccessToken', () => {
         ).rejects.toMatchObject({ code: 'UNAUTHORIZED' })
 
         expect(mockedAuthRepository.findRefreshToken).not.toHaveBeenCalled()
+    })
+
+    it('stores the rotated token in the same family as the presented one', async () => {
+        const refreshToken = generateRefreshToken({
+            userId: 'user-1',
+            email: 'user@blend.dev',
+            role: 'viewer',
+        })
+        seedStoredToken()
+
+        await refreshAccessToken(
+            { cookies: {}, body: { refreshToken } } as any,
+            makeRes()
+        )
+
+        expect(mockedAuthRepository.storeRefreshToken).toHaveBeenCalledWith(
+            'user-1',
+            expect.any(String),
+            expect.any(Date),
+            'family-1'
+        )
+    })
+
+    it('revokes the whole token family when a revoked (already rotated) token is replayed', async () => {
+        const refreshToken = generateRefreshToken({
+            userId: 'user-1',
+            email: 'user@blend.dev',
+            role: 'viewer',
+        })
+        seedStoredToken()
+        mockedAuthRepository.findRefreshToken.mockResolvedValue({
+            id: 'rt-1',
+            userId: 'user-1',
+            tokenHash: 'hash',
+            familyId: 'family-1',
+            expiresAt: futureDate(),
+            revokedAt: new Date('2026-01-01T00:00:00Z'),
+        } as any)
+
+        await expect(
+            refreshAccessToken(
+                { cookies: {}, body: { refreshToken } } as any,
+                makeRes()
+            )
+        ).rejects.toMatchObject({ code: 'UNAUTHORIZED' })
+
+        expect(
+            mockedAuthRepository.revokeRefreshTokenFamily
+        ).toHaveBeenCalledWith('family-1')
+        expect(mockedAuthRepository.storeRefreshToken).not.toHaveBeenCalled()
     })
 })

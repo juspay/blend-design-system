@@ -58,11 +58,11 @@ export const authenticate = async (
             return
         }
 
-        // 4. JWT path
-        const decoded = verifyJwtToken(token)
-        if (!isSessionToken(decoded.type)) {
-            throw new UnauthorizedError('Invalid token type')
-        }
+        // 4. JWT path — type allowlist enforced inside verifyJwtToken so no
+        // caller can forget it (rescan hardening, CWE-347).
+        const decoded = verifyJwtToken(token, {
+            types: ['access', 'cli_export'],
+        })
 
         const user = await userRepo.findUserById(decoded.userId)
         if (!user || !user.isActive) {

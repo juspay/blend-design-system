@@ -15,6 +15,7 @@ import {
 import {
     canBypassApproval,
     canRoleApprove,
+    countEffectiveApprovals,
     hasReachedApprovalThreshold,
     resolvePublishApprovalPolicy,
     type OrgApprovalSettings,
@@ -191,7 +192,7 @@ export const approvePublishRequest = async (
     }
 
     const thresholdReached = hasReachedApprovalThreshold(
-        refreshed.approvals.length,
+        countEffectiveApprovals(refreshed.approvals, refreshed.requestedBy),
         policy
     )
     const updated = await publishRequestRepo.updatePublishRequestStatus(id, {
@@ -301,8 +302,14 @@ export const executePublishRequest = async (
         throw new ForbiddenError('Only admins can execute publish requests')
     }
 
+    // The requester's own approval never counts toward the threshold
+    // (rescan hardening, CWE-863).
+    const effectiveApprovalCount = countEffectiveApprovals(
+        request.approvals,
+        request.requestedBy
+    )
     const approvalsMet = hasReachedApprovalThreshold(
-        request.approvals.length,
+        effectiveApprovalCount,
         policy
     )
     const bypassAllowed = canBypassApproval(policy, userRole)
@@ -368,7 +375,7 @@ export const executePublishRequest = async (
                 version: request.version,
                 usedAdminBypass:
                     policy.requireApproval && !approvalsMet && bypassAllowed,
-                approvalCount: request.approvals.length,
+                approvalCount: effectiveApprovalCount,
                 minRequired: policy.minApprovals,
             },
         })
