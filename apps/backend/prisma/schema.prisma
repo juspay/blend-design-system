@@ -194,17 +194,24 @@ model User {
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid()) @db.Uuid
-  userId    String   @map("user_id") @db.Uuid
-  tokenHash String   @unique @map("token_hash") @db.VarChar(255)
-  expiresAt DateTime @map("expires_at")
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash") @db.VarChar(255)
+  /// Rotation chain this token belongs to. Replaying any revoked member of
+  /// a family revokes the whole family (rescan hardening, CWE-522).
+  familyId  String    @map("family_id") @db.Uuid
+  expiresAt DateTime  @map("expires_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  /// Null while the token is live; set instead of deleting on rotation or
+  /// logout so replays of a spent token can be detected.
+  revokedAt DateTime? @map("revoked_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([tokenHash])
   @@index([expiresAt])
+  @@index([familyId])
   @@map("refresh_tokens")
 }
 

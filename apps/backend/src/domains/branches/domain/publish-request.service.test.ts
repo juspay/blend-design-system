@@ -289,6 +289,84 @@ describe('publish-request.service', () => {
         })
     })
 
+    it('does not count the requester own approval toward the approval threshold', async () => {
+        mockedPublishRequestRepository.getPublishRequestById.mockResolvedValue({
+            id: 'pr-1',
+            organizationId: 'org-1',
+            branchId: 'branch-1',
+            branchName: 'Main',
+            requestedBy: 'requester-1',
+            requestedByName: 'Requester User',
+            status: 'pending' as const,
+            version: '1.0.0',
+            changelog: 'release',
+            isBreaking: false,
+            isPrerelease: false,
+            // Legacy self-approval plus one genuine approval: only one
+            // counts toward minApprovals=2.
+            approvals: [
+                {
+                    id: 'app-0',
+                    publishRequestId: 'pr-1',
+                    userId: 'requester-1',
+                    userName: 'Requester',
+                    userRole: 'editor',
+                    approvedAt: new Date(),
+                },
+                {
+                    id: 'app-1',
+                    publishRequestId: 'pr-1',
+                    userId: 'reviewer-1',
+                    userName: 'Reviewer',
+                    userRole: 'admin',
+                    approvedAt: new Date(),
+                },
+            ],
+        } as any)
+
+        mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+            {
+                id: 'member-1',
+                organizationId: 'org-1',
+                userId: 'admin-1',
+                role: 'admin',
+                joinedAt: new Date(),
+            }
+        )
+
+        mockedBranchRepository.getBranchById.mockResolvedValue({
+            id: 'branch-1',
+            createdBy: 'owner-1',
+            tokenConfig: { colors: {} },
+            isProtected: true,
+            protectionRequireApproval: null,
+            protectionMinApprovals: null,
+            protectionApproverIds: [],
+        } as any)
+
+        mockedOrganizationRepository.getOrganizationById.mockResolvedValue({
+            id: 'org-1',
+            defaultBranchId: 'branch-1',
+            requireApprovalForMerge: true,
+            requireApprovalForPublish: true,
+            allowedApprovers: 'admins',
+            minApprovals: 2,
+            allowAdminBypass: false,
+        } as any)
+
+        await expect(
+            executePublishRequest(
+                'pr-1',
+                'admin-1',
+                'Admin User',
+                'admin@blend.dev'
+            )
+        ).rejects.toMatchObject({
+            code: 'VALIDATION_ERROR',
+            message: 'This publish request requires at least 2 approvals',
+        })
+    })
+
     describe.each(['rejected', 'cancelled', 'published'] as const)(
         'executePublishRequest with a %s request',
         (status) => {

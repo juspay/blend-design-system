@@ -23,6 +23,7 @@ import {
 import {
     canBypassApproval,
     canRoleApprove,
+    countEffectiveApprovals,
     hasReachedApprovalThreshold,
     resolveMergeApprovalPolicy,
     type OrgApprovalSettings,
@@ -419,7 +420,7 @@ export const approveMergeRequest = async (
     if (!latest) throw new NotFoundError('Merge request')
 
     const approved = hasReachedApprovalThreshold(
-        latest.approvals.length,
+        countEffectiveApprovals(latest.approvals, latest.requestedBy),
         policy
     )
     const updated = await mrRepo.updateMergeRequestStatus(id, {
@@ -526,8 +527,14 @@ export const mergeMergeRequest = async (
     }
 
     const bypassAllowed = canBypassApproval(policy, userRole)
+    // The requester's own approval never counts toward the threshold
+    // (rescan hardening, CWE-863).
+    const effectiveApprovalCount = countEffectiveApprovals(
+        mr.approvals,
+        mr.requestedBy
+    )
     const approvalsMet = hasReachedApprovalThreshold(
-        mr.approvals.length,
+        effectiveApprovalCount,
         policy
     )
 
@@ -583,7 +590,7 @@ export const mergeMergeRequest = async (
                 targetBranchId: mr.targetBranchId,
                 usedAdminBypass:
                     policy.requireApproval && !approvalsMet && bypassAllowed,
-                approvalCount: mr.approvals.length,
+                approvalCount: effectiveApprovalCount,
                 minRequired: policy.minApprovals,
             },
         })

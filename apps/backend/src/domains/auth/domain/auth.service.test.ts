@@ -82,3 +82,57 @@ describe('auth.service jwt hardening', () => {
         expect(env.JWT_SECRET).toBeTruthy()
     })
 })
+
+describe('verifyJwtToken central type enforcement', () => {
+    it('rejects a refresh token when { type: access } is required', () => {
+        const token = generateRefreshToken({
+            userId: 'user-1',
+            email: 'user@blend.dev',
+            role: 'viewer',
+        })
+
+        expect(() => verifyJwtToken(token, { type: 'access' })).toThrow(
+            'Invalid token type'
+        )
+    })
+
+    it('rejects an access token when { type: refresh } is required', () => {
+        const token = generateAccessToken({
+            userId: 'user-1',
+            email: 'user@blend.dev',
+            role: 'viewer',
+        })
+
+        expect(() => verifyJwtToken(token, { type: 'refresh' })).toThrow(
+            'Invalid token type'
+        )
+    })
+
+    it('accepts tokens whose type is in the allowlist', () => {
+        const access = generateAccessToken({
+            userId: 'user-1',
+            email: 'user@blend.dev',
+            role: 'viewer',
+        })
+        const cliExport = generateCliExportToken({
+            userId: 'user-1',
+            email: 'user@blend.dev',
+            role: 'viewer',
+        })
+        const refresh = generateRefreshToken({
+            userId: 'user-1',
+            email: 'user@blend.dev',
+            role: 'viewer',
+        })
+
+        expect(
+            verifyJwtToken(access, { types: ['access', 'cli_export'] }).type
+        ).toBe('access')
+        expect(
+            verifyJwtToken(cliExport, { types: ['access', 'cli_export'] }).type
+        ).toBe('cli_export')
+        expect(() =>
+            verifyJwtToken(refresh, { types: ['access', 'cli_export'] })
+        ).toThrow('Invalid token type')
+    })
+})

@@ -22,6 +22,7 @@ import {
     storeRefreshToken,
     findRefreshToken,
     revokeRefreshToken,
+    revokeRefreshTokenFamily,
     revokeAllUserRefreshTokens,
 } from '../data-access/auth.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
@@ -176,7 +177,12 @@ export const googleCallback = async (req: Request, res: Response) => {
         const refreshTokenHash = hashToken(tokens.refreshToken)
         const expiresAt = new Date()
         expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_EXPIRES_DAYS)
-        await storeRefreshToken(user.id, refreshTokenHash, expiresAt)
+        await storeRefreshToken(
+            user.id,
+            refreshTokenHash,
+            expiresAt,
+            crypto.randomUUID()
+        )
 
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,
@@ -257,12 +263,16 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         throw new UnauthorizedError('Invalid refresh token')
     }
 
-    try {
-        const decoded = verifyJwtToken(refreshToken)
+    // Replay of an already-rotated token: the token leaked at some point,
+    // so nothing in its rotation family can be trusted (rescan hardening,
+    // CWE-522 — family revocation on reuse).
+    if (storedToken.revokedAt) {
+        await revokeRefreshTokenFamily(storedToken.familyId)
+        throw new UnauthorizedError('Invalid refresh token')
+    }
 
-        if (decoded.type !== 'refresh') {
-            throw new UnauthorizedError('Invalid refresh token')
-        }
+    try {
+        const decoded = verifyJwtToken(refreshToken, { type: 'refresh' })
 
         const newTokens = generateTokens({
             userId: decoded.userId,
@@ -288,7 +298,10 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         await storeRefreshToken(
             decoded.userId,
             newRefreshTokenHash,
-            new Date(refreshExpMs)
+            new Date(refreshExpMs),
+            // Successor stays in the same rotation family so a later replay
+            // of the presented token revokes this one too.
+            storedToken.familyId
         )
 
         const accessExpiresAt = (() => {
@@ -472,7 +485,8 @@ export const getCliAccessToken = async (req: Request, res: Response) => {
         await storeRefreshToken(
             user.id,
             refreshTokenHash,
-            new Date(refreshExpMs)
+            new Date(refreshExpMs),
+            crypto.randomUUID()
         )
     }
 
