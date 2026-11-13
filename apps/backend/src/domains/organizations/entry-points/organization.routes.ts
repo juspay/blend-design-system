@@ -35,6 +35,34 @@ const requireOrgAdminOrSystemAdmin = async (
     )
 }
 
+/**
+ * System admins may administer organizations they do not belong to (platform
+ * operations). Make every such cross-tenant intervention traceable in the
+ * organization's audit trail (audit #13, CWE-566).
+ */
+const auditSystemAdminBypass = async (
+    req: Request,
+    organizationId: string,
+    operation: string,
+    extra: { targetUserId?: string; role?: string } = {}
+): Promise<void> => {
+    if (!isSystemAdmin(req)) return
+
+    await auditLogRepo.createAuditLog({
+        organizationId,
+        action: 'system_admin_cross_tenant_action',
+        actorId: req.user!.id,
+        actorEmail: req.user!.email,
+        targetType: 'organization',
+        targetId: organizationId,
+        metadata: {
+            operation,
+            viaSystemAdmin: true,
+            ...extra,
+        },
+    })
+}
+
 // ---------------------------------------------------------------------------
 // List Organizations (admin only)
 // ---------------------------------------------------------------------------
@@ -149,6 +177,7 @@ router.patch(
     validate({ body: updateOrgSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         await requireOrgAdminOrSystemAdmin(req, req.params.id)
+        await auditSystemAdminBypass(req, req.params.id, 'organization_updated')
 
         const org = await orgRepo.updateOrganization(req.params.id, req.body)
         if (!org) {
@@ -243,6 +272,10 @@ router.post(
     validate({ body: addMemberSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         await requireOrgAdminOrSystemAdmin(req, req.params.id)
+        await auditSystemAdminBypass(req, req.params.id, 'member_added', {
+            targetUserId: req.body.userId,
+            role: req.body.role,
+        })
 
         const member = await orgRepo.addMember({
             organizationId: req.params.id,
@@ -261,6 +294,9 @@ router.delete(
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
         await requireOrgAdminOrSystemAdmin(req, req.params.id)
+        await auditSystemAdminBypass(req, req.params.id, 'member_removed', {
+            targetUserId: req.params.userId,
+        })
 
         await orgRepo.removeMember(req.params.id, req.params.userId)
         res.json({ success: true, message: 'Member removed' })
@@ -276,6 +312,15 @@ router.patch(
     validate({ body: updateMemberRoleSchema }),
     asyncHandler(async (req: Request, res: Response) => {
         await requireOrgAdminOrSystemAdmin(req, req.params.id)
+        await auditSystemAdminBypass(
+            req,
+            req.params.id,
+            'member_role_updated',
+            {
+                targetUserId: req.params.userId,
+                role: req.body.role,
+            }
+        )
 
         const member = await orgRepo.updateMemberRole(
             req.params.id,
@@ -294,6 +339,7 @@ router.get(
     authenticate,
     asyncHandler(async (req: Request, res: Response) => {
         await requireOrgAdminOrSystemAdmin(req, req.params.id)
+        await auditSystemAdminBypass(req, req.params.id, 'audit_logs_viewed')
 
         const { logs, nextCursor } = await auditLogRepo.listAuditLogs({
             organizationId: req.params.id,

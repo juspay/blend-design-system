@@ -2,10 +2,11 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
-import { env, isDevelopment } from '@/config/index.js'
+import { env, isDevelopment, isProduction } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js'
 import { apiLimiter } from '@/middlewares/rateLimit.js'
+import { authenticate, requireRole } from '@/middlewares/auth.js'
 import { createCookieCsrfProtection } from '@/middlewares/csrf.js'
 import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
 import { connectDatabaseWithRetry, isDatabaseReady } from '@/config/database.js'
@@ -200,6 +201,11 @@ app.use(
     }
 )
 
+// Swagger UI is operator tooling, not a public API surface: in production it
+// is restricted to authenticated system admins (audit #18, CWE-200). Local
+// development keeps /docs open for convenience.
+const docsGuards = isProduction ? [authenticate, requireRole('admin')] : []
+app.use('/docs', ...docsGuards)
 app.use(
     '/docs',
     helmet({

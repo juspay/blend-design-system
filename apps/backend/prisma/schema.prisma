@@ -107,6 +107,7 @@ enum AuditAction {
   branch_protection_enabled
   branch_protection_updated
   branch_protection_disabled
+  system_admin_cross_tenant_action
 }
 
 // ===========================================================================
