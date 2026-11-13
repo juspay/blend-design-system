@@ -41,6 +41,7 @@ export type AuditAction =
     | 'branch_protection_enabled'
     | 'branch_protection_updated'
     | 'branch_protection_disabled'
+    | 'system_admin_cross_tenant_action'
 
 // ===========================================================================
 // Structured Metadata — typed per action so callers can't pass random shapes
@@ -197,6 +198,18 @@ export interface BranchProtectionMeta {
     hasCustomApprovers: boolean
 }
 
+/**
+ * System admins may administer organizations they are not a member of
+ * (platform operations). Every such cross-tenant action is recorded with
+ * this shape (audit #13, CWE-566).
+ */
+export interface SystemAdminCrossTenantMeta {
+    operation: string
+    viaSystemAdmin: true
+    targetUserId?: string
+    role?: string
+}
+
 export type AuditMetadata =
     | BranchCreatedMeta
     | BranchUpdatedMeta
@@ -224,6 +237,7 @@ export type AuditMetadata =
     | PublishRequestMeta
     | OrganizationSettingsUpdatedMeta
     | BranchProtectionMeta
+    | SystemAdminCrossTenantMeta
 
 // ===========================================================================
 // Target types — constrained set of entities that can be audit-logged

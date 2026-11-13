@@ -14,6 +14,7 @@ import type {
     BrandConfig,
 } from '@/domains/branches/domain/branch.types.js'
 import { canReadBranch } from '@/domains/branches/domain/branch.service.js'
+import { assertSafeBrandConfig } from '@/domains/branches/domain/inheritance.js'
 import {
     requireOrganizationRole,
     requireOrganizationMember,
@@ -79,6 +80,11 @@ function mergeConfigForTargetBranch(
     targetConfig: BrandConfig,
     sourceConfig: BrandConfig
 ): BrandConfig {
+    // Both configs are user-controlled JSON; refuse unsafe keys before any
+    // merge or store happens (audit #16, CWE-1321).
+    assertSafeBrandConfig(targetConfig, 'target branch config')
+    assertSafeBrandConfig(sourceConfig, 'source branch config')
+
     return {
         ...targetConfig,
         colors: {
@@ -252,6 +258,11 @@ export const createMergeRequest = async (
             'Source and target branches must be different'
         )
     }
+
+    // Reject polluted configs up front instead of persisting them into the
+    // stored diff (audit #16, CWE-1321).
+    assertSafeBrandConfig(target.tokenConfig, 'target branch config')
+    assertSafeBrandConfig(source.tokenConfig, 'source branch config')
 
     const diff = diffBrandConfigs(target.tokenConfig, source.tokenConfig)
 
@@ -526,23 +537,26 @@ export const mergeMergeRequest = async (
         )
     }
 
-    if (mr.organizationId) {
-        const lockViolations = await lockService.validateBranchAgainstLocks(
-            mr.organizationId,
-            source.tokenConfig,
-            target.tokenConfig
-        )
-        if (lockViolations.length > 0) {
-            throw new ValidationError(
-                'Cannot merge: lock violations must be resolved first'
-            )
-        }
-    }
-
     const mergedTargetConfig = mergeConfigForTargetBranch(
         target.tokenConfig,
         source.tokenConfig
     )
+
+    if (mr.organizationId) {
+        // Validate the config we are about to write, not just the inputs:
+        // a merge that changes or drops a locked path must be rejected
+        // (audit #16 — lock bypass via omitted locked paths).
+        const lockViolations = await lockService.validateMergedBranchConfig(
+            mr.organizationId,
+            mergedTargetConfig,
+            target.tokenConfig
+        )
+        if (lockViolations.length > 0) {
+            throw new ValidationError(
+                'Cannot merge: locked token paths must keep their current values'
+            )
+        }
+    }
 
     await branchRepo.updateBranch(mr.targetBranchId, {
         tokenConfig: mergedTargetConfig,

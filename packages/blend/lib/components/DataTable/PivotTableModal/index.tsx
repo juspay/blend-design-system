@@ -25,7 +25,7 @@ import { TruncatedTextWithTooltipV2 } from '../../common/TruncatedTextWithToolti
 import { TooltipV2Align, TooltipV2Side } from '../../TooltipV2/tooltipV2.types'
 import { ColumnDefinition, PivotAggregationType, ColumnType } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
-import { downloadCSV } from '../utils'
+import { downloadCSV, escapeCSVValue } from '../utils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useTheme } from '../../../context/ThemeContext'
 import { FOUNDATION_THEME } from '../../../tokens'
@@ -380,11 +380,11 @@ const PivotTableModal = forwardRef<
 
             if (!exportRows || exportRows.length === 0) return
 
-            const headers = exportColumns?.map((col) => `"${col.label}"`) || []
+            const headers =
+                exportColumns?.map((col) => escapeCSVValue(col.label)) || []
             const rows = exportRows.map((row) =>
-                exportColumns?.map(
-                    (col) =>
-                        `"${String(row[col.key] ?? '').replace(/"/g, '""')}"`
+                exportColumns?.map((col) =>
+                    escapeCSVValue(String(row[col.key] ?? ''))
                 )
             )
 

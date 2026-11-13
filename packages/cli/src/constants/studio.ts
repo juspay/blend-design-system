@@ -7,6 +7,7 @@
  * CLI environment variables:
  * - BLEND_STUDIO_API_URL — Base URL for Studio API (overrides blend.config.json `studio.apiUrl`).
  * - BLEND_STUDIO_API_TOKEN — JWT for non-interactive use (CI); valid tokens skip interactive login.
+ * - BLEND_TRUST_PROJECT_API_URL — Set to 1 to allow blend.config.json `studio.apiUrl` hosts outside the official allowlist (self-hosted servers).
  * - DEBUG — Set to show stack traces on unexpected CLI errors.
  */
 
@@ -23,6 +24,11 @@ export const STUDIO_API_URL_BY_DEPLOYMENT: Record<
 
 /** Use staging for day-to-day CLI and init until production is verified end-to-end. */
 export const DEFAULT_STUDIO_DEPLOYMENT: BlendStudioDeployment = 'staging'
+
+/** Hosts the CLI may send credentials to when the URL comes from a repo-controlled blend.config.json. */
+export const TRUSTED_STUDIO_API_HOSTS: string[] = Object.values(
+    STUDIO_API_URL_BY_DEPLOYMENT
+).map((url) => new URL(url).host)
 
 export function parseEnvFlag(value: string): BlendStudioDeployment | null {
     const v = value.trim().toLowerCase()

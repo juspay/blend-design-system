@@ -69,6 +69,54 @@ function validateJson(data: unknown): { valid: boolean; errors: string[] } {
     return { valid: errors.length === 0, errors }
 }
 
+const UNSAFE_KEYS = new Set(['__proto__', 'prototype', 'constructor'])
+const MAX_CONFIG_DEPTH = 16
+const MAX_CONFIG_KEYS = 5000
+
+/**
+ * Uploaded brand configs are persisted verbatim and re-serialized for every
+ * downstream consumer, so hostile documents must be rejected at the
+ * boundary instead of trusting every reader to be defensive (audit #7,
+ * CWE-20).
+ */
+function assertSafeUploadConfig(value: unknown): void {
+    let keyCount = 0
+
+    const walk = (node: unknown, depth: number): void => {
+        if (depth > MAX_CONFIG_DEPTH) {
+            throw new ValidationError(
+                `Token config exceeds the maximum nesting depth of ${MAX_CONFIG_DEPTH}`
+            )
+        }
+
+        if (Array.isArray(node)) {
+            for (const item of node) {
+                walk(item, depth + 1)
+            }
+            return
+        }
+
+        if (node && typeof node === 'object') {
+            for (const key of Object.keys(node)) {
+                keyCount += 1
+                if (keyCount > MAX_CONFIG_KEYS) {
+                    throw new ValidationError(
+                        `Token config exceeds the maximum of ${MAX_CONFIG_KEYS} keys`
+                    )
+                }
+                if (UNSAFE_KEYS.has(key)) {
+                    throw new ValidationError(
+                        `Token config contains a forbidden key: ${key}`
+                    )
+                }
+                walk((node as Record<string, unknown>)[key], depth + 1)
+            }
+        }
+    }
+
+    walk(value, 1)
+}
+
 export const uploadToken = async (
     input: TokenUploadInput
 ): Promise<TokenUploadResult> => {
@@ -89,6 +137,9 @@ export const uploadToken = async (
             `Token validation failed: ${validation.errors.join(', ')}`
         )
     }
+
+    // Reject hostile documents before they are persisted (audit #7, CWE-20).
+    assertSafeUploadConfig(parsed)
 
     const brandConfig = parsed as Record<string, unknown>
 

@@ -66,9 +66,45 @@ export const listPublishRequests = async (
     },
     requesterUserId: string
 ) => {
+    // Never serve an unscoped listing: without an organization, requester or
+    // branch filter this would return every tenant's publish requests (audit
+    // #2, CWE-639). Branch filters are validated for visibility below.
+    if (!options.organizationId && !options.requestedBy && !options.branchId) {
+        throw new ValidationError(
+            'Listing publish requests requires an organizationId, requestedBy or branchId filter'
+        )
+    }
+
     if (options.organizationId) {
         await requireOrganizationMember(options.organizationId, requesterUserId)
     }
+
+    // Without an organization scope, a requester may only list their own
+    // requests — mirroring what getPublishRequest enforces for personal branches.
+    if (
+        !options.organizationId &&
+        options.requestedBy &&
+        options.requestedBy !== requesterUserId
+    ) {
+        throw new ForbiddenError('Access denied')
+    }
+
+    // A branch filter must not become a side channel around organization scoping.
+    if (options.branchId && !options.organizationId) {
+        const branch = await branchRepo.getBranchById(options.branchId)
+        if (!branch) {
+            throw new NotFoundError('Branch')
+        }
+        if (branch.organizationId) {
+            await requireOrganizationMember(
+                branch.organizationId,
+                requesterUserId
+            )
+        } else if (branch.createdBy !== requesterUserId) {
+            throw new ForbiddenError('Access denied')
+        }
+    }
+
     return publishRequestRepo.listPublishRequests(options)
 }
 
@@ -270,6 +306,19 @@ export const executePublishRequest = async (
         policy
     )
     const bypassAllowed = canBypassApproval(policy, userRole)
+
+    // Admin bypass may fast-track a *pending* request; it must never resurrect
+    // a rejected/cancelled one or re-publish an already executed one (audit
+    // #3, CWE-863).
+    if (
+        request.status === 'rejected' ||
+        request.status === 'cancelled' ||
+        request.status === 'published'
+    ) {
+        throw new ValidationError(
+            `Publish requests with status '${request.status}' cannot be executed`
+        )
+    }
 
     if (policy.requireApproval && !approvalsMet && !bypassAllowed) {
         throw new ValidationError(
