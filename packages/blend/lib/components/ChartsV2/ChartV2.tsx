@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useMemo } from 'react'
 import {
     ChartV2ReactRefObject,
     ChartV2Props,
@@ -15,7 +15,7 @@ import ChartV2Skeleton from './ChartV2Skeleton'
 import ChartV2NoData from './ChartV2NoData'
 import { filterBlockedProps } from '../../utils/prop-helpers'
 import { mergeChartOptions } from './chartV2Options'
-import './chartV2.sankey'
+import { ensureSankeyRegistered } from './chartV2.sankey'
 
 const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
     (
@@ -33,6 +33,11 @@ const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
     ) => {
         const tokens = useResponsiveTokens<ChartV2TokensType>('CHARTSV2')
         const { options = {}, ...restProps } = props
+
+        const sankeyInstance = useMemo(
+            () => ensureSankeyRegistered(highcharts),
+            [highcharts]
+        )
 
         const hasSeriesData =
             (options.series as ChartV2SeriesOptionsType[] | undefined)?.some(
@@ -81,7 +86,7 @@ const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
                 </style>
                 <HighchartsReact
                     ref={ref}
-                    highcharts={highcharts}
+                    highcharts={sankeyInstance}
                     {...highchartsProps}
                     containerProps={containerProps}
                     options={mergeChartOptions(options, tokens)}
