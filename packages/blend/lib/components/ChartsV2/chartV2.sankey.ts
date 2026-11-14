@@ -10,10 +10,20 @@ const init =
           ? (sankeyAny.default as (H: typeof Highcharts) => void)
           : null
 
+type HighchartsWithSeriesTypes = typeof Highcharts & {
+    seriesTypes?: Record<string, unknown>
+    SeriesRegistry?: { seriesTypes?: Record<string, unknown> }
+}
+
 export const ensureSankeyRegistered = (
     highchartsInstance: typeof Highcharts = Highcharts
 ): typeof Highcharts => {
-    if (init && !highchartsInstance.seriesTypes.sankey) {
+    const instance = highchartsInstance as HighchartsWithSeriesTypes
+    const hasSankey = Boolean(
+        instance.SeriesRegistry?.seriesTypes?.sankey ??
+        instance.seriesTypes?.sankey
+    )
+    if (init && !hasSankey) {
         init(highchartsInstance)
     }
     return highchartsInstance
