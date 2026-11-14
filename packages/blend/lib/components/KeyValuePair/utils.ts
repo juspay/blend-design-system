@@ -13,8 +13,12 @@ export const getTextStyles = (
     const baseStyles: CSSObject = !slotPresent
         ? {
               width: '100%',
+              minWidth: 0,
           }
-        : {}
+        : {
+              flex: '1 1 0%',
+              minWidth: 0,
+          }
 
     const ellipsisStyles: CSSObject = {
         overflow: 'hidden',
