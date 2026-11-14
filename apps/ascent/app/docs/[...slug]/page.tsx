@@ -6,6 +6,7 @@ import { cache } from 'react'
 import React from 'react'
 import { PageMetadata } from '../utils/getFileContent'
 import { extractHeadings } from '../utils/toc'
+import { resolveContentPath } from '@/lib/utils/safe-path'
 import { generateBreadcrumbItems } from '../utils/generateBreadcrumbs'
 import { Metadata } from 'next'
 import TableOfContents from '@/components/Navigation/TableOfContents'
@@ -63,16 +64,13 @@ const getCompiledMDX = cache(async (filePath: string) => {
 function resolveFilePath(slugArray: string[]): string | null {
     const basePath = path.join(process.cwd(), 'app', 'docs', 'content')
 
-    const directPath =
-        path.join(
-            basePath,
-            Array.isArray(slugArray) ? slugArray.join('/') : slugArray
-        ) + '.mdx'
+    const directPath = resolveContentPath(basePath, slugArray)
+    if (directPath && fs.existsSync(`${directPath}.mdx`)) {
+        return `${directPath}.mdx`
+    }
 
-    if (fs.existsSync(directPath)) return directPath
-
-    const indexPath = path.join(basePath, ...slugArray, 'page.mdx')
-    if (fs.existsSync(indexPath)) return indexPath
+    const indexPath = resolveContentPath(basePath, [...slugArray, 'page.mdx'])
+    if (indexPath && fs.existsSync(indexPath)) return indexPath
 
     return null
 }

@@ -565,14 +565,19 @@ export const mergeMergeRequest = async (
         }
     }
 
-    await branchRepo.updateBranch(mr.targetBranchId, {
-        tokenConfig: mergedTargetConfig,
-    })
-
-    const updated = await mrRepo.updateMergeRequestStatus(id, {
-        status: 'merged',
-        reviewedBy: userId,
-    })
+    // Claim-then-apply in a single transaction (rescan round-2, CWE-367):
+    // the conditional status flip serializes concurrent merges and loses to
+    // a racing cancel instead of overwriting it.
+    const updated = await mrRepo.applyMerge(
+        id,
+        mr.status,
+        userId,
+        mr.targetBranchId,
+        mergedTargetConfig
+    )
+    if (!updated) {
+        throw new ValidationError('This merge request is no longer mergeable')
+    }
 
     if (mr.organizationId) {
         await auditLogRepo.createAuditLog({
