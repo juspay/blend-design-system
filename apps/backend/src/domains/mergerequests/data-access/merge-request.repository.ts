@@ -188,6 +188,47 @@ export const updateMergeRequestStatus = async (
     return mr as unknown as MergeRequestRow | null
 }
 
+// Atomically claims the merge request and applies the target branch config
+// in a single transaction (rescan round-2, CWE-367). The status transition
+// is conditional on the expected status, so two concurrent merges — or a
+// merge racing a cancel — cannot both apply their config write.
+export const applyMerge = async (
+    id: string,
+    expectedStatus: MergeRequestRow['status'],
+    reviewedBy: string,
+    targetBranchId: string,
+    targetTokenConfig: unknown
+): Promise<MergeRequestRow | null> => {
+    const mr = await prisma.$transaction(async (tx: any) => {
+        const claimed = await tx.mergeRequest.updateMany({
+            where: { id, status: expectedStatus },
+            data: {
+                status: 'merged',
+                reviewedBy,
+                reviewedAt: new Date(),
+            },
+        })
+        if (claimed.count === 0) {
+            return null
+        }
+
+        await tx.branch.update({
+            where: { id: targetBranchId },
+            data: { tokenConfig: targetTokenConfig as any },
+        })
+
+        return tx.mergeRequest.findUnique({
+            where: { id },
+            include: includeApprovals,
+        })
+    })
+
+    if (mr) {
+        logger.info({ mrId: id, status: 'merged' }, 'Merge request merged')
+    }
+    return mr as unknown as MergeRequestRow | null
+}
+
 export const cancelMergeRequest = async (
     id: string
 ): Promise<MergeRequestRow | null> => {
@@ -196,6 +237,7 @@ export const cancelMergeRequest = async (
         data: { status: 'cancelled' },
         include: includeApprovals,
     })
+
     logger.info({ mrId: id }, 'Merge request cancelled')
     return mr as unknown as MergeRequestRow | null
 }

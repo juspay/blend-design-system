@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import { BlogPost, BlogPostWithContent } from '@/lib/types'
+import { resolveContentPath } from '@/lib/utils/safe-path'
 
 const BLOG_CONTENT_DIR = path.join(process.cwd(), 'app/blog/content')
 const BLOG_CONFIG_PATH = path.join(BLOG_CONTENT_DIR, 'config.json')
@@ -91,7 +92,12 @@ export function getAllBlogPosts(): BlogPost[] {
 
 export function getBlogPost(slug: string): BlogPostWithContent | null {
     try {
-        const filePath = path.join(BLOG_CONTENT_DIR, `${slug}.mdx`)
+        const resolvedPath = resolveContentPath(BLOG_CONTENT_DIR, slug)
+        if (!resolvedPath) {
+            return null
+        }
+
+        const filePath = `${resolvedPath}.mdx`
 
         if (!fs.existsSync(filePath)) {
             return null

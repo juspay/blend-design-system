@@ -341,21 +341,30 @@ export const executePublishRequest = async (
         }
     }
 
-    const version = await branchRepo.createVersion(request.branchId, {
-        version: request.version,
-        tokenConfig: branch.tokenConfig,
-        changelog: request.changelog,
-        isBreaking: request.isBreaking,
-        isPrerelease: request.isPrerelease,
-        publishedBy: userId,
-        publishedByName: userName,
-    })
+    // Claim-then-apply in a single transaction (rescan round-2, CWE-367):
+    // the conditional status flip serializes concurrent executions and
+    // loses to a racing cancel instead of double-publishing.
+    const applied = await publishRequestRepo.applyPublish(
+        id,
+        request.status,
+        request.branchId,
+        {
+            version: request.version,
+            tokenConfig: branch.tokenConfig,
+            changelog: request.changelog,
+            isBreaking: request.isBreaking,
+            isPrerelease: request.isPrerelease,
+            publishedBy: userId,
+            publishedByName: userName,
+        }
+    )
+    if (!applied) {
+        throw new ValidationError(
+            'This publish request is no longer executable'
+        )
+    }
 
-    const updated = await publishRequestRepo.updatePublishRequestStatus(id, {
-        status: 'published',
-        publishedVersionId: version.id,
-        publishedAt: new Date(),
-    })
+    const { publishRequest: updated, version } = applied
 
     if (request.organizationId) {
         await auditLogRepo.createAuditLog({

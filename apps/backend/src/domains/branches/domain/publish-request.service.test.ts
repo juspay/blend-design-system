@@ -197,18 +197,17 @@ describe('publish-request.service', () => {
             allowAdminBypass: true,
         } as any)
 
-        mockedBranchRepository.createVersion.mockResolvedValue({
-            id: 'version-1',
-            branchId: 'branch-1',
-            version: '1.0.0',
-        } as any)
-
-        mockedPublishRequestRepository.updatePublishRequestStatus.mockResolvedValue(
-            {
+        mockedPublishRequestRepository.applyPublish.mockResolvedValue({
+            publishRequest: {
                 id: 'pr-1',
                 status: 'published' as const,
-            } as any
-        )
+            },
+            version: {
+                id: 'version-1',
+                branchId: 'branch-1',
+                version: '1.0.0',
+            },
+        } as any)
 
         const result = await executePublishRequest(
             'pr-1',
@@ -217,17 +216,82 @@ describe('publish-request.service', () => {
             'admin@blend.dev'
         )
 
-        expect(mockedBranchRepository.createVersion).toHaveBeenCalledTimes(1)
         expect(
-            mockedPublishRequestRepository.updatePublishRequestStatus
+            mockedPublishRequestRepository.applyPublish
         ).toHaveBeenCalledWith(
             'pr-1',
-            expect.objectContaining({ status: 'published' })
+            'pending',
+            'branch-1',
+            expect.objectContaining({ version: '1.0.0' })
         )
         expect(mockedAuditLogRepository.createAuditLog).toHaveBeenCalledTimes(1)
         expect(result.publishRequest).toEqual(
             expect.objectContaining({ status: 'published' })
         )
+    })
+
+    it('aborts the publish when a concurrent transition already claimed the request', async () => {
+        mockedPublishRequestRepository.getPublishRequestById.mockResolvedValue({
+            id: 'pr-1',
+            organizationId: 'org-1',
+            branchId: 'branch-1',
+            branchName: 'Main',
+            requestedBy: 'requester-1',
+            requestedByName: 'Requester User',
+            status: 'approved' as const,
+            version: '1.0.0',
+            changelog: 'release',
+            isBreaking: false,
+            isPrerelease: false,
+            approvals: [],
+        } as any)
+
+        mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+            {
+                id: 'member-1',
+                organizationId: 'org-1',
+                userId: 'admin-1',
+                role: 'admin',
+                joinedAt: new Date(),
+            }
+        )
+
+        mockedBranchRepository.getBranchById.mockResolvedValue({
+            id: 'branch-1',
+            createdBy: 'owner-1',
+            tokenConfig: { colors: {} },
+            isProtected: true,
+            protectionRequireApproval: null,
+            protectionMinApprovals: null,
+            protectionApproverIds: [],
+        } as any)
+
+        mockedOrganizationRepository.getOrganizationById.mockResolvedValue({
+            id: 'org-1',
+            defaultBranchId: 'branch-1',
+            requireApprovalForMerge: true,
+            requireApprovalForPublish: true,
+            allowedApprovers: 'admins',
+            minApprovals: 1,
+            allowAdminBypass: true,
+        } as any)
+
+        // Conditional claim lost the race (e.g. a cancel landed first).
+        mockedPublishRequestRepository.applyPublish.mockResolvedValue(null)
+
+        await expect(
+            executePublishRequest(
+                'pr-1',
+                'admin-1',
+                'Admin User',
+                'admin@blend.dev'
+            )
+        ).rejects.toMatchObject({
+            code: 'VALIDATION_ERROR',
+            message: 'This publish request is no longer executable',
+        })
+
+        expect(mockedAuditLogRepository.createAuditLog).not.toHaveBeenCalled()
     })
 
     it('rejects execute publish when not approved and bypass disabled', async () => {
