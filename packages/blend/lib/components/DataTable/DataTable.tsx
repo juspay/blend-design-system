@@ -51,6 +51,7 @@ import {
     getDataTableBodyState,
     downloadDataTableExport,
     DataTableExportError,
+    stripNumberFormatting,
 } from './utils'
 import DataTableHeader from './DataTableHeader'
 import TableHeader from './TableHeader'
@@ -85,6 +86,7 @@ const EXPORT_ERROR_KEYS = {
     DataTableExportError['code'],
     keyof typeof DATA_TABLE_MESSAGES
 >
+import { useI18n } from '../../i18n/I18nContext'
 
 const ScrollableContainer = styled(Block)`
     overflow-x: auto;
@@ -256,6 +258,7 @@ const DataTable = forwardRef(
     ) => {
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const { m } = useMessages(DATA_TABLE_MESSAGES)
+        const { locale } = useI18n()
         const { theme } = useTheme()
         const isDarkTheme = theme === 'dark'
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
@@ -587,26 +590,8 @@ const DataTable = forwardRef(
             },
         ]
 
-        const removeNumberFormatting = (value: unknown): string => {
-            if (value == null) return ''
-
-            const stringValue = String(value)
-
-            let cleaned = stringValue.replace(/[$€£¥₹₽₪₩₦₡₵₸₴₺₻₼₽¢]/g, '')
-
-            cleaned = cleaned.replace(/%/g, '')
-
-            cleaned = cleaned.replace(/,/g, '')
-
-            cleaned = cleaned.trim()
-
-            const numericValue = parseFloat(cleaned)
-            if (!isNaN(numericValue)) {
-                return numericValue.toString()
-            }
-
-            return stringValue
-        }
+        const removeNumberFormatting = (value: unknown): string =>
+            stripNumberFormatting(value, locale)
 
         const getDisplayValue = (
             value: unknown,
