@@ -4,6 +4,8 @@ import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import PrimitiveText from '../../Primitives/PrimitiveText/PrimitiveText'
 import { Grip } from 'lucide-react'
 import type { MobileNavigationTokenType } from './mobile.tokens'
+import { useMessages } from '../../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../../i18n/catalog/navigation.messages'
 
 const ICON_SIZE = 20
 
@@ -14,6 +16,7 @@ type MoreButtonProps = {
 
 const MoreButton = forwardRef<HTMLButtonElement, MoreButtonProps>(
     ({ tokens, onClick }, ref) => {
+        const { m } = useMessages(NAVIGATION_MESSAGES)
         const moreButtonColor = String(tokens.row.item.color.default)
 
         return (
@@ -32,7 +35,7 @@ const MoreButton = forwardRef<HTMLButtonElement, MoreButtonProps>(
                 color={moreButtonColor}
                 fontWeight={tokens.row.item.fontWeight}
                 flexShrink={0}
-                aria-label="More options"
+                aria-label={m('sidebar.a11y.more-options')}
                 onClick={onClick}
             >
                 <Block
@@ -64,7 +67,7 @@ const MoreButton = forwardRef<HTMLButtonElement, MoreButtonProps>(
                         truncate
                         color={moreButtonColor}
                     >
-                        More
+                        {m('sidebar.label.more')}
                     </PrimitiveText>
                 </Block>
             </PrimitiveButton>

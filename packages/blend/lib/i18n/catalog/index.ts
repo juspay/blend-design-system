@@ -21,6 +21,11 @@ import { DATE_RANGE_PICKER_MESSAGES } from './dateRangePicker.messages'
 import { UPLOAD_V2_MESSAGES } from './uploadV2.messages'
 import { SELECT_MESSAGES } from './select.messages'
 import { DATA_TABLE_MESSAGES } from './dataTable.messages'
+import { NAVIGATION_MESSAGES } from './navigation.messages'
+import { MENU_MESSAGES } from './menu.messages'
+import { DIRECTORY_MESSAGES } from './directory.messages'
+import { BREADCRUMB_MESSAGES } from './breadcrumb.messages'
+import { TABS_MESSAGES } from './tabs.messages'
 
 /**
  * Spreading `as const` fragments preserves every key and value literal, so
@@ -37,6 +42,11 @@ export const BLEND_MESSAGES = {
     ...TIME_PICKER_MESSAGES,
     ...SELECT_MESSAGES,
     ...DATA_TABLE_MESSAGES,
+    ...NAVIGATION_MESSAGES,
+    ...MENU_MESSAGES,
+    ...DIRECTORY_MESSAGES,
+    ...BREADCRUMB_MESSAGES,
+    ...TABS_MESSAGES,
 } as const
 
 /**

@@ -8,6 +8,8 @@ import SidebarV2Header from './SidebarV2Header'
 import SidebarV2Footer from './SidebarV2Footer'
 import type { SidebarV2StateChangeType } from './types'
 import type { SidebarV2TokensType } from './sidebarV2.tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 
 const DirectoryContainer = styled(Block)`
     flex: 1;
@@ -89,6 +91,7 @@ const SidebarV2Panel = ({
     enableVirtualization = false,
     virtualization,
 }: SidebarV2PanelProps) => {
+    const { m } = useMessages(NAVIGATION_MESSAGES)
     const directoryData = normalizeDirectoryData(data)
 
     return (
@@ -125,7 +128,7 @@ const SidebarV2Panel = ({
                 data-directory-container
                 id={sidebarNavId}
                 role="region"
-                aria-label="Navigation menu"
+                aria-label={m('navigation.a11y.navigation-menu')}
                 onMouseEnter={
                     setIsHovering ? () => setIsHovering(true) : undefined
                 }

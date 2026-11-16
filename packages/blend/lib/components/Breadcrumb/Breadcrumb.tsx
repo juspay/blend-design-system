@@ -14,6 +14,8 @@ import { normalizeBreadcrumbItems } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { SkeletonVariant } from '../Skeleton'
 import BreadcrumbSkeleton from './BreadcrumbSkeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { BREADCRUMB_MESSAGES } from '../../i18n/catalog/breadcrumb.messages'
 
 const MAX_ITEMS = 4
 
@@ -26,6 +28,7 @@ const BreadcrumbItem = ({
     isActive: boolean
     skeleton?: BreadcrumbSkeletonProps
 }) => {
+    const { m } = useMessages(BREADCRUMB_MESSAGES)
     const breadcrumbTokens =
         useResponsiveTokens<BreadcrumbTokenType>('BREADCRUMB')
 
@@ -72,8 +75,12 @@ const BreadcrumbItem = ({
                 tabIndex={isActive ? 0 : undefined}
                 aria-label={
                     isActive
-                        ? `Current page: ${item.label}`
-                        : `Navigate to ${item.label}`
+                        ? m('breadcrumb.a11y.current-page', {
+                              label: item.label,
+                          })
+                        : m('breadcrumb.a11y.navigate-to', {
+                              label: item.label,
+                          })
                 }
                 aria-current={isActive ? 'page' : undefined}
             >
@@ -117,6 +124,7 @@ const BreadcrumbItem = ({
 }
 
 const Breadcrumb = ({ items: itemsProp, skeleton }: BreadcrumbProps) => {
+    const { m, mp } = useMessages(BREADCRUMB_MESSAGES)
     const items = normalizeBreadcrumbItems(itemsProp)
 
     const breadcrumbTokens =
@@ -141,7 +149,11 @@ const Breadcrumb = ({ items: itemsProp, skeleton }: BreadcrumbProps) => {
 
     const restItems = shouldShowMenu ? items.slice(-3) : items.slice(1)
     return (
-        <Block as="nav" width={'full'} aria-label="Breadcrumb navigation">
+        <Block
+            as="nav"
+            width={'full'}
+            aria-label={m('breadcrumb.a11y.navigation')}
+        >
             <ol
                 style={{
                     display: 'flex',
@@ -185,7 +197,10 @@ const Breadcrumb = ({ items: itemsProp, skeleton }: BreadcrumbProps) => {
                             contentCentered
                             color={FOUNDATION_THEME.colors.gray[400]}
                             size={24}
-                            aria-label={`Show ${menuItems.length} more breadcrumb items`}
+                            aria-label={mp(
+                                'breadcrumb.a11y.show-more',
+                                menuItems.length
+                            )}
                             aria-expanded="false"
                             aria-haspopup="menu"
                             type="button"

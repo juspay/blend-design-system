@@ -8,6 +8,8 @@ import { TooltipV2 } from '../TooltipV2/TooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
 import { VisuallyHidden } from '../../utils/accessibility'
 import type { SidebarV2TokensType } from './sidebarV2.tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 import { parseUnitValue } from '../SidebarV2/SidebarV2MobileNavigation/utils'
 
 export type SidebarV2HeaderProps = {
@@ -43,18 +45,21 @@ const SidebarV2Header = ({
     iconOnlyMode = false,
     tokens,
 }: SidebarV2HeaderProps) => {
+    const { m } = useMessages(NAVIGATION_MESSAGES)
     const headerSlot = sidebarTopSlot ? (
         sidebarTopSlot
     ) : merchantInfo ? (
         <SingleSelectV2
             helpIconText=""
             required={false}
-            placeholder="Select Merchant"
-            aria-label={`Select merchant: ${
-                merchantInfo.items.find(
-                    (item) => item.value === merchantInfo.selected
-                )?.label ?? 'Select Merchant'
-            }`}
+            placeholder={m('navigation.placeholder.select-merchant')}
+            aria-label={m('navigation.a11y.select-merchant', {
+                name: String(
+                    merchantInfo.items.find(
+                        (item) => item.value === merchantInfo.selected
+                    )?.label ?? m('navigation.placeholder.select-merchant')
+                ),
+            })}
             variant={SingleSelectV2Variant.NO_CONTAINER}
             size={SingleSelectV2Size.SM}
             items={[
@@ -114,7 +119,12 @@ const SidebarV2Header = ({
 
             {!hideToggleButton && (
                 <TooltipV2
-                    content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
+                    content={m(
+                        isExpanded
+                            ? 'sidebar.label.collapse-shortcut'
+                            : 'sidebar.label.expand-shortcut',
+                        { shortcut: String(sidebarCollapseKey) }
+                    )}
                     side={TooltipV2Side.RIGHT}
                 >
                     <PrimitiveButton
@@ -131,7 +141,12 @@ const SidebarV2Header = ({
                         borderRadius={tokens.header.toggleButton.borderRadius}
                         cursor="pointer"
                         padding={tokens.header.toggleButton.padding}
-                        aria-label={`${isExpanded ? 'Collapse' : 'Expand'} sidebar. Press ${sidebarCollapseKey} to toggle.`}
+                        aria-label={m(
+                            isExpanded
+                                ? 'sidebar.a11y.collapse-toggle'
+                                : 'sidebar.a11y.expand-toggle',
+                            { shortcut: String(sidebarCollapseKey) }
+                        )}
                         aria-expanded={isExpanded}
                         aria-controls={
                             isExpanded && sidebarNavId
@@ -153,7 +168,11 @@ const SidebarV2Header = ({
                             aria-hidden="true"
                         />
                         <VisuallyHidden>
-                            {isExpanded ? 'Collapse' : 'Expand'} sidebar
+                            {m(
+                                isExpanded
+                                    ? 'sidebar.action.collapse'
+                                    : 'sidebar.action.expand'
+                            )}
                         </VisuallyHidden>
                     </PrimitiveButton>
                 </TooltipV2>

@@ -6,6 +6,8 @@ import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { TooltipV2, TooltipV2Side, TooltipV2Size } from '../TooltipV2'
 import { Badge, BadgeColor, BadgeSize } from '../Badge'
 import styled from 'styled-components'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 
 const ScrollableContainer = styled(Block)`
     &::-webkit-scrollbar {
@@ -40,6 +42,7 @@ function SecondarySidebarItemButton({
     buttonProps,
     tokens,
 }: SecondarySidebarItemButtonProps) {
+    const { m } = useMessages(NAVIGATION_MESSAGES)
     const itemButton = (
         <PrimitiveButton
             {...buttonProps}
@@ -68,7 +71,9 @@ function SecondarySidebarItemButton({
                 onSelect(item.value)
                 buttonProps?.onClick?.(e)
             }}
-            aria-label={`Select tenant: ${item.label}`}
+            aria-label={m('navigation.a11y.select-tenant', {
+                name: String(item.label),
+            })}
             aria-pressed={isSelected}
         >
             <span aria-hidden="true">{item.icon}</span>

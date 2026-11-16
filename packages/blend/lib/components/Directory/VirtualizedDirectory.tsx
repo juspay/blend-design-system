@@ -23,6 +23,8 @@ import {
 } from './utils'
 import type { DirectoryFlatRow, DirectoryProps, NavbarItem } from './types'
 import type { DirectoryItemVisualState } from './directory.tokens.types'
+import { useMessages } from '../../i18n/useMessages'
+import { DIRECTORY_MESSAGES } from '../../i18n/catalog/directory.messages'
 
 const DEFAULT_ROW_HEIGHT = 36
 const DEFAULT_SECTION_HEIGHT = 28
@@ -286,6 +288,7 @@ const VirtualizedDirectory = ({
     highlightActivePath = false,
     virtualization,
 }: DirectoryProps) => {
+    const { m } = useMessages(DIRECTORY_MESSAGES)
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const directoryData = useMemo(
         () => normalizeDirectoryData(directoryDataProp),
@@ -782,7 +785,7 @@ const VirtualizedDirectory = ({
             height="100%"
             flexGrow={1}
             overflow={virtualization?.viewportRef ? 'visible' : 'auto'}
-            aria-label="Directory navigation"
+            aria-label={m('directory.a11y.navigation')}
             paddingX={tokens.paddingX}
             paddingY={tokens.paddingY}
         >

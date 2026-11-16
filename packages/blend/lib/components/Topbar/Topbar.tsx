@@ -12,6 +12,8 @@ import type { ResponsiveTopbarTokens } from './topbar.tokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import Seperator from '../common/Seperator'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 
 /**
  * Helper to check if Topbar is in controlled mode
@@ -41,6 +43,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(NAVIGATION_MESSAGES)
         const isControlled = isControlledTopbar(controlledIsVisible)
         const [internalVisible] = useState<boolean>(defaultIsVisible)
 
@@ -75,7 +78,7 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                             padding={topBarToken.actionButton.padding}
                             minWidth={topBarToken.actionButton.minWidth}
                             height={topBarToken.actionButton.height}
-                            aria-label="Go back"
+                            aria-label={m('topbar.a11y.go-back')}
                             style={{
                                 transition: topBarToken.actionButton.transition,
                             }}
@@ -140,7 +143,24 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                 topBarToken.tenantIconButton
                                                     .minHeight
                                             }
-                                            aria-label={`Select tenant: ${leftPanel.selected || leftPanel.items[0]?.label || 'tenant'}`}
+                                            aria-label={
+                                                leftPanel.selected ||
+                                                leftPanel.items[0]?.label
+                                                    ? m(
+                                                          'navigation.a11y.select-tenant',
+                                                          {
+                                                              name: String(
+                                                                  leftPanel.selected ||
+                                                                      leftPanel
+                                                                          .items[0]
+                                                                          ?.label
+                                                              ),
+                                                          }
+                                                      )
+                                                    : m(
+                                                          'navigation.a11y.select-tenant-unnamed'
+                                                      )
+                                            }
                                             style={{
                                                 transition:
                                                     topBarToken.tenantIconButton
@@ -186,7 +206,9 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
 
                         {merchantInfo && (
                             <SingleSelect
-                                placeholder="Select Merchant"
+                                placeholder={m(
+                                    'navigation.placeholder.select-merchant'
+                                )}
                                 variant={SelectMenuVariant.NO_CONTAINER}
                                 items={[
                                     {
@@ -217,13 +239,21 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                         padding="0"
                                         width="100%"
                                         overflow="hidden"
-                                        aria-label={`Select merchant: ${
-                                            merchantInfo.items.find(
-                                                (merchant) =>
-                                                    merchant.value ===
-                                                    merchantInfo.selected
-                                            )?.label || 'Select Merchant'
-                                        }`}
+                                        aria-label={m(
+                                            'navigation.a11y.select-merchant',
+                                            {
+                                                name: String(
+                                                    merchantInfo.items.find(
+                                                        (merchant) =>
+                                                            merchant.value ===
+                                                            merchantInfo.selected
+                                                    )?.label ||
+                                                        m(
+                                                            'navigation.placeholder.select-merchant'
+                                                        )
+                                                ),
+                                            }
+                                        )}
                                     >
                                         <Block
                                             display="flex"
@@ -270,7 +300,10 @@ const Topbar = forwardRef<HTMLDivElement, TopbarProps>(
                                                     (merchant) =>
                                                         merchant.value ===
                                                         merchantInfo.selected
-                                                )?.label || 'Select Merchant'}
+                                                )?.label ||
+                                                    m(
+                                                        'navigation.placeholder.select-merchant'
+                                                    )}
                                             </Text>
                                         </Block>
                                         <ChevronDown

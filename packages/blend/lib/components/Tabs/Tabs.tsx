@@ -18,8 +18,10 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
             onTabAdd,
             showDropdown = false,
             showAddButton = false,
-            dropdownTooltip = 'Navigate to tab',
-            addButtonTooltip = 'Add new tab',
+            // No defaults here: TabsList resolves the localized default, so
+            // an omitted prop must reach it as `undefined`.
+            dropdownTooltip,
+            addButtonTooltip,
             value,
             defaultValue,
             onValueChange,

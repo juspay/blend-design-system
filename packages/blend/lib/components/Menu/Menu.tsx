@@ -27,6 +27,8 @@ import { menuContentAnimations } from './menu.animations'
 import { Skeleton, SkeletonVariant } from '../Skeleton'
 import { useDropdownInteractionLock, useShadowRoot } from '../../hooks'
 import useScrollLock from '../../hooks/useScrollLock'
+import { useMessages } from '../../i18n/useMessages'
+import { MENU_MESSAGES } from '../../i18n/catalog/menu.messages'
 
 export const contentBaseStyle: CSSObject = {
     backgroundColor: 'white',
@@ -79,7 +81,7 @@ const Menu = ({
     collisonBoundaryRef,
     maxHeight,
     enableSearch = false,
-    searchPlaceholder = 'Search',
+    searchPlaceholder: searchPlaceholderProp,
     searchSortFn = defaultSearchSortFn,
     onEnter,
     minWidth,
@@ -99,6 +101,11 @@ const Menu = ({
         variant: 'pulse',
     },
 }: MenuProps) => {
+    const { m, pick } = useMessages(MENU_MESSAGES)
+    const searchPlaceholder = pick(
+        searchPlaceholderProp,
+        'menu.placeholder.search'
+    )
     const [searchText, setSearchText] = useState<string>('')
     const [isOpen, setIsOpen] = useState(false)
     const searchInputRef = useRef<HTMLInputElement>(null)
@@ -413,7 +420,17 @@ const Menu = ({
                                                 e.stopPropagation()
                                             }
                                         }}
-                                        aria-label={`Search menu items${searchPlaceholder ? `: ${searchPlaceholder}` : ''}`}
+                                        aria-label={
+                                            searchPlaceholder
+                                                ? m(
+                                                      'menu.a11y.search-with-placeholder',
+                                                      {
+                                                          placeholder:
+                                                              searchPlaceholder,
+                                                      }
+                                                  )
+                                                : m('menu.a11y.search')
+                                        }
                                     />
                                 </Block>
                             )}

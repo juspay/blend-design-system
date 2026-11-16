@@ -26,6 +26,8 @@ import {
     MOBILE_NAVIGATION_SAFE_AREA,
 } from './utils'
 import SidebarMobileNavigation from './SidebarMobile'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 import { SectionStateContext } from '../Directory/Section'
 
 const getSidebarStatus = (
@@ -111,6 +113,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(NAVIGATION_MESSAGES)
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
@@ -539,7 +542,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         as="main"
                         id={skipToContentId}
                         role="main"
-                        aria-label="Main content"
+                        aria-label={m('navigation.a11y.main-content')}
                         paddingBottom={
                             shouldRenderMobileNavigation
                                 ? (mobileNavigationHeight ??

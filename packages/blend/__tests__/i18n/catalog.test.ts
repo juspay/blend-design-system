@@ -8,6 +8,11 @@ import { UPLOAD_MESSAGES } from '../../lib/i18n/catalog/upload.messages'
 import { UPLOAD_V2_MESSAGES } from '../../lib/i18n/catalog/uploadV2.messages'
 import { SELECT_MESSAGES } from '../../lib/i18n/catalog/select.messages'
 import { DATA_TABLE_MESSAGES } from '../../lib/i18n/catalog/dataTable.messages'
+import { NAVIGATION_MESSAGES } from '../../lib/i18n/catalog/navigation.messages'
+import { MENU_MESSAGES } from '../../lib/i18n/catalog/menu.messages'
+import { DIRECTORY_MESSAGES } from '../../lib/i18n/catalog/directory.messages'
+import { BREADCRUMB_MESSAGES } from '../../lib/i18n/catalog/breadcrumb.messages'
+import { TABS_MESSAGES } from '../../lib/i18n/catalog/tabs.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -23,6 +28,13 @@ const FAMILIES = new Set([
     'date-range-picker',
     'time-picker',
     'select',
+    'navigation',
+    'sidebar',
+    'topbar',
+    'menu',
+    'directory',
+    'breadcrumb',
+    'tabs',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -35,6 +47,11 @@ const FRAGMENTS = {
     TIME_PICKER_MESSAGES,
     SELECT_MESSAGES,
     DATA_TABLE_MESSAGES,
+    NAVIGATION_MESSAGES,
+    MENU_MESSAGES,
+    DIRECTORY_MESSAGES,
+    BREADCRUMB_MESSAGES,
+    TABS_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -126,6 +143,14 @@ describe('message catalog', () => {
     it('matches the published key list', () => {
         expect([...keys].sort()).toMatchInlineSnapshot(`
           [
+            "breadcrumb.a11y.current-page",
+            "breadcrumb.a11y.current-page-unnamed",
+            "breadcrumb.a11y.navigate-to",
+            "breadcrumb.a11y.navigate-to-unnamed",
+            "breadcrumb.a11y.navigation",
+            "breadcrumb.a11y.show-more.one",
+            "breadcrumb.a11y.show-more.other",
+            "breadcrumb.label.item-fallback",
             "common.action.apply",
             "common.action.cancel",
             "common.action.clear",
@@ -313,6 +338,39 @@ describe('message catalog', () => {
             "select.placeholder.search",
             "select.placeholder.search-short",
             "select.status.searching",
+            "directory.a11y.navigation",
+            "directory.a11y.section",
+            "directory.a11y.submenu",
+            "menu.a11y.search",
+            "menu.a11y.search-submenu",
+            "menu.a11y.search-with-placeholder",
+            "menu.placeholder.search",
+            "menu.placeholder.submenu-search",
+            "navigation.a11y.main-content",
+            "navigation.a11y.navigation-menu",
+            "navigation.a11y.select-merchant",
+            "navigation.a11y.select-tenant",
+            "navigation.a11y.select-tenant-unnamed",
+            "navigation.placeholder.select-merchant",
+            "sidebar.a11y.app-navigation",
+            "sidebar.a11y.collapse-toggle",
+            "sidebar.a11y.expand-toggle",
+            "sidebar.a11y.more-navigation-options",
+            "sidebar.a11y.more-options",
+            "sidebar.a11y.more-tenants",
+            "sidebar.a11y.primary-action",
+            "sidebar.action.collapse",
+            "sidebar.action.expand",
+            "sidebar.label.collapse-shortcut",
+            "sidebar.label.expand-shortcut",
+            "sidebar.label.more",
+            "sidebar.placeholder.search-tenants",
+            "tabs.a11y.close",
+            "tabs.a11y.close-tab",
+            "tabs.a11y.navigate-to-tab",
+            "tabs.label.add-new-tab",
+            "tabs.placeholder.navigate",
+            "tabs.placeholder.search-tabs",
             "time-picker.a11y.choose-time",
             "time-picker.a11y.trigger",
             "time-picker.label.am",
@@ -322,6 +380,7 @@ describe('message catalog', () => {
             "time-picker.label.pm",
             "time-picker.label.seconds",
             "time-picker.label.time-with-period",
+            "topbar.a11y.go-back",
             "upload-v2.a11y.file-input",
             "upload-v2.a11y.remove-file",
             "upload-v2.a11y.show-more-files.one",

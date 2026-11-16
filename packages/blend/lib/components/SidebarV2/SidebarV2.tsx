@@ -13,6 +13,8 @@ import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import type { SidebarV2TokensType } from './sidebarV2.tokens'
 import type { SidebarV2Props } from './types'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 import { SecondarySidebar } from './SecondarySidebar'
 import SidebarV2Panel from './SidebarV2Panel'
 import { TopbarV2 } from '../TopbarV2'
@@ -83,6 +85,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(NAVIGATION_MESSAGES)
         const tokens = useResponsiveTokens<SidebarV2TokensType>('SIDEBARV2')
         const mobileNavigationTokens =
             useResponsiveTokens<MobileNavigationV2TokenType>(
@@ -430,7 +433,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                         as="main"
                         id={skipToContentId}
                         role="main"
-                        aria-label="Main content"
+                        aria-label={m('navigation.a11y.main-content')}
                         style={
                             shouldRenderMobileNavigation
                                 ? {

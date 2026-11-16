@@ -6,6 +6,8 @@ import BreadcrumbV2Separator from './BreadcrumbV2Separator'
 import type { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
 import type { IndexedBreadcrumbChild } from './utils'
 import { resolveBreadcrumbItemActive } from './utils'
+import { useMessages } from '../../i18n/useMessages'
+import { BREADCRUMB_MESSAGES } from '../../i18n/catalog/breadcrumb.messages'
 
 export type BreadcrumbV2ListProps = {
     breadcrumbTokens: BreadcrumbV2TokensType
@@ -29,6 +31,7 @@ const BreadcrumbV2List = ({
     menuItems,
     totalItems,
 }: BreadcrumbV2ListProps) => {
+    const { m } = useMessages(BREADCRUMB_MESSAGES)
     const isActive = (
         idx: number,
         el: React.ReactElement<BreadcrumbCompoundItemProps>
@@ -38,7 +41,7 @@ const BreadcrumbV2List = ({
         <Block
             as="nav"
             width={'full'}
-            aria-label="Breadcrumb navigation"
+            aria-label={m('breadcrumb.a11y.navigation')}
             style={{ overflowX: 'auto', scrollbarWidth: 'none' }}
         >
             <ol

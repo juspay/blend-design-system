@@ -1,6 +1,8 @@
 import React, { forwardRef } from 'react'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import type { MobileNavigationTokenType } from './mobile.tokens'
+import { useMessages } from '../../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../../i18n/catalog/navigation.messages'
 
 const PrimaryActionIcon = () => (
     <svg
@@ -31,6 +33,7 @@ const PrimaryActionButton = forwardRef<
     HTMLButtonElement,
     PrimaryActionButtonProps
 >(({ tokens, buttonProps }, ref) => {
+    const { m } = useMessages(NAVIGATION_MESSAGES)
     return (
         <PrimitiveButton
             ref={ref}
@@ -47,7 +50,7 @@ const PrimaryActionButton = forwardRef<
             boxShadow={tokens.row.primaryAction.boxShadow}
             color={String(tokens.row.primaryAction.color)}
             flexShrink={0}
-            aria-label="Primary action"
+            aria-label={m('sidebar.a11y.primary-action')}
             {...buttonProps}
         >
             <PrimaryActionIcon />

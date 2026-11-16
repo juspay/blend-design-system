@@ -9,6 +9,8 @@ import Skeleton from '../Skeleton/Skeleton'
 import { getSkeletonState } from '../Skeleton/utils'
 import { useTabsV2Context } from './tabsV2.context'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { useMessages } from '../../i18n/useMessages'
+import { TABS_MESSAGES } from '../../i18n/catalog/tabs.messages'
 
 const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
     (
@@ -31,6 +33,7 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(TABS_MESSAGES)
         const context = useTabsV2Context()
         const variant = variantProp ?? context.variant
         const size = sizeProp ?? context.size
@@ -93,7 +96,13 @@ const TabsV2Trigger = forwardRef<HTMLButtonElement, TabsV2TriggerProps>(
                 $tabsToken={tabsToken}
             >
                 <PrimitiveButton
-                    aria-label={`Close ${children ?? 'tab'}`}
+                    aria-label={
+                        children != null
+                            ? m('tabs.a11y.close', {
+                                  label: String(children),
+                              })
+                            : m('tabs.a11y.close-tab')
+                    }
                     disabled={isDisabled}
                     tabIndex={isDisabled ? -1 : 0}
                     onClick={handleCloseClick}
