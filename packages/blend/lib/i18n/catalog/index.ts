@@ -19,6 +19,7 @@ import { TIME_PICKER_MESSAGES } from './timePicker.messages'
 import { UPLOAD_MESSAGES } from './upload.messages'
 import { DATE_RANGE_PICKER_MESSAGES } from './dateRangePicker.messages'
 import { UPLOAD_V2_MESSAGES } from './uploadV2.messages'
+import { SELECT_MESSAGES } from './select.messages'
 
 /**
  * Spreading `as const` fragments preserves every key and value literal, so
@@ -33,6 +34,7 @@ export const BLEND_MESSAGES = {
     ...UPLOAD_V2_MESSAGES,
     ...DATE_RANGE_PICKER_MESSAGES,
     ...TIME_PICKER_MESSAGES,
+    ...SELECT_MESSAGES,
 } as const
 
 /**

@@ -61,6 +61,9 @@ import { useSelectSearchController } from '../../Select/useSelectSearchControlle
 import SelectSearchStatus, {
     SELECT_SEARCH_STATUS_HEIGHT,
 } from '../../Select/SelectSearchStatus'
+import { SELECT_MESSAGES } from '../../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../../i18n/catalog/common.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 const MobileMultiSelectV2 = ({
     selectedValues,
@@ -79,7 +82,7 @@ const MobileMultiSelectV2 = ({
     size = MultiSelectV2Size.MD,
     search,
     enableSelectAll = false,
-    selectAllText = 'Select All',
+    selectAllText: selectAllTextProp,
     maxSelections,
     customTrigger,
     error = {},
@@ -100,7 +103,7 @@ const MobileMultiSelectV2 = ({
         variant: 'pulse',
     },
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     onOpenChange,
     triggerDimensions,
     inline = false,
@@ -108,6 +111,13 @@ const MobileMultiSelectV2 = ({
     name,
     ...buttonRest
 }: MultiSelectV2Props) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const selectAllText = pick(selectAllTextProp, 'select.action.select-all')
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const safeItems = items ?? []
     const [open, setOpen] = useState(false)
     const multiSelectTokens =
@@ -121,7 +131,8 @@ const MobileMultiSelectV2 = ({
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const isContainer = variant === MultiSelectV2Variant.CONTAINER
-    const searchPlaceholder = search?.placeholder ?? 'Search options...'
+    const searchPlaceholder =
+        search?.placeholder ?? m('select.placeholder.search')
     const {
         value: searchText,
         isControlled: isSearchControlled,
@@ -166,9 +177,12 @@ const MobileMultiSelectV2 = ({
             hasMatch,
             allowCustomValue,
             isSearchEnabled && !search?.isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         safeItems,
         searchText,
         hasMatch,
@@ -504,7 +518,7 @@ const MobileMultiSelectV2 = ({
                                 })}
                             >
                                 <DrawerTitle>
-                                    {label || 'Select options'}
+                                    {label || m('select.label.select-options')}
                                 </DrawerTitle>
                             </Block>
                         </DrawerHeader>
@@ -621,8 +635,12 @@ const MobileMultiSelectV2 = ({
                                             emptyStateText={
                                                 search?.emptyStateText ||
                                                 (!hasSourceItems
-                                                    ? 'No items available'
-                                                    : 'No results found')
+                                                    ? mc(
+                                                          'common.empty.no-items'
+                                                      )
+                                                    : mc(
+                                                          'common.empty.no-results'
+                                                      ))
                                             }
                                         />
 
@@ -639,8 +657,12 @@ const MobileMultiSelectV2 = ({
                                             >
                                                 {search?.emptyStateText ||
                                                     (!hasSourceItems
-                                                        ? 'No items available'
-                                                        : 'No results found')}
+                                                        ? mc(
+                                                              'common.empty.no-items'
+                                                          )
+                                                        : mc(
+                                                              'common.empty.no-results'
+                                                          ))}
                                             </Text>
                                         ) : enableVirtualization ? (
                                             <VirtualList

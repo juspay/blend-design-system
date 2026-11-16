@@ -48,6 +48,9 @@ import SelectSearchStatus, {
     SELECT_SEARCH_STATUS_HEIGHT,
 } from '../Select/SelectSearchStatus'
 import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
@@ -103,15 +106,22 @@ const SingleSelectV2Menu = ({
     loadingComponent,
     skeleton = defaultSingleSelectV2Skeleton,
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     menuId,
     menuFooter,
 }: SingleSelectV2MenuProps) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
     const { target: portalContainer } = useShadowRoot()
 
-    const searchPlaceholder = search?.placeholder ?? 'Search options...'
+    const searchPlaceholder =
+        search?.placeholder ?? m('select.placeholder.search')
     const maxMenuHeight = menuDimensions?.maxHeight as number | undefined
     const alignment = menuPosition?.alignment ?? SingleSelectV2Alignment.START
     const side = menuPosition?.side ?? SingleSelectV2Side.BOTTOM
@@ -163,9 +173,12 @@ const SingleSelectV2Menu = ({
             hasMatch,
             allowCustomValue ?? false,
             isSearchEnabled && !search?.isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         items,
         searchText,
         allowCustomValue,
@@ -263,8 +276,8 @@ const SingleSelectV2Menu = ({
     const isActiveSearchLoading =
         isSearchEnabled && Boolean(search?.isSearchLoading)
     const emptyMessage = !hasSourceItems
-        ? 'No items available'
-        : 'No results found'
+        ? mc('common.empty.no-items')
+        : mc('common.empty.no-results')
 
     const showVirtualList =
         enableVirtualization &&

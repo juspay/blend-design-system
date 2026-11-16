@@ -16,6 +16,8 @@ import { SearchInputV2 } from '../InputsV2/SearchInputV2'
 import type { SelectTokensType } from './select.tokens.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useTheme } from '../../context/ThemeContext'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 type TokenizedProps = {
     $tokens: SelectTokensType
@@ -473,6 +475,7 @@ const SelectMenu = ({
     enableSearch = false,
     onOpenChange,
 }: SelectMenuProps) => {
+    const { m } = useMessages(SELECT_MESSAGES)
     const { foundationTokens } = useTheme()
     const tokens = useResponsiveTokens<SelectTokensType>('SELECT')
     const [searchText, setSearchText] = useState<string>('')
@@ -505,7 +508,7 @@ const SelectMenu = ({
                         paddingBottom={10}
                     >
                         <SearchInputV2
-                            placeholder="Search"
+                            placeholder={m('select.placeholder.search-short')}
                             value={searchText}
                             onChange={(e) => {
                                 e.stopPropagation()

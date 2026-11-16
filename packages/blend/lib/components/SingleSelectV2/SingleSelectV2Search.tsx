@@ -1,6 +1,8 @@
 import Block from '../Primitives/Block/Block'
 import { SearchInputV2 } from '../InputsV2/SearchInputV2'
 import type { MenuSearchProps } from './singleSelectV2.types'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const SingleSelectV2Search = ({
     enabled,
@@ -12,6 +14,7 @@ const SingleSelectV2Search = ({
     searchInputRef,
     containerRef,
 }: MenuSearchProps) => {
+    const { m } = useMessages(SELECT_MESSAGES)
     if (!enabled || !hasItems) return null
 
     return (
@@ -46,7 +49,7 @@ const SingleSelectV2Search = ({
                     }
                 }}
                 autoFocus
-                aria-label={searchPlaceholder ?? 'Search options'}
+                aria-label={searchPlaceholder ?? m('select.a11y.search')}
             />
         </Block>
     )

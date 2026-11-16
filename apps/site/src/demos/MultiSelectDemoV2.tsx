@@ -437,7 +437,6 @@ const MultiSelectDemoV2 = () => {
                             disabled={playgroundDisabled}
                             search={{ show: playgroundEnableSearch }}
                             enableSelectAll={playgroundEnableSelectAll}
-                            selectAllText="Select All"
                             slot={
                                 playgroundShowSlot ? (
                                     <User size={16} />
@@ -489,7 +488,6 @@ const MultiSelectDemoV2 = () => {
                         onSelectionChange={handleActionButtonsSelectionChange}
                         search={{ show: true }}
                         enableSelectAll
-                        selectAllText="Select All"
                         selectionTagType={MultiSelectV2SelectionTagType.TEXT}
                         showActionButtons
                         primaryAction={{

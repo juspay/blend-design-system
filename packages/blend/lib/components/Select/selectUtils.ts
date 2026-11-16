@@ -57,11 +57,21 @@ export const getFilteredItemsWithCustomValue = <
     hasMatch: boolean,
     allowCustomValue: boolean,
     enableSearch: boolean,
-    customValueLabel: string = 'Specify'
+    customValueLabel: string = 'Specify',
+    /**
+     * Builds the option's label. Components pass a catalog-backed formatter
+     * so the punctuation and quote marks around the typed value can follow
+     * the language; the default keeps this pure helper's historical English
+     * output for any direct caller.
+     */
+    formatCustomValueLabel: (label: string, value: string) => string = (
+        label,
+        value
+    ) => `${label}: "${value}"`
 ): G[] => {
     if (allowCustomValue && searchText.trim() && !hasMatch && enableSearch) {
         const customItem = {
-            label: `${customValueLabel}: "${searchText}"`,
+            label: formatCustomValueLabel(customValueLabel, searchText),
             value: searchText,
         } as T
 

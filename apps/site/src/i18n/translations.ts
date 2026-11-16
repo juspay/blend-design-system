@@ -189,6 +189,20 @@ const FRENCH: BlendMessageOverrides = {
     'time-picker.label.time-with-period': '{time} {period}',
     'time-picker.a11y.choose-time': "Choisir l'heure",
     'time-picker.a11y.trigger': "Sélecteur d'heure, {value}",
+    'select.action.select-all': 'Tout sélectionner',
+    'select.action.clear-all': 'Tout effacer',
+    'select.label.custom-value': 'Préciser',
+    'select.label.custom-value-option': '{label} : « {value} »',
+    'select.label.select-options': 'Sélectionner des options',
+    'select.label.select-options-v1': 'Sélectionner des options',
+    'select.placeholder.search': 'Rechercher des options...',
+    'select.placeholder.search-short': 'Rechercher',
+    'select.status.searching': 'Recherche…',
+    'select.a11y.search': 'Rechercher des options',
+    'select.a11y.searching': 'Recherche en cours',
+    'select.a11y.results-updated': 'Résultats de recherche mis à jour',
+    'select.a11y.clear-selection': 'Effacer la sélection',
+    'select.a11y.clear-selection-for': 'Effacer la sélection pour {label}',
 }
 
 const JAPANESE: BlendMessageOverrides = {
@@ -318,6 +332,20 @@ const JAPANESE: BlendMessageOverrides = {
     'time-picker.label.time-with-period': '{period}{time}',
     'time-picker.a11y.choose-time': '時刻を選択',
     'time-picker.a11y.trigger': '時刻選択、{value}',
+    'select.action.select-all': 'すべて選択',
+    'select.action.clear-all': 'すべてクリア',
+    'select.label.custom-value': '指定',
+    'select.label.custom-value-option': '{label}：「{value}」',
+    'select.label.select-options': 'オプションを選択',
+    'select.label.select-options-v1': 'オプションを選択',
+    'select.placeholder.search': 'オプションを検索...',
+    'select.placeholder.search-short': '検索',
+    'select.status.searching': '検索中…',
+    'select.a11y.search': 'オプションを検索',
+    'select.a11y.searching': '検索中',
+    'select.a11y.results-updated': '検索結果を更新しました',
+    'select.a11y.clear-selection': '選択をクリア',
+    'select.a11y.clear-selection-for': '{label}の選択をクリア',
 }
 
 /**

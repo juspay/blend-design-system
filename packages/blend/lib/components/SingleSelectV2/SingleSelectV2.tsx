@@ -21,6 +21,8 @@ import {
     setupAccessibility,
 } from './utils'
 import { useDropdownInteractionLock } from '../../hooks'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const SingleSelectV2 = ({
     label,
@@ -62,11 +64,16 @@ const SingleSelectV2 = ({
         variant: 'pulse',
     },
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     singleSelectGroupPosition,
     menuFooter,
     ...rest
 }: SingleSelectV2Props) => {
+    const { pick } = useMessages(SELECT_MESSAGES)
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const { disabled, name, ...buttonRest } = rest as {
         disabled?: boolean
         name?: string

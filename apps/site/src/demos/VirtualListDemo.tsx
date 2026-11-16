@@ -917,7 +917,6 @@ const VirtualListDemo = () => {
                                 selected={selectedInfinite}
                                 onSelect={setSelectedInfinite}
                                 enableSearch
-                                searchPlaceholder="Search options..."
                                 size={SelectMenuSize.MEDIUM}
                                 maxMenuHeight={400}
                                 enableVirtualization={true}
@@ -1120,7 +1119,6 @@ const VirtualListDemo = () => {
                                     setSelectedInfiniteMulti
                                 )}
                                 enableSearch
-                                searchPlaceholder="Search options..."
                                 size={MultiSelectMenuSize.MEDIUM}
                                 maxMenuHeight={400}
                                 enableSelectAll
@@ -1233,7 +1231,6 @@ const handleChange = (value: string) => {
                                 selected={selectedApiSelect}
                                 onSelect={setSelectedApiSelect}
                                 enableSearch
-                                searchPlaceholder="Search options..."
                                 size={SelectMenuSize.MEDIUM}
                                 maxMenuHeight={400}
                                 enableVirtualization={true}
@@ -1361,7 +1358,6 @@ const loadMore = async () => {
                                 selected=""
                                 onSelect={() => {}}
                                 enableSearch
-                                searchPlaceholder="Search options..."
                                 size={SelectMenuSize.MEDIUM}
                                 maxMenuHeight={400}
                             />
@@ -1395,7 +1391,6 @@ const loadMore = async () => {
                                 selectedValues={[]}
                                 onChange={() => {}}
                                 enableSearch
-                                searchPlaceholder="Search options..."
                                 size={MultiSelectMenuSize.MEDIUM}
                                 maxMenuHeight={400}
                                 enableSelectAll
@@ -1432,7 +1427,6 @@ const loadMore = async () => {
                                 selected=""
                                 onSelect={() => {}}
                                 enableSearch
-                                searchPlaceholder="Search options..."
                                 size={SelectMenuSize.MEDIUM}
                                 maxMenuHeight={400}
                                 enableVirtualization={true}
@@ -1470,7 +1464,6 @@ const loadMore = async () => {
                                 selectedValues={[]}
                                 onChange={() => {}}
                                 enableSearch
-                                searchPlaceholder="Search options..."
                                 size={MultiSelectMenuSize.MEDIUM}
                                 maxMenuHeight={400}
                                 enableSelectAll
@@ -1568,7 +1561,6 @@ const emptyItems: SelectMenuGroupType[] = []
                                     setSelectedApiMultiSelect
                                 )}
                                 enableSearch
-                                searchPlaceholder="Search options..."
                                 size={MultiSelectMenuSize.MEDIUM}
                                 maxMenuHeight={400}
                                 enableSelectAll

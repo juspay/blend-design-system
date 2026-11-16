@@ -40,6 +40,8 @@ import {
     getNextSelectionAfterToggle,
     getNextSelectionForScope,
 } from '../shared/multiSelectSelection'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -60,9 +62,10 @@ const MultiSelectV2 = ({
     hintText,
     placeholder,
     size = MultiSelectV2Size.MD,
-    search = { show: true, placeholder: 'Search options...' },
+    // No placeholder here: the menu resolves it, so a provider `t` reaches it.
+    search = { show: true },
     enableSelectAll = false,
-    selectAllText = 'Select All',
+    selectAllText: selectAllTextProp,
     maxSelections,
     customTrigger,
     usePanelOnMobile = true,
@@ -93,7 +96,7 @@ const MultiSelectV2 = ({
         variant: 'pulse',
     },
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     showClearButton,
     onClearAllClick,
     onOpenChange,
@@ -101,6 +104,12 @@ const MultiSelectV2 = ({
     menuFooter,
     ...rest
 }: MultiSelectV2Props) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const selectAllText = pick(selectAllTextProp, 'select.action.select-all')
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const { disabled, name, ...buttonRest } = rest as {
         disabled?: boolean
         name?: string
@@ -431,8 +440,10 @@ const MultiSelectV2 = ({
                             onKeyDown={handleClearKeyDown}
                             aria-label={
                                 label
-                                    ? `Clear selection for ${label}`
-                                    : 'Clear selection'
+                                    ? m('select.a11y.clear-selection-for', {
+                                          label,
+                                      })
+                                    : m('select.a11y.clear-selection')
                             }
                             tabIndex={disabled ? -1 : 0}
                             outline={clearButtonOutline}
