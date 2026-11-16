@@ -6,7 +6,7 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'
 import { TooltipV2Side } from '../TooltipV2/tooltipV2.types'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useDirectoryAppearance } from './directoryAppearance.context'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { DirectoryTokenType } from './directory.tokens'
 import {
@@ -82,17 +82,18 @@ const connectorColor = (
 const ConnectorVerticalLine = styled.span<{
     $tokens: DirectoryTokenType
     $column: number
+    $straight?: boolean
     $isCurrent?: boolean
     $isLast?: boolean
     $active?: boolean
 }>`
     position: absolute;
     z-index: 1;
-    left: ${({ $tokens, $column }) =>
-        `calc(${$tokens.section.itemList.nested.paddingLeft} * ${$column} + ${$tokens.section.itemList.nested.border.leftOffset})`};
+    left: ${({ $tokens, $column, $straight }) =>
+        `calc(${$tokens.section.itemList.nested.paddingLeft} * ${$column} + ${$straight ? $tokens.section.itemList.nested.connector.straightGuideOffset : $tokens.section.itemList.nested.border.leftOffset})`};
     top: 0;
-    height: ${({ $tokens, $isCurrent, $isLast }) =>
-        $isCurrent && $isLast
+    height: ${({ $tokens, $isCurrent, $isLast, $straight }) =>
+        !$straight && $isCurrent && $isLast
             ? $tokens.section.itemList.nested.connector.elbowTop
             : '100%'};
     border-left: ${({ $tokens, $active }) =>
@@ -270,6 +271,7 @@ const getFocusableRowIndex = (
 }
 
 const VirtualizedDirectory = ({
+    appearance,
     directoryData: directoryDataProp,
     activeItem: controlledActiveItem,
     onActiveItemChange,
@@ -286,7 +288,7 @@ const VirtualizedDirectory = ({
     highlightActivePath = false,
     virtualization,
 }: DirectoryProps) => {
-    const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
+    const tokens = useDirectoryAppearance()
     const directoryData = useMemo(
         () => normalizeDirectoryData(directoryDataProp),
         [directoryDataProp]
@@ -544,12 +546,17 @@ const VirtualizedDirectory = ({
                   (activeItem === row.itemPath ||
                       (!row.item.id && activeItem === row.item.label))
 
-        const visualState = getItemVisualState({
-            isActive,
-            itemPath: row.itemPath,
-            activeItem,
-            highlightActivePath,
-        })
+        const visualState =
+            appearance?.emphasizeSelectedAncestors &&
+            activeItem &&
+            isActiveAncestorPath(row.itemPath, activeItem)
+                ? 'activePath'
+                : getItemVisualState({
+                      isActive,
+                      itemPath: row.itemPath,
+                      activeItem,
+                      highlightActivePath,
+                  })
         const itemColors = resolveItemColors(tokens, visualState)
 
         const Element = row.item.href ? 'a' : 'button'
@@ -607,30 +614,37 @@ const VirtualizedDirectory = ({
                                 key={`ancestor-${column}`}
                                 $tokens={tokens}
                                 $column={column}
+                                $straight={
+                                    appearance?.connectorMode === 'straight'
+                                }
                                 $active={rowActiveColumns?.has(column)}
                             />
                         ))}
                         <ConnectorVerticalLine
                             $tokens={tokens}
                             $column={currentLineColumn}
+                            $straight={appearance?.connectorMode === 'straight'}
                             $isCurrent
                             $isLast={row.isLast}
                             $active={rowActiveColumns?.has(currentLineColumn)}
                         />
-                        {isElbowActive && (
-                            <ConnectorActiveStub
+                        {appearance?.connectorMode !== 'straight' &&
+                            isElbowActive && (
+                                <ConnectorActiveStub
+                                    $tokens={tokens}
+                                    $column={currentLineColumn}
+                                />
+                            )}
+                        {appearance?.connectorMode !== 'straight' && (
+                            <ConnectorElbow
                                 $tokens={tokens}
                                 $column={currentLineColumn}
+                                $hierarchyLineBorderRadius={
+                                    hierarchyLineBorderRadius
+                                }
+                                $active={isElbowActive}
                             />
                         )}
-                        <ConnectorElbow
-                            $tokens={tokens}
-                            $column={currentLineColumn}
-                            $hierarchyLineBorderRadius={
-                                hierarchyLineBorderRadius
-                            }
-                            $active={isElbowActive}
-                        />
                     </ConnectorLayer>
                 )}
                 <ItemButton
@@ -682,7 +696,15 @@ const VirtualizedDirectory = ({
                                             size?: number
                                         }
                                     >,
-                                    { color: itemColors.color }
+                                    {
+                                        color:
+                                            appearance?.iconColorMode ===
+                                            'state'
+                                                ? itemColors.color
+                                                : (tokens.section.itemList.item
+                                                      .icon.color ??
+                                                  itemColors.color),
+                                    }
                                 )}
                             </IconWrapper>
                         )}
@@ -708,7 +730,10 @@ const VirtualizedDirectory = ({
                         >
                             <ChevronDown
                                 color={
-                                    tokens.section.itemList.item.chevron.color
+                                    appearance?.chevronColorMode === 'state'
+                                        ? itemColors.color
+                                        : tokens.section.itemList.item.chevron
+                                              .color
                                 }
                             />
                         </ChevronWrapper>

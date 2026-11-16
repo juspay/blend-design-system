@@ -1,4 +1,5 @@
 export const DEMOS = [
+    { id: 'sidebarV3', label: 'Sidebar V3' },
     { id: 'buttons', label: 'Button' },
     { id: 'buttonV2', label: 'Button V2' },
     { id: 'buttonGroups', label: 'Button Group' },

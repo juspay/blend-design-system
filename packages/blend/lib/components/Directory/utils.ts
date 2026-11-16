@@ -15,6 +15,25 @@ import type {
 
 export const DEFAULT_END_REACHED_THRESHOLD = 200
 
+/** Move through visible directory rows in DOM order, including expanded descendants. */
+export const focusAdjacentDirectoryItem = (
+    list: Element | null | undefined,
+    direction: 'up' | 'down',
+    current: Element | null = document.activeElement
+): boolean => {
+    const items = Array.from(
+        list?.querySelectorAll<HTMLElement>(
+            '[data-element="sidebar-sub-section"]:not([tabindex="-1"])'
+        ) ?? []
+    )
+    const currentIndex = items.findIndex((item) => item === current)
+    const nextIndex = currentIndex + (direction === 'down' ? 1 : -1)
+    const nextItem = items[nextIndex]
+    if (!nextItem) return false
+    nextItem.focus()
+    return true
+}
+
 export const useDirectoryEndReached = ({
     scrollRef,
     externalRef,

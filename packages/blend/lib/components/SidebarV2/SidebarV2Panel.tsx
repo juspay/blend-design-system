@@ -1,9 +1,19 @@
-import type { ReactNode } from 'react'
+import { useLayoutEffect, useRef, type ReactNode } from 'react'
 import styled from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
+import {
+    DirectoryDisclosureMotionProvider,
+    type DirectoryDisclosureMotion,
+} from '../Directory/NavItem'
+import { DirectoryAppearanceProvider } from '../Directory/DirectoryAppearance'
+import type { DirectoryTokenType } from '../Directory/directory.tokens.types'
 import { normalizeDirectoryData } from '../Directory/utils'
-import type { DirectoryData, DirectoryProps } from '../Directory/types'
+import type {
+    DirectoryAppearance,
+    DirectoryData,
+    DirectoryProps,
+} from '../Directory/types'
 import SidebarV2Header from './SidebarV2Header'
 import SidebarV2Footer from './SidebarV2Footer'
 import type { SidebarV2StateChangeType } from './types'
@@ -24,8 +34,27 @@ const DirectoryContainer = styled(Block)`
     scrollbar-color: transparent transparent;
 `
 
+const SearchContainer = styled(Block)<{
+    $collapsed: boolean
+    $transition?: string
+}>`
+    display: grid;
+    grid-template-rows: ${({ $collapsed }) => ($collapsed ? '0fr' : '1fr')};
+    opacity: ${({ $collapsed }) => ($collapsed ? 0 : 1)};
+    transition: ${({ $transition }) => $transition ?? 'none'};
+
+    @media (prefers-reduced-motion: reduce) {
+        transition: none;
+    }
+`
+
 export type SidebarV2PanelProps = {
     sidebarTopSlot?: ReactNode
+    sidebarSearch?: ReactNode
+    searchTransition?: string
+    disclosureMotion?: DirectoryDisclosureMotion
+    directoryTokens?: DirectoryTokenType
+    directoryAppearance?: DirectoryAppearance
     merchantInfo?: {
         items: Array<{
             label: string
@@ -63,6 +92,11 @@ export type SidebarV2PanelProps = {
 
 const SidebarV2Panel = ({
     sidebarTopSlot,
+    sidebarSearch,
+    searchTransition,
+    disclosureMotion,
+    directoryTokens,
+    directoryAppearance,
     merchantInfo,
     isExpanded,
     isScrolled,
@@ -89,7 +123,53 @@ const SidebarV2Panel = ({
     enableVirtualization = false,
     virtualization,
 }: SidebarV2PanelProps) => {
+    const searchRef = useRef<HTMLDivElement>(null)
+    useLayoutEffect(() => {
+        const search = searchRef.current
+        if (!search) return
+        if (iconOnlyMode) {
+            if (search.contains(document.activeElement)) {
+                ;(document.activeElement as HTMLElement).blur()
+            }
+            search.setAttribute('inert', '')
+        } else {
+            search.removeAttribute('inert')
+        }
+    }, [iconOnlyMode])
     const directoryData = normalizeDirectoryData(data)
+    const directory = (
+        <Directory
+            directoryData={directoryData}
+            idPrefix={idPrefix}
+            activeItem={activeItem}
+            onActiveItemChange={onActiveItemChange}
+            defaultActiveItem={defaultActiveItem}
+            iconOnlyMode={iconOnlyMode}
+            showHierarchyLines={showHierarchyLines}
+            hierarchyLineBorderRadius={hierarchyLineBorderRadius}
+            expandedItems={expandedItems}
+            defaultExpandedItems={defaultExpandedItems}
+            onExpandedItemsChange={onExpandedItemsChange}
+            onItemExpand={onItemExpand}
+            enableVirtualization={enableVirtualization}
+            virtualization={virtualization}
+            appearance={directoryAppearance}
+        />
+    )
+    const animatedDirectory = disclosureMotion ? (
+        <DirectoryDisclosureMotionProvider motion={disclosureMotion}>
+            {directory}
+        </DirectoryDisclosureMotionProvider>
+    ) : (
+        directory
+    )
+    const themedDirectory = directoryTokens ? (
+        <DirectoryAppearanceProvider tokens={directoryTokens}>
+            {animatedDirectory}
+        </DirectoryAppearanceProvider>
+    ) : (
+        animatedDirectory
+    )
 
     return (
         <Block
@@ -121,6 +201,22 @@ const SidebarV2Panel = ({
                 tokens={tokens}
             />
 
+            {sidebarSearch && (
+                <SearchContainer
+                    ref={searchRef}
+                    data-sidebar-search
+                    data-state={iconOnlyMode ? 'collapsed' : 'expanded'}
+                    aria-hidden={iconOnlyMode ? true : undefined}
+                    flexShrink={0}
+                    $collapsed={iconOnlyMode}
+                    $transition={searchTransition}
+                >
+                    <Block minHeight={0} overflow="hidden">
+                        {sidebarSearch}
+                    </Block>
+                </SearchContainer>
+            )}
+
             <DirectoryContainer
                 data-directory-container
                 id={sidebarNavId}
@@ -130,22 +226,7 @@ const SidebarV2Panel = ({
                     setIsHovering ? () => setIsHovering(true) : undefined
                 }
             >
-                <Directory
-                    directoryData={directoryData}
-                    idPrefix={idPrefix}
-                    activeItem={activeItem}
-                    onActiveItemChange={onActiveItemChange}
-                    defaultActiveItem={defaultActiveItem}
-                    iconOnlyMode={iconOnlyMode}
-                    showHierarchyLines={showHierarchyLines}
-                    hierarchyLineBorderRadius={hierarchyLineBorderRadius}
-                    expandedItems={expandedItems}
-                    defaultExpandedItems={defaultExpandedItems}
-                    onExpandedItemsChange={onExpandedItemsChange}
-                    onItemExpand={onItemExpand}
-                    enableVirtualization={enableVirtualization}
-                    virtualization={virtualization}
-                />
+                {themedDirectory}
             </DirectoryContainer>
 
             <SidebarV2Footer

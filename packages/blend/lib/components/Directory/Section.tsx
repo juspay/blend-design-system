@@ -11,10 +11,10 @@ import NavItem from './NavItem'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import styled from 'styled-components'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { DirectoryTokenType } from './directory.tokens'
+import { useDirectoryAppearance } from './directoryAppearance.context'
+import type { DirectoryTokenType } from './directory.tokens.types'
 import { useSectionScroll } from '../../hooks/useSectionScroll'
-import { getItemPathSegment } from './utils'
+import { focusAdjacentDirectoryItem, getItemPathSegment } from './utils'
 
 type SectionStateContextValue = {
     sectionStates: Map<number, boolean>
@@ -51,6 +51,7 @@ const ChevronWrapper = styled(Block)<{
 `
 
 const Section = ({
+    appearance,
     section,
     sectionIndex,
     onNavigateBetweenSections,
@@ -61,7 +62,7 @@ const Section = ({
     enableParentSelection = false,
     highlightActivePath = false,
 }: SectionProps) => {
-    const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
+    const tokens = useDirectoryAppearance()
     const sectionStateContext = useSectionState()
     const { scrollIntoView } = useSectionScroll()
 
@@ -134,33 +135,11 @@ const Section = ({
         }
     }
 
-    const handleItemNavigation = (
-        direction: 'up' | 'down',
-        currentIndex: number
-    ) => {
-        if (direction === 'up') {
-            if (currentIndex === 0) {
-                headerRef.current?.focus()
-            } else {
-                const prevItem = sectionRef.current
-                    ?.querySelector('ul')
-                    ?.querySelectorAll('button, a')[currentIndex - 1]
-                if (prevItem) {
-                    ;(prevItem as HTMLElement).focus()
-                }
-            }
-        } else {
-            if (currentIndex === (section.items?.length || 0) - 1) {
-                onNavigateBetweenSections('down', sectionIndex)
-            } else {
-                const nextItem = sectionRef.current
-                    ?.querySelector('ul')
-                    ?.querySelectorAll('button, a')[currentIndex + 1]
-                if (nextItem) {
-                    ;(nextItem as HTMLElement).focus()
-                }
-            }
-        }
+    const handleItemNavigation = (direction: 'up' | 'down') => {
+        const sectionList = sectionRef.current?.querySelector('ul')
+        if (focusAdjacentDirectoryItem(sectionList, direction)) return
+        if (direction === 'up') headerRef.current?.focus()
+        else onNavigateBetweenSections('down', sectionIndex)
     }
 
     const isCollapsible = section.isCollapsible !== false
@@ -177,7 +156,19 @@ const Section = ({
             data-element="sidebar-section"
             data-id={section.label || `section-${sectionIndex}`}
             data-status={isOpen ? 'expanded' : 'collapsed'}
+            position="relative"
         >
+            {sectionIndex > 0 && tokens.section.separator && !iconOnlyMode && (
+                <Block
+                    aria-hidden="true"
+                    position="absolute"
+                    top={`calc(-1 * ${tokens.section.separator.offset})`}
+                    left="0"
+                    right="0"
+                    height={tokens.section.separator.height}
+                    backgroundColor={tokens.section.separator.color}
+                />
+            )}
             {section.label && !iconOnlyMode && (
                 <Block
                     display="flex"
@@ -259,6 +250,7 @@ const Section = ({
                 >
                     {section.items.map((item, itemIdx) => (
                         <NavItem
+                            appearance={appearance}
                             key={itemIdx}
                             item={item}
                             index={itemIdx}
