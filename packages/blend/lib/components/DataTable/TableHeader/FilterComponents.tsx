@@ -17,6 +17,9 @@ import Slider from '../../Slider/Slider'
 import { SliderSize, SliderValueType } from '../../Slider/types'
 import { ColumnDefinition, FilterType, SortDirection } from '../types'
 import { TableTokenType } from '../dataTable.tokens'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { COMMON_MESSAGES } from '../../../i18n/catalog/common.messages'
+import { useMessages } from '../../../i18n/useMessages'
 import {
     SortHandlers,
     FilterHandlers,
@@ -270,6 +273,7 @@ export const SortOptions: React.FC<{
     onFilterApplied,
     onPopoverClose,
 }) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
     const hasDeltaSort =
         column.isDeltaSortable === true && !!column.getSortField
     const isCurrentField = sortState.currentSortField === fieldKey
@@ -310,7 +314,7 @@ export const SortOptions: React.FC<{
                             .iconColor
                     }
                 />,
-                'Sort Ascending',
+                m('data-table.action.sort-ascending'),
                 () => {
                     sortHandlers.handleSortAscending(fieldKey, 'primary')
                     onFilterApplied?.()
@@ -328,7 +332,7 @@ export const SortOptions: React.FC<{
                             .iconColor
                     }
                 />,
-                'Sort Descending',
+                m('data-table.action.sort-descending'),
                 () => {
                     sortHandlers.handleSortDescending(fieldKey, 'primary')
                     onFilterApplied?.()
@@ -360,7 +364,7 @@ export const SortOptions: React.FC<{
                             letterSpacing: '0.5px',
                         }}
                     >
-                        Delta
+                        {m('data-table.label.delta')}
                     </PrimitiveText>
                     {renderSortOption(
                         tableToken,
@@ -371,7 +375,7 @@ export const SortOptions: React.FC<{
                                     .sortOption.iconColor
                             }
                         />,
-                        'Sort Ascending',
+                        m('data-table.action.sort-ascending'),
                         () => {
                             sortHandlers.handleSortAscending(fieldKey, 'delta')
                             onFilterApplied?.()
@@ -390,7 +394,7 @@ export const SortOptions: React.FC<{
                                     .sortOption.iconColor
                             }
                         />,
-                        'Sort Descending',
+                        m('data-table.action.sort-descending'),
                         () => {
                             sortHandlers.handleSortDescending(fieldKey, 'delta')
                             onFilterApplied?.()
@@ -412,27 +416,30 @@ export const DropdownSearchSection: React.FC<{
     tableToken: TableTokenType
     filterHandlers: FilterHandlers
     filterState: FilterState
-}> = ({ fieldKey, tableToken, filterHandlers, filterState }) => (
-    <Block>
-        <SearchInput
-            placeholder={`Search`}
-            value={filterState.columnSearchValues[fieldKey] || ''}
-            leftSlot={
-                <Search
-                    size={FOUNDATION_THEME.unit[16]}
-                    color={
-                        tableToken.dataTable.table.header.filter.sortOption
-                            .iconColor
-                    }
-                />
-            }
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                const value = e.target.value
-                filterHandlers.handleSearchChange(fieldKey, value)
-            }}
-        />
-    </Block>
-)
+}> = ({ fieldKey, tableToken, filterHandlers, filterState }) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
+    return (
+        <Block>
+            <SearchInput
+                placeholder={m('data-table.placeholder.search')}
+                value={filterState.columnSearchValues[fieldKey] || ''}
+                leftSlot={
+                    <Search
+                        size={FOUNDATION_THEME.unit[16]}
+                        color={
+                            tableToken.dataTable.table.header.filter.sortOption
+                                .iconColor
+                        }
+                    />
+                }
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value
+                    filterHandlers.handleSearchChange(fieldKey, value)
+                }}
+            />
+        </Block>
+    )
+}
 
 export const Separator: React.FC<{ tableToken: TableTokenType }> = ({
     tableToken,
@@ -464,6 +471,7 @@ export const SingleSelectItems: React.FC<{
     onColumnFilter,
     onPopoverClose,
 }) => {
+    const { m: mc } = useMessages(COMMON_MESSAGES)
     const menuItems = getSelectMenuItems(column, data)
     const filterSearch = menuItems.map((group) =>
         filterItemsBySearch(
@@ -512,7 +520,7 @@ export const SingleSelectItems: React.FC<{
                                 .padding,
                     }}
                 >
-                    No results found
+                    {mc('common.empty.no-results')}
                 </PrimitiveText>
             ) : (
                 <Block
@@ -679,6 +687,7 @@ export const MultiSelectItems: React.FC<{
     data,
     onColumnFilter,
 }) => {
+    const { m: mc } = useMessages(COMMON_MESSAGES)
     const menuItems = getMultiSelectMenuItems(column, data)
     const filterSearch = menuItems.map((group) =>
         filterItemsBySearch(
@@ -727,7 +736,7 @@ export const MultiSelectItems: React.FC<{
                                 .padding,
                     }}
                 >
-                    No results found
+                    {mc('common.empty.no-results')}
                 </PrimitiveText>
             ) : (
                 <Block
@@ -877,6 +886,7 @@ export const SliderFilter: React.FC<{
     data?: Record<string, unknown>[]
     onColumnFilter?: ColumnFilterHandler
 }> = ({ column, fieldKey, tableToken, filterState, data, onColumnFilter }) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
     const sliderColumn = column as ColumnDefinition<Record<string, unknown>> & {
         sliderConfig?: {
             min: number
@@ -979,7 +989,7 @@ export const SliderFilter: React.FC<{
                             .groupLabelColor,
                     }}
                 >
-                    Slider configuration missing
+                    {m('data-table.error.slider-config-missing')}
                 </PrimitiveText>
             </Block>
         )
@@ -1028,7 +1038,7 @@ export const SliderFilter: React.FC<{
                     marginBottom: FOUNDATION_THEME.unit[8],
                 }}
             >
-                Filter by Range
+                {m('data-table.label.filter-by-range')}
             </PrimitiveText>
 
             <Block
@@ -1125,6 +1135,7 @@ export const DateFilter: React.FC<{
     filterState: FilterState
     onColumnFilter?: ColumnFilterHandler
 }> = ({ column, fieldKey, tableToken, filterState, onColumnFilter }) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
     const { theme } = useTheme()
     const destructiveColor =
         theme === 'dark'
@@ -1186,7 +1197,7 @@ export const DateFilter: React.FC<{
                                     weight="bold"
                                 />
                             }
-                            label="Filter"
+                            label={m('data-table.action.filter')}
                             onClick={(e) => {
                                 e.stopPropagation()
                                 onClick()
@@ -1215,7 +1226,7 @@ export const DateFilter: React.FC<{
                             weight="bold"
                         />
                     }
-                    label="Clear Filter"
+                    label={m('data-table.action.clear-filter')}
                     onClick={(e) => {
                         e.stopPropagation()
                         onColumnFilter?.(
@@ -1252,6 +1263,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
     onPopoverClose,
     onFilterApplied,
 }) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
     const { theme } = useTheme()
     const destructiveColor =
         theme === 'dark'
@@ -1404,7 +1416,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                                     weight="bold"
                                 />
                             }
-                            label="Filter"
+                            label={m('data-table.action.filter')}
                             stopPropagationOnClick={false}
                             trailingIcon={
                                 <ChevronRight
@@ -1497,7 +1509,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                                 weight="bold"
                             />
                         }
-                        label="Clear Filter"
+                        label={m('data-table.action.clear-filter')}
                         onClick={(e) => {
                             e.stopPropagation()
                             setNestedFilterOpen(false)
@@ -1522,7 +1534,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                             weight="bold"
                         />
                     }
-                    label="Operations"
+                    label={m('data-table.action.operations')}
                     onClick={() => {
                         setNestedFilterOpen(false)
                         onOperations()
@@ -1545,7 +1557,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                             weight="bold"
                         />
                     }
-                    label="Rename"
+                    label={m('data-table.action.rename')}
                     onClick={() => {
                         setNestedFilterOpen(false)
                         onRenameHeader()
@@ -1565,7 +1577,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                             weight="bold"
                         />
                     }
-                    label="Insert Left"
+                    label={m('data-table.action.insert-left')}
                     onClick={() => {
                         setNestedFilterOpen(false)
                         onInsertLeft()
@@ -1584,7 +1596,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                             weight="bold"
                         />
                     }
-                    label="Insert Right"
+                    label={m('data-table.action.insert-right')}
                     onClick={() => {
                         setNestedFilterOpen(false)
                         onInsertRight()
@@ -1605,7 +1617,7 @@ export const ColumnFilter: React.FC<FilterComponentsProps> = ({
                             weight="bold"
                         />
                     }
-                    label="Delete"
+                    label={m('data-table.action.delete')}
                     isDestructive
                     onClick={() => {
                         setNestedFilterOpen(false)

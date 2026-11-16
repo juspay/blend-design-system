@@ -1,4 +1,7 @@
 import React from 'react'
+import { DEFAULT_LOCALE } from '../../i18n/constants'
+import { getMonthNames } from '../../i18n/format/calendarNames'
+import type { BlendLocale } from '../../i18n/types'
 import {
     SortDirection,
     SortConfig,
@@ -645,7 +648,12 @@ export const getUniqueColumnValues = <T extends Record<string, unknown>>(
                 'date' in value
             ) {
                 const dateData = value as { date: Date | string }
-                addValue(new Date(dateData.date).toLocaleDateString())
+                // Pinned, not host-dependent: with no argument this used the
+                // machine's locale, so the same data produced different filter
+                // options (and match values) on different machines.
+                addValue(
+                    new Date(dateData.date).toLocaleDateString(DEFAULT_LOCALE)
+                )
             } else if (typeof value === 'object' && value !== null) {
                 const obj = value as Record<string, unknown>
                 if ('name' in obj) addValue(obj.name)
@@ -988,10 +996,50 @@ const FORMAT_TOKEN_PATTERN = /YYYY|YY|MMM|MM|dd|DD|HH|hh|mm|ss|A|a/g
 
 const pad2 = (n: number): string => String(n).padStart(2, '0')
 
-// Format a Date using a format string like "DD MMM YYYY, hh:mm A"
-export const formatDateString = (date: Date, format: string): string => {
-    if (isNaN(date.getTime())) return '-'
+/**
+ * An export failure the UI shows to the user.
+ *
+ * `message` stays English for logs and existing `toThrow(...)` assertions;
+ * `code` is what the component resolves to a localized message, so this pure
+ * module never needs a translator.
+ */
+export class DataTableExportError extends Error {
+    readonly code: 'no-data' | 'no-selection'
 
+    constructor(code: 'no-data' | 'no-selection', message: string) {
+        super(message)
+        this.name = 'DataTableExportError'
+        this.code = code
+    }
+}
+
+/**
+ * Display options for `formatDateString`. Every field is optional and
+ * defaults to the English output this function has always produced, so
+ * existing callers (including deep imports via `"./lib/*"`) are unchanged.
+ */
+export type FormatDateStringOptions = {
+    /** Locale for the `MMM` month name. */
+    locale?: BlendLocale
+    /** Marker for the `A`/`a` tokens before noon. */
+    am?: string
+    /** Marker for the `A`/`a` tokens from noon. */
+    pm?: string
+}
+
+// Format a Date using a format string like "DD MMM YYYY, hh:mm A"
+export const formatDateString = (
+    date: Date,
+    format: string,
+    options: FormatDateStringOptions = {}
+): string => {
+    if (isNaN(date.getTime())) return '-'
+    const { locale = DEFAULT_LOCALE, am = 'AM', pm = 'PM' } = options
+
+    // Decomposition, not display: `formatToParts` here only splits the
+    // instant into numeric fields keyed by part type. `'en-US'` with
+    // `hour12: false` is load-bearing for that keying and must NOT be
+    // localized; the localized pieces are `MMM` and `A`/`a` below.
     const parts = new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
         month: '2-digit',
@@ -1014,17 +1062,17 @@ export const formatDateString = (date: Date, format: string): string => {
     const minute = lookup.minute ?? ''
     const second = lookup.second ?? ''
 
-    // Short month name via a separate formatter (month: 'short' gives 'Jan' etc.)
-    const shortMonth = new Intl.DateTimeFormat('en-US', {
-        month: 'short',
-    }).format(date)
+    // Indexed by the decomposed (local-time) month, so the name can never
+    // disagree with the `MM` token across a timezone boundary.
+    const shortMonth =
+        getMonthNames(locale, 'short')[Number(monthNum) - 1] ?? ''
 
     // Normalize the 24-hour value: some browsers/locales return "24" for
     // midnight instead of "00". Convert 24 -> 0 so HH always prints 00.
     const hourNumRaw = parseInt(hour24, 10)
     const hourNum = hourNumRaw === 24 ? 0 : hourNumRaw
     const hour12 = (hourNum % 12 || 12).toString()
-    const ampm = hourNum < 12 ? 'AM' : 'PM'
+    const ampm = hourNum < 12 ? am : pm
 
     FORMAT_TOKEN_PATTERN.lastIndex = 0
     return format.replace(FORMAT_TOKEN_PATTERN, (token) => {
@@ -1051,7 +1099,7 @@ export const formatDateString = (date: Date, format: string): string => {
             case 'A':
                 return ampm
             case 'a':
-                return ampm.toLowerCase()
+                return ampm.toLocaleLowerCase(locale)
             default:
                 return token
         }
@@ -1117,6 +1165,8 @@ const getExportValue = <T extends Record<string, unknown>>(
     if (value == null) return ''
 
     if (typeof value === 'boolean') {
+        // Export data, not display: stays English so exported files parse
+        // the same whatever the viewer's locale.
         return value ? 'Yes' : 'No'
     }
 
@@ -1235,6 +1285,7 @@ const getExportValue = <T extends Record<string, unknown>>(
                 }
                 const startDate = new Date(dateRangeData.startDate)
                 const endDate = new Date(dateRangeData.endDate)
+                // Export data, not display: see the boolean case above.
                 const format = (date: Date) =>
                     new Intl.DateTimeFormat('en-US', {
                         year: 'numeric',
@@ -1541,7 +1592,10 @@ export const generateDataTableCSV = async <T extends Record<string, unknown>>(
     options: DataTableExportValueOptions<T> = {}
 ): Promise<string> => {
     if (data.length === 0) {
-        throw new Error('No data available for export')
+        throw new DataTableExportError(
+            'no-data',
+            'No data available for export'
+        )
     }
 
     const header = columns.map((column) => column.header)
@@ -1560,7 +1614,10 @@ export const getDataTableExportMatrix = async <
     options: DataTableExportValueOptions<T> = {}
 ): Promise<string[][]> => {
     if (data.length === 0) {
-        throw new Error('No data available for export')
+        throw new DataTableExportError(
+            'no-data',
+            'No data available for export'
+        )
     }
 
     const rows = await serializeDataTableRows(data, columns, options)
@@ -1621,7 +1678,10 @@ export const generateCSVContent = <T extends Record<string, unknown>>(
     columns: ColumnDefinition<T>[]
 ): string => {
     if (data.length === 0) {
-        throw new Error('No data available for export')
+        throw new DataTableExportError(
+            'no-data',
+            'No data available for export'
+        )
     }
 
     const header = columns.map((col) => escapeCSVValue(col.header)).join(',')
@@ -1677,7 +1737,10 @@ export const exportSelectedRowsToCSV = <T extends Record<string, unknown>>(
     })
 
     if (selectedData.length === 0) {
-        throw new Error('Please select at least one row to export')
+        throw new DataTableExportError(
+            'no-selection',
+            'Please select at least one row to export'
+        )
     }
 
     const csvContent = generateCSVContent(selectedData, columns)

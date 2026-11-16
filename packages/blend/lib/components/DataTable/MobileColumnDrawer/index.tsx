@@ -22,6 +22,8 @@ import { Button } from '../../Button'
 import { ButtonType, ButtonSize, ButtonSubType } from '../../Button/types'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import type { TableTokenType } from '../dataTable.tokens'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 export interface MobileColumnDrawerProps<T extends Record<string, unknown>> {
     isOpen: boolean
@@ -47,6 +49,7 @@ const MobileColumnDrawer: React.FC<
     rowActions,
 }) => {
     const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
     const [nestedDrawerOpen, setNestedDrawerOpen] = useState(false)
     const [selectedDropdownColumn, setSelectedDropdownColumn] = useState<{
         column: ColumnDefinition<Record<string, unknown>>
@@ -209,7 +212,7 @@ const MobileColumnDrawer: React.FC<
                                     }
                                     color={tableToken.header.title.color}
                                 >
-                                    Insights
+                                    {m('data-table.label.insights')}
                                 </PrimitiveText>
                             </Block>
                         </DrawerTitle>
@@ -380,7 +383,9 @@ const MobileColumnDrawer: React.FC<
                     open={nestedDrawerOpen}
                     onOpenChange={setNestedDrawerOpen}
                     heading={selectedDropdownColumn.column.header}
-                    description={`Select a ${selectedDropdownColumn.column.header.toLowerCase()}`}
+                    description={m('data-table.label.select-column-value', {
+                        column: selectedDropdownColumn.column.header.toLowerCase(),
+                    })}
                     items={[
                         {
                             items: selectedDropdownColumn.value.options.map(

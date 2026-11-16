@@ -28,6 +28,8 @@ import { TableTokenType } from '../dataTable.tokens'
 import { downloadCSV, escapeCSVValue } from '../utils'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useTheme } from '../../../context/ThemeContext'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../../i18n/useMessages'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { PivotTableModalProps, PivotFieldConfig } from './types'
 import {
@@ -52,7 +54,7 @@ const PivotTableModal = forwardRef<
             onClose,
             columns,
             data,
-            title = 'Create Pivot Table',
+            title: titleProp,
             description: subtitle,
             initialConfig,
             onConfigChange,
@@ -65,6 +67,13 @@ const PivotTableModal = forwardRef<
     ) => {
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
         const { theme } = useTheme()
+        const { m, pick } = useMessages(DATA_TABLE_MESSAGES)
+        const title = pick(titleProp, 'data-table.label.pivot-title')
+        const addFieldLabel: Record<PivotSectionKey, string> = {
+            rows: m('data-table.a11y.pivot-add-rows'),
+            columns: m('data-table.a11y.pivot-add-columns'),
+            values: m('data-table.a11y.pivot-add-values'),
+        }
         const pivot = useMemo(
             () => getPivotModalStyleTokens(FOUNDATION_THEME, tableToken, theme),
             [tableToken, theme]
@@ -511,7 +520,9 @@ const PivotTableModal = forwardRef<
                             e.currentTarget.style.backgroundColor =
                                 'transparent'
                         }}
-                        aria-label={`Remove ${field.field}`}
+                        aria-label={m('data-table.a11y.remove-field', {
+                            field: field.field,
+                        })}
                     >
                         <X
                             size={16}
@@ -531,7 +542,9 @@ const PivotTableModal = forwardRef<
                 >
                     <Block style={{ flex: 1, minWidth: 0 }}>
                         <SingleSelect
-                            placeholder="Column Name"
+                            placeholder={m(
+                                'data-table.placeholder.column-name'
+                            )}
                             items={[
                                 {
                                     items: fieldOptions.map((option) => ({
@@ -550,7 +563,9 @@ const PivotTableModal = forwardRef<
                     {showAggSelector && aggValue && onAggChange && (
                         <Block style={{ flex: 1, minWidth: 0 }}>
                             <SingleSelect
-                                placeholder="operation"
+                                placeholder={m(
+                                    'data-table.placeholder.operation'
+                                )}
                                 items={[
                                     {
                                         items: getSupportedAggregations(
@@ -585,7 +600,7 @@ const PivotTableModal = forwardRef<
                                 )
                             }
                         >
-                            Show Total
+                            {m('data-table.label.show-total')}
                         </Checkbox>
                     </Block>
                 )}
@@ -627,7 +642,7 @@ const PivotTableModal = forwardRef<
                         {title}
                     </PrimitiveText>
                     <SingleSelect
-                        placeholder="Add"
+                        placeholder={m('data-table.placeholder.add')}
                         items={[
                             {
                                 items:
@@ -682,7 +697,7 @@ const PivotTableModal = forwardRef<
                                 size={ButtonSize.SMALL}
                                 subType={ButtonSubType.ICON_ONLY}
                                 leadingIcon={<Plus size={16} />}
-                                aria-label={`Add ${title.toLowerCase()} field`}
+                                aria-label={addFieldLabel[sectionKey]}
                             />
                         }
                     />
@@ -726,7 +741,7 @@ const PivotTableModal = forwardRef<
         )
 
         const secondaryActionButton = {
-            text: 'Download',
+            text: m('data-table.action.download'),
             buttonType: ButtonType.SECONDARY,
             size: ButtonSize.SMALL,
             onClick: exportPivotTable,
@@ -813,7 +828,7 @@ const PivotTableModal = forwardRef<
                             >
                                 {/* Rows Section */}
                                 {renderSection(
-                                    'Rows',
+                                    m('data-table.label.pivot-rows'),
                                     'rows',
                                     rowFields,
                                     removeRowField,
@@ -825,7 +840,7 @@ const PivotTableModal = forwardRef<
 
                                 {/* Columns Section */}
                                 {renderSection(
-                                    'Columns',
+                                    m('data-table.label.pivot-columns'),
                                     'columns',
                                     columnFields,
                                     removeColumnField,
@@ -837,7 +852,7 @@ const PivotTableModal = forwardRef<
 
                                 {/* Values Section */}
                                 {renderSection(
-                                    'Values',
+                                    m('data-table.label.pivot-values'),
                                     'values',
                                     valueConfigs.map((v) => ({
                                         field: String(v.field),
