@@ -18,6 +18,8 @@ import {
     errorShakeAnimation,
 } from '../../common/error.animations'
 import styled from 'styled-components'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -37,7 +39,7 @@ const UnitInput = ({
     placeholder,
     sublabel,
     helpIconHintText,
-    label = 'Number Input',
+    label: labelProp,
     hintText,
     leftSlot,
     rightSlot,
@@ -48,6 +50,11 @@ const UnitInput = ({
     onBlur,
     ...rest
 }: UnitInputProps) => {
+    const { pick } = useMessages(INPUT_MESSAGES)
+    // The visible label (and accessible name) follows the locale; the
+    // `data-unitinput` selector keeps the English default so it is stable.
+    const label = pick(labelProp, 'input.label.number-input')
+    const dataLabel = labelProp === undefined ? 'Number Input' : labelProp
     const { foundationTokens } = useTheme()
     const unitInputTokens =
         useResponsiveTokens<UnitInputTokensType>('UNIT_INPUT')
@@ -184,7 +191,7 @@ const UnitInput = ({
 
     return (
         <Block
-            data-unitinput={label || 'unitinput'}
+            data-unitinput={dataLabel || 'unitinput'}
             data-status={disabled ? 'disabled' : 'enabled'}
             data-component-field-wrapper={`field-${name}`}
             display="flex"

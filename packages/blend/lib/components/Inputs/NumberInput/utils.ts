@@ -273,17 +273,48 @@ export const wouldGoBelowMin = (
  * @param max - Maximum allowed value
  * @returns Error message string
  */
-export const getRangeErrorMessage = (min?: number, max?: number): string => {
-    if (min !== undefined && max !== undefined) {
-        return `Value must be between ${min} and ${max}`
-    }
-    if (min !== undefined) {
-        return `Value must be at least ${min}`
-    }
-    if (max !== undefined) {
-        return `Value must be at most ${max}`
-    }
-    return 'Invalid value'
+export type RangeErrorCode =
+    | 'range-between'
+    | 'range-min'
+    | 'range-max'
+    | 'invalid-value'
+
+/**
+ * Resolves a range-error code to display text. Components pass one bound to
+ * the active locale; omitted, the English sentences below are used, so
+ * existing direct callers are unchanged.
+ */
+export type RangeErrorFormatter = (
+    code: RangeErrorCode,
+    vars: { min: string; max: string }
+) => string
+
+const ENGLISH_RANGE_ERRORS: Record<
+    RangeErrorCode,
+    (vars: { min: string; max: string }) => string
+> = {
+    'range-between': ({ min, max }) =>
+        `Value must be between ${min} and ${max}`,
+    'range-min': ({ min }) => `Value must be at least ${min}`,
+    'range-max': ({ max }) => `Value must be at most ${max}`,
+    'invalid-value': () => 'Invalid value',
+}
+
+export const getRangeErrorMessage = (
+    min?: number,
+    max?: number,
+    format?: RangeErrorFormatter
+): string => {
+    const code: RangeErrorCode =
+        min !== undefined && max !== undefined
+            ? 'range-between'
+            : min !== undefined
+              ? 'range-min'
+              : max !== undefined
+                ? 'range-max'
+                : 'invalid-value'
+    const vars = { min: String(min), max: String(max) }
+    return format ? format(code, vars) : ENGLISH_RANGE_ERRORS[code](vars)
 }
 
 /**

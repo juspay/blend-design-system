@@ -44,6 +44,8 @@ import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 import SingleSelectV2 from '../../SingleSelectV2/SingleSelectV2'
 import { subscribeElementOffsetWidth } from '../NumberInputV2/utils'
 import { toEmbeddedSingleSelectV2Props } from './utils'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 function omitDropdownPosition(
     o: TextInputV2Dropdown
@@ -80,6 +82,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         }: TextInputV2Props,
         ref
     ) => {
+        const { m } = useMessages(INPUT_MESSAGES)
         const normalizedDropdowns = useMemo((): TextInputV2Dropdown[] => {
             if (dropdown == null) return []
             return Array.isArray(dropdown) ? dropdown : [dropdown]
@@ -184,7 +187,9 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                     id={toggleButtonId}
                     type="button"
                     aria-label={
-                        showPassword ? 'Hide password' : 'Show password'
+                        showPassword
+                            ? m('input.a11y.hide-password')
+                            : m('input.a11y.show-password')
                     }
                     aria-pressed={showPassword}
                     aria-controls={inputId}
@@ -362,6 +367,9 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                             <SingleSelectV2
                                 {...toEmbeddedSingleSelectV2Props(leftSelect, {
                                     fieldLabel: label,
+                                    fallbackAriaLabel: m(
+                                        'input.a11y.select-option'
+                                    ),
                                     fieldDisabled: disabled,
                                     singleSelectV2Size,
                                     menuAlignment: SelectV2Alignment.START,
@@ -470,6 +478,9 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
                             <SingleSelectV2
                                 {...toEmbeddedSingleSelectV2Props(rightSelect, {
                                     fieldLabel: label,
+                                    fallbackAriaLabel: m(
+                                        'input.a11y.select-option'
+                                    ),
                                     fieldDisabled: disabled,
                                     singleSelectV2Size,
                                     menuAlignment: SelectV2Alignment.END,

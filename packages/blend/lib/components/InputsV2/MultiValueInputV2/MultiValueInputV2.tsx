@@ -20,6 +20,8 @@ import styled, { type CSSObject } from 'styled-components'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
 import { generateAccessibilityIds } from '../utils/utils'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const ContentContainer = styled(Block)<{
     $hasLeftSlot: boolean
@@ -70,6 +72,7 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
         rightSlot,
         ...rest
     }) => {
+        const { m } = useMessages(INPUT_MESSAGES)
         const { onKeyDown: restOnKeyDown, ...restWithoutKeyDown } = rest
         const filteredRest = filterBlockedProps(restWithoutKeyDown)
         const multiValueInputTokens =
@@ -253,7 +256,12 @@ const MultiValueInputV2 = forwardRef<HTMLInputElement, MultiValueInputV2Props>(
                                     <PrimitiveButton
                                         type="button"
                                         disabled={disabled}
-                                        aria-label={`Remove ${tag}`}
+                                        aria-label={m(
+                                            'input.a11y.remove-value',
+                                            {
+                                                value: String(tag),
+                                            }
+                                        )}
                                         onClick={(e) => {
                                             e.stopPropagation()
                                             removeTag(tag)

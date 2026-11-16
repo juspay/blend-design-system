@@ -18,6 +18,8 @@ import {
     toPixels,
 } from './utils'
 import { InputSizeV2 } from '../inputV2.types'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
     (
@@ -39,6 +41,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(INPUT_MESSAGES)
         const filteredRest = filterBlockedProps(rest)
         const searchInputTokens =
             useResponsiveTokens<SearchInputV2TokensType>('SEARCH_INPUT_V2')
@@ -195,7 +198,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
                         tabIndex={showClearButton && !rightSlot ? 0 : undefined}
                         aria-label={
                             showClearButton && !rightSlot
-                                ? 'Clear search'
+                                ? m('input.a11y.clear-search')
                                 : undefined
                         }
                         top={searchInputTokens.inputContainer.slot.right.top}

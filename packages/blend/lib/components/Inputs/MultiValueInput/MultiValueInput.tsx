@@ -18,6 +18,8 @@ import {
 } from '../../common/error.animations'
 import styled from 'styled-components'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -65,6 +67,7 @@ const MultiValueInput = ({
     rightSlot,
     ...rest
 }: MultiValueInputProps) => {
+    const { m } = useMessages(INPUT_MESSAGES)
     const multiValueInputTokens =
         useResponsiveTokens<MultiValueInputTokensType>('MULTI_VALUE_INPUT')
     const { theme: blendTheme } = useTheme()
@@ -215,7 +218,12 @@ const MultiValueInput = ({
                                 rightSlot={
                                     <PrimitiveButton
                                         type="button"
-                                        aria-label={`Remove ${tag}`}
+                                        aria-label={m(
+                                            'input.a11y.remove-value',
+                                            {
+                                                value: String(tag),
+                                            }
+                                        )}
                                         onClick={(e) => {
                                             e.stopPropagation()
                                             removeTag(tag)

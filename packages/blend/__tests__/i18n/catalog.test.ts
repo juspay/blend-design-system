@@ -13,6 +13,7 @@ import { MENU_MESSAGES } from '../../lib/i18n/catalog/menu.messages'
 import { DIRECTORY_MESSAGES } from '../../lib/i18n/catalog/directory.messages'
 import { BREADCRUMB_MESSAGES } from '../../lib/i18n/catalog/breadcrumb.messages'
 import { TABS_MESSAGES } from '../../lib/i18n/catalog/tabs.messages'
+import { INPUT_MESSAGES } from '../../lib/i18n/catalog/input.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -35,6 +36,7 @@ const FAMILIES = new Set([
     'directory',
     'breadcrumb',
     'tabs',
+    'input',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -52,6 +54,7 @@ const FRAGMENTS = {
     DIRECTORY_MESSAGES,
     BREADCRUMB_MESSAGES,
     TABS_MESSAGES,
+    INPUT_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -373,6 +376,26 @@ describe('message catalog', () => {
             "tabs.label.add-new-tab",
             "tabs.placeholder.navigate",
             "tabs.placeholder.search-tabs",
+            "input.a11y.clear-search",
+            "input.a11y.decrease",
+            "input.a11y.decrease-value",
+            "input.a11y.hide-password",
+            "input.a11y.hide-password-verbose",
+            "input.a11y.increase",
+            "input.a11y.increase-value",
+            "input.a11y.password-group",
+            "input.a11y.password-group-unnamed",
+            "input.a11y.remove-value",
+            "input.a11y.select-option",
+            "input.a11y.show-password",
+            "input.a11y.show-password-verbose",
+            "input.a11y.text-input-group",
+            "input.error.invalid-value",
+            "input.error.range-between",
+            "input.error.range-max",
+            "input.error.range-min",
+            "input.error.unit-too-long",
+            "input.label.number-input",
             "time-picker.a11y.choose-time",
             "time-picker.a11y.trigger",
             "time-picker.label.am",
