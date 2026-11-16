@@ -74,6 +74,34 @@ describe('SidebarV2', () => {
         window.dispatchEvent(new Event('resize'))
     })
 
+    it('moves from an expanded parent to its child with ArrowDown', async () => {
+        const user = userEvent.setup()
+        render(
+            <SidebarV2
+                data={[
+                    {
+                        items: [
+                            {
+                                id: 'analytics',
+                                label: 'Analytics',
+                                items: [{ id: 'tx', label: 'Transactions' }],
+                            },
+                            { id: 'home', label: 'Home' },
+                        ],
+                    },
+                ]}
+                defaultExpandedItems={['analytics']}
+            />
+        )
+        screen.getByRole('button', { name: 'Analytics' }).focus()
+        await user.keyboard('{ArrowDown}')
+        expect(
+            screen.getByRole('button', { name: 'Transactions' })
+        ).toHaveFocus()
+        await user.keyboard('{ArrowDown}')
+        expect(screen.getByRole('button', { name: 'Home' })).toHaveFocus()
+    })
+
     it('renders with default expanded state', () => {
         const { container } = render(
             <SidebarV2 data={createMockDirectoryData()}>

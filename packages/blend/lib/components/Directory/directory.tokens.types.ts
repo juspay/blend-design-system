@@ -52,6 +52,12 @@ export type DirectoryTokenType = {
     // Section configuration
     section: {
         gap: CSSObject['gap'] // Space between section header and items
+        separator?: {
+            /** Divider before every section after the first, including labeled sections. */
+            color: CSSObject['backgroundColor']
+            height: CSSObject['height']
+            offset: CSSObject['top']
+        }
 
         // Section header (clickable area with label and chevron)
         header: {
@@ -138,6 +144,7 @@ export type DirectoryTokenType = {
                     leftOffset: CSSObject['left'] // Border line left position
                 }
                 connector: {
+                    straightGuideOffset?: CSSObject['left']
                     itemInset: CSSObject['marginLeft'] // Keeps item backgrounds clear of hierarchy lines
                     itemPaddingLeft: CSSObject['paddingLeft'] // Left padding for nested items when hierarchy lines are visible
                     elbowTop: CSSObject['top'] // Top offset for the horizontal connector elbow

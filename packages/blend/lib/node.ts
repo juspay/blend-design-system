@@ -261,6 +261,11 @@ export type {
 export { getTimelineTokens } from './components/Timeline/timeline.token'
 export { getTopbarTokens } from './components/Topbar/topbar.tokens'
 export { getSidebarTokens } from './components/Sidebar/sidebar.tokens'
+export { getSidebarV3Tokens } from './components/SidebarV3/sidebarV3.tokens'
+export type {
+    SidebarV3TokensType,
+    ResponsiveSidebarV3Tokens,
+} from './components/SidebarV3/sidebarV3.tokens.types'
 export { getMobileNavigationTokens } from './components/Sidebar/SidebarMobile/mobile.tokens'
 export { getTooltipV2Tokens } from './components/TooltipV2/tooltipV2.tokens'
 export type { TooltipV2TokensType } from './components/TooltipV2/tooltipV2.tokens.types'

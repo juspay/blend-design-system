@@ -1,5 +1,6 @@
 import {
     forwardRef,
+    type ReactNode,
     useCallback,
     useEffect,
     useId,
@@ -18,6 +19,9 @@ import SidebarV2Panel from './SidebarV2Panel'
 import { TopbarV2 } from '../TopbarV2'
 import type { ResponsiveTopbarV2Tokens } from '../TopbarV2/topbarV2.tokens'
 import { SectionStateContext } from '../Directory/Section'
+import type { DirectoryDisclosureMotion } from '../Directory/NavItem'
+import type { DirectoryTokenType } from '../Directory/directory.tokens.types'
+import type { DirectoryAppearance } from '../Directory/types'
 import SidebarV2MobileNavigation from './SidebarV2MobileNavigation'
 import { getSidebarV2CollapsedMobilePadding } from './SidebarV2MobileNavigation/utils'
 import type { MobileNavigationV2TokenType } from './SidebarV2MobileNavigation/mobile.tokens'
@@ -45,7 +49,16 @@ const MainContentContainer = styled(Block)`
     scrollbar-width: none;
 `
 
-const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
+type SidebarV2CoreProps = SidebarV2Props & {
+    resolvedTokens?: SidebarV2TokensType
+    sidebarSearch?: ReactNode
+    searchTransition?: string
+    disclosureMotion?: DirectoryDisclosureMotion
+    directoryTokens?: DirectoryTokenType
+    directoryAppearance?: DirectoryAppearance
+}
+
+export const SidebarV2Core = forwardRef<HTMLDivElement, SidebarV2CoreProps>(
     (
         {
             height = '100dvh',
@@ -54,6 +67,12 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
             topbar,
             secondarySidebar,
             sidebarTopSlot,
+            sidebarSearch,
+            searchTransition,
+            disclosureMotion,
+            directoryTokens,
+            directoryAppearance,
+            resolvedTokens,
             footer,
             sidebarCollapseKey = '/',
             merchantInfo,
@@ -83,7 +102,9 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
         },
         ref
     ) => {
-        const tokens = useResponsiveTokens<SidebarV2TokensType>('SIDEBARV2')
+        const defaultTokens =
+            useResponsiveTokens<SidebarV2TokensType>('SIDEBARV2')
+        const tokens = resolvedTokens ?? defaultTokens
         const mobileNavigationTokens =
             useResponsiveTokens<MobileNavigationV2TokenType>(
                 'MOBILE_NAVIGATION_V2'
@@ -218,9 +239,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
         }, [shouldRenderMobileNavigation])
 
         useEffect(() => {
-            const directoryContainer = document.querySelector(
-                '[data-directory-container]'
-            ) as HTMLElement | null
+            const directoryContainer = document.getElementById(sidebarNavId)
             if (!directoryContainer) return
 
             const getScrollingElement = (): HTMLElement | null => {
@@ -270,7 +289,7 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                 )
                 window.removeEventListener('resize', handleResize)
             }
-        }, [isExpanded, safeDirectory])
+        }, [isExpanded, safeDirectory, sidebarNavId])
 
         return (
             <SectionStateContext.Provider value={sectionStateValue}>
@@ -314,6 +333,11 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
 
                         {data && data.length > 0 && (
                             <SidebarV2Panel
+                                sidebarSearch={sidebarSearch}
+                                searchTransition={searchTransition}
+                                disclosureMotion={disclosureMotion}
+                                directoryTokens={directoryTokens}
+                                directoryAppearance={directoryAppearance}
                                 sidebarTopSlot={sidebarTopSlot}
                                 merchantInfo={merchantInfo}
                                 isExpanded={isExpanded}
@@ -365,7 +389,8 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                 height="100%"
                                 overflow="hidden"
                                 zIndex={tokens.container.zIndex}
-                                aria-hidden="true"
+                                aria-hidden={isHovering ? undefined : true}
+                                inert={isHovering ? undefined : true}
                                 backgroundColor={
                                     tokens.container.backgroundColor
                                 }
@@ -393,6 +418,11 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                                     />
                                 )}
                                 <SidebarV2Panel
+                                    sidebarSearch={sidebarSearch}
+                                    searchTransition={searchTransition}
+                                    disclosureMotion={disclosureMotion}
+                                    directoryTokens={directoryTokens}
+                                    directoryAppearance={directoryAppearance}
                                     sidebarTopSlot={sidebarTopSlot}
                                     merchantInfo={merchantInfo}
                                     isExpanded={isExpanded}
@@ -503,6 +533,12 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
         )
     }
 )
+
+SidebarV2Core.displayName = 'SidebarV2Core'
+
+const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>((props, ref) => (
+    <SidebarV2Core {...props} ref={ref} />
+))
 
 SidebarV2.displayName = 'SidebarV2'
 

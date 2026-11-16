@@ -3,6 +3,14 @@ import type { CSSObject } from 'styled-components'
 
 export type DirectoryExpandedItems = Set<string> | string[]
 
+/** Rendering choices; color and spacing values remain in DIRECTORY tokens. */
+export type DirectoryAppearance = {
+    emphasizeSelectedAncestors?: boolean
+    iconColorMode?: 'token' | 'state'
+    chevronColorMode?: 'token' | 'state'
+    connectorMode?: 'elbow' | 'straight'
+}
+
 export type DirectoryVirtualizationConfig = {
     /**
      * External scroll container. Must be mounted (ref.current set) by the
@@ -18,6 +26,7 @@ export type DirectoryVirtualizationConfig = {
 }
 
 export type DirectoryProps = {
+    appearance?: DirectoryAppearance
     directoryData: DirectoryData[] | null
     idPrefix?: string
     activeItem?: string | null
@@ -102,6 +111,7 @@ export type NavbarItem = {
 }
 
 export type SectionProps = {
+    appearance?: DirectoryAppearance
     section: DirectoryData
     sectionIndex: number
     // totalSections: number;
@@ -118,6 +128,7 @@ export type SectionProps = {
 }
 
 export type NavItemProps = {
+    appearance?: DirectoryAppearance
     item: NavbarItem
     index: number
     onNavigate: (direction: 'up' | 'down', currentIndex: number) => void
@@ -127,6 +138,8 @@ export type NavItemProps = {
     hierarchyLineBorderRadius?: CSSObject['borderRadius']
     isLast?: boolean
     isNested?: boolean
+    /** Keeps animated, mounted descendants out of the tab order while closed. */
+    isInCollapsedBranch?: boolean
     enableParentSelection?: boolean
     highlightActivePath?: boolean
     // Active-path connector highlighting, decided by the parent:

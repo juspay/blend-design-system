@@ -708,6 +708,13 @@ const SidebarV2Demo = () => {
                         showOnMobile: true,
                     },
                     {
+                        label: 'Sidebar V3',
+                        leftSlot: <Layout aria-hidden="true" size={16} />,
+                        onClick: () => {
+                            window.location.hash = 'sidebarV3'
+                        },
+                    },
+                    {
                         label: 'Button V2',
                         leftSlot: (
                             <Grid style={{ width: '16px', height: '16px' }} />

@@ -14,10 +14,10 @@ import {
     useDirectoryEndReached,
 } from './utils'
 import { ActiveItemProvider, ExpandedItemsProvider } from './NavItem'
-import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
-import { DirectoryTokenType } from './directory.tokens'
+import { useDirectoryAppearance } from './directoryAppearance.context'
 
 const Directory = ({
+    appearance,
     directoryData: directoryDataProp,
     idPrefix,
     activeItem,
@@ -43,7 +43,7 @@ const Directory = ({
     )
     const scrollRef = useRef<HTMLDivElement | null>(null)
 
-    const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
+    const tokens = useDirectoryAppearance()
     useEffect(() => {
         sectionRefs.current = directoryData.map(() =>
             createRef<HTMLDivElement | null>()
@@ -61,6 +61,7 @@ const Directory = ({
     if (enableVirtualization && !iconOnlyMode) {
         return (
             <VirtualizedDirectory
+                appearance={appearance}
                 directoryData={directoryData}
                 idPrefix={idPrefix}
                 activeItem={activeItem}
@@ -111,6 +112,7 @@ const Directory = ({
                 >
                     {directoryData.map((section, sectionIndex) => (
                         <Section
+                            appearance={appearance}
                             key={sectionIndex}
                             section={section}
                             sectionIndex={sectionIndex}
