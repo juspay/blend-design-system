@@ -719,6 +719,9 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                             <PickerClearButton
                                 onClear={handleClear}
                                 calendarToken={calendarToken}
+                                label={m(
+                                    'date-range-picker.a11y.clear-selection'
+                                )}
                             />
                         </Block>
                     )}

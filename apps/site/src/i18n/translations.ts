@@ -176,6 +176,7 @@ const FRENCH: BlendMessageOverrides = {
     'date-range-picker.a11y.choose-date': 'Choisir une date',
     'date-range-picker.a11y.choose-month': 'Choisir un mois',
     'date-range-picker.a11y.choose-year': 'Choisir une année',
+    'date-range-picker.a11y.clear-selection': 'Effacer la sélection',
     'date-range-picker.a11y.trigger': 'Sélecteur de date, {value}',
 
     'time-picker.label.hours': 'Heures',
@@ -301,6 +302,7 @@ const JAPANESE: BlendMessageOverrides = {
     'date-range-picker.a11y.choose-date': '日付を選択',
     'date-range-picker.a11y.choose-month': '月を選択',
     'date-range-picker.a11y.choose-year': '年を選択',
+    'date-range-picker.a11y.clear-selection': '選択をクリア',
     'date-range-picker.a11y.trigger': '日付ピッカー、{value}',
 
     'time-picker.label.hours': '時',

@@ -75,6 +75,7 @@ export const DATE_RANGE_PICKER_MESSAGES = {
     'date-range-picker.a11y.choose-date': 'Choose date',
     'date-range-picker.a11y.choose-month': 'Choose month',
     'date-range-picker.a11y.choose-year': 'Choose year',
+    'date-range-picker.a11y.clear-selection': 'Clear selection',
     // Whole sentence with a placeholder, not `'Date picker, ' + value`:
     // word order around an interpolated value is not portable.
     'date-range-picker.a11y.trigger': 'Date picker, {value}',
