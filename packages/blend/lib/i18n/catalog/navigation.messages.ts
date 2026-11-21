@@ -28,6 +28,8 @@ export const NAVIGATION_MESSAGES = {
     'sidebar.a11y.collapse-toggle':
         'Collapse sidebar. Press {shortcut} to toggle.',
     'sidebar.a11y.expand-toggle': 'Expand sidebar. Press {shortcut} to toggle.',
+    'sidebar.status.expanded': 'Sidebar expanded',
+    'sidebar.status.collapsed': 'Sidebar collapsed',
     'sidebar.label.more': 'More',
     'sidebar.a11y.more-options': 'More options',
     'sidebar.a11y.primary-action': 'Primary action',

@@ -352,6 +352,8 @@ const FRENCH: BlendMessageOverrides = {
         'Réduire la barre latérale. Appuyez sur {shortcut} pour basculer.',
     'sidebar.a11y.expand-toggle':
         'Développer la barre latérale. Appuyez sur {shortcut} pour basculer.',
+    'sidebar.status.expanded': 'Barre latérale développée',
+    'sidebar.status.collapsed': 'Barre latérale réduite',
     'sidebar.label.more': 'Plus',
     'sidebar.a11y.more-options': "Plus d'options",
     'sidebar.a11y.primary-action': 'Action principale',
@@ -664,6 +666,8 @@ const JAPANESE: BlendMessageOverrides = {
         'サイドバーを折りたたむ。{shortcut} で切り替えます。',
     'sidebar.a11y.expand-toggle':
         'サイドバーを展開。{shortcut} で切り替えます。',
+    'sidebar.status.expanded': 'サイドバーを展開しました',
+    'sidebar.status.collapsed': 'サイドバーを折りたたみました',
     'sidebar.label.more': 'その他',
     'sidebar.a11y.more-options': 'その他のオプション',
     'sidebar.a11y.primary-action': 'メインアクション',

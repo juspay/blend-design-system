@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from 'vitest'
-import { render, screen } from '../../test-utils'
+import { render, screen, fireEvent } from '../../test-utils'
 import SidebarV2 from '../../../lib/components/SidebarV2/SidebarV2'
 import TopbarV2 from '../../../lib/components/TopbarV2/TopbarV2'
 import type { DirectoryData } from '../../../lib/components/Directory/types'
@@ -11,6 +11,7 @@ const FRENCH: Record<string, string> = {
         'Réduire la barre latérale. Appuyez sur {shortcut} pour basculer.',
     'sidebar.action.collapse': 'Réduire la barre latérale',
     'topbar.a11y.go-back': 'Retour',
+    'sidebar.status.collapsed': 'Barre latérale réduite',
 }
 const t = (key: string) => FRENCH[key]
 
@@ -61,6 +62,18 @@ describe('SidebarV2 and TopbarV2 locale', () => {
         expect(
             screen.getByText('Réduire la barre latérale')
         ).toBeInTheDocument()
+    })
+
+    it('announces the keyboard toggle in the provider language', () => {
+        render(
+            <SidebarV2 data={DATA}>
+                <p>Page</p>
+            </SidebarV2>,
+            { providerProps: { locale: 'fr-FR', t } }
+        )
+
+        fireEvent.keyDown(document, { key: '/' })
+        expect(document.body.textContent).toContain('Barre latérale réduite')
     })
 
     describe('on a narrow viewport', () => {

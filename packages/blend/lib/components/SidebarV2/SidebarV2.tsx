@@ -189,12 +189,19 @@ const SidebarV2 = forwardRef<HTMLDivElement, SidebarV2Props>(
                 ) {
                     event.preventDefault()
                     toggleSidebar()
-                    announceSidebarV2StateChange(!isExpanded)
+                    announceSidebarV2StateChange(
+                        !isExpanded,
+                        m(
+                            !isExpanded
+                                ? 'sidebar.status.expanded'
+                                : 'sidebar.status.collapsed'
+                        )
+                    )
                 }
             }
             document.addEventListener('keydown', handleKeyPress)
             return () => document.removeEventListener('keydown', handleKeyPress)
-        }, [isSmallScreen, sidebarCollapseKey, toggleSidebar, isExpanded])
+        }, [isSmallScreen, sidebarCollapseKey, toggleSidebar, isExpanded, m])
 
         useEffect(() => {
             if (isSmallScreen && isExpanded) {

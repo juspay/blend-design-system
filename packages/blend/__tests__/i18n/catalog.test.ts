@@ -365,6 +365,8 @@ describe('message catalog', () => {
             "sidebar.label.expand-shortcut",
             "sidebar.label.more",
             "sidebar.placeholder.search-tenants",
+            "sidebar.status.collapsed",
+            "sidebar.status.expanded",
             "tabs.a11y.close",
             "tabs.a11y.close-tab",
             "tabs.a11y.navigate-to-tab",

@@ -38,7 +38,13 @@ const getSidebarStatus = (
     return isExpanded ? 'expanded' : 'collapsed'
 }
 
-const announceSidebarStateChange = (isExpanded: boolean) => {
+/**
+ * `message` is the localized announcement; omitted, the English one is used.
+ */
+const announceSidebarStateChange = (
+    isExpanded: boolean,
+    message = `Sidebar ${isExpanded ? 'expanded' : 'collapsed'}` // i18n-ignore: English default for direct callers
+) => {
     const announcement = document.createElement('div')
     announcement.setAttribute('role', 'status')
     announcement.setAttribute('aria-live', 'polite')
@@ -48,7 +54,7 @@ const announceSidebarStateChange = (isExpanded: boolean) => {
     announcement.style.width = '1px'
     announcement.style.height = '1px'
     announcement.style.overflow = 'hidden'
-    announcement.textContent = `Sidebar ${isExpanded ? 'expanded' : 'collapsed'}`
+    announcement.textContent = message
     document.body.appendChild(announcement)
 
     // Remove announcement after screen reader has time to read it
@@ -233,12 +239,19 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     event.preventDefault()
                     toggleSidebar()
 
-                    announceSidebarStateChange(!isExpanded)
+                    announceSidebarStateChange(
+                        !isExpanded,
+                        m(
+                            !isExpanded
+                                ? 'sidebar.status.expanded'
+                                : 'sidebar.status.collapsed'
+                        )
+                    )
                 }
             }
             document.addEventListener('keydown', handleKeyPress)
             return () => document.removeEventListener('keydown', handleKeyPress)
-        }, [isSmallScreen, sidebarCollapseKey, toggleSidebar, isExpanded])
+        }, [isSmallScreen, sidebarCollapseKey, toggleSidebar, isExpanded, m])
 
         // Mobile and toggle button logic
         useEffect(() => {
