@@ -11,6 +11,8 @@ import MobilePopover from './MobilePopover'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { popoverContentAnimations } from './popover.animations'
 import PopoverSkeleton from './PopoverSkeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 
 const AnimatedPopoverSurface = styled(Block)`
     ${popoverContentAnimations}
@@ -45,6 +47,7 @@ const Popover = ({
     avoidCollisions = true,
     skeleton,
 }: PopoverProps) => {
+    const { m } = useMessages(OVERLAY_MESSAGES)
     const [isOpen, setIsOpen] = useState(open || false)
     const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
     const { innerWidth } = useBreakpoints()
@@ -129,7 +132,10 @@ const Popover = ({
                         style={{ zIndex }}
                         {...(headingId
                             ? { 'aria-labelledby': headingId }
-                            : { 'aria-label': heading || 'Popover dialog' })}
+                            : {
+                                  'aria-label':
+                                      heading || m('popover.a11y.dialog'),
+                              })}
                         {...(ariaDescribedBy
                             ? { 'aria-describedby': ariaDescribedBy }
                             : {})}

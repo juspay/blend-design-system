@@ -15,6 +15,8 @@ import ModalV2Skeleton from './ModalV2Skeleton'
 import ModalV2Footer from './ModalV2Footer'
 import { createPortal } from 'react-dom'
 import { filterBlockedProps } from '../../utils/prop-helpers'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 
 const AnimatedBackdrop = styled(Block)<{ $isAnimatingIn: boolean }>`
     ${({ $isAnimatingIn }) => modalBackdropAnimationsV2($isAnimatingIn)}
@@ -50,6 +52,7 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(OVERLAY_MESSAGES)
         const filteredRest = filterBlockedProps(props)
         const {
             'aria-label': ariaLabel,
@@ -185,7 +188,7 @@ const ModalV2 = forwardRef<HTMLDivElement, ModalV2Props>(
                             ariaLabel ??
                             (ariaLabelledBy || titleId
                                 ? undefined
-                                : title || 'Modal dialog')
+                                : title || m('modal.a11y.dialog'))
                         }
                         aria-describedby={ariaDescribedBy ?? subtitleId}
                         zIndex={1}

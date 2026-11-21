@@ -15,6 +15,8 @@ import { TextInput } from '../../Inputs/TextInput'
 import { Checkbox } from '../../Checkbox'
 import { FOUNDATION_THEME } from '../../../tokens'
 import type { SelectDrawerProps } from '../types'
+import { useMessages } from '../../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../../i18n/catalog/overlay.messages'
 
 /**
  * @deprecated Use `MultiSelectListV2` instead. `MultiSelectDrawer` predates the
@@ -40,9 +42,9 @@ export const MultiSelectDrawer = ({
     selectedValues = [],
     onSelectionChange,
     enableSearch = true,
-    searchPlaceholder = 'Search',
-    cancelText = 'Clear All',
-    confirmText = 'Done',
+    searchPlaceholder: searchPlaceholderProp,
+    cancelText: cancelTextProp,
+    confirmText: confirmTextProp,
     onCancel,
     onConfirm,
     showCancelButton = true,
@@ -56,6 +58,13 @@ export const MultiSelectDrawer = ({
     SelectDrawerProps,
     'multiSelect' | 'selectedValue' | 'onValueChange'
 >) => {
+    const { pick } = useMessages(OVERLAY_MESSAGES)
+    const searchPlaceholder = pick(
+        searchPlaceholderProp,
+        'drawer.placeholder.search'
+    )
+    const cancelText = pick(cancelTextProp, 'drawer.action.clear-all')
+    const confirmText = pick(confirmTextProp, 'drawer.action.done')
     const [searchTerm, setSearchTerm] = useState('')
     const [internalSelectedValues, setInternalSelectedValues] =
         useState<string[]>(selectedValues)
@@ -396,9 +405,9 @@ export const SingleSelectDrawer = ({
     selectedValue,
     onValueChange,
     enableSearch = true,
-    searchPlaceholder = 'Search',
-    cancelText = 'Clear',
-    confirmText = 'Done',
+    searchPlaceholder: searchPlaceholderProp,
+    cancelText: cancelTextProp,
+    confirmText: confirmTextProp,
     onCancel,
     onConfirm,
     showCancelButton = true,
@@ -412,6 +421,13 @@ export const SingleSelectDrawer = ({
     SelectDrawerProps,
     'multiSelect' | 'selectedValues' | 'onSelectionChange'
 >) => {
+    const { pick } = useMessages(OVERLAY_MESSAGES)
+    const searchPlaceholder = pick(
+        searchPlaceholderProp,
+        'drawer.placeholder.search'
+    )
+    const cancelText = pick(cancelTextProp, 'drawer.action.clear')
+    const confirmText = pick(confirmTextProp, 'drawer.action.done')
     const [searchTerm, setSearchTerm] = useState('')
     const [internalSelectedValue, setInternalSelectedValue] = useState<string>(
         selectedValue || ''

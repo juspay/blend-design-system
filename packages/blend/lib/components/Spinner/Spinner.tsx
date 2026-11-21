@@ -5,18 +5,22 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import type { SpinnerProps } from './types'
 import type { SpinnerTokensType } from './spinner.tokens.types'
+import { useMessages } from '../../i18n/useMessages'
+import { FEEDBACK_MESSAGES } from '../../i18n/catalog/feedback.messages'
 
 const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
     (
         {
             size = 'md',
             color = 'default',
-            label = 'Loading',
+            label: labelProp,
             overlay = false,
             ...rest
         },
         ref
     ) => {
+        const { pick } = useMessages(FEEDBACK_MESSAGES)
+        const label = pick(labelProp, 'spinner.label.loading')
         const tokens = useResponsiveTokens<SpinnerTokensType>('SPINNER')
         const prefersReducedMotion = useReducedMotion()
         const spinnerSize = tokens.size[size]
