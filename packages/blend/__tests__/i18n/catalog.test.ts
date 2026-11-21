@@ -20,6 +20,7 @@ import { CHAT_INPUT_MESSAGES } from '../../lib/i18n/catalog/chatInput.messages'
 import { CODE_MESSAGES } from '../../lib/i18n/catalog/code.messages'
 import { STEPPER_MESSAGES } from '../../lib/i18n/catalog/stepper.messages'
 import { CHART_MESSAGES } from '../../lib/i18n/catalog/chart.messages'
+import { DISPLAY_MESSAGES } from '../../lib/i18n/catalog/display.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -56,6 +57,15 @@ const FAMILIES = new Set([
     'stepper',
     'chart',
     'stat-card',
+    'avatar',
+    'avatar-group',
+    'badge',
+    'card',
+    'key-value-pair',
+    'slider',
+    'tag',
+    'timeline',
+    'group',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -80,6 +90,7 @@ const FRAGMENTS = {
     CODE_MESSAGES,
     STEPPER_MESSAGES,
     CHART_MESSAGES,
+    DISPLAY_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -173,6 +184,25 @@ describe('message catalog', () => {
           [
             "alert.a11y.action",
             "alert.a11y.close",
+            "avatar-group.a11y.group-selected.one",
+            "avatar-group.a11y.group-selected.other",
+            "avatar-group.a11y.group.one",
+            "avatar-group.a11y.group.other",
+            "avatar-group.a11y.loading-more",
+            "avatar-group.a11y.overflow.one",
+            "avatar-group.a11y.overflow.other",
+            "avatar-group.a11y.position",
+            "avatar-group.a11y.position-more",
+            "avatar-group.a11y.selected",
+            "avatar-group.label.fallback-name",
+            "avatar-group.placeholder.search",
+            "avatar.a11y.status-away",
+            "avatar.a11y.status-busy",
+            "avatar.a11y.status-offline",
+            "avatar.a11y.status-online",
+            "avatar.label.fallback",
+            "badge.a11y.more-than",
+            "badge.a11y.notification",
             "breadcrumb.a11y.current-page",
             "breadcrumb.a11y.current-page-unnamed",
             "breadcrumb.a11y.navigate-to",
@@ -181,6 +211,8 @@ describe('message catalog', () => {
             "breadcrumb.a11y.show-more.one",
             "breadcrumb.a11y.show-more.other",
             "breadcrumb.label.item-fallback",
+            "card.a11y.custom-content",
+            "card.a11y.visual-content",
             "chart.a11y.collapse",
             "chart.a11y.container",
             "chart.a11y.enter-fullscreen",
@@ -432,6 +464,10 @@ describe('message catalog', () => {
             "drawer.action.done",
             "drawer.placeholder.search",
             "drawer.status.opened",
+            "group.a11y.button-group",
+            "group.a11y.multi-select-group",
+            "group.a11y.single-select-group",
+            "group.a11y.tag-group",
             "input.a11y.clear-search",
             "input.a11y.decrease",
             "input.a11y.decrease-value",
@@ -453,6 +489,7 @@ describe('message catalog', () => {
             "input.error.unit-too-long",
             "input.label.number-input",
             "input.placeholder.enter",
+            "key-value-pair.a11y.label",
             "menu.a11y.search",
             "menu.a11y.search-submenu",
             "menu.a11y.search-with-placeholder",
@@ -500,6 +537,9 @@ describe('message catalog', () => {
             "skeleton.a11y.loading",
             "skeleton.label.cancel",
             "skeleton.label.confirm",
+            "slider.a11y.single",
+            "slider.a11y.thumb",
+            "slider.a11y.thumb-labelled",
             "snackbar.a11y.close",
             "spinner.label.loading",
             "stat-card.a11y.change-decrease",
@@ -537,6 +577,10 @@ describe('message catalog', () => {
             "tabs.label.add-new-tab",
             "tabs.placeholder.navigate",
             "tabs.placeholder.search-tabs",
+            "tag.a11y.mixed",
+            "tag.a11y.pressed",
+            "tag.a11y.split",
+            "tag.a11y.split-unnamed",
             "time-picker.a11y.choose-time",
             "time-picker.a11y.trigger",
             "time-picker.label.am",
@@ -546,6 +590,7 @@ describe('message catalog', () => {
             "time-picker.label.pm",
             "time-picker.label.seconds",
             "time-picker.label.time-with-period",
+            "timeline.action.show-more",
             "topbar.a11y.go-back",
             "upload-v2.a11y.file-input",
             "upload-v2.a11y.remove-file",

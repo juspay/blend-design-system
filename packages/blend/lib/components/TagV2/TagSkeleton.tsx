@@ -10,6 +10,7 @@ import { addPxToValue } from '../../global-utils/GlobalUtils'
 const TagSkeleton = ({
     showSkeleton = false,
     skeletonVariant = 'pulse',
+    // i18n-ignore: width filler only; hidden (aria-hidden, transparent) while the skeleton shows
     text = 'TagV2',
     size = TagV2Size.SM,
     type = TagV2Type.SUBTLE,
@@ -87,6 +88,7 @@ const TagSkeleton = ({
                     }
                     aria-hidden={showSkeleton ? true : undefined}
                 >
+                    {/* i18n-ignore: same width filler as the default above */}
                     {text || 'TagV2'}
                 </Text>
                 {rightSlot && (

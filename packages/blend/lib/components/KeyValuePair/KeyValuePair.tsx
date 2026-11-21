@@ -20,6 +20,8 @@ import {
     getLayoutStyles,
     getSlotStyles,
 } from './utils'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 const ResponsiveText = ({
     children,
@@ -135,6 +137,7 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
         },
         ref
     ) => {
+        const { m } = useMessages(DISPLAY_MESSAGES)
         const keyValuePairTokens =
             useResponsiveTokens<KeyValuePairTokensType>('KEYVALUEPAIR')
 
@@ -167,7 +170,10 @@ const KeyValuePair = forwardRef<HTMLDivElement, KeyValuePairPropTypes>(
                 ref={ref}
                 style={containerStyles as React.CSSProperties}
                 role="group"
-                aria-label={`${keyString}: ${value || ''}`}
+                aria-label={m('key-value-pair.a11y.label', {
+                    key: String(keyString),
+                    value: value || '',
+                })}
             >
                 <Block
                     data-element="key"
