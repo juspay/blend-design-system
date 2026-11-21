@@ -31,7 +31,7 @@ const FRENCH: Record<string, string> = {
 }
 const t = (key: string) => FRENCH[key]
 
-describe('Select family localization', () => {
+describe('Select family localization (Accessibility)', () => {
     it('keeps English defaults with no provider configuration', async () => {
         const { user } = render(
             <SelectListV2
