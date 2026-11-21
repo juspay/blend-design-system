@@ -485,6 +485,30 @@ const FRENCH: BlendMessageOverrides = {
     'code-editor.a11y.header': 'En-tête de l’éditeur de code',
     'code-editor.a11y.copy': 'Copier le code',
     'code-editor.a11y.copied': 'Copié',
+    'stepper.a11y.step-completed':
+        'Étape {number} sur {total} : {title}, terminée',
+    'stepper.a11y.step-current':
+        'Étape {number} sur {total} : {title}, en cours',
+    'stepper.a11y.step-disabled':
+        'Étape {number} sur {total} : {title}, désactivée',
+    'stepper.a11y.step-skipped':
+        'Étape {number} sur {total} : {title}, ignorée',
+    'stepper.a11y.step-pending':
+        'Étape {number} sur {total} : {title}, en attente',
+    'stepper.a11y.substep-completed': 'Sous-étape {number} : {title}, terminée',
+    'stepper.a11y.substep-current': 'Sous-étape {number} : {title}, en cours',
+    'stepper.a11y.substep-disabled':
+        'Sous-étape {number} : {title}, désactivée',
+    'stepper.a11y.substep-skipped': 'Sous-étape {number} : {title}, ignorée',
+    'stepper.a11y.substep-pending': 'Sous-étape {number} : {title}, en attente',
+    'stepper.a11y.step-focused': 'Étape {number} : {title}',
+    'stepper.a11y.progress':
+        'Indicateur de progression : étape {number} sur {total}',
+    'stepper.a11y.additional-info':
+        'Informations supplémentaires : {description}',
+    'stepper.a11y.expand-substeps': 'Développer les sous-étapes de {title}',
+    'stepper.a11y.collapse-substeps': 'Réduire les sous-étapes de {title}',
+    'stepper.a11y.substeps': 'Sous-étapes de {title}',
 }
 
 const JAPANESE: BlendMessageOverrides = {
@@ -879,6 +903,22 @@ const JAPANESE: BlendMessageOverrides = {
     'code-editor.a11y.header': 'コードエディターのヘッダー',
     'code-editor.a11y.copy': 'コードをコピー',
     'code-editor.a11y.copied': 'コピーしました',
+    'stepper.a11y.step-completed': 'ステップ{number}/{total}：{title}、完了',
+    'stepper.a11y.step-current': 'ステップ{number}/{total}：{title}、現在',
+    'stepper.a11y.step-disabled': 'ステップ{number}/{total}：{title}、無効',
+    'stepper.a11y.step-skipped': 'ステップ{number}/{total}：{title}、スキップ',
+    'stepper.a11y.step-pending': 'ステップ{number}/{total}：{title}、未完了',
+    'stepper.a11y.substep-completed': 'サブステップ{number}：{title}、完了',
+    'stepper.a11y.substep-current': 'サブステップ{number}：{title}、現在',
+    'stepper.a11y.substep-disabled': 'サブステップ{number}：{title}、無効',
+    'stepper.a11y.substep-skipped': 'サブステップ{number}：{title}、スキップ',
+    'stepper.a11y.substep-pending': 'サブステップ{number}：{title}、未完了',
+    'stepper.a11y.step-focused': 'ステップ{number}：{title}',
+    'stepper.a11y.progress': '進捗インジケーター：ステップ{number}/{total}',
+    'stepper.a11y.additional-info': '補足情報：{description}',
+    'stepper.a11y.expand-substeps': '{title}のサブステップを展開',
+    'stepper.a11y.collapse-substeps': '{title}のサブステップを折りたたむ',
+    'stepper.a11y.substeps': '{title}のサブステップ',
 }
 
 /**

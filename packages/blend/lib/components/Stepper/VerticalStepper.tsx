@@ -15,12 +15,17 @@ import Text from '../Text/Text'
 import { toPixels } from '../../global-utils/GlobalUtils'
 import VerticalLine from './VerticalLine'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { STEPPER_MESSAGES } from '../../i18n/catalog/stepper.messages'
+import { getStepStatusKey, getSubstepStatusKey } from './stepStatusKey'
 
 const StepComponent = forwardRef<
     HTMLDivElement,
     StepProps & {
         onKeyDown?: (event: React.KeyboardEvent, stepIndex: number) => void
         stepperInstanceId: string
+        /** Total number of steps, for the "Step n of total" accessible name. */
+        stepsLength: number
     }
 >(
     (
@@ -35,9 +40,11 @@ const StepComponent = forwardRef<
             clickable,
             onKeyDown,
             stepperInstanceId,
+            stepsLength,
         },
         ref
     ) => {
+        const { m } = useMessages(STEPPER_MESSAGES)
         const stepperTokens = useResponsiveTokens<StepperTokensType>('STEPPER')
         const verticalLineRef = useRef<HTMLDivElement>(null)
         const descriptionRef = useRef<HTMLDivElement>(null)
@@ -453,21 +460,19 @@ const StepComponent = forwardRef<
                                 isClickable && isCurrent ? 'true' : undefined
                             }
                             aria-disabled={step.disabled ? 'true' : undefined}
+                            // `data-id` keeps the original English string; the
+                            // accessible name is localized and names the step
+                            // count ("Step 2 of 4: Payment").
                             aria-label={
                                 isClickable
-                                    ? `Step ${stepIndex + 1} of ${step.title}${
-                                          stepState === StepState.COMPLETED
-                                              ? ', completed'
-                                              : stepState === StepState.CURRENT
-                                                ? ', current'
-                                                : stepState ===
-                                                    StepState.DISABLED
-                                                  ? ', disabled'
-                                                  : stepState ===
-                                                      StepState.SKIPPED
-                                                    ? ', skipped'
-                                                    : ', pending'
-                                      }`
+                                    ? m(
+                                          `stepper.a11y.step-${getStepStatusKey(stepState)}`,
+                                          {
+                                              number: String(stepIndex + 1),
+                                              total: String(stepsLength),
+                                              title: String(step.title),
+                                          }
+                                      )
                                     : undefined
                             }
                             aria-labelledby={stepTitleId}
@@ -530,8 +535,12 @@ const StepComponent = forwardRef<
                                 tabIndex={0}
                                 aria-label={
                                     isExpanded
-                                        ? `Collapse substeps for ${step.title}`
-                                        : `Expand substeps for ${step.title}`
+                                        ? m('stepper.a11y.collapse-substeps', {
+                                              title: String(step.title),
+                                          })
+                                        : m('stepper.a11y.expand-substeps', {
+                                              title: String(step.title),
+                                          })
                                 }
                                 aria-expanded={isExpanded}
                                 aria-controls={
@@ -586,7 +595,9 @@ const StepComponent = forwardRef<
                                 data-element={`substeps:Step ${stepIndex + 1}`}
                                 id={`substeps-${stepId}`}
                                 role="group"
-                                aria-label={`Substeps for ${step.title}`}
+                                aria-label={m('stepper.a11y.substeps', {
+                                    title: String(step.title),
+                                })}
                             >
                                 {step.substeps.map((subStep, index) => {
                                     const explicitStatus = subStep.status
@@ -668,17 +679,22 @@ const StepComponent = forwardRef<
                                                             ? 0
                                                             : -1
                                                     }
-                                                    aria-label={`Substep ${index + 1}: ${subStep.title}${
-                                                        isSubstepCompleted
-                                                            ? ', completed'
-                                                            : isSubstepCurrent
-                                                              ? ', current'
-                                                              : isSubstepDisabled
-                                                                ? ', disabled'
-                                                                : isSubstepSkipped
-                                                                  ? ', skipped'
-                                                                  : ', pending'
-                                                    }`}
+                                                    aria-label={m(
+                                                        `stepper.a11y.substep-${getSubstepStatusKey(
+                                                            isSubstepCompleted,
+                                                            isSubstepCurrent,
+                                                            isSubstepDisabled,
+                                                            isSubstepSkipped
+                                                        )}`,
+                                                        {
+                                                            number: String(
+                                                                index + 1
+                                                            ),
+                                                            title: String(
+                                                                subStep.title
+                                                            ),
+                                                        }
+                                                    )}
                                                     aria-disabled={
                                                         isSubstepDisabled
                                                             ? 'true'
@@ -853,6 +869,7 @@ const StepComponent = forwardRef<
 
 const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
     ({ steps, onStepClick, onSubstepClick, clickable, ...htmlProps }, ref) => {
+        const { m } = useMessages(STEPPER_MESSAGES)
         // Generate unique ID for this stepper instance to avoid duplicate IDs across multiple steppers
         const stepperInstanceId = useId().replace(/:/g, '-')
 
@@ -933,7 +950,10 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
                     announcement.style.width = '1px'
                     announcement.style.height = '1px'
                     announcement.style.overflow = 'hidden'
-                    announcement.textContent = `Step ${focusedStepIndex + 1}: ${currentStep.title}`
+                    announcement.textContent = m('stepper.a11y.step-focused', {
+                        number: String(focusedStepIndex + 1),
+                        title: String(currentStep.title),
+                    })
                     document.body.appendChild(announcement)
 
                     const timer = setTimeout(() => {
@@ -950,7 +970,7 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
                     }
                 }
             }
-        }, [focusedStepIndex, steps])
+        }, [focusedStepIndex, steps, m])
 
         // Filter out aria-orientation as it's not valid for role="group"
         const filteredHtmlProps = { ...htmlProps } as Record<string, unknown>
@@ -964,7 +984,10 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
                 display="flex"
                 flexDirection="column"
                 role="group"
-                aria-label={`Progress indicator: step ${derivedIndex + 1} of ${steps.length}`}
+                aria-label={m('stepper.a11y.progress', {
+                    number: String(derivedIndex + 1),
+                    total: String(steps.length),
+                })}
                 aria-roledescription="stepper"
                 {...filteredHtmlProps}
             >
@@ -993,6 +1016,7 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
                         clickable={clickable}
                         onKeyDown={handleKeyDown}
                         stepperInstanceId={stepperInstanceId}
+                        stepsLength={steps.length}
                     />
                 ))}
             </Block>
