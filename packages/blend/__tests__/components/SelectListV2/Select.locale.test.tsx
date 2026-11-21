@@ -112,8 +112,8 @@ describe('Select family localization (Accessibility)', () => {
         expect(await screen.findByText('Add : « mango »')).toBeInTheDocument()
     })
 
-    it('translates Select All in the multi-select list', () => {
-        render(
+    it('translates Select All in the multi-select list but keeps its data-id English', () => {
+        const { container } = render(
             <MultiSelectListV2
                 label="Pick"
                 items={items()}
@@ -125,6 +125,11 @@ describe('Select family localization (Accessibility)', () => {
         )
 
         expect(screen.getByText('Tout sélectionner')).toBeInTheDocument()
+        // The data-id hooks keep the English default so selectors are stable.
+        expect(
+            container.querySelector('[data-id="Tout sélectionner"]')
+        ).toBeNull()
+        expect(container.querySelector('[data-id="Select All"]')).not.toBeNull()
     })
 })
 

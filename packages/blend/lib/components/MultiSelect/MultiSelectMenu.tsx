@@ -547,6 +547,12 @@ const MultiSelectMenu = ({
                                                     )
                                                 }
                                                 selectAllText={selectAllText}
+                                                dataIdText={
+                                                    selectAllTextProp ??
+                                                    SELECT_MESSAGES[
+                                                        'select.action.select-all'
+                                                    ]
+                                                }
                                                 disabled={disabled}
                                             />
                                         </Block>

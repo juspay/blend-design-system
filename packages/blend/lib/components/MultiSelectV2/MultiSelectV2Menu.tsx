@@ -440,6 +440,10 @@ const MultiSelectV2Menu = ({
                                         : undefined
                                 }
                                 selectAllText={selectAllText}
+                                selectAllDataId={
+                                    selectAllTextProp ??
+                                    SELECT_MESSAGES['select.action.select-all']
+                                }
                                 disabled={disabled}
                             />
                             <ScrollableContent

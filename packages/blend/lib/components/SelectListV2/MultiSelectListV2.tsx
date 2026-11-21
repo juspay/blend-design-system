@@ -340,6 +340,10 @@ const MultiSelectListV2 = ({
                         availableValues={availableValues}
                         onSelectAll={handleSelectAll}
                         selectAllText={selectAllText}
+                        dataIdText={
+                            selectAllTextProp ??
+                            SELECT_MESSAGES['select.action.select-all']
+                        }
                         disabled={selectAllDisabled}
                         asMenuItem={false}
                     />

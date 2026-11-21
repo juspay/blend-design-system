@@ -26,6 +26,8 @@ export type MultiSelectV2MenuHeaderProps = {
         filteredItems: MultiSelectV2GroupType[]
     ) => void
     selectAllText?: string
+    /** Stable `data-id` text for the select-all row (see `dataIdText`). */
+    selectAllDataId?: string
     disabled?: boolean
 }
 
@@ -45,6 +47,7 @@ const MultiSelectV2MenuHeader = ({
     filteredItems,
     onSelectAll,
     selectAllText,
+    selectAllDataId,
     disabled,
 }: MultiSelectV2MenuHeaderProps) => {
     const { m } = useMessages(SELECT_MESSAGES)
@@ -84,6 +87,10 @@ const MultiSelectV2MenuHeader = ({
                         }
                         selectAllText={
                             selectAllText ?? m('select.action.select-all')
+                        }
+                        dataIdText={
+                            selectAllDataId ??
+                            SELECT_MESSAGES['select.action.select-all']
                         }
                         disabled={disabled}
                     />
