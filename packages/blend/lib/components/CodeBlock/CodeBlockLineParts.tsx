@@ -164,6 +164,9 @@ export type DiffRowRenderContext = {
     getTokenColor: (type: string) => string
     getDiffGutterStyle: (lineType?: DiffLineType) => CSSProperties
     getDiffLineBackground: (lineType?: DiffLineType) => CSSProperties
+    /** Localized labels; omitted, the English defaults are used. */
+    removedCodeLabel?: string
+    addedCodeLabel?: string
 }
 
 /**
@@ -221,7 +224,7 @@ export const renderDiffUnifiedRowPair = (
                 alignItems="flex-start"
                 borderRight={tokens.border}
                 role="group"
-                aria-label="Removed code"
+                aria-label={ctx.removedCodeLabel ?? 'Removed code'}
                 style={{
                     flex: '1 1 0%',
                     minWidth: 0,
@@ -260,7 +263,7 @@ export const renderDiffUnifiedRowPair = (
                 display="flex"
                 alignItems="flex-start"
                 role="group"
-                aria-label="Added code"
+                aria-label={ctx.addedCodeLabel ?? 'Added code'}
                 style={{
                     flex: '1 1 0%',
                     minWidth: 0,

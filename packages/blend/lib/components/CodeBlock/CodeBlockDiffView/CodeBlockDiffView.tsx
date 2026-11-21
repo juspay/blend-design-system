@@ -22,6 +22,8 @@ import { getDiffCollapsedRangeKey } from '../utils'
 import type { CodeBlockDiffViewProps } from './types'
 import type { DiffGapExpansionState } from './types'
 import { DiffLineType } from '../types'
+import { useMessages } from '../../../i18n/useMessages'
+import { CODE_MESSAGES } from '../../../i18n/catalog/code.messages'
 
 const lineBlockMotion: CSSProperties = {
     transition: 'opacity 0.2s ease-out',
@@ -69,6 +71,7 @@ const CodeBlockDiffView = ({
     rowCtx,
     diffExpandChunk,
 }: CodeBlockDiffViewProps) => {
+    const { m } = useMessages(CODE_MESSAGES)
     const [gapExpansionByKey, setGapExpansionByKey] = useState<
         Map<string, DiffGapExpansionState>
     >(() => new Map())
@@ -305,7 +308,7 @@ const CodeBlockDiffView = ({
                             }
                             style={expandBarMotion}
                             role="separator"
-                            aria-label="Collapsed lines. Use controls to load more context."
+                            aria-label={m('code-block.a11y.collapsed-lines')}
                         >
                             <ExpandButton
                                 type="button"
@@ -317,7 +320,9 @@ const CodeBlockDiffView = ({
                                     )
                                 }
                                 disabled={hiddenCount === 0}
-                                aria-label="Load more lines from above"
+                                aria-label={m(
+                                    'code-block.a11y.load-more-above'
+                                )}
                                 $color={tokens.body.expandContext.color}
                                 $padding={
                                     tokens.body.expandContext.button.padding
@@ -359,7 +364,9 @@ const CodeBlockDiffView = ({
                                     onClick={() =>
                                         expandGapFull(gapStart, gapEnd, gapKey)
                                     }
-                                    aria-label="Expand full collapsed section"
+                                    aria-label={m(
+                                        'code-block.a11y.expand-collapsed'
+                                    )}
                                     $color={tokens.body.expandContext.color}
                                     $padding={
                                         tokens.body.expandContext.button
@@ -396,7 +403,9 @@ const CodeBlockDiffView = ({
                                     )
                                 }
                                 disabled={hiddenCount === 0}
-                                aria-label="Load more lines from below"
+                                aria-label={m(
+                                    'code-block.a11y.load-more-below'
+                                )}
                                 $color={tokens.body.expandContext.color}
                                 $padding={
                                     tokens.body.expandContext.button.padding
@@ -446,6 +455,7 @@ const CodeBlockDiffView = ({
             gapExpansionByKey,
             renderColumnPair,
             tokens,
+            m,
         ]
     )
 

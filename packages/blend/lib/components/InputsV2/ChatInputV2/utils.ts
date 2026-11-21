@@ -169,17 +169,35 @@ export function applyChatInputV2TextareaAutoHeight(
     el.style.height = `${Math.min(el.scrollHeight, maxHeightPx)}px`
 }
 
+/**
+ * Localized copy for the duplicate-file snackbar. ChatInputV2 passes one
+ * bound to the provider locale; omitted, the English text below is used, so
+ * direct callers are unchanged.
+ */
+export type ChatInputV2DuplicateFileMessages = {
+    header: string
+    single: (name: string) => string
+    many: (count: number) => string
+}
+
+const ENGLISH_DUPLICATE_FILE_MESSAGES: ChatInputV2DuplicateFileMessages = {
+    header: 'Duplicate File',
+    single: (name) => `File "${name}" is already attached`,
+    many: (count) => `${count} duplicate file(s) were not added`,
+}
+
 export function notifyChatInputV2DuplicateFiles(
-    duplicateFileNames: string[]
+    duplicateFileNames: string[],
+    messages: ChatInputV2DuplicateFileMessages = ENGLISH_DUPLICATE_FILE_MESSAGES
 ): void {
     if (duplicateFileNames.length === 0) return
     const duplicateCount = duplicateFileNames.length
     const message =
         duplicateCount === 1
-            ? `File "${duplicateFileNames[0]}" is already attached`
-            : `${duplicateCount} duplicate file(s) were not added`
+            ? messages.single(duplicateFileNames[0])
+            : messages.many(duplicateCount)
     addSnackbarV2({
-        header: 'Duplicate File',
+        header: messages.header,
         description: message,
         variant: SnackbarV2Variant.WARNING,
         duration: DUPLICATE_FILE_SNACKBAR_MS,
@@ -190,7 +208,8 @@ export function notifyChatInputV2DuplicateFiles(
 export function handleChatInputV2FileInputChange(
     e: ChangeEvent<HTMLInputElement>,
     attachedFiles: ChatInputV2AttachedFile[],
-    onAttachFiles: (files: File[]) => void
+    onAttachFiles: (files: File[]) => void,
+    duplicateFileMessages?: ChatInputV2DuplicateFileMessages
 ): void {
     const files = Array.from(e.target.files || [])
     e.target.value = ''
@@ -202,7 +221,7 @@ export function handleChatInputV2FileInputChange(
     )
 
     if (duplicateFiles.length > 0) {
-        notifyChatInputV2DuplicateFiles(duplicateFiles)
+        notifyChatInputV2DuplicateFiles(duplicateFiles, duplicateFileMessages)
     }
 
     if (newFiles.length > 0) {

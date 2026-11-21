@@ -20,6 +20,8 @@ import { ChatInputTokensType } from './chatInput.tokens'
 import { createOverflowMenuItems } from './utils'
 import { useResizeObserver } from '../../hooks/useResizeObserver'
 import { useDebounce } from '../../hooks/useDebounce'
+import { useMessages } from '../../i18n/useMessages'
+import { CHAT_INPUT_MESSAGES } from '../../i18n/catalog/chatInput.messages'
 
 type AttachmentFileProps = {
     attachedFiles: AttachedFile[]
@@ -36,6 +38,7 @@ const AttachmentFile = ({
     overflowMenuProps,
     containerRef,
 }: AttachmentFileProps) => {
+    const { m, mp } = useMessages(CHAT_INPUT_MESSAGES)
     const [cutOffIndex, setCutOffIndex] = useState<number>(attachedFiles.length)
     const [overflowMenuOpen, setOverflowMenuOpen] = useState(false)
     const tokens = useResponsiveTokens<ChatInputTokensType>('CHAT_INPUT')
@@ -165,9 +168,10 @@ const AttachmentFile = ({
                 maxHeight={tokens.filesContainer.maxHeight}
                 overflowY={tokens.filesContainer.overflowY}
                 role="region"
-                aria-label={`${attachedFiles.length} file${
-                    attachedFiles.length !== 1 ? 's' : ''
-                } attached`}
+                aria-label={mp(
+                    'chat-input.a11y.files-attached',
+                    attachedFiles.length
+                )}
                 id={filesRegionId}
                 margin={tokens.filesContainer.margin}
             >
@@ -191,13 +195,23 @@ const AttachmentFile = ({
                                             e.stopPropagation()
                                             onFileRemove?.(file.id)
                                         }}
-                                        aria-label={`Remove ${fileName} file`}
+                                        aria-label={m(
+                                            'chat-input.a11y.remove-file',
+                                            { name: fileName }
+                                        )}
+                                        data-element="file-attachment-remove"
                                     />
                                 }
                                 onClick={(e) => {
                                     const target = e.target as HTMLElement
+                                    // The data-element hook is what matches
+                                    // now that the aria-label is localized;
+                                    // the English label check is kept for
+                                    // anything that relied on it.
                                     if (
-                                        target.closest('[aria-label*="Remove"]')
+                                        target.closest(
+                                            '[data-element="file-attachment-remove"], [aria-label*="Remove"]'
+                                        )
                                     ) {
                                         return
                                     }
@@ -213,7 +227,9 @@ const AttachmentFile = ({
                                         onFileRemove?.(file.id)
                                     }
                                 }}
-                                aria-label={`${fileName} file, press Delete to remove, click to view`}
+                                aria-label={m('chat-input.a11y.file-item', {
+                                    name: fileName,
+                                })}
                                 data-element="file-attachment-item"
                             />
                         </Tooltip>
@@ -229,13 +245,20 @@ const AttachmentFile = ({
                                     size={ButtonSize.SMALL}
                                     subType={ButtonSubType.INLINE}
                                     leadingIcon={<Plus size={14} />}
-                                    text={`${hiddenFiles.length} more`}
-                                    aria-label={`Show ${hiddenFiles.length} more attached file${
-                                        hiddenFiles.length !== 1 ? 's' : ''
-                                    }`}
+                                    text={mp(
+                                        'chat-input.label.more-files',
+                                        hiddenFiles.length
+                                    )}
+                                    aria-label={mp(
+                                        'chat-input.a11y.show-more-files',
+                                        hiddenFiles.length
+                                    )}
                                 >
                                     <Plus size={14} />
-                                    {hiddenFiles.length} more
+                                    {mp(
+                                        'chat-input.label.more-files',
+                                        hiddenFiles.length
+                                    )}
                                 </Button>
                             }
                             items={[

@@ -24,6 +24,8 @@ import { useComponentToken } from '../../../context/useComponentToken'
 import { ChatInputV2MobileTokensType } from './ChatInputV2Mobile.tokens'
 import { InputStateV2 } from '../inputV2.types'
 import { MobileChatInputV2Props } from './ChatInputV2.types'
+import { useMessages } from '../../../i18n/useMessages'
+import { CHAT_INPUT_MESSAGES } from '../../../i18n/catalog/chatInput.messages'
 
 const HiddenScrollbarTextarea = styled(PrimitiveTextarea)`
     /* Hide scrollbar for Firefox */
@@ -61,6 +63,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
         },
         ref
     ) {
+        const { m } = useMessages(CHAT_INPUT_MESSAGES)
         const mobileTokens = useComponentToken(
             'CHAT_INPUTV2_MOBILE'
         ) as ChatInputV2MobileTokensType
@@ -214,7 +217,7 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                                 mobileTokens.attachmentButtonDimensions.height
                             }
                             onClick={handleAttachClick}
-                            aria-label="Attach files"
+                            aria-label={m('chat-input.a11y.attach-files')}
                             display="flex"
                             alignItems="center"
                             justifyContent="center"
@@ -308,7 +311,9 @@ const MobileChatInputV2 = forwardRef<HTMLDivElement, MobileChatInputV2Props>(
                         {secondaryAction && (
                             <PrimitiveButton
                                 disabled={disabled}
-                                aria-label="Secondary action"
+                                aria-label={m(
+                                    'chat-input.a11y.secondary-action'
+                                )}
                                 position="absolute"
                                 bottom={mobileTokens.secondaryAction.bottom}
                                 right={mobileTokens.secondaryAction.right}

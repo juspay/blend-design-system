@@ -33,6 +33,8 @@ import MobileChatInputV2 from './MobileChatInputV2'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { filterBlockedProps } from '../../../utils/prop-helpers'
+import { useMessages } from '../../../i18n/useMessages'
+import { CHAT_INPUT_MESSAGES } from '../../../i18n/catalog/chatInput.messages'
 
 const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
     (
@@ -40,7 +42,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
             topContent,
             secondaryAction,
             onSecondaryActionClick = () => {},
-            placeholder = 'Type a message...',
+            placeholder: placeholderProp,
             onChange,
             onEnter = () => {},
             onAttachFiles = () => {},
@@ -57,6 +59,21 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
         },
         ref
     ) => {
+        const { m, mp, pick } = useMessages(CHAT_INPUT_MESSAGES)
+        const placeholder = pick(
+            placeholderProp,
+            'chat-input.placeholder.message'
+        )
+        const duplicateFileMessages = useMemo(
+            () => ({
+                header: m('chat-input.status.duplicate-header'),
+                single: (name: string) =>
+                    m('chat-input.status.duplicate-single', { name }),
+                many: (count: number) =>
+                    mp('chat-input.status.duplicates-not-added', count),
+            }),
+            [m, mp]
+        )
         const filteredRest = filterBlockedProps(textareaRest)
         const containerRef = useRef<HTMLDivElement>(null)
         const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -115,15 +132,16 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                         handleChatInputV2FileInputChange(
                             e,
                             attachedFiles,
-                            onAttachFiles
+                            onAttachFiles,
+                            duplicateFileMessages
                         )
                     }
                     multiple
                     accept="image/*,.pdf,.csv,.txt,.doc,.docx"
-                    aria-label="Attach files"
+                    aria-label={m('chat-input.a11y.attach-files')}
                 />
             ),
-            [attachedFiles, onAttachFiles]
+            [attachedFiles, onAttachFiles, duplicateFileMessages, m]
         )
 
         if (isMobile) {
@@ -298,7 +316,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                             leftSlot={{ slot: <PaperclipIcon size={16} /> }}
                             onClick={handleAttachClick}
                             disabled={disabled}
-                            aria-label="Attach files"
+                            aria-label={m('chat-input.a11y.attach-files')}
                         />
 
                         {secondaryAction && (
@@ -311,7 +329,9 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                                     onSecondaryActionClick()
                                 }}
                                 disabled={disabled}
-                                aria-label="Secondary action"
+                                aria-label={m(
+                                    'chat-input.a11y.secondary-action'
+                                )}
                             />
                         )}
                     </Block>
@@ -385,7 +405,7 @@ const ChatInputV2 = forwardRef<HTMLDivElement, ChatInputV2Props>(
                                             .header.textTransform
                                     }
                                 >
-                                    Top Queries
+                                    {m('chat-input.label.top-queries')}
                                 </Text>
                             </Block>
 

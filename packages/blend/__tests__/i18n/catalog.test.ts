@@ -16,6 +16,8 @@ import { TABS_MESSAGES } from '../../lib/i18n/catalog/tabs.messages'
 import { INPUT_MESSAGES } from '../../lib/i18n/catalog/input.messages'
 import { OVERLAY_MESSAGES } from '../../lib/i18n/catalog/overlay.messages'
 import { FEEDBACK_MESSAGES } from '../../lib/i18n/catalog/feedback.messages'
+import { CHAT_INPUT_MESSAGES } from '../../lib/i18n/catalog/chatInput.messages'
+import { CODE_MESSAGES } from '../../lib/i18n/catalog/code.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -46,6 +48,9 @@ const FAMILIES = new Set([
     'snackbar',
     'spinner',
     'skeleton',
+    'chat-input',
+    'code-block',
+    'code-editor',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -66,6 +71,8 @@ const FRAGMENTS = {
     INPUT_MESSAGES,
     OVERLAY_MESSAGES,
     FEEDBACK_MESSAGES,
+    CHAT_INPUT_MESSAGES,
+    CODE_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -167,6 +174,50 @@ describe('message catalog', () => {
             "breadcrumb.a11y.show-more.one",
             "breadcrumb.a11y.show-more.other",
             "breadcrumb.label.item-fallback",
+            "chat-input.a11y.actions",
+            "chat-input.a11y.attach-files",
+            "chat-input.a11y.file-item",
+            "chat-input.a11y.files-attached.one",
+            "chat-input.a11y.files-attached.other",
+            "chat-input.a11y.message-input",
+            "chat-input.a11y.query",
+            "chat-input.a11y.remove-attachment",
+            "chat-input.a11y.remove-file",
+            "chat-input.a11y.secondary-action",
+            "chat-input.a11y.show-more-files.one",
+            "chat-input.a11y.show-more-files.other",
+            "chat-input.a11y.suggested-queries",
+            "chat-input.label.more-files.one",
+            "chat-input.label.more-files.other",
+            "chat-input.label.top-queries",
+            "chat-input.placeholder.message",
+            "chat-input.status.duplicate-header",
+            "chat-input.status.duplicate-single",
+            "chat-input.status.duplicates-not-added.one",
+            "chat-input.status.duplicates-not-added.other",
+            "code-block.a11y.added-code",
+            "code-block.a11y.collapsed-lines",
+            "code-block.a11y.copied",
+            "code-block.a11y.copied-from",
+            "code-block.a11y.copied-from-unnamed",
+            "code-block.a11y.copy",
+            "code-block.a11y.copy-from",
+            "code-block.a11y.copy-from-unnamed",
+            "code-block.a11y.expand-collapsed",
+            "code-block.a11y.header",
+            "code-block.a11y.load-more-above",
+            "code-block.a11y.load-more-below",
+            "code-block.a11y.region",
+            "code-block.a11y.region-language",
+            "code-block.a11y.region-unnamed",
+            "code-block.a11y.region-unnamed-language",
+            "code-block.a11y.removed-code",
+            "code-block.label.header",
+            "code-editor.a11y.copied",
+            "code-editor.a11y.copy",
+            "code-editor.a11y.header",
+            "code-editor.label.title",
+            "code-editor.status.loading",
             "common.action.apply",
             "common.action.cancel",
             "common.action.clear",

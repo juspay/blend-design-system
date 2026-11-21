@@ -11,6 +11,8 @@ import type { MenuProps } from '../Menu/types'
 import AttachmentFile from './AttachmentFile'
 import { truncatePlaceholder } from './utils'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useMessages } from '../../i18n/useMessages'
+import { CHAT_INPUT_MESSAGES } from '../../i18n/catalog/chatInput.messages'
 
 const HiddenScrollbarTextarea = styled(PrimitiveTextarea)`
     /* Hide scrollbar for Firefox */
@@ -50,6 +52,7 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
     onFileClick,
     overflowMenuProps,
 }) => {
+    const { m } = useMessages(CHAT_INPUT_MESSAGES)
     const containerRef = useRef<HTMLDivElement>(null!)
     const tokens = useResponsiveTokens<ChatInputTokensType>('CHAT_INPUT')
     const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -149,7 +152,7 @@ const MobileChatInput: React.FC<MobileChatInputProps> = ({
                         width={FOUNDATION_THEME.unit[44]}
                         height={tokens.minHeight}
                         onClick={handleAttachClick}
-                        aria-label="Attach files"
+                        aria-label={m('chat-input.a11y.attach-files')}
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
