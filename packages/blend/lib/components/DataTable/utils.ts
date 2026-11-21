@@ -1,6 +1,7 @@
 import React from 'react'
 import { DEFAULT_LOCALE } from '../../i18n/constants'
 import { getMonthNames } from '../../i18n/format/calendarNames'
+import { getNumberFormat } from '../../i18n/format/formatterCache'
 import type { BlendLocale } from '../../i18n/types'
 import {
     SortDirection,
@@ -895,6 +896,66 @@ export const sortData = <T extends Record<string, unknown>>(
             ? result
             : -result
     })
+}
+
+const escapeRegExp = (s: string): string =>
+    s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+/** Spaces a locale may use, or a person may type, as a digit-group separator. */
+// Two regexes on purpose: `.test()` on a `g` regex advances `lastIndex`, so
+// sharing one between the test and the replace makes alternate calls fail.
+const IS_SPACE_LIKE = /[\s\u00A0\u202F]/
+const SPACE_LIKE = /[\s\u00A0\u202F]/g
+// Swiss grouping: ICU versions differ on ' (U+0027) vs ’ (U+2019), and
+// hand-entered data uses either, so both count as the same separator.
+const IS_APOSTROPHE_LIKE = /['\u2019]/
+const APOSTROPHE_LIKE = /['\u2019]/g
+
+/**
+ * Strips display formatting (currency symbols, `%`, digit grouping) from a
+ * formatted number and returns a plain `Number#toString()`, or the input
+ * unchanged when it does not parse.
+ *
+ * The grouping and decimal characters come from `locale` rather than being
+ * assumed. The old implementation removed every comma, which is right for
+ * `en-US` but turns German or French `1.234,56` into `1.23456` — a wrong
+ * value on screen and in exports. With the default locale the behaviour is
+ * exactly the old one: `,` is stripped and `.` is the decimal point.
+ */
+export const stripNumberFormatting = (
+    value: unknown,
+    locale: BlendLocale = DEFAULT_LOCALE
+): string => {
+    if (value == null) return ''
+
+    const stringValue = String(value)
+
+    const parts = getNumberFormat(locale, 'decimal-2').formatToParts(12345.6)
+    const group = parts.find((p) => p.type === 'group')?.value ?? ','
+    const decimal = parts.find((p) => p.type === 'decimal')?.value ?? '.'
+
+    let cleaned = stringValue.replace(/[$€£¥₹₽₪₩₦₡₵₸₴₺₻₼₽¢]/g, '')
+    cleaned = cleaned.replace(/%/g, '')
+
+    // A space-like group separator (fr-FR's U+202F, and the plain spaces
+    // people type in its place) is matched as a class, not one exact char.
+    if (IS_SPACE_LIKE.test(group)) {
+        cleaned = cleaned.replace(SPACE_LIKE, '')
+    } else if (IS_APOSTROPHE_LIKE.test(group)) {
+        cleaned = cleaned.replace(APOSTROPHE_LIKE, '')
+    } else {
+        cleaned = cleaned.replace(new RegExp(escapeRegExp(group), 'g'), '')
+    }
+    if (decimal !== '.') cleaned = cleaned.replace(decimal, '.')
+
+    cleaned = cleaned.trim()
+
+    const numericValue = parseFloat(cleaned)
+    if (!isNaN(numericValue)) {
+        return numericValue.toString()
+    }
+
+    return stringValue
 }
 
 export const formatCurrency = (amount: number, currency = 'INR'): string => {
