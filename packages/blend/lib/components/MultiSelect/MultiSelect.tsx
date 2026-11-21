@@ -122,7 +122,9 @@ const MultiSelect = ({
         searchPlaceholderProp,
         'select.placeholder.search'
     )
-    const selectAllText = pick(selectAllTextProp, 'select.action.select-all')
+    // The menus resolve the display text themselves; they get the raw prop so
+    // their select-all `data-id` can fall back to the English default rather
+    // than inheriting an already-translated string.
     const customValueLabel = pick(
         customValueLabelProp,
         'select.label.custom-value'
@@ -275,7 +277,7 @@ const MultiSelect = ({
                 isSearchLoading={isSearchLoading}
                 emptyStateText={emptyStateText}
                 enableSelectAll={enableSelectAll}
-                selectAllText={selectAllText}
+                selectAllText={selectAllTextProp}
                 maxSelections={maxSelections}
                 customTrigger={customTrigger}
                 onBlur={callOnBlur}
@@ -376,7 +378,7 @@ const MultiSelect = ({
                             isSearchLoading={isSearchLoading}
                             emptyStateText={emptyStateText}
                             enableSelectAll={enableSelectAll}
-                            selectAllText={selectAllText}
+                            selectAllText={selectAllTextProp}
                             maxSelections={maxSelections}
                             onSelectAll={
                                 enableSelectAll

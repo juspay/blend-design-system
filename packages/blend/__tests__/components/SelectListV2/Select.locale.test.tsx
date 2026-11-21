@@ -6,6 +6,8 @@ import {
     MultiSelectListV2,
 } from '../../../lib/components/SelectListV2'
 import { getFilteredItemsWithCustomValue } from '../../../lib/components/Select/selectUtils'
+import { MultiSelect } from '../../../lib/components/MultiSelect'
+import { MultiSelectV2 } from '../../../lib/components/MultiSelectV2'
 
 /**
  * Select-family localization, exercised through the list variants because
@@ -130,6 +132,56 @@ describe('Select family localization (Accessibility)', () => {
             container.querySelector('[data-id="Tout sélectionner"]')
         ).toBeNull()
         expect(container.querySelector('[data-id="Select All"]')).not.toBeNull()
+    })
+})
+
+// The dropdown variants resolve their display text inside the menu, so the
+// select-all data-id must be checked through them too, not only through the
+// inline list.
+describe.each([
+    ['MultiSelect', MultiSelect],
+    ['MultiSelectV2', MultiSelectV2],
+] as const)('%s select-all data-id (Accessibility)', (_, Component) => {
+    it('shows the translated label but keeps the English data-id', async () => {
+        const { user } = render(
+            <Component
+                label="Fruit"
+                placeholder="Choose"
+                items={items()}
+                selectedValues={[]}
+                onChange={() => {}}
+                enableSelectAll
+            />,
+            { providerProps: { locale: 'fr-FR', t } }
+        )
+
+        await user.click(screen.getByLabelText('Fruit'))
+        expect(await screen.findByText('Tout sélectionner')).toBeInTheDocument()
+        expect(
+            document.querySelector('[data-id="Tout sélectionner"]')
+        ).toBeNull()
+        expect(document.querySelector('[data-id="Select All"]')).not.toBeNull()
+    })
+
+    it('uses the consumer text for both when selectAllText is passed', async () => {
+        const { user } = render(
+            <Component
+                label="Fruit"
+                placeholder="Choose"
+                items={items()}
+                selectedValues={[]}
+                onChange={() => {}}
+                enableSelectAll
+                selectAllText="Pick every fruit"
+            />,
+            { providerProps: { locale: 'fr-FR', t } }
+        )
+
+        await user.click(screen.getByLabelText('Fruit'))
+        expect(await screen.findByText('Pick every fruit')).toBeInTheDocument()
+        expect(
+            document.querySelector('[data-id="Pick every fruit"]')
+        ).not.toBeNull()
     })
 })
 

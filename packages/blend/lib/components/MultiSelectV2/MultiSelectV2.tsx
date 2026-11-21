@@ -105,7 +105,9 @@ const MultiSelectV2 = ({
     ...rest
 }: MultiSelectV2Props) => {
     const { m, pick } = useMessages(SELECT_MESSAGES)
-    const selectAllText = pick(selectAllTextProp, 'select.action.select-all')
+    // The menus resolve the display text themselves; they get the raw prop so
+    // their select-all `data-id` can fall back to the English default rather
+    // than inheriting an already-translated string.
     const customValueLabel = pick(
         customValueLabelProp,
         'select.label.custom-value'
@@ -249,7 +251,7 @@ const MultiSelectV2 = ({
         size,
         search,
         enableSelectAll,
-        selectAllText,
+        selectAllText: selectAllTextProp,
         maxSelections,
         customTrigger,
         error,
@@ -351,7 +353,7 @@ const MultiSelectV2 = ({
                         disabled={disabled}
                         search={search}
                         enableSelectAll={enableSelectAll}
-                        selectAllText={selectAllText}
+                        selectAllText={selectAllTextProp}
                         maxSelections={maxSelections}
                         onSelectAll={
                             enableSelectAll ? handleBulkSelection : undefined
