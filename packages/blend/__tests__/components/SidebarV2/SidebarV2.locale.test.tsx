@@ -19,7 +19,7 @@ const DATA: DirectoryData[] = [
     { label: 'Main', items: [{ label: 'Dashboard' }] },
 ]
 
-describe('SidebarV2 and TopbarV2 locale', () => {
+describe('SidebarV2 and TopbarV2 locale (Accessibility)', () => {
     it('renders the English names with no provider locale', () => {
         render(
             <SidebarV2 data={DATA}>

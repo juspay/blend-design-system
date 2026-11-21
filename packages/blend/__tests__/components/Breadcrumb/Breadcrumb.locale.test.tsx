@@ -19,7 +19,7 @@ const itemsOf = (n: number) =>
         href: `/l${i + 1}`,
     }))
 
-describe('Breadcrumb locale', () => {
+describe('Breadcrumb locale (Accessibility)', () => {
     it('renders the English accessible names with no provider locale', () => {
         render(<Breadcrumb items={itemsOf(3)} />)
 

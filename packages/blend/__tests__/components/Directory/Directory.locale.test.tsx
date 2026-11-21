@@ -13,7 +13,7 @@ const DATA: DirectoryData[] = [
     { label: 'Organizations', items: [{ label: 'Acme' }, { label: 'Orbit' }] },
 ]
 
-describe('Directory locale', () => {
+describe('Directory locale (Accessibility)', () => {
     it('renders the English landmark and section names with no provider locale', () => {
         render(<Directory directoryData={DATA} />)
 

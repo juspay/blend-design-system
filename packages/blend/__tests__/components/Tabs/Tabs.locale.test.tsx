@@ -19,7 +19,7 @@ const ITEMS = [
     { value: 'two', label: 'Two', content: <p>Content two</p>, newItem: true },
 ]
 
-describe('Tabs locale', () => {
+describe('Tabs locale (Accessibility)', () => {
     it('renders the English close and add labels with no provider locale', () => {
         render(<Tabs items={ITEMS} showAddButton onTabAdd={() => {}} />)
 

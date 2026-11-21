@@ -15,7 +15,7 @@ const ITEMS_V2 = [
     { items: [{ label: { text: 'Mumbai' } }, { label: { text: 'Moscow' } }] },
 ]
 
-describe('Menu locale', () => {
+describe('Menu locale (Accessibility)', () => {
     it('defaults the V1 search placeholder and its name to English', async () => {
         const { user } = render(
             <Menu
