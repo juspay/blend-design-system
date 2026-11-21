@@ -43,6 +43,7 @@ import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { Button, ButtonType } from '../Button'
 import { DEFAULT_COLORS } from './utils'
+import ChartMessage from './ChartMessage'
 
 export const renderChart = ({
     chartName,
@@ -218,15 +219,18 @@ export const renderChart = ({
                             color={FOUNDATION_THEME.colors.gray[800]}
                             fontWeight={600}
                         >
-                            {noData?.title || 'No data available'}
+                            {noData?.title || (
+                                <ChartMessage id="chart.empty.no-data" />
+                            )}
                         </Text>
                         <Text
                             variant="body.md"
                             color={FOUNDATION_THEME.colors.gray[600]}
                             fontWeight={500}
                         >
-                            {noData?.subtitle ||
-                                'Data will appear here once available'}
+                            {noData?.subtitle || (
+                                <ChartMessage id="chart.empty.no-data-subtitle" />
+                            )}
                         </Text>
                     </Block>
                 </Block>
@@ -1212,14 +1216,14 @@ export const renderChart = ({
                             color={FOUNDATION_THEME.colors.gray[800]}
                             fontWeight={600}
                         >
-                            Invalid Sankey data format
+                            <ChartMessage id="chart.error.invalid-sankey" />
                         </Text>
                         <Text
                             variant="body.md"
                             color={FOUNDATION_THEME.colors.gray[600]}
                             fontWeight={500}
                         >
-                            Please provide nodes and links
+                            <ChartMessage id="chart.error.invalid-sankey-hint" />
                         </Text>
                     </Block>
                 )
@@ -1466,6 +1470,10 @@ export const renderChart = ({
         }
 
         default:
-            return <div>Unsupported chart type</div>
+            return (
+                <div>
+                    <ChartMessage id="chart.error.unsupported-type" />
+                </div>
+            )
     }
 }
