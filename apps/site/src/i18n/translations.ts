@@ -203,6 +203,7 @@ const FRENCH: BlendMessageOverrides = {
     'select.a11y.results-updated': 'Résultats de recherche mis à jour',
     'select.a11y.clear-selection': 'Effacer la sélection',
     'select.a11y.clear-selection-for': 'Effacer la sélection pour {label}',
+    'button.a11y.loading': 'Chargement, veuillez patienter',
 }
 
 const JAPANESE: BlendMessageOverrides = {
@@ -346,6 +347,7 @@ const JAPANESE: BlendMessageOverrides = {
     'select.a11y.results-updated': '検索結果を更新しました',
     'select.a11y.clear-selection': '選択をクリア',
     'select.a11y.clear-selection-for': '{label}の選択をクリア',
+    'button.a11y.loading': '読み込み中です。お待ちください',
 }
 
 /**

@@ -7,6 +7,7 @@ import { TIME_PICKER_MESSAGES } from '../../lib/i18n/catalog/timePicker.messages
 import { UPLOAD_MESSAGES } from '../../lib/i18n/catalog/upload.messages'
 import { UPLOAD_V2_MESSAGES } from '../../lib/i18n/catalog/uploadV2.messages'
 import { SELECT_MESSAGES } from '../../lib/i18n/catalog/select.messages'
+import { BUTTON_MESSAGES } from '../../lib/i18n/catalog/button.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -21,6 +22,7 @@ const FAMILIES = new Set([
     'date-range-picker',
     'time-picker',
     'select',
+    'button',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -32,6 +34,7 @@ const FRAGMENTS = {
     DATE_RANGE_PICKER_MESSAGES,
     TIME_PICKER_MESSAGES,
     SELECT_MESSAGES,
+    BUTTON_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -123,6 +126,7 @@ describe('message catalog', () => {
     it('matches the published key list', () => {
         expect([...keys].sort()).toMatchInlineSnapshot(`
           [
+            "button.a11y.loading",
             "common.action.apply",
             "common.action.cancel",
             "common.action.clear",
