@@ -25,7 +25,7 @@ const fr = { providerProps: { locale: 'fr-FR', t } }
 
 const FILES: AttachedFile[] = [{ id: '1', name: 'report.pdf', type: 'pdf' }]
 
-describe('ChatInput and code components locale', () => {
+describe('ChatInput and code components locale (Accessibility)', () => {
     it('translates the default placeholder but keeps data-chatinput English', () => {
         const { container } = render(
             <ChatInput value="" onChange={() => {}} />,
