@@ -29,7 +29,7 @@ const STEPS = [
 const stepWithDataId = (container: HTMLElement, dataId: string) =>
     container.querySelector(`[data-id="${dataId}"]`)
 
-describe('Stepper locale', () => {
+describe('Stepper locale (Accessibility)', () => {
     it('names the V1 step count and keeps the original data-id', () => {
         const { container } = render(
             <Stepper
