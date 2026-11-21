@@ -16,6 +16,8 @@ import {
 import { ActiveItemProvider, ExpandedItemsProvider } from './NavItem'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { DIRECTORY_MESSAGES } from '../../i18n/catalog/directory.messages'
 
 const Directory = ({
     directoryData: directoryDataProp,
@@ -37,6 +39,7 @@ const Directory = ({
     enableVirtualization = false,
     virtualization,
 }: DirectoryProps) => {
+    const { m } = useMessages(DIRECTORY_MESSAGES)
     const directoryData = normalizeDirectoryData(directoryDataProp)
     const sectionRefs = useRef<Array<React.RefObject<HTMLDivElement | null>>>(
         []
@@ -104,7 +107,7 @@ const Directory = ({
                     flexDirection="column"
                     alignItems="center"
                     overflow="auto"
-                    aria-label="Directory navigation"
+                    aria-label={m('directory.a11y.navigation')}
                     gap={iconOnlyMode ? '8px' : tokens.gap}
                     paddingX={iconOnlyMode ? '12px' : tokens.paddingX}
                     paddingY={tokens.paddingY}

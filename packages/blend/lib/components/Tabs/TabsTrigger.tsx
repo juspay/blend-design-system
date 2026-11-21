@@ -8,6 +8,8 @@ import { X } from 'lucide-react'
 import Skeleton from '../Skeleton/Skeleton'
 import { getSkeletonState } from '../Skeleton/utils'
 import Block from '../Primitives/Block/Block'
+import { useMessages } from '../../i18n/useMessages'
+import { TABS_MESSAGES } from '../../i18n/catalog/tabs.messages'
 
 const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
     (
@@ -30,6 +32,7 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(TABS_MESSAGES)
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
         const { shouldShowSkeleton } = getSkeletonState(showSkeleton)
 
@@ -90,7 +93,11 @@ const TabsTrigger = forwardRef<HTMLButtonElement, TabsTriggerProps>(
                 alignItems="center"
                 justifyContent="center"
                 transition="background-color 0.2s"
-                aria-label={`Close ${children || 'tab'}`}
+                aria-label={
+                    children
+                        ? m('tabs.a11y.close', { label: String(children) })
+                        : m('tabs.a11y.close-tab')
+                }
                 tabIndex={isDisabled ? -1 : 0}
                 aria-disabled={isDisabled ? 'true' : undefined}
                 _hover={{

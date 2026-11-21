@@ -10,6 +10,8 @@ import type { SidebarMerchantInfo } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SidebarTokenType } from './sidebar.tokens'
 import { Tooltip } from '../Tooltip'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 
 type SidebarHeaderProps = {
     sidebarTopSlot?: React.ReactNode
@@ -34,6 +36,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
     hideToggleButton = false,
     iconOnlyMode = false,
 }) => {
+    const { m } = useMessages(NAVIGATION_MESSAGES)
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
     const defaultMerchantInfo: SidebarMerchantInfo = {
@@ -65,7 +68,7 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
         <SingleSelect
             helpIconText=""
             required={false}
-            placeholder="Select Merchant"
+            placeholder={m('navigation.placeholder.select-merchant')}
             variant={SelectMenuVariant.NO_CONTAINER}
             size={SelectMenuSize.SMALL}
             items={merchantData.items.map((item) => ({
@@ -129,7 +132,12 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
 
             {!hideToggleButton && (
                 <Tooltip
-                    content={`${isExpanded ? 'Collapse' : 'Expand'} sidebar (${sidebarCollapseKey})`}
+                    content={m(
+                        isExpanded
+                            ? 'sidebar.label.collapse-shortcut'
+                            : 'sidebar.label.expand-shortcut',
+                        { shortcut: String(sidebarCollapseKey) }
+                    )}
                 >
                     <PrimitiveButton
                         type="button"
@@ -145,7 +153,12 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                         borderRadius="10px"
                         cursor="pointer"
                         padding="9px"
-                        aria-label={`${isExpanded ? 'Collapse' : 'Expand'} sidebar. Press ${sidebarCollapseKey} to toggle.`}
+                        aria-label={m(
+                            isExpanded
+                                ? 'sidebar.a11y.collapse-toggle'
+                                : 'sidebar.a11y.expand-toggle',
+                            { shortcut: String(sidebarCollapseKey) }
+                        )}
                         aria-expanded={isExpanded}
                         aria-controls={
                             isExpanded && sidebarNavId
@@ -177,7 +190,11 @@ const SidebarHeader: React.FC<SidebarHeaderProps> = ({
                                 borderWidth: 0,
                             }}
                         >
-                            {isExpanded ? 'Collapse' : 'Expand'} sidebar
+                            {m(
+                                isExpanded
+                                    ? 'sidebar.action.collapse'
+                                    : 'sidebar.action.expand'
+                            )}
                         </span>
                     </PrimitiveButton>
                 </Tooltip>

@@ -9,6 +9,8 @@ import {
 } from '../MenuV2/menuV2.types'
 import type { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
 import type { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
+import { useMessages } from '../../i18n/useMessages'
+import { BREADCRUMB_MESSAGES } from '../../i18n/catalog/breadcrumb.messages'
 import {
     createStubAnchorClickEvent,
     getPlainTextFromReactNode,
@@ -24,6 +26,7 @@ const BreadcrumbV2OverflowMenu = ({
     menuItems,
     breadcrumbTokens,
 }: BreadcrumbV2OverflowMenuProps) => {
+    const { m, mp } = useMessages(BREADCRUMB_MESSAGES)
     const [open, setOpen] = React.useState(false)
 
     const items: MenuV2GroupType[] = React.useMemo(() => {
@@ -35,7 +38,7 @@ const BreadcrumbV2OverflowMenu = ({
                     const props = el.props as BreadcrumbCompoundItemProps
                     const text =
                         getPlainTextFromReactNode(props.children).trim() ||
-                        'Breadcrumb'
+                        m('breadcrumb.label.item-fallback')
                     const href = props.href ?? '#'
 
                     return {
@@ -58,7 +61,7 @@ const BreadcrumbV2OverflowMenu = ({
                 }),
             },
         ]
-    }, [menuItems])
+    }, [menuItems, m])
 
     if (menuItems.length === 0) {
         return null
@@ -91,7 +94,7 @@ const BreadcrumbV2OverflowMenu = ({
                 </PrimitiveButton>
             }
             triggerProps={{
-                'aria-label': `Show ${count} more breadcrumb ${count === 1 ? 'item' : 'items'}`,
+                'aria-label': mp('breadcrumb.a11y.show-more', count),
                 'aria-expanded': open,
                 'aria-haspopup': 'menu',
             }}

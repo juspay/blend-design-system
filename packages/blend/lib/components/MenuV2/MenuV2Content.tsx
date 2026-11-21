@@ -16,6 +16,8 @@ import { menuV2ContentAnimations } from './menuV2.animations'
 import { flattenMenuV2Groups, type MenuV2FlatRow } from './menuV2.utils'
 import { getBaseVirtualViewportHeight } from '../common/virtualViewport'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
+import { useMessages } from '../../i18n/useMessages'
+import { MENU_MESSAGES } from '../../i18n/catalog/menu.messages'
 
 type ContentStyledProps = { $zIndex?: number | string }
 
@@ -153,6 +155,7 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(MENU_MESSAGES)
         const searchInputRef = useRef<HTMLInputElement>(null)
         const virtualScrollRef = useRef<HTMLDivElement>(null)
         const content = menuTokens
@@ -281,8 +284,10 @@ const MenuV2Content = React.forwardRef<HTMLDivElement, MenuV2ContentProps>(
                             }}
                             aria-label={
                                 searchPlaceholder
-                                    ? `Search menu items: ${searchPlaceholder}`
-                                    : 'Search menu items'
+                                    ? m('menu.a11y.search-with-placeholder', {
+                                          placeholder: searchPlaceholder,
+                                      })
+                                    : m('menu.a11y.search')
                             }
                         />
                     </Block>

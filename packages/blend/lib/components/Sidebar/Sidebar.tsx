@@ -26,6 +26,8 @@ import {
     MOBILE_NAVIGATION_SAFE_AREA,
 } from './utils'
 import SidebarMobileNavigation from './SidebarMobile'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 import { SectionStateContext } from '../Directory/Section'
 
 const getSidebarStatus = (
@@ -36,7 +38,13 @@ const getSidebarStatus = (
     return isExpanded ? 'expanded' : 'collapsed'
 }
 
-const announceSidebarStateChange = (isExpanded: boolean) => {
+/**
+ * `message` is the localized announcement; omitted, the English one is used.
+ */
+const announceSidebarStateChange = (
+    isExpanded: boolean,
+    message = `Sidebar ${isExpanded ? 'expanded' : 'collapsed'}` // i18n-ignore: English default for direct callers
+) => {
     const announcement = document.createElement('div')
     announcement.setAttribute('role', 'status')
     announcement.setAttribute('aria-live', 'polite')
@@ -46,7 +54,7 @@ const announceSidebarStateChange = (isExpanded: boolean) => {
     announcement.style.width = '1px'
     announcement.style.height = '1px'
     announcement.style.overflow = 'hidden'
-    announcement.textContent = `Sidebar ${isExpanded ? 'expanded' : 'collapsed'}`
+    announcement.textContent = message
     document.body.appendChild(announcement)
 
     // Remove announcement after screen reader has time to read it
@@ -111,6 +119,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(NAVIGATION_MESSAGES)
         const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
@@ -230,12 +239,19 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                     event.preventDefault()
                     toggleSidebar()
 
-                    announceSidebarStateChange(!isExpanded)
+                    announceSidebarStateChange(
+                        !isExpanded,
+                        m(
+                            !isExpanded
+                                ? 'sidebar.status.expanded'
+                                : 'sidebar.status.collapsed'
+                        )
+                    )
                 }
             }
             document.addEventListener('keydown', handleKeyPress)
             return () => document.removeEventListener('keydown', handleKeyPress)
-        }, [isSmallScreen, sidebarCollapseKey, toggleSidebar, isExpanded])
+        }, [isSmallScreen, sidebarCollapseKey, toggleSidebar, isExpanded, m])
 
         // Mobile and toggle button logic
         useEffect(() => {
@@ -539,7 +555,7 @@ const Sidebar = forwardRef<HTMLDivElement, SidebarProps>(
                         as="main"
                         id={skipToContentId}
                         role="main"
-                        aria-label="Main content"
+                        aria-label={m('navigation.a11y.main-content')}
                         paddingBottom={
                             shouldRenderMobileNavigation
                                 ? (mobileNavigationHeight ??

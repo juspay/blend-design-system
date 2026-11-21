@@ -33,6 +33,8 @@ import {
     MenuV2Side,
     type MenuV2ItemType,
 } from '../MenuV2/menuV2.types'
+import { useMessages } from '../../i18n/useMessages'
+import { DIRECTORY_MESSAGES } from '../../i18n/catalog/directory.messages'
 
 const StyledElement = styled(Block)<{
     $isLink?: boolean
@@ -459,6 +461,7 @@ const NavItem = ({
     pathVerticalActive = false,
     pathElbowActive = false,
 }: NavItemProps) => {
+    const { m } = useMessages(DIRECTORY_MESSAGES)
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const { isItemExpanded, setItemExpanded } = useExpandedItemsContext()
     const isExpanded = isItemExpanded(itemPath)
@@ -807,7 +810,9 @@ const NavItem = ({
                         $tokens={tokens}
                         $showHierarchyLines={showHierarchyLines}
                         role="list"
-                        aria-label={`${item.label} submenu`}
+                        aria-label={m('directory.a11y.submenu', {
+                            label: String(item.label),
+                        })}
                         data-directory-hierarchy-line={
                             showHierarchyLines ? 'true' : undefined
                         }

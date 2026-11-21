@@ -12,6 +12,8 @@ import Block from '../../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import type { SidebarV2MobileNavigationProps } from './types'
 import type { MobileNavigationV2TokenType } from './mobile.tokens'
+import { useMessages } from '../../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../../i18n/catalog/navigation.messages'
 import {
     getMobileNavigationFillerCount,
     getMobileNavigationLayout,
@@ -93,6 +95,7 @@ const SidebarV2MobileNavigation = forwardRef<
         },
         ref
     ) => {
+        const { m } = useMessages(NAVIGATION_MESSAGES)
         const baseId = useId()
         const secondaryNavigationRegionId = `${baseId}-secondary-mobile-nav`
 
@@ -264,7 +267,7 @@ const SidebarV2MobileNavigation = forwardRef<
                         ? String(tokens.container.background)
                         : undefined
                 }
-                aria-label="App navigation"
+                aria-label={m('sidebar.a11y.app-navigation')}
                 style={{
                     maxHeight: navigationHeight,
                     marginBottom: `calc(${safeAreaOffset}px + ${floatingPadding})`,
@@ -301,7 +304,9 @@ const SidebarV2MobileNavigation = forwardRef<
                         <Block
                             id={secondaryNavigationRegionId}
                             role="region"
-                            aria-label="More navigation options"
+                            aria-label={m(
+                                'sidebar.a11y.more-navigation-options'
+                            )}
                             aria-hidden={!isExpanded}
                             display={isExpanded ? 'flex' : 'none'}
                             flexDirection="column"

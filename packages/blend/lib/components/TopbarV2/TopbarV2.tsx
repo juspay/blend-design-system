@@ -11,6 +11,8 @@ import { useComponentToken } from '../../context/useComponentToken'
 import type { ResponsiveTopbarV2Tokens } from './topbarV2.tokens'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import Seperator from '../common/Seperator'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 
 const isControlledTopbarV2 = (isVisible: boolean | undefined): boolean =>
     isVisible !== undefined
@@ -38,6 +40,7 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(NAVIGATION_MESSAGES)
         const isControlled = isControlledTopbarV2(controlledIsVisible)
         const [internalVisible] = useState<boolean>(defaultIsVisible)
         const isVisible = isControlled ? controlledIsVisible! : internalVisible
@@ -76,7 +79,7 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
                             padding={topBarToken.actionButton.padding}
                             minWidth={topBarToken.actionButton.minWidth}
                             height={topBarToken.actionButton.height}
-                            aria-label="Go back"
+                            aria-label={m('topbar.a11y.go-back')}
                             style={{
                                 transition: topBarToken.actionButton.transition,
                             }}
@@ -140,11 +143,24 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
                                             topBarToken.tenantIconButton
                                                 .minHeight
                                         }
-                                        aria-label={`Select tenant: ${
+                                        aria-label={
                                             secondarySidebar.selected ||
-                                            secondarySidebar.items[0]?.label ||
-                                            'tenant'
-                                        }`}
+                                            secondarySidebar.items[0]?.label
+                                                ? m(
+                                                      'navigation.a11y.select-tenant',
+                                                      {
+                                                          name: String(
+                                                              secondarySidebar.selected ||
+                                                                  secondarySidebar
+                                                                      .items[0]
+                                                                      ?.label
+                                                          ),
+                                                      }
+                                                  )
+                                                : m(
+                                                      'navigation.a11y.select-tenant-unnamed'
+                                                  )
+                                        }
                                         style={{
                                             transition:
                                                 topBarToken.tenantIconButton
@@ -183,15 +199,19 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
 
                         {merchantInfo ? (
                             <SingleSelect
-                                placeholder="Select Merchant"
+                                placeholder={m(
+                                    'navigation.placeholder.select-merchant'
+                                )}
                                 variant={SelectMenuVariant.NO_CONTAINER}
                                 items={[
                                     {
-                                        items: merchantInfo.items.map((m) => ({
-                                            label: m.label,
-                                            value: m.value,
-                                            slot1: m.icon,
-                                        })),
+                                        items: merchantInfo.items.map(
+                                            (merchant) => ({
+                                                label: merchant.label,
+                                                value: merchant.value,
+                                                slot1: merchant.icon,
+                                            })
+                                        ),
                                     },
                                 ]}
                                 selected={merchantInfo.selected}
@@ -212,13 +232,21 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
                                         padding="0"
                                         width="100%"
                                         overflow="hidden"
-                                        aria-label={`Select merchant: ${
-                                            merchantInfo.items.find(
-                                                (m) =>
-                                                    m.value ===
-                                                    merchantInfo.selected
-                                            )?.label ?? 'Select Merchant'
-                                        }`}
+                                        aria-label={m(
+                                            'navigation.a11y.select-merchant',
+                                            {
+                                                name: String(
+                                                    merchantInfo.items.find(
+                                                        (merchant) =>
+                                                            merchant.value ===
+                                                            merchantInfo.selected
+                                                    )?.label ??
+                                                        m(
+                                                            'navigation.placeholder.select-merchant'
+                                                        )
+                                                ),
+                                            }
+                                        )}
                                     >
                                         <Block
                                             display="flex"
@@ -229,15 +257,15 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
                                             }
                                         >
                                             {merchantInfo.items.find(
-                                                (m) =>
-                                                    m.value ===
+                                                (merchant) =>
+                                                    merchant.value ===
                                                     merchantInfo.selected
                                             )?.icon ? (
                                                 <span aria-hidden="true">
                                                     {
                                                         merchantInfo.items.find(
-                                                            (m) =>
-                                                                m.value ===
+                                                            (merchant) =>
+                                                                merchant.value ===
                                                                 merchantInfo.selected
                                                         )?.icon
                                                     }
@@ -262,10 +290,13 @@ const TopbarV2 = forwardRef<HTMLDivElement, TopbarV2Props>(
                                                 }}
                                             >
                                                 {merchantInfo.items.find(
-                                                    (m) =>
-                                                        m.value ===
+                                                    (merchant) =>
+                                                        merchant.value ===
                                                         merchantInfo.selected
-                                                )?.label ?? 'Select Merchant'}
+                                                )?.label ??
+                                                    m(
+                                                        'navigation.placeholder.select-merchant'
+                                                    )}
                                             </Text>
                                         </Block>
                                         <ChevronDown
