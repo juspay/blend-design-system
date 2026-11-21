@@ -48,7 +48,7 @@ const FRENCH: Record<string, string> = {
 }
 const t = (key: string) => FRENCH[key]
 
-describe('DataTable localization', () => {
+describe('DataTable localization (Accessibility)', () => {
     it('renders byte-identical English with no provider configuration', () => {
         render(<DataTable {...tableProps} />)
 
