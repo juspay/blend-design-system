@@ -5,11 +5,15 @@ import { ButtonV2SubType, ButtonV2Type } from '../ButtonV2/buttonV2.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TimelineTokensType } from './timeline.token'
 import type { TimelineShowMoreProps } from './types'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 const TimelineShowMore = forwardRef<HTMLDivElement, TimelineShowMoreProps>(
     ({ count, label, onShowMore, buttonProps }, ref) => {
+        const { m } = useMessages(DISPLAY_MESSAGES)
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
-        const displayText = label ?? `Show more (${count}+)`
+        const displayText =
+            label ?? m('timeline.action.show-more', { count: String(count) })
 
         return (
             <Block

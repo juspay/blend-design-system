@@ -22,6 +22,8 @@ import {
     getBodySlot2MarginBottom,
     isInlineActionButton,
 } from './utils'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 type CardComponentProps = {
     props: Extract<CardProps, { variant?: CardVariant.DEFAULT }>
@@ -533,6 +535,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
     maxHeight,
     baseId,
 }) => {
+    const { m } = useMessages(DISPLAY_MESSAGES)
     const { alignment, centerAlign = false, cardSlot } = props
     const variant = CardVariant.ALIGNED
     const hasCardSlot = Boolean(cardSlot)
@@ -554,7 +557,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                             flexShrink: 0,
                             minWidth: '92px',
                         }}
-                        aria-label="Card visual content"
+                        aria-label={m('card.a11y.visual-content')}
                     >
                         {cardSlot}
                     </Block>
@@ -585,7 +588,7 @@ export const AlignedCard: React.FC<AlignedCardComponentProps> = ({
                                 padding: `${String(cardToken.padding[variant].y)} ${String(cardToken.padding[variant].x)}`,
                             }),
                         }}
-                        aria-label="Card visual content"
+                        aria-label={m('card.a11y.visual-content')}
                     >
                         {cardSlot}
                     </Block>
@@ -638,6 +641,7 @@ export const CustomCard: React.FC<CustomCardComponentProps> = ({
     props,
     maxHeight,
 }) => {
+    const { m } = useMessages(DISPLAY_MESSAGES)
     const { children } = props
 
     return (
@@ -654,7 +658,7 @@ export const CustomCard: React.FC<CustomCardComponentProps> = ({
                 }),
             }}
             role="group"
-            aria-label="Custom card content"
+            aria-label={m('card.a11y.custom-content')}
         >
             {children}
         </Block>

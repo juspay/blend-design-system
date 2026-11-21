@@ -119,19 +119,35 @@ export function getColorFromText(text: string): string {
     return AVATAR_COLOR_PALETTE[colorIndex]
 }
 
+/**
+ * Localized label copy. `formatStatus` returns the whole "{name}, {status}"
+ * sentence for a known status, or `undefined` to fall back to the English
+ * composition below. Omitted, output is unchanged.
+ */
+export type AvatarV2LabelMessages = {
+    fallbackName: string
+    formatStatus: (name: string, status: string) => string | undefined
+}
+
 export function getAccessibleLabel(
     alt: string,
     fallbackText: string | undefined,
-    status: string
+    status: string,
+    messages?: AvatarV2LabelMessages
 ): string {
     const name =
         alt ||
-        (typeof fallbackText === 'string' ? fallbackText : DEFAULT_AVATAR_ALT)
+        (typeof fallbackText === 'string'
+            ? fallbackText
+            : (messages?.fallbackName ?? DEFAULT_AVATAR_ALT))
     const sanitizedName = sanitizeTextForLabel(name)
 
     if (!status || status === AvatarV2Status.NONE) {
         return sanitizedName
     }
+
+    const localized = messages?.formatStatus(sanitizedName, status)
+    if (localized !== undefined) return localized
 
     const statusText = status
         .replace(TEXT_PATTERNS.CAPITAL_LETTERS, ' $1')

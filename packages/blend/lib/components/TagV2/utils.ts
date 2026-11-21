@@ -2,10 +2,22 @@ import type { KeyboardEvent, MouseEvent } from 'react'
 import type { TagV2Size, TagV2SubType } from './TagV2.types'
 import type { TagV2TokensType } from './tagV2.tokens'
 
+/** Localized label copy; omitted, the English defaults are used. */
+export type TagV2LabelMessages = {
+    pressed: (text: string) => string
+    mixed: (text: string) => string
+}
+
+const ENGLISH_TAG_LABELS: TagV2LabelMessages = {
+    pressed: (text) => `${text}, pressed`,
+    mixed: (text) => `${text}, mixed state`,
+}
+
 export const getAccessibleName = (
     text: string,
     isInteractive: boolean,
-    ariaPressed: boolean | 'mixed' | undefined
+    ariaPressed: boolean | 'mixed' | undefined,
+    messages: TagV2LabelMessages = ENGLISH_TAG_LABELS
 ): string | undefined => {
     if (!isInteractive) {
         return undefined
@@ -15,9 +27,9 @@ export const getAccessibleName = (
 
     if (ariaPressed !== undefined) {
         if (ariaPressed === true) {
-            accessibleName = `${text}, pressed`
+            accessibleName = messages.pressed(text)
         } else if (ariaPressed === 'mixed') {
-            accessibleName = `${text}, mixed state`
+            accessibleName = messages.mixed(text)
         }
     }
 
