@@ -47,7 +47,7 @@ import {
 
 figma.connect(
     SidebarV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-654676&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29882-13577&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Note: sidebarSecondary (Figma) → secondarySidebar (Code)

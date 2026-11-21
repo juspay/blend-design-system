@@ -51,7 +51,7 @@ import {
 
 figma.connect(
     BreadcrumbV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-493172&t=Igz9fmVsO5gD0NMR-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29297-89271&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
             // Direct mapping: label (Figma) → item page text (Code)

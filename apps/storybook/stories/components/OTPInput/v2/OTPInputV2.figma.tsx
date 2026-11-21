@@ -44,7 +44,7 @@ import { OTPInputV2 } from '@juspay/blend-design-system'
 
 figma.connect(
     OTPInputV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516190&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29491-12419&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Direct string mappings

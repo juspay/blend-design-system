@@ -60,7 +60,7 @@ import {
 // Base connection
 figma.connect(
     MultiValueInputV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29491-12827&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
             // Size mapping (enum changed from TextInputSize to InputSizeV2)
@@ -143,7 +143,7 @@ figma.connect(
 // Variant: With label
 figma.connect(
     MultiValueInputV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29491-12827&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: true },
         props: {
@@ -197,7 +197,7 @@ figma.connect(
 // Variant: Without label
 figma.connect(
     MultiValueInputV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29491-12827&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: false },
         props: {
@@ -247,7 +247,7 @@ figma.connect(
 // Variant: Error state
 figma.connect(
     MultiValueInputV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29491-12827&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { state: 'error' },
         props: {
@@ -287,7 +287,7 @@ figma.connect(
 // Variant: Disabled state
 figma.connect(
     MultiValueInputV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29491-12827&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { state: 'disabled' },
         props: {
@@ -326,7 +326,7 @@ figma.connect(
 // Variant: Medium size
 figma.connect(
     MultiValueInputV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29491-12827&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'md' },
         props: {
@@ -376,7 +376,7 @@ figma.connect(
 // Variant: Large size
 figma.connect(
     MultiValueInputV2,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29491-12827&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'lg' },
         props: {
