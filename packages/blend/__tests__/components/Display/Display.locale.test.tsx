@@ -23,7 +23,7 @@ const AVATARS = [
     { id: 3, alt: 'Mike Johnson' },
 ]
 
-describe('display components locale', () => {
+describe('display components locale (Accessibility)', () => {
     it('keeps the English AvatarGroup name, and fixes the singular', () => {
         const { unmount } = render(<AvatarGroup avatars={AVATARS} />)
         expect(
