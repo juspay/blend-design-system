@@ -17,45 +17,58 @@
 
 ## Current Status
 
-### ✅ Setup Complete & Published
+### ✅ V2 Migration Complete
 
-- **Configuration**: `figma.config.json` configured with correct include paths
+- **Configuration**: `figma.config.json` configured with correct include paths and `figmaFileUrl`
 - **Dependencies**: `@figma/code-connect` installed
 - **Scripts**: Added to package.json (`figma:validate`, `figma:publish`, `figma:unpublish`)
 - **Environment**: `.env` file created with Figma access token
-- **Migration**: Updated repository URLs from old to new repo
-- **Published**: All Code Connect files successfully published to Figma
+- **V1 Removal**: All 28 V1 `.figma.tsx` files deleted
+- **V2 Published**: All V2 Code Connect files created and validated
 
-### Existing Code Connect Components
+### Existing V2 Code Connect Components
 
-1. Button - `apps/storybook/stories/components/Button/Button.figma.tsx`
-2. ButtonGroup - `apps/storybook/stories/components/Button/ButtonGroup.figma.tsx`
-3. Breadcrumb - `apps/storybook/stories/components/Breadcrumb/Breadcrumb.figma.tsx`
-4. Tags - `apps/storybook/stories/components/Tags/Tags.figma.tsx`
-5. SplitTag - `apps/storybook/stories/components/Tags/SplitTag.figma.tsx`
-6. Checkbox - `apps/storybook/stories/components/Checkbox/Checkbox.figma.tsx` ✅
-7. Switch - `apps/storybook/stories/components/Switch/Switch.figma.tsx` ✅
-8. Radio - `apps/storybook/stories/components/Radio/Radio.figma.tsx` ✅
-9. Alert - `apps/storybook/stories/components/Alert/Alert.figma.tsx` ✅
-10. Modal - `apps/storybook/stories/components/Modal/Modal.figma.tsx` ✅
-11. StatCard - `apps/storybook/stories/components/StatCard/StatCard.figma.tsx` ✅
-12. Tabs (TabsTrigger) - `apps/storybook/stories/components/Tabs/Tabs.figma.tsx` ✅
-13. Avatar - `apps/storybook/stories/components/Avatar/Avatar.figma.tsx` ✅
-14. AvatarGroup - `apps/storybook/stories/components/Avatar/AvatarGroup.figma.tsx` ✅
-15. Popover - `apps/storybook/stories/components/Popover/Popover.figma.tsx` ✅
-16. Tooltip - `apps/storybook/stories/components/Tooltip/Tooltip.figma.tsx` ✅
-17. TextInput - `apps/storybook/stories/components/TextInput/TextInput.figma.tsx` ✅
-18. DropdownInput - `apps/storybook/stories/components/TextInput/DropdownInput.figma.tsx` ✅
-19. OTPInput - `apps/storybook/stories/components/TextInput/OTPInput.figma.tsx` ✅
-20. TextArea - `apps/storybook/stories/components/TextInput/TextArea.figma.tsx` ✅
-21. SearchInput - `apps/storybook/stories/components/TextInput/SearchInput.figma.tsx` ✅
-22. NumberInput - `apps/storybook/stories/components/TextInput/NumberInput.figma.tsx` ✅
-23. UnitInput - `apps/storybook/stories/components/TextInput/UnitInput.figma.tsx` ✅
-24. MultiValueInput - `apps/storybook/stories/components/TextInput/MultiValueInput.figma.tsx` ✅
-25. DateRangePicker - `apps/storybook/stories/components/DateRangePicker/DateRangePicker.figma.tsx` ✅
-26. Charts - `apps/storybook/stories/components/Charts/Charts.figma.tsx` ✅
-27. DataTable - `apps/storybook/stories/components/DataTable/DataTable.figma.tsx` ✅
-28. Sidebar - `apps/storybook/stories/components/Sidebar/Sidebar.figma.tsx` ✅
+All files are in `apps/storybook/stories/components/<Component>/v2/<Component>V2.figma.tsx`:
+
+| #   | Component          | File                                             |
+| --- | ------------------ | ------------------------------------------------ |
+| 1   | AccordionV2        | `Accordion/v2/AccordionV2.figma.tsx`             |
+| 2   | AlertV2            | `Alert/v2/AlertV2.figma.tsx`                     |
+| 3   | AvatarV2           | `Avatar/v2/AvatarV2.figma.tsx`                   |
+| 4   | BreadcrumbV2       | `Breadcrumb/v2/BreadcrumbV2.figma.tsx`           |
+| 5   | ButtonV2           | `Button/v2/ButtonV2.figma.tsx`                   |
+| 6   | ButtonGroupV2      | `ButtonGroup/v2/ButtonGroupV2.figma.tsx`         |
+| 7   | ChartsV2 (ChartV2) | `Charts/v2/ChartsV2.figma.tsx`                   |
+| 8   | CheckboxV2         | `Checkbox/v2/CheckboxV2.figma.tsx`               |
+| 9   | ModalV2            | `Modal/v2/ModalV2.figma.tsx`                     |
+| 10  | MultiValueInputV2  | `MultiValueInput/v2/MultiValueInputV2.figma.tsx` |
+| 11  | NumberInputV2      | `NumberInput/v2/NumberInputV2.figma.tsx`         |
+| 12  | OTPInputV2         | `OTPInput/v2/OTPInputV2.figma.tsx`               |
+| 13  | PopoverV2          | `Popover/v2/PopoverV2.figma.tsx`                 |
+| 14  | RadioV2            | `Radio/v2/RadioV2.figma.tsx`                     |
+| 15  | SearchInputV2      | `SearchInput/v2/SearchInputV2.figma.tsx`         |
+| 16  | SidebarV2          | `Sidebar/v2/SidebarV2.figma.tsx`                 |
+| 17  | StatCardV2         | `StatCard/v2/StatCardV2.figma.tsx`               |
+| 18  | SwitchV2           | `Switch/v2/SwitchV2.figma.tsx`                   |
+| 19  | TabsV2             | `Tabs/v2/TabsV2.figma.tsx`                       |
+| 20  | TagV2              | `Tags/v2/TagV2.figma.tsx`                        |
+| 21  | TextAreaV2         | `TextArea/v2/TextAreaV2.figma.tsx`               |
+| 22  | TextInputV2        | `TextInput/v2/TextInputV2.figma.tsx`             |
+| 23  | TooltipV2          | `Tooltip/v2/TooltipV2.figma.tsx`                 |
+
+### Components Not Yet Connected (need Figma node ID discovery)
+
+These V2 components exist in the library but have no V1 Code Connect precedent.
+Creating their `.figma.tsx` files requires retrieving Figma node IDs via the
+Figma MCP or manual lookup:
+
+- CardV2, ProgressBarV2, DrawerV2, MenuV2, KeyValuePairV2, CodeEditorV2,
+  StepperV2, UploadV2, MultiSelectV2, SingleSelectV2, TagGroupV2
+
+### Excluded from Code Connect
+
+- **SnackbarV2** — Provider pattern (`addSnackbar()`) breaks Code Connect's
+  direct-render requirement.
 
 ## Quick Start
 

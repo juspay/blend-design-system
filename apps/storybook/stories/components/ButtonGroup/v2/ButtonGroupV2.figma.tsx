@@ -1,9 +1,13 @@
 import React from 'react'
-import { ButtonGroup, Button, ButtonSize } from '@juspay/blend-design-system'
 import { figma } from '@figma/code-connect'
+import {
+    ButtonGroupV2,
+    ButtonV2,
+    ButtonV2Size,
+} from '@juspay/blend-design-system'
 
 /**
- * FIGMA CODE CONNECT FOR BUTTON GROUP COMPONENT
+ * FIGMA CODE CONNECT FOR BUTTON GROUP V2 COMPONENT
  *
  * PROP MAPPING DOCUMENTATION
  *
@@ -12,20 +16,29 @@ import { figma } from '@figma/code-connect'
  * 1. RENAMED MAPPINGS:
  *    - stack (Figma) → stacked (Code)
  *
- * 2. FIGMA-ONLY PROPERTIES (not in code):
+ * 2. SPECIAL MAPPINGS:
+ *    - number (Figma) → children (Code)
+ *      Figma exposes a 'number' variant ('2'-'5') controlling how many button
+ *      slots are rendered; code takes real ButtonV2 children, so each variant
+ *      maps to a static array of N ButtonV2 elements.
+ *    - size (Figma) applies to every button in the group; ButtonGroupV2 has
+ *      no size prop of its own, so size is applied to each child ButtonV2.
+ *
+ * 3. FIGMA-ONLY PROPERTIES (not in code):
  *    - number: Determines the number of buttons to render (2-5)
  *    - size: Button size that applies to all buttons in the group
  *
- * 3. CODE-ONLY PROPERTIES (not in Figma):
- *    - children: The actual Button components to render
+ * 4. CODE-ONLY PROPERTIES (not in Figma):
+ *    - children: The actual ButtonV2 components to render
+ *    - gap: Spacing between buttons
  *
  * Note: The 'size' prop in Figma corresponds to the individual button sizes,
- * but ButtonGroup itself doesn't have a size prop in code. The size is applied
- * to each individual Button component within the group.
+ * but ButtonGroupV2 itself doesn't have a size prop in code. The size is
+ * applied to each individual ButtonV2 component within the group.
  */
 
 figma.connect(
-    ButtonGroup,
+    ButtonGroupV2,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18797-274946&t=Igz9fmVsO5gD0NMR-4',
     {
         props: {
@@ -36,243 +49,243 @@ figma.connect(
             children: figma.enum('number', {
                 '2': figma.enum('size', {
                     small: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
                     ],
                     medium: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
                     ],
                     large: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
                     ],
                 }),
                 '3': figma.enum('size', {
                     small: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={2}
                             text="Button 3"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
                     ],
                     medium: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={2}
                             text="Button 3"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
                     ],
                     large: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={2}
                             text="Button 3"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
                     ],
                 }),
                 '4': figma.enum('size', {
                     small: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={2}
                             text="Button 3"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={3}
                             text="Button 4"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
                     ],
                     medium: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={2}
                             text="Button 3"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={3}
                             text="Button 4"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
                     ],
                     large: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={2}
                             text="Button 3"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={3}
                             text="Button 4"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
                     ],
                 }),
                 '5': figma.enum('size', {
                     small: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={2}
                             text="Button 3"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={3}
                             text="Button 4"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
-                        <Button
+                        <ButtonV2
                             key={4}
                             text="Button 5"
-                            size={ButtonSize.SMALL}
+                            size={ButtonV2Size.SMALL}
                         />,
                     ],
                     medium: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={2}
                             text="Button 3"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={3}
                             text="Button 4"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
-                        <Button
+                        <ButtonV2
                             key={4}
                             text="Button 5"
-                            size={ButtonSize.MEDIUM}
+                            size={ButtonV2Size.MEDIUM}
                         />,
                     ],
                     large: [
-                        <Button
+                        <ButtonV2
                             key={0}
                             text="Button 1"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={1}
                             text="Button 2"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={2}
                             text="Button 3"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={3}
                             text="Button 4"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
-                        <Button
+                        <ButtonV2
                             key={4}
                             text="Button 5"
-                            size={ButtonSize.LARGE}
+                            size={ButtonV2Size.LARGE}
                         />,
                     ],
                 }),
@@ -280,21 +293,21 @@ figma.connect(
         },
 
         example: ({ stacked, children }) => (
-            <ButtonGroup stacked={stacked}>{children}</ButtonGroup>
+            <ButtonGroupV2 stacked={stacked}>{children}</ButtonGroupV2>
         ),
 
         imports: [
-            "import { ButtonGroup, Button, ButtonSize } from '@juspay/blend-design-system'",
+            "import { ButtonGroupV2, ButtonV2, ButtonV2Size } from '@juspay/blend-design-system'",
         ],
 
         links: [
             {
                 name: 'GitHub',
-                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/Button',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/ButtonV2/ButtonGroupV2',
             },
             {
                 name: 'Storybook',
-                url: 'https://blend.juspay.design/storybook/?path=/docs/components-button--docs',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-button-buttonv2--docs',
             },
         ],
     }

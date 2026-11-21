@@ -1,54 +1,72 @@
+import React from 'react'
 import { figma } from '@figma/code-connect'
-import { MultiValueInput, TextInputSize } from '@juspay/blend-design-system'
+import {
+    MultiValueInputV2,
+    InputSizeV2,
+    TagSize,
+    TagShape,
+    TagVariant,
+} from '@juspay/blend-design-system'
 
 /**
- * FIGMA CODE CONNECT FOR MULTIVALUEINPUT COMPONENT
+ * FIGMA CODE CONNECT FOR MULTIVALUEINPUTV2 COMPONENT
  *
  * PROP MAPPING DOCUMENTATION
  *
- * Figma vs Code Property Mappings:
+ * Figma vs Code Property Differences:
  *
- * 1. DIRECT MAPPINGS:
- *    - size → size
+ * 1. RENAMED MAPPINGS:
+ *    - size (Figma) → size (Code), but enum changed: TextInputSize → InputSizeV2
+ *      - md → InputSizeV2.MD
+ *      - lg → InputSizeV2.LG
+ *
+ * 2. DIRECT MAPPINGS (same in both):
  *    - label → label
- *    - sublabel → sublabel
+ *    - sublabel → sublabel (V2 keeps the lowercase `sublabel` prop name)
  *    - hintText → hintText
  *
- * 2. SPECIAL MAPPINGS:
- *    - state=error (Figma) → error=true (Code) - Error state in Figma maps to error prop
- *    - state=disabled (Figma) → disabled=true (Code) - Disabled state in Figma maps to disabled prop
+ * 3. SPECIAL MAPPINGS:
+ *    - state (Figma) → error + disabled (Code)
+ *      The V2 component has no `state` prop; it derives state internally from
+ *      the `error` and `disabled` booleans. `InputStateV2` is an internal enum
+ *      (not exported from the package), so each Figma state value maps to the
+ *      corresponding boolean flags:
+ *      - state=error → error=true, disabled=false
+ *      - state=disabled → error=false, disabled=true
+ *      - state=default/hover/active/focussed → error=false, disabled=false
  *
- * 3. FIGMA-ONLY PROPERTIES (not needed in code):
- *    - state - Other interaction states (hover, focus, etc.) are handled automatically
- *    - placeholder - Not available in MultiValueInput component
- *    - rightSlot - Not available in MultiValueInput component
- *    - leftSlot - Not available in MultiValueInput component
- *    - showRightSlot - Not available in MultiValueInput component
- *    - showLeftSlot - Not available in MultiValueInput component
- *    - showInfo - Not available in current implementation
- *    - showLabel - Label is shown automatically when label prop is provided
- *    - showSublabel - Sublabel is shown automatically when sublabel prop is provided
- *    - showHint - Hint is shown automatically when hintText prop is provided
+ * 4. FIGMA-ONLY PROPERTIES (not needed in code):
+ *    - state: Interaction states (hover, focus, active) are handled
+ *      automatically by the component; only error/disabled are exposed.
+ *    - placeholder: Not a component property on this layer.
+ *    - rightSlot, leftSlot, showRightSlot, showLeftSlot: Slot visibility is
+ *      derived from whether a slot is passed.
+ *    - showInfo: Help icon is shown when `helpIconHintText` is provided.
+ *    - showLabel, showSublabel, showHint: Visibility is derived from presence
+ *      of the corresponding text prop.
  *
- * 4. CODE-ONLY PROPERTIES (not in Figma):
- *    - tags: Array of tag strings
- *    - onTagAdd: Callback function for adding tags
- *    - onTagRemove: Callback function for removing tags
- *    - errorMessage: Error message to display
- *    - helpIconHintText: Tooltip text for help icon
- *    - All standard HTML input attributes (except size, style, className)
+ * 5. CODE-ONLY PROPERTIES (not in Figma):
+ *    - value: Controlled input value.
+ *    - tags: Object of shape { value: string[], size: TagSize, shape: TagShape,
+ *      variant: TagVariant } (V2 changed from a plain string[] to a structured
+ *      object so each chip's appearance is configurable).
+ *    - onChange: Input change callback.
+ *    - onTagAdd, onTagRemove: Tag add/remove callbacks.
+ *    - errorMessage: Error message text shown when `error` is true.
+ *    - helpIconHintText: Tooltip text for the help icon.
+ *    - leftSlot, rightSlot: ReactNode content slots.
  */
 
 // Base connection
 figma.connect(
-    MultiValueInput,
+    MultiValueInputV2,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
-            // Size mapping
+            // Size mapping (enum changed from TextInputSize to InputSizeV2)
             size: figma.enum('size', {
-                md: TextInputSize.MEDIUM,
-                lg: TextInputSize.LARGE,
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
             }),
 
             // Direct string mappings
@@ -56,7 +74,7 @@ figma.connect(
             sublabel: figma.string('sublabel'),
             hintText: figma.string('hintText'),
 
-            // State to error/disabled mapping
+            // State → error/disabled boolean flags (no `state` prop in V2)
             error: figma.enum('state', {
                 error: true,
                 default: false,
@@ -76,42 +94,47 @@ figma.connect(
             }),
 
             // Note: The following Figma props are not mapped:
-            // - state: Other states handled automatically by component interactions
-            // - placeholder: Not available in MultiValueInput
-            // - rightSlot, leftSlot: Not available in MultiValueInput
-            // - showRightSlot, showLeftSlot: Not available in MultiValueInput
-            // - showInfo: Not available in current implementation
-            // - showLabel: Determined by presence of label
-            // - showSublabel: Determined by presence of sublabel
-            // - showHint: Determined by presence of hintText
+            // - state: Other states handled automatically by the component
+            // - placeholder: Not available on this layer
+            // - rightSlot, leftSlot: Derived from presence of slot content
+            // - showRightSlot, showLeftSlot: Derived from slot presence
+            // - showInfo: Derived from helpIconHintText presence
+            // - showLabel, showSublabel, showHint: Derived from text presence
         },
 
         example: ({ size, label, sublabel, hintText, error, disabled }) => (
-            <MultiValueInput
+            <MultiValueInputV2
                 size={size}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
                 error={error}
                 disabled={disabled}
-                tags={['tag1', 'tag2']}
+                value=""
+                tags={{
+                    value: ['Design', 'Research'],
+                    size: TagSize.XS,
+                    shape: TagShape.ROUNDED,
+                    variant: TagVariant.SUBTLE,
+                }}
+                onChange={() => {}}
                 onTagAdd={() => {}}
                 onTagRemove={() => {}}
             />
         ),
 
         imports: [
-            "import { MultiValueInput, TextInputSize } from '@juspay/blend-design-system'",
+            "import { MultiValueInputV2, InputSizeV2, TagSize, TagShape, TagVariant } from '@juspay/blend-design-system'",
         ],
 
         links: [
             {
                 name: 'GitHub',
-                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/Inputs/MultiValueInput',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/InputsV2/MultiValueInputV2',
             },
             {
                 name: 'Storybook',
-                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-multivalueinput--docs',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-multivalueinputv2--docs',
             },
         ],
     }
@@ -119,14 +142,14 @@ figma.connect(
 
 // Variant: With label
 figma.connect(
-    MultiValueInput,
+    MultiValueInputV2,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: true },
         props: {
             size: figma.enum('size', {
-                md: TextInputSize.MEDIUM,
-                lg: TextInputSize.LARGE,
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
             }),
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
@@ -149,14 +172,21 @@ figma.connect(
             }),
         },
         example: ({ size, label, sublabel, hintText, error, disabled }) => (
-            <MultiValueInput
+            <MultiValueInputV2
                 size={size}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
                 error={error}
                 disabled={disabled}
-                tags={['tag1', 'tag2']}
+                value=""
+                tags={{
+                    value: ['Design', 'Research'],
+                    size: TagSize.XS,
+                    shape: TagShape.ROUNDED,
+                    variant: TagVariant.SUBTLE,
+                }}
+                onChange={() => {}}
                 onTagAdd={() => {}}
                 onTagRemove={() => {}}
             />
@@ -166,14 +196,14 @@ figma.connect(
 
 // Variant: Without label
 figma.connect(
-    MultiValueInput,
+    MultiValueInputV2,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { showLabel: false },
         props: {
             size: figma.enum('size', {
-                md: TextInputSize.MEDIUM,
-                lg: TextInputSize.LARGE,
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
             }),
             hintText: figma.string('hintText'),
             error: figma.enum('state', {
@@ -194,12 +224,19 @@ figma.connect(
             }),
         },
         example: ({ size, hintText, error, disabled }) => (
-            <MultiValueInput
+            <MultiValueInputV2
                 size={size}
                 hintText={hintText}
                 error={error}
                 disabled={disabled}
-                tags={['tag1', 'tag2']}
+                value=""
+                tags={{
+                    value: ['Design', 'Research'],
+                    size: TagSize.XS,
+                    shape: TagShape.ROUNDED,
+                    variant: TagVariant.SUBTLE,
+                }}
+                onChange={() => {}}
                 onTagAdd={() => {}}
                 onTagRemove={() => {}}
             />
@@ -209,14 +246,14 @@ figma.connect(
 
 // Variant: Error state
 figma.connect(
-    MultiValueInput,
+    MultiValueInputV2,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { state: 'error' },
         props: {
             size: figma.enum('size', {
-                md: TextInputSize.MEDIUM,
-                lg: TextInputSize.LARGE,
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
             }),
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
@@ -224,14 +261,22 @@ figma.connect(
             disabled: false,
         },
         example: ({ size, label, sublabel, hintText }) => (
-            <MultiValueInput
+            <MultiValueInputV2
                 size={size}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
                 error={true}
                 disabled={false}
-                tags={['tag1', 'tag2']}
+                errorMessage="Please add at least one value"
+                value=""
+                tags={{
+                    value: ['Design', 'Research'],
+                    size: TagSize.XS,
+                    shape: TagShape.ROUNDED,
+                    variant: TagVariant.SUBTLE,
+                }}
+                onChange={() => {}}
                 onTagAdd={() => {}}
                 onTagRemove={() => {}}
             />
@@ -241,14 +286,14 @@ figma.connect(
 
 // Variant: Disabled state
 figma.connect(
-    MultiValueInput,
+    MultiValueInputV2,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { state: 'disabled' },
         props: {
             size: figma.enum('size', {
-                md: TextInputSize.MEDIUM,
-                lg: TextInputSize.LARGE,
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
             }),
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
@@ -256,14 +301,21 @@ figma.connect(
             error: false,
         },
         example: ({ size, label, sublabel, hintText }) => (
-            <MultiValueInput
+            <MultiValueInputV2
                 size={size}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
                 error={false}
                 disabled={true}
-                tags={['tag1', 'tag2']}
+                value=""
+                tags={{
+                    value: ['Design', 'Research'],
+                    size: TagSize.XS,
+                    shape: TagShape.ROUNDED,
+                    variant: TagVariant.SUBTLE,
+                }}
+                onChange={() => {}}
                 onTagAdd={() => {}}
                 onTagRemove={() => {}}
             />
@@ -273,7 +325,7 @@ figma.connect(
 
 // Variant: Medium size
 figma.connect(
-    MultiValueInput,
+    MultiValueInputV2,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'md' },
@@ -299,14 +351,21 @@ figma.connect(
             }),
         },
         example: ({ label, sublabel, hintText, error, disabled }) => (
-            <MultiValueInput
-                size={TextInputSize.MEDIUM}
+            <MultiValueInputV2
+                size={InputSizeV2.MD}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
                 error={error}
                 disabled={disabled}
-                tags={['tag1', 'tag2']}
+                value=""
+                tags={{
+                    value: ['Design', 'Research'],
+                    size: TagSize.XS,
+                    shape: TagShape.ROUNDED,
+                    variant: TagVariant.SUBTLE,
+                }}
+                onChange={() => {}}
                 onTagAdd={() => {}}
                 onTagRemove={() => {}}
             />
@@ -316,7 +375,7 @@ figma.connect(
 
 // Variant: Large size
 figma.connect(
-    MultiValueInput,
+    MultiValueInputV2,
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-516597&t=2L1Yl830ZKZjFcrt-4',
     {
         variant: { size: 'lg' },
@@ -342,14 +401,21 @@ figma.connect(
             }),
         },
         example: ({ label, sublabel, hintText, error, disabled }) => (
-            <MultiValueInput
-                size={TextInputSize.LARGE}
+            <MultiValueInputV2
+                size={InputSizeV2.LG}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
                 error={error}
                 disabled={disabled}
-                tags={['tag1', 'tag2']}
+                value=""
+                tags={{
+                    value: ['Design', 'Research'],
+                    size: TagSize.XS,
+                    shape: TagShape.ROUNDED,
+                    variant: TagVariant.SUBTLE,
+                }}
+                onChange={() => {}}
                 onTagAdd={() => {}}
                 onTagRemove={() => {}}
             />
@@ -358,85 +424,72 @@ figma.connect(
 )
 
 /**
- * Example of MultiValueInput usage in code:
+ * Example of MultiValueInputV2 usage in code:
+ *
+ * import { useState } from 'react'
+ * import {
+ *   MultiValueInputV2,
+ *   InputSizeV2,
+ *   TagSize,
+ *   TagShape,
+ *   TagVariant,
+ * } from '@juspay/blend-design-system'
  *
  * // Basic usage
- * const [tags, setTags] = useState(['tag1', 'tag2']);
+ * const [value, setValue] = useState('')
+ * const [tags, setTags] = useState<string[]>(['Design', 'Research'])
  *
- * <MultiValueInput
- *   tags={tags}
- *   onTagAdd={(tag) => setTags([...tags, tag])}
- *   onTagRemove={(tag) => setTags(tags.filter(t => t !== tag))}
- * />
- *
- * // With label and hint
- * <MultiValueInput
+ * <MultiValueInputV2
  *   label="Skills"
  *   sublabel="Add your skills"
  *   hintText="Press Enter to add a skill"
- *   tags={skills}
- *   onTagAdd={handleAddSkill}
- *   onTagRemove={handleRemoveSkill}
- *   size={TextInputSize.MEDIUM}
+ *   size={InputSizeV2.MD}
+ *   value={value}
+ *   onChange={setValue}
+ *   tags={{
+ *     value: tags,
+ *     size: TagSize.XS,
+ *     shape: TagShape.ROUNDED,
+ *     variant: TagVariant.SUBTLE,
+ *   }}
+ *   onTagAdd={(tag) => setTags((prev) => [...prev, tag])}
+ *   onTagRemove={(tag) => setTags((prev) => prev.filter((t) => t !== tag))}
  * />
  *
  * // With error state
- * <MultiValueInput
+ * <MultiValueInputV2
  *   label="Keywords"
- *   tags={keywords}
- *   onTagAdd={handleAddKeyword}
- *   onTagRemove={handleRemoveKeyword}
- *   error={true}
+ *   error
  *   errorMessage="At least 3 keywords are required"
+ *   value={value}
+ *   onChange={setValue}
+ *   tags={{ value: tags, size: TagSize.XS, shape: TagShape.ROUNDED, variant: TagVariant.SUBTLE }}
+ *   onTagAdd={handleAdd}
+ *   onTagRemove={handleRemove}
  * />
  *
  * // Disabled state
- * <MultiValueInput
+ * <MultiValueInputV2
  *   label="Categories"
- *   tags={categories}
+ *   disabled
+ *   hintText="Categories cannot be edited"
+ *   value=""
+ *   tags={{ value: tags, size: TagSize.XS, shape: TagShape.ROUNDED, variant: TagVariant.SUBTLE }}
+ *   onChange={() => {}}
  *   onTagAdd={() => {}}
  *   onTagRemove={() => {}}
- *   disabled={true}
- *   hintText="Categories cannot be edited"
  * />
  *
  * // With help icon
- * <MultiValueInput
+ * <MultiValueInputV2
  *   label="Email Recipients"
  *   sublabel="Add email addresses"
- *   tags={recipients}
- *   onTagAdd={handleAddRecipient}
- *   onTagRemove={handleRemoveRecipient}
  *   helpIconHintText="Enter valid email addresses and press Enter"
- *   placeholder="Enter email address"
- * />
- *
- * // Complete form example
- * const [interests, setInterests] = useState<string[]>([]);
- * const [interestsError, setInterestsError] = useState(false);
- *
- * const handleAddInterest = (interest: string) => {
- *   if (interest.trim()) {
- *     setInterests([...interests, interest.trim()]);
- *     setInterestsError(false);
- *   }
- * };
- *
- * const handleRemoveInterest = (interest: string) => {
- *   const updated = interests.filter(i => i !== interest);
- *   setInterests(updated);
- *   setInterestsError(updated.length === 0);
- * };
- *
- * <MultiValueInput
- *   label="Areas of Interest"
- *   sublabel="Add at least one interest"
- *   tags={interests}
- *   onTagAdd={handleAddInterest}
- *   onTagRemove={handleRemoveInterest}
- *   error={interestsError}
- *   errorMessage={interestsError ? "Please add at least one interest" : undefined}
- *   hintText="Type an interest and press Enter"
- *   size={TextInputSize.LARGE}
+ *   value={value}
+ *   onChange={setValue}
+ *   tags={{ value: tags, size: TagSize.XS, shape: TagShape.ROUNDED, variant: TagVariant.SUBTLE }}
+ *   onTagAdd={handleAdd}
+ *   onTagRemove={handleRemove}
+ *   size={InputSizeV2.LG}
  * />
  */

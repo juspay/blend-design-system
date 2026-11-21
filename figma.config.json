@@ -1,4 +1,5 @@
 {
+    "figmaFileUrl": "https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System",
     "codeConnect": {
         "include": [
             "apps/storybook/stories/**/*.figma.{ts,tsx}",
