@@ -6,6 +6,8 @@ import { ColumnManagerProps } from './types'
 import { useMobileDataTable } from './hooks/useMobileDataTable'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TableTokenType } from './dataTable.tokens'
+import { DATA_TABLE_MESSAGES } from '../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../i18n/useMessages'
 import { MultiSelect } from '../MultiSelect'
 import {
     MultiSelectVariant,
@@ -27,6 +29,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
     multiSelectWidth = 250,
     disabled = false,
 }: ColumnManagerProps<T>) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
     const mobileConfig = useMobileDataTable()
     const tableTokens = useResponsiveTokens<TableTokenType>('TABLE')
     const hasPrimaryAction = !!columnManagerPrimaryAction
@@ -216,8 +219,8 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             cursor={disabled ? 'not-allowed' : 'pointer'}
             border="none"
             disabled={disabled}
-            aria-label="Manage columns"
-            title="Manage columns"
+            aria-label={m('data-table.a11y.manage-columns')}
+            title={m('data-table.a11y.manage-columns')}
             tabIndex={disabled ? -1 : 0}
             type="button"
             onKeyDown={(e) => {
@@ -296,7 +299,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                 <MultiSelect
                     label=""
                     side={MultiSelectMenuSide.BOTTOM}
-                    placeholder="Select columns to display"
+                    placeholder={m('data-table.placeholder.select-columns')}
                     variant={MultiSelectVariant.CONTAINER}
                     size={MultiSelectMenuSize.MEDIUM}
                     showItemDividers={true}
@@ -305,12 +308,11 @@ export const ColumnManager = <T extends Record<string, unknown>>({
             ) : (
                 <MultiSelect
                     label=""
-                    placeholder="Manage Columns"
+                    placeholder={m('data-table.placeholder.manage-columns')}
                     side={MultiSelectMenuSide.BOTTOM}
                     variant={MultiSelectVariant.NO_CONTAINER}
                     alignment={MultiSelectMenuAlignment.END}
                     size={MultiSelectMenuSize.SMALL}
-                    selectAllText="Select All Columns"
                     maxMenuHeight={400}
                     {...commonProps}
                 />

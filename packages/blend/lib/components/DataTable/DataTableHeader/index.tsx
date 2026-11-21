@@ -22,6 +22,8 @@ import {
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import Tooltip from '../../Tooltip/Tooltip'
 import { TooltipSize, TooltipSide, TooltipAlign } from '../../Tooltip/types'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 const SearchCloseButton = ({
     onClose,
@@ -29,31 +31,35 @@ const SearchCloseButton = ({
 }: {
     onClose: () => void
     tableToken: TableTokenType
-}) => (
-    <PrimitiveButton
-        onClick={onClose}
-        contentCentered
-        padding="4px"
-        borderRadius="4px"
-        backgroundColor="transparent"
-        border="none"
-        cursor="pointer"
-        aria-label="Close search"
-        type="button"
-        _hover={{
-            backgroundColor:
-                tableToken.dataTable.table.header.filter.hoverBackground,
-        }}
-    >
-        <X
-            size={16}
-            color={
-                tableToken.dataTable.table.header.filter.sortOption.iconColor
-            }
-            aria-hidden="true"
-        />
-    </PrimitiveButton>
-)
+}) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
+    return (
+        <PrimitiveButton
+            onClick={onClose}
+            contentCentered
+            padding="4px"
+            borderRadius="4px"
+            backgroundColor="transparent"
+            border="none"
+            cursor="pointer"
+            aria-label={m('data-table.a11y.close-search')}
+            type="button"
+            _hover={{
+                backgroundColor:
+                    tableToken.dataTable.table.header.filter.hoverBackground,
+            }}
+        >
+            <X
+                size={16}
+                color={
+                    tableToken.dataTable.table.header.filter.sortOption
+                        .iconColor
+                }
+                aria-hidden="true"
+            />
+        </PrimitiveButton>
+    )
+}
 
 const MobileSearchInput = ({
     searchPlaceholder,
@@ -216,7 +222,7 @@ const DataTableHeader = forwardRef<
             showHeader = true,
             showToolbar = true,
             enableSearch = false,
-            searchPlaceholder = 'Search...',
+            searchPlaceholder: searchPlaceholderProp,
             searchConfig,
             enableAdvancedFilter = false,
             advancedFilterComponent: AdvancedFilterComponent,
@@ -234,6 +240,11 @@ const DataTableHeader = forwardRef<
     ) => {
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
         const mobileConfig = useMobileDataTable()
+        const { m, pick } = useMessages(DATA_TABLE_MESSAGES)
+        const searchPlaceholder = pick(
+            searchPlaceholderProp,
+            'data-table.placeholder.search-table'
+        )
 
         const [isDrawerOpen, setIsDrawerOpen] = useState(false)
         const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -331,7 +342,9 @@ const DataTableHeader = forwardRef<
                                                 aria-hidden="true"
                                             />
                                         }
-                                        aria-label="Open search"
+                                        aria-label={m(
+                                            'data-table.a11y.open-search'
+                                        )}
                                         size={ButtonSize.SMALL}
                                         onClick={() => setIsSearchOpen(true)}
                                     />
@@ -361,7 +374,20 @@ const DataTableHeader = forwardRef<
                                                 aria-hidden="true"
                                             />
                                         }
-                                        aria-label={`Advanced filters${advancedFilters.length > 0 ? ` (${advancedFilters.length} active)` : ''}`}
+                                        aria-label={
+                                            advancedFilters.length > 0
+                                                ? m(
+                                                      'data-table.a11y.advanced-filters-active',
+                                                      {
+                                                          count: String(
+                                                              advancedFilters.length
+                                                          ),
+                                                      }
+                                                  )
+                                                : m(
+                                                      'data-table.a11y.advanced-filters'
+                                                  )
+                                        }
                                         size={ButtonSize.SMALL}
                                         onClick={() => setIsDrawerOpen(true)}
                                     />
@@ -448,7 +474,9 @@ const DataTableHeader = forwardRef<
                                                                     .unit[8],
                                                         }}
                                                     >
-                                                        Advanced Filters
+                                                        {m(
+                                                            'data-table.label.advanced-filters'
+                                                        )}
                                                     </PrimitiveText>
                                                     <AdvancedFilterComponent
                                                         filters={
@@ -490,7 +518,9 @@ const DataTableHeader = forwardRef<
                                                                 .unit[8],
                                                     }}
                                                 >
-                                                    Actions
+                                                    {m(
+                                                        'data-table.label.actions'
+                                                    )}
                                                 </PrimitiveText>
                                                 <Block
                                                     display="flex"
@@ -533,7 +563,9 @@ const DataTableHeader = forwardRef<
                                                             ButtonType.SECONDARY
                                                         }
                                                         size={ButtonSize.SMALL}
-                                                        aria-label="Clear all filters"
+                                                        aria-label={m(
+                                                            'data-table.a11y.clear-all-filters'
+                                                        )}
                                                         onClick={() => {
                                                             onClearAllFilters()
                                                             setIsDrawerOpen(
@@ -541,7 +573,9 @@ const DataTableHeader = forwardRef<
                                                             )
                                                         }}
                                                     >
-                                                        Clear All
+                                                        {m(
+                                                            'data-table.action.clear-all'
+                                                        )}
                                                     </Button>
                                                 </Block>
                                             )}
@@ -687,13 +721,36 @@ const DataTableHeader = forwardRef<
                                                         leadingIcon={
                                                             <Filter aria-hidden="true" />
                                                         }
-                                                        aria-label={`Advanced filters${advancedFilters.length > 0 ? ` (${advancedFilters.length} active)` : ''}`}
+                                                        aria-label={
+                                                            advancedFilters.length >
+                                                            0
+                                                                ? m(
+                                                                      'data-table.a11y.advanced-filters-active',
+                                                                      {
+                                                                          count: String(
+                                                                              advancedFilters.length
+                                                                          ),
+                                                                      }
+                                                                  )
+                                                                : m(
+                                                                      'data-table.a11y.advanced-filters'
+                                                                  )
+                                                        }
                                                         size={ButtonSize.SMALL}
                                                     >
-                                                        Advanced Filters{' '}
                                                         {advancedFilters.length >
-                                                            0 &&
-                                                            `(${advancedFilters.length})`}
+                                                        0
+                                                            ? m(
+                                                                  'data-table.label.advanced-filters-count',
+                                                                  {
+                                                                      count: String(
+                                                                          advancedFilters.length
+                                                                      ),
+                                                                  }
+                                                              )
+                                                            : m(
+                                                                  'data-table.label.advanced-filters'
+                                                              )}
                                                     </Button>
                                                 }
                                                 size={PopoverSize.MEDIUM}

@@ -8,6 +8,8 @@ import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { FOUNDATION_THEME } from '../../../tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { TableTokenType } from '../dataTable.tokens'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../../i18n/useMessages'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../../breakpoints/breakPoints'
 import {
@@ -41,6 +43,9 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
         ref
     ) => {
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+        const { m, mp } = useMessages(DATA_TABLE_MESSAGES)
+        // Raw, not locale-grouped: keeps the visible count byte-identical.
+        const countVars = { count: String(selectedCount) }
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isMobile = breakPointLabel === 'sm'
         const [drawerOpen, setDrawerOpen] = useState(false)
@@ -52,7 +57,11 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                 <Block
                     ref={ref}
                     role="region"
-                    aria-label={`${selectedCount} row${selectedCount !== 1 ? 's' : ''} selected`}
+                    aria-label={mp(
+                        'data-table.a11y.rows-selected',
+                        selectedCount,
+                        countVars
+                    )}
                     position="absolute"
                     display="flex"
                     alignItems="center"
@@ -96,7 +105,7 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                                 whiteSpace: 'nowrap', // Prevent text wrapping
                             }}
                         >
-                            {selectedCount} selected
+                            {m('data-table.label.selected-count', countVars)}
                         </PrimitiveText>
 
                         <Block
@@ -116,8 +125,12 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                                 <Button
                                     buttonType={ButtonType.SECONDARY}
                                     size={ButtonSize.SMALL}
-                                    aria-label={`See actions for ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
-                                    text="See Actions"
+                                    aria-label={mp(
+                                        'data-table.a11y.see-actions',
+                                        selectedCount,
+                                        countVars
+                                    )}
+                                    text={m('data-table.action.see-actions')}
                                 />
                             </DrawerTrigger>
 
@@ -130,7 +143,9 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            <DrawerTitle>Actions</DrawerTitle>
+                                            <DrawerTitle>
+                                                {m('data-table.label.actions')}
+                                            </DrawerTitle>
                                         </Block>
                                     </DrawerHeader>
 
@@ -148,14 +163,20 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                                                     leadingIcon={
                                                         <Download aria-hidden="true" />
                                                     }
-                                                    aria-label={`Export ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
+                                                    aria-label={mp(
+                                                        'data-table.a11y.export-selected',
+                                                        selectedCount,
+                                                        countVars
+                                                    )}
                                                     size={ButtonSize.MEDIUM}
                                                     onClick={() => {
                                                         onExport()
                                                         setDrawerOpen(false)
                                                     }}
                                                     fullWidth
-                                                    text="Export"
+                                                    text={m(
+                                                        'data-table.action.export'
+                                                    )}
                                                 />
                                             )}
 
@@ -163,14 +184,18 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                                                 buttonType={
                                                     ButtonType.SECONDARY
                                                 }
-                                                aria-label="Deselect all rows"
+                                                aria-label={m(
+                                                    'data-table.a11y.deselect-all'
+                                                )}
                                                 size={ButtonSize.MEDIUM}
                                                 onClick={() => {
                                                     onDeselectAll()
                                                     setDrawerOpen(false)
                                                 }}
                                                 fullWidth
-                                                text="Deselect all"
+                                                text={m(
+                                                    'data-table.action.deselect-all'
+                                                )}
                                             />
 
                                             {customActions && (
@@ -199,7 +224,11 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
             <Block
                 ref={ref}
                 role="region"
-                aria-label={`${selectedCount} row${selectedCount !== 1 ? 's' : ''} selected`}
+                aria-label={mp(
+                    'data-table.a11y.rows-selected',
+                    selectedCount,
+                    countVars
+                )}
                 position="absolute"
                 display="flex"
                 alignItems="center"
@@ -237,7 +266,7 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                         flexShrink: 0,
                     }}
                 >
-                    {selectedCount} selected
+                    {m('data-table.label.selected-count', countVars)}
                 </PrimitiveText>
 
                 {showExport && (
@@ -256,11 +285,15 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                             <Button
                                 buttonType={ButtonType.SECONDARY}
                                 leadingIcon={<Download aria-hidden="true" />}
-                                aria-label={`Export ${selectedCount} selected row${selectedCount !== 1 ? 's' : ''}`}
+                                aria-label={mp(
+                                    'data-table.a11y.export-selected',
+                                    selectedCount,
+                                    countVars
+                                )}
                                 size={ButtonSize.SMALL}
                                 onClick={onExport}
                             >
-                                Export
+                                {m('data-table.action.export')}
                             </Button>
                         </Block>
                     </>
@@ -278,7 +311,7 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                 <PrimitiveButton
                     onClick={onDeselectAll}
                     type="button"
-                    aria-label="Deselect all rows"
+                    aria-label={m('data-table.a11y.deselect-all')}
                     style={{
                         fontSize:
                             tableToken.dataTable.bulkActions.selectText
@@ -295,7 +328,7 @@ const BulkActionBar = forwardRef<HTMLDivElement, BulkActionBarProps>(
                         flexShrink: 0,
                     }}
                 >
-                    Deselect all
+                    {m('data-table.action.deselect-all')}
                 </PrimitiveButton>
 
                 {customActions && (

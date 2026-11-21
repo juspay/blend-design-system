@@ -10,6 +10,8 @@ import SingleSelect from '../SingleSelect/SingleSelect'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useTheme } from '../../context/ThemeContext'
+import { DATA_TABLE_MESSAGES } from '../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 type DataTablePaginationProps = {
     currentPage: number
@@ -37,6 +39,7 @@ export function DataTablePagination({
     onPageSizeChange,
 }: DataTablePaginationProps) {
     const tableToken = useResponsiveTokens('TABLE') as TableTokenType
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
     const { theme } = useTheme()
     const isDarkTheme = theme === 'dark'
     const { breakPointLabel } = useBreakpoints()
@@ -208,7 +211,7 @@ export function DataTablePagination({
             alignItems="center"
             width="100%"
             role="navigation"
-            aria-label="Pagination"
+            aria-label={m('data-table.a11y.pagination')}
         >
             <Block
                 data-element="pagesize"
@@ -232,7 +235,9 @@ export function DataTablePagination({
                         flexShrink: 0,
                     }}
                 >
-                    {isMobile ? 'Rows' : 'Rows per page'}
+                    {isMobile
+                        ? m('data-table.label.rows')
+                        : m('data-table.label.rows-per-page')}
                 </PrimitiveText>
 
                 <Block
@@ -242,8 +247,8 @@ export function DataTablePagination({
                     }}
                 >
                     <SingleSelect
-                        label="Rows per page"
-                        aria-label="Select number of rows per page"
+                        label={m('data-table.label.rows-per-page')}
+                        aria-label={m('data-table.a11y.rows-per-page')}
                         items={pageSizeMenuItems}
                         selected={String(pageSize)}
                         onSelect={(value) => {
@@ -286,8 +291,14 @@ export function DataTablePagination({
                     }}
                 >
                     {hasVisibleRows
-                        ? `${rangeStart}-${rangeEnd} of ${totalRows}`
-                        : `0 of ${totalRows}`}
+                        ? m('data-table.label.range', {
+                              start: String(rangeStart),
+                              end: String(rangeEnd),
+                              total: String(totalRows),
+                          })
+                        : m('data-table.label.range-empty', {
+                              total: String(totalRows),
+                          })}
                 </PrimitiveText>
             </Block>
 
@@ -332,7 +343,13 @@ export function DataTablePagination({
                             handlePreviousPage()
                         }
                     }}
-                    aria-label={`Previous page${currentPage > 1 ? ` (currently page ${currentPage})` : ''}`}
+                    aria-label={
+                        currentPage > 1
+                            ? m('data-table.a11y.previous-page-current', {
+                                  page: String(currentPage),
+                              })
+                            : m('data-table.a11y.previous-page')
+                    }
                     tabIndex={
                         currentPage === 1 || isLoading || !hasData ? -1 : 0
                     }
@@ -395,7 +412,12 @@ export function DataTablePagination({
                                         !hasData ||
                                         page > totalPages
                                     }
-                                    aria-label={`Go to page ${page}${currentPage === page ? ' (current page)' : ''}`}
+                                    aria-label={m(
+                                        currentPage === page
+                                            ? 'data-table.a11y.go-to-page-current'
+                                            : 'data-table.a11y.go-to-page',
+                                        { page: String(page) }
+                                    )}
                                     aria-current={
                                         currentPage === page
                                             ? 'page'
@@ -451,11 +473,15 @@ export function DataTablePagination({
                             ) : (
                                 <SingleSelect
                                     key={index}
-                                    label="Jump to page"
-                                    aria-label="Jump to page"
+                                    label={m('data-table.label.jump-to-page')}
+                                    aria-label={m(
+                                        'data-table.label.jump-to-page'
+                                    )}
                                     items={[
                                         {
-                                            groupLabel: 'Go to page',
+                                            groupLabel: m(
+                                                'data-table.label.go-to-page'
+                                            ),
                                             showSeparator: false,
                                             items: (() => {
                                                 const visiblePages =
@@ -477,7 +503,14 @@ export function DataTablePagination({
                                                         )
                                                     ) {
                                                         hiddenPages.push({
-                                                            label: `Page ${i}`,
+                                                            label: m(
+                                                                'data-table.label.page',
+                                                                {
+                                                                    page: String(
+                                                                        i
+                                                                    ),
+                                                                }
+                                                            ),
                                                             value: String(i),
                                                         })
                                                     }
@@ -496,7 +529,9 @@ export function DataTablePagination({
                                         }
                                     }}
                                     enableSearch={totalPages > 10}
-                                    searchPlaceholder="Search pages..."
+                                    searchPlaceholder={m(
+                                        'data-table.placeholder.search-pages'
+                                    )}
                                     size={SelectMenuSize.SMALL}
                                     variant={SelectMenuVariant.NO_CONTAINER}
                                     placeholder="..."
@@ -523,7 +558,13 @@ export function DataTablePagination({
                                                     .radius[8]
                                             }
                                             disabled={isLoading || !hasData}
-                                            aria-label={`Jump to page (currently showing page ${currentPage} of ${totalPages})`}
+                                            aria-label={m(
+                                                'data-table.a11y.jump-to-page-current',
+                                                {
+                                                    page: String(currentPage),
+                                                    total: String(totalPages),
+                                                }
+                                            )}
                                             _hover={{
                                                 backgroundColor:
                                                     paginationToken
@@ -578,7 +619,14 @@ export function DataTablePagination({
                             handleNextPage()
                         }
                     }}
-                    aria-label={`Next page${currentPage < totalPages ? ` (currently page ${currentPage} of ${totalPages})` : ''}`}
+                    aria-label={
+                        currentPage < totalPages
+                            ? m('data-table.a11y.next-page-current', {
+                                  page: String(currentPage),
+                                  total: String(totalPages),
+                              })
+                            : m('data-table.a11y.next-page')
+                    }
                     tabIndex={
                         currentPage === totalPages || isLoading || !hasData
                             ? -1

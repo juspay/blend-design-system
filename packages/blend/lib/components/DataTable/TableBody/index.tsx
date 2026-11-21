@@ -31,6 +31,9 @@ import { Button, ButtonType, ButtonSize, ButtonSubType } from '../../Button'
 import { Checkbox, CheckboxSize } from '../../Checkbox'
 import { Tooltip } from '../../Tooltip'
 import type { TableTokenType } from '../dataTable.tokens'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { COMMON_MESSAGES } from '../../../i18n/catalog/common.messages'
+import { useMessages } from '../../../i18n/useMessages'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useTheme } from '../../../context/ThemeContext'
 import { TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip/types'
@@ -254,6 +257,8 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
     onCancelEdit,
     idField,
 }) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
     const containerRef = useRef<HTMLDivElement>(null)
     const [visibleButtons, setVisibleButtons] = useState<number>(0)
     const [shouldShowMenu, setShouldShowMenu] = useState(false)
@@ -282,15 +287,15 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                         <Button
                             key="save"
                             onClick={() => onSaveRow(row[idField])}
-                            aria-label="Save row"
-                            title="Save"
+                            aria-label={m('data-table.a11y.save-row')}
+                            title={m('data-table.action.save')}
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Save size={16} />}
                             size={ButtonSize.SMALL}
                         />
                     ),
                     menuItem: {
-                        label: 'Save',
+                        label: m('data-table.action.save'),
                         onClick: () => onSaveRow(row[idField]),
                         leadingSlot: <Save size={16} />,
                     },
@@ -302,15 +307,15 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                         <Button
                             key="cancel"
                             onClick={() => onCancelEdit(row[idField])}
-                            aria-label="Cancel editing row"
-                            title="Cancel"
+                            aria-label={m('data-table.a11y.cancel-edit')}
+                            title={mc('common.action.cancel')}
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<X size={16} />}
                             size={ButtonSize.SMALL}
                         />
                     ),
                     menuItem: {
-                        label: 'Cancel',
+                        label: mc('common.action.cancel'),
                         onClick: () => onCancelEdit(row[idField]),
                         leadingSlot: <X size={16} />,
                     },
@@ -323,15 +328,15 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                         <Button
                             key="edit"
                             onClick={() => onEditRow(row[idField])}
-                            aria-label="Edit row"
-                            title="Edit"
+                            aria-label={m('data-table.a11y.edit-row')}
+                            title={m('data-table.action.edit')}
                             buttonType={ButtonType.SECONDARY}
                             leadingIcon={<Edit size={16} />}
                             size={ButtonSize.SMALL}
                         />
                     ),
                     menuItem: {
-                        label: 'Edit',
+                        label: m('data-table.action.edit'),
                         onClick: () => onEditRow(row[idField]),
                         leadingSlot: <Edit size={16} />,
                     },
@@ -371,7 +376,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                     />
                 ),
                 menuItem: {
-                    label: slot1.text || 'Action',
+                    label: slot1.text || m('data-table.action.default'),
                     onClick: () => slot1.onClick(row, index),
                     disabled: isDisabled,
                     leadingSlot: slot1.leadingIcon,
@@ -411,7 +416,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                     />
                 ),
                 menuItem: {
-                    label: slot2.text || 'Action',
+                    label: slot2.text || m('data-table.action.default'),
                     onClick: () => slot2.onClick(row, index),
                     disabled: isDisabled,
                     leadingSlot: slot2.leadingIcon,
@@ -430,6 +435,8 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
         onSaveRow,
         onCancelEdit,
         idField,
+        m,
+        mc,
     ])
 
     // Calculate how many buttons can fit
@@ -549,8 +556,8 @@ const ActionsCell: React.FC<ActionsCellProps> = ({
                             size={ButtonSize.SMALL}
                             subType={ButtonSubType.ICON_ONLY}
                             leadingIcon={<MoreHorizontal size={16} />}
-                            aria-label="More actions"
-                            title="More actions"
+                            aria-label={m('data-table.a11y.more-actions')}
+                            title={m('data-table.a11y.more-actions')}
                         />
                     }
                     items={[
@@ -618,6 +625,7 @@ const TableBody = forwardRef<
         },
         ref
     ) => {
+        const { m } = useMessages(DATA_TABLE_MESSAGES)
         const colSpan = useMemo(() => {
             let span = visibleColumns.length
             if (enableRowSelection) span += 1
@@ -753,7 +761,16 @@ const TableBody = forwardRef<
                               rowIsLoading || globalShouldShowSkeleton
 
                           const isSelected = selectedRows[rowId] || false
-                          const rowAriaLabel = `Row ${index + 1}${isSelected ? ', selected' : ''}${isExpanded ? ', expanded' : ''}`
+                          const rowAriaLabel = m(
+                              isSelected && isExpanded
+                                  ? 'data-table.a11y.row-selected-expanded'
+                                  : isSelected
+                                    ? 'data-table.a11y.row-selected'
+                                    : isExpanded
+                                      ? 'data-table.a11y.row-expanded'
+                                      : 'data-table.a11y.row',
+                              { index: String(index + 1) }
+                          )
 
                           const getAbsoluteColIndex = (
                               relativeColIndex: number
@@ -895,8 +912,12 @@ const TableBody = forwardRef<
                                                               type="button"
                                                               aria-label={
                                                                   isExpanded
-                                                                      ? 'Collapse row'
-                                                                      : 'Expand row'
+                                                                      ? m(
+                                                                            'data-table.a11y.collapse-row'
+                                                                        )
+                                                                      : m(
+                                                                            'data-table.a11y.expand-row'
+                                                                        )
                                                               }
                                                               aria-expanded={
                                                                   isExpanded
@@ -912,8 +933,12 @@ const TableBody = forwardRef<
                                                               }
                                                               title={
                                                                   isExpanded
-                                                                      ? 'Collapse row'
-                                                                      : 'Expand row'
+                                                                      ? m(
+                                                                            'data-table.a11y.collapse-row'
+                                                                        )
+                                                                      : m(
+                                                                            'data-table.a11y.expand-row'
+                                                                        )
                                                               }
                                                               style={{
                                                                   display:
@@ -1053,7 +1078,28 @@ const TableBody = forwardRef<
                                                               disabled={
                                                                   isRowDisabled
                                                               }
-                                                              aria-label={`Select row ${index + 1}${tableTitle ? ` in ${tableTitle}` : ''}`}
+                                                              aria-label={
+                                                                  tableTitle
+                                                                      ? m(
+                                                                            'data-table.a11y.select-row-in-table',
+                                                                            {
+                                                                                index: String(
+                                                                                    index +
+                                                                                        1
+                                                                                ),
+                                                                                table: tableTitle,
+                                                                            }
+                                                                        )
+                                                                      : m(
+                                                                            'data-table.a11y.select-row',
+                                                                            {
+                                                                                index: String(
+                                                                                    index +
+                                                                                        1
+                                                                                ),
+                                                                            }
+                                                                        )
+                                                              }
                                                           />
                                                       )
 
@@ -1604,8 +1650,12 @@ const TableBody = forwardRef<
                                                                   tableToken
                                                               }
                                                               type="button"
-                                                              aria-label="View more details"
-                                                              title="View more details"
+                                                              aria-label={m(
+                                                                  'data-table.a11y.view-details'
+                                                              )}
+                                                              title={m(
+                                                                  'data-table.a11y.view-details'
+                                                              )}
                                                               onClick={() =>
                                                                   onMobileOverflowClick(
                                                                       row

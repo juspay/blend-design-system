@@ -41,6 +41,8 @@ import {
 import DateRangePicker from '../../DateRangePicker/DateRangePicker'
 import { DateRange } from '../../DateRangePicker/types'
 import { parseDateLike, toLocalDateString } from '../utils'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 type MobileFilterDrawerProps = {
     column: ColumnDefinition<Record<string, unknown>>
@@ -68,6 +70,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
     onColumnFilter,
     onPopoverClose,
 }) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
     const [filterDrawerOpen, setFilterDrawerOpen] = useState(false)
     const { theme } = useTheme()
     const destructiveColor =
@@ -261,7 +264,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                             color: filterToken.groupLabelColor,
                         }}
                     >
-                        Slider configuration missing
+                        {m('data-table.error.slider-config-missing')}
                     </PrimitiveText>
                 </Block>
             )
@@ -314,7 +317,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                             color: filterToken.selectedTextColor,
                         }}
                     >
-                        Filter by Range
+                        {m('data-table.label.filter-by-range')}
                     </PrimitiveText>
 
                     <Block
@@ -401,7 +404,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                 size={16}
                                 color={filterToken.sortOption.iconColor}
                             />,
-                            'Sort Ascending',
+                            m('data-table.action.sort-ascending'),
                             () =>
                                 handleSortAndClose(() =>
                                     sortHandlers.handleSortAscending(fieldKey)
@@ -413,7 +416,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                 size={16}
                                 color={filterToken.sortOption.iconColor}
                             />,
-                            'Sort Descending',
+                            m('data-table.action.sort-descending'),
                             () =>
                                 handleSortAndClose(() =>
                                     sortHandlers.handleSortDescending(fieldKey)
@@ -459,7 +462,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                     fontWeight: 500,
                                 }}
                             >
-                                Filter
+                                {m('data-table.action.filter')}
                             </PrimitiveText>
                         </Block>
                         <ChevronRight
@@ -504,7 +507,7 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                     fontWeight: 500,
                                 }}
                             >
-                                Clear Filter
+                                {m('data-table.action.clear-filter')}
                             </PrimitiveText>
                         </Block>
                     )}
@@ -533,7 +536,9 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                         'select') && (
                                     <Block padding="14px 20px 8px 20px">
                                         <TextInput
-                                            placeholder="Search"
+                                            placeholder={m(
+                                                'data-table.placeholder.search'
+                                            )}
                                             value={
                                                 filterState.columnSearchValues[
                                                     fieldKey
@@ -727,7 +732,9 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                                                 color: destructiveColor,
                                                             }}
                                                         >
-                                                            Clear Filter
+                                                            {m(
+                                                                'data-table.action.clear-filter'
+                                                            )}
                                                         </PrimitiveText>
                                                     </button>
                                                 </Block>
@@ -811,8 +818,9 @@ export const MobileFilterDrawer: React.FC<MobileFilterDrawerProps> = ({
                                                 fontStyle: 'italic',
                                             }}
                                         >
-                                            No filter component configured for
-                                            this column type
+                                            {m(
+                                                'data-table.empty.no-filter-component'
+                                            )}
                                         </PrimitiveText>
                                     </Block>
                                 )}
