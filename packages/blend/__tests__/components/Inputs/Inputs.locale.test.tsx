@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '../../test-utils'
 import TextInput from '../../../lib/components/Inputs/TextInput/TextInput'
 import UnitInput from '../../../lib/components/Inputs/UnitInput/UnitInput'
+import SearchInputV2 from '../../../lib/components/InputsV2/SearchInputV2/SearchInputV2'
 import NumberInputV2 from '../../../lib/components/InputsV2/NumberInputV2/NumberInputV2'
 import { getRangeErrorMessage } from '../../../lib/components/InputsV2/NumberInputV2/utils'
 
@@ -13,6 +14,7 @@ const FRENCH: Record<string, string> = {
     'input.error.range-between':
         'La valeur doit être comprise entre {min} et {max}',
     'input.label.number-input': 'Champ numérique',
+    'input.placeholder.enter': 'Saisir',
 }
 const t = (key: string) => FRENCH[key]
 const noop = () => {}
@@ -120,5 +122,17 @@ describe('Inputs locale', () => {
 
         expect(screen.getByText('Amount')).toBeInTheDocument()
         expect(screen.queryByText('Champ numérique')).toBeNull()
+    })
+
+    it('translates the default "Enter" placeholder but keeps data-searchinput English', () => {
+        const { container } = render(
+            <SearchInputV2 value="" onChange={noop} />,
+            { providerProps: { locale: 'fr-FR', t } }
+        )
+
+        expect(screen.getByPlaceholderText('Saisir')).toBeInTheDocument()
+        expect(
+            container.querySelector('[data-searchinput="Enter"]')
+        ).not.toBeNull()
     })
 })

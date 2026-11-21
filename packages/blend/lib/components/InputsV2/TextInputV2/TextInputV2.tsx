@@ -62,7 +62,7 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
             name = 'text-input',
             value,
             onChange,
-            placeholder = 'Enter',
+            placeholder: placeholderProp,
             label,
             subLabel,
             size = InputSizeV2.SM,
@@ -82,7 +82,8 @@ const TextInputV2 = forwardRef<HTMLInputElement, TextInputV2Props>(
         }: TextInputV2Props,
         ref
     ) => {
-        const { m } = useMessages(INPUT_MESSAGES)
+        const { m, pick } = useMessages(INPUT_MESSAGES)
+        const placeholder = pick(placeholderProp, 'input.placeholder.enter')
         const normalizedDropdowns = useMemo((): TextInputV2Dropdown[] => {
             if (dropdown == null) return []
             return Array.isArray(dropdown) ? dropdown : [dropdown]

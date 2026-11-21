@@ -396,6 +396,7 @@ describe('message catalog', () => {
             "input.error.range-min",
             "input.error.unit-too-long",
             "input.label.number-input",
+            "input.placeholder.enter",
             "time-picker.a11y.choose-time",
             "time-picker.a11y.trigger",
             "time-picker.label.am",

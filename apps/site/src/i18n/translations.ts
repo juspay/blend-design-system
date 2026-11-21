@@ -388,6 +388,7 @@ const FRENCH: BlendMessageOverrides = {
     'tabs.label.add-new-tab': 'Ajouter un onglet',
     'tabs.placeholder.navigate': 'Naviguer',
     'tabs.placeholder.search-tabs': 'Rechercher et aller à un onglet',
+    'input.placeholder.enter': 'Saisir',
     'input.a11y.show-password': 'Afficher le mot de passe',
     'input.a11y.hide-password': 'Masquer le mot de passe',
     'input.a11y.show-password-verbose':
@@ -722,6 +723,7 @@ const JAPANESE: BlendMessageOverrides = {
     'tabs.label.add-new-tab': '新しいタブを追加',
     'tabs.placeholder.navigate': '移動',
     'tabs.placeholder.search-tabs': 'タブを検索して移動',
+    'input.placeholder.enter': '入力',
     'input.a11y.show-password': 'パスワードを表示',
     'input.a11y.hide-password': 'パスワードを隠す',
     'input.a11y.show-password-verbose':

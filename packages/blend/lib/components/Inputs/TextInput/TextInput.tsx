@@ -41,7 +41,7 @@ const TextInput = ({
     helpIconHintText,
     disabled = false,
     label,
-    placeholder = 'Enter',
+    placeholder: placeholderProp,
     sublabel,
     value,
     onChange,
@@ -56,7 +56,8 @@ const TextInput = ({
     textInputGroupPosition,
     ...rest
 }: TextInputProps) => {
-    const { m } = useMessages(INPUT_MESSAGES)
+    const { m, pick } = useMessages(INPUT_MESSAGES)
+    const placeholder = pick(placeholderProp, 'input.placeholder.enter')
     const textInputTokens =
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
     const { theme: blendTheme } = useTheme()

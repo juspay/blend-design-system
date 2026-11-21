@@ -27,7 +27,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
             leftSlot,
             rightSlot,
             error = false,
-            placeholder = 'Enter',
+            placeholder: placeholderProp,
             value,
             onChange,
             name,
@@ -41,7 +41,11 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
         },
         ref
     ) => {
-        const { m } = useMessages(INPUT_MESSAGES)
+        const { m, pick } = useMessages(INPUT_MESSAGES)
+        const placeholder = pick(placeholderProp, 'input.placeholder.enter')
+        // `data-searchinput` keeps the English default for stable selectors.
+        const dataPlaceholder =
+            placeholderProp === undefined ? 'Enter' : placeholderProp
         const filteredRest = filterBlockedProps(rest)
         const searchInputTokens =
             useResponsiveTokens<SearchInputV2TokensType>('SEARCH_INPUT_V2')
@@ -165,7 +169,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
 
         return (
             <Block
-                data-searchinput={placeholder ?? ''}
+                data-searchinput={dataPlaceholder ?? ''}
                 data-status={disabled ? 'disabled' : 'enabled'}
                 position="relative"
                 width={'100%'}

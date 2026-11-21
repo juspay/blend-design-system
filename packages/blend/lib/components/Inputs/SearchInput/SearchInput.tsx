@@ -14,6 +14,8 @@ import type { SearchInputProps } from './types'
 import type { SearchInputTokensType } from './searchInput.tokens'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../../tokens'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const toPixels = (value: string | number | undefined): number => {
     if (typeof value === 'number') {
@@ -65,7 +67,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             leftSlot,
             rightSlot,
             error = false,
-            placeholder = 'Enter',
+            placeholder: placeholderProp,
             value,
             onChange,
             name,
@@ -76,6 +78,11 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         },
         ref
     ) => {
+        const { pick } = useMessages(INPUT_MESSAGES)
+        const placeholder = pick(placeholderProp, 'input.placeholder.enter')
+        // `data-searchinput` keeps the English default for stable selectors.
+        const dataPlaceholder =
+            placeholderProp === undefined ? 'Enter' : placeholderProp
         const searchInputTokens =
             useResponsiveTokens<SearchInputTokensType>('SEARCH_INPUT')
 
@@ -160,7 +167,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
 
         return (
             <Block
-                data-searchinput={placeholder ?? ''}
+                data-searchinput={dataPlaceholder ?? ''}
                 data-status={rest.disabled ? 'disabled' : 'enabled'}
                 position="relative"
                 width={'100%'}

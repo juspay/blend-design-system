@@ -11,6 +11,7 @@
  * Zero imports, so this module stays tree-shakable in isolation.
  */
 export const INPUT_MESSAGES = {
+    'input.placeholder.enter': 'Enter',
     'input.a11y.show-password': 'Show password',
     'input.a11y.hide-password': 'Hide password',
     'input.a11y.show-password-verbose':
