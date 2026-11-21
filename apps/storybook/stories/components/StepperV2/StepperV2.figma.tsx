@@ -9,7 +9,7 @@ import {
 /**
  * FIGMA CODE CONNECT FOR STEPPERV2 COMPONENT
  *
- * Six Figma component sets map to StepperV2 (data-driven API):
+ * Seven Figma component sets map to StepperV2 (data-driven API):
  *
  * 1. "stepper" (20382:12234) — full stepper container (22 variants)
  * 2. "stepper-number" (20382:12618) — vertical step with number indicator (8 variants)
@@ -17,9 +17,10 @@ import {
  * 4. "number" (20503:10168) — horizontal step with number (8 variants)
  * 5. "icon" (20503:10173) — horizontal step with icon (8 variants)
  * 6. "substep" (20435:8680) — substep within a vertical step (8 variants)
+ * 7. "substep" #2 (20435:9196) — decorative substep number indicator (9 variants)
  *
  * Set 7 "substep" (20435:9196) is a purely decorative number indicator
- * (Default, 1-8) with no meaningful code props — intentionally not mapped.
+ * (Default, 1-8) — mapped at bottom of file as connection #7.
  *
  * PROP MAPPING DOCUMENTATION
  *
@@ -574,6 +575,254 @@ figma.connect(
                                 status: substepStatus,
                             },
                         ],
+                    },
+                ]}
+            />
+        ),
+
+        imports: [
+            "import { StepperV2, StepperV2Type, StepperV2StepStatus } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/StepperV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-stepperv2--docs',
+            },
+        ],
+    }
+)
+
+// ─── 7. Decorative Substep Number Indicator ───────────────────────
+// Set #7 (20435:9196) — substep with `number` variant prop [Default, 1-8].
+// Purely decorative: renders only the step dot(s) for N substeps.
+// Maps to a minimal VERTICAL StepperV2 with N nested substeps.
+
+figma.connect(
+    StepperV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=20435-9196',
+    {
+        props: {
+            substeps: figma.enum('number', {
+                Default: [
+                    {
+                        id: 1,
+                        title: 'Substep 1',
+                        status: StepperV2StepStatus.CURRENT,
+                    },
+                ],
+                '1': [
+                    {
+                        id: 1,
+                        title: 'Substep 1',
+                        status: StepperV2StepStatus.CURRENT,
+                    },
+                ],
+                '2': [
+                    {
+                        id: 1,
+                        title: 'Substep 1',
+                        status: StepperV2StepStatus.CURRENT,
+                    },
+                    {
+                        id: 2,
+                        title: 'Substep 2',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                ],
+                '3': [
+                    {
+                        id: 1,
+                        title: 'Substep 1',
+                        status: StepperV2StepStatus.CURRENT,
+                    },
+                    {
+                        id: 2,
+                        title: 'Substep 2',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 3,
+                        title: 'Substep 3',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                ],
+                '4': [
+                    {
+                        id: 1,
+                        title: 'Substep 1',
+                        status: StepperV2StepStatus.CURRENT,
+                    },
+                    {
+                        id: 2,
+                        title: 'Substep 2',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 3,
+                        title: 'Substep 3',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 4,
+                        title: 'Substep 4',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                ],
+                '5': [
+                    {
+                        id: 1,
+                        title: 'Substep 1',
+                        status: StepperV2StepStatus.CURRENT,
+                    },
+                    {
+                        id: 2,
+                        title: 'Substep 2',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 3,
+                        title: 'Substep 3',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 4,
+                        title: 'Substep 4',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 5,
+                        title: 'Substep 5',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                ],
+                '6': [
+                    {
+                        id: 1,
+                        title: 'Substep 1',
+                        status: StepperV2StepStatus.CURRENT,
+                    },
+                    {
+                        id: 2,
+                        title: 'Substep 2',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 3,
+                        title: 'Substep 3',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 4,
+                        title: 'Substep 4',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 5,
+                        title: 'Substep 5',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 6,
+                        title: 'Substep 6',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                ],
+                '7': [
+                    {
+                        id: 1,
+                        title: 'Substep 1',
+                        status: StepperV2StepStatus.CURRENT,
+                    },
+                    {
+                        id: 2,
+                        title: 'Substep 2',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 3,
+                        title: 'Substep 3',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 4,
+                        title: 'Substep 4',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 5,
+                        title: 'Substep 5',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 6,
+                        title: 'Substep 6',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 7,
+                        title: 'Substep 7',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                ],
+                '8': [
+                    {
+                        id: 1,
+                        title: 'Substep 1',
+                        status: StepperV2StepStatus.CURRENT,
+                    },
+                    {
+                        id: 2,
+                        title: 'Substep 2',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 3,
+                        title: 'Substep 3',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 4,
+                        title: 'Substep 4',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 5,
+                        title: 'Substep 5',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 6,
+                        title: 'Substep 6',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 7,
+                        title: 'Substep 7',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                    {
+                        id: 8,
+                        title: 'Substep 8',
+                        status: StepperV2StepStatus.PENDING,
+                    },
+                ],
+            }),
+        },
+
+        example: ({ substeps }) => (
+            <StepperV2
+                stepperType={StepperV2Type.VERTICAL}
+                steps={[
+                    {
+                        id: 1,
+                        title: 'Step 1',
+                        status: StepperV2StepStatus.CURRENT,
+                        substeps: substeps,
                     },
                 ]}
             />
