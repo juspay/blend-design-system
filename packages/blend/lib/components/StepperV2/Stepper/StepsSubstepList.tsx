@@ -10,7 +10,13 @@ import type { StepperV2TokensType } from '../stepperV2.tokens'
 import Block from '../../Primitives/Block/Block'
 import Text from '../../Text/Text'
 import { toPixels } from '../../../global-utils/GlobalUtils'
-import { buildSubstepRowLabel, getSubstepTextColor } from './stepsHelpers'
+import {
+    buildSubstepRowLabel,
+    getSubstepStatusKey,
+    getSubstepTextColor,
+} from './stepsHelpers'
+import { useMessages } from '../../../i18n/useMessages'
+import { STEPPER_MESSAGES } from '../../../i18n/catalog/stepper.messages'
 
 type StepsSubstepListProps = {
     step: StepperV2Step
@@ -39,6 +45,7 @@ export function StepsSubstepList({
     clickable,
     onSubstepClick,
 }: StepsSubstepListProps) {
+    const { m } = useMessages(STEPPER_MESSAGES)
     if (!step.substeps?.length) return null
 
     return (
@@ -46,7 +53,9 @@ export function StepsSubstepList({
             data-element={`substeps:Step ${stepIndex + 1}`}
             id={`substeps-${stepId}`}
             role="group"
-            aria-label={`Substeps for ${step.title}`}
+            aria-label={m('stepper.a11y.substeps', {
+                title: String(step.title),
+            })}
         >
             {step.substeps.map((subStep, index) => {
                 const explicitStatus = subStep.status
@@ -76,6 +85,15 @@ export function StepsSubstepList({
                     isSubstepDisabled,
                     isSubstepSkipped
                 )
+                const rowAriaLabel = m(
+                    `stepper.a11y.substep-${getSubstepStatusKey(
+                        isSubstepCompleted,
+                        isSubstepCurrent,
+                        isSubstepDisabled,
+                        isSubstepSkipped
+                    )}`,
+                    { number: String(index + 1), title: String(subStep.title) }
+                )
 
                 return (
                     <Block
@@ -97,7 +115,7 @@ export function StepsSubstepList({
                             }}
                             role={clickable ? 'button' : 'group'}
                             tabIndex={clickable && !isSubstepDisabled ? 0 : -1}
-                            aria-label={rowLabel}
+                            aria-label={rowAriaLabel}
                             aria-disabled={
                                 isSubstepDisabled ? 'true' : undefined
                             }

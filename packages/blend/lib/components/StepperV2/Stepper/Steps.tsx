@@ -12,6 +12,8 @@ import {
 } from '../stepperV2.types'
 import Block from '../../Primitives/Block/Block'
 import { getStepState } from '../utils'
+import { useMessages } from '../../../i18n/useMessages'
+import { STEPPER_MESSAGES } from '../../../i18n/catalog/stepper.messages'
 import { StepStatusCircle } from './StepStatusCircle'
 import { StepsHorizontalBody } from './StepsHorizontalBody'
 import { StepsVerticalSubstepRails } from './StepsVerticalSubstepRails'
@@ -43,6 +45,7 @@ export const Steps = forwardRef<
         },
         ref
     ) => {
+        const { m } = useMessages(STEPPER_MESSAGES)
         const isHorizontal = stepperType === StepperV2Type.HORIZONTAL
 
         const stepperTokens =
@@ -297,6 +300,28 @@ export const Steps = forwardRef<
                             : ', pending'
               }`
             : undefined
+        // `clickableStepLabel` stays English because it is also the
+        // `data-id`; the accessible name is the localized equivalent.
+        const clickableStepAriaLabel = isClickable
+            ? m(
+                  `stepper.a11y.step-${
+                      stepState === StepperV2StepStatus.COMPLETED
+                          ? 'completed'
+                          : stepState === StepperV2StepStatus.CURRENT
+                            ? 'current'
+                            : stepState === StepperV2StepStatus.DISABLED
+                              ? 'disabled'
+                              : stepState === StepperV2StepStatus.SKIPPED
+                                ? 'skipped'
+                                : 'pending'
+                  }`,
+                  {
+                      current: String(stepIndex + 1),
+                      total: String(stepsLength),
+                      title: String(step.title),
+                  }
+              )
+            : undefined
 
         const stepIcon = renderStepIcon()
 
@@ -316,7 +341,7 @@ export const Steps = forwardRef<
                     aria-current={isCurrent ? 'step' : undefined}
                     aria-pressed={isClickable && isCurrent ? 'true' : undefined}
                     aria-disabled={step.disabled ? 'true' : undefined}
-                    aria-label={clickableStepLabel}
+                    aria-label={clickableStepAriaLabel}
                     id={stepId}
                     cursor={isClickable ? 'pointer' : 'default'}
                     onClick={isClickable ? handleClick : undefined}
@@ -435,7 +460,7 @@ export const Steps = forwardRef<
                                 isClickable && isCurrent ? 'true' : undefined
                             }
                             aria-disabled={step.disabled ? 'true' : undefined}
-                            aria-label={clickableStepLabel}
+                            aria-label={clickableStepAriaLabel}
                             aria-describedby={stepDescriptionId}
                             cursor={isClickable ? 'pointer' : 'default'}
                             onClick={isClickable ? handleClick : undefined}
@@ -505,8 +530,12 @@ export const Steps = forwardRef<
                                 tabIndex={0}
                                 aria-label={
                                     isExpanded
-                                        ? `Collapse substeps for ${step.title}`
-                                        : `Expand substeps for ${step.title}`
+                                        ? m('stepper.a11y.collapse-substeps', {
+                                              title: String(step.title),
+                                          })
+                                        : m('stepper.a11y.expand-substeps', {
+                                              title: String(step.title),
+                                          })
                                 }
                                 aria-expanded={isExpanded}
                                 aria-controls={

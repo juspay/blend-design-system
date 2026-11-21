@@ -18,6 +18,7 @@ import { OVERLAY_MESSAGES } from '../../lib/i18n/catalog/overlay.messages'
 import { FEEDBACK_MESSAGES } from '../../lib/i18n/catalog/feedback.messages'
 import { CHAT_INPUT_MESSAGES } from '../../lib/i18n/catalog/chatInput.messages'
 import { CODE_MESSAGES } from '../../lib/i18n/catalog/code.messages'
+import { STEPPER_MESSAGES } from '../../lib/i18n/catalog/stepper.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -51,6 +52,7 @@ const FAMILIES = new Set([
     'chat-input',
     'code-block',
     'code-editor',
+    'stepper',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -73,6 +75,7 @@ const FRAGMENTS = {
     FEEDBACK_MESSAGES,
     CHAT_INPUT_MESSAGES,
     CODE_MESSAGES,
+    STEPPER_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -469,6 +472,22 @@ describe('message catalog', () => {
             "skeleton.label.confirm",
             "snackbar.a11y.close",
             "spinner.label.loading",
+            "stepper.a11y.additional-info",
+            "stepper.a11y.collapse-substeps",
+            "stepper.a11y.expand-substeps",
+            "stepper.a11y.progress",
+            "stepper.a11y.step-completed",
+            "stepper.a11y.step-current",
+            "stepper.a11y.step-disabled",
+            "stepper.a11y.step-focused",
+            "stepper.a11y.step-pending",
+            "stepper.a11y.step-skipped",
+            "stepper.a11y.substep-completed",
+            "stepper.a11y.substep-current",
+            "stepper.a11y.substep-disabled",
+            "stepper.a11y.substep-pending",
+            "stepper.a11y.substep-skipped",
+            "stepper.a11y.substeps",
             "tabs.a11y.close",
             "tabs.a11y.close-tab",
             "tabs.a11y.navigate-to-tab",

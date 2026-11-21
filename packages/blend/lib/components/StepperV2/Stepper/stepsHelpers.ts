@@ -13,6 +13,32 @@ export function getSubstepListLabelSuffix(
     return ', pending'
 }
 
+/** The status segment of the `stepper.a11y.substep-*` keys. */
+export type StepperV2StatusKey =
+    | 'completed'
+    | 'current'
+    | 'disabled'
+    | 'skipped'
+    | 'pending'
+
+/** Same precedence as `getSubstepListLabelSuffix`. */
+export function getSubstepStatusKey(
+    isSubstepCompleted: boolean,
+    isSubstepCurrent: boolean,
+    isSubstepDisabled: boolean,
+    isSubstepSkipped: boolean
+): StepperV2StatusKey {
+    if (isSubstepCompleted) return 'completed'
+    if (isSubstepCurrent) return 'current'
+    if (isSubstepDisabled) return 'disabled'
+    if (isSubstepSkipped) return 'skipped'
+    return 'pending'
+}
+
+/**
+ * English label kept for the substep's `data-id`. The accessible name is
+ * localized separately from `getSubstepStatusKey`.
+ */
 export function buildSubstepRowLabel(
     substepIndex0: number,
     title: string,
