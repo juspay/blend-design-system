@@ -185,7 +185,9 @@ const FRENCH: BlendMessageOverrides = {
     'time-picker.label.period': 'AM/PM',
     'time-picker.label.am': 'AM',
     'time-picker.label.pm': 'PM',
+    'time-picker.label.time-with-period': '{time} {period}',
     'time-picker.a11y.choose-time': "Choisir l'heure",
+    'time-picker.a11y.trigger': "Sélecteur d'heure, {value}",
 }
 
 const JAPANESE: BlendMessageOverrides = {
@@ -311,7 +313,9 @@ const JAPANESE: BlendMessageOverrides = {
     'time-picker.label.period': '午前/午後',
     'time-picker.label.am': '午前',
     'time-picker.label.pm': '午後',
+    'time-picker.label.time-with-period': '{period}{time}',
     'time-picker.a11y.choose-time': '時刻を選択',
+    'time-picker.a11y.trigger': '時刻選択、{value}',
 }
 
 /**
