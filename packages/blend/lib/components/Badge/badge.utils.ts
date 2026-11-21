@@ -94,20 +94,32 @@ export const getPositionStyles = (
     }
 }
 
+/** Localized label copy; omitted, the English defaults below are used. */
+export type BadgeLabelMessages = {
+    moreThan: (maxCount: number) => string
+    notification: string
+}
+
+const ENGLISH_BADGE_LABELS: BadgeLabelMessages = {
+    moreThan: (maxCount) => `More than ${maxCount}`,
+    notification: 'Notification',
+}
+
 // Get accessible label for the badge
 export const getAccessibleLabel = (
     count: number | undefined,
     text: string | undefined,
     maxCount: number,
-    showBadge: boolean
+    showBadge: boolean,
+    messages: BadgeLabelMessages = ENGLISH_BADGE_LABELS
 ): string | undefined => {
     if (!showBadge) return undefined
     if (text) return text
     if (count !== undefined) {
         if (count > maxCount) {
-            return `More than ${maxCount}`
+            return messages.moreThan(maxCount)
         }
         return count.toString()
     }
-    return 'Notification'
+    return messages.notification
 }

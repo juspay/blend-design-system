@@ -20,6 +20,7 @@ import { CHAT_INPUT_MESSAGES } from '../../lib/i18n/catalog/chatInput.messages'
 import { CODE_MESSAGES } from '../../lib/i18n/catalog/code.messages'
 import { STEPPER_MESSAGES } from '../../lib/i18n/catalog/stepper.messages'
 import { CHART_MESSAGES } from '../../lib/i18n/catalog/chart.messages'
+import { DISPLAY_MESSAGES } from '../../lib/i18n/catalog/display.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -56,6 +57,15 @@ const FAMILIES = new Set([
     'stepper',
     'chart',
     'stat-card',
+    'avatar',
+    'avatar-group',
+    'badge',
+    'card',
+    'key-value-pair',
+    'slider',
+    'tag',
+    'timeline',
+    'group',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -80,6 +90,7 @@ const FRAGMENTS = {
     CODE_MESSAGES,
     STEPPER_MESSAGES,
     CHART_MESSAGES,
+    DISPLAY_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -251,6 +262,27 @@ describe('message catalog', () => {
             "code-editor.a11y.header",
             "code-editor.label.title",
             "code-editor.status.loading",
+            "avatar-group.a11y.group-selected.one",
+            "avatar-group.a11y.group-selected.other",
+            "avatar-group.a11y.group.one",
+            "avatar-group.a11y.group.other",
+            "avatar-group.a11y.loading-more",
+            "avatar-group.a11y.overflow.one",
+            "avatar-group.a11y.overflow.other",
+            "avatar-group.a11y.position",
+            "avatar-group.a11y.position-more",
+            "avatar-group.a11y.selected",
+            "avatar-group.label.fallback-name",
+            "avatar-group.placeholder.search",
+            "avatar.a11y.status-away",
+            "avatar.a11y.status-busy",
+            "avatar.a11y.status-offline",
+            "avatar.a11y.status-online",
+            "avatar.label.fallback",
+            "badge.a11y.more-than",
+            "badge.a11y.notification",
+            "card.a11y.custom-content",
+            "card.a11y.visual-content",
             "common.action.apply",
             "common.action.cancel",
             "common.action.clear",
@@ -537,6 +569,18 @@ describe('message catalog', () => {
             "tabs.label.add-new-tab",
             "tabs.placeholder.navigate",
             "tabs.placeholder.search-tabs",
+            "group.a11y.button-group",
+            "group.a11y.multi-select-group",
+            "group.a11y.single-select-group",
+            "group.a11y.tag-group",
+            "key-value-pair.a11y.label",
+            "slider.a11y.single",
+            "slider.a11y.thumb",
+            "slider.a11y.thumb-labelled",
+            "tag.a11y.mixed",
+            "tag.a11y.pressed",
+            "tag.a11y.split",
+            "tag.a11y.split-unnamed",
             "time-picker.a11y.choose-time",
             "time-picker.a11y.trigger",
             "time-picker.label.am",
@@ -547,6 +591,7 @@ describe('message catalog', () => {
             "time-picker.label.seconds",
             "time-picker.label.time-with-period",
             "topbar.a11y.go-back",
+            "timeline.action.show-more",
             "upload-v2.a11y.file-input",
             "upload-v2.a11y.remove-file",
             "upload-v2.a11y.show-more-files.one",

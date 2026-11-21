@@ -13,6 +13,8 @@ import Menu from '../Menu/Menu'
 import { Skeleton } from '../Skeleton'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { AvatarTokensType } from '../Avatar/avatar.tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
     (
@@ -28,6 +30,7 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
         },
         ref
     ) => {
+        const { m, mp } = useMessages(DISPLAY_MESSAGES)
         const tokens = useResponsiveTokens<AvatarTokensType>('AVATAR')
         const safeMaxCount = Math.max(1, maxCount)
 
@@ -61,14 +64,25 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
             overflowAvatars,
             internalSelectedIds,
             handleSelect,
-            Avatar
+            Avatar,
+            (id) => m('avatar-group.label.fallback-name', { id: String(id) })
         )
 
         return (
             <StyledAvatarGroupContainer
                 ref={ref}
                 role="group"
-                aria-label={`Group of ${avatars.length} avatars${internalSelectedIds.length > 0 ? `, ${internalSelectedIds.length} selected` : ''}`}
+                aria-label={
+                    internalSelectedIds.length > 0
+                        ? mp(
+                              'avatar-group.a11y.group-selected',
+                              avatars.length,
+                              {
+                                  selected: String(internalSelectedIds.length),
+                              }
+                          )
+                        : mp('avatar-group.a11y.group', avatars.length)
+                }
                 aria-live="polite"
                 aria-atomic="true"
                 data-avatar-group="avatar-group"
@@ -83,7 +97,9 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                         avatar.alt ||
                         (typeof avatar.fallback === 'string'
                             ? avatar.fallback
-                            : `Avatar ${avatar.id}`)
+                            : m('avatar-group.label.fallback-name', {
+                                  id: String(avatar.id),
+                              }))
                     const descriptionId = `avatar-group-item-${avatar.id}-description`
 
                     return (
@@ -98,7 +114,9 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                             aria-pressed={isSelected}
                             aria-label={
                                 isSelected
-                                    ? `${avatarName}, selected`
+                                    ? m('avatar-group.a11y.selected', {
+                                          name: avatarName,
+                                      })
                                     : avatarName
                             }
                             aria-describedby={descriptionId}
@@ -126,7 +144,16 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                                 id={descriptionId}
                                 aria-hidden="false"
                             >
-                                {`Avatar ${index + 1} of ${visibleAvatars.length}${overflowCount > 0 ? `, ${overflowCount} more available` : ''}`}
+                                {overflowCount > 0
+                                    ? m('avatar-group.a11y.position-more', {
+                                          number: String(index + 1),
+                                          total: String(visibleAvatars.length),
+                                          more: String(overflowCount),
+                                      })
+                                    : m('avatar-group.a11y.position', {
+                                          number: String(index + 1),
+                                          total: String(visibleAvatars.length),
+                                      })}
                             </VisuallyHidden>
                         </StyledAvatarWrapper>
                     )
@@ -139,7 +166,7 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                             width={tokens.container.size[size].width}
                             height={tokens.container.size[size].height}
                             borderRadius={tokens.container.borderRadius[shape]}
-                            aria-label="Loading more avatars"
+                            aria-label={m('avatar-group.a11y.loading-more')}
                         />
                     ) : (
                         <Menu
@@ -150,7 +177,10 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                                     $shape={shape}
                                     aria-haspopup="menu"
                                     aria-expanded="false"
-                                    aria-label={`${overflowCount} more avatar${overflowCount > 1 ? 's' : ''}, click to view and select`}
+                                    aria-label={mp(
+                                        'avatar-group.a11y.overflow',
+                                        overflowCount
+                                    )}
                                     data-avatar-group-overflow="true"
                                     data-avatar-group-overflow-count={
                                         overflowCount
@@ -164,7 +194,9 @@ const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
                             }
                             items={menuItems}
                             enableSearch
-                            searchPlaceholder="Search avatars..."
+                            searchPlaceholder={m(
+                                'avatar-group.placeholder.search'
+                            )}
                             maxHeight={250}
                         />
                     ))}

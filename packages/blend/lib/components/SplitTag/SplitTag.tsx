@@ -2,6 +2,8 @@ import { useId, useMemo } from 'react'
 import Block from '../Primitives/Block/Block'
 import { Tag, TagVariant } from '../Tags'
 import { SplitTagProps } from './types'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 const SplitTag = ({
     primaryTag,
@@ -10,6 +12,7 @@ const SplitTag = ({
     shape,
     ...props
 }: SplitTagProps) => {
+    const { m } = useMessages(DISPLAY_MESSAGES)
     const baseId = useId()
     const splitTagId = `${baseId}-split-tag`
     const primaryTagId = `${baseId}-primary-tag`
@@ -28,15 +31,13 @@ const SplitTag = ({
         if (ariaLabel) {
             return ariaLabel
         }
-        const parts: string[] = []
-        if (primaryTag?.text) {
-            parts.push(primaryTag.text)
+        const primary = primaryTag?.text
+        const secondary = secondaryTag?.text
+        if (primary && secondary) {
+            return m('tag.a11y.split', { primary, secondary })
         }
-        if (secondaryTag?.text) {
-            parts.push(secondaryTag.text)
-        }
-        return parts.length > 0 ? parts.join(': ') : 'Split tag'
-    }, [primaryTag?.text, secondaryTag?.text, ariaLabel])
+        return primary || secondary || m('tag.a11y.split-unnamed')
+    }, [primaryTag?.text, secondaryTag?.text, ariaLabel, m])
 
     return (
         <Block
