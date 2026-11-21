@@ -468,7 +468,7 @@ const StepComponent = forwardRef<
                                     ? m(
                                           `stepper.a11y.step-${getStepStatusKey(stepState)}`,
                                           {
-                                              number: String(stepIndex + 1),
+                                              current: String(stepIndex + 1),
                                               total: String(stepsLength),
                                               title: String(step.title),
                                           }
@@ -951,7 +951,7 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
                     announcement.style.height = '1px'
                     announcement.style.overflow = 'hidden'
                     announcement.textContent = m('stepper.a11y.step-focused', {
-                        number: String(focusedStepIndex + 1),
+                        current: String(focusedStepIndex + 1),
                         title: String(currentStep.title),
                     })
                     document.body.appendChild(announcement)
@@ -985,7 +985,7 @@ const VerticalStepper = forwardRef<HTMLDivElement, StepperProps>(
                 flexDirection="column"
                 role="group"
                 aria-label={m('stepper.a11y.progress', {
-                    number: String(derivedIndex + 1),
+                    current: String(derivedIndex + 1),
                     total: String(steps.length),
                 })}
                 aria-roledescription="stepper"

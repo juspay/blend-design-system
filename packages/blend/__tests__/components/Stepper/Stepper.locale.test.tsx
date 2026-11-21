@@ -10,10 +10,10 @@ import {
 
 const FRENCH: Record<string, string> = {
     'stepper.a11y.step-current':
-        'Étape {number} sur {total} : {title}, en cours',
+        'Étape {current} sur {total} : {title}, en cours',
     'stepper.a11y.substep-pending': 'Sous-étape {number} : {title}, en attente',
     'stepper.a11y.progress':
-        'Indicateur de progression : étape {number} sur {total}',
+        'Indicateur de progression : étape {current} sur {total}',
 }
 const t = (key: string) => FRENCH[key]
 
