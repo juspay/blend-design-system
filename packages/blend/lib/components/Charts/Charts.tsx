@@ -50,7 +50,7 @@ const Charts: React.FC<ChartsProps> = ({
     lineSeriesKeys,
     ...props
 }) => {
-    const { m } = useMessages(CHART_MESSAGES)
+    const { m, locale } = useMessages(CHART_MESSAGES)
     const data = normalizeChartData(dataProp)
 
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -434,6 +434,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={250}
                                               >
                                                   {renderChart({
+                                                      locale,
                                                       chartTokens,
                                                       CustomizedDot,
                                                       flattenedData,
@@ -508,6 +509,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={300}
                                               >
                                                   {renderChart({
+                                                      locale,
                                                       chartTokens,
                                                       CustomizedDot,
                                                       flattenedData,
@@ -755,6 +757,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   //   height={'auto'}
                                               >
                                                   {renderChart({
+                                                      locale,
                                                       chartTokens,
                                                       CustomizedDot,
                                                       chartName,
@@ -944,6 +947,7 @@ const Charts: React.FC<ChartsProps> = ({
                                                   height={'100%'}
                                               >
                                                   {renderChart({
+                                                      locale,
                                                       chartTokens,
                                                       CustomizedDot,
                                                       flattenedData,

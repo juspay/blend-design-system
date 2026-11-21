@@ -50,6 +50,11 @@ import { getAxisFormatter, createDateTimeFormatter } from '../Charts/ChartUtils'
 import { AxisType } from '../Charts/types'
 import StatCardSkeleton from './StatCardSkeleton'
 import { useMessages } from '../../i18n/useMessages'
+import { DEFAULT_LOCALE } from '../../i18n/constants'
+import {
+    getListFormat,
+    getNumberFormat,
+} from '../../i18n/format/formatterCache'
 import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 import {
     calculateTrend,
@@ -305,6 +310,16 @@ const StatCard = ({
     showBorder = true,
     ...props
 }: StatCardProps) => {
+    const { m, mp, locale } = useMessages(CHART_MESSAGES)
+    // English keeps the original `toFixed(2)` output byte-identical; other
+    // locales get their own decimal separator.
+    const formatChangeValue = useCallback(
+        (changeValue: number): string =>
+            locale === DEFAULT_LOCALE
+                ? changeValue.toFixed(2)
+                : getNumberFormat(locale, 'decimal-2').format(changeValue),
+        [locale]
+    )
     const statCardToken = useResponsiveTokens<StatCardTokenType>('STAT_CARD')
 
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
@@ -343,15 +358,19 @@ const StatCard = ({
                 change.valueType != null &&
                 change.valueType != undefined
             ) {
-                const changeText =
+                const changeText = m(
                     change.valueType === ChangeType.INCREASE
-                        ? `increased by ${change.value.toFixed(2)}%`
-                        : `decreased by ${change.value.toFixed(2)}%`
+                        ? 'stat-card.a11y.change-increase'
+                        : 'stat-card.a11y.change-decrease',
+                    { value: formatChangeValue(change.value) }
+                )
                 parts.push(changeText)
             }
-            return parts.join(', ')
+            // `unit`/`short` list format is ", " in English, so the English
+            // label is unchanged while the separator follows the locale.
+            return getListFormat(locale).format(parts)
         },
-        [title, value, subtitle, change]
+        [title, value, subtitle, change, m, locale, formatChangeValue]
     )
 
     // Construct accessible description for charts
@@ -366,8 +385,12 @@ const StatCard = ({
                 : firstValue && lastValue && lastValue < firstValue
                   ? 'decreasing'
                   : 'stable'
-        return `${title} chart showing ${dataPoints} data points with ${trend} trend`
-    }, [chartData, title])
+        return mp(`stat-card.a11y.chart-trend-${trend}`, dataPoints, {
+            title: String(title),
+            // Unformatted, as before: no grouping separator in English.
+            count: String(dataPoints),
+        })
+    }, [chartData, title, mp])
 
     const formatTooltipLabel = (label: string | number): string => {
         if (!xAxis) return String(label)
@@ -378,33 +401,47 @@ const StatCard = ({
                 useUTC: true,
                 smartDateTimeFormat: false,
                 showYear: true,
+                locale,
             })
             return tooltipFormatter(label)
         }
         if (xAxis.type) {
-            return getAxisFormatter(xAxis)(label)
+            return getAxisFormatter(xAxis, locale)(label)
         }
         return String(label)
     }
 
     const formatTooltipValue = (val: string | number): string => {
         if (!yAxis) {
-            return typeof val === 'number' ? val.toLocaleString() : String(val)
+            return typeof val === 'number'
+                ? getNumberFormat(locale, 'decimal').format(val)
+                : String(val)
         }
         if (yAxis.tickFormatter) return yAxis.tickFormatter(val)
         if (yAxis.type) {
-            return getAxisFormatter(yAxis)(val)
+            return getAxisFormatter(yAxis, locale)(val)
         }
-        return typeof val === 'number' ? val.toLocaleString() : String(val)
+        return typeof val === 'number'
+            ? getNumberFormat(locale, 'decimal').format(val)
+            : String(val)
     }
 
     const formatMainValue = useCallback(
         (val: string | number): string => {
             if (valueFormatter) {
-                return getAxisFormatter({ type: valueFormatter })(val)
+                return getAxisFormatter({ type: valueFormatter }, locale)(val)
             }
             return String(val)
         },
+        [valueFormatter, locale]
+    )
+    // `data-numeric` is a selector/analytics hook, so it keeps the
+    // locale-independent English form of the same value.
+    const formatMainValueData = useCallback(
+        (val: string | number): string =>
+            valueFormatter
+                ? getAxisFormatter({ type: valueFormatter })(val)
+                : String(val),
         [valueFormatter]
     )
 
@@ -491,7 +528,7 @@ const StatCard = ({
                     {effectiveChange.value!.toFixed(2)?.includes('-')
                         ? ''
                         : '+'}
-                    {effectiveChange.value!.toFixed(2)}%
+                    {formatChangeValue(effectiveChange.value!)}%
                 </Text>
             </Block>
         ) : null
@@ -1014,7 +1051,7 @@ const StatCard = ({
                                                 style={{
                                                     cursor: 'pointer',
                                                 }}
-                                                data-numeric={formatMainValue(
+                                                data-numeric={formatMainValueData(
                                                     value || '--'
                                                 )}
                                                 data-element="statcard-data"
@@ -1233,7 +1270,7 @@ const StatCard = ({
                                                 style={{
                                                     cursor: 'pointer',
                                                 }}
-                                                data-numeric={formatMainValue(
+                                                data-numeric={formatMainValueData(
                                                     value || '--'
                                                 )}
                                                 data-element="statcard-data"
@@ -1332,7 +1369,12 @@ const StatCard = ({
                                     height={statCardToken.chart.height}
                                     width="100%"
                                     role="img"
-                                    aria-label={chartLabel || `${title} chart`}
+                                    aria-label={
+                                        chartLabel ||
+                                        m('stat-card.a11y.chart', {
+                                            title: String(title),
+                                        })
+                                    }
                                 >
                                     {indexedChartData &&
                                     indexedChartData.length > 0 ? (
@@ -1345,7 +1387,9 @@ const StatCard = ({
                                                 data={indexedChartData}
                                                 aria-label={
                                                     chartLabel ||
-                                                    `${title} chart`
+                                                    m('stat-card.a11y.chart', {
+                                                        title: String(title),
+                                                    })
                                                 }
                                                 margin={{
                                                     top: 5,
@@ -1466,7 +1510,12 @@ const StatCard = ({
                             id={chartId}
                             height={statCardToken.chart.height}
                             role="img"
-                            aria-label={chartLabel || `${title} chart`}
+                            aria-label={
+                                chartLabel ||
+                                m('stat-card.a11y.chart', {
+                                    title: String(title),
+                                })
+                            }
                         >
                             {variant === StatCardVariant.LINE &&
                                 (indexedChartData &&
@@ -1479,7 +1528,10 @@ const StatCard = ({
                                             data-single-stat-graph={title}
                                             data={indexedChartData}
                                             aria-label={
-                                                chartLabel || `${title} chart`
+                                                chartLabel ||
+                                                m('stat-card.a11y.chart', {
+                                                    title: String(title),
+                                                })
                                             }
                                             margin={{
                                                 top: 5,
@@ -1590,7 +1642,10 @@ const StatCard = ({
                                             data-single-stat-graph={title}
                                             data={indexedChartData}
                                             aria-label={
-                                                chartLabel || `${title} chart`
+                                                chartLabel ||
+                                                m('stat-card.a11y.chart', {
+                                                    title: String(title),
+                                                })
                                             }
                                             margin={{
                                                 top: 0,

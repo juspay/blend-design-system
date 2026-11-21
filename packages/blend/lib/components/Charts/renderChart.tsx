@@ -67,6 +67,7 @@ export const renderChart = ({
     lineSeriesKeys,
     onKeyClick,
     chartTokens,
+    locale,
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
@@ -103,6 +104,7 @@ export const renderChart = ({
             dateOnly: finalXAxis.dateOnly,
             timeOnly: finalXAxis.timeOnly,
             showYear: finalXAxis.showYear,
+            locale,
             useUTC: finalXAxis.useUTC,
             formatString: finalXAxis.formatString,
         })
@@ -298,8 +300,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -344,8 +346,8 @@ export const renderChart = ({
                                     : finalYAxis.tickFormatter
                                       ? finalYAxis.tickFormatter
                                       : finalYAxis.type
-                                        ? getAxisFormatter(finalYAxis)
-                                        : (value) => formatNumber(value)
+                                        ? getAxisFormatter(finalYAxis, locale)
+                                        : (value) => formatNumber(value, locale)
                             }
                             tick={
                                 (finalYAxis.customTick
@@ -553,8 +555,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -597,8 +599,8 @@ export const renderChart = ({
                                     : finalYAxis.tickFormatter
                                       ? finalYAxis.tickFormatter
                                       : finalYAxis.type
-                                        ? getAxisFormatter(finalYAxis)
-                                        : (value) => formatNumber(value)
+                                        ? getAxisFormatter(finalYAxis, locale)
+                                        : (value) => formatNumber(value, locale)
                             }
                             tick={
                                 (finalYAxis.customTick
@@ -704,8 +706,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -730,8 +732,8 @@ export const renderChart = ({
                                 : finalYAxis.tickFormatter
                                   ? finalYAxis.tickFormatter
                                   : finalYAxis.type
-                                    ? getAxisFormatter(finalYAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalYAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (finalYAxis.customTick
@@ -1073,8 +1075,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -1123,8 +1125,8 @@ export const renderChart = ({
                                 : finalYAxis.tickFormatter
                                   ? finalYAxis.tickFormatter
                                   : finalYAxis.type
-                                    ? getAxisFormatter(finalYAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalYAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (finalYAxis.customTick
@@ -1354,8 +1356,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -1398,8 +1400,8 @@ export const renderChart = ({
                                     : finalYAxis.tickFormatter
                                       ? finalYAxis.tickFormatter
                                       : finalYAxis.type
-                                        ? getAxisFormatter(finalYAxis)
-                                        : (value) => formatNumber(value)
+                                        ? getAxisFormatter(finalYAxis, locale)
+                                        : (value) => formatNumber(value, locale)
                             }
                             tick={
                                 (finalYAxis.customTick
