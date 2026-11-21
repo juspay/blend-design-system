@@ -7,6 +7,7 @@ import { TIME_PICKER_MESSAGES } from '../../lib/i18n/catalog/timePicker.messages
 import { UPLOAD_MESSAGES } from '../../lib/i18n/catalog/upload.messages'
 import { UPLOAD_V2_MESSAGES } from '../../lib/i18n/catalog/uploadV2.messages'
 import { SELECT_MESSAGES } from '../../lib/i18n/catalog/select.messages'
+import { STEPPER_MESSAGES } from '../../lib/i18n/catalog/stepper.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -21,6 +22,7 @@ const FAMILIES = new Set([
     'date-range-picker',
     'time-picker',
     'select',
+    'stepper',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -32,6 +34,7 @@ const FRAGMENTS = {
     DATE_RANGE_PICKER_MESSAGES,
     TIME_PICKER_MESSAGES,
     SELECT_MESSAGES,
+    STEPPER_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -191,6 +194,22 @@ describe('message catalog', () => {
             "select.placeholder.search",
             "select.placeholder.search-short",
             "select.status.searching",
+            "stepper.a11y.additional-info",
+            "stepper.a11y.collapse-substeps",
+            "stepper.a11y.expand-substeps",
+            "stepper.a11y.progress",
+            "stepper.a11y.step-completed",
+            "stepper.a11y.step-current",
+            "stepper.a11y.step-disabled",
+            "stepper.a11y.step-focused",
+            "stepper.a11y.step-pending",
+            "stepper.a11y.step-skipped",
+            "stepper.a11y.substep-completed",
+            "stepper.a11y.substep-current",
+            "stepper.a11y.substep-disabled",
+            "stepper.a11y.substep-pending",
+            "stepper.a11y.substep-skipped",
+            "stepper.a11y.substeps",
             "time-picker.a11y.choose-time",
             "time-picker.a11y.trigger",
             "time-picker.label.am",
