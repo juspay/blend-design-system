@@ -529,7 +529,9 @@ export function DataTablePagination({
                                         }
                                     }}
                                     enableSearch={totalPages > 10}
-                                    searchPlaceholder="Search pages..."
+                                    searchPlaceholder={m(
+                                        'data-table.placeholder.search-pages'
+                                    )}
                                     size={SelectMenuSize.SMALL}
                                     variant={SelectMenuVariant.NO_CONTAINER}
                                     placeholder="..."

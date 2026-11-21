@@ -313,7 +313,7 @@ export const ColumnManager = <T extends Record<string, unknown>>({
                     variant={MultiSelectVariant.NO_CONTAINER}
                     alignment={MultiSelectMenuAlignment.END}
                     size={MultiSelectMenuSize.SMALL}
-                    selectAllText="Select All Columns"
+                    selectAllText={m('data-table.action.select-all-columns')}
                     maxMenuHeight={400}
                     {...commonProps}
                 />

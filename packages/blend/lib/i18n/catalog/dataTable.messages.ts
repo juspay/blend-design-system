@@ -40,6 +40,7 @@ export const DATA_TABLE_MESSAGES = {
     'data-table.action.delete': 'Delete',
     'data-table.action.format': 'Format',
     'data-table.action.add-columns': 'Add Columns',
+    'data-table.action.select-all-columns': 'Select All Columns',
 
     'data-table.label.actions': 'Actions',
     'data-table.label.advanced-filters': 'Advanced Filters',
@@ -69,6 +70,9 @@ export const DATA_TABLE_MESSAGES = {
 
     'data-table.placeholder.search': 'Search',
     'data-table.placeholder.search-table': 'Search...',
+    'data-table.placeholder.search-pages': 'Search pages...',
+    'data-table.placeholder.search-options': 'Search options...',
+    'data-table.placeholder.search-columns': 'Search columns...',
     'data-table.placeholder.select': 'Select...',
     'data-table.placeholder.select-columns': 'Select columns to display',
     'data-table.placeholder.manage-columns': 'Manage Columns',

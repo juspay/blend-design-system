@@ -139,9 +139,13 @@ const MobileColumnManagerDrawer: React.FC<
                                     onChange={handleMultiSelectChange}
                                     items={multiSelectItems}
                                     enableSearch={true}
-                                    searchPlaceholder="Search columns..."
+                                    searchPlaceholder={m(
+                                        'data-table.placeholder.search-columns'
+                                    )}
                                     enableSelectAll={true}
-                                    selectAllText="Select All Columns"
+                                    selectAllText={m(
+                                        'data-table.action.select-all-columns'
+                                    )}
                                     useDrawerOnMobile={true}
                                 />
                             </Block>

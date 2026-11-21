@@ -411,7 +411,9 @@ const MobileColumnDrawer: React.FC<
                         setSelectedDropdownColumn(null)
                     }}
                     enableSearch={true}
-                    searchPlaceholder="Search options..."
+                    searchPlaceholder={m(
+                        'data-table.placeholder.search-options'
+                    )}
                 />
             )}
         </>
