@@ -190,6 +190,7 @@ figma.connect(
                 line: lineChartOptions,
                 bar: barChartOptions,
                 pie: pieChartOptions,
+                empty: undefined,
             }),
         },
 

@@ -62,8 +62,8 @@ figma.connect(
                 error: { show: true },
                 default: { show: false },
                 hover: { show: false },
-                active: { show: false },
-                focussed: { show: false },
+                focused: { show: false },
+                filled: { show: false },
                 disabled: { show: false },
             }),
 
@@ -72,8 +72,8 @@ figma.connect(
                 disabled: true,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
+                focused: false,
+                filled: false,
                 error: false,
             }),
 

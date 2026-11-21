@@ -14,11 +14,12 @@ import { RadioV2, SelectorV2Size } from '@juspay/blend-design-system'
  *      [V1 used `subtext`; V2's prop is `subLabel`]
  *
  * 2. DIRECT MAPPINGS (same in both):
- *    - size → size (SelectorV2Size enum: SM/MD/LG)
- *    - disabled → disabled
+ *    - size → size (Figma options: small/medium; SelectorV2Size enum: SM/MD/LG)
+ *    - disabled → disabled (Figma variant 'true'/'false' → Code boolean)
+ *    - label → label
  *
  * 3. SPECIAL MAPPINGS:
- *    - enable (Figma boolean) → checked (Code boolean)
+ *    - enable (Figma variant on/off) → checked (Code boolean)
  *      [V1 renamed `enable` → `checked`; V2 keeps the prop name `checked`]
  *    - hasSlot (Figma boolean) + slot (Figma instance) → slot (Code object)
  *      V2 `slot` is `{ slot: ReactElement; maxHeight? }`, so the Figma instance
@@ -29,11 +30,8 @@ import { RadioV2, SelectorV2Size } from '@juspay/blend-design-system'
  *    - hasContent: Automatically determined by presence of label/subLabel/slot
  *    - hasSubtext: Handled by the subLabel prop itself
  *    - hasSlot: Handled by the slot prop itself
- *    - label: Text layer inside the Figma instance, not exposed as a string
- *      property (hardcoded in design; developers should replace with content)
  *
  * 5. CODE-ONLY PROPERTIES (not in Figma):
- *    - label: Label text — not exposed as a Figma string property
  *    - id: Form identifier
  *    - defaultChecked: Initial state handling
  *    - required: Not represented in Figma design
@@ -49,22 +47,20 @@ figma.connect(
     {
         props: {
             // Size mapping — SelectorV2Size (SM/MD/LG)
+            // Figma exposes only 'small' and 'medium' variant options
             size: figma.enum('size', {
-                sm: SelectorV2Size.SM,
-                md: SelectorV2Size.MD,
                 small: SelectorV2Size.SM,
                 medium: SelectorV2Size.MD,
-                Small: SelectorV2Size.SM,
-                Medium: SelectorV2Size.MD,
-                SM: SelectorV2Size.SM,
-                MD: SelectorV2Size.MD,
             }),
 
-            // Renamed mapping: enable (Figma) → checked (Code)
-            checked: figma.boolean('enable'),
+            // Renamed mapping: enable (Figma variant) → checked (Code boolean)
+            checked: figma.enum('enable', { on: true, off: false }),
 
-            // Direct mapping: disabled
-            disabled: figma.boolean('disabled'),
+            // Direct mapping: disabled (Figma variant 'true'/'false' → boolean)
+            disabled: figma.enum('disabled', { true: true, false: false }),
+
+            // Direct mapping: label
+            label: figma.string('label'),
 
             // Renamed: subtext (Figma) → subLabel (Code) [V1 used `subtext`]
             subLabel: figma.string('subtext'),
@@ -76,7 +72,6 @@ figma.connect(
             }),
 
             // Note: The following props are not mapped as they don't exist in Figma:
-            // - label (label text — not available as a Figma string property)
             // - id (form identifier)
             // - defaultChecked (initial state)
             // - required (form validation)
@@ -86,11 +81,12 @@ figma.connect(
             // - maxLength (truncation config)
         },
 
-        example: ({ size, checked, disabled, subLabel, slot }) => (
+        example: ({ size, checked, disabled, label, subLabel, slot }) => (
             <RadioV2
                 size={size}
                 checked={checked}
                 disabled={disabled}
+                label={label}
                 subLabel={subLabel}
                 slot={slot}
             />

@@ -62,19 +62,14 @@ figma.connect(
                 error: true,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
             }),
 
-            // Special mapping: state=disabled → disabled=true
+            // SearchInputV2 Figma component has no 'disabled' state,
+            // so disabled is always false; kept to avoid Code Connect errors
             disabled: figma.enum('state', {
-                disabled: true,
+                error: false,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
-                error: false,
             }),
 
             // onChange handler

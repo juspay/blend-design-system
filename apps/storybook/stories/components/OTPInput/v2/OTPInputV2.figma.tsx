@@ -56,11 +56,9 @@ figma.connect(
             required: figma.boolean('mandatory'),
 
             // Renamed mapping: digits (Figma) → length (Code)
-            // Digit-count variants map to the configurable V2 length prop (default 6)
+            // Figma only exposes the '6' digit variant
             length: figma.enum('digits', {
-                '4': 4,
                 '6': 6,
-                '8': 8,
             }),
 
             // Special mapping: state=error → error=true
@@ -68,8 +66,8 @@ figma.connect(
                 error: true,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
+                focused: false,
+                filled: false,
                 disabled: false,
             }),
 
@@ -78,8 +76,8 @@ figma.connect(
                 disabled: true,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
+                focused: false,
+                filled: false,
                 error: false,
             }),
 

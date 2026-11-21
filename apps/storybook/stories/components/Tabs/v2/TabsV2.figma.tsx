@@ -138,8 +138,12 @@ figma.connect(
                 lg: TabsV2Size.LG,
             }),
 
-            // Direct mapping: expanded
-            expanded: figma.boolean('expanded'),
+            // Direct mapping: expanded (Figma exposes this as a VARIANT with
+            // 'true'/'false' options, not a boolean)
+            expanded: figma.enum('expanded', {
+                true: true,
+                false: false,
+            }),
         },
 
         example: ({ variant, size, expanded }) => (

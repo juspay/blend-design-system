@@ -19,20 +19,18 @@ import { SwitchV2, SelectorV2Size } from '@juspay/blend-design-system'
  *    - label → label
  *
  * 3. SPECIAL MAPPINGS:
- *    - state (Figma variant) → checked (Code boolean)
- *      Only state='checked' maps to checked=true; all other states map to false.
- *      - state='checked' → checked=true
- *      - state='default' → checked=false
- *      - state='hover' → checked=false (interaction state, not a code prop)
- *      - state='active' → checked=false
- *      - state='focussed' → checked=false
- *      - state='disabled' → checked=false (disabled handled by separate boolean)
+ *    - enable (Figma variant) → checked (Code boolean)
+ *      - enable='on' → checked=true
+ *      - enable='off' → checked=false
+ *    - disabled (Figma variant 'true'/'false') → disabled (Code boolean)
+ *      - disabled='true' → disabled=true
+ *      - disabled='false' → disabled=false
  *    - hasSlot (Figma boolean) + slot (Figma instance) → slot (Code object)
  *      V2 `slot` is `{ slot: ReactElement; maxHeight? }`, so the Figma instance
  *      is wrapped in the example: `slot={slot ? { slot } : undefined}`
  *
  * 4. FIGMA-ONLY PROPERTIES (not needed in code):
- *    - state: hover/active/focussed are interaction states, not code props
+ *    - state: hover is an interaction state, not a code prop
  *    - hasContent: Automatically determined by presence of label/subLabel/slot
  *    - hasSubtext: Handled by the subLabel prop itself
  *    - hasSlot: Handled by the slot prop itself
@@ -54,26 +52,21 @@ figma.connect(
         props: {
             // Size mapping — SelectorV2Size (SM/MD/LG)
             size: figma.enum('size', {
-                sm: SelectorV2Size.SM,
-                md: SelectorV2Size.MD,
                 small: SelectorV2Size.SM,
                 medium: SelectorV2Size.MD,
-                Small: SelectorV2Size.SM,
-                Medium: SelectorV2Size.MD,
             }),
 
-            // State → checked mapping (only checked=true matters)
-            checked: figma.enum('state', {
-                checked: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
+            // Enable → checked mapping
+            checked: figma.enum('enable', {
+                on: true,
+                off: false,
             }),
 
-            // Direct mapping: disabled
-            disabled: figma.boolean('disabled'),
+            // Direct mapping: disabled (Figma variant 'true'/'false')
+            disabled: figma.enum('disabled', {
+                true: true,
+                false: false,
+            }),
 
             // Direct string mappings
             label: figma.string('label'),

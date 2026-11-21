@@ -50,14 +50,20 @@ figma.connect(
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=29882-13577&t=2L1Yl830ZKZjFcrt-4',
     {
         props: {
-            // Note: sidebarSecondary (Figma) → secondarySidebar (Code)
-            // secondarySidebar expects a SecondarySidebarInfo object, not a boolean.
-            // Most SidebarV2 props are code-only and configured in the implementation;
-            // the Figma component primarily represents the visual structure.
+            // Map Figma state variant to defaultIsExpanded
+            // - expanded → defaultIsExpanded=true
+            // - collapseSidebar → defaultIsExpanded=false
+            // - intermediate → defaultIsExpanded=false (hover state, not persistent)
+            defaultIsExpanded: figma.enum('state', {
+                expanded: true,
+                collapseSidebar: false,
+                intermediate: false,
+            }),
         },
 
-        example: () => (
+        example: ({ defaultIsExpanded }) => (
             <SidebarV2
+                defaultIsExpanded={defaultIsExpanded}
                 secondarySidebar={{
                     items: [
                         {

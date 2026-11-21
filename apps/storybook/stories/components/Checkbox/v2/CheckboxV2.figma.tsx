@@ -17,15 +17,15 @@ import { CheckboxV2, SelectorV2Size } from '@juspay/blend-design-system'
  *
  * 2. DIRECT MAPPINGS (same in both):
  *    - size → size (SelectorV2Size enum: SM/MD/LG)
- *    - disabled → disabled
  *
  * 3. SPECIAL MAPPINGS:
- *    - state (Figma variant) → checked (Code) + disabled (Code)
+ *    - state (Figma variant) → checked (Code)
  *      V2 `checked` accepts `boolean | 'indeterminate'`.
  *      - state='default' → checked=false
  *      - state='checked' → checked=true
  *      - state='intermediate' → checked='indeterminate'
- *      - state='disabled' → checked=false (disabled surfaced via separate boolean)
+ *      - state='hover' → checked=false
+ *    - disabled (Figma variant 'true'/'false') → disabled (Code boolean)
  *    - hasSlot (Figma boolean) + slot (Figma instance) → slot (Code object)
  *      V2 `slot` is `{ slot: ReactElement; maxHeight? }`, so the Figma instance
  *      is wrapped in the example: `slot={slot ? { slot } : undefined}`
@@ -54,12 +54,8 @@ figma.connect(
         props: {
             // Size mapping — SelectorV2Size (SM/MD/LG)
             size: figma.enum('size', {
-                sm: SelectorV2Size.SM,
-                md: SelectorV2Size.MD,
                 small: SelectorV2Size.SM,
                 medium: SelectorV2Size.MD,
-                Small: SelectorV2Size.SM,
-                Medium: SelectorV2Size.MD,
             }),
 
             // State → checked mapping (V2 checked: boolean | 'indeterminate')
@@ -67,11 +63,14 @@ figma.connect(
                 default: false,
                 checked: true,
                 intermediate: 'indeterminate',
-                disabled: false,
+                hover: false,
             }),
 
-            // Disabled is a separate boolean property in Figma
-            disabled: figma.boolean('disabled'),
+            // Disabled is a VARIANT property in Figma ('true'/'false')
+            disabled: figma.enum('disabled', {
+                true: true,
+                false: false,
+            }),
 
             // Renamed: label (Figma) → label (Code) [V1 mapped this to `value`]
             label: figma.string('label'),

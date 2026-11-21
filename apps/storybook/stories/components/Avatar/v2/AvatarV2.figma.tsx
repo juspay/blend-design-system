@@ -33,11 +33,11 @@ import {
  *      members (V2 adds the `regular` size that V1 lacked).
  *
  * 3. SPECIAL MAPPINGS:
- *    - notificationDot (Figma, boolean) → status (Code, AvatarV2StatusConfig)
+ *    - notificationDot (Figma, variant 'true'/'false') → status (Code, AvatarV2StatusConfig)
  *      - notificationDot=true  → { type: AvatarV2Status.ONLINE }
  *      - notificationDot=false → { type: AvatarV2Status.NONE }
  *      (V2 also supports OFFLINE/AWAY/BUSY, but Figma only toggles on/off.)
- *    - placeholder (Figma, boolean) → fallbackText (Code, string)
+ *    - placeholder (Figma, variant 'true'/'false') → fallbackText (Code, string)
  *      The Figma component does not expose a text property for the placeholder
  *      content, so a sensible default ('AB') is provided; replace it with the
  *      actual fallback content in your implementation.
@@ -82,14 +82,14 @@ figma.connect(
 
             // Renamed mapping: notificationDot (Figma) → status (Code)
             // V2 uses a status config object instead of the V1 `online` boolean.
-            status: figma.boolean('notificationDot', {
+            status: figma.enum('notificationDot', {
                 true: { type: AvatarV2Status.ONLINE },
                 false: { type: AvatarV2Status.NONE },
             }),
 
             // Renamed mapping: placeholder (Figma) → fallbackText (Code)
             // No exposed text property in Figma, so a sensible default is used.
-            fallbackText: figma.boolean('placeholder', {
+            fallbackText: figma.enum('placeholder', {
                 true: 'AB',
                 false: undefined,
             }),

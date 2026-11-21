@@ -70,12 +70,12 @@ figma.connect(
                 lg: ButtonV2Size.LARGE,
             }),
 
-            // SubType mapping - NOTE: 'plainIcon' exists in Figma but not in code
+            // SubType mapping - NOTE: 'plainIcon' maps to DEFAULT as there is no direct code equivalent
             subType: figma.enum('subType', {
                 default: ButtonV2SubType.DEFAULT,
                 iconOnly: ButtonV2SubType.ICON_ONLY,
-                inline: ButtonV2SubType.INLINE,
-                // 'plainIcon' is intentionally excluded - Figma only variant
+                plainIcon: ButtonV2SubType.DEFAULT,
+                link: ButtonV2SubType.INLINE,
             }),
 
             // State to disabled mapping - Figma uses variant, code uses boolean

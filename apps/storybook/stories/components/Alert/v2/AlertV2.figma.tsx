@@ -72,21 +72,19 @@ figma.connect(
             subType: figma.enum('style', {
                 subtle: AlertV2SubType.SUBTLE,
                 noFill: AlertV2SubType.NO_FILL,
-                'no-fill': AlertV2SubType.NO_FILL, // Alternative naming
             }),
 
             // Complex mapping: actionButtons + actionPlacement (Figma) → actions (Code)
             // The position and action objects are grouped under one `actions` prop,
             // and each action object uses `text` instead of V1's `label`
             actions: figma.enum('actionButtons', {
-                '0': undefined,
                 '1': {
                     position: figma.enum('actionPlacement', {
                         bottom: AlertV2ActionPosition.BOTTOM,
                         right: AlertV2ActionPosition.RIGHT,
                     }),
                     primaryAction: {
-                        text: figma.string('primaryActionLabel'),
+                        text: 'Confirm',
                         onClick: () => {},
                     },
                 },
@@ -96,11 +94,11 @@ figma.connect(
                         right: AlertV2ActionPosition.RIGHT,
                     }),
                     primaryAction: {
-                        text: figma.string('primaryActionLabel'),
+                        text: 'Confirm',
                         onClick: () => {},
                     },
                     secondaryAction: {
-                        text: figma.string('secondaryActionLabel'),
+                        text: 'Cancel',
                         onClick: () => {},
                     },
                 },

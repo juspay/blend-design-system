@@ -13,7 +13,11 @@ import {
  *
  * PROP MAPPING DOCUMENTATION
  *
- * Figma vs Code Property Differences:
+ * The Figma StatCard component set only exposes three variant properties:
+ * - display: 'web' | 'mobile' (not needed in code)
+ * - type: 'progress' | 'line' | 'bar' | 'number' | 'Empty' |
+ *   'noVisualisationData'
+ * - state: 'hover' | 'default' (interaction state, not needed in code)
  *
  * 1. RENAMED MAPPINGS:
  *    - type (Figma) → variant (Code)
@@ -21,45 +25,24 @@ import {
  *      - progress → StatCardV2Variant.PROGRESS_BAR
  *      - number → StatCardV2Variant.NUMBER
  *      - bar → StatCardV2Variant.CHART (fallback: V2 dropped the BAR variant)
- *    - date (Figma) → subtitle (Code)
- *    - hasDelta (Figma) → change (Code): maps to a structured object, not a bool
- *    - slot1 (Figma) → titleIcon (Code)
- *    - hasVisualisation (Figma) → options (Code): V2 has no `chartData` prop;
- *      the chart variant is driven by `options: ChartV2Options` (Highcharts).
+ *      - Empty / noVisualisationData → undefined (no code equivalent)
  *
- * 2. DIRECT MAPPINGS (same in both):
- *    - title → title
- *    - value → value
+ * 2. HARDCODED DEFAULTS:
+ *    - Text content (title, value, date/subtitle), delta, slots, and
+ *      visualisation flags live inside nested text/instance layers that are
+ *      not exposed as component properties, so they are provided as sensible
+ *      defaults in the example below.
  *
- * 3. SPECIAL MAPPINGS:
- *    - change (Code): When hasDelta is true, a `StatCardV2Change` object is
- *      provided. Its shape is { value: string, changeType:
+ * 3. CODE-ONLY PROPERTIES (not in Figma):
+ *    - change: StatCardV2Change object — { value: string, changeType:
  *      StatCardV2ChangeType, arrowDirection?: StatCardV2ArrowDirection }.
  *      NOTE: the V2 type field is `changeType` (not `type` as in V1), and
  *      `value` is a string.
- *    - options (Code): When type=line and hasVisualisation is true, a sample
- *      sparkline `ChartV2Options` is provided. V2 replaced V1's `chartData`
- *      array with a full Highcharts options object.
- *    - progressValue (Code): Provided for the PROGRESS_BAR variant.
- *
- * 4. FIGMA-ONLY PROPERTIES (not needed in code):
- *    - state: Interaction state, not needed in code.
- *    - hasDate: Date visibility handled automatically (maps to `subtitle`).
- *    - hasHelpIcon: Help icon visibility handled automatically (maps to
- *      `helpIconText`).
- *    - hasSlot1: Handled by the slot1/titleIcon mapping.
- *    - hasSlot2, slot2: Not used in code.
- *
- * 5. CODE-ONLY PROPERTIES (not in Figma):
- *    - options: Highcharts options for the CHART variant (replaces chartData).
+ *    - options: Highcharts options for the CHART variant (replaces V1's
+ *      `chartData` array); a sample sparkline `ChartV2Options` is provided.
  *    - progressValue: Numeric value (0-100) for the PROGRESS_BAR variant.
- *    - actionIcon: ReactNode icon shown in the card header.
- *    - helpIconText: Tooltip text for the help icon.
- *    - valueTooltip: Tooltip for the value.
- *    - dropdownProps: SingleSelect props for a dropdown variant.
- *    - skeleton: Skeleton configuration.
- *    - showBorder: Toggle the card border.
- *    - width/maxWidth/minWidth/height: Dimension controls.
+ *    - titleIcon, actionIcon, helpIconText, valueTooltip, dropdownProps,
+ *      skeleton, showBorder, width/maxWidth/minWidth/height: not mapped.
  */
 
 // Sample sparkline options for the CHART variant
@@ -115,82 +98,54 @@ figma.connect(
     {
         props: {
             // Renamed mapping: type (Figma) → variant (Code)
+            // NOTE: The Figma StatCard component only exposes display, type,
+            // and state properties — text content (title, value, date), delta,
+            // slots, and visualisation flags live inside nested text/instance
+            // layers that are not exposed as component properties, so they are
+            // provided as sensible defaults in the example below.
             variant: figma.enum('type', {
                 line: StatCardV2Variant.CHART,
                 progress: StatCardV2Variant.PROGRESS_BAR,
                 bar: StatCardV2Variant.CHART, // V2 dropped BAR; fall back to CHART
                 number: StatCardV2Variant.NUMBER,
+                Empty: undefined,
+                noVisualisationData: undefined,
             }),
 
-            // Direct string mappings
-            title: figma.string('title'),
-            value: figma.string('value'),
-
-            // Renamed mapping: date (Figma) → subtitle (Code)
-            subtitle: figma.string('date'),
-
-            // Renamed mapping: hasDelta (Figma) → change (Code object)
-            // V2 change shape: { value: string, changeType, arrowDirection }
-            change: figma.boolean('hasDelta', {
-                true: {
-                    value: '10%',
-                    changeType: StatCardV2ChangeType.INCREASE,
-                    arrowDirection: StatCardV2ArrowDirection.UP,
-                },
-                false: undefined,
-            }),
-
-            // Renamed mapping: slot1 (Figma) → titleIcon (Code)
-            titleIcon: figma.boolean('hasSlot1', {
-                true: figma.instance('slot 1'), // Property name with space
-                false: undefined,
-            }),
-
-            // Renamed mapping: hasVisualisation (Figma) → options (Code)
-            // V2 has no `chartData` prop; the chart variant uses Highcharts options.
+            // Chart options for the CHART variant (code-only; sample data)
             options: figma.enum('type', {
-                line: figma.boolean('hasVisualisation', {
-                    true: sampleChartOptions,
-                    false: undefined,
-                }),
+                line: sampleChartOptions,
                 progress: undefined,
                 bar: undefined,
                 number: undefined,
+                Empty: undefined,
+                noVisualisationData: undefined,
             }),
 
-            // Code-only: progress value for the PROGRESS_BAR variant
+            // Progress value for the PROGRESS_BAR variant (code-only; sample)
             progressValue: figma.enum('type', {
                 line: undefined,
-                progress: 75, // Default progress value
+                progress: 75,
                 bar: undefined,
                 number: undefined,
+                Empty: undefined,
+                noVisualisationData: undefined,
             }),
-
-            // Note: The following props are not mapped:
-            // - actionIcon (not in Figma)
-            // - helpIconText (not in Figma)
-            // - valueTooltip (not in Figma)
         },
 
-        example: ({
-            variant,
-            title,
-            value,
-            change,
-            subtitle,
-            options,
-            progressValue,
-            titleIcon,
-        }) => (
+        example: ({ variant, options, progressValue }) => (
             <StatCardV2
                 variant={variant}
-                title={title}
-                value={value}
-                change={change}
-                subtitle={subtitle}
+                title="Total Revenue"
+                value="$ 1,25,000"
+                change={{
+                    value: '10%',
+                    changeType: StatCardV2ChangeType.INCREASE,
+                    arrowDirection: StatCardV2ArrowDirection.UP,
+                }}
+                subtitle="vs last month"
                 options={options}
                 progressValue={progressValue}
-                titleIcon={titleIcon}
             />
         ),
 

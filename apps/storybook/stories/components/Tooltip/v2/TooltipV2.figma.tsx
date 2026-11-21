@@ -25,7 +25,7 @@ import {
  *      object)
  *
  * 2. SPECIAL MAPPINGS:
- *    - arrow (Figma string) → decomposed into three V2 props via a helper:
+ *    - arrow (Figma variant) → decomposed into three V2 props via a helper:
  *        - side (TooltipV2Side: TOP/RIGHT/LEFT/BOTTOM)
  *        - align (TooltipV2Align: START/CENTER/END)
  *        - showArrow (boolean)
@@ -129,8 +129,19 @@ figma.connect(
                 md: TooltipV2Size.MD,
             }),
 
-            // Arrow mapping — decomposed into side/align/showArrow via helper
-            arrow: figma.string('arrow'),
+            // Arrow mapping — Figma VARIANT (not text), mapped to itself as a
+            // string, then decomposed into side/align/showArrow via helper
+            arrow: figma.enum('arrow', {
+                none: 'none',
+                right: 'right',
+                left: 'left',
+                bottomCenter: 'bottomCenter',
+                bottomLeft: 'bottomLeft',
+                bottomRight: 'bottomRight',
+                topCenter: 'topCenter',
+                topLeft: 'topLeft',
+                topRight: 'topRight',
+            }),
 
             // Slot direction mapping — TooltipV2SlotDirection (LEFT/RIGHT)
             slotDirection: figma.enum('slotDirection', {

@@ -74,9 +74,10 @@ figma.connect(
                 error: { show: true },
                 default: { show: false },
                 hover: { show: false },
-                active: { show: false },
-                focussed: { show: false },
+                focused: { show: false },
+                filled: { show: false },
                 disabled: { show: false },
+                focus: { show: false },
             }),
 
             // Special mapping: state=disabled → disabled=true
@@ -84,9 +85,10 @@ figma.connect(
                 disabled: true,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
+                focused: false,
+                filled: false,
                 error: false,
+                focus: false,
             }),
 
             // Required onChange handler
