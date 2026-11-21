@@ -15,6 +15,8 @@ import {
     SliderLabelPosition,
 } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 type SliderProps = BaseSliderProps &
     Omit<
@@ -234,6 +236,7 @@ const Slider = forwardRef<
         },
         ref
     ) => {
+        const { m } = useMessages(DISPLAY_MESSAGES)
         const tokens = useResponsiveTokens<SliderTokensType>('SLIDER')
         const currentValues = value || defaultValue || [min]
         const thumbCount = currentValues.length
@@ -287,6 +290,21 @@ const Slider = forwardRef<
                         ariaDescribedBy,
                         thumbIndex: index,
                         thumbCount,
+                        messages: {
+                            labelled: (label, thumbNumber, valueText) =>
+                                m('slider.a11y.thumb-labelled', {
+                                    label,
+                                    number: String(thumbNumber),
+                                    value: valueText,
+                                }),
+                            thumb: (thumbNumber, valueText) =>
+                                m('slider.a11y.thumb', {
+                                    number: String(thumbNumber),
+                                    value: valueText,
+                                }),
+                            single: (valueText) =>
+                                m('slider.a11y.single', { value: valueText }),
+                        },
                     })
 
                     return (

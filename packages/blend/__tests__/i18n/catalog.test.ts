@@ -7,6 +7,7 @@ import { TIME_PICKER_MESSAGES } from '../../lib/i18n/catalog/timePicker.messages
 import { UPLOAD_MESSAGES } from '../../lib/i18n/catalog/upload.messages'
 import { UPLOAD_V2_MESSAGES } from '../../lib/i18n/catalog/uploadV2.messages'
 import { SELECT_MESSAGES } from '../../lib/i18n/catalog/select.messages'
+import { DISPLAY_MESSAGES } from '../../lib/i18n/catalog/display.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -21,6 +22,15 @@ const FAMILIES = new Set([
     'date-range-picker',
     'time-picker',
     'select',
+    'avatar',
+    'avatar-group',
+    'badge',
+    'card',
+    'key-value-pair',
+    'slider',
+    'tag',
+    'timeline',
+    'group',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -32,6 +42,7 @@ const FRAGMENTS = {
     DATE_RANGE_PICKER_MESSAGES,
     TIME_PICKER_MESSAGES,
     SELECT_MESSAGES,
+    DISPLAY_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -123,6 +134,27 @@ describe('message catalog', () => {
     it('matches the published key list', () => {
         expect([...keys].sort()).toMatchInlineSnapshot(`
           [
+            "avatar-group.a11y.group-selected.one",
+            "avatar-group.a11y.group-selected.other",
+            "avatar-group.a11y.group.one",
+            "avatar-group.a11y.group.other",
+            "avatar-group.a11y.loading-more",
+            "avatar-group.a11y.overflow.one",
+            "avatar-group.a11y.overflow.other",
+            "avatar-group.a11y.position",
+            "avatar-group.a11y.position-more",
+            "avatar-group.a11y.selected",
+            "avatar-group.label.fallback-name",
+            "avatar-group.placeholder.search",
+            "avatar.a11y.status-away",
+            "avatar.a11y.status-busy",
+            "avatar.a11y.status-offline",
+            "avatar.a11y.status-online",
+            "avatar.label.fallback",
+            "badge.a11y.more-than",
+            "badge.a11y.notification",
+            "card.a11y.custom-content",
+            "card.a11y.visual-content",
             "common.action.apply",
             "common.action.cancel",
             "common.action.clear",
@@ -177,6 +209,11 @@ describe('message catalog', () => {
             "date-range-picker.preset.today",
             "date-range-picker.preset.tomorrow",
             "date-range-picker.preset.yesterday",
+            "group.a11y.button-group",
+            "group.a11y.multi-select-group",
+            "group.a11y.single-select-group",
+            "group.a11y.tag-group",
+            "key-value-pair.a11y.label",
             "select.a11y.clear-selection",
             "select.a11y.clear-selection-for",
             "select.a11y.results-updated",
@@ -191,6 +228,13 @@ describe('message catalog', () => {
             "select.placeholder.search",
             "select.placeholder.search-short",
             "select.status.searching",
+            "slider.a11y.single",
+            "slider.a11y.thumb",
+            "slider.a11y.thumb-labelled",
+            "tag.a11y.mixed",
+            "tag.a11y.pressed",
+            "tag.a11y.split",
+            "tag.a11y.split-unnamed",
             "time-picker.a11y.choose-time",
             "time-picker.a11y.trigger",
             "time-picker.label.am",
@@ -200,6 +244,7 @@ describe('message catalog', () => {
             "time-picker.label.pm",
             "time-picker.label.seconds",
             "time-picker.label.time-with-period",
+            "timeline.action.show-more",
             "upload-v2.a11y.file-input",
             "upload-v2.a11y.remove-file",
             "upload-v2.a11y.show-more-files.one",

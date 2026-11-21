@@ -21,6 +21,8 @@ import {
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { addAccessibleAriaAttributes } from '../../utils/accessibility/icon-helpers'
 import { filterBlockedProps } from '../../utils/prop-helpers'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 const FOCUS_VISIBLE_STYLES = {
     outline: '2px solid #0561E2',
@@ -48,6 +50,7 @@ const TagV2 = forwardRef<HTMLButtonElement | HTMLDivElement, TagV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(DISPLAY_MESSAGES)
         const { showSkeleton, skeletonVariant } = skeleton
         const tagTokens = useResponsiveTokens<TagV2TokensType>('TAGV2')
         const TagElement = onClick ? PrimitiveButton : Block
@@ -65,7 +68,11 @@ const TagV2 = forwardRef<HTMLButtonElement | HTMLDivElement, TagV2Props>(
         const accessibleName = getAccessibleName(
             text,
             isInteractive,
-            ariaPressed
+            ariaPressed,
+            {
+                pressed: (name) => m('tag.a11y.pressed', { text: name }),
+                mixed: (name) => m('tag.a11y.mixed', { text: name }),
+            }
         )
 
         const handleKeyDown = createKeyboardHandler(isInteractive, onClick)

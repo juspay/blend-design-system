@@ -13,6 +13,8 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useBreakpoints } from '../../hooks/useBreakPoints'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
 import { Skeleton } from '../Skeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
     (
@@ -32,6 +34,7 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(DISPLAY_MESSAGES)
         const [imageError, setImageError] = useState(false)
 
         useEffect(() => {
@@ -60,9 +63,11 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
 
         const getAccessibleLabel = () => {
             const name =
-                alt || (typeof fallback === 'string' ? fallback : 'Avatar')
-            const statusText = online ? ', online' : ''
-            return `${name}${statusText}`
+                alt ||
+                (typeof fallback === 'string'
+                    ? fallback
+                    : m('avatar.label.fallback'))
+            return online ? m('avatar.a11y.status-online', { name }) : name
         }
 
         const isInteractive = onClick !== undefined
