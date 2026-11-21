@@ -11,6 +11,8 @@ import type { ButtonTokensType } from './button.tokens'
 import { LoaderCircle } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { BUTTON_MESSAGES } from '../../i18n/catalog/button.messages'
 const StyledButtonText = styled.span`
     display: flex;
     align-items: center;
@@ -46,6 +48,7 @@ const formatLineHeight = (
 }
 const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
     (props, ref) => {
+        const { m } = useMessages(BUTTON_MESSAGES)
         const {
             buttonType = ButtonType.PRIMARY,
             size = ButtonSize.SMALL,
@@ -252,7 +255,7 @@ const ButtonBase = forwardRef<HTMLButtonElement, ButtonBaseProps>(
                             }}
                         />
                         <VisuallyHidden aria-live="polite">
-                            Loading, please wait
+                            {m('button.a11y.loading')}
                         </VisuallyHidden>
                     </>
                 ) : (

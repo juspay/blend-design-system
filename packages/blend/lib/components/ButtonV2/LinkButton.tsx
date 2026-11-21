@@ -24,6 +24,8 @@ import {
     createButtonKeyboardHandler,
     getButtonAriaAttributes,
 } from '../../utils/accessibility'
+import { useMessages } from '../../i18n/useMessages'
+import { BUTTON_MESSAGES } from '../../i18n/catalog/button.messages'
 
 const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
     (
@@ -50,6 +52,7 @@ const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(BUTTON_MESSAGES)
         const { showSkeleton = false, skeletonVariant = 'pulse' } = skeleton
 
         const buttonTokens = useResponsiveTokens<ButtonV2TokensType>('BUTTONV2')
@@ -150,6 +153,7 @@ const LinkButton = forwardRef<HTMLAnchorElement, LinkButtonProps>(
         const linkElement = (
             <PrimitiveLink {...linkProps}>
                 {renderButtonContent({
+                    loadingLabel: m('button.a11y.loading'),
                     isLoading,
                     isSkeleton,
                     disabled: isDisabled,

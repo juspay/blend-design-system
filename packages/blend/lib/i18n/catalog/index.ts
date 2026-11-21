@@ -34,6 +34,7 @@ import { CODE_MESSAGES } from './code.messages'
 import { STEPPER_MESSAGES } from './stepper.messages'
 import { CHART_MESSAGES } from './chart.messages'
 import { DISPLAY_MESSAGES } from './display.messages'
+import { BUTTON_MESSAGES } from './button.messages'
 
 /**
  * Spreading `as const` fragments preserves every key and value literal, so
@@ -63,6 +64,7 @@ export const BLEND_MESSAGES = {
     ...STEPPER_MESSAGES,
     ...CHART_MESSAGES,
     ...DISPLAY_MESSAGES,
+    ...BUTTON_MESSAGES,
 } as const
 
 /**
