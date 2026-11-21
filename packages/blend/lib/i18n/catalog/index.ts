@@ -26,6 +26,7 @@ import { MENU_MESSAGES } from './menu.messages'
 import { DIRECTORY_MESSAGES } from './directory.messages'
 import { BREADCRUMB_MESSAGES } from './breadcrumb.messages'
 import { TABS_MESSAGES } from './tabs.messages'
+import { INPUT_MESSAGES } from './input.messages'
 
 /**
  * Spreading `as const` fragments preserves every key and value literal, so
@@ -47,6 +48,7 @@ export const BLEND_MESSAGES = {
     ...DIRECTORY_MESSAGES,
     ...BREADCRUMB_MESSAGES,
     ...TABS_MESSAGES,
+    ...INPUT_MESSAGES,
 } as const
 
 /**

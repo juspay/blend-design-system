@@ -3,9 +3,12 @@ import { Group } from '../Primitives/Group'
 import { GroupOrientation } from '../Primitives/Group/types'
 import type { TextInputGroupProps } from './TextInputGroupProps.types'
 import { flattenChildren } from '../../global-utils/GlobalUtils'
+import { useMessages } from '../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../i18n/catalog/input.messages'
 
 const TextInputGroup = forwardRef<HTMLDivElement, TextInputGroupProps>(
     ({ stacked = false, gap, children, ...restProps }, ref) => {
+        const { m } = useMessages(INPUT_MESSAGES)
         const flatChildren = flattenChildren(children)
         const totalChildren = flatChildren.length
 
@@ -17,7 +20,7 @@ const TextInputGroup = forwardRef<HTMLDivElement, TextInputGroupProps>(
                 orientation={GroupOrientation.HORIZONTAL}
                 alignItems="stretch"
                 positionProp="textInputGroupPosition"
-                aria-label="TextInput group"
+                aria-label={m('input.a11y.text-input-group')}
                 data-text-input-group="true"
                 data-text-input-group-stacked={String(stacked)}
                 data-text-input-group-count={totalChildren}

@@ -48,6 +48,7 @@ export function toEmbeddedSingleSelectV2Props(
 ): SingleSelectV2Props {
     const {
         fieldLabel,
+        fallbackAriaLabel = 'Select option',
         fieldDisabled,
         singleSelectV2Size,
         menuAlignment,
@@ -62,7 +63,7 @@ export function toEmbeddedSingleSelectV2Props(
         inline: true,
         size: singleSelectV2Size,
         disabled: fieldDisabled,
-        'aria-label': config['aria-label'] ?? fieldLabel ?? 'Select option',
+        'aria-label': config['aria-label'] ?? fieldLabel ?? fallbackAriaLabel,
         singleSelectGroupPosition:
             config.singleSelectGroupPosition ??
             defaultSingleSelectGroupPosition,

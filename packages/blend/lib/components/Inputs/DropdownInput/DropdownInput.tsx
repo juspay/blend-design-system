@@ -25,6 +25,8 @@ import {
     errorShakeAnimation,
 } from '../../common/error.animations'
 import styled from 'styled-components'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -60,6 +62,7 @@ const DropdownInput = ({
     maxMenuWidth,
     ...rest
 }: DropdownInputProps) => {
+    const { m } = useMessages(INPUT_MESSAGES)
     const { foundationTokens } = useTheme()
     const dropdownInputTokens =
         useResponsiveTokens<DropdownInputTokensType>('DROPDOWN_INPUT')
@@ -250,7 +253,9 @@ const DropdownInput = ({
                             inline={true}
                             disabled={disabled}
                             aria-label={
-                                dropdownName || label || 'Select option'
+                                dropdownName ||
+                                label ||
+                                m('input.a11y.select-option')
                             }
                             variant={SingleSelectV2Variant.NO_CONTAINER}
                             size={SingleSelectV2Size.SM}
@@ -396,7 +401,9 @@ const DropdownInput = ({
                             inline={true}
                             disabled={disabled}
                             aria-label={
-                                dropdownName || label || 'Select option'
+                                dropdownName ||
+                                label ||
+                                m('input.a11y.select-option')
                             }
                             variant={SingleSelectV2Variant.NO_CONTAINER}
                             size={SingleSelectV2Size.SM}

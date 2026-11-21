@@ -64,6 +64,8 @@ export type TextInputV2Props = TextInputBaseProps & {
 
 export type EmbeddedSingleSelectOptions = {
     fieldLabel: string | undefined
+    /** Accessible name when neither the config nor the field has one. Defaults to `'Select option'`. */
+    fallbackAriaLabel?: string
     fieldDisabled: boolean
     singleSelectV2Size: SingleSelectV2Size
     menuAlignment: SelectV2Alignment

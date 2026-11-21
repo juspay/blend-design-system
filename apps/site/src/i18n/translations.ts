@@ -388,6 +388,32 @@ const FRENCH: BlendMessageOverrides = {
     'tabs.label.add-new-tab': 'Ajouter un onglet',
     'tabs.placeholder.navigate': 'Naviguer',
     'tabs.placeholder.search-tabs': 'Rechercher et aller à un onglet',
+    'input.placeholder.enter': 'Saisir',
+    'input.a11y.show-password': 'Afficher le mot de passe',
+    'input.a11y.hide-password': 'Masquer le mot de passe',
+    'input.a11y.show-password-verbose':
+        'Afficher le mot de passe. Le mot de passe est actuellement masqué.',
+    'input.a11y.hide-password-verbose':
+        'Masquer le mot de passe. Le mot de passe est actuellement affiché en clair.',
+    'input.a11y.password-group': 'Champ {label} avec bouton de visibilité',
+    'input.a11y.password-group-unnamed':
+        'Champ de mot de passe avec bouton de visibilité',
+    'input.a11y.remove-value': 'Supprimer {value}',
+    'input.a11y.clear-search': 'Effacer la recherche',
+    'input.a11y.increase': 'Augmenter {label}',
+    'input.a11y.increase-value': 'Augmenter la valeur',
+    'input.a11y.decrease': 'Diminuer {label}',
+    'input.a11y.decrease-value': 'Diminuer la valeur',
+    'input.error.range-between':
+        'La valeur doit être comprise entre {min} et {max}',
+    'input.error.range-min': 'La valeur doit être au moins {min}',
+    'input.error.range-max': 'La valeur doit être au plus {max}',
+    'input.error.invalid-value': 'Valeur non valide',
+    'input.error.unit-too-long':
+        "L'unité doit comporter {max} caractères au maximum.",
+    'input.a11y.select-option': 'Sélectionner une option',
+    'input.label.number-input': 'Champ numérique',
+    'input.a11y.text-input-group': 'Groupe de champs de texte',
 }
 
 const JAPANESE: BlendMessageOverrides = {
@@ -697,6 +723,29 @@ const JAPANESE: BlendMessageOverrides = {
     'tabs.label.add-new-tab': '新しいタブを追加',
     'tabs.placeholder.navigate': '移動',
     'tabs.placeholder.search-tabs': 'タブを検索して移動',
+    'input.placeholder.enter': '入力',
+    'input.a11y.show-password': 'パスワードを表示',
+    'input.a11y.hide-password': 'パスワードを隠す',
+    'input.a11y.show-password-verbose':
+        'パスワードを表示。現在パスワードは非表示です。',
+    'input.a11y.hide-password-verbose':
+        'パスワードを隠す。現在パスワードは平文で表示されています。',
+    'input.a11y.password-group': '表示切り替え付きの{label}入力欄',
+    'input.a11y.password-group-unnamed': '表示切り替え付きのパスワード入力欄',
+    'input.a11y.remove-value': '{value}を削除',
+    'input.a11y.clear-search': '検索をクリア',
+    'input.a11y.increase': '{label}を増やす',
+    'input.a11y.increase-value': '値を増やす',
+    'input.a11y.decrease': '{label}を減らす',
+    'input.a11y.decrease-value': '値を減らす',
+    'input.error.range-between': '値は{min}から{max}の間で入力してください',
+    'input.error.range-min': '値は{min}以上で入力してください',
+    'input.error.range-max': '値は{max}以下で入力してください',
+    'input.error.invalid-value': '無効な値です',
+    'input.error.unit-too-long': '単位は{max}文字以内にしてください。',
+    'input.a11y.select-option': 'オプションを選択',
+    'input.label.number-input': '数値入力',
+    'input.a11y.text-input-group': 'テキスト入力グループ',
 }
 
 /**
