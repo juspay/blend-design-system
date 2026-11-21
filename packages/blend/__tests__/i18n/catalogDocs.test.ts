@@ -102,8 +102,17 @@ const usedBy = (): Map<string, string[]> => {
 
 /** An inline code span that survives MDX and a GFM table cell. */
 const code = (text: string) => {
-    const escaped = text.replace(/\|/g, '\\|')
-    return escaped.includes('`') ? `\`\` ${escaped} \`\`` : `\`${escaped}\``
+    // A code span prints backslashes literally, and a GFM table splits cells
+    // on `|` even inside one, so no escaping is both correct and complete.
+    // No catalog value uses these characters; fail loudly if one ever does,
+    // rather than write a page that renders it wrong.
+    if (/[|`\\]/.test(text)) {
+        throw new Error(
+            `Message catalog page cannot render ${JSON.stringify(text)}: ` +
+                'it contains |, ` or \\. Extend code() in catalogDocs.test.ts.'
+        )
+    }
+    return `\`${text}\``
 }
 
 const placeholders = (value: string) =>
