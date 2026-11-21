@@ -588,7 +588,7 @@ const Upload: React.FC<UploadProps> = ({
                 cursor={disabled ? 'not-allowed' : 'pointer'}
                 style={{ transition: 'all 0.2s ease-in-out' }}
                 role="region"
-                aria-label={label || 'File upload area'}
+                aria-label={label || m('upload.a11y.upload-area')}
                 aria-describedby={
                     [descriptionId, errorId, hintId]
                         .filter(Boolean)

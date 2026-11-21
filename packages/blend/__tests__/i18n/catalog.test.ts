@@ -202,6 +202,7 @@ describe('message catalog', () => {
             "upload-v2.status.uploading",
             "upload.a11y.file-input",
             "upload.a11y.remove-file",
+            "upload.a11y.upload-area",
             "upload.a11y.uploading-progress",
             "upload.action.browse-files",
             "upload.action.replace-file",

@@ -112,6 +112,7 @@ const FRENCH: BlendMessageOverrides = {
     'upload.label.partial-result': '{succeeded} réussis, {failed} échoués',
     'upload.status.failed': 'Échec',
     'upload.a11y.file-input': 'Téléversement de fichier',
+    'upload.a11y.upload-area': 'Zone de dépôt de fichiers',
     'upload.a11y.remove-file': 'Supprimer {name}',
     'upload.a11y.uploading-progress':
         'Téléversement de {name}, {progress}% terminé',
@@ -239,6 +240,7 @@ const JAPANESE: BlendMessageOverrides = {
     'upload.label.partial-result': '成功 {succeeded} 件、失敗 {failed} 件',
     'upload.status.failed': '失敗',
     'upload.a11y.file-input': 'ファイルのアップロード',
+    'upload.a11y.upload-area': 'ファイルアップロード領域',
     'upload.a11y.remove-file': '{name} を削除',
     'upload.a11y.uploading-progress':
         '{name} をアップロード中、{progress}% 完了',
