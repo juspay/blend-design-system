@@ -16,7 +16,7 @@ const FRENCH: Record<string, string> = {
 const t = (key: string) => FRENCH[key]
 const fr = { providerProps: { locale: 'fr-FR', t } }
 
-describe('overlay and feedback locale', () => {
+describe('overlay and feedback locale (Accessibility)', () => {
     it('keeps the English Alert names with no provider locale', () => {
         render(
             <Alert
