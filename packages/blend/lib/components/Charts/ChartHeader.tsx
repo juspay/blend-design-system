@@ -5,6 +5,8 @@ import { FOUNDATION_THEME } from '../../tokens'
 import { ChevronsDownUp, Expand } from 'lucide-react'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 const ChartHeader: React.FC<ChartHeaderProps> = ({
     id,
@@ -20,6 +22,7 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
     setIsExpanded,
     showCollapseIcon,
 }) => {
+    const { m } = useMessages(CHART_MESSAGES)
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
     const headerTokens = chartTokens.header
 
@@ -54,7 +57,7 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                     : headerTokens.borderRadius
             }
             role="group"
-            aria-label="Chart header"
+            aria-label={m('chart.a11y.header')}
             width="100%"
         >
             <Block data-element="chart-header-slot" width="100%" minWidth="0">
@@ -71,8 +74,8 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                         type="button"
                         aria-label={
                             isFullscreen
-                                ? 'Exit fullscreen view'
-                                : 'Enter fullscreen view'
+                                ? m('chart.a11y.exit-fullscreen')
+                                : m('chart.a11y.enter-fullscreen')
                         }
                         onClick={
                             isFullscreen ? onExitFullscreen : handleExpandClick
@@ -110,8 +113,8 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                                 type="button"
                                 aria-label={
                                     isFullscreen
-                                        ? 'Exit fullscreen view'
-                                        : 'Enter fullscreen view'
+                                        ? m('chart.a11y.exit-fullscreen')
+                                        : m('chart.a11y.enter-fullscreen')
                                 }
                                 onClick={
                                     isFullscreen
@@ -154,7 +157,9 @@ const ChartHeader: React.FC<ChartHeaderProps> = ({
                         }
                         type="button"
                         aria-label={
-                            isExpanded ? 'Collapse chart' : 'Expand chart'
+                            isExpanded
+                                ? m('chart.a11y.collapse')
+                                : m('chart.a11y.expand')
                         }
                         aria-expanded={isExpanded}
                         onClick={() => setIsExpanded(!isExpanded)}

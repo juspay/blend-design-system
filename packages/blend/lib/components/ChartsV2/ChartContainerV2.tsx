@@ -2,14 +2,17 @@ import { ChartV2ContainerProps } from './chartV2.types'
 import { ChartV2TokensType } from './chartV2.tokens'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import Block from '../Primitives/Block/Block'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 const ChartContainerV2 = ({ children }: ChartV2ContainerProps) => {
+    const { m } = useMessages(CHART_MESSAGES)
     const chartTokens = useResponsiveTokens<ChartV2TokensType>('CHARTSV2')
     return (
         <Block
             as="section"
             role="group"
-            aria-roledescription="Chart container"
+            aria-roledescription={m('chart.a11y.container')}
             data-chart="Chart-Container"
             display="flex"
             flexDirection="column"

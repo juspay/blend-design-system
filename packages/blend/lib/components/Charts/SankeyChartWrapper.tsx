@@ -7,6 +7,8 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { FOUNDATION_THEME } from '../../tokens'
 import { formatNumber } from './ChartUtils'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 interface SankeyChartWrapperProps {
     chartName?: string
@@ -38,6 +40,7 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
     sankeyHeight,
     isSmallScreen,
 }) => {
+    const { m } = useMessages(CHART_MESSAGES)
     const containerRef = useRef<HTMLDivElement>(null)
     const [containerWidth, setContainerWidth] = useState<number>(sankeyWidth)
     const [containerHeight, setContainerHeight] = useState<number>(sankeyHeight)
@@ -139,7 +142,7 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[500]}
                                 color={FOUNDATION_THEME.colors.gray[400]}
                             >
-                                Value:
+                                {m('chart.label.sankey-value')}
                             </Text>
                             <Text
                                 fontSize={12}
@@ -185,7 +188,7 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
                             color={FOUNDATION_THEME.colors.gray[900]}
                             truncate={true}
                         >
-                            Flow
+                            {m('chart.label.sankey-flow')}
                         </Text>
                     </Block>
                     <Block display="flex" flexDirection="column" gap={6}>
@@ -199,7 +202,7 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[500]}
                                 color={FOUNDATION_THEME.colors.gray[400]}
                             >
-                                From:
+                                {m('chart.label.sankey-from')}
                             </Text>
                             <Block maxWidth={120}>
                                 <Text
@@ -210,7 +213,10 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
                                     color={FOUNDATION_THEME.colors.gray[900]}
                                     truncate={true}
                                 >
-                                    {data.sourceName || `Node ${data.source}`}
+                                    {data.sourceName ||
+                                        m('chart.label.sankey-node', {
+                                            id: String(data.source),
+                                        })}
                                 </Text>
                             </Block>
                         </Block>
@@ -224,7 +230,7 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[500]}
                                 color={FOUNDATION_THEME.colors.gray[400]}
                             >
-                                To:
+                                {m('chart.label.sankey-to')}
                             </Text>
                             <Block maxWidth={120}>
                                 <Text
@@ -235,7 +241,10 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
                                     color={FOUNDATION_THEME.colors.gray[900]}
                                     truncate={true}
                                 >
-                                    {data.targetName || `Node ${data.target}`}
+                                    {data.targetName ||
+                                        m('chart.label.sankey-node', {
+                                            id: String(data.target),
+                                        })}
                                 </Text>
                             </Block>
                         </Block>
@@ -249,7 +258,7 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[500]}
                                 color={FOUNDATION_THEME.colors.gray[400]}
                             >
-                                Value:
+                                {m('chart.label.sankey-value')}
                             </Text>
                             <Text
                                 fontSize={12}
