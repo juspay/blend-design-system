@@ -24,6 +24,7 @@ import {
 } from 'recharts/types/component/DefaultTooltipContent'
 import { FOUNDATION_THEME } from '../../tokens'
 import { useMessages } from '../../i18n/useMessages'
+import { useI18n } from '../../i18n/I18nContext'
 import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 interface AuxItem {
@@ -39,7 +40,8 @@ interface AuxItem {
 
 const formatTooltipLabel = (
     label: string | number,
-    xAxis?: XAxisConfig
+    xAxis?: XAxisConfig,
+    locale?: string
 ): string => {
     if (!xAxis) return String(label)
 
@@ -55,12 +57,13 @@ const formatTooltipLabel = (
             dateOnly: false,
             timeOnly: false,
             formatString: xAxis.formatString,
+            locale,
         })
         return tooltipFormatter(label)
     }
 
     if (xAxis.type) {
-        return getAxisFormatter(xAxis)(label)
+        return getAxisFormatter(xAxis, locale)(label)
     }
 
     return String(label)
@@ -68,10 +71,13 @@ const formatTooltipLabel = (
 
 const formatTooltipValue = (
     value: string | number,
-    yAxis?: YAxisConfig
+    yAxis?: YAxisConfig,
+    locale?: string
 ): string => {
     if (!yAxis) {
-        return typeof value === 'number' ? formatNumber(value) : String(value)
+        return typeof value === 'number'
+            ? formatNumber(value, locale)
+            : String(value)
     }
 
     if (yAxis.tickFormatter) {
@@ -79,21 +85,26 @@ const formatTooltipValue = (
     }
 
     if (yAxis.type) {
-        return getAxisFormatter(yAxis)(value)
+        return getAxisFormatter(yAxis, locale)(value)
     }
 
-    return typeof value === 'number' ? formatNumber(value) : String(value)
+    return typeof value === 'number'
+        ? formatNumber(value, locale)
+        : String(value)
 }
 
 const formatAuxTooltipValue = (
     value: string | number,
-    auxItem: AuxItem
+    auxItem: AuxItem,
+    locale?: string
 ): string => {
     if (auxItem.type) {
-        return getAxisFormatter(auxItem)(value)
+        return getAxisFormatter(auxItem, locale)(value)
     }
 
-    return typeof value === 'number' ? formatNumber(value) : String(value)
+    return typeof value === 'number'
+        ? formatNumber(value, locale)
+        : String(value)
 }
 
 export const findDataPointByLabel = (
@@ -130,11 +141,12 @@ const getDataIndex = (
 const formatTooltipHeader = (
     label: string | number,
     xAxis: XAxisConfig | undefined,
-    labelFormatter: CustomTooltipProps['labelFormatter']
+    labelFormatter: CustomTooltipProps['labelFormatter'],
+    locale?: string
 ): ReactNode => {
     return labelFormatter
         ? labelFormatter(label)
-        : formatTooltipLabel(label, xAxis)
+        : formatTooltipLabel(label, xAxis, locale)
 }
 
 const formatPrimaryTooltipValue = ({
@@ -145,7 +157,9 @@ const formatPrimaryTooltipValue = ({
     payload,
     yAxis,
     formatter,
+    locale,
 }: {
+    locale?: string
     value: string | number
     seriesName: string | number
     dataIndex: number
@@ -154,7 +168,7 @@ const formatPrimaryTooltipValue = ({
     yAxis?: YAxisConfig
     formatter?: TooltipFormatter
 }): ReactNode => {
-    if (!formatter) return formatTooltipValue(value, yAxis)
+    if (!formatter) return formatTooltipValue(value, yAxis, locale)
 
     return formatter({
         seriesName,
@@ -306,6 +320,7 @@ const BarChartTooltip = ({
     formatter?: TooltipFormatter
     labelFormatter?: CustomTooltipProps['labelFormatter']
 }) => {
+    const { locale } = useI18n()
     const relevantData = findDataPointByLabel(originalData, label)?.data
     const dataIndex = getDataIndex(originalData, label)
 
@@ -331,7 +346,7 @@ const BarChartTooltip = ({
                     fontWeight={FOUNDATION_THEME.font.weight[600]}
                     color={FOUNDATION_THEME.colors.gray[900]}
                 >
-                    {formatTooltipHeader(label, xAxis, labelFormatter)}
+                    {formatTooltipHeader(label, xAxis, labelFormatter, locale)}
                 </Text>
             </Block>
 
@@ -409,6 +424,7 @@ const BarChartTooltip = ({
                                             truncate={!formatter}
                                         >
                                             {formatPrimaryTooltipValue({
+                                                locale,
                                                 value: relevantData[key].primary
                                                     .val,
                                                 seriesName:
@@ -469,7 +485,11 @@ const BarChartTooltip = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
-                                {formatAuxTooltipValue(auxItem.val, auxItem)}
+                                {formatAuxTooltipValue(
+                                    auxItem.val,
+                                    auxItem,
+                                    locale
+                                )}
                             </Text>
                         </Block>
                     ))}
@@ -506,6 +526,7 @@ const LineChartTooltip = ({
     formatter?: TooltipFormatter
     labelFormatter?: CustomTooltipProps['labelFormatter']
 }) => {
+    const { locale } = useI18n()
     const updateScheduledRef = useRef(false)
 
     useEffect(() => {
@@ -562,7 +583,12 @@ const LineChartTooltip = ({
                         fontWeight={FOUNDATION_THEME.font.weight[500]}
                         color={FOUNDATION_THEME.colors.gray[400]}
                     >
-                        {formatTooltipHeader(label, xAxis, labelFormatter)}
+                        {formatTooltipHeader(
+                            label,
+                            xAxis,
+                            labelFormatter,
+                            locale
+                        )}
                     </Text>
                 </Block>
             </Block>
@@ -582,6 +608,7 @@ const LineChartTooltip = ({
                     truncate={!formatter}
                 >
                     {formatPrimaryTooltipValue({
+                        locale,
                         value: relevantData.primary.val,
                         seriesName: hoveredKey,
                         dataIndex: getDataIndex(originalData, label),
@@ -625,7 +652,11 @@ const LineChartTooltip = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
-                                {formatAuxTooltipValue(auxItem.val, auxItem)}
+                                {formatAuxTooltipValue(
+                                    auxItem.val,
+                                    auxItem,
+                                    locale
+                                )}
                             </Text>
                         </Block>
                     ))}
@@ -744,6 +775,7 @@ const PieChartTooltip = ({
     formatter?: TooltipFormatter
     labelFormatter?: CustomTooltipProps['labelFormatter']
 }) => {
+    const { locale } = useI18n()
     const updateScheduledRef = useRef(false)
 
     useEffect(() => {
@@ -804,7 +836,8 @@ const PieChartTooltip = ({
                         {formatTooltipHeader(
                             label || originalData[0].name,
                             xAxis,
-                            labelFormatter
+                            labelFormatter,
+                            locale
                         )}
                     </Text>
                 </Block>
@@ -825,6 +858,7 @@ const PieChartTooltip = ({
                     truncate={!formatter}
                 >
                     {formatPrimaryTooltipValue({
+                        locale,
                         value: data.primary.val,
                         seriesName: name,
                         dataIndex: getDataIndex(
@@ -868,7 +902,11 @@ const PieChartTooltip = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[700]}
                             >
-                                {formatAuxTooltipValue(auxItem.val, auxItem)}
+                                {formatAuxTooltipValue(
+                                    auxItem.val,
+                                    auxItem,
+                                    locale
+                                )}
                             </Text>
                         </Block>
                     ))}
@@ -899,7 +937,7 @@ const ScatterChartTooltip = ({
     formatter?: TooltipFormatter
     labelFormatter?: CustomTooltipProps['labelFormatter']
 }) => {
-    const { m } = useMessages(CHART_MESSAGES)
+    const { m, locale } = useMessages(CHART_MESSAGES)
     if (!active || !payload || !payload.length) {
         return null
     }
@@ -958,7 +996,8 @@ const ScatterChartTooltip = ({
                         {formatTooltipHeader(
                             point.name || m('chart.label.data-point'),
                             xAxis,
-                            labelFormatter
+                            labelFormatter,
+                            locale
                         )}
                     </Text>
                 </Block>
@@ -988,7 +1027,7 @@ const ScatterChartTooltip = ({
                         color={FOUNDATION_THEME.colors.gray[900]}
                         truncate={true}
                     >
-                        {formatTooltipValue(point.x, xAxis)}
+                        {formatTooltipValue(point.x, xAxis, locale)}
                     </Text>
                 </Block>
                 <Block
@@ -1010,6 +1049,7 @@ const ScatterChartTooltip = ({
                         truncate={!formatter}
                     >
                         {formatPrimaryTooltipValue({
+                            locale,
                             value: point.y,
                             seriesName: seriesKey,
                             dataIndex: getDataIndex(

@@ -45,7 +45,12 @@ export type DateTimePresetName =
     | 'time-12h'
     | 'time-24h'
 
-export type NumberPresetName = 'integer' | 'decimal-2' | 'percent' | 'compact'
+export type NumberPresetName =
+    | 'integer'
+    | 'decimal'
+    | 'decimal-2'
+    | 'percent'
+    | 'compact'
 
 /**
  * `timeZone: 'UTC'` on the month and weekday presets is mandatory, not
@@ -84,6 +89,9 @@ const DATE_TIME_PRESETS: Record<
 
 const NUMBER_PRESETS: Record<NumberPresetName, Intl.NumberFormatOptions> = {
     integer: { maximumFractionDigits: 0 },
+    // Intl's defaults: identical to `Number.prototype.toLocaleString(locale)`,
+    // which is what it replaces at host-locale call sites.
+    decimal: {},
     'decimal-2': { minimumFractionDigits: 2, maximumFractionDigits: 2 },
     percent: { style: 'percent', maximumFractionDigits: 1 },
     compact: { notation: 'compact', maximumFractionDigits: 1 },

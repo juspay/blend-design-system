@@ -40,7 +40,7 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
     sankeyHeight,
     isSmallScreen,
 }) => {
-    const { m } = useMessages(CHART_MESSAGES)
+    const { m, locale } = useMessages(CHART_MESSAGES)
     const containerRef = useRef<HTMLDivElement>(null)
     const [containerWidth, setContainerWidth] = useState<number>(sankeyWidth)
     const [containerHeight, setContainerHeight] = useState<number>(sankeyHeight)
@@ -149,7 +149,7 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[900]}
                             >
-                                {formatNumber(data.value)}
+                                {formatNumber(data.value, locale)}
                             </Text>
                         </Block>
                     )}
@@ -265,7 +265,7 @@ const SankeyChartWrapper: React.FC<SankeyChartWrapperProps> = ({
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={FOUNDATION_THEME.colors.gray[900]}
                             >
-                                {formatNumber(data.value)}
+                                {formatNumber(data.value, locale)}
                             </Text>
                         </Block>
                     </Block>

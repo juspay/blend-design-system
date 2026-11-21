@@ -4,6 +4,7 @@ import { ChartType, CoreChartProps } from './types'
 import { DEFAULT_COLORS } from './utils'
 import { renderChart } from './renderChart'
 import { normalizeChartData, transformNestedData } from './ChartUtils'
+import { useI18n } from '../../i18n/I18nContext'
 
 export const CoreChart: React.FC<CoreChartProps> = ({
     chartType = ChartType.LINE,
@@ -23,6 +24,7 @@ export const CoreChart: React.FC<CoreChartProps> = ({
     enableHover = false,
     lineSeriesKeys,
 }) => {
+    const { locale } = useI18n()
     const data = normalizeChartData(dataProp)
 
     const [internalHoveredKey, setInternalHoveredKey] = useState<string | null>(
@@ -48,6 +50,7 @@ export const CoreChart: React.FC<CoreChartProps> = ({
     return (
         <ResponsiveContainer width={width} height={height}>
             {renderChart({
+                locale,
                 flattenedData,
                 chartType,
                 hoveredKey:

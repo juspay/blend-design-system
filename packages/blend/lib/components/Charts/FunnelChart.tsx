@@ -120,7 +120,7 @@ const FunnelLabel = ({
     stages: FunnelStage[]
     isSmallScreen: boolean
 }) => {
-    const { m } = useMessages(CHART_MESSAGES)
+    const { m, locale } = useMessages(CHART_MESSAGES)
     const stage = index === undefined ? undefined : stages[index]
     if (!stage || !viewBox) return null
 
@@ -141,7 +141,7 @@ const FunnelLabel = ({
             dominantBaseline="central"
         >
             {m('chart.label.funnel-drop-off', {
-                value: formatNumber(stage.value),
+                value: formatNumber(stage.value, locale),
                 percentage: formatFunnelPercentage(stage.dropOffPercentage),
             })}
         </text>

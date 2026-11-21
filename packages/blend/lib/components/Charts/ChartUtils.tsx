@@ -5,6 +5,8 @@ import {
     AxisConfig,
 } from './types'
 import { parseTimestamp, dateFormat } from './DateTimeFormatter'
+import { DEFAULT_LOCALE } from '../../i18n/constants'
+import { getNumberFormat } from '../../i18n/format/formatterCache'
 
 /** Replace null, undefined, or non-array `data` with `[]` (empty / no-data state). */
 export function normalizeChartData(
@@ -174,11 +176,31 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
     return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)]
 }
 
-export const formatNumber = (value: number | string): string => {
+/**
+ * Abbreviates large numbers for axes and tooltips.
+ *
+ * `locale` omitted or `'en-US'` keeps the original hand-rolled output
+ * byte-identical (`1.5K`, `2.0M`, `12.3456`). Any other locale uses
+ * `Intl` compact notation for values from 1000 up, so the suffix, its
+ * threshold and the decimal separator follow the locale: 1500 is `1,5 k` in
+ * French but stays `1500` in German and Japanese, whose compact forms start
+ * at `Mio.` and `万`. Below 1000 it is plain locale formatting (`999,5`).
+ */
+export const formatNumber = (
+    value: number | string,
+    locale?: string
+): string => {
     if (typeof value === 'string') {
         const parsedValue = parseFloat(value)
         if (isNaN(parsedValue)) return value
         value = parsedValue
+    }
+
+    if (locale !== undefined && locale !== DEFAULT_LOCALE) {
+        return getNumberFormat(
+            locale,
+            value >= 1000 ? 'compact' : 'decimal'
+        ).format(value)
     }
 
     if (value >= 1000000) {
@@ -209,6 +231,8 @@ export type DateTimeFormatterOptions = {
     timeOnly?: boolean
     showYear?: boolean
     smartDateTimeFormat?: boolean // Alternates between date and time like Highcharts
+    /** Locale for month, weekday and AM/PM names; omitted means English. */
+    locale?: string
 }
 
 /**
@@ -252,9 +276,10 @@ export const createDateTimeFormatter = (
         timeOnly = false,
         showYear = false,
         smartDateTimeFormat = false,
+        locale,
     } = options
 
-    const dateTimeConfig = { useUTC }
+    const dateTimeConfig = { useUTC, locale }
 
     // Smart format: show date at start of day, time otherwise
     if (smartDateTimeFormat) {
@@ -302,7 +327,7 @@ export const createDateTimeFormatter = (
         const timestamp = parseTimestamp(value)
         if (timestamp === null) return value.toString()
 
-        return dateFormat(finalFormat, timestamp, { useUTC })
+        return dateFormat(finalFormat, timestamp, { useUTC, locale })
     }
 }
 
@@ -333,9 +358,16 @@ export const createDateTimeFormatter = (
  * getAxisFormatter(AxisType.DATE_TIME, { useUTC: false })
  */
 export const getAxisFormatter = (
-    finalAxis: AxisConfig
+    finalAxis: AxisConfig,
+    locale?: string
 ): ((value: string | number) => string) => {
+    // Omitted means today's behaviour, pinned: the currency branch used the
+    // *host* locale via `toLocaleString()`, which made identical props render
+    // differently per machine. `en-US` is what a US machine produced.
+    const resolvedLocale = locale ?? DEFAULT_LOCALE
+    const isEnglish = resolvedLocale === DEFAULT_LOCALE
     const dateTimeOptions = {
+        locale: resolvedLocale,
         useUTC: finalAxis.useUTC,
         formatString: finalAxis.formatString,
         dateOnly: finalAxis.dateOnly,
@@ -355,12 +387,17 @@ export const getAxisFormatter = (
                     typeof value === 'string' ? parseFloat(value) : value
                 if (isNaN(numValue)) return value.toString()
 
+                // `$` is kept for every locale: a locale says how to write
+                // a number, not which currency the data is in.
+                if (!isEnglish) {
+                    return `$${formatNumber(numValue, resolvedLocale)}`
+                }
                 if (numValue >= 1000000) {
                     return `$${(numValue / 1000000).toFixed(1)}M`
                 } else if (numValue >= 1000) {
                     return `$${(numValue / 1000).toFixed(1)}K`
                 }
-                return `$${numValue.toLocaleString()}`
+                return `$${getNumberFormat(DEFAULT_LOCALE, 'decimal').format(numValue)}`
             }
 
         case AxisType.PERCENTAGE:
@@ -368,7 +405,9 @@ export const getAxisFormatter = (
                 const numValue =
                     typeof value === 'string' ? parseFloat(value) : value
                 if (isNaN(numValue)) return value.toString()
-                return `${numValue}%`
+                return isEnglish
+                    ? `${numValue}%`
+                    : `${getNumberFormat(resolvedLocale, 'decimal').format(numValue)}%`
             }
 
         case AxisType.NUMBER:
@@ -376,7 +415,7 @@ export const getAxisFormatter = (
                 const numValue =
                     typeof value === 'string' ? parseFloat(value) : value
                 if (isNaN(numValue)) return value.toString()
-                return formatNumber(numValue)
+                return formatNumber(numValue, resolvedLocale)
             }
 
         default:
