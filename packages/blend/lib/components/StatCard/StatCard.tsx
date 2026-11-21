@@ -435,6 +435,15 @@ const StatCard = ({
         },
         [valueFormatter, locale]
     )
+    // `data-numeric` is a selector/analytics hook, so it keeps the
+    // locale-independent English form of the same value.
+    const formatMainValueData = useCallback(
+        (val: string | number): string =>
+            valueFormatter
+                ? getAxisFormatter({ type: valueFormatter })(val)
+                : String(val),
+        [valueFormatter]
+    )
 
     const cardLabel = useMemo(
         () => getCardLabel(formatMainValue),
@@ -1042,7 +1051,7 @@ const StatCard = ({
                                                 style={{
                                                     cursor: 'pointer',
                                                 }}
-                                                data-numeric={formatMainValue(
+                                                data-numeric={formatMainValueData(
                                                     value || '--'
                                                 )}
                                                 data-element="statcard-data"
@@ -1261,7 +1270,7 @@ const StatCard = ({
                                                 style={{
                                                     cursor: 'pointer',
                                                 }}
-                                                data-numeric={formatMainValue(
+                                                data-numeric={formatMainValueData(
                                                     value || '--'
                                                 )}
                                                 data-element="statcard-data"

@@ -7,6 +7,9 @@ import {
 } from '../../../lib/components/Charts/ChartUtils'
 import { AxisType } from '../../../lib/components/Charts/types'
 import StatCard from '../../../lib/components/StatCard/StatCard'
+import StatCardV2 from '../../../lib/components/StatCardV2/StatCardV2'
+import { StatCardV2ChangeType } from '../../../lib/components/StatCardV2/statcardV2.tokens.types'
+import { buildStatCardV2AriaLabel } from '../../../lib/components/StatCardV2/utils'
 import {
     ChangeType,
     StatCardVariant,
@@ -123,6 +126,65 @@ describe('chart formatting by locale', () => {
                 screen.getByLabelText(
                     'Revenue, 120, Last 30 days, increased by 12.50%'
                 )
+            ).toBeInTheDocument()
+        })
+    })
+
+    describe('StatCard data-numeric', () => {
+        it('shows the localized value but keeps data-numeric English', () => {
+            const { container } = render(
+                <StatCard
+                    title="Revenue"
+                    value={1500}
+                    variant={StatCardVariant.NUMBER}
+                    valueFormatter={AxisType.CURRENCY}
+                />,
+                { providerProps: { locale: 'fr-FR' } }
+            )
+            const data = container.querySelector(
+                '[data-element="statcard-data"]'
+            )
+
+            expect(data?.textContent).toMatch(/^\$1,5\sk$/)
+            expect(data).toHaveAttribute('data-numeric', '$1.5K')
+        })
+    })
+
+    describe('StatCardV2 label', () => {
+        const change = {
+            value: '10.00',
+            rightSymbol: '%',
+            changeType: StatCardV2ChangeType.INCREASE,
+        }
+
+        it('keeps the English label for direct callers and with no provider', () => {
+            expect(
+                buildStatCardV2AriaLabel({
+                    title: 'Rate',
+                    value: '83%',
+                    change,
+                })
+            ).toBe('Rate, 83%, increased by 10.00%')
+
+            render(<StatCardV2 title="Rate" value="83%" change={change} />)
+            expect(
+                screen.getByLabelText('Rate, 83%, increased by 10.00%')
+            ).toBeInTheDocument()
+        })
+
+        it('translates the change phrase through the provider', () => {
+            const t = (key: string) =>
+                key === 'stat-card.a11y.change-increase-v2'
+                    ? 'en hausse de {value}'
+                    : undefined
+            render(<StatCardV2 title="Rate" value="83%" change={change} />, {
+                providerProps: { locale: 'fr-FR', t },
+            })
+
+            expect(
+                // The list separator follows the locale too (French joins the
+                // last item with "et").
+                screen.getByLabelText('Rate, 83% et en hausse de 10.00%')
             ).toBeInTheDocument()
         })
     })

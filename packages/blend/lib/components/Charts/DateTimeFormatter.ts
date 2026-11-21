@@ -43,7 +43,14 @@ export const DEFAULT_DATE_TIME_FORMATS: Record<TimeUnit, string> = {
 export interface DateTimeFormatterConfig {
     useUTC?: boolean
     customFormats?: Partial<Record<TimeUnit, string>>
-    startOfWeek?: number // 0 = Sunday, 1 = Monday (default)
+    /**
+     * First day of the week for week-aligned ticks: 0 = Sunday, 1 = Monday
+     * (default). The same numbering and default as the provider's
+     * `firstDayOfWeek`, so a caller can pass that through directly. No Blend
+     * component reaches week normalization today; it is only used by these
+     * tick helpers.
+     */
+    startOfWeek?: number
     /**
      * BCP 47 locale for the name tokens (`%b %B %a %A %p`). Omitted or
      * `'en-US'`, the built-in English tables are used, byte-identical to
