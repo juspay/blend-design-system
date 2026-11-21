@@ -430,6 +430,61 @@ const FRENCH: BlendMessageOverrides = {
     'skeleton.a11y.loading': 'Chargement du contenu',
     'skeleton.label.cancel': 'Annuler',
     'skeleton.label.confirm': 'Confirmer',
+    'chat-input.placeholder.message': 'Écrire un message...',
+    'chat-input.a11y.message-input': 'Saisie du message',
+    'chat-input.a11y.attach-files': 'Joindre des fichiers',
+    'chat-input.a11y.actions': 'Actions de saisie',
+    'chat-input.a11y.secondary-action': 'Action secondaire',
+    'chat-input.a11y.suggested-queries': 'Requêtes suggérées',
+    'chat-input.label.top-queries': 'Requêtes fréquentes',
+    'chat-input.a11y.query': 'Requête : {query}',
+    'chat-input.a11y.files-attached.one': '{count} fichier joint',
+    'chat-input.a11y.files-attached.other': '{count} fichiers joints',
+    'chat-input.a11y.file-item':
+        'Fichier {name}, appuyez sur Suppr pour le retirer, cliquez pour l’afficher',
+    'chat-input.a11y.remove-file': 'Supprimer le fichier {name}',
+    'chat-input.a11y.remove-attachment': 'Supprimer {name}',
+    'chat-input.label.more-files.one': '{count} de plus',
+    'chat-input.label.more-files.other': '{count} de plus',
+    'chat-input.a11y.show-more-files.one':
+        'Afficher {count} autre fichier joint',
+    'chat-input.a11y.show-more-files.other':
+        'Afficher {count} autres fichiers joints',
+    'chat-input.status.duplicate-header': 'Fichier en double',
+    'chat-input.status.duplicate-single':
+        'Le fichier « {name} » est déjà joint',
+    'chat-input.status.duplicates-not-added.one':
+        '{count} fichier en double n’a pas été ajouté',
+    'chat-input.status.duplicates-not-added.other':
+        '{count} fichiers en double n’ont pas été ajoutés',
+    'code-block.label.header': 'En-tête',
+    'code-block.a11y.region': 'Bloc de code : {header}',
+    'code-block.a11y.region-unnamed': 'Bloc de code',
+    'code-block.a11y.region-language':
+        'Bloc de code : {header}, langage {language}',
+    'code-block.a11y.region-unnamed-language':
+        'Bloc de code, langage {language}',
+    'code-block.a11y.header': 'En-tête du bloc de code : {header}',
+    'code-block.a11y.copy-from': 'Copier le code de {header}',
+    'code-block.a11y.copy-from-unnamed': 'Copier le code du bloc',
+    'code-block.a11y.copied-from':
+        'Code de {header} copié dans le presse-papiers',
+    'code-block.a11y.copied-from-unnamed':
+        'Code du bloc copié dans le presse-papiers',
+    'code-block.a11y.copy': 'Copier le code',
+    'code-block.a11y.copied': 'Code copié dans le presse-papiers',
+    'code-block.a11y.removed-code': 'Code supprimé',
+    'code-block.a11y.added-code': 'Code ajouté',
+    'code-block.a11y.collapsed-lines':
+        'Lignes masquées. Utilisez les commandes pour afficher plus de contexte.',
+    'code-block.a11y.load-more-above': 'Afficher plus de lignes au-dessus',
+    'code-block.a11y.load-more-below': 'Afficher plus de lignes en dessous',
+    'code-block.a11y.expand-collapsed': 'Développer toute la section masquée',
+    'code-editor.label.title': 'Éditeur',
+    'code-editor.status.loading': 'Chargement de l’éditeur...',
+    'code-editor.a11y.header': 'En-tête de l’éditeur de code',
+    'code-editor.a11y.copy': 'Copier le code',
+    'code-editor.a11y.copied': 'Copié',
 }
 
 const JAPANESE: BlendMessageOverrides = {
@@ -778,6 +833,52 @@ const JAPANESE: BlendMessageOverrides = {
     'skeleton.a11y.loading': 'コンテンツを読み込み中',
     'skeleton.label.cancel': 'キャンセル',
     'skeleton.label.confirm': '確認',
+    'chat-input.placeholder.message': 'メッセージを入力...',
+    'chat-input.a11y.message-input': 'メッセージ入力',
+    'chat-input.a11y.attach-files': 'ファイルを添付',
+    'chat-input.a11y.actions': 'チャット入力の操作',
+    'chat-input.a11y.secondary-action': 'セカンダリアクション',
+    'chat-input.a11y.suggested-queries': '提案されたクエリ',
+    'chat-input.label.top-queries': 'よく使われるクエリ',
+    'chat-input.a11y.query': 'クエリ：{query}',
+    'chat-input.a11y.files-attached.other': '{count}件のファイルを添付済み',
+    'chat-input.a11y.file-item': '{name}ファイル、Deleteで削除、クリックで表示',
+    'chat-input.a11y.remove-file': '{name}ファイルを削除',
+    'chat-input.a11y.remove-attachment': '{name}を削除',
+    'chat-input.label.more-files.other': '他{count}件',
+    'chat-input.a11y.show-more-files.other':
+        '添付ファイルをさらに{count}件表示',
+    'chat-input.status.duplicate-header': '重複したファイル',
+    'chat-input.status.duplicate-single':
+        'ファイル「{name}」はすでに添付されています',
+    'chat-input.status.duplicates-not-added.other':
+        '重複した{count}件のファイルは追加されませんでした',
+    'code-block.label.header': 'ヘッダー',
+    'code-block.a11y.region': 'コードブロック：{header}',
+    'code-block.a11y.region-unnamed': 'コードブロック',
+    'code-block.a11y.region-language': 'コードブロック：{header}、{language}',
+    'code-block.a11y.region-unnamed-language': 'コードブロック、{language}',
+    'code-block.a11y.header': 'コードブロックのヘッダー：{header}',
+    'code-block.a11y.copy-from': '{header}のコードをコピー',
+    'code-block.a11y.copy-from-unnamed': 'コードブロックのコードをコピー',
+    'code-block.a11y.copied-from':
+        '{header}のコードをクリップボードにコピーしました',
+    'code-block.a11y.copied-from-unnamed':
+        'コードブロックのコードをクリップボードにコピーしました',
+    'code-block.a11y.copy': 'コードをコピー',
+    'code-block.a11y.copied': 'コードをクリップボードにコピーしました',
+    'code-block.a11y.removed-code': '削除されたコード',
+    'code-block.a11y.added-code': '追加されたコード',
+    'code-block.a11y.collapsed-lines':
+        '折りたたまれた行。操作ボタンで前後の行を表示できます。',
+    'code-block.a11y.load-more-above': '上の行をさらに表示',
+    'code-block.a11y.load-more-below': '下の行をさらに表示',
+    'code-block.a11y.expand-collapsed': '折りたたまれたセクションをすべて展開',
+    'code-editor.label.title': 'エディター',
+    'code-editor.status.loading': 'エディターを読み込み中...',
+    'code-editor.a11y.header': 'コードエディターのヘッダー',
+    'code-editor.a11y.copy': 'コードをコピー',
+    'code-editor.a11y.copied': 'コピーしました',
 }
 
 /**

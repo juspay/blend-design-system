@@ -6,6 +6,8 @@ import { CodeEditorVariant, type CodeEditorProps } from './types'
 import { shouldShowLineNumbers, getContainerStyles } from './utils'
 import { CodeEditorHeader } from './CodeEditorHeader'
 import { MonacoEditorWrapper } from './MonacoEditorWrapper'
+import { useMessages } from '../../i18n/useMessages'
+import { CODE_MESSAGES } from '../../i18n/catalog/code.messages'
 
 const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
     (
@@ -15,7 +17,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
             variant = CodeEditorVariant.DEFAULT,
             showLineNumbers,
             showHeader = true,
-            header = 'Editor',
+            header: headerProp,
             headerLeftSlot,
             headerRightSlot,
             showLeftIcon = true,
@@ -34,6 +36,10 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
         },
         ref
     ) => {
+        const { pick } = useMessages(CODE_MESSAGES)
+        const header = pick(headerProp, 'code-editor.label.title')
+        // `data-codeeditor` keeps the English default for stable selectors.
+        const dataHeader = headerProp === undefined ? 'Editor' : headerProp
         const tokens = useResponsiveTokens<CodeBlockTokenType>('CODE_BLOCK')
         const [isCopied, setIsCopied] = useState(false)
         const copyFeedbackTimeoutRef = useRef<ReturnType<
@@ -82,7 +88,7 @@ const CodeEditor = forwardRef<HTMLDivElement, CodeEditorProps>(
                 boxShadow={tokens.boxShadow}
                 className={className}
                 style={containerStyles}
-                data-codeeditor={header}
+                data-codeeditor={dataHeader}
             >
                 {showHeader && (
                     <CodeEditorHeader

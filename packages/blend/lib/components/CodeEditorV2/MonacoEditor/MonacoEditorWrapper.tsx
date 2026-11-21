@@ -25,6 +25,8 @@ import {
     toCssValue,
 } from '../utils'
 import { CSSObject } from 'styled-components'
+import { useMessages } from '../../../i18n/useMessages'
+import { CODE_MESSAGES } from '../../../i18n/catalog/code.messages'
 
 // ---------------------------------------------------------------------------
 // Language mapping
@@ -52,6 +54,7 @@ function EditorLoading({
     minHeight: CSSObject['minHeight']
     tokens: CodeEditorV2Tokens
 }) {
+    const { m } = useMessages(CODE_MESSAGES)
     return (
         <Block
             display="flex"
@@ -62,7 +65,7 @@ function EditorLoading({
             color={tokens.body.syntax.comment.color}
             fontSize={tokens.body.code.fontSize}
         >
-            Loading editor...
+            {m('code-editor.status.loading')}
         </Block>
     )
 }

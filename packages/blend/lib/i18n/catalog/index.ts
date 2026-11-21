@@ -29,6 +29,8 @@ import { TABS_MESSAGES } from './tabs.messages'
 import { INPUT_MESSAGES } from './input.messages'
 import { OVERLAY_MESSAGES } from './overlay.messages'
 import { FEEDBACK_MESSAGES } from './feedback.messages'
+import { CHAT_INPUT_MESSAGES } from './chatInput.messages'
+import { CODE_MESSAGES } from './code.messages'
 
 /**
  * Spreading `as const` fragments preserves every key and value literal, so
@@ -53,6 +55,8 @@ export const BLEND_MESSAGES = {
     ...INPUT_MESSAGES,
     ...OVERLAY_MESSAGES,
     ...FEEDBACK_MESSAGES,
+    ...CHAT_INPUT_MESSAGES,
+    ...CODE_MESSAGES,
 } as const
 
 /**

@@ -15,6 +15,8 @@ import {
     ButtonV2SubType,
     ButtonV2Type,
 } from '../../ButtonV2'
+import { useMessages } from '../../../i18n/useMessages'
+import { CHAT_INPUT_MESSAGES } from '../../../i18n/catalog/chatInput.messages'
 
 type ChatInputTagV2Props = {
     text: string
@@ -33,6 +35,7 @@ const ChatInputTagV2 = ({
     onRemove,
     onFileClick,
 }: ChatInputTagV2Props) => {
+    const { m } = useMessages(CHAT_INPUT_MESSAGES)
     const getFileTypeIcon = (fileType: ChatInputV2AttachedFile['type']) => {
         switch (fileType) {
             case 'image':
@@ -77,7 +80,9 @@ const ChatInputTagV2 = ({
                 size={ButtonV2Size.SMALL}
                 buttonType={ButtonV2Type.SECONDARY}
                 subType={ButtonV2SubType.INLINE}
-                aria-label={`Remove ${file.name}`}
+                aria-label={m('chat-input.a11y.remove-attachment', {
+                    name: file.name,
+                })}
                 onClick={(e) => {
                     e.stopPropagation()
                     onRemove()
