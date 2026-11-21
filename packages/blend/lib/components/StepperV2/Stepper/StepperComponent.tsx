@@ -14,6 +14,8 @@ import {
 import { scheduleLiveRegionAnnouncement } from '../utils'
 import Block from '../../Primitives/Block/Block'
 import { Steps } from './Steps'
+import { useMessages } from '../../../i18n/useMessages'
+import { STEPPER_MESSAGES } from '../../../i18n/catalog/stepper.messages'
 
 const StepperComponent = forwardRef<HTMLDivElement, StepperV2Props>(
     (
@@ -27,6 +29,7 @@ const StepperComponent = forwardRef<HTMLDivElement, StepperV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(STEPPER_MESSAGES)
         const stepperInstanceId = useId().replace(/:/g, '-')
 
         const [focusedStepIndex, setFocusedStepIndex] = useState<number | null>(
@@ -114,9 +117,12 @@ const StepperComponent = forwardRef<HTMLDivElement, StepperV2Props>(
             const currentStep = steps[focusedStepIndex]
             if (!currentStep || currentStep.disabled) return
             return scheduleLiveRegionAnnouncement(
-                `Step ${focusedStepIndex + 1}: ${currentStep.title}`
+                m('stepper.a11y.step-focused', {
+                    number: String(focusedStepIndex + 1),
+                    title: String(currentStep.title),
+                })
             )
-        }, [focusedStepIndex, steps])
+        }, [focusedStepIndex, steps, m])
 
         const blockHtmlProps = { ...(htmlProps as Record<string, unknown>) }
         delete blockHtmlProps['aria-orientation']
@@ -144,7 +150,10 @@ const StepperComponent = forwardRef<HTMLDivElement, StepperV2Props>(
                         : 'flex-start'
                 }
                 role="group"
-                aria-label={`Progress indicator: step ${derivedIndex + 1} of ${steps.length}`}
+                aria-label={m('stepper.a11y.progress', {
+                    number: String(derivedIndex + 1),
+                    total: String(steps.length),
+                })}
                 aria-roledescription="stepper"
                 {...blockHtmlProps}
             >
