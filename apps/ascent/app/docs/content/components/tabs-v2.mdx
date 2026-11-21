@@ -481,6 +481,42 @@ const tabItems = [
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+TabsV2 has 2 built-in strings: 2 read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                   | English default | Where it appears |
+| --------------------- | --------------- | ---------------- |
+| `tabs.a11y.close`     | `Close {label}` | Screen reader    |
+| `tabs.a11y.close-tab` | `Close tab`     | Screen reader    |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#tabs), under [`tabs.*`](/docs/internationalization/message-catalog#tabs).
+
+`tabs.*` is shared with Tabs, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'tabs.a11y.close': 'Fermer {label}',
+    'tabs.a11y.close-tab': "Fermer l'onglet",
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
 ## Component Tokens
 
 You can style the TabsV2 component using the following tokens:

@@ -132,6 +132,48 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+AvatarGroup has 9 built-in strings: 1 shown on screen, 1 placeholder and 7 read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                                             | English default                                     | Where it appears |
+| ----------------------------------------------- | --------------------------------------------------- | ---------------- |
+| `avatar-group.a11y.group.one / .other`          | `Group of {count} avatars`                          | Screen reader    |
+| `avatar-group.a11y.group-selected.one / .other` | `Group of {count} avatars, {selected} selected`     | Screen reader    |
+| `avatar-group.a11y.loading-more`                | `Loading more avatars`                              | Screen reader    |
+| `avatar-group.a11y.overflow.one / .other`       | `{count} more avatars, click to view and select`    | Screen reader    |
+| `avatar-group.a11y.position`                    | `Avatar {number} of {total}`                        | Screen reader    |
+| `avatar-group.a11y.position-more`               | `Avatar {number} of {total}, {more} more available` | Screen reader    |
+| `avatar-group.a11y.selected`                    | `{name}, selected`                                  | Screen reader    |
+| `avatar-group.label.fallback-name`              | `Avatar {id}`                                       | On screen        |
+| `avatar-group.placeholder.search`               | `Search avatars...`                                 | Placeholder      |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#avatar-group), under [`avatar-group.*`](/docs/internationalization/message-catalog#avatar-group).
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'avatar-group.label.fallback-name': 'Avatar {id}',
+    'avatar-group.a11y.group.one': 'Groupe de {count} avatar',
+    'avatar-group.a11y.group.other': 'Groupe de {count} avatars',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
 ## Component Tokens
 
 You can style the avatar group component using the following tokens:

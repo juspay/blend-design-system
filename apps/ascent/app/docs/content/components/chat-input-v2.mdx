@@ -229,6 +229,62 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+ChatInputV2 has 11 built-in strings: 5 shown on screen, 1 placeholder and 5 read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                                                   | English default                          | Where it appears |
+| ----------------------------------------------------- | ---------------------------------------- | ---------------- |
+| `chat-input.a11y.attach-files`                        | `Attach files`                           | Screen reader    |
+| `chat-input.a11y.files-attached.one / .other`         | `{count} files attached`                 | Screen reader    |
+| `chat-input.a11y.remove-attachment`                   | `Remove {name}`                          | Screen reader    |
+| `chat-input.a11y.secondary-action`                    | `Secondary action`                       | Screen reader    |
+| `chat-input.a11y.show-more-files.one / .other`        | `Show {count} more attached files`       | Screen reader    |
+| `chat-input.label.more-files.one / .other`            | `{count} more`                           | On screen        |
+| `chat-input.label.top-queries`                        | `Top Queries`                            | On screen        |
+| `chat-input.placeholder.message`                      | `Type a message...`                      | Placeholder      |
+| `chat-input.status.duplicate-header`                  | `Duplicate File`                         | On screen        |
+| `chat-input.status.duplicate-single`                  | `File "{name}" is already attached`      | On screen        |
+| `chat-input.status.duplicates-not-added.one / .other` | `{count} duplicate files were not added` | On screen        |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#chat-input), under [`chat-input.*`](/docs/internationalization/message-catalog#chat-input).
+
+`chat-input.*` is shared with ChatInput, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'chat-input.label.more-files.one': '{count} de plus',
+    'chat-input.label.more-files.other': '{count} de plus',
+    'chat-input.a11y.attach-files': 'Joindre des fichiers',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Changing one string
+
+A prop replaces one string for that instance and always wins over `t`:
+
+| Prop          | Replaces key                     | English default     |
+| ------------- | -------------------------------- | ------------------- |
+| `placeholder` | `chat-input.placeholder.message` | `Type a message...` |
+
+Don't pass a prop just to restate the English default: it wins over `t`, so that string would stay English in every locale.
+
 ## Component Tokens
 
 You can style the ChatInputV2 component using the following tokens:

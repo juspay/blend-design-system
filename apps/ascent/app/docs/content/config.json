@@ -2,8 +2,8 @@
     "order": [
         "intro",
         "getting-started",
-        "internationalization",
         "contributing",
+        "internationalization",
         "migration",
         "components"
     ]
