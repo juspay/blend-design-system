@@ -19,7 +19,7 @@ const FRENCH: Record<string, string> = {
 const t = (key: string) => FRENCH[key]
 const noop = () => {}
 
-describe('Inputs locale', () => {
+describe('Inputs locale (Accessibility)', () => {
     it('keeps the English password toggle names with no provider locale', () => {
         render(
             <TextInput
