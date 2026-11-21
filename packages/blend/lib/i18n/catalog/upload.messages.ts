@@ -53,6 +53,7 @@ export const UPLOAD_MESSAGES = {
     // Fallback accessible name for the hidden file input when the consumer
     // passes no visible `label`.
     'upload.a11y.file-input': 'File upload',
+    'upload.a11y.upload-area': 'File upload area',
     'upload.a11y.remove-file': 'Remove {name}',
     'upload.a11y.uploading-progress': 'Uploading {name}, {progress}% complete',
 } as const

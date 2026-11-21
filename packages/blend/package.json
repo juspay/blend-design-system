@@ -36,9 +36,11 @@
     "scripts": {
         "lint": "eslint .",
         "i18n:audit": "node scripts/find-untranslated.mjs",
+        "i18n:check": "node scripts/check-i18n.mjs",
+        "i18n:baseline": "node scripts/check-i18n.mjs --update",
         "check:circular": "node scripts/check-circular.mjs",
         "check:dist": "node scripts/check-dist.mjs",
-        "build": "pnpm lint && vite build && pnpm check:dist",
+        "build": "pnpm lint && pnpm i18n:check && vite build && pnpm check:dist",
         "prepublishOnly": "pnpm run build",
         "test": "vitest",
         "test:ui": "vitest --ui",
