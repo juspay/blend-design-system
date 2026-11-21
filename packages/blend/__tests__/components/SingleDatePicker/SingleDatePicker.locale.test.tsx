@@ -10,7 +10,7 @@ const SEP_15 = new Date(2025, 8, 15)
  * "Clear selection" under every locale after the rest of the picker was
  * migrated.
  */
-describe('SingleDatePicker clear button locale', () => {
+describe('SingleDatePicker clear button locale (Accessibility)', () => {
     it('keeps the English name with no provider locale', () => {
         render(
             <SingleDatePicker value={SEP_15} onChange={() => {}} allowClear />
