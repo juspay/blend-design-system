@@ -36,7 +36,7 @@ const legendProps = {
     activeKeys: [],
 }
 
-describe('Charts locale', () => {
+describe('Charts locale (Accessibility)', () => {
     it('renders the English ChartV2 empty state with no provider locale', () => {
         render(<ChartV2 options={EMPTY_OPTIONS} />)
 
