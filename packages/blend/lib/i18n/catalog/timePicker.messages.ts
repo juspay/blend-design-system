@@ -18,6 +18,11 @@ export const TIME_PICKER_MESSAGES = {
     'time-picker.label.period': 'AM/PM',
     'time-picker.label.am': 'AM',
     'time-picker.label.pm': 'PM',
+    // Where the day period sits relative to the time is a locale convention
+    // (`2:30 PM` vs `午後2:30`), so the whole pattern is translatable.
+    // `{period}` is the translated `label.am` / `label.pm`.
+    'time-picker.label.time-with-period': '{time} {period}',
 
     'time-picker.a11y.choose-time': 'Choose time',
+    'time-picker.a11y.trigger': 'Time picker, {value}',
 } as const

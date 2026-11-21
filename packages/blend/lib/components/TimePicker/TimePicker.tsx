@@ -34,6 +34,7 @@ import {
     timeValueToSeconds,
     timeValueToString,
 } from '../shared/datetime/timeCore'
+import { createPeriodFormatter } from '../shared/datetime/dayPeriod'
 
 /**
  * `snapToMinuteStep` rounds to the *nearest* slot, which rolls into the next
@@ -125,12 +126,12 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
         const { foundationTokens } = useTheme()
         const timeToken =
             useResponsiveTokens<TimePickerTokensType>('TIME_PICKER')
-        const { m } = useMessages(TIME_PICKER_MESSAGES)
-        // Display text only; matches the localized period column.
-        const dayPeriods = {
-            am: m('time-picker.label.am'),
-            pm: m('time-picker.label.pm'),
-        }
+        const { m, pick, translate } = useMessages(TIME_PICKER_MESSAGES)
+        // Display only, and the same strings the period column uses.
+        const formatWithPeriod = useMemo(
+            () => createPeriodFormatter(translate),
+            [translate]
+        )
 
         const baseId = useId()
         const errorId = `${baseId}-error`
@@ -239,9 +240,13 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
               : undefined
 
         const displayText = displayValue
-            ? formatTimeValue(displayValue, { format, showSeconds, dayPeriods })
+            ? formatTimeValue(displayValue, {
+                  format,
+                  showSeconds,
+                  formatWithPeriod,
+              })
             : (placeholder ??
-              getTimePlaceholder({ format, showSeconds, dayPeriods }))
+              getTimePlaceholder({ format, showSeconds, formatWithPeriod }))
 
         const handleChange = useCallback(
             (next: TimeValue) => {
@@ -278,7 +283,9 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             calendarToken,
             foundationTokens,
             onToggle: () => setIsOpen((open) => !open),
-            ariaLabel: ariaLabel ?? `Time picker, ${displayText}`,
+            ariaLabel: pick(ariaLabel, 'time-picker.a11y.trigger', {
+                value: displayText,
+            }),
             dataDatePicker: 'timePicker-Filter',
             defaultIcon: (
                 <Clock size={calendarToken?.trigger?.dateInput?.iconSize} />

@@ -25,6 +25,7 @@ import {
     timeValueFromDate,
     timeValueToString,
 } from '../shared/datetime/timeCore'
+import { createPeriodFormatter } from '../shared/datetime/dayPeriod'
 import { DATE_RANGE_PICKER_CONSTANTS } from './constants'
 
 /**
@@ -257,8 +258,14 @@ export const isControlledDateRange = (
  * @param date The date to format
  * @returns The formatted time string
  */
-export const formatTimeIn12Hour = (date: Date): string =>
-    formatTimeValue(timeValueFromDate(date), { format: '12h' })
+export const formatTimeIn12Hour = (
+    date: Date,
+    formatWithPeriod?: (time: string, period: 'AM' | 'PM') => string
+): string =>
+    formatTimeValue(timeValueFromDate(date), {
+        format: '12h',
+        formatWithPeriod,
+    })
 
 /**
  * Formats a date range for display
@@ -2698,7 +2705,13 @@ export const formatDateRangeWithConfig = (
     range: DateRange,
     config: DateFormatConfig = {},
     timezone?: string,
-    i18n?: BlendI18nHandle
+    i18n?: BlendI18nHandle,
+    /**
+     * Display formatter for 12-hour times. SingleDatePicker passes one so
+     * its trigger matches its localized period column; DateRangePicker does
+     * not, because its time field is typed into and parsed back in English.
+     */
+    formatWithPeriod?: (time: string, period: 'AM' | 'PM') => string
 ): string => {
     if (!range.startDate) {
         return ''
@@ -2734,7 +2747,7 @@ export const formatDateRangeWithConfig = (
         if (!includeTime) return ''
 
         if (timeFormat === '12h') {
-            return formatTimeIn12Hour(date)
+            return formatTimeIn12Hour(date, formatWithPeriod)
         } else {
             return formatDate(date, 'HH:mm', timezone)
         }
@@ -2989,7 +3002,13 @@ export const formatTriggerDisplay = (
         )
     }
 
-    return formatDateRangeWithConfig(range, config, timezone, i18n)
+    return formatDateRangeWithConfig(
+        range,
+        config,
+        timezone,
+        i18n,
+        isSingleDatePicker ? createPeriodFormatter(i18n?.translate) : undefined
+    )
 }
 
 /**

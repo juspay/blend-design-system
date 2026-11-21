@@ -360,12 +360,14 @@ export type FormatTimeOptions = {
     format?: TimeFormat
     showSeconds?: boolean
     /**
-     * Display text for the 12-hour day period. Omitted, the English
-     * `AM`/`PM` is used. Display only: never pass these to anything that is
-     * parsed back (`parseTimeInput` and `from12Hour` take the English
-     * `'AM' | 'PM'` data values).
+     * Joins the clock text and the 12-hour day period for display. Omitted,
+     * the English `"{time} AM"` form is used. A whole-pattern formatter rather
+     * than just translated AM/PM labels, because the period's position is a
+     * locale convention (`午後2:30`). Display only: never feed its output to
+     * anything that is parsed back (`parseTimeInput` and `from12Hour` take
+     * the English `'AM' | 'PM'` data values).
      */
-    dayPeriods?: { am: string; pm: string }
+    formatWithPeriod?: (time: string, period: 'AM' | 'PM') => string
 }
 
 /**
@@ -374,7 +376,11 @@ export type FormatTimeOptions = {
  */
 export const formatTimeValue = (
     time: TimeValue,
-    { format = '12h', showSeconds = false, dayPeriods }: FormatTimeOptions = {}
+    {
+        format = '12h',
+        showSeconds = false,
+        formatWithPeriod,
+    }: FormatTimeOptions = {}
 ): string => {
     const secondsPart = showSeconds ? `:${pad(time.seconds)}` : ''
 
@@ -383,25 +389,25 @@ export const formatTimeValue = (
     }
 
     const { hour, period } = to12Hour(time.hours)
-    const periodText = dayPeriods
-        ? period === 'AM'
-            ? dayPeriods.am
-            : dayPeriods.pm
-        : period
-    return `${hour}:${pad(time.minutes)}${secondsPart} ${periodText}`
+    const clock = `${hour}:${pad(time.minutes)}${secondsPart}`
+    return formatWithPeriod
+        ? formatWithPeriod(clock, period)
+        : `${clock} ${period}`
 }
 
 /** Placeholder matching what `formatTimeValue` would produce. */
 export const getTimePlaceholder = ({
     format = '12h',
     showSeconds = false,
-    dayPeriods,
+    formatWithPeriod,
 }: FormatTimeOptions = {}): string =>
     format === '24h'
         ? showSeconds
             ? 'HH:mm:ss'
             : 'HH:mm'
-        : `${showSeconds ? 'hh:mm:ss' : 'hh:mm'} ${dayPeriods?.am ?? 'AM'}`
+        : formatWithPeriod
+          ? formatWithPeriod(showSeconds ? 'hh:mm:ss' : 'hh:mm', 'AM')
+          : `${showSeconds ? 'hh:mm:ss' : 'hh:mm'} AM`
 
 // =============================================================================
 // BOUNDS
