@@ -18,6 +18,8 @@ import {
 import { useModal } from './useModal'
 import { type SkeletonVariant } from '../Skeleton'
 import ModalSkeleton from './ModalSkeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 
 const AnimatedBackdrop = styled(Block)<{ $isAnimatingIn: boolean }>`
     ${({ $isAnimatingIn }) => modalBackdropAnimations($isAnimatingIn)}
@@ -50,6 +52,7 @@ const ModalHeader = ({
     titleId?: string
     subtitleId?: string
 }) => {
+    const { m } = useMessages(OVERLAY_MESSAGES)
     const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
 
     if (showSkeleton) {
@@ -140,7 +143,7 @@ const ModalHeader = ({
                         />
                     }
                     onClick={onClose}
-                    aria-label="Close modal"
+                    aria-label={m('modal.a11y.close')}
                 />
             )}
         </Block>
@@ -248,6 +251,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(OVERLAY_MESSAGES)
         const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
         const { innerWidth } = useBreakpoints()
         const isMobile = innerWidth < 1024
@@ -337,7 +341,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby={titleId}
-                        aria-label={title || 'Modal dialog'}
+                        aria-label={title || m('modal.a11y.dialog')}
                         aria-describedby={ariaDescribedBy}
                         zIndex={1}
                         pointerEvents="auto"

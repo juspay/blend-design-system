@@ -7,6 +7,8 @@ import { TIME_PICKER_MESSAGES } from '../../lib/i18n/catalog/timePicker.messages
 import { UPLOAD_MESSAGES } from '../../lib/i18n/catalog/upload.messages'
 import { UPLOAD_V2_MESSAGES } from '../../lib/i18n/catalog/uploadV2.messages'
 import { SELECT_MESSAGES } from '../../lib/i18n/catalog/select.messages'
+import { OVERLAY_MESSAGES } from '../../lib/i18n/catalog/overlay.messages'
+import { FEEDBACK_MESSAGES } from '../../lib/i18n/catalog/feedback.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -21,6 +23,13 @@ const FAMILIES = new Set([
     'date-range-picker',
     'time-picker',
     'select',
+    'modal',
+    'popover',
+    'drawer',
+    'alert',
+    'snackbar',
+    'spinner',
+    'skeleton',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -32,6 +41,8 @@ const FRAGMENTS = {
     DATE_RANGE_PICKER_MESSAGES,
     TIME_PICKER_MESSAGES,
     SELECT_MESSAGES,
+    OVERLAY_MESSAGES,
+    FEEDBACK_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -123,6 +134,8 @@ describe('message catalog', () => {
     it('matches the published key list', () => {
         expect([...keys].sort()).toMatchInlineSnapshot(`
           [
+            "alert.a11y.action",
+            "alert.a11y.close",
             "common.action.apply",
             "common.action.cancel",
             "common.action.clear",
@@ -177,6 +190,15 @@ describe('message catalog', () => {
             "date-range-picker.preset.today",
             "date-range-picker.preset.tomorrow",
             "date-range-picker.preset.yesterday",
+            "drawer.action.clear",
+            "drawer.action.clear-all",
+            "drawer.action.done",
+            "drawer.placeholder.search",
+            "drawer.status.opened",
+            "modal.a11y.close",
+            "modal.a11y.dialog",
+            "popover.a11y.close",
+            "popover.a11y.dialog",
             "select.a11y.clear-selection",
             "select.a11y.clear-selection-for",
             "select.a11y.results-updated",
@@ -191,6 +213,11 @@ describe('message catalog', () => {
             "select.placeholder.search",
             "select.placeholder.search-short",
             "select.status.searching",
+            "skeleton.a11y.loading",
+            "skeleton.label.cancel",
+            "skeleton.label.confirm",
+            "snackbar.a11y.close",
+            "spinner.label.loading",
             "time-picker.a11y.choose-time",
             "time-picker.a11y.trigger",
             "time-picker.label.am",

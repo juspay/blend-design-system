@@ -19,6 +19,8 @@ import {
     DrawerV2Title,
 } from '../DrawerV2'
 import { XIcon } from '@phosphor-icons/react'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 type MobileModalV2Props = ModalV2Props
 
 const formatLineHeight = (value: string | number | undefined) =>
@@ -60,6 +62,7 @@ const MobileModalV2 = forwardRef<HTMLDivElement, MobileModalV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(OVERLAY_MESSAGES)
         const modalTokens = useResponsiveTokens<ModalV2TokensType>('MODALV2')
 
         const shouldShowSkeleton = skeleton?.show
@@ -120,8 +123,8 @@ const MobileModalV2 = forwardRef<HTMLDivElement, MobileModalV2Props>(
             ariaLabel ??
             (ariaLabelledBy || shouldUseGeneratedTitle
                 ? undefined
-                : title || 'Modal dialog')
-        const hiddenTitle = ariaLabel || title || 'Modal dialog'
+                : title || m('modal.a11y.dialog'))
+        const hiddenTitle = ariaLabel || title || m('modal.a11y.dialog')
 
         return (
             <DrawerV2
@@ -285,7 +288,9 @@ const MobileModalV2 = forwardRef<HTMLDivElement, MobileModalV2Props>(
                                                                     .closeButton
                                                                     .height,
                                                         }}
-                                                        aria-label="Close modal"
+                                                        aria-label={m(
+                                                            'modal.a11y.close'
+                                                        )}
                                                     />
                                                 </DrawerV2Close>
                                             )}

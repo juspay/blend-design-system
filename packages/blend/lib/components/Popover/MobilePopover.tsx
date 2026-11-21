@@ -22,6 +22,8 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { type SkeletonVariant } from '../Skeleton'
 import type { PopoverTokenType } from './popover.tokens'
 import PopoverSkeleton from './PopoverSkeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 
 type MobilePopoverProps = PopoverProps & {
     useDrawerOnMobile?: boolean
@@ -41,6 +43,7 @@ const MobilePopover: React.FC<MobilePopoverProps> = ({
     skeleton,
     size = PopoverSize.MEDIUM,
 }) => {
+    const { m } = useMessages(OVERLAY_MESSAGES)
     const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
 
     const shouldShowSkeleton = skeleton?.show
@@ -81,7 +84,7 @@ const MobilePopover: React.FC<MobilePopoverProps> = ({
                     showHandle={true}
                     contentDriven={true}
                     aria-labelledby={headingId}
-                    aria-label={heading || 'Popover dialog'}
+                    aria-label={heading || m('popover.a11y.dialog')}
                     aria-describedby={ariaDescribedBy}
                 >
                     {(heading || description || shouldShowSkeleton) && (
@@ -159,7 +162,9 @@ const MobilePopover: React.FC<MobilePopoverProps> = ({
                                                         onClose()
                                                     }
                                                 }}
-                                                aria-label="Close popover"
+                                                aria-label={m(
+                                                    'popover.a11y.close'
+                                                )}
                                             />
                                         </DrawerClose>
                                     )}

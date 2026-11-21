@@ -4,6 +4,19 @@ import { LinearProgressBarV2Props } from './progressBarV2.types'
 import { getProgressBarValueState } from './utils'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
+import { useI18n } from '../../i18n/I18nContext'
+import { DEFAULT_LOCALE } from '../../i18n/constants'
+import { getNumberFormat } from '../../i18n/format/formatterCache'
+
+/**
+ * The visible percentage label. English keeps the original `${n}%`; other
+ * locales get their own percent format (`50 %` in French, `%50` in
+ * Turkish). The `data-id` beside it always stays the English form.
+ */
+const formatPercentLabel = (locale: string, rounded: number): string =>
+    locale === DEFAULT_LOCALE
+        ? `${rounded}%`
+        : getNumberFormat(locale, 'percent').format(rounded / 100)
 
 export const LinearProgressBarV2 = ({
     value,
@@ -16,6 +29,7 @@ export const LinearProgressBarV2 = ({
     min,
     max,
 }: LinearProgressBarV2Props) => {
+    const { locale } = useI18n()
     const { rangeMin, rangeMax, clampedValue, percentage } = useMemo(
         () => getProgressBarValueState(value, min, max),
         [value, min, max]
@@ -95,7 +109,7 @@ export const LinearProgressBarV2 = ({
                         fontSize={tokens.label.fontSize}
                         aria-hidden="true"
                     >
-                        {Math.round(percentage)}%
+                        {formatPercentLabel(locale, Math.round(percentage))}
                     </Text>
                 </Block>
             )}

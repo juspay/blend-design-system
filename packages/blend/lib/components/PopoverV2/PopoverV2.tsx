@@ -17,6 +17,8 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { popoverContentAnimations } from '../Popover/popover.animations'
 import PopoverV2Skeleton from './PopoverV2Skeleton'
 import { BREAKPOINTS } from '../../breakpoints/breakPoints'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 
 const AnimatedPopoverSurface = styled(Block)`
     ${popoverContentAnimations}
@@ -54,6 +56,7 @@ const PopoverV2 = forwardRef<HTMLDivElement, PopoverV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(OVERLAY_MESSAGES)
         const [internalOpen, setInternalOpen] = useState(false)
         const isControlled = open !== undefined
         const effectiveOpen = isControlled ? open : internalOpen
@@ -142,7 +145,8 @@ const PopoverV2 = forwardRef<HTMLDivElement, PopoverV2Props>(
                             {...(headingId
                                 ? { 'aria-labelledby': headingId }
                                 : {
-                                      'aria-label': heading || 'Popover dialog',
+                                      'aria-label':
+                                          heading || m('popover.a11y.dialog'),
                                   })}
                             {...(ariaDescribedBy
                                 ? { 'aria-describedby': ariaDescribedBy }

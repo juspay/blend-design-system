@@ -7,6 +7,8 @@ import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { ButtonV2, ButtonV2Type, ButtonV2SubType } from '../ButtonV2'
 import { XIcon } from '@phosphor-icons/react'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 
 const formatLineHeight = (value: string | number | undefined) =>
     typeof value === 'number' ? `${value}px` : value
@@ -34,6 +36,7 @@ const ModalV2Header = ({
     titleId?: string
     subtitleId?: string
 }) => {
+    const { m } = useMessages(OVERLAY_MESSAGES)
     const modalTokens = useResponsiveTokens<ModalV2TokensType>('MODALV2')
 
     if (showSkeleton) {
@@ -134,7 +137,7 @@ const ModalV2Header = ({
                         maxHeight: modalTokens.closeButton.height,
                     }}
                     onClick={onClose}
-                    aria-label="Close modal"
+                    aria-label={m('modal.a11y.close')}
                 />
             )}
         </Block>
