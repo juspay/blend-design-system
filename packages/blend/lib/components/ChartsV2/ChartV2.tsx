@@ -18,13 +18,14 @@ import { mergeChartOptions } from './chartV2Options'
 import { ensureSankeyRegistered } from './chartV2.sankey'
 import { useMessages } from '../../i18n/useMessages'
 import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
+import { DEFAULT_LOCALE } from '../../i18n/constants'
 
 const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
     (
         { highcharts = Highcharts, skeleton, noData: noDataProp, ...props },
         ref
     ) => {
-        const { m } = useMessages(CHART_MESSAGES)
+        const { m, locale } = useMessages(CHART_MESSAGES)
         // Same semantics as the old destructuring default: only an omitted
         // prop gets the built-in empty state.
         const noData =
@@ -36,7 +37,22 @@ const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
                   }
                 : noDataProp
         const tokens = useResponsiveTokens<ChartV2TokensType>('CHARTSV2')
-        const { options = {}, ...restProps } = props
+        const { options: optionsProp = {}, ...restProps } = props
+        // Highcharts 12 resolves its own locale from `lang.locale`, then the
+        // page's `<html lang>`, then the browser. Only an app that set a
+        // Blend locale gets it forwarded, so charts in apps that rely on
+        // `<html lang>` today render exactly as before; an explicit
+        // `lang.locale` in the consumer's options always wins.
+        const options = useMemo(
+            () =>
+                locale === DEFAULT_LOCALE || optionsProp.lang?.locale
+                    ? optionsProp
+                    : {
+                          ...optionsProp,
+                          lang: { ...optionsProp.lang, locale },
+                      },
+            [optionsProp, locale]
+        )
 
         const sankeyInstance = useMemo(
             () => ensureSankeyRegistered(highcharts),

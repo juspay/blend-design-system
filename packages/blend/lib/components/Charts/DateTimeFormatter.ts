@@ -6,6 +6,10 @@
  * custom format strings similar to Highcharts' dateTimeLabelFormats.
  */
 
+import { DEFAULT_LOCALE } from '../../i18n/constants'
+import { getMonthNames, getWeekdayNames } from '../../i18n/format/calendarNames'
+import { getDateTimeFormat } from '../../i18n/format/formatterCache'
+
 // ============================================================================
 // TYPES & CONSTANTS
 // ============================================================================
@@ -40,6 +44,12 @@ export interface DateTimeFormatterConfig {
     useUTC?: boolean
     customFormats?: Partial<Record<TimeUnit, string>>
     startOfWeek?: number // 0 = Sunday, 1 = Monday (default)
+    /**
+     * BCP 47 locale for the name tokens (`%b %B %a %A %p`). Omitted or
+     * `'en-US'`, the built-in English tables are used, byte-identical to
+     * before. Numeric tokens never change.
+     */
+    locale?: string
 }
 
 // Static constants for month and weekday names
@@ -92,6 +102,62 @@ const WEEKDAY_NAMES_SHORT = [
     'Fri',
     'Sat',
 ] as const
+
+type NameTables = {
+    monthsLong: readonly string[]
+    monthsShort: readonly string[]
+    weekdaysLong: readonly string[]
+    weekdaysShort: readonly string[]
+    am: string
+    pm: string
+}
+
+const ENGLISH_NAMES: NameTables = {
+    monthsLong: MONTH_NAMES,
+    monthsShort: MONTH_NAMES_SHORT,
+    weekdaysLong: WEEKDAY_NAMES,
+    weekdaysShort: WEEKDAY_NAMES_SHORT,
+    am: 'AM',
+    pm: 'PM',
+}
+
+const localizedNameCache = new Map<string, NameTables>()
+
+/**
+ * The 12-hour day period (`%p`) as the locale writes it, read from a fixed
+ * UTC morning and afternoon. Falls back to English when the locale's 12-hour
+ * format has no day-period part.
+ */
+const getDayPeriod = (locale: string, hour: number, fallback: string) => {
+    const parts = getDateTimeFormat(locale, 'time-12h', 'UTC').formatToParts(
+        new Date(Date.UTC(2000, 0, 1, hour))
+    )
+    return parts.find((part) => part.type === 'dayPeriod')?.value ?? fallback
+}
+
+/**
+ * English stays on the hardcoded tables rather than `Intl` so its output is
+ * byte-identical to before on every engine (ICU versions disagree on, for
+ * example, "Sep" vs "Sept"). Other locales come from `Intl`, Sunday-first so
+ * they index by `getDay()` like the English table.
+ */
+const getNameTables = (locale: string | undefined): NameTables => {
+    if (locale === undefined || locale === DEFAULT_LOCALE) return ENGLISH_NAMES
+
+    const hit = localizedNameCache.get(locale)
+    if (hit !== undefined) return hit
+
+    const tables: NameTables = {
+        monthsLong: getMonthNames(locale, 'long'),
+        monthsShort: getMonthNames(locale, 'short'),
+        weekdaysLong: getWeekdayNames(locale, 'long', 0),
+        weekdaysShort: getWeekdayNames(locale, 'short', 0),
+        am: getDayPeriod(locale, 9, 'AM'),
+        pm: getDayPeriod(locale, 15, 'PM'),
+    }
+    localizedNameCache.set(locale, tables)
+    return tables
+}
 
 // Token regex for efficient replacement
 const TOKEN_REGEX = /%%|%[YyBbmddeHIMSLpaA]/g
@@ -267,7 +333,8 @@ export function dateFormat(
     timestamp: number,
     config: DateTimeFormatterConfig = {}
 ): string {
-    const { useUTC = false } = config
+    const { useUTC = false, locale } = config
+    const names = getNameTables(locale)
     const date = new Date(timestamp)
 
     // Get date components based on UTC setting
@@ -290,8 +357,8 @@ export function dateFormat(
     const tokens: Record<string, string> = {
         '%Y': year.toString(),
         '%y': (year % 100).toString().padStart(2, '0'),
-        '%B': MONTH_NAMES[month],
-        '%b': MONTH_NAMES_SHORT[month],
+        '%B': names.monthsLong[month],
+        '%b': names.monthsShort[month],
         '%m': pad(month + 1),
         '%d': pad(day),
         '%e': day.toString(),
@@ -300,9 +367,9 @@ export function dateFormat(
         '%M': pad(minutes),
         '%S': pad(seconds),
         '%L': pad(milliseconds, 3),
-        '%p': hours < 12 ? 'AM' : 'PM',
-        '%A': WEEKDAY_NAMES[weekdayIndex],
-        '%a': WEEKDAY_NAMES_SHORT[weekdayIndex],
+        '%p': hours < 12 ? names.am : names.pm,
+        '%A': names.weekdaysLong[weekdayIndex],
+        '%a': names.weekdaysShort[weekdayIndex],
         '%%': '%',
     }
 

@@ -38,4 +38,20 @@ export const CHART_MESSAGES = {
     'stat-card.a11y.help': 'Help for {title}',
     'stat-card.a11y.chart': '{title} chart',
     'stat-card.a11y.chart-unnamed': 'Data chart',
+    'stat-card.a11y.change-increase': 'increased by {value}%',
+    'stat-card.a11y.change-decrease': 'decreased by {value}%',
+    // One whole sentence per trend rather than a `{trend}` word: the trend's
+    // form agrees with the rest of the sentence in many languages.
+    'stat-card.a11y.chart-trend-increasing.one':
+        '{title} chart showing {count} data point with increasing trend',
+    'stat-card.a11y.chart-trend-increasing.other':
+        '{title} chart showing {count} data points with increasing trend',
+    'stat-card.a11y.chart-trend-decreasing.one':
+        '{title} chart showing {count} data point with decreasing trend',
+    'stat-card.a11y.chart-trend-decreasing.other':
+        '{title} chart showing {count} data points with decreasing trend',
+    'stat-card.a11y.chart-trend-stable.one':
+        '{title} chart showing {count} data point with stable trend',
+    'stat-card.a11y.chart-trend-stable.other':
+        '{title} chart showing {count} data points with stable trend',
 } as const
