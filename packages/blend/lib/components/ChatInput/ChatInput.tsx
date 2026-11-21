@@ -29,6 +29,8 @@ import MobileChatInput from './MobileChatInput'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import PrimitiveTextarea from '../Primitives/PrimitiveTextArea'
 import AttachmentFile from './AttachmentFile'
+import { useMessages } from '../../i18n/useMessages'
+import { CHAT_INPUT_MESSAGES } from '../../i18n/catalog/chatInput.messages'
 
 export { getDocIcon } from './getDocIcon'
 
@@ -42,7 +44,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
             onAttachFiles,
             onFileRemove,
             onFileClick,
-            placeholder = 'Type a message...',
+            placeholder: placeholderProp,
             disabled = false,
             maxLength,
             autoResize = true,
@@ -58,6 +60,17 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
         },
         ref
     ) => {
+        const { m, mp, pick } = useMessages(CHAT_INPUT_MESSAGES)
+        const placeholder = pick(
+            placeholderProp,
+            'chat-input.placeholder.message'
+        )
+        // `data-chatinput` keeps the English default so selectors do not
+        // change with the locale.
+        const dataPlaceholder =
+            placeholderProp === undefined
+                ? 'Type a message...'
+                : placeholderProp
         const tokens = useResponsiveTokens<ChatInputTokensType>('CHAT_INPUT')
         const textareaRef = useRef<HTMLTextAreaElement>(null)
         const fileInputRef = useRef<HTMLInputElement>(null)
@@ -108,11 +121,16 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                         const duplicateCount = duplicateFiles.length
                         const message =
                             duplicateCount === 1
-                                ? `File "${duplicateFiles[0]}" is already attached`
-                                : `${duplicateCount} duplicate file(s) were not added`
+                                ? m('chat-input.status.duplicate-single', {
+                                      name: duplicateFiles[0],
+                                  })
+                                : mp(
+                                      'chat-input.status.duplicates-not-added',
+                                      duplicateCount
+                                  )
 
                         addSnackbar({
-                            header: 'Duplicate File',
+                            header: m('chat-input.status.duplicate-header'),
                             description: message,
                             variant: SnackbarVariant.WARNING,
                             duration: 3000,
@@ -127,7 +145,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 // Reset the input value to allow selecting the same file again
                 e.target.value = ''
             },
-            [onAttachFiles, attachedFiles]
+            [onAttachFiles, attachedFiles, m, mp]
         )
 
         const handleTopQueryClick = useCallback(
@@ -207,7 +225,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                 onChange={handleFileInputChange}
                 style={{ display: 'none' }}
                 accept="image/*,.pdf,.csv,.txt,.doc,.docx"
-                aria-label="Attach files"
+                aria-label={m('chat-input.a11y.attach-files')}
                 id={fileInputLabelId}
             />
         )
@@ -235,7 +253,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
 
         return (
             <Block
-                data-chatinput={placeholder || 'Message input'}
+                data-chatinput={dataPlaceholder || 'Message input'}
                 data-status={disabled ? 'disabled' : 'enabled'}
                 ref={containerRef}
                 display="flex"
@@ -294,7 +312,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             placeholder={placeholder}
                             disabled={disabled}
                             maxLength={maxLength}
-                            aria-label={ariaLabel || 'Message input'}
+                            aria-label={
+                                ariaLabel || m('chat-input.a11y.message-input')
+                            }
                             aria-describedby={textareaAriaDescribedBy}
                             aria-invalid={
                                 maxLength && value.length > maxLength
@@ -352,7 +372,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                             paddingLeft={tokens.textarea.paddingLeft}
                             gap={tokens.bottomActions.gap}
                             role="toolbar"
-                            aria-label="Chat input actions"
+                            aria-label={m('chat-input.a11y.actions')}
                         >
                             <Button
                                 buttonType={ButtonType.SECONDARY}
@@ -363,7 +383,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                 }
                                 onClick={handleAttachClick}
                                 disabled={disabled}
-                                aria-label="Attach files"
+                                aria-label={m('chat-input.a11y.attach-files')}
                                 aria-describedby={fileInputLabelId}
                             />
 
@@ -386,7 +406,9 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                         : undefined
                                 }
                                 role="region"
-                                aria-label="Suggested queries"
+                                aria-label={m(
+                                    'chat-input.a11y.suggested-queries'
+                                )}
                                 id={topQueriesId}
                             >
                                 <Block
@@ -425,7 +447,7 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                                     .paddingX,
                                         }}
                                     >
-                                        Top Queries
+                                        {m('chat-input.label.top-queries')}
                                     </Text>
                                 </Block>
                                 <Block
@@ -473,7 +495,12 @@ const ChatInput = forwardRef<HTMLTextAreaElement, ChatInputProps>(
                                                 tabIndex={isFocused ? 0 : -1}
                                                 role="option"
                                                 aria-selected={isFocused}
-                                                aria-label={`Query: ${query.text}`}
+                                                aria-label={m(
+                                                    'chat-input.a11y.query',
+                                                    {
+                                                        query: query.text,
+                                                    }
+                                                )}
                                                 style={{
                                                     display: 'block',
                                                     width: '100%',

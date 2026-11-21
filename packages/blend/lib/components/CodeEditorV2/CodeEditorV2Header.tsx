@@ -5,6 +5,8 @@ import Button from '../Button/Button'
 import { ButtonSize, ButtonSubType, ButtonType } from '../Button/types'
 import type { CodeEditorV2Tokens } from './codeEditorV2.tokens'
 import { CodeEditorV2HeaderProps } from './codeEditorV2.types'
+import { useMessages } from '../../i18n/useMessages'
+import { CODE_MESSAGES } from '../../i18n/catalog/code.messages'
 
 function formatHeaderSpacing(value: string | number | undefined): string {
     if (value === undefined || value === null) {
@@ -36,6 +38,7 @@ export const CodeEditorV2Header = ({
     onCopy,
     tokens,
 }: CodeEditorV2HeaderProps) => {
+    const { m } = useMessages(CODE_MESSAGES)
     const titleId = useId()
     const headerLabel = title?.trim()
 
@@ -58,7 +61,7 @@ export const CodeEditorV2Header = ({
             as="header"
             {...(headerLabel
                 ? { 'aria-labelledby': titleId }
-                : { 'aria-label': 'Code editor header' })}
+                : { 'aria-label': m('code-editor.a11y.header') })}
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -104,8 +107,16 @@ export const CodeEditorV2Header = ({
                     data-element="copy-button"
                     type="button"
                     onClick={onCopy}
-                    aria-label={isCopied ? 'Copied' : 'Copy code'}
-                    title={isCopied ? 'Copied' : 'Copy code'}
+                    aria-label={
+                        isCopied
+                            ? m('code-editor.a11y.copied')
+                            : m('code-editor.a11y.copy')
+                    }
+                    title={
+                        isCopied
+                            ? m('code-editor.a11y.copied')
+                            : m('code-editor.a11y.copy')
+                    }
                     buttonType={ButtonType.SECONDARY}
                     subType={ButtonSubType.ICON_ONLY}
                     size={ButtonSize.SMALL}

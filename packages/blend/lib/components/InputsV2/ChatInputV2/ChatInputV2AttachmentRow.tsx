@@ -37,6 +37,8 @@ import {
     ButtonV2SubType,
 } from '../../ButtonV2/buttonV2.types'
 import { PlusIcon } from '@phosphor-icons/react'
+import { useMessages } from '../../../i18n/useMessages'
+import { CHAT_INPUT_MESSAGES } from '../../../i18n/catalog/chatInput.messages'
 
 export type ChatInputV2AttachmentRowProps = {
     attachedFiles: ChatInputV2AttachedFile[]
@@ -55,6 +57,7 @@ export default function ChatInputV2AttachmentRow({
     outerContainerRef,
     gap,
 }: ChatInputV2AttachmentRowProps) {
+    const { mp } = useMessages(CHAT_INPUT_MESSAGES)
     const [cutOffIndex, setCutOffIndex] = useState(attachedFiles.length)
     const [overflowMenuOpen, setOverflowMenuOpen] = useState(false)
     const isExpanding = useRef(false)
@@ -201,9 +204,10 @@ export default function ChatInputV2AttachmentRow({
             gap={gap}
             width="100%"
             role="region"
-            aria-label={`${attachedFiles.length} file${
-                attachedFiles.length !== 1 ? 's' : ''
-            } attached`}
+            aria-label={mp(
+                'chat-input.a11y.files-attached',
+                attachedFiles.length
+            )}
             id={filesRegionId}
         >
             {visibleFiles.map((file) => (
@@ -226,10 +230,14 @@ export default function ChatInputV2AttachmentRow({
                 >
                     <ButtonV2
                         type="button"
-                        text={`${hiddenFiles.length} more`}
-                        aria-label={`Show ${hiddenFiles.length} more attached file${
-                            hiddenFiles.length !== 1 ? 's' : ''
-                        }`}
+                        text={mp(
+                            'chat-input.label.more-files',
+                            hiddenFiles.length
+                        )}
+                        aria-label={mp(
+                            'chat-input.a11y.show-more-files',
+                            hiddenFiles.length
+                        )}
                         aria-haspopup="true"
                         aria-expanded={overflowMenuOpen}
                         aria-controls={

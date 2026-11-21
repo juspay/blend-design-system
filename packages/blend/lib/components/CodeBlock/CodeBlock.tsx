@@ -1,3 +1,5 @@
+import { useMessages } from '../../i18n/useMessages'
+import { CODE_MESSAGES } from '../../i18n/catalog/code.messages'
 import {
     forwardRef,
     useState,
@@ -56,7 +58,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
             variant = CodeBlockVariant.DEFAULT,
             showLineNumbers,
             showHeader = true,
-            header = 'Header',
+            header: headerProp,
             headerLeftSlot,
             headerRightSlot,
             diffLines,
@@ -70,6 +72,10 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
         },
         ref
     ) => {
+        const { m, pick } = useMessages(CODE_MESSAGES)
+        const header = pick(headerProp, 'code-block.label.header')
+        // `data-codeblock` keeps the English default for stable selectors.
+        const dataHeader = headerProp === undefined ? 'Header' : headerProp
         const tokens = useResponsiveTokens<CodeBlockTokenType>('CODE_BLOCK')
         const [isCopied, setIsCopied] = useState(false)
         const codeBlockId = useId().replace(/:/g, '-')
@@ -138,7 +144,9 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                 announcement.style.width = '1px'
                 announcement.style.height = '1px'
                 announcement.style.overflow = 'hidden'
-                announcement.textContent = `Code from ${header || 'code block'} copied to clipboard`
+                announcement.textContent = header
+                    ? m('code-block.a11y.copied-from', { header })
+                    : m('code-block.a11y.copied-from-unnamed')
                 document.body.appendChild(announcement)
 
                 // Reset after 2 seconds
@@ -156,13 +164,16 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                     }
                 }
             }
-        }, [isCopied, header])
+        }, [isCopied, header, m])
 
         // Generate accessible label for code block
-        const codeBlockLabel = header ? `Code block: ${header}` : 'Code block'
         const codeBlockDescription = language
-            ? `${codeBlockLabel}, ${language} language`
-            : codeBlockLabel
+            ? header
+                ? m('code-block.a11y.region-language', { header, language })
+                : m('code-block.a11y.region-unnamed-language', { language })
+            : header
+              ? m('code-block.a11y.region', { header })
+              : m('code-block.a11y.region-unnamed')
 
         // Use utility functions
         const tokenizeLineLocal = (line: string) => tokenizeLine(line, language)
@@ -179,6 +190,8 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
 
         const diffRowCtx = useMemo<DiffRowRenderContext>(
             () => ({
+                removedCodeLabel: m('code-block.a11y.removed-code'),
+                addedCodeLabel: m('code-block.a11y.added-code'),
                 shouldShowLineNumbers,
                 tokens,
                 tokenizeLine: (line: string) => tokenizeLine(line, language),
@@ -197,7 +210,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                         tokens.body.highlightedLine
                     ),
             }),
-            [shouldShowLineNumbers, tokens, language, isDiffMode]
+            [shouldShowLineNumbers, tokens, language, isDiffMode, m]
         )
 
         return (
@@ -212,7 +225,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                 boxShadow={tokens.boxShadow}
                 role="region"
                 aria-label={codeBlockDescription}
-                data-codeblock={header}
+                data-codeblock={dataHeader}
             >
                 {/* Header */}
                 {showHeader && (
@@ -226,7 +239,7 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                         borderBottom={tokens.header.borderBottom}
                         gap={tokens.header.gap}
                         role="group"
-                        aria-label={`Code block header: ${header}`}
+                        aria-label={m('code-block.a11y.header', { header })}
                     >
                         <Block
                             display="flex"
@@ -275,8 +288,20 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 size={ButtonSize.SMALL}
                                 aria-label={
                                     isCopied
-                                        ? `Code from ${header || 'code block'} copied to clipboard`
-                                        : `Copy code from ${header || 'code block'}`
+                                        ? header
+                                            ? m('code-block.a11y.copied-from', {
+                                                  header,
+                                              })
+                                            : m(
+                                                  'code-block.a11y.copied-from-unnamed'
+                                              )
+                                        : header
+                                          ? m('code-block.a11y.copy-from', {
+                                                header,
+                                            })
+                                          : m(
+                                                'code-block.a11y.copy-from-unnamed'
+                                            )
                                 }
                                 leadingIcon={
                                     isCopied ? (
@@ -323,8 +348,8 @@ const CodeBlock = forwardRef<HTMLDivElement, CodeBlockProps>(
                                 size={ButtonSize.SMALL}
                                 aria-label={
                                     isCopied
-                                        ? 'Code copied to clipboard'
-                                        : 'Copy code'
+                                        ? m('code-block.a11y.copied')
+                                        : m('code-block.a11y.copy')
                                 }
                                 leadingIcon={
                                     isCopied ? (
