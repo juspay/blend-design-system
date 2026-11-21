@@ -28,11 +28,12 @@ export const CHAT_INPUT_MESSAGES = {
     'chat-input.a11y.show-more-files.other': 'Show {count} more attached files',
     'chat-input.status.duplicate-header': 'Duplicate File',
     'chat-input.status.duplicate-single': 'File "{name}" is already attached',
-    // Only ever shown for two or more files (one file gets `duplicate-single`);
-    // the English "(s)" is kept so the English output does not change. The
-    // `.one` form exists because the catalog requires plural pairs.
+    // Real plural forms rather than "file(s)". Only ever shown for two or
+    // more files in practice (one file gets `duplicate-single`); `.one`
+    // exists because the catalog requires plural pairs. Direct callers of
+    // `notifyChatInputV2DuplicateFiles` keep the old English via its default.
     'chat-input.status.duplicates-not-added.one':
-        '{count} duplicate file(s) were not added',
+        '{count} duplicate file was not added',
     'chat-input.status.duplicates-not-added.other':
-        '{count} duplicate file(s) were not added',
+        '{count} duplicate files were not added',
 } as const
