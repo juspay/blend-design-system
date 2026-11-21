@@ -14,6 +14,8 @@ import { DIRECTORY_MESSAGES } from '../../lib/i18n/catalog/directory.messages'
 import { BREADCRUMB_MESSAGES } from '../../lib/i18n/catalog/breadcrumb.messages'
 import { TABS_MESSAGES } from '../../lib/i18n/catalog/tabs.messages'
 import { INPUT_MESSAGES } from '../../lib/i18n/catalog/input.messages'
+import { OVERLAY_MESSAGES } from '../../lib/i18n/catalog/overlay.messages'
+import { FEEDBACK_MESSAGES } from '../../lib/i18n/catalog/feedback.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -37,6 +39,13 @@ const FAMILIES = new Set([
     'breadcrumb',
     'tabs',
     'input',
+    'modal',
+    'popover',
+    'drawer',
+    'alert',
+    'snackbar',
+    'spinner',
+    'skeleton',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -55,6 +64,8 @@ const FRAGMENTS = {
     BREADCRUMB_MESSAGES,
     TABS_MESSAGES,
     INPUT_MESSAGES,
+    OVERLAY_MESSAGES,
+    FEEDBACK_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -146,6 +157,8 @@ describe('message catalog', () => {
     it('matches the published key list', () => {
         expect([...keys].sort()).toMatchInlineSnapshot(`
           [
+            "alert.a11y.action",
+            "alert.a11y.close",
             "breadcrumb.a11y.current-page",
             "breadcrumb.a11y.current-page-unnamed",
             "breadcrumb.a11y.navigate-to",
@@ -330,6 +343,11 @@ describe('message catalog', () => {
             "directory.a11y.navigation",
             "directory.a11y.section",
             "directory.a11y.submenu",
+            "drawer.action.clear",
+            "drawer.action.clear-all",
+            "drawer.action.done",
+            "drawer.placeholder.search",
+            "drawer.status.opened",
             "input.a11y.clear-search",
             "input.a11y.decrease",
             "input.a11y.decrease-value",
@@ -356,12 +374,16 @@ describe('message catalog', () => {
             "menu.a11y.search-with-placeholder",
             "menu.placeholder.search",
             "menu.placeholder.submenu-search",
+            "modal.a11y.close",
+            "modal.a11y.dialog",
             "navigation.a11y.main-content",
             "navigation.a11y.navigation-menu",
             "navigation.a11y.select-merchant",
             "navigation.a11y.select-tenant",
             "navigation.a11y.select-tenant-unnamed",
             "navigation.placeholder.select-merchant",
+            "popover.a11y.close",
+            "popover.a11y.dialog",
             "select.a11y.clear-selection",
             "select.a11y.clear-selection-for",
             "select.a11y.results-updated",
@@ -391,6 +413,11 @@ describe('message catalog', () => {
             "sidebar.placeholder.search-tenants",
             "sidebar.status.collapsed",
             "sidebar.status.expanded",
+            "skeleton.a11y.loading",
+            "skeleton.label.cancel",
+            "skeleton.label.confirm",
+            "snackbar.a11y.close",
+            "spinner.label.loading",
             "tabs.a11y.close",
             "tabs.a11y.close-tab",
             "tabs.a11y.navigate-to-tab",

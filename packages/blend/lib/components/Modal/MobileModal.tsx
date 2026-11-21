@@ -20,6 +20,8 @@ import { type SkeletonVariant } from '../Skeleton'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { ModalTokensType } from './modal.tokens'
 import ModalSkeleton from './ModalSkeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 
 type MobileModalProps = ModalProps & {
     useDrawerOnMobile?: boolean
@@ -38,6 +40,7 @@ const MobileModal: React.FC<MobileModalProps> = ({
     headerRightSlot,
     skeleton,
 }) => {
+    const { m } = useMessages(OVERLAY_MESSAGES)
     const modalTokens = useResponsiveTokens<ModalTokensType>('MODAL')
 
     const shouldShowSkeleton = skeleton?.show
@@ -139,7 +142,9 @@ const MobileModal: React.FC<MobileModalProps> = ({
                                                     />
                                                 }
                                                 onClick={onClose}
-                                                aria-label="Close modal"
+                                                aria-label={m(
+                                                    'modal.a11y.close'
+                                                )}
                                             />
                                         </DrawerClose>
                                     )}

@@ -8,6 +8,8 @@ import { PopoverProps, PopoverSize } from './types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { type SkeletonVariant } from '../Skeleton'
 import PopoverSkeleton from './PopoverSkeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 
 const PopoverHeader = ({
     heading,
@@ -28,6 +30,7 @@ const PopoverHeader = ({
     headingId?: string
     descriptionId?: string
 }) => {
+    const { m } = useMessages(OVERLAY_MESSAGES)
     const popoverTokens = useResponsiveTokens<PopoverTokenType>('POPOVER')
 
     if (showSkeleton) {
@@ -110,7 +113,7 @@ const PopoverHeader = ({
                                 />
                             }
                             onClick={onClose}
-                            aria-label="Close popover"
+                            aria-label={m('popover.a11y.close')}
                         ></Button>
                     </Block>
                 )}

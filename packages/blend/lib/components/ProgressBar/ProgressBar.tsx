@@ -14,6 +14,19 @@ import {
     calculateCircularStroke,
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useI18n } from '../../i18n/I18nContext'
+import { DEFAULT_LOCALE } from '../../i18n/constants'
+import { getNumberFormat } from '../../i18n/format/formatterCache'
+
+/**
+ * The visible percentage label. English keeps the original `${n}%`; other
+ * locales get their own percent format (`50 %` in French, `%50` in
+ * Turkish). The `data-id` beside it always stays the English form.
+ */
+const formatPercentLabel = (locale: string, rounded: number): string =>
+    locale === DEFAULT_LOCALE
+        ? `${rounded}%`
+        : getNumberFormat(locale, 'percent').format(rounded / 100)
 
 type ProgressBarInternalProps = {
     value: number
@@ -41,6 +54,7 @@ const CircularProgressBar: React.FC<
     min,
     max,
 }) => {
+    const { locale } = useI18n()
     const clampedValue = useMemo(
         () => clampValue(value, min, max),
         [value, min, max]
@@ -131,7 +145,7 @@ const CircularProgressBar: React.FC<
                         color={tokens.label.color}
                         aria-hidden="true"
                     >
-                        {Math.round(percentage)}%
+                        {formatPercentLabel(locale, Math.round(percentage))}
                     </Text>
                 </Block>
             )}
@@ -155,6 +169,7 @@ const LinearProgressBar: React.FC<
     min,
     max,
 }) => {
+    const { locale } = useI18n()
     const clampedValue = useMemo(
         () => clampValue(value, min, max),
         [value, min, max]
@@ -238,7 +253,7 @@ const LinearProgressBar: React.FC<
                         fontSize={tokens.label.fontSize}
                         aria-hidden="true"
                     >
-                        {Math.round(percentage)}%
+                        {formatPercentLabel(locale, Math.round(percentage))}
                     </Text>
                 </Block>
             )}

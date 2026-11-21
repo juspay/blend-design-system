@@ -14,6 +14,8 @@ import Text from '../Text/Text'
 import { forwardRef } from 'react'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
+import { useMessages } from '../../i18n/useMessages'
+import { FEEDBACK_MESSAGES } from '../../i18n/catalog/feedback.messages'
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(
     (
@@ -33,6 +35,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(FEEDBACK_MESSAGES)
         const alertTokens = useResponsiveTokens<AlertTokenType>('ALERT')
 
         const shouldShowCloseAtBottom =
@@ -178,7 +181,14 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                                 primaryAction.onClick
                                                             }
                                                             tabIndex={0}
-                                                            aria-label={`${primaryAction.label} action`}
+                                                            aria-label={m(
+                                                                'alert.a11y.action',
+                                                                {
+                                                                    label: String(
+                                                                        primaryAction.label
+                                                                    ),
+                                                                }
+                                                            )}
                                                             style={{
                                                                 border: 'none',
                                                                 background:
@@ -234,7 +244,14 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                                 secondaryAction.onClick
                                                             }
                                                             tabIndex={0}
-                                                            aria-label={`${secondaryAction.label} action`}
+                                                            aria-label={m(
+                                                                'alert.a11y.action',
+                                                                {
+                                                                    label: String(
+                                                                        secondaryAction.label
+                                                                    ),
+                                                                }
+                                                            )}
                                                             style={{
                                                                 border: 'none',
                                                                 background:
@@ -293,7 +310,9 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                                                         />
                                                         <AlertCloseButton
                                                             onClick={onClose}
-                                                            aria-label="Close"
+                                                            aria-label={m(
+                                                                'alert.a11y.close'
+                                                            )}
                                                             $color={
                                                                 alertTokens
                                                                     .button
@@ -330,7 +349,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(
                             <AlertCloseButton
                                 data-element="close-button"
                                 onClick={onClose}
-                                aria-label="Close"
+                                aria-label={m('alert.a11y.close')}
                                 $color={
                                     alertTokens.button.closeButton.color[
                                         variant
