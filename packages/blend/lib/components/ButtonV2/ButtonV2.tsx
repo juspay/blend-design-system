@@ -66,7 +66,9 @@ export function renderButtonContent({
     leftSlot,
     rightSlot,
     tokens,
-    loadingLabel = 'Loading, please wait', // i18n-ignore: English default for direct callers
+    // The catalog's English, so direct callers keep today's text without
+    // the string being written twice.
+    loadingLabel = BUTTON_MESSAGES['button.a11y.loading'],
 }: RenderButtonContentProps) {
     const iconMaxHeights = getIconMaxHeight(
         subType,
