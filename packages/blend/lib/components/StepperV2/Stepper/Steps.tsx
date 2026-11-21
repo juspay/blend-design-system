@@ -316,7 +316,7 @@ export const Steps = forwardRef<
                                 : 'pending'
                   }`,
                   {
-                      number: String(stepIndex + 1),
+                      current: String(stepIndex + 1),
                       total: String(stepsLength),
                       title: String(step.title),
                   }

@@ -118,7 +118,7 @@ const StepperComponent = forwardRef<HTMLDivElement, StepperV2Props>(
             if (!currentStep || currentStep.disabled) return
             return scheduleLiveRegionAnnouncement(
                 m('stepper.a11y.step-focused', {
-                    number: String(focusedStepIndex + 1),
+                    current: String(focusedStepIndex + 1),
                     title: String(currentStep.title),
                 })
             )
@@ -151,7 +151,7 @@ const StepperComponent = forwardRef<HTMLDivElement, StepperV2Props>(
                 }
                 role="group"
                 aria-label={m('stepper.a11y.progress', {
-                    number: String(derivedIndex + 1),
+                    current: String(derivedIndex + 1),
                     total: String(steps.length),
                 })}
                 aria-roledescription="stepper"
