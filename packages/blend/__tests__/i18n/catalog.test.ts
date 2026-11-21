@@ -128,6 +128,7 @@ describe('message catalog', () => {
             "date-range-picker.a11y.choose-date",
             "date-range-picker.a11y.choose-month",
             "date-range-picker.a11y.choose-year",
+            "date-range-picker.a11y.clear-selection",
             "date-range-picker.a11y.end-time",
             "date-range-picker.a11y.next-year",
             "date-range-picker.a11y.previous-year",
