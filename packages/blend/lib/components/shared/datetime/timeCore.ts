@@ -359,6 +359,13 @@ export const from12Hour = (hour: number, period: 'AM' | 'PM'): number => {
 export type FormatTimeOptions = {
     format?: TimeFormat
     showSeconds?: boolean
+    /**
+     * Display text for the 12-hour day period. Omitted, the English
+     * `AM`/`PM` is used. Display only: never pass these to anything that is
+     * parsed back (`parseTimeInput` and `from12Hour` take the English
+     * `'AM' | 'PM'` data values).
+     */
+    dayPeriods?: { am: string; pm: string }
 }
 
 /**
@@ -367,7 +374,7 @@ export type FormatTimeOptions = {
  */
 export const formatTimeValue = (
     time: TimeValue,
-    { format = '12h', showSeconds = false }: FormatTimeOptions = {}
+    { format = '12h', showSeconds = false, dayPeriods }: FormatTimeOptions = {}
 ): string => {
     const secondsPart = showSeconds ? `:${pad(time.seconds)}` : ''
 
@@ -376,21 +383,25 @@ export const formatTimeValue = (
     }
 
     const { hour, period } = to12Hour(time.hours)
-    return `${hour}:${pad(time.minutes)}${secondsPart} ${period}`
+    const periodText = dayPeriods
+        ? period === 'AM'
+            ? dayPeriods.am
+            : dayPeriods.pm
+        : period
+    return `${hour}:${pad(time.minutes)}${secondsPart} ${periodText}`
 }
 
 /** Placeholder matching what `formatTimeValue` would produce. */
 export const getTimePlaceholder = ({
     format = '12h',
     showSeconds = false,
+    dayPeriods,
 }: FormatTimeOptions = {}): string =>
     format === '24h'
         ? showSeconds
             ? 'HH:mm:ss'
             : 'HH:mm'
-        : showSeconds
-          ? 'hh:mm:ss AM'
-          : 'hh:mm AM'
+        : `${showSeconds ? 'hh:mm:ss' : 'hh:mm'} ${dayPeriods?.am ?? 'AM'}`
 
 // =============================================================================
 // BOUNDS

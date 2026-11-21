@@ -126,6 +126,11 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
         const timeToken =
             useResponsiveTokens<TimePickerTokensType>('TIME_PICKER')
         const { m } = useMessages(TIME_PICKER_MESSAGES)
+        // Display text only; matches the localized period column.
+        const dayPeriods = {
+            am: m('time-picker.label.am'),
+            pm: m('time-picker.label.pm'),
+        }
 
         const baseId = useId()
         const errorId = `${baseId}-error`
@@ -234,8 +239,9 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
               : undefined
 
         const displayText = displayValue
-            ? formatTimeValue(displayValue, { format, showSeconds })
-            : (placeholder ?? getTimePlaceholder({ format, showSeconds }))
+            ? formatTimeValue(displayValue, { format, showSeconds, dayPeriods })
+            : (placeholder ??
+              getTimePlaceholder({ format, showSeconds, dayPeriods }))
 
         const handleChange = useCallback(
             (next: TimeValue) => {

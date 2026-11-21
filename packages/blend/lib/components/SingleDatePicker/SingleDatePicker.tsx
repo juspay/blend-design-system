@@ -42,6 +42,7 @@ import type { TimePickerTokensType } from '../TimePicker/timePicker.tokens.types
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
 import { DATE_RANGE_PICKER_MESSAGES } from '../../i18n/catalog/dateRangePicker.messages'
+import { TIME_PICKER_MESSAGES } from '../../i18n/catalog/timePicker.messages'
 import { useMessages } from '../../i18n/useMessages'
 import { useTheme } from '../../context'
 import { FOUNDATION_THEME } from '../../tokens'
@@ -149,6 +150,12 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
         // from CALENDAR and TIME_PICKER; it resolves its strings from the
         // DateRangePicker fragment for the same reason.
         const { m, i18n } = useMessages(DATE_RANGE_PICKER_MESSAGES)
+        const { m: mt } = useMessages(TIME_PICKER_MESSAGES)
+        // Display text only, matching the localized period column.
+        const dayPeriods = {
+            am: mt('time-picker.label.am'),
+            pm: mt('time-picker.label.pm'),
+        }
         const { m: mc } = useMessages(COMMON_MESSAGES)
         const calendarToken = useResponsiveTokens<CalendarTokenType>('CALENDAR')
         const { foundationTokens } = useTheme()
@@ -263,6 +270,7 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                               {
                                   format: timeFormat,
                                   showSeconds,
+                                  dayPeriods,
                               }
                           )}`
                         : ''
@@ -638,6 +646,7 @@ const SingleDatePicker = forwardRef<HTMLDivElement, SingleDatePickerProps>(
                                         {formatTimeValue(draftTime, {
                                             format: timeFormat,
                                             showSeconds,
+                                            dayPeriods,
                                         })}
                                     </PrimitiveText>
                                     <TimeColumns
