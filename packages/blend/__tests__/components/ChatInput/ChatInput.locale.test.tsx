@@ -6,6 +6,8 @@ import CodeBlock from '../../../lib/components/CodeBlock/CodeBlock'
 import CodeEditorV2 from '../../../lib/components/CodeEditorV2/CodeEditorV2'
 import { notifyChatInputV2DuplicateFiles } from '../../../lib/components/InputsV2/ChatInputV2/utils'
 import * as snackbarV2 from '../../../lib/components/SnackbarV2'
+import { useMessages } from '../../../lib/i18n/useMessages'
+import { CHAT_INPUT_MESSAGES } from '../../../lib/i18n/catalog/chatInput.messages'
 
 vi.mock('@monaco-editor/react', () => import('../../mocks/monaco-editor-react'))
 
@@ -93,6 +95,20 @@ describe('ChatInput and code components locale', () => {
             description: '2 duplicate file(s) were not added',
         })
         spy.mockRestore()
+    })
+
+    it('uses real plural forms for the duplicate-files message', () => {
+        // The components resolve this through `mp`; English no longer
+        // carries "file(s)".
+        const Probe = ({ count }: { count: number }) => {
+            const { mp } = useMessages(CHAT_INPUT_MESSAGES)
+            return <p>{mp('chat-input.status.duplicates-not-added', count)}</p>
+        }
+        render(<Probe count={3} />)
+
+        expect(
+            screen.getByText('3 duplicate files were not added')
+        ).toBeInTheDocument()
     })
 
     it('translates the CodeBlock default header but keeps data-codeblock English', () => {
