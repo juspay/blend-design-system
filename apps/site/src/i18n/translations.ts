@@ -234,6 +234,22 @@ const FRENCH: BlendMessageOverrides = {
     'stat-card.a11y.help': 'Aide pour {title}',
     'stat-card.a11y.chart': 'Graphique {title}',
     'stat-card.a11y.chart-unnamed': 'Graphique de données',
+    'stat-card.a11y.change-increase': 'en hausse de {value} %',
+    'stat-card.a11y.change-decrease': 'en baisse de {value} %',
+    'stat-card.a11y.change-increase-v2': 'en hausse de {value}',
+    'stat-card.a11y.change-decrease-v2': 'en baisse de {value}',
+    'stat-card.a11y.chart-trend-increasing.one':
+        'Graphique {title} avec {count} point de données, tendance à la hausse',
+    'stat-card.a11y.chart-trend-increasing.other':
+        'Graphique {title} avec {count} points de données, tendance à la hausse',
+    'stat-card.a11y.chart-trend-decreasing.one':
+        'Graphique {title} avec {count} point de données, tendance à la baisse',
+    'stat-card.a11y.chart-trend-decreasing.other':
+        'Graphique {title} avec {count} points de données, tendance à la baisse',
+    'stat-card.a11y.chart-trend-stable.one':
+        'Graphique {title} avec {count} point de données, tendance stable',
+    'stat-card.a11y.chart-trend-stable.other':
+        'Graphique {title} avec {count} points de données, tendance stable',
 }
 
 const JAPANESE: BlendMessageOverrides = {
@@ -406,6 +422,16 @@ const JAPANESE: BlendMessageOverrides = {
     'stat-card.a11y.help': '{title}のヘルプ',
     'stat-card.a11y.chart': '{title}のグラフ',
     'stat-card.a11y.chart-unnamed': 'データのグラフ',
+    'stat-card.a11y.change-increase': '{value}%増加',
+    'stat-card.a11y.change-decrease': '{value}%減少',
+    'stat-card.a11y.change-increase-v2': '{value}増加',
+    'stat-card.a11y.change-decrease-v2': '{value}減少',
+    'stat-card.a11y.chart-trend-increasing.other':
+        '{title}のグラフ、データポイント{count}件、増加傾向',
+    'stat-card.a11y.chart-trend-decreasing.other':
+        '{title}のグラフ、データポイント{count}件、減少傾向',
+    'stat-card.a11y.chart-trend-stable.other':
+        '{title}のグラフ、データポイント{count}件、横ばい',
 }
 
 /**

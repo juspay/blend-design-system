@@ -180,6 +180,9 @@ export type RenderChartProps = {
      *  component, so it cannot read them itself; without these the axis falls
      *  back to theme-neutral foundation greys and draws white rules on dark. */
     chartTokens?: ChartTokensType
+    /** Provider locale for axis numbers and date names; renderChart cannot
+     *  read context itself. Omitted keeps the English output. */
+    locale?: string
 }
 
 export type CoreChartProps = {
