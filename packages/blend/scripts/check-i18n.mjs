@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Build gate: no NEW hardcoded user-visible English in `lib/components`.
+ * Build gate: no NEW hardcoded user-visible English, and no new direct
+ * `Intl` / host-locale / hardcoded-locale formatting, in `lib/components`.
  *
  *   node scripts/check-i18n.mjs            check against the baseline
  *   node scripts/check-i18n.mjs --update   rewrite the baseline
@@ -81,13 +82,18 @@ if (stale > 0) {
 
 if (added.length > 0) {
     console.error(
-        `\n✖ ${added.length} new hardcoded user-visible string(s) in lib/components:\n\n` +
+        `\n✖ ${added.length} new i18n finding(s) in lib/components (hardcoded strings or locale-unaware formatting):\n\n` +
             added.join('\n') +
-            '\n\nRoute them through the component’s message catalog ' +
-            '(useMessages, RFC 0008), or mark a deliberate non-UI literal ' +
-            'with an `// i18n-ignore` comment.\n'
+            '\n\nRoute text through the component’s message catalog ' +
+            '(useMessages, RFC 0008). For intl-constructor / host-locale / ' +
+            'locale-literal findings, format through the presets in ' +
+            'lib/i18n/format/formatterCache with the provider locale or ' +
+            'DEFAULT_LOCALE. Mark a deliberate exception with an ' +
+            '`// i18n-ignore` comment.\n'
     )
     process.exit(1)
 }
 
-console.log('✔ No new hardcoded user-visible strings.')
+console.log(
+    '✔ No new hardcoded strings or locale-unaware formatting in lib/components.'
+)

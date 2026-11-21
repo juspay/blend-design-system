@@ -17,6 +17,15 @@
  *   default         ({ searchPlaceholder = 'Search' }) => …
  *   text-content    announcement.textContent = 'Drawer opened'
  *
+ * And three formatting shapes, so the formatting rules are enforced too:
+ *
+ *   intl-constructor  new Intl.NumberFormat(…) -- components must go through
+ *                     the cached presets in `lib/i18n/format/formatterCache`
+ *   host-locale       value.toLocaleString() with no locale argument, which
+ *                     formats by the viewer's machine, not the provider
+ *   locale-literal    a hardcoded tag such as 'en-US' or 'en-IN' -- use
+ *                     DEFAULT_LOCALE or the provider locale
+ *
  * Not covered, by design: plain string returns from helpers and module
  * constants. Those need human judgement (many are data, ids or the English
  * defaults of pure helpers) and are left to the audit + review.
@@ -232,6 +241,40 @@ export const scanFiles = (files) => {
                 for (const text of branchTexts(node.right)) {
                     if (isProse(text)) report(node, 'text-content', text)
                 }
+            }
+
+            if (
+                ts.isNewExpression(node) &&
+                ts.isPropertyAccessExpression(node.expression) &&
+                ts.isIdentifier(node.expression.expression) &&
+                node.expression.expression.text === 'Intl'
+            ) {
+                report(
+                    node,
+                    'intl-constructor',
+                    `new Intl.${node.expression.name.text}`
+                )
+            }
+
+            if (
+                ts.isCallExpression(node) &&
+                ts.isPropertyAccessExpression(node.expression) &&
+                /^toLocale(Date|Time)?String$/.test(
+                    node.expression.name.text
+                ) &&
+                node.arguments.length === 0
+            ) {
+                report(node, 'host-locale', `${node.expression.name.text}()`)
+            }
+
+            if (
+                (ts.isStringLiteral(node) ||
+                    ts.isNoSubstitutionTemplateLiteral(node)) &&
+                /^[a-z]{2,3}-[A-Z]{2}$/.test(node.text) &&
+                !ts.isImportDeclaration(node.parent) &&
+                !ts.isLiteralTypeNode(node.parent)
+            ) {
+                report(node, 'locale-literal', node.text)
             }
 
             ts.forEachChild(node, visit)
