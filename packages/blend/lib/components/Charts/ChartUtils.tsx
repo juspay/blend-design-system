@@ -455,6 +455,26 @@ export function getSuggestedTickInterval(
 }
 
 /**
+ * Default cap on the number of x-axis labels rendered for category-style
+ * axes (line/bar/lineBar/area) before labels are thinned.
+ */
+export const DEFAULT_MAX_CATEGORY_LABELS = 12
+
+/**
+ * Computes the recharts `interval` (show every interval + 1-th label)
+ * needed to cap the number of rendered x-axis labels at `maxTicks`.
+ * Returns `undefined` when no thinning is needed, so recharts' native
+ * auto interval behavior is preserved.
+ */
+export function getCategoryLabelInterval(
+    dataLength: number,
+    maxTicks: number = DEFAULT_MAX_CATEGORY_LABELS
+): number | undefined {
+    if (maxTicks <= 0 || dataLength <= maxTicks) return undefined
+    return Math.max(0, Math.ceil(dataLength / maxTicks) - 1)
+}
+
+/**
  * Generates consistent, evenly-spaced tick values for datetime axes
  * This mimics Highcharts behavior where ticks are at regular intervals
  *
