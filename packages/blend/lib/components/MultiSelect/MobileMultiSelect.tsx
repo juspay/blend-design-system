@@ -56,6 +56,9 @@ import {
     getNextSelectionAfterToggle,
     getNextSelectionForScope,
 } from '../shared/multiSelectSelection'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 type MobileMultiSelectProps = MultiSelectProps
 
@@ -326,24 +329,19 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     placeholder,
     size = MultiSelectMenuSize.MEDIUM,
     enableSearch = true,
-    searchPlaceholder = 'Search options...',
+    searchPlaceholder: searchPlaceholderProp,
     searchText: controlledSearchText,
     onSearchChange,
     isSearchLoading,
     emptyStateText,
     enableSelectAll = false,
-    selectAllText = 'Select All',
+    selectAllText: selectAllTextProp,
     maxSelections,
     customTrigger,
     error,
     errorMessage,
     showActionButtons = true,
-    primaryAction = {
-        text: 'Apply',
-        onClick: () => {},
-        disabled: false,
-        loading: false,
-    },
+    primaryAction: primaryActionProp,
     secondaryAction,
     showItemDividers = false,
     showHeaderBorder = false,
@@ -361,7 +359,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     maxTriggerWidth,
     minTriggerWidth,
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     onOpenChange,
     ...rest
 }) => {
@@ -370,6 +368,23 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
     const isSmallScreen = breakPointLabel === 'sm'
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const searchPlaceholder = pick(
+        searchPlaceholderProp,
+        'select.placeholder.search'
+    )
+    const selectAllText = pick(selectAllTextProp, 'select.action.select-all')
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
+    const primaryAction = primaryActionProp ?? {
+        text: mc('common.action.apply'),
+        onClick: () => {},
+        disabled: false,
+        loading: false,
+    }
     const [drawerOpen, setDrawerOpen] = useState(false)
     const {
         value: searchText,
@@ -417,9 +432,12 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
             hasMatch,
             allowCustomValue,
             isSearchEnabled && !isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         items,
         searchText,
         allowCustomValue,
@@ -558,7 +576,8 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                 })}
                             >
                                 <DrawerTitle>
-                                    {label || 'Select Options'}
+                                    {label ||
+                                        m('select.label.select-options-v1')}
                                 </DrawerTitle>
                             </Block>
                         </DrawerHeader>
@@ -643,7 +662,7 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                     }
                                                     aria-label={
                                                         searchPlaceholder ||
-                                                        'Search options'
+                                                        m('select.a11y.search')
                                                     }
                                                 />
                                             </Block>
@@ -659,8 +678,12 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                             emptyStateText={
                                                 emptyStateText ||
                                                 (!hasSourceItems
-                                                    ? 'No items available'
-                                                    : 'No results found')
+                                                    ? mc(
+                                                          'common.empty.no-items'
+                                                      )
+                                                    : mc(
+                                                          'common.empty.no-results'
+                                                      ))
                                             }
                                         />
 
@@ -686,8 +709,12 @@ const MobileMultiSelect: React.FC<MobileMultiSelectProps> = ({
                                                 >
                                                     {emptyStateText ||
                                                         (!hasSourceItems
-                                                            ? 'No items available'
-                                                            : 'No results found')}
+                                                            ? mc(
+                                                                  'common.empty.no-items'
+                                                              )
+                                                            : mc(
+                                                                  'common.empty.no-results'
+                                                              ))}
                                                 </Text>
                                             </Block>
                                         ) : enableVirtualization &&

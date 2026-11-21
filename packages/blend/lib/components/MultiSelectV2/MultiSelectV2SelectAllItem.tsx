@@ -13,6 +13,12 @@ type MultiSelectV2SelectAllItemProps = {
     availableValues: string[]
     onSelectAll: (selectAll: boolean) => void
     selectAllText: string
+    /**
+     * Value for the `data-id` hooks only: the consumer's raw `selectAllText`,
+     * else the catalog's English default. Kept separate from the displayed
+     * (possibly translated) text so selectors stay stable across locales.
+     */
+    dataIdText?: string
     disabled?: boolean
     /**
      * Set false to render outside a Radix Menu.Root (e.g. an always-visible
@@ -27,6 +33,7 @@ const MultiSelectV2SelectAllItem = ({
     availableValues,
     onSelectAll,
     selectAllText,
+    dataIdText,
     disabled,
     asMenuItem = true,
 }: MultiSelectV2SelectAllItemProps) => {
@@ -110,7 +117,7 @@ const MultiSelectV2SelectAllItem = ({
             })}
         >
             <PrimitiveText
-                data-id={selectAllText || 'selectAll-checkbox'}
+                data-id={(dataIdText ?? selectAllText) || 'selectAll-checkbox'}
                 fontSize={multiSelectTokens.menu.item.optionsLabel.fontSize}
                 fontWeight={multiSelectTokens.menu.item.optionsLabel.fontWeight}
                 color={
@@ -133,7 +140,7 @@ const MultiSelectV2SelectAllItem = ({
                 <Checkbox
                     data-status={disabled ? 'disabled' : 'enabled'}
                     data-element="checkbox"
-                    data-id={selectAllText || 'checkbox'}
+                    data-id={(dataIdText ?? selectAllText) || 'checkbox'}
                     data-state={checkboxState ? 'selected' : 'not selected'}
                     checked={checkboxState}
                     disabled={disabled}
@@ -144,7 +151,7 @@ const MultiSelectV2SelectAllItem = ({
                 <Block
                     data-status={disabled ? 'disabled' : 'enabled'}
                     data-element="checkbox"
-                    data-id={selectAllText || 'checkbox'}
+                    data-id={(dataIdText ?? selectAllText) || 'checkbox'}
                     data-state={checkboxState ? 'selected' : 'not selected'}
                     display="flex"
                     alignItems="center"

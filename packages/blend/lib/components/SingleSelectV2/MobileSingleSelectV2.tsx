@@ -33,6 +33,9 @@ import SingleSelectV2MobileItem from './mobile/SingleSelectV2MobileItem'
 import { filterMobileMenuGroups } from './mobile/singleSelectV2.mobile.utils'
 import { useSelectSearchController } from '../Select/useSelectSearchController'
 import SelectSearchStatus from '../Select/SelectSearchStatus'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 type MobileSingleSelectV2Props = SingleSelectV2Props
 
@@ -66,9 +69,15 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
         variant: 'pulse',
     },
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     ...rest
 }) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const { disabled, name, ...buttonRest } = rest as {
         disabled?: boolean
         name?: string
@@ -79,7 +88,8 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
 
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
-    const searchPlaceholder = search?.placeholder ?? 'Search options...'
+    const searchPlaceholder =
+        search?.placeholder ?? m('select.placeholder.search')
 
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
@@ -192,9 +202,12 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
             hasMatch,
             allowCustomValue,
             isSearchEnabled && !search?.isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         items,
         searchText,
         allowCustomValue,
@@ -393,7 +406,7 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                     }
                                                     aria-label={
                                                         searchPlaceholder ||
-                                                        'Search options'
+                                                        m('select.a11y.search')
                                                     }
                                                 />
                                             </Block>
@@ -409,8 +422,12 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                             emptyStateText={
                                                 search?.emptyStateText ||
                                                 (!hasSourceItems
-                                                    ? 'No items available'
-                                                    : 'No results found')
+                                                    ? mc(
+                                                          'common.empty.no-items'
+                                                      )
+                                                    : mc(
+                                                          'common.empty.no-results'
+                                                      ))
                                             }
                                         />
 
@@ -456,8 +473,12 @@ const MobileSingleSelectV2: React.FC<MobileSingleSelectV2Props> = ({
                                                 >
                                                     {search?.emptyStateText ||
                                                         (!hasSourceItems
-                                                            ? 'No items available'
-                                                            : 'No results found')}
+                                                            ? mc(
+                                                                  'common.empty.no-items'
+                                                              )
+                                                            : mc(
+                                                                  'common.empty.no-results'
+                                                              ))}
                                                 </Text>
                                             </Block>
                                         ) : (

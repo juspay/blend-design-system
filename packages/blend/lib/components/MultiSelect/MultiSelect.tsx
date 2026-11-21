@@ -42,6 +42,8 @@ import {
 import styled from 'styled-components'
 import { setupAccessibility } from '../SingleSelect/utils'
 import { useDropdownInteractionLock } from '../../hooks'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -65,13 +67,13 @@ const MultiSelect = ({
     placeholder,
     size = MultiSelectMenuSize.MEDIUM,
     enableSearch = true,
-    searchPlaceholder = 'Search options...',
+    searchPlaceholder: searchPlaceholderProp,
     searchText,
     onSearchChange,
     isSearchLoading,
     emptyStateText,
     enableSelectAll = false,
-    selectAllText = 'Select All',
+    selectAllText: selectAllTextProp,
     maxSelections,
     customTrigger,
     useDrawerOnMobile = true,
@@ -107,7 +109,7 @@ const MultiSelect = ({
     maxTriggerWidth,
     minTriggerWidth,
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     showClearButton,
     onClearAllClick,
     onOpenChange,
@@ -115,6 +117,18 @@ const MultiSelect = ({
     menuFooter,
     ...rest
 }: MultiSelectProps) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const searchPlaceholder = pick(
+        searchPlaceholderProp,
+        'select.placeholder.search'
+    )
+    // The menus resolve the display text themselves; they get the raw prop so
+    // their select-all `data-id` can fall back to the English default rather
+    // than inheriting an already-translated string.
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const { onFocus, onBlur, ...buttonRest } = rest
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
@@ -263,7 +277,7 @@ const MultiSelect = ({
                 isSearchLoading={isSearchLoading}
                 emptyStateText={emptyStateText}
                 enableSelectAll={enableSelectAll}
-                selectAllText={selectAllText}
+                selectAllText={selectAllTextProp}
                 maxSelections={maxSelections}
                 customTrigger={customTrigger}
                 onBlur={callOnBlur}
@@ -364,7 +378,7 @@ const MultiSelect = ({
                             isSearchLoading={isSearchLoading}
                             emptyStateText={emptyStateText}
                             enableSelectAll={enableSelectAll}
-                            selectAllText={selectAllText}
+                            selectAllText={selectAllTextProp}
                             maxSelections={maxSelections}
                             onSelectAll={
                                 enableSelectAll
@@ -829,8 +843,10 @@ const MultiSelect = ({
                             onClick={handleClearSelection}
                             aria-label={
                                 label
-                                    ? `Clear selection for ${label}`
-                                    : 'Clear selection'
+                                    ? m('select.a11y.clear-selection-for', {
+                                          label,
+                                      })
+                                    : m('select.a11y.clear-selection')
                             }
                             border={
                                 multiSelectTokens.trigger.outline[variant][

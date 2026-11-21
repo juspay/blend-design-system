@@ -4,6 +4,8 @@ import type { MultiSelectV2TokensType } from './multiSelectV2.tokens'
 import type { MultiSelectV2GroupType } from './multiSelectV2.types'
 import MultiSelectV2MenuSearch from './MultiSelectV2MenuSearch'
 import MultiSelectV2SelectAllItem from './MultiSelectV2SelectAllItem'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 export type MultiSelectV2MenuHeaderProps = {
     tokens: MultiSelectV2TokensType
@@ -24,6 +26,8 @@ export type MultiSelectV2MenuHeaderProps = {
         filteredItems: MultiSelectV2GroupType[]
     ) => void
     selectAllText?: string
+    /** Stable `data-id` text for the select-all row (see `dataIdText`). */
+    selectAllDataId?: string
     disabled?: boolean
 }
 
@@ -43,8 +47,10 @@ const MultiSelectV2MenuHeader = ({
     filteredItems,
     onSelectAll,
     selectAllText,
+    selectAllDataId,
     disabled,
 }: MultiSelectV2MenuHeaderProps) => {
+    const { m } = useMessages(SELECT_MESSAGES)
     const header = tokens.menu?.header
     return (
         <Block
@@ -63,7 +69,7 @@ const MultiSelectV2MenuHeader = ({
                     value={searchValue}
                     onChange={onSearchChange}
                     placeholder={searchPlaceholder}
-                    ariaLabel={searchPlaceholder ?? 'Search options'}
+                    ariaLabel={searchPlaceholder ?? m('select.a11y.search')}
                     onArrowKeyToFirstOption={onSearchArrowKeyToFirst}
                 />
             )}
@@ -79,7 +85,13 @@ const MultiSelectV2MenuHeader = ({
                         onSelectAll={(selectAll) =>
                             onSelectAll?.(selectAll, filteredItems)
                         }
-                        selectAllText={selectAllText ?? 'Select All'}
+                        selectAllText={
+                            selectAllText ?? m('select.action.select-all')
+                        }
+                        dataIdText={
+                            selectAllDataId ??
+                            SELECT_MESSAGES['select.action.select-all']
+                        }
                         disabled={disabled}
                     />
                 </Block>

@@ -6,6 +6,7 @@ import { DATE_RANGE_PICKER_MESSAGES } from '../../lib/i18n/catalog/dateRangePick
 import { TIME_PICKER_MESSAGES } from '../../lib/i18n/catalog/timePicker.messages'
 import { UPLOAD_MESSAGES } from '../../lib/i18n/catalog/upload.messages'
 import { UPLOAD_V2_MESSAGES } from '../../lib/i18n/catalog/uploadV2.messages'
+import { SELECT_MESSAGES } from '../../lib/i18n/catalog/select.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -19,6 +20,7 @@ const FAMILIES = new Set([
     'upload-v2',
     'date-range-picker',
     'time-picker',
+    'select',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -29,6 +31,7 @@ const FRAGMENTS = {
     UPLOAD_V2_MESSAGES,
     DATE_RANGE_PICKER_MESSAGES,
     TIME_PICKER_MESSAGES,
+    SELECT_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -174,6 +177,20 @@ describe('message catalog', () => {
             "date-range-picker.preset.today",
             "date-range-picker.preset.tomorrow",
             "date-range-picker.preset.yesterday",
+            "select.a11y.clear-selection",
+            "select.a11y.clear-selection-for",
+            "select.a11y.results-updated",
+            "select.a11y.search",
+            "select.a11y.searching",
+            "select.action.clear-all",
+            "select.action.select-all",
+            "select.label.custom-value",
+            "select.label.custom-value-option",
+            "select.label.select-options",
+            "select.label.select-options-v1",
+            "select.placeholder.search",
+            "select.placeholder.search-short",
+            "select.status.searching",
             "time-picker.a11y.choose-time",
             "time-picker.a11y.trigger",
             "time-picker.label.am",

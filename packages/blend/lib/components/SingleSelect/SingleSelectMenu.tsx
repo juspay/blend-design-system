@@ -41,6 +41,9 @@ import SelectSearchStatus, {
     SELECT_SEARCH_STATUS_HEIGHT,
 } from '../Select/SelectSearchStatus'
 import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 type SingleSelectMenuProps = {
     items: SelectMenuGroupType[]
@@ -394,7 +397,7 @@ const SingleSelectMenu = ({
     maxMenuWidth,
     maxMenuHeight = 400,
     enableSearch,
-    searchPlaceholder = 'Search options...',
+    searchPlaceholder: searchPlaceholderProp,
     searchText: controlledSearchText,
     onSearchChange,
     isSearchLoading,
@@ -421,9 +424,19 @@ const SingleSelectMenu = ({
         variant: 'pulse',
     },
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     menuFooter,
 }: SingleSelectMenuProps) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const searchPlaceholder = pick(
+        searchPlaceholderProp,
+        'select.placeholder.search'
+    )
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const singleSelectTokens =
         useResponsiveTokens<SingleSelectTokensType>('SINGLE_SELECT')
     const { target: portalContainer } = useShadowRoot()
@@ -482,9 +495,12 @@ const SingleSelectMenu = ({
             hasMatch,
             allowCustomValue || false,
             isSearchEnabled && !isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         items,
         searchText,
         allowCustomValue,
@@ -749,7 +765,7 @@ const SingleSelectMenu = ({
                                         autoFocus
                                         aria-label={
                                             searchPlaceholder ||
-                                            'Search options'
+                                            m('select.a11y.search')
                                         }
                                     />
                                 </Block>
@@ -764,8 +780,8 @@ const SingleSelectMenu = ({
                                     emptyStateText={
                                         emptyStateText ||
                                         (!hasSourceItems
-                                            ? 'No items available'
-                                            : 'No results found')
+                                            ? mc('common.empty.no-items')
+                                            : mc('common.empty.no-results'))
                                     }
                                 />
                                 {isActiveSearchLoading &&
@@ -788,8 +804,12 @@ const SingleSelectMenu = ({
                                         >
                                             {emptyStateText ||
                                                 (!hasSourceItems
-                                                    ? 'No items available'
-                                                    : 'No results found')}
+                                                    ? mc(
+                                                          'common.empty.no-items'
+                                                      )
+                                                    : mc(
+                                                          'common.empty.no-results'
+                                                      ))}
                                         </Text>
                                     </Block>
                                 ) : enableVirtualization &&
