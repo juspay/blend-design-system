@@ -23,6 +23,8 @@ import {
     NameType,
 } from 'recharts/types/component/DefaultTooltipContent'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 interface AuxItem {
     label: string
@@ -897,6 +899,7 @@ const ScatterChartTooltip = ({
     formatter?: TooltipFormatter
     labelFormatter?: CustomTooltipProps['labelFormatter']
 }) => {
+    const { m } = useMessages(CHART_MESSAGES)
     if (!active || !payload || !payload.length) {
         return null
     }
@@ -953,7 +956,7 @@ const ScatterChartTooltip = ({
                         color={FOUNDATION_THEME.colors.gray[400]}
                     >
                         {formatTooltipHeader(
-                            point.name || 'Data Point',
+                            point.name || m('chart.label.data-point'),
                             xAxis,
                             labelFormatter
                         )}

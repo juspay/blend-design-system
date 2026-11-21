@@ -16,21 +16,25 @@ import ChartV2NoData from './ChartV2NoData'
 import { filterBlockedProps } from '../../utils/prop-helpers'
 import { mergeChartOptions } from './chartV2Options'
 import { ensureSankeyRegistered } from './chartV2.sankey'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
     (
-        {
-            highcharts = Highcharts,
-            skeleton,
-            noData = {
-                title: 'No data available',
-                subtitle: 'Data will appear here once available',
-                button: undefined,
-            },
-            ...props
-        },
+        { highcharts = Highcharts, skeleton, noData: noDataProp, ...props },
         ref
     ) => {
+        const { m } = useMessages(CHART_MESSAGES)
+        // Same semantics as the old destructuring default: only an omitted
+        // prop gets the built-in empty state.
+        const noData =
+            noDataProp === undefined
+                ? {
+                      title: m('chart.empty.no-data'),
+                      subtitle: m('chart.empty.no-data-subtitle'),
+                      button: undefined,
+                  }
+                : noDataProp
         const tokens = useResponsiveTokens<ChartV2TokensType>('CHARTSV2')
         const { options = {}, ...restProps } = props
 

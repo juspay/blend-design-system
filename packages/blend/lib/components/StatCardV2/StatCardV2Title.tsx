@@ -6,6 +6,8 @@ import Text from '../Text/Text'
 import { Tooltip } from '../Tooltip'
 import type { StatCardV2TitleProps } from './statcardV2.types'
 import type { StatCardV2TokensType } from './statcardV2.tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 type StatCardV2TitleTextProps = {
     title: string
@@ -100,6 +102,7 @@ const StatCardV2HelpIcon = ({
     tokens,
     isSmallScreen,
 }: StatCardV2HelpIconProps) => {
+    const { m } = useMessages(CHART_MESSAGES)
     const [forceTooltipOpen, setForceTooltipOpen] = useState(false)
     const helpIconRef = useRef<HTMLDivElement>(null)
 
@@ -124,7 +127,10 @@ const StatCardV2HelpIcon = ({
             justifyContent="center"
             role="button"
             tabIndex={0}
-            aria-label={helpIconText || `Help for ${title}`}
+            aria-label={
+                helpIconText ||
+                m('stat-card.a11y.help', { title: String(title) })
+            }
         >
             <CircleHelp
                 width={

@@ -21,6 +21,8 @@ import { formatNumber } from './ChartUtils'
 import { CustomTooltip } from './CustomTooltip'
 import { DEFAULT_COLORS } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 const FUNNEL_MARGIN = 10
 const FUNNEL_LABEL_OFFSET = 8
@@ -118,6 +120,7 @@ const FunnelLabel = ({
     stages: FunnelStage[]
     isSmallScreen: boolean
 }) => {
+    const { m } = useMessages(CHART_MESSAGES)
     const stage = index === undefined ? undefined : stages[index]
     if (!stage || !viewBox) return null
 
@@ -137,7 +140,10 @@ const FunnelLabel = ({
             fontWeight={FOUNDATION_THEME.font.weight[500]}
             dominantBaseline="central"
         >
-            {`${formatNumber(stage.value)} · ${formatFunnelPercentage(stage.dropOffPercentage)} drop-off`}
+            {m('chart.label.funnel-drop-off', {
+                value: formatNumber(stage.value),
+                percentage: formatFunnelPercentage(stage.dropOffPercentage),
+            })}
         </text>
     )
 }

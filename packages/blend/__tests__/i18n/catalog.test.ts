@@ -19,6 +19,7 @@ import { FEEDBACK_MESSAGES } from '../../lib/i18n/catalog/feedback.messages'
 import { CHAT_INPUT_MESSAGES } from '../../lib/i18n/catalog/chatInput.messages'
 import { CODE_MESSAGES } from '../../lib/i18n/catalog/code.messages'
 import { STEPPER_MESSAGES } from '../../lib/i18n/catalog/stepper.messages'
+import { CHART_MESSAGES } from '../../lib/i18n/catalog/chart.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -53,6 +54,8 @@ const FAMILIES = new Set([
     'code-block',
     'code-editor',
     'stepper',
+    'chart',
+    'stat-card',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -76,6 +79,7 @@ const FRAGMENTS = {
     CHAT_INPUT_MESSAGES,
     CODE_MESSAGES,
     STEPPER_MESSAGES,
+    CHART_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -177,6 +181,32 @@ describe('message catalog', () => {
             "breadcrumb.a11y.show-more.one",
             "breadcrumb.a11y.show-more.other",
             "breadcrumb.label.item-fallback",
+            "chart.a11y.collapse",
+            "chart.a11y.container",
+            "chart.a11y.enter-fullscreen",
+            "chart.a11y.exit-fullscreen",
+            "chart.a11y.expand",
+            "chart.a11y.header",
+            "chart.a11y.legend",
+            "chart.a11y.reset-legend",
+            "chart.a11y.toggle-series",
+            "chart.action.hide-legend",
+            "chart.action.show-legend",
+            "chart.empty.no-data",
+            "chart.empty.no-data-subtitle",
+            "chart.error.fullscreen",
+            "chart.error.invalid-sankey",
+            "chart.error.invalid-sankey-hint",
+            "chart.error.unsupported-type",
+            "chart.label.data-point",
+            "chart.label.funnel-drop-off",
+            "chart.label.more-series.one",
+            "chart.label.more-series.other",
+            "chart.label.sankey-flow",
+            "chart.label.sankey-from",
+            "chart.label.sankey-node",
+            "chart.label.sankey-to",
+            "chart.label.sankey-value",
             "chat-input.a11y.actions",
             "chat-input.a11y.attach-files",
             "chat-input.a11y.file-item",
@@ -472,6 +502,9 @@ describe('message catalog', () => {
             "skeleton.label.confirm",
             "snackbar.a11y.close",
             "spinner.label.loading",
+            "stat-card.a11y.chart",
+            "stat-card.a11y.chart-unnamed",
+            "stat-card.a11y.help",
             "stepper.a11y.additional-info",
             "stepper.a11y.collapse-substeps",
             "stepper.a11y.expand-substeps",

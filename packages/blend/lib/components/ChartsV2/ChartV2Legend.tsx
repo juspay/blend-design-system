@@ -6,6 +6,8 @@ import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import Text from '../Text/Text'
 import Seperator from '../common/Seperator'
 import { useChartLegend } from './useChartLegend'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 const ChartV2Legend = ({
     chartRef,
@@ -14,6 +16,7 @@ const ChartV2Legend = ({
     renderItem,
     layout = 'horizontal',
 }: ChartV2LegendProps) => {
+    const { m } = useMessages(CHART_MESSAGES)
     const { legends } = useResponsiveTokens<ChartV2TokensType>('CHARTSV2')
     const { chart, allItems, hoveredItem, setHoveredItem, handleClick } =
         useChartLegend(chartRef, chartRefs)
@@ -31,7 +34,7 @@ const ChartV2Legend = ({
             gap={legends.gap}
             alignItems={isVertical ? 'stretch' : 'center'}
             role="list"
-            aria-label="Chart legend"
+            aria-label={m('chart.a11y.legend')}
         >
             {allItems.map((item, i) => {
                 const key = item.name ?? ''
