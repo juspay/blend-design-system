@@ -595,6 +595,7 @@ const FRENCH: BlendMessageOverrides = {
     'group.a11y.tag-group': 'Groupe d’étiquettes',
     'group.a11y.single-select-group': 'Groupe de sélections simples',
     'group.a11y.multi-select-group': 'Groupe de sélections multiples',
+    'button.a11y.loading': 'Chargement, veuillez patienter',
 }
 
 const JAPANESE: BlendMessageOverrides = {
@@ -1078,6 +1079,7 @@ const JAPANESE: BlendMessageOverrides = {
     'group.a11y.tag-group': 'タググループ',
     'group.a11y.single-select-group': '単一選択グループ',
     'group.a11y.multi-select-group': '複数選択グループ',
+    'button.a11y.loading': '読み込み中です。お待ちください',
 }
 
 /**

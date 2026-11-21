@@ -29,6 +29,8 @@ import {
     getButtonLineHeight,
 } from './utils'
 import { getButtonAriaAttributes } from '../../utils/accessibility'
+import { useMessages } from '../../i18n/useMessages'
+import { BUTTON_MESSAGES } from '../../i18n/catalog/button.messages'
 
 type RenderButtonContentProps = {
     isLoading: boolean
@@ -39,6 +41,8 @@ type RenderButtonContentProps = {
     subType: ButtonV2SubType
     size: ButtonV2Size
     text?: string
+    /** Localized live-region text while loading; defaults to English. */
+    loadingLabel?: string
     leftSlot?: {
         slot: React.ReactNode
         maxHeight?: string | number
@@ -62,6 +66,9 @@ export function renderButtonContent({
     leftSlot,
     rightSlot,
     tokens,
+    // The catalog's English, so direct callers keep today's text without
+    // the string being written twice.
+    loadingLabel = BUTTON_MESSAGES['button.a11y.loading'],
 }: RenderButtonContentProps) {
     const iconMaxHeights = getIconMaxHeight(
         subType,
@@ -105,7 +112,7 @@ export function renderButtonContent({
                     }}
                 />
                 <VisuallyHidden aria-live="polite">
-                    Loading, please wait
+                    {loadingLabel}
                 </VisuallyHidden>
             </>
         )
@@ -189,6 +196,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(BUTTON_MESSAGES)
         const { showSkeleton = false, skeletonVariant = 'pulse' } = skeleton
         const buttonTokens = useResponsiveTokens<ButtonV2TokensType>('BUTTONV2')
         const isSkeleton = showSkeleton ?? false
@@ -278,6 +286,7 @@ const ButtonV2 = forwardRef<HTMLButtonElement, ButtonV2Props>(
                 onKeyDown={onKeyDown}
             >
                 {renderButtonContent({
+                    loadingLabel: m('button.a11y.loading'),
                     isLoading,
                     isSkeleton,
                     disabled,

@@ -21,6 +21,7 @@ import { CODE_MESSAGES } from '../../lib/i18n/catalog/code.messages'
 import { STEPPER_MESSAGES } from '../../lib/i18n/catalog/stepper.messages'
 import { CHART_MESSAGES } from '../../lib/i18n/catalog/chart.messages'
 import { DISPLAY_MESSAGES } from '../../lib/i18n/catalog/display.messages'
+import { BUTTON_MESSAGES } from '../../lib/i18n/catalog/button.messages'
 
 /** `{component}.{group}.{item}[.{modifier}][.{plural-category}]`, 3-5 segments. */
 const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*){2,4}$/
@@ -66,6 +67,7 @@ const FAMILIES = new Set([
     'tag',
     'timeline',
     'group',
+    'button',
 ])
 const PLACEHOLDER_SCAN = /\{([^}]*)\}/g
 const VALID_PLACEHOLDER = /^[A-Za-z0-9_]+$/
@@ -91,6 +93,7 @@ const FRAGMENTS = {
     STEPPER_MESSAGES,
     CHART_MESSAGES,
     DISPLAY_MESSAGES,
+    BUTTON_MESSAGES,
 }
 
 const entries = Object.entries(BLEND_MESSAGES)
@@ -211,6 +214,7 @@ describe('message catalog', () => {
             "breadcrumb.a11y.show-more.one",
             "breadcrumb.a11y.show-more.other",
             "breadcrumb.label.item-fallback",
+            "button.a11y.loading",
             "card.a11y.custom-content",
             "card.a11y.visual-content",
             "chart.a11y.collapse",
