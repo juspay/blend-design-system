@@ -28,6 +28,8 @@ import {
     useVisibleToastCount,
 } from '../../utils/snackbar-shared'
 import { SnackbarTokens } from './snackbar.tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { FEEDBACK_MESSAGES } from '../../i18n/catalog/feedback.messages'
 
 const SnackbarIcon: React.FC<SnackbarIconProps> = ({ variant }) => {
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
@@ -53,6 +55,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
     wrap = false,
     ...props
 }) => {
+    const { m } = useMessages(FEEDBACK_MESSAGES)
     const snackbarTokens = useResponsiveTokens<SnackbarTokens>('SNACKBAR')
     const baseId = useId()
     const role =
@@ -136,7 +139,7 @@ export const StyledToast: React.FC<CustomToastProps> = ({
                         backgroundColor="transparent"
                         contentCentered
                         onClick={onClose}
-                        aria-label="Close notification"
+                        aria-label={m('snackbar.a11y.close')}
                         data-element="close-button"
                     >
                         <X

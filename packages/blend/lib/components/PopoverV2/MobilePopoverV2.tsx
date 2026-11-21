@@ -22,6 +22,8 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { type SkeletonVariant } from '../Skeleton'
 import type { PopoverV2TokenType } from './popoverV2.token'
 import PopoverV2Skeleton from './PopoverV2Skeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../i18n/catalog/overlay.messages'
 
 type MobilePopoverV2Props = PopoverV2Props & {
     useDrawerOnMobile?: boolean
@@ -41,6 +43,7 @@ const MobilePopoverV2: React.FC<MobilePopoverV2Props> = ({
     skeleton,
     size = PopoverV2Size.MD,
 }) => {
+    const { m } = useMessages(OVERLAY_MESSAGES)
     const popoverTokens = useResponsiveTokens<PopoverV2TokenType>('POPOVERV2')
     const shouldShowSkeleton = skeleton?.show
     const showBodySkeleton = skeleton?.bodySkeletonProps?.show
@@ -77,7 +80,9 @@ const MobilePopoverV2: React.FC<MobilePopoverV2Props> = ({
                     contentDriven={true}
                     {...(headingId
                         ? { 'aria-labelledby': headingId }
-                        : { 'aria-label': heading || 'Popover dialog' })}
+                        : {
+                              'aria-label': heading || m('popover.a11y.dialog'),
+                          })}
                     aria-describedby={ariaDescribedBy}
                 >
                     {(heading || description || shouldShowSkeleton) && (
@@ -155,7 +160,9 @@ const MobilePopoverV2: React.FC<MobilePopoverV2Props> = ({
                                                         onClose()
                                                     }
                                                 }}
-                                                aria-label="Close popover"
+                                                aria-label={m(
+                                                    'popover.a11y.close'
+                                                )}
                                             />
                                         </DrawerClose>
                                     )}

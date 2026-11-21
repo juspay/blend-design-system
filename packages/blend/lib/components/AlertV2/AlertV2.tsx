@@ -19,6 +19,8 @@ import Seperator from '../common/Seperator'
 import { filterBlockedProps } from '../../utils/prop-helpers'
 import { CSSObject } from 'styled-components'
 import { addAccessibleAriaAttributes } from '../../utils/accessibility/icon-helpers'
+import { useMessages } from '../../i18n/useMessages'
+import { FEEDBACK_MESSAGES } from '../../i18n/catalog/feedback.messages'
 
 const SlotContainer = ({
     slot,
@@ -50,6 +52,7 @@ const ActionButton = ({
     alertV2Tokens: AlertV2TokensType
     variant: 'primaryAction' | 'secondaryAction'
 }) => {
+    const { m } = useMessages(FEEDBACK_MESSAGES)
     const actionTokens =
         alertV2Tokens.mainContainer.content.actionContainer[variant]
     const color = actionTokens.color[type]
@@ -60,7 +63,9 @@ const ActionButton = ({
             data-id={action.text}
             onClick={action.onClick}
             tabIndex={0}
-            aria-label={`${action.text} action`}
+            aria-label={m('alert.a11y.action', {
+                label: String(action.text),
+            })}
             border="none"
             backgroundColor="transparent"
             cursor="pointer"
@@ -214,6 +219,7 @@ const CloseButton = ({
     alertV2Tokens: AlertV2TokensType
     actionPlacementBottom?: boolean
 }) => {
+    const { m } = useMessages(FEEDBACK_MESSAGES)
     if (!closeButton?.show) return null
 
     const closeButtonColor = alertV2Tokens.mainContainer.closeButton.color[type]
@@ -230,7 +236,7 @@ const CloseButton = ({
             className="debug"
             color={closeButtonColor}
             contentCentered
-            aria-label="Close"
+            aria-label={m('alert.a11y.close')}
             _focusVisible={{
                 outline: `1px solid ${closeButtonColor}`,
             }}
