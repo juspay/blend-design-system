@@ -15,6 +15,8 @@ import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { Menu } from '../Menu'
 import { Button, ButtonSize, ButtonSubType, ButtonType } from '../Button'
 import { Skeleton } from '../Skeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 
 const StackedLegends: React.FC<{
     keys: string[]
@@ -39,6 +41,7 @@ const StackedLegends: React.FC<{
     isSmallScreen,
     stackedLegendsData,
 }) => {
+    const { m } = useMessages(CHART_MESSAGES)
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
 
     const legendTokens = chartTokens.content.legend
@@ -87,7 +90,9 @@ const StackedLegends: React.FC<{
                         <PrimitiveButton
                             type="button"
                             key={key}
-                            aria-label={`Toggle ${key} series visibility`}
+                            aria-label={m('chart.a11y.toggle-series', {
+                                name: key,
+                            })}
                             aria-pressed={selectedKeys.includes(key)}
                             onClick={() => handleLegendClick(key)}
                             onMouseEnter={() => handleLegendEnter(key)}
@@ -198,6 +203,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
     stackedLegendsData,
     showAllLegends = false,
 }) => {
+    const { m, mp } = useMessages(CHART_MESSAGES)
     const chartTokens = useResponsiveTokens<ChartTokensType>('CHARTS')
     const legendTokens = chartTokens.content.legend
 
@@ -415,7 +421,9 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                     key={dataKey}
                                     data-element="chart-legend"
                                     data-id={dataKey}
-                                    aria-label={`Toggle ${dataKey} series visibility`}
+                                    aria-label={m('chart.a11y.toggle-series', {
+                                        name: dataKey,
+                                    })}
                                     aria-pressed={selectedKeys.includes(
                                         dataKey
                                     )}
@@ -543,7 +551,10 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                     <Menu
                         trigger={
                             <Button
-                                text={`+ ${displayLegends.length - cuttOffIndex} more`}
+                                text={mp(
+                                    'chart.label.more-series',
+                                    displayLegends.length - cuttOffIndex
+                                )}
                                 buttonType={ButtonType.SECONDARY}
                                 size={ButtonSize.SMALL}
                                 subType={ButtonSubType.INLINE}
@@ -591,7 +602,12 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                             slot1: (
                                                 <PrimitiveButton
                                                     type="button"
-                                                    aria-label={`Toggle ${dataKey} series visibility`}
+                                                    aria-label={m(
+                                                        'chart.a11y.toggle-series',
+                                                        {
+                                                            name: dataKey,
+                                                        }
+                                                    )}
                                                     aria-pressed={isSelected}
                                                     onClick={(e) => {
                                                         e.stopPropagation()
@@ -729,7 +745,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                 selectedKeys.length !== displayLegends.length && (
                     <PrimitiveButton
                         type="button"
-                        aria-label="Reset all legend filters"
+                        aria-label={m('chart.a11y.reset-legend')}
                         onClick={() => setSelectedKeys([])}
                         style={{
                             fontSize: legendTokens.item.fontSize,

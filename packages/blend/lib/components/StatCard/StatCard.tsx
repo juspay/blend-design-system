@@ -49,6 +49,8 @@ import { toPixels } from '../../global-utils/GlobalUtils'
 import { getAxisFormatter, createDateTimeFormatter } from '../Charts/ChartUtils'
 import { AxisType } from '../Charts/types'
 import StatCardSkeleton from './StatCardSkeleton'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
 import {
     calculateTrend,
     getEffectiveChange,
@@ -140,6 +142,7 @@ const StatCardHelpIcon = ({
     statCardToken,
     isSmallScreen,
 }: StatCardHelpIconProps) => {
+    const { m } = useMessages(CHART_MESSAGES)
     const [forceTooltipOpen, setForceTooltipOpen] = useState<boolean>(false)
     const helpIconRef = useRef<HTMLDivElement>(null)
 
@@ -166,7 +169,10 @@ const StatCardHelpIcon = ({
             justifyContent="center"
             role="button"
             tabIndex={0}
-            aria-label={helpIconText || `Help for ${title}`}
+            aria-label={
+                helpIconText ||
+                m('stat-card.a11y.help', { title: String(title) })
+            }
         >
             <CircleHelp
                 width={parseInt(
