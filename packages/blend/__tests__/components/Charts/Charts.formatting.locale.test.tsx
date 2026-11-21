@@ -18,7 +18,7 @@ import {
 // 2024-09-03 (a Tuesday) 15:04 UTC
 const TS = Date.UTC(2024, 8, 3, 15, 4)
 
-describe('chart formatting by locale', () => {
+describe('chart formatting by locale (Accessibility)', () => {
     afterEach(() => {
         vi.restoreAllMocks()
     })
