@@ -118,3 +118,137 @@ figma.connect(
         ],
     }
 )
+
+figma.connect(
+    TextAreaV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-12599',
+    {
+        props: {
+            label: figma.string('label'),
+            sublabel: figma.string('sublabel'),
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            required: figma.boolean('mandatory'),
+            error: figma.enum('state', {
+                error: { show: true },
+                default: { show: false },
+                hover: { show: false },
+                focused: { show: false },
+                filled: { show: false },
+                disabled: { show: false },
+            }),
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
+            onChange: () => {},
+        },
+
+        example: ({
+            label,
+            sublabel,
+            hintText,
+            placeholder,
+            required,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <TextAreaV2
+                label={label}
+                sublabel={sublabel}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                value=""
+                onChange={onChange}
+            />
+        ),
+
+        imports: ["import { TextAreaV2 } from '@juspay/blend-design-system'"],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/InputsV2/TextAreaV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-textareav2--docs',
+            },
+        ],
+    }
+)
+
+figma.connect(
+    TextAreaV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-12668',
+    {
+        props: {
+            label: figma.string('label'),
+            sublabel: figma.string('sublabel'),
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            required: figma.boolean('mandatory'),
+            error: figma.enum('state', {
+                error: { show: true },
+                default: { show: false },
+                hover: { show: false },
+                focused: { show: false },
+                filled: { show: false },
+                disabled: { show: false },
+            }),
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
+            onChange: () => {},
+        },
+
+        example: ({
+            label,
+            sublabel,
+            hintText,
+            placeholder,
+            required,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <TextAreaV2
+                label={label}
+                sublabel={sublabel}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                value=""
+                onChange={onChange}
+            />
+        ),
+
+        imports: ["import { TextAreaV2 } from '@juspay/blend-design-system'"],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/InputsV2/TextAreaV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-textareav2--docs',
+            },
+        ],
+    }
+)

@@ -111,3 +111,66 @@ figma.connect(
         ],
     }
 )
+
+figma.connect(
+    SearchInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-12805',
+    {
+        props: {
+            placeholder: figma.string('placeholder'),
+            leftSlot: figma.boolean('showLeftSlot', {
+                true: figma.instance('leftSlot'),
+                false: undefined,
+            }),
+            rightSlot: figma.boolean('showRightSlot', {
+                true: figma.instance('rightSlot'),
+                false: undefined,
+            }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+            }),
+            disabled: figma.enum('state', {
+                error: false,
+                default: false,
+                hover: false,
+            }),
+            onChange: () => {},
+        },
+
+        example: ({
+            placeholder,
+            leftSlot,
+            rightSlot,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <SearchInputV2
+                placeholder={placeholder}
+                leftSlot={leftSlot}
+                rightSlot={rightSlot}
+                error={error}
+                disabled={disabled}
+                value=""
+                onChange={onChange}
+            />
+        ),
+
+        imports: [
+            "import { SearchInputV2 } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/InputsV2/SearchInputV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-searchinputv2--docs',
+            },
+        ],
+    }
+)

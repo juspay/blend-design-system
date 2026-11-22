@@ -1,6 +1,10 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { NumberInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+import {
+    NumberInputV2,
+    InputSizeV2,
+    NumberInputV2Direction,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR NUMBERINPUTV2 COMPONENT
@@ -121,6 +125,388 @@ figma.connect(
 
         imports: [
             "import { NumberInputV2, InputSizeV2 } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/InputsV2/NumberInputV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-numberinputv2--docs',
+            },
+        ],
+    }
+)
+
+figma.connect(
+    NumberInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-11885',
+    {
+        props: {
+            size: figma.enum('size', {
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
+            }),
+
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            label: figma.string('label'),
+            subtext: figma.string('sublabel'),
+            required: figma.boolean('mandatory'),
+
+            error: figma.enum('state', {
+                error: { show: true },
+                default: { show: false },
+                hover: { show: false },
+                focused: { show: false },
+                filled: { show: false },
+                disabled: { show: false },
+                focus: { show: false },
+            }),
+
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+                focus: false,
+            }),
+
+            onChange: () => {},
+        },
+
+        example: ({
+            size,
+            label,
+            subtext,
+            hintText,
+            placeholder,
+            required,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <NumberInputV2
+                size={size}
+                label={{ text: label, subtext: subtext }}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                value={null}
+                onChange={onChange}
+            />
+        ),
+
+        imports: [
+            "import { NumberInputV2, InputSizeV2 } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/InputsV2/NumberInputV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-numberinputv2--docs',
+            },
+        ],
+    }
+)
+
+figma.connect(
+    NumberInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-12116',
+    {
+        props: {
+            size: figma.enum('size', {
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
+            }),
+
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            label: figma.string('label'),
+            subtext: figma.string('sublabel'),
+            required: figma.boolean('mandatory'),
+
+            error: figma.enum('state', {
+                error: { show: true },
+                default: { show: false },
+                hover: { show: false },
+                focused: { show: false },
+                filled: { show: false },
+                disabled: { show: false },
+                focus: { show: false },
+            }),
+
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+                focus: false,
+            }),
+
+            onChange: () => {},
+        },
+
+        example: ({
+            size,
+            label,
+            subtext,
+            hintText,
+            placeholder,
+            required,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <NumberInputV2
+                size={size}
+                label={{ text: label, subtext: subtext }}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                value={null}
+                onChange={onChange}
+            />
+        ),
+
+        imports: [
+            "import { NumberInputV2, InputSizeV2 } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/InputsV2/NumberInputV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-numberinputv2--docs',
+            },
+        ],
+    }
+)
+
+figma.connect(
+    NumberInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-11103',
+    {
+        props: {
+            size: figma.enum('size', {
+                sm: InputSizeV2.SM,
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
+            }),
+
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            label: figma.string('label'),
+            subtext: figma.string('sublabel'),
+            required: figma.boolean('mandatory'),
+
+            error: figma.enum('state', {
+                error: { show: true },
+                default: { show: false },
+                hover: { show: false },
+                focused: { show: false },
+                filled: { show: false },
+                disabled: { show: false },
+                focus: { show: false },
+            }),
+
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+                focus: false,
+            }),
+
+            unit: figma.string('unitText'),
+
+            unitDirection: figma.enum('unitPosition', {
+                left: NumberInputV2Direction.LEFT,
+                right: NumberInputV2Direction.RIGHT,
+            }),
+
+            slot: figma.boolean('showLeftSlot', {
+                true: {
+                    left: figma.instance('leftSlot'),
+                    right: figma.boolean('showRightSlot', {
+                        true: figma.instance('rightSlot'),
+                        false: undefined,
+                    }),
+                },
+                false: {
+                    left: undefined,
+                    right: figma.boolean('showRightSlot', {
+                        true: figma.instance('rightSlot'),
+                        false: undefined,
+                    }),
+                },
+            }),
+
+            onChange: () => {},
+        },
+
+        example: ({
+            size,
+            label,
+            subtext,
+            hintText,
+            placeholder,
+            required,
+            error,
+            disabled,
+            unit,
+            unitDirection,
+            slot,
+            onChange,
+        }) => (
+            <NumberInputV2
+                size={size}
+                label={{ text: label, subtext: subtext }}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                unit={unit}
+                unitDirection={unitDirection}
+                slot={slot}
+                value={null}
+                onChange={onChange}
+            />
+        ),
+
+        imports: [
+            "import { NumberInputV2, InputSizeV2, NumberInputV2Direction } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/InputsV2/NumberInputV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-numberinputv2--docs',
+            },
+        ],
+    }
+)
+
+figma.connect(
+    NumberInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-11492',
+    {
+        props: {
+            size: figma.enum('size', {
+                sm: InputSizeV2.SM,
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
+            }),
+
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            label: figma.string('label'),
+            subtext: figma.string('sublabel'),
+            required: figma.boolean('mandatory'),
+
+            error: figma.enum('state', {
+                error: { show: true },
+                default: { show: false },
+                hover: { show: false },
+                focused: { show: false },
+                filled: { show: false },
+                disabled: { show: false },
+                focus: { show: false },
+            }),
+
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+                focus: false,
+            }),
+
+            unit: figma.string('unitText'),
+
+            unitDirection: figma.enum('unitPosition', {
+                left: NumberInputV2Direction.LEFT,
+                right: NumberInputV2Direction.RIGHT,
+            }),
+
+            slot: figma.boolean('showLeftSlot', {
+                true: {
+                    left: figma.instance('leftSlot'),
+                    right: figma.boolean('showRightSlot', {
+                        true: figma.instance('rightSlot'),
+                        false: undefined,
+                    }),
+                },
+                false: {
+                    left: undefined,
+                    right: figma.boolean('showRightSlot', {
+                        true: figma.instance('rightSlot'),
+                        false: undefined,
+                    }),
+                },
+            }),
+
+            onChange: () => {},
+        },
+
+        example: ({
+            size,
+            label,
+            subtext,
+            hintText,
+            placeholder,
+            required,
+            error,
+            disabled,
+            unit,
+            unitDirection,
+            slot,
+            onChange,
+        }) => (
+            <NumberInputV2
+                size={size}
+                label={{ text: label, subtext: subtext }}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                unit={unit}
+                unitDirection={unitDirection}
+                slot={slot}
+                value={null}
+                onChange={onChange}
+            />
+        ),
+
+        imports: [
+            "import { NumberInputV2, InputSizeV2, NumberInputV2Direction } from '@juspay/blend-design-system'",
         ],
 
         links: [

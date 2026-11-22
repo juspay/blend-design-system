@@ -1,6 +1,10 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system'
+import {
+    TextInputV2,
+    InputSizeV2,
+    TextInputV2DropdownPosition,
+} from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR TEXTINPUTV2 COMPONENT
@@ -44,6 +48,195 @@ import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system'
  *    - dropdown: Inline SingleSelectV2 embed configuration
  *    - maxLength, name, id and other standard HTML input attributes
  */
+
+figma.connect(
+    TextInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-10209',
+    {
+        props: {
+            size: figma.enum('size', {
+                sm: InputSizeV2.SM,
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
+            }),
+            label: figma.string('label'),
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            subLabel: figma.string('sublabel'),
+            required: figma.boolean('mandatory'),
+            dropdown: figma.enum('dropdownPosition', {
+                left: {
+                    position: TextInputV2DropdownPosition.LEFT,
+                    placeholder: 'Select country',
+                    items: [
+                        {
+                            items: [
+                                { label: 'US', value: 'US' },
+                                { label: 'IN', value: 'IN' },
+                            ],
+                        },
+                    ],
+                    selected: 'US',
+                    onSelect: () => {},
+                },
+                right: {
+                    position: TextInputV2DropdownPosition.RIGHT,
+                    placeholder: 'Select country',
+                    items: [
+                        {
+                            items: [
+                                { label: 'US', value: 'US' },
+                                { label: 'IN', value: 'IN' },
+                            ],
+                        },
+                    ],
+                    selected: 'US',
+                    onSelect: () => {},
+                },
+            }),
+            error: figma.enum('state', {
+                error: { show: true },
+                default: undefined,
+                hover: undefined,
+                focused: undefined,
+                filled: undefined,
+                disabled: undefined,
+            }),
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
+            onChange: () => {},
+        },
+        example: ({
+            size,
+            label,
+            subLabel,
+            hintText,
+            placeholder,
+            required,
+            dropdown,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <TextInputV2
+                size={size}
+                label={label}
+                subLabel={subLabel}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                dropdown={dropdown}
+                value=""
+                onChange={onChange}
+            />
+        ),
+        imports: [
+            "import { TextInputV2, InputSizeV2, TextInputV2DropdownPosition } from '@juspay/blend-design-system'",
+        ],
+    }
+)
+
+figma.connect(
+    TextInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-10650',
+    {
+        props: {
+            size: figma.enum('size', {
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
+            }),
+            label: figma.string('label'),
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            subLabel: figma.string('sublabel'),
+            required: figma.boolean('mandatory'),
+            dropdown: figma.enum('dropdownPosition', {
+                left: {
+                    position: TextInputV2DropdownPosition.LEFT,
+                    placeholder: 'Select country',
+                    items: [
+                        {
+                            items: [
+                                { label: 'US', value: 'US' },
+                                { label: 'IN', value: 'IN' },
+                            ],
+                        },
+                    ],
+                    selected: 'US',
+                    onSelect: () => {},
+                },
+                right: {
+                    position: TextInputV2DropdownPosition.RIGHT,
+                    placeholder: 'Select country',
+                    items: [
+                        {
+                            items: [
+                                { label: 'US', value: 'US' },
+                                { label: 'IN', value: 'IN' },
+                            ],
+                        },
+                    ],
+                    selected: 'US',
+                    onSelect: () => {},
+                },
+            }),
+            error: figma.enum('state', {
+                error: { show: true },
+                default: undefined,
+                hover: undefined,
+                focused: undefined,
+                filled: undefined,
+                disabled: undefined,
+            }),
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
+            onChange: () => {},
+        },
+        example: ({
+            size,
+            label,
+            subLabel,
+            hintText,
+            placeholder,
+            required,
+            dropdown,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <TextInputV2
+                size={size}
+                label={label}
+                subLabel={subLabel}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                dropdown={dropdown}
+                value=""
+                onChange={onChange}
+            />
+        ),
+        imports: [
+            "import { TextInputV2, InputSizeV2, TextInputV2DropdownPosition } from '@juspay/blend-design-system'",
+        ],
+    }
+)
 
 figma.connect(
     TextInputV2,
@@ -145,6 +338,155 @@ figma.connect(
                 name: 'Storybook',
                 url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-textinputv2--docs',
             },
+        ],
+    }
+)
+
+figma.connect(
+    TextInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-9873',
+    {
+        props: {
+            size: figma.enum('size', {
+                sm: InputSizeV2.SM,
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
+            }),
+            label: figma.string('label'),
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            subLabel: figma.string('sublabel'),
+            required: figma.boolean('mandatory'),
+            leftSlot: figma.boolean('showLeftSlot', {
+                true: { slot: figma.instance('leftSlot') },
+                false: undefined,
+            }),
+            rightSlot: figma.boolean('showRightSlot', {
+                true: { slot: figma.instance('rightSlot') },
+                false: undefined,
+            }),
+            error: figma.enum('state', {
+                error: { show: true },
+                default: undefined,
+                hover: undefined,
+                focused: undefined,
+                filled: undefined,
+                disabled: undefined,
+            }),
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
+            onChange: () => {},
+        },
+        example: ({
+            size,
+            label,
+            subLabel,
+            hintText,
+            placeholder,
+            required,
+            leftSlot,
+            rightSlot,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <TextInputV2
+                size={size}
+                label={label}
+                subLabel={subLabel}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                leftSlot={leftSlot}
+                rightSlot={rightSlot}
+                value=""
+                onChange={onChange}
+            />
+        ),
+        imports: [
+            "import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system'",
+        ],
+    }
+)
+
+figma.connect(
+    TextInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-10044',
+    {
+        props: {
+            size: figma.enum('size', {
+                md: InputSizeV2.MD,
+                lg: InputSizeV2.LG,
+            }),
+            label: figma.string('label'),
+            hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
+            subLabel: figma.string('sublabel'),
+            required: figma.boolean('mandatory'),
+            leftSlot: figma.boolean('showLeftSlot', {
+                true: { slot: figma.instance('leftSlot') },
+                false: undefined,
+            }),
+            rightSlot: figma.boolean('showRightSlot', {
+                true: { slot: figma.instance('rightSlot') },
+                false: undefined,
+            }),
+            error: figma.enum('state', {
+                error: { show: true },
+                default: undefined,
+                hover: undefined,
+                focused: undefined,
+                filled: undefined,
+                disabled: undefined,
+            }),
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
+            onChange: () => {},
+        },
+        example: ({
+            size,
+            label,
+            subLabel,
+            hintText,
+            placeholder,
+            required,
+            leftSlot,
+            rightSlot,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <TextInputV2
+                size={size}
+                label={label}
+                subLabel={subLabel}
+                hintText={hintText}
+                placeholder={placeholder}
+                required={required}
+                disabled={disabled}
+                error={error}
+                leftSlot={leftSlot}
+                rightSlot={rightSlot}
+                value=""
+                onChange={onChange}
+            />
+        ),
+        imports: [
+            "import { TextInputV2, InputSizeV2 } from '@juspay/blend-design-system'",
         ],
     }
 )

@@ -122,3 +122,72 @@ figma.connect(
         ],
     }
 )
+
+figma.connect(
+    OTPInputV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-12515',
+    {
+        props: {
+            label: figma.string('label'),
+            sublabel: figma.string('sublabel'),
+            hintText: figma.string('hintText'),
+            required: figma.boolean('mandatory'),
+            length: figma.enum('digits', {
+                '4': 4,
+            }),
+            error: figma.enum('state', {
+                error: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                disabled: false,
+            }),
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
+            onChange: () => {},
+        },
+
+        example: ({
+            label,
+            sublabel,
+            hintText,
+            required,
+            length,
+            error,
+            disabled,
+            onChange,
+        }) => (
+            <OTPInputV2
+                label={label}
+                sublabel={sublabel}
+                hintText={hintText}
+                required={required}
+                length={length}
+                error={error}
+                disabled={disabled}
+                value=""
+                onChange={onChange}
+            />
+        ),
+
+        imports: ["import { OTPInputV2 } from '@juspay/blend-design-system'"],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/InputsV2/OTPInputV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-otpinputv2--docs',
+            },
+        ],
+    }
+)
