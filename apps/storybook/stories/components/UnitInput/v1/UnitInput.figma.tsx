@@ -1,3 +1,4 @@
+import React from 'react'
 import { figma } from '@figma/code-connect'
 import {
     UnitInput,
@@ -6,52 +7,55 @@ import {
 } from '@juspay/blend-design-system'
 
 /**
- * FIGMA CODE CONNECT FOR UNITINPUT COMPONENT
+ * FIGMA CODE CONNECT FOR UNITINPUT COMPONENT (V1)
  *
  * PROP MAPPING DOCUMENTATION
  *
- * Figma vs Code Property Mappings:
+ * Figma vs Code Property Differences:
  *
- * 1. DIRECT MAPPINGS:
- *    - size → size
+ * 1. RENAMED MAPPINGS:
+ *    - mandatory (Figma) → required (Code)
+ *    - unitText (Figma) → unit (Code)
+ *    - unitPosition (Figma) → unitPosition (Code, enum typed)
+ *
+ * 2. DIRECT MAPPINGS (same in both):
+ *    - size → size (Figma sm/md/lg → UnitInputSize.SMALL/MEDIUM/LARGE)
  *    - label → label
  *    - sublabel → sublabel
  *    - hintText → hintText
- *    - rightSlot → rightSlot
- *    - leftSlot → leftSlot
- *    - unitPosition → unitPosition
+ *    - placeholder → placeholder
  *
- * 2. SPECIAL MAPPINGS:
- *    - placeholder (Figma) → value (Code) - Placeholder text in Figma maps to value prop
- *    - state=error (Figma) → error=true (Code) - Error state in Figma maps to error prop
- *    - mandatory (Figma) → required (Code) - Mandatory in Figma maps to required prop
- *    - unitText (Figma) → unit (Code) - Unit text in Figma maps to unit prop
+ * 3. SPECIAL MAPPINGS:
+ *    - state (Figma) → error + disabled (Code)
+ *      - state=error → error=true
+ *      - state=disabled → disabled=true
+ *      - state=default/hover/focus → handled automatically by CSS interactions
+ *    - showLeftSlot/leftSlot (Figma) → leftSlot (Code, direct ReactNode)
+ *    - showRightSlot/rightSlot (Figma) → rightSlot (Code, direct ReactNode)
  *
- * 3. FIGMA-ONLY PROPERTIES (not needed in code):
- *    - state - Other interaction states (hover, focus, etc.) are handled automatically
- *    - showRightSlot - Right slot is shown automatically when rightSlot prop is provided
- *    - showLeftSlot - Left slot is shown automatically when leftSlot prop is provided
- *    - showInfo - Not available in current implementation
- *    - showLabel - Label is shown automatically when label prop is provided
- *    - showSublabel - Sublabel is shown automatically when sublabel prop is provided
- *    - showHint - Hint is shown automatically when hintText prop is provided
+ * 4. FIGMA-ONLY PROPERTIES (not needed in code):
+ *    - state: hover/focus are interaction states, not code props
+ *    - showInfo: Help icon is shown automatically when helpIconHintText is provided
+ *    - showLabel: Label is shown automatically when label prop is provided
+ *    - showSubLabel: Sublabel is shown automatically when sublabel prop is provided
+ *    - showHint: Hint is shown automatically when hintText prop is provided
  *
- * 4. CODE-ONLY PROPERTIES (not in Figma):
- *    - onChange: Required callback function for handling input changes
- *    - step: Step value for number increment/decrement
- *    - errorMessage: Error message to display
- *    - helpIconHintText: Tooltip text for help icon
- *    - All standard HTML input attributes (except size, style, className)
+ * 5. CODE-ONLY PROPERTIES (not in Figma):
+ *    - value: Controlled numeric value (number | undefined), managed by parent state
+ *    - onChange: Required callback for handling input changes
+ *    - step: Numeric stepping increment
+ *    - helpIconHintText: Tooltip text for the help icon
+ *    - onFocus/onBlur: Focus/blur callbacks
  */
 
-// Base connection
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-11103',
     {
         props: {
-            // Size mapping
+            // Size mapping: Figma sm/md/lg → UnitInputSize.SMALL/MEDIUM/LARGE
             size: figma.enum('size', {
+                sm: UnitInputSize.SMALL,
                 md: UnitInputSize.MEDIUM,
                 lg: UnitInputSize.LARGE,
             }),
@@ -60,20 +64,21 @@ figma.connect(
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
             hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
 
-            // Placeholder maps to value in code (converted to number)
-            value: figma.string('placeholder'),
+            // Renamed mapping: mandatory (Figma) → required (Code)
+            required: figma.boolean('mandatory'),
 
-            // Unit text mapping
+            // Renamed mapping: unitText (Figma) → unit (Code)
             unit: figma.string('unitText'),
 
-            // Unit position mapping
+            // Direct mapping: unitPosition (Figma) → UnitPosition (Code)
             unitPosition: figma.enum('unitPosition', {
                 left: UnitPosition.LEFT,
                 right: UnitPosition.RIGHT,
             }),
 
-            // Slot mappings
+            // Slot mappings: Figma instances → direct ReactNode props
             leftSlot: figma.boolean('showLeftSlot', {
                 true: figma.instance('leftSlot'),
                 false: undefined,
@@ -84,25 +89,27 @@ figma.connect(
                 false: undefined,
             }),
 
-            // State to error mapping
+            // Special mapping: state=error → error=true (V1 has boolean error)
             error: figma.enum('state', {
                 error: true,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
+                focus: false,
+                focused: false,
+                filled: false,
                 disabled: false,
             }),
 
-            // Mandatory to required mapping
-            required: figma.boolean('mandatory'),
-
-            // Note: The following Figma props are not mapped:
-            // - state: Other states handled automatically by component interactions
-            // - showInfo: Not available in current implementation
-            // - showLabel: Determined by presence of label
-            // - showSublabel: Determined by presence of sublabel
-            // - showHint: Determined by presence of hintText
+            // Special mapping: state=disabled → disabled=true
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focus: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
         },
 
         example: ({
@@ -110,26 +117,29 @@ figma.connect(
             label,
             sublabel,
             hintText,
-            value,
+            placeholder,
+            required,
             unit,
             unitPosition,
             leftSlot,
             rightSlot,
             error,
-            required,
+            disabled,
         }) => (
             <UnitInput
                 size={size}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
-                value={Number(value) || 0}
+                placeholder={placeholder}
+                required={required}
                 unit={unit}
                 unitPosition={unitPosition}
                 leftSlot={leftSlot}
                 rightSlot={rightSlot}
                 error={error}
-                required={required}
+                disabled={disabled}
+                value={0}
                 onChange={() => {}}
             />
         ),
@@ -151,579 +161,107 @@ figma.connect(
     }
 )
 
-// Variant: With label
 figma.connect(
     UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-11492',
     {
-        variant: { showLabel: true },
         props: {
+            // Size mapping: mobile has only md/lg (no sm)
             size: figma.enum('size', {
                 md: UnitInputSize.MEDIUM,
                 lg: UnitInputSize.LARGE,
             }),
+
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
             hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
+            placeholder: figma.string('placeholder'),
+
+            required: figma.boolean('mandatory'),
+
             unit: figma.string('unitText'),
+
             unitPosition: figma.enum('unitPosition', {
                 left: UnitPosition.LEFT,
                 right: UnitPosition.RIGHT,
             }),
+
             leftSlot: figma.boolean('showLeftSlot', {
                 true: figma.instance('leftSlot'),
                 false: undefined,
             }),
+
             rightSlot: figma.boolean('showRightSlot', {
                 true: figma.instance('rightSlot'),
                 false: undefined,
             }),
+
             error: figma.enum('state', {
                 error: true,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
+                focus: false,
+                focused: false,
+                filled: false,
                 disabled: false,
             }),
-            required: figma.boolean('mandatory'),
+
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focus: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
         },
+
         example: ({
             size,
             label,
             sublabel,
             hintText,
-            value,
+            placeholder,
+            required,
             unit,
             unitPosition,
             leftSlot,
             rightSlot,
             error,
-            required,
+            disabled,
         }) => (
             <UnitInput
                 size={size}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
-                value={Number(value) || 0}
+                placeholder={placeholder}
+                required={required}
                 unit={unit}
                 unitPosition={unitPosition}
                 leftSlot={leftSlot}
                 rightSlot={rightSlot}
                 error={error}
-                required={required}
+                disabled={disabled}
+                value={0}
                 onChange={() => {}}
             />
         ),
+
+        imports: [
+            "import { UnitInput, UnitInputSize, UnitPosition } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/Inputs/UnitInput',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-unitinput--docs',
+            },
+        ],
     }
 )
-
-// Variant: Without label
-figma.connect(
-    UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { showLabel: false },
-        props: {
-            size: figma.enum('size', {
-                md: UnitInputSize.MEDIUM,
-                lg: UnitInputSize.LARGE,
-            }),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            unit: figma.string('unitText'),
-            unitPosition: figma.enum('unitPosition', {
-                left: UnitPosition.LEFT,
-                right: UnitPosition.RIGHT,
-            }),
-            leftSlot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
-            }),
-            rightSlot: figma.boolean('showRightSlot', {
-                true: figma.instance('rightSlot'),
-                false: undefined,
-            }),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-            required: figma.boolean('mandatory'),
-        },
-        example: ({
-            size,
-            hintText,
-            value,
-            unit,
-            unitPosition,
-            leftSlot,
-            rightSlot,
-            error,
-            required,
-        }) => (
-            <UnitInput
-                size={size}
-                hintText={hintText}
-                value={Number(value) || 0}
-                unit={unit}
-                unitPosition={unitPosition}
-                leftSlot={leftSlot}
-                rightSlot={rightSlot}
-                error={error}
-                required={required}
-                onChange={() => {}}
-            />
-        ),
-    }
-)
-
-// Variant: Unit on left
-figma.connect(
-    UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { unitPosition: 'left' },
-        props: {
-            size: figma.enum('size', {
-                md: UnitInputSize.MEDIUM,
-                lg: UnitInputSize.LARGE,
-            }),
-            label: figma.string('label'),
-            sublabel: figma.string('sublabel'),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            unit: figma.string('unitText'),
-            leftSlot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
-            }),
-            rightSlot: figma.boolean('showRightSlot', {
-                true: figma.instance('rightSlot'),
-                false: undefined,
-            }),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-            required: figma.boolean('mandatory'),
-        },
-        example: ({
-            size,
-            label,
-            sublabel,
-            hintText,
-            value,
-            unit,
-            leftSlot,
-            rightSlot,
-            error,
-            required,
-        }) => (
-            <UnitInput
-                size={size}
-                label={label}
-                sublabel={sublabel}
-                hintText={hintText}
-                value={Number(value) || 0}
-                unit={unit}
-                unitPosition={UnitPosition.LEFT}
-                leftSlot={leftSlot}
-                rightSlot={rightSlot}
-                error={error}
-                required={required}
-                onChange={() => {}}
-            />
-        ),
-    }
-)
-
-// Variant: Unit on right
-figma.connect(
-    UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { unitPosition: 'right' },
-        props: {
-            size: figma.enum('size', {
-                md: UnitInputSize.MEDIUM,
-                lg: UnitInputSize.LARGE,
-            }),
-            label: figma.string('label'),
-            sublabel: figma.string('sublabel'),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            unit: figma.string('unitText'),
-            leftSlot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
-            }),
-            rightSlot: figma.boolean('showRightSlot', {
-                true: figma.instance('rightSlot'),
-                false: undefined,
-            }),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-            required: figma.boolean('mandatory'),
-        },
-        example: ({
-            size,
-            label,
-            sublabel,
-            hintText,
-            value,
-            unit,
-            leftSlot,
-            rightSlot,
-            error,
-            required,
-        }) => (
-            <UnitInput
-                size={size}
-                label={label}
-                sublabel={sublabel}
-                hintText={hintText}
-                value={Number(value) || 0}
-                unit={unit}
-                unitPosition={UnitPosition.RIGHT}
-                leftSlot={leftSlot}
-                rightSlot={rightSlot}
-                error={error}
-                required={required}
-                onChange={() => {}}
-            />
-        ),
-    }
-)
-
-// Variant: Medium size
-figma.connect(
-    UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { size: 'md' },
-        props: {
-            label: figma.string('label'),
-            sublabel: figma.string('sublabel'),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            unit: figma.string('unitText'),
-            unitPosition: figma.enum('unitPosition', {
-                left: UnitPosition.LEFT,
-                right: UnitPosition.RIGHT,
-            }),
-            leftSlot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
-            }),
-            rightSlot: figma.boolean('showRightSlot', {
-                true: figma.instance('rightSlot'),
-                false: undefined,
-            }),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-            required: figma.boolean('mandatory'),
-        },
-        example: ({
-            label,
-            sublabel,
-            hintText,
-            value,
-            unit,
-            unitPosition,
-            leftSlot,
-            rightSlot,
-            error,
-            required,
-        }) => (
-            <UnitInput
-                size={UnitInputSize.MEDIUM}
-                label={label}
-                sublabel={sublabel}
-                hintText={hintText}
-                value={Number(value) || 0}
-                unit={unit}
-                unitPosition={unitPosition}
-                leftSlot={leftSlot}
-                rightSlot={rightSlot}
-                error={error}
-                required={required}
-                onChange={() => {}}
-            />
-        ),
-    }
-)
-
-// Variant: Large size
-figma.connect(
-    UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { size: 'lg' },
-        props: {
-            label: figma.string('label'),
-            sublabel: figma.string('sublabel'),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            unit: figma.string('unitText'),
-            unitPosition: figma.enum('unitPosition', {
-                left: UnitPosition.LEFT,
-                right: UnitPosition.RIGHT,
-            }),
-            leftSlot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
-            }),
-            rightSlot: figma.boolean('showRightSlot', {
-                true: figma.instance('rightSlot'),
-                false: undefined,
-            }),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-            required: figma.boolean('mandatory'),
-        },
-        example: ({
-            label,
-            sublabel,
-            hintText,
-            value,
-            unit,
-            unitPosition,
-            leftSlot,
-            rightSlot,
-            error,
-            required,
-        }) => (
-            <UnitInput
-                size={UnitInputSize.LARGE}
-                label={label}
-                sublabel={sublabel}
-                hintText={hintText}
-                value={Number(value) || 0}
-                unit={unit}
-                unitPosition={unitPosition}
-                leftSlot={leftSlot}
-                rightSlot={rightSlot}
-                error={error}
-                required={required}
-                onChange={() => {}}
-            />
-        ),
-    }
-)
-
-// Variant: Required field
-figma.connect(
-    UnitInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-514810&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { mandatory: true },
-        props: {
-            size: figma.enum('size', {
-                md: UnitInputSize.MEDIUM,
-                lg: UnitInputSize.LARGE,
-            }),
-            label: figma.string('label'),
-            sublabel: figma.string('sublabel'),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            unit: figma.string('unitText'),
-            unitPosition: figma.enum('unitPosition', {
-                left: UnitPosition.LEFT,
-                right: UnitPosition.RIGHT,
-            }),
-            leftSlot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
-            }),
-            rightSlot: figma.boolean('showRightSlot', {
-                true: figma.instance('rightSlot'),
-                false: undefined,
-            }),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-        },
-        example: ({
-            size,
-            label,
-            sublabel,
-            hintText,
-            value,
-            unit,
-            unitPosition,
-            leftSlot,
-            rightSlot,
-            error,
-        }) => (
-            <UnitInput
-                size={size}
-                label={label}
-                sublabel={sublabel}
-                hintText={hintText}
-                value={Number(value) || 0}
-                unit={unit}
-                unitPosition={unitPosition}
-                leftSlot={leftSlot}
-                rightSlot={rightSlot}
-                error={error}
-                required={true}
-                onChange={() => {}}
-            />
-        ),
-    }
-)
-
-/**
- * Example of UnitInput usage in code:
- *
- * // Basic usage
- * const [weight, setWeight] = useState(0);
- *
- * <UnitInput
- *   value={weight}
- *   onChange={(e) => setWeight(Number(e.target.value))}
- *   unit="kg"
- *   unitPosition={UnitPosition.RIGHT}
- * />
- *
- * // With label and hint
- * <UnitInput
- *   label="Weight"
- *   sublabel="Required"
- *   hintText="Enter your weight"
- *   value={weight}
- *   onChange={(e) => setWeight(Number(e.target.value))}
- *   unit="kg"
- *   unitPosition={UnitPosition.RIGHT}
- *   size={UnitInputSize.MEDIUM}
- *   required={true}
- * />
- *
- * // With error state
- * <UnitInput
- *   label="Height"
- *   value={height}
- *   onChange={(e) => setHeight(Number(e.target.value))}
- *   unit="cm"
- *   unitPosition={UnitPosition.RIGHT}
- *   error={true}
- *   errorMessage="Height must be between 50 and 300 cm"
- *   min={50}
- *   max={300}
- * />
- *
- * // With unit on left
- * import { DollarSign } from 'lucide-react';
- *
- * <UnitInput
- *   label="Price"
- *   value={price}
- *   onChange={(e) => setPrice(Number(e.target.value))}
- *   unit="$"
- *   unitPosition={UnitPosition.LEFT}
- *   min={0}
- *   step={0.01}
- * />
- *
- * // With slots
- * import { Calculator } from 'lucide-react';
- *
- * <UnitInput
- *   label="Distance"
- *   value={distance}
- *   onChange={(e) => setDistance(Number(e.target.value))}
- *   unit="km"
- *   unitPosition={UnitPosition.RIGHT}
- *   leftSlot={<Calculator size={18} />}
- *   rightSlot={
- *     <button onClick={convertToMiles}>
- *       Convert
- *     </button>
- *   }
- * />
- *
- * // With percentage
- * <UnitInput
- *   label="Interest Rate"
- *   value={interestRate}
- *   onChange={(e) => setInterestRate(Number(e.target.value))}
- *   unit="%"
- *   unitPosition={UnitPosition.RIGHT}
- *   min={0}
- *   max={100}
- *   step={0.1}
- * />
- *
- * // With help icon
- * <UnitInput
- *   label="Temperature"
- *   value={temperature}
- *   onChange={(e) => setTemperature(Number(e.target.value))}
- *   unit="°C"
- *   unitPosition={UnitPosition.RIGHT}
- *   helpIconHintText="Body temperature in Celsius"
- *   min={35}
- *   max={42}
- *   step={0.1}
- * />
- *
- * // Complete form example
- * const [speed, setSpeed] = useState(0);
- * const [speedError, setSpeedError] = useState(false);
- *
- * const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
- *   const newSpeed = Number(e.target.value);
- *   setSpeed(newSpeed);
- *   setSpeedError(newSpeed < 0 || newSpeed > 200);
- * };
- *
- * <UnitInput
- *   label="Speed Limit"
- *   sublabel="Maximum allowed speed"
- *   value={speed}
- *   onChange={handleSpeedChange}
- *   unit="km/h"
- *   unitPosition={UnitPosition.RIGHT}
- *   error={speedError}
- *   errorMessage={speedError ? "Speed must be between 0 and 200 km/h" : undefined}
- *   hintText="Enter the speed limit for this road"
- *   min={0}
- *   max={200}
- *   step={10}
- *   required={true}
- *   size={UnitInputSize.LARGE}
- * />
- */

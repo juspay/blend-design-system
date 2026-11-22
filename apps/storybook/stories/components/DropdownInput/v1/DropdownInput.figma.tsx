@@ -1,56 +1,63 @@
+import React from 'react'
 import { figma } from '@figma/code-connect'
-import { DropdownInput, TextInputSize } from '@juspay/blend-design-system'
+import {
+    DropdownInput,
+    DropdownPosition,
+    TextInputSize,
+} from '@juspay/blend-design-system'
 
 /**
- * FIGMA CODE CONNECT FOR DROPDOWNINPUT COMPONENT
+ * FIGMA CODE CONNECT FOR DROPDOWNINPUT COMPONENT (V1)
  *
  * PROP MAPPING DOCUMENTATION
  *
- * Figma vs Code Property Mappings:
+ * Figma vs Code Property Differences:
  *
- * 1. DIRECT MAPPINGS:
- *    - size → size
+ * 1. RENAMED MAPPINGS:
+ *    - mandatory (Figma) → required (Code)
+ *    - dropdownPosition (Figma) → dropdownPosition (Code, enum typed)
+ *
+ * 2. DIRECT MAPPINGS (same in both):
+ *    - size → size (Figma sm/md/lg → TextInputSize.SMALL/MEDIUM/LARGE)
  *    - label → label
  *    - sublabel → sublabel
  *    - hintText → hintText
+ *    - placeholder → placeholder
  *
- * 2. SPECIAL MAPPINGS:
- *    - placeholder (Figma) → value (Code) - Placeholder text in Figma maps to value prop
- *    - leftSlot (Figma) → slot (Code) - Left slot in Figma maps to slot prop in code
- *    - state=error (Figma) → error=true (Code) - Error state in Figma maps to error prop
+ * 3. SPECIAL MAPPINGS:
+ *    - state (Figma) → error + disabled (Code)
+ *      - state=error → error=true
+ *      - state=disabled → disabled=true
+ *      - state=default/hover/focus → handled automatically by CSS interactions
+ *    - dropdownPosition (Figma) → dropdownPosition (Code, DropdownPosition enum)
  *
- * 3. FIGMA-ONLY PROPERTIES (not needed in code):
- *    - dropdownPosition - Not available in code implementation
- *    - state - Other interaction states (hover, focus, etc.) are handled automatically
- *    - showInfo - Help icon is shown automatically when helpIconHintText is provided
- *    - showLabel - Label is shown automatically when label prop is provided
- *    - showSublabel - Sublabel is shown automatically when sublabel prop is provided
- *    - showHint - Hint is shown automatically when hintText prop is provided
- *    - showRightSlot - Not used in DropdownInput (dropdown is always on the right)
- *    - rightSlot - Not used in DropdownInput
- *    - showLeftSlot - Left slot is shown automatically when slot prop is provided
- *    - mandatory - Not directly supported in code
+ * 4. FIGMA-ONLY PROPERTIES (not needed in code):
+ *    - state: hover/focus are interaction states, not code props
+ *    - showInfo: Help icon is shown automatically when helpIconHintText is provided
+ *    - showLabel: Label is shown automatically when label prop is provided
+ *    - showSubLabel: Sublabel is shown automatically when sublabel prop is provided
+ *    - showHint: Hint is shown automatically when hintText prop is provided
  *
- * 4. CODE-ONLY PROPERTIES (not in Figma):
- *    - onChange: Callback function for handling input changes
- *    - onDropDownChange: Callback function for handling dropdown selection changes
- *    - dropDownItems: Array of items for the dropdown menu
- *    - dropDownValue: Currently selected dropdown value
- *    - error: Boolean to indicate error state
- *    - errorMessage: Error message to display
- *    - helpIconHintText: Tooltip text for help icon
- *    - disabled: Whether the input is disabled
- *    - All standard HTML input attributes
+ * 5. CODE-ONLY PROPERTIES (not in Figma):
+ *    - value: Controlled input value, managed by parent state
+ *    - onChange: Callback for handling input changes
+ *    - dropDownValue: Controlled dropdown selection
+ *    - dropDownPlaceholder: Placeholder for the dropdown
+ *    - onDropDownChange: Callback for dropdown selection changes
+ *    - dropDownItems: Menu items (SelectMenuGroupType[])
+ *    - dropdownName: Accessible name for the dropdown
+ *    - onDropdownOpen/Close: Dropdown open/close callbacks
+ *    - maxMenuHeight, minMenuWidth, maxMenuWidth: Menu dimension constraints
  */
 
-// Base connection
 figma.connect(
     DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-10209',
     {
         props: {
-            // Size mapping
+            // Size mapping: Figma sm/md/lg → TextInputSize.SMALL/MEDIUM/LARGE
             size: figma.enum('size', {
+                sm: TextInputSize.SMALL,
                 md: TextInputSize.MEDIUM,
                 lg: TextInputSize.LARGE,
             }),
@@ -59,56 +66,79 @@ figma.connect(
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
             hintText: figma.string('hintText'),
+            placeholder: figma.string('placeholder'),
 
-            // Placeholder maps to value in code
-            value: figma.string('placeholder'),
+            // Renamed mapping: mandatory (Figma) → required (Code)
+            required: figma.boolean('mandatory'),
 
-            // Left slot mapping (leftSlot in Figma → slot in code)
-            slot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
+            // Direct mapping: dropdownPosition (Figma) → DropdownPosition (Code)
+            dropdownPosition: figma.enum('dropdownPosition', {
+                left: DropdownPosition.LEFT,
+                right: DropdownPosition.RIGHT,
             }),
 
-            // State to error mapping
+            // Special mapping: state=error → error=true (V1 has boolean error)
             error: figma.enum('state', {
                 error: true,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
+                focus: false,
+                focused: false,
+                filled: false,
                 disabled: false,
             }),
 
-            // Note: The following Figma props are not mapped:
-            // - dropdownPosition: Not available in code
-            // - state: Other states handled automatically by component interactions
-            // - showInfo: Determined by presence of helpIconHintText
-            // - showLabel: Determined by presence of label
-            // - showSublabel: Determined by presence of sublabel
-            // - showHint: Determined by presence of hintText
-            // - showRightSlot: Not applicable (dropdown is always on right)
-            // - rightSlot: Not applicable
-            // - mandatory: Can be passed as 'required' HTML attribute
+            // Special mapping: state=disabled → disabled=true
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focus: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
         },
 
-        example: ({ size, label, sublabel, hintText, value, slot, error }) => (
+        example: ({
+            size,
+            label,
+            sublabel,
+            hintText,
+            placeholder,
+            required,
+            dropdownPosition,
+            error,
+            disabled,
+        }) => (
             <DropdownInput
                 size={size}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
-                value={value}
-                slot={slot}
+                placeholder={placeholder}
+                required={required}
+                dropdownPosition={dropdownPosition}
                 error={error}
+                disabled={disabled}
+                value=""
                 onChange={() => {}}
+                dropDownValue="US"
+                dropDownPlaceholder="Select country"
                 onDropDownChange={() => {}}
-                dropDownItems={[]}
-                dropDownValue=""
+                dropDownItems={[
+                    {
+                        items: [
+                            { label: 'US', value: 'US' },
+                            { label: 'IN', value: 'IN' },
+                        ],
+                    },
+                ]}
             />
         ),
 
         imports: [
-            "import { DropdownInput, TextInputSize } from '@juspay/blend-design-system'",
+            "import { DropdownInput, DropdownPosition, TextInputSize } from '@juspay/blend-design-system'",
         ],
 
         links: [
@@ -124,289 +154,100 @@ figma.connect(
     }
 )
 
-// Variant: With label
 figma.connect(
     DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=29491-10650',
     {
-        variant: { showLabel: true },
         props: {
+            // Size mapping: mobile has only md/lg (no sm)
             size: figma.enum('size', {
                 md: TextInputSize.MEDIUM,
                 lg: TextInputSize.LARGE,
             }),
+
             label: figma.string('label'),
             sublabel: figma.string('sublabel'),
             hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            slot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
+            placeholder: figma.string('placeholder'),
+
+            required: figma.boolean('mandatory'),
+
+            dropdownPosition: figma.enum('dropdownPosition', {
+                left: DropdownPosition.LEFT,
+                right: DropdownPosition.RIGHT,
             }),
+
             error: figma.enum('state', {
                 error: true,
                 default: false,
                 hover: false,
-                active: false,
-                focussed: false,
+                focus: false,
+                focused: false,
+                filled: false,
                 disabled: false,
             }),
+
+            disabled: figma.enum('state', {
+                disabled: true,
+                default: false,
+                hover: false,
+                focus: false,
+                focused: false,
+                filled: false,
+                error: false,
+            }),
         },
-        example: ({ size, label, sublabel, hintText, value, slot, error }) => (
+
+        example: ({
+            size,
+            label,
+            sublabel,
+            hintText,
+            placeholder,
+            required,
+            dropdownPosition,
+            error,
+            disabled,
+        }) => (
             <DropdownInput
                 size={size}
                 label={label}
                 sublabel={sublabel}
                 hintText={hintText}
-                value={value}
-                slot={slot}
+                placeholder={placeholder}
+                required={required}
+                dropdownPosition={dropdownPosition}
                 error={error}
+                disabled={disabled}
+                value=""
                 onChange={() => {}}
+                dropDownValue="US"
+                dropDownPlaceholder="Select country"
                 onDropDownChange={() => {}}
-                dropDownItems={[]}
-                dropDownValue=""
+                dropDownItems={[
+                    {
+                        items: [
+                            { label: 'US', value: 'US' },
+                            { label: 'IN', value: 'IN' },
+                        ],
+                    },
+                ]}
             />
         ),
+
+        imports: [
+            "import { DropdownInput, DropdownPosition, TextInputSize } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/Inputs/DropdownInput',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-inputs-dropdowninput--docs',
+            },
+        ],
     }
 )
-
-// Variant: Without label
-figma.connect(
-    DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { showLabel: false },
-        props: {
-            size: figma.enum('size', {
-                md: TextInputSize.MEDIUM,
-                lg: TextInputSize.LARGE,
-            }),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            slot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
-            }),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-        },
-        example: ({ size, hintText, value, slot, error }) => (
-            <DropdownInput
-                size={size}
-                hintText={hintText}
-                value={value}
-                slot={slot}
-                error={error}
-                onChange={() => {}}
-                onDropDownChange={() => {}}
-                dropDownItems={[]}
-                dropDownValue=""
-            />
-        ),
-    }
-)
-
-// Variant: With left slot
-figma.connect(
-    DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { showLeftSlot: true },
-        props: {
-            size: figma.enum('size', {
-                md: TextInputSize.MEDIUM,
-                lg: TextInputSize.LARGE,
-            }),
-            label: figma.string('label'),
-            sublabel: figma.string('sublabel'),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            slot: figma.instance('leftSlot'),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-        },
-        example: ({ size, label, sublabel, hintText, value, slot, error }) => (
-            <DropdownInput
-                size={size}
-                label={label}
-                sublabel={sublabel}
-                hintText={hintText}
-                value={value}
-                slot={slot}
-                error={error}
-                onChange={() => {}}
-                onDropDownChange={() => {}}
-                dropDownItems={[]}
-                dropDownValue=""
-            />
-        ),
-    }
-)
-
-// Variant: Medium size
-figma.connect(
-    DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { size: 'md' },
-        props: {
-            label: figma.string('label'),
-            sublabel: figma.string('sublabel'),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            slot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
-            }),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-        },
-        example: ({ label, sublabel, hintText, value, slot, error }) => (
-            <DropdownInput
-                size={TextInputSize.MEDIUM}
-                label={label}
-                sublabel={sublabel}
-                hintText={hintText}
-                value={value}
-                slot={slot}
-                error={error}
-                onChange={() => {}}
-                onDropDownChange={() => {}}
-                dropDownItems={[]}
-                dropDownValue=""
-            />
-        ),
-    }
-)
-
-// Variant: Large size
-figma.connect(
-    DropdownInput,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-513927&t=2L1Yl830ZKZjFcrt-4',
-    {
-        variant: { size: 'lg' },
-        props: {
-            label: figma.string('label'),
-            sublabel: figma.string('sublabel'),
-            hintText: figma.string('hintText'),
-            value: figma.string('placeholder'),
-            slot: figma.boolean('showLeftSlot', {
-                true: figma.instance('leftSlot'),
-                false: undefined,
-            }),
-            error: figma.enum('state', {
-                error: true,
-                default: false,
-                hover: false,
-                active: false,
-                focussed: false,
-                disabled: false,
-            }),
-        },
-        example: ({ label, sublabel, hintText, value, slot, error }) => (
-            <DropdownInput
-                size={TextInputSize.LARGE}
-                label={label}
-                sublabel={sublabel}
-                hintText={hintText}
-                value={value}
-                slot={slot}
-                error={error}
-                onChange={() => {}}
-                onDropDownChange={() => {}}
-                dropDownItems={[]}
-                dropDownValue=""
-            />
-        ),
-    }
-)
-
-/**
- * Example of DropdownInput usage in code:
- *
- * // Basic usage
- * const dropdownItems = [
- *   {
- *     label: 'Options',
- *     items: [
- *       { label: 'USD', value: 'usd' },
- *       { label: 'EUR', value: 'eur' },
- *       { label: 'GBP', value: 'gbp' }
- *     ]
- *   }
- * ];
- *
- * <DropdownInput
- *   value={amount}
- *   onChange={(e) => setAmount(e.target.value)}
- *   dropDownValue={currency}
- *   onDropDownChange={setCurrency}
- *   dropDownItems={dropdownItems}
- *   placeholder="Enter amount"
- * />
- *
- * // With label and hint
- * <DropdownInput
- *   label="Price"
- *   sublabel="Required"
- *   hintText="Enter the product price"
- *   value={price}
- *   onChange={(e) => setPrice(e.target.value)}
- *   dropDownValue={selectedCurrency}
- *   onDropDownChange={setSelectedCurrency}
- *   dropDownItems={currencyOptions}
- *   size={TextInputSize.MEDIUM}
- * />
- *
- * // With error state
- * <DropdownInput
- *   label="Amount"
- *   value={amount}
- *   onChange={(e) => setAmount(e.target.value)}
- *   dropDownValue={currency}
- *   onDropDownChange={setCurrency}
- *   dropDownItems={currencyList}
- *   error={true}
- *   errorMessage="Amount must be greater than 0"
- * />
- *
- * // With left slot
- * <DropdownInput
- *   label="Phone Number"
- *   value={phoneNumber}
- *   onChange={(e) => setPhoneNumber(e.target.value)}
- *   dropDownValue={countryCode}
- *   onDropDownChange={setCountryCode}
- *   dropDownItems={countryCodeOptions}
- *   slot={<PhoneIcon />}
- * />
- *
- * // With help icon
- * <DropdownInput
- *   label="Exchange Rate"
- *   value={rate}
- *   onChange={(e) => setRate(e.target.value)}
- *   dropDownValue={baseCurrency}
- *   onDropDownChange={setBaseCurrency}
- *   dropDownItems={currencyPairs}
- *   helpIconHintText="The exchange rate will be updated daily"
- * />
- */

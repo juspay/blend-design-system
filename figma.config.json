@@ -1,9 +1,13 @@
 {
+    "figmaFileUrl": "https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System",
     "codeConnect": {
         "include": [
             "apps/storybook/stories/**/*.figma.{ts,tsx}",
             "apps/storybook/stories/**/*.stories.{ts,tsx}",
-            "packages/blend/lib/**/*.figma.{ts,tsx}"
+            "packages/blend/lib/**/*.figma.{ts,tsx}",
+            "packages/blend/lib/main.ts",
+            "packages/blend/lib/components/**/*.tsx",
+            "packages/blend/lib/components/**/*.ts"
         ],
         "exclude": [
             "**/node_modules/**",
@@ -12,6 +16,11 @@
             "apps/ascent/**",
             "apps/site/**"
         ],
-        "parser": "react"
+        "parser": "react",
+        "baseUrl": ".",
+        "paths": {
+            "@juspay/blend-design-system": ["packages/blend/lib/main.ts"],
+            "@juspay/blend-design-system/*": ["packages/blend/lib/*"]
+        }
     }
 }

@@ -1,139 +1,101 @@
+import React from 'react'
 import { figma } from '@figma/code-connect'
 import { DataTable, ColumnType } from '@juspay/blend-design-system'
 
 /**
- * FIGMA CODE CONNECT FOR DATATABLE COMPONENT
+ * FIGMA CODE CONNECT FOR DATATABLE
  *
  * PROP MAPPING DOCUMENTATION
  *
- * Figma vs Code Property Mappings:
+ * 1. FIGMA-ONLY PROPERTIES (not mapped):
+ *    - display (VARIANT web/mobile): Responsive presentation variant.
+ *      The DataTable renders a mobile card view automatically based on
+ *      viewport width. Use `mobileColumnsToShow` to control how many
+ *      columns appear in the mobile card layout.
+ *    - hscroll (VARIANT true/false): Horizontal scroll behaviour.
+ *      Automatic when column widths exceed the container; no prop needed.
+ *    - type (VARIANT columnConstruction/rowConstruction): Design-time
+ *      construction guide only — not a runtime prop.
  *
- * 1. DIRECT MAPPINGS:
- *    - The Figma component represents the visual table structure
- *
- * 2. CODE-ONLY PROPERTIES:
- *    - data: Array of row data
- *    - columns: Column definitions with types and configurations
- *    - idField: Unique identifier field for rows
- *    - title: Table title
- *    - description: Table description
- *    - enableSearch: Enable search functionality
- *    - enableFiltering: Enable column filtering
- *    - pagination: Pagination configuration
- *    - enableRowSelection: Enable row selection
- *    - enableColumnManager: Enable column visibility management
- *    - isHoverable: Enable row hover effects
- *    - onRowClick: Row click handler
- *    - bulkActions: Bulk action buttons
+ * 2. CODE-ONLY PROPERTIES (not in Figma):
+ *    - data: Array of row objects, each keyed by the column `field` names.
+ *    - columns: ColumnDefinition[] describing each column's field, header,
+ *      type, and options (sorting, filtering, cell rendering).
+ *    - idField: Field name used as the unique row identifier.
+ *    - enableSearch, pagination, isHoverable: Feature toggles shown in the
+ *      example as representative configuration.
  */
 
-// Base DataTable connection
 figma.connect(
     DataTable,
-    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/-BETA--Dashboard-Design-System?node-id=18805-438276&t=2L1Yl830ZKZjFcrt-11',
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=18805-438276',
     {
-        props: {
-            // Note: The DataTable Figma component doesn't expose properties
-            // All props are code-only and configured in the implementation
-        },
-
         example: () => (
             <DataTable
                 data={[
                     {
                         id: '1',
-                        name: 'John Doe',
-                        email: 'john.doe@example.com',
-                        role: 'Admin',
-                        status: { text: 'Active', color: 'success' },
-                        lastActive: '2024-01-15',
+                        user: {
+                            label: 'Alicia Koch',
+                            sublabel: 'Designer',
+                            imageUrl: 'https://i.pravatar.cc/100?img=1',
+                        },
+                        status: {
+                            text: 'Active',
+                            variant: 'subtle',
+                            color: 'success',
+                        },
+                        amount: 276,
+                        date: { date: '2025-09-24', format: 'DD MMM YYYY' },
                     },
                     {
                         id: '2',
-                        name: 'Jane Smith',
-                        email: 'jane.smith@example.com',
-                        role: 'User',
-                        status: { text: 'Inactive', color: 'neutral' },
-                        lastActive: '2024-01-10',
-                    },
-                    {
-                        id: '3',
-                        name: 'Bob Johnson',
-                        email: 'bob.johnson@example.com',
-                        role: 'Editor',
-                        status: { text: 'Active', color: 'success' },
-                        lastActive: '2024-01-14',
+                        user: {
+                            label: 'James Smith',
+                            sublabel: 'Developer',
+                            imageUrl: 'https://i.pravatar.cc/100?img=2',
+                        },
+                        status: {
+                            text: 'On Leave',
+                            variant: 'subtle',
+                            color: 'warning',
+                        },
+                        amount: 4500,
+                        date: { date: '2025-10-12', format: 'DD MMM YYYY' },
                     },
                 ]}
                 columns={[
                     {
-                        field: 'name',
-                        header: 'Name',
-                        type: ColumnType.TEXT,
+                        field: 'user',
+                        header: 'User',
+                        type: ColumnType.AVATAR,
                         isSortable: true,
-                        minWidth: '150px',
-                    },
-                    {
-                        field: 'email',
-                        header: 'Email',
-                        type: ColumnType.TEXT,
-                        isSortable: true,
-                        minWidth: '200px',
-                    },
-                    {
-                        field: 'role',
-                        header: 'Role',
-                        type: ColumnType.TEXT,
-                        isSortable: true,
-                        minWidth: '100px',
                     },
                     {
                         field: 'status',
                         header: 'Status',
                         type: ColumnType.TAG,
-                        isSortable: false,
-                        minWidth: '120px',
+                        isSortable: true,
                     },
                     {
-                        field: 'lastActive',
-                        header: 'Last Active',
-                        type: ColumnType.DATE,
+                        field: 'amount',
+                        header: 'Amount',
+                        type: ColumnType.NUMBER,
+                        format: 'currency',
                         isSortable: true,
-                        minWidth: '150px',
+                    },
+                    {
+                        field: 'date',
+                        header: 'Date',
+                        type: ColumnType.DATE,
+                        dateFormat: 'DD MMM YYYY',
+                        isSortable: true,
                     },
                 ]}
                 idField="id"
-                title="User Management"
-                description="Manage system users and their permissions"
-                enableSearch={true}
-                searchPlaceholder="Search users..."
-                enableFiltering={true}
-                enableRowSelection={true}
-                enableColumnManager={true}
-                isHoverable={true}
-                pagination={{
-                    currentPage: 1,
-                    pageSize: 10,
-                    totalRows: 3,
-                    pageSizeOptions: [10, 25, 50],
-                }}
-                bulkActions={[
-                    {
-                        id: 'delete',
-                        label: 'Delete',
-                        variant: 'danger',
-                        onClick: (selectedIds) =>
-                            console.log('Delete:', selectedIds),
-                    },
-                    {
-                        id: 'export',
-                        label: 'Export',
-                        variant: 'secondary',
-                        onClick: (selectedIds) =>
-                            console.log('Export:', selectedIds),
-                    },
-                ]}
-                onRowClick={(row) => console.log('Row clicked:', row)}
+                enableSearch
+                pagination={{ currentPage: 1, pageSize: 10, totalRows: 2 }}
+                isHoverable
             />
         ),
 
@@ -153,126 +115,3 @@ figma.connect(
         ],
     }
 )
-
-/**
- * Example of DataTable usage in code:
- *
- * // Basic DataTable
- * const userData = [
- *   { id: '1', name: 'John', email: 'john@example.com', role: 'Admin' },
- *   { id: '2', name: 'Jane', email: 'jane@example.com', role: 'User' },
- * ];
- *
- * const columns = [
- *   { field: 'name', header: 'Name', type: ColumnType.TEXT },
- *   { field: 'email', header: 'Email', type: ColumnType.TEXT },
- *   { field: 'role', header: 'Role', type: ColumnType.TEXT },
- * ];
- *
- * <DataTable
- *   data={userData}
- *   columns={columns}
- *   idField="id"
- * />
- *
- * // With Avatar Column
- * const columnsWithAvatar = [
- *   {
- *     field: 'user',
- *     header: 'User',
- *     type: ColumnType.AVATAR,
- *     renderCell: (value) => ({
- *       label: value.name,
- *       sublabel: value.email,
- *       imageUrl: value.avatar,
- *     }),
- *   },
- *   // ... other columns
- * ];
- *
- * // With Tag Column
- * const columnsWithTag = [
- *   {
- *     field: 'status',
- *     header: 'Status',
- *     type: ColumnType.TAG,
- *     renderCell: (value) => ({
- *       text: value.label,
- *       color: value.color,
- *       variant: 'subtle',
- *     }),
- *   },
- *   // ... other columns
- * ];
- *
- * // With Progress Column
- * const columnsWithProgress = [
- *   {
- *     field: 'completion',
- *     header: 'Progress',
- *     type: ColumnType.PROGRESS,
- *     renderCell: (value) => ({
- *       value: value,
- *       max: 100,
- *       showPercentage: true,
- *       color: value >= 80 ? 'success' : 'primary',
- *     }),
- *   },
- *   // ... other columns
- * ];
- *
- * // With Custom Filtering
- * <DataTable
- *   data={data}
- *   columns={columns}
- *   idField="id"
- *   enableFiltering={true}
- *   onFilterChange={(filters) => {
- *     console.log('Filters applied:', filters);
- *   }}
- * />
- *
- * // With Server-Side Pagination
- * <DataTable
- *   data={currentPageData}
- *   columns={columns}
- *   idField="id"
- *   serverSidePagination={true}
- *   pagination={{
- *     currentPage: page,
- *     pageSize: pageSize,
- *     totalRows: totalCount,
- *   }}
- *   onPageChange={(newPage) => fetchData(newPage, pageSize)}
- *   onPageSizeChange={(newSize) => fetchData(1, newSize)}
- * />
- *
- * // With Row Expansion
- * <DataTable
- *   data={data}
- *   columns={columns}
- *   idField="id"
- *   enableRowExpansion={true}
- *   renderExpandedRow={({ row }) => (
- *     <div className="p-4">
- *       <h4>Additional Details</h4>
- *       <p>Created: {row.createdAt}</p>
- *       <p>Modified: {row.modifiedAt}</p>
- *     </div>
- *   )}
- * />
- *
- * // With Inline Editing
- * <DataTable
- *   data={data}
- *   columns={editableColumns}
- *   idField="id"
- *   enableInlineEdit={true}
- *   onRowSave={(rowId, updatedRow) => {
- *     console.log('Save row:', rowId, updatedRow);
- *   }}
- *   onFieldChange={(rowId, fieldName, value) => {
- *     console.log('Field changed:', rowId, fieldName, value);
- *   }}
- * />
- */
