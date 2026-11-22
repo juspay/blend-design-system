@@ -5,11 +5,18 @@ export interface FeatureFlags {
     apiBaseUrl: string
 }
 
+/**
+ * Demo mode is an explicit build-time opt-in that can never activate in a
+ * production bundle (audit #15, CWE-602): `import.meta.env.PROD` is
+ * statically replaced at build time, so `vite build` output has the mock
+ * path dead-code-eliminated. Missing API env vars must not silently turn
+ * a deployment into an unauthenticated mock app.
+ */
+export const IS_DEMO_BUILD =
+    import.meta.env.VITE_USE_MOCK_DATA === 'true' && !import.meta.env.PROD
+
 const DEFAULT_FLAGS: FeatureFlags = {
-    useMockData:
-        import.meta.env.VITE_USE_MOCK_DATA === 'true' ||
-        (!import.meta.env.VITE_FIREBASE_API_KEY &&
-            !import.meta.env.VITE_API_BASE_URL),
+    useMockData: IS_DEMO_BUILD,
     enableRealTimeSync: import.meta.env.VITE_ENABLE_REALTIME_SYNC === 'true',
     enableNotifications: import.meta.env.VITE_ENABLE_NOTIFICATIONS === 'true',
     apiBaseUrl: import.meta.env.VITE_API_BASE_URL || '',

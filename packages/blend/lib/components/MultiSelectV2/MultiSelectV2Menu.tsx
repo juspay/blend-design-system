@@ -37,6 +37,9 @@ import SelectSearchStatus, {
     SELECT_SEARCH_STATUS_HEIGHT,
 } from '../Select/SelectSearchStatus'
 import { useSelectSearchFocusRecovery } from '../Select/useSelectSearchFocusRecovery'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const JUST_OPENED_DEBOUNCE_MS = 150
 const DEFAULT_MIN_MENU_WIDTH = 250
@@ -88,7 +91,7 @@ const MultiSelectV2Menu = ({
     disabled = false,
     search,
     enableSelectAll = false,
-    selectAllText = 'Select All',
+    selectAllText: selectAllTextProp,
     maxSelections,
     onSelectAll,
     menuPosition,
@@ -112,14 +115,22 @@ const MultiSelectV2Menu = ({
     size = MultiSelectV2Size.MD,
     variant = MultiSelectV2Variant.CONTAINER,
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     menuId,
     menuFooter,
 }: MultiSelectV2MenuProps) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const selectAllText = pick(selectAllTextProp, 'select.action.select-all')
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
 
-    const searchPlaceholder = search?.placeholder ?? 'Search options...'
+    const searchPlaceholder =
+        search?.placeholder ?? m('select.placeholder.search')
     const minMenuWidth = menuDimensions?.minWidth as number | undefined
     const maxMenuWidth = menuDimensions?.maxWidth as string | number | undefined
     const maxMenuHeight = menuDimensions?.maxHeight as number | undefined
@@ -208,9 +219,12 @@ const MultiSelectV2Menu = ({
             hasMatch,
             allowCustomValue,
             isSearchEnabled && !search?.isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         items,
         searchText,
         allowCustomValue,
@@ -426,6 +440,10 @@ const MultiSelectV2Menu = ({
                                         : undefined
                                 }
                                 selectAllText={selectAllText}
+                                selectAllDataId={
+                                    selectAllTextProp ??
+                                    SELECT_MESSAGES['select.action.select-all']
+                                }
                                 disabled={disabled}
                             />
                             <ScrollableContent
@@ -444,8 +462,8 @@ const MultiSelectV2Menu = ({
                                     emptyStateText={
                                         search?.emptyStateText ||
                                         (!hasSourceItems
-                                            ? 'No items available'
-                                            : 'No results found')
+                                            ? mc('common.empty.no-items')
+                                            : mc('common.empty.no-results'))
                                     }
                                 />
                                 {isActiveSearchLoading &&
@@ -479,8 +497,12 @@ const MultiSelectV2Menu = ({
                                         >
                                             {search?.emptyStateText ||
                                                 (!hasSourceItems
-                                                    ? 'No items available'
-                                                    : 'No results found')}
+                                                    ? mc(
+                                                          'common.empty.no-items'
+                                                      )
+                                                    : mc(
+                                                          'common.empty.no-results'
+                                                      ))}
                                         </Text>
                                     </Block>
                                 ) : enableVirtualization &&

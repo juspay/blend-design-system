@@ -27,8 +27,11 @@ export async function loginCommand(options: LoginOptions = {}): Promise<void> {
     logger.header('Blend Token Studio — Login')
 
     if (apiClient.isAuthenticated()) {
+        await apiClient.verifyAuthWithServer()
         const email = apiClient.getAuthEmail()
-        logger.info(`Already logged in as ${email}`)
+        logger.info(
+            email ? `Already logged in as ${email}` : 'Already authenticated'
+        )
         const { proceed } = await prompts({
             type: 'confirm',
             name: 'proceed',
@@ -62,7 +65,8 @@ export async function loginCommand(options: LoginOptions = {}): Promise<void> {
   Option 2 — CI / scripts
     export BLEND_STUDIO_API_TOKEN=<your-token>
 
-  Tip: BLEND_STUDIO_API_URL overrides blend.config.json if you need to point the CLI elsewhere.
+  Tip: BLEND_STUDIO_API_URL overrides blend.config.json. Unofficial hosts in
+       blend.config.json require BLEND_TRUST_PROJECT_API_URL=1 (self-hosted servers).
 
 `)
 
@@ -88,56 +92,51 @@ async function loginWithToken(token: string): Promise<void> {
     }
 
     try {
-        const payload = JSON.parse(
-            Buffer.from(parts[1], 'base64').toString('utf-8')
-        )
-
-        const email = payload.email
-        const uid = payload.user_id || payload.sub || payload.userId
-        const expiresAt = payload.exp * 1000
-
-        if (!email || !uid) {
-            logger.error('Token does not contain required claims')
-            return
-        }
-
-        if (expiresAt < Date.now()) {
-            logger.error(
-                'Token has expired. Please get a fresh token from the dashboard.'
-            )
-            return
-        }
-
-        // Option 2: Exchange the short-lived Studio CLI token for a
-        // long-lived CLI session (access token + refresh token).
+        // The server verifies the token signature and mints the CLI session;
+        // identity comes from /auth/me, never from the unsigned JWT payload.
         const exchange = await apiClient.exchangeCliExportTokenForSession(token)
 
-        const nextAccessExpiresAt =
-            exchange.accessExpiresAt ?? exchange.expiresAt ?? expiresAt
+        const identity = await apiClient.fetchCurrentUser(
+            exchange.accessToken ?? token
+        )
 
-        const expiresInSeconds =
-            typeof exchange.accessExpiresInSeconds === 'number'
-                ? exchange.accessExpiresInSeconds
-                : Math.max(
-                      0,
-                      Math.floor((nextAccessExpiresAt - Date.now()) / 1000)
-                  )
+        let expiresInSeconds = 0
+        if (typeof exchange.accessExpiresInSeconds === 'number') {
+            expiresInSeconds = exchange.accessExpiresInSeconds
+        } else if (typeof exchange.accessExpiresAt === 'number') {
+            expiresInSeconds = Math.max(
+                0,
+                Math.floor((exchange.accessExpiresAt - Date.now()) / 1000)
+            )
+        } else if (typeof exchange.expiresAt === 'number') {
+            expiresInSeconds = Math.max(
+                0,
+                Math.floor((exchange.expiresAt - Date.now()) / 1000)
+            )
+        }
+
+        const nextAccessExpiresAt =
+            exchange.accessExpiresAt ?? exchange.expiresAt ?? null
 
         await apiClient.login(
             exchange.accessToken ?? token,
             exchange.refreshToken ?? '',
             expiresInSeconds,
-            email,
-            uid
+            identity?.email ?? '',
+            identity?.id ?? ''
         )
 
-        logger.success(`Logged in as ${email}`)
+        logger.success(
+            identity ? `Logged in as ${identity.email}` : 'Logged in'
+        )
         logger.detail(
             'Access token expires at: ' +
-                new Date(nextAccessExpiresAt).toLocaleString()
+                (nextAccessExpiresAt
+                    ? new Date(nextAccessExpiresAt).toLocaleString()
+                    : 'unknown')
         )
     } catch (error) {
-        logger.error('Failed to parse token')
+        logger.error('Login failed')
         logger.detail(error instanceof Error ? error.message : 'Unknown error')
     }
 }
@@ -165,19 +164,21 @@ export async function whoamiCommand(): Promise<void> {
         return
     }
 
+    await apiClient.verifyAuthWithServer()
     const email = apiClient.getAuthEmail()
+    const identityLabel = email || '(API token)'
 
     if (existsSync(AUTH_FILE)) {
         const data = JSON.parse(readFileSync(AUTH_FILE, 'utf-8'))
         const expiresAt = new Date(data.expiresAt)
 
-        console.log(`Logged in as: ${email}`)
+        console.log(`Logged in as: ${identityLabel}`)
         console.log(`Token expires: ${expiresAt.toLocaleString()}`)
 
         if (data.expiresAt < Date.now()) {
             console.log('\x1b[33mWarning: Token has expired\x1b[0m')
         }
     } else {
-        console.log(`Logged in as: ${email}`)
+        console.log(`Logged in as: ${identityLabel}`)
     }
 }

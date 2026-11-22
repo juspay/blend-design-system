@@ -126,6 +126,17 @@ export const canRoleApprove = (
     return userRole === 'admin'
 }
 
+// Approvals recorded by the requester never count toward the threshold, even
+// for pre-existing requests approved before the self-approval block existed
+// (rescan hardening, CWE-863).
+export const countEffectiveApprovals = (
+    approvals: Array<{ userId: string }>,
+    requesterId: string
+): number => {
+    return approvals.filter((approval) => approval.userId !== requesterId)
+        .length
+}
+
 export const canBypassApproval = (
     policy: EffectiveApprovalPolicy,
     userRole: OrgRole

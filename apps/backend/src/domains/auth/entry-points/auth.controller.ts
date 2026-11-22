@@ -22,6 +22,7 @@ import {
     storeRefreshToken,
     findRefreshToken,
     revokeRefreshToken,
+    revokeRefreshTokenFamily,
     revokeAllUserRefreshTokens,
 } from '../data-access/auth.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
@@ -176,7 +177,12 @@ export const googleCallback = async (req: Request, res: Response) => {
         const refreshTokenHash = hashToken(tokens.refreshToken)
         const expiresAt = new Date()
         expiresAt.setDate(expiresAt.getDate() + REFRESH_TOKEN_EXPIRES_DAYS)
-        await storeRefreshToken(user.id, refreshTokenHash, expiresAt)
+        await storeRefreshToken(
+            user.id,
+            refreshTokenHash,
+            expiresAt,
+            crypto.randomUUID()
+        )
 
         res.cookie('refreshToken', tokens.refreshToken, {
             httpOnly: true,
@@ -210,11 +216,13 @@ export const googleCallback = async (req: Request, res: Response) => {
         )
         res.redirect(`${env.FRONTEND_URL}/auth-callback?newUser=${isNewUser}`)
     } catch (error: any) {
+        // Log the message only — full stacks raised during token exchange
+        // can embed request context (authorization codes, client ids) that
+        // must not reach the log aggregator (audit #8, CWE-209).
         logger.error(
             {
                 ...callbackContext,
                 error: error.message || error,
-                stack: error.stack,
                 name: error.name,
             },
             'Google auth callback failed'
@@ -223,8 +231,26 @@ export const googleCallback = async (req: Request, res: Response) => {
     }
 }
 
+const getBodyRefreshToken = (req: Request): string | null => {
+    const value = (req.body as { refreshToken?: unknown } | undefined)
+        ?.refreshToken
+    return typeof value === 'string' && value.length > 0 ? value : null
+}
+
 export const refreshAccessToken = async (req: Request, res: Response) => {
-    const refreshToken = req.cookies?.refreshToken || req.body?.refreshToken
+    // Two disjoint flows (audit #1, CWE-522):
+    // - CLI: presents the refresh token in the request body (no cookie jar)
+    //   and already owns the token value — rotated tokens go back in the body.
+    // - Browser: credentials live in httpOnly cookies only. Cookies are
+    //   rotated and the response carries metadata, never token values, so an
+    //   XSS payload on the Studio origin cannot read a long-lived token out
+    //   of the response body.
+    const bodyRefreshToken = getBodyRefreshToken(req)
+    const cookieRefreshToken =
+        typeof req.cookies?.refreshToken === 'string'
+            ? req.cookies.refreshToken
+            : null
+    const refreshToken = bodyRefreshToken ?? cookieRefreshToken
 
     if (!refreshToken) {
         throw new UnauthorizedError('Refresh token required')
@@ -237,12 +263,16 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         throw new UnauthorizedError('Invalid refresh token')
     }
 
-    try {
-        const decoded = verifyJwtToken(refreshToken)
+    // Replay of an already-rotated token: the token leaked at some point,
+    // so nothing in its rotation family can be trusted (rescan hardening,
+    // CWE-522 — family revocation on reuse).
+    if (storedToken.revokedAt) {
+        await revokeRefreshTokenFamily(storedToken.familyId)
+        throw new UnauthorizedError('Invalid refresh token')
+    }
 
-        if (decoded.type !== 'refresh') {
-            throw new UnauthorizedError('Invalid refresh token')
-        }
+    try {
+        const decoded = verifyJwtToken(refreshToken, { type: 'refresh' })
 
         const newTokens = generateTokens({
             userId: decoded.userId,
@@ -268,9 +298,46 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         await storeRefreshToken(
             decoded.userId,
             newRefreshTokenHash,
-            new Date(refreshExpMs)
+            new Date(refreshExpMs),
+            // Successor stays in the same rotation family so a later replay
+            // of the presented token revokes this one too.
+            storedToken.familyId
         )
 
+        const accessExpiresAt = (() => {
+            const rawAccess = jwt.decode(newTokens.accessToken) as {
+                exp?: number
+            } | null
+            const accessExpSec = rawAccess?.exp
+            return typeof accessExpSec === 'number' ? accessExpSec * 1000 : null
+        })()
+        const accessExpiresInSeconds = (() => {
+            const rawAccess = jwt.decode(newTokens.accessToken) as {
+                exp?: number
+            } | null
+            const accessExpSec = rawAccess?.exp
+            return typeof accessExpSec === 'number'
+                ? Math.max(0, accessExpSec - Math.floor(Date.now() / 1000))
+                : null
+        })()
+
+        if (bodyRefreshToken) {
+            // CLI flow — keep the body-in/body-out contract `blend-studio` relies on.
+            res.json({
+                success: true,
+                data: {
+                    accessToken: newTokens.accessToken,
+                    expiresAt: accessExpiresAt,
+                    expiresInSeconds: accessExpiresInSeconds,
+                    // Return new refresh token so CLI can keep refreshing.
+                    refreshToken: newTokens.refreshToken,
+                    refreshExpiresAt: refreshExpMs,
+                },
+            })
+            return
+        }
+
+        // Browser flow — rotate cookies, return metadata only.
         res.cookie('refreshToken', newTokens.refreshToken, {
             httpOnly: true,
             secure: env.NODE_ENV === 'production',
@@ -290,31 +357,8 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
         res.json({
             success: true,
             data: {
-                accessToken: newTokens.accessToken,
-                expiresAt: (() => {
-                    const rawAccess = jwt.decode(newTokens.accessToken) as {
-                        exp?: number
-                    } | null
-                    const accessExpSec = rawAccess?.exp
-                    return typeof accessExpSec === 'number'
-                        ? accessExpSec * 1000
-                        : null
-                })(),
-                // Remaining seconds to expiry (computed from exp).
-                expiresInSeconds: (() => {
-                    const rawAccess = jwt.decode(newTokens.accessToken) as {
-                        exp?: number
-                    } | null
-                    const accessExpSec = rawAccess?.exp
-                    return typeof accessExpSec === 'number'
-                        ? Math.max(
-                              0,
-                              accessExpSec - Math.floor(Date.now() / 1000)
-                          )
-                        : null
-                })(),
-                // Return new refresh token so CLI can keep refreshing.
-                refreshToken: newTokens.refreshToken,
+                expiresAt: accessExpiresAt,
+                expiresInSeconds: accessExpiresInSeconds,
                 refreshExpiresAt: refreshExpMs,
             },
         })
@@ -441,7 +485,8 @@ export const getCliAccessToken = async (req: Request, res: Response) => {
         await storeRefreshToken(
             user.id,
             refreshTokenHash,
-            new Date(refreshExpMs)
+            new Date(refreshExpMs),
+            crypto.randomUUID()
         )
     }
 

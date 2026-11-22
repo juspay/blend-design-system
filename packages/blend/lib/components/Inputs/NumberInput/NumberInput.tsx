@@ -29,6 +29,8 @@ import {
     incrementValue,
     decrementValue,
 } from './utils'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -56,6 +58,7 @@ const NumberInput = ({
     onFocus,
     ...rest
 }: NumberInputProps) => {
+    const { m } = useMessages(INPUT_MESSAGES)
     const numberInputTokens =
         useResponsiveTokens<NumberInputTokensType>('NUMBER_INPUT')
 
@@ -245,7 +248,12 @@ const NumberInput = ({
                             ) {
                                 setInternalError(true)
                                 setInternalErrorMessage(
-                                    getRangeErrorMessage(numericMin, numericMax)
+                                    getRangeErrorMessage(
+                                        numericMin,
+                                        numericMax,
+                                        (code, vars) =>
+                                            m(`input.error.${code}`, vars)
+                                    )
                                 )
                             } else {
                                 setInternalError(false)
@@ -452,7 +460,9 @@ const NumberInput = ({
                     <PrimitiveButton
                         type="button"
                         aria-label={
-                            label ? `Increase ${label}` : 'Increase value'
+                            label
+                                ? m('input.a11y.increase', { label })
+                                : m('input.a11y.increase-value')
                         }
                         onClick={() => {
                             if (isUpButtonDisabled) return
@@ -532,7 +542,9 @@ const NumberInput = ({
                     <PrimitiveButton
                         type="button"
                         aria-label={
-                            label ? `Decrease ${label}` : 'Decrease value'
+                            label
+                                ? m('input.a11y.decrease', { label })
+                                : m('input.a11y.decrease-value')
                         }
                         onClick={() => {
                             if (isDownButtonDisabled) return

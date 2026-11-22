@@ -125,6 +125,21 @@ export const MDXComponents = {
     ),
     a: ({ href, children, ...props }: AnchorProps) => {
         const className = 'text-blue-500 hover:text-blue-700'
+        // A link to a section of another page (`/docs/x#section`) is a plain
+        // anchor: client-side navigation scrolls the new page to the top and
+        // loses the section, while a normal load lets the browser jump to it.
+        if (href?.startsWith('/') && href.includes('#')) {
+            return (
+                <a
+                    href={href}
+                    className={className}
+                    data-nav-content
+                    {...props}
+                >
+                    {children}
+                </a>
+            )
+        }
         if (href?.startsWith('/')) {
             return (
                 <Link

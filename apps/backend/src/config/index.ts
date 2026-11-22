@@ -22,6 +22,13 @@ const envSchema = z.object({
     JWT_REFRESH_EXPIRES_IN: z.string().default('30d'),
     /** Short-lived token minted for CLI paste from Studio (default 10 minutes). */
     JWT_CLI_EXPORT_EXPIRES_IN: z.string().default('10m'),
+    /**
+     * Optional issuer/audience binding for all JWTs (audit #19, CWE-347).
+     * When set, tokens are signed and verified with these claims. Deploying
+     * with them set invalidates outstanding tokens — users log in once more.
+     */
+    JWT_ISSUER: z.string().optional(),
+    JWT_AUDIENCE: z.string().optional(),
 
     FRONTEND_URL: z.string().default('http://localhost:5173'),
     STUDIO_URL: z.string().default(''),

@@ -248,6 +248,19 @@ export const createSliderRange = (
 /**
  * Get label styles for value display
  */
+export type SliderThumbLabelMessages = {
+    labelled: (label: string, thumbNumber: number, value: string) => string
+    thumb: (thumbNumber: number, value: string) => string
+    single: (value: string) => string
+}
+
+const ENGLISH_SLIDER_THUMB_LABELS: SliderThumbLabelMessages = {
+    labelled: (label, thumbNumber, value) =>
+        `${label}, value ${thumbNumber}: ${value}`,
+    thumb: (thumbNumber, value) => `Slider value ${thumbNumber}: ${value}`,
+    single: (value) => `Slider, current value: ${value}`,
+}
+
 /**
  * Builds ARIA attributes for slider thumb elements
  */
@@ -262,6 +275,8 @@ export const buildThumbAriaAttributes = (options: {
     ariaDescribedBy?: string
     thumbIndex: number
     thumbCount: number
+    /** Localized label copy; omitted, the English defaults are used. */
+    messages?: SliderThumbLabelMessages
 }): Record<string, string | undefined> => {
     const {
         min,
@@ -274,6 +289,7 @@ export const buildThumbAriaAttributes = (options: {
         ariaDescribedBy,
         thumbIndex,
         thumbCount,
+        messages = ENGLISH_SLIDER_THUMB_LABELS,
     } = options
 
     const ariaProps: Record<string, string | undefined> = {
@@ -289,13 +305,13 @@ export const buildThumbAriaAttributes = (options: {
     } else if (ariaLabel) {
         ariaProps['aria-label'] =
             thumbCount > 1
-                ? `${ariaLabel}, value ${thumbIndex + 1}: ${formattedValue}`
+                ? messages.labelled(ariaLabel, thumbIndex + 1, formattedValue)
                 : ariaLabel
     } else {
         ariaProps['aria-label'] =
             thumbCount > 1
-                ? `Slider value ${thumbIndex + 1}: ${formattedValue}`
-                : `Slider, current value: ${formattedValue}`
+                ? messages.thumb(thumbIndex + 1, formattedValue)
+                : messages.single(formattedValue)
     }
 
     if (ariaDescribedBy) {

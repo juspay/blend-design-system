@@ -27,6 +27,8 @@ import {
 } from './utils'
 import { FOUNDATION_THEME } from '../../tokens'
 import Block from '../Primitives/Block/Block'
+import { useMessages } from '../../i18n/useMessages'
+import { TABS_MESSAGES } from '../../i18n/catalog/tabs.messages'
 
 const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
     (
@@ -42,7 +44,7 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
             onTabAdd,
             showDropdown = false,
             showAddButton = false,
-            addButtonTooltip = 'Add new tab',
+            addButtonTooltip: addButtonTooltipProp,
             onTabChange,
             activeTab = '',
             disable = false,
@@ -54,6 +56,11 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
         },
         ref
     ) => {
+        const { m, pick } = useMessages(TABS_MESSAGES)
+        const addButtonTooltip = pick(
+            addButtonTooltipProp,
+            'tabs.label.add-new-tab'
+        )
         const tabsToken = useResponsiveTokens<TabsTokensType>('TABS')
         const tabsGroupId = useId()
 
@@ -441,15 +448,19 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
                                     items={dropdownItems}
                                     selected={activeTab}
                                     onSelect={handleDropdownSelect}
-                                    placeholder="Navigate"
-                                    searchPlaceholder="Search and navigate to tab"
+                                    placeholder={m('tabs.placeholder.navigate')}
+                                    searchPlaceholder={m(
+                                        'tabs.placeholder.search-tabs'
+                                    )}
                                     customTrigger={
                                         <PrimitiveButton
                                             height={FOUNDATION_THEME.unit[20]}
                                             width={FOUNDATION_THEME.unit[20]}
                                             backgroundColor="transparent"
                                             contentCentered
-                                            aria-label="Navigate to tab"
+                                            aria-label={m(
+                                                'tabs.a11y.navigate-to-tab'
+                                            )}
                                             _hover={{
                                                 backgroundColor:
                                                     FOUNDATION_THEME.colors

@@ -14,6 +14,8 @@ import {
 import { Pressable } from '../../primitives/Pressable'
 import { Text } from '../../primitives/Text'
 import { Block } from '../../primitives/Block'
+import { parseDimension } from '../../adapters/cssStringAdapter'
+import { HelpIcon } from '../shared/field/HelpIcon'
 import { Slot } from '../../primitives/Slot'
 import { getFieldState, type FieldError } from '../shared/field/fieldState'
 import type { DropdownTriggerState } from '../shared/dropdown/dropdown.types'
@@ -22,12 +24,14 @@ import type { SelectV2ErrorState } from '@juspay/blend-design-system/node'
 export type SingleSelectTriggerProps = {
     label?: string
     subLabel?: string
+    helpIconText?: string
     hintText?: string
     required?: boolean
     placeholder: string
     selectedLabel?: string
     size: SelectV2Size
     variant: SelectV2Variant
+    inline?: boolean
     disabled: boolean
     state: DropdownTriggerState
     error?: SelectV2ErrorState
@@ -45,12 +49,14 @@ function SingleSelectTriggerImpl(
     const {
         label,
         subLabel,
+        helpIconText,
         hintText,
         required = false,
         placeholder,
         selectedLabel,
         size,
         variant,
+        inline = false,
         disabled,
         state,
         error,
@@ -72,8 +78,13 @@ function SingleSelectTriggerImpl(
             trigger.backgroundColor[variant].closed
     )
     const border = trigger.outline[variant][state]
-    const height = trigger.height[size][variant]
-    const padding = trigger.padding[size][variant]
+    // Web: `(!inline || isContainer)` gates the trigger's padding, background
+    // and height — an inline borderless trigger is just its content.
+    const bare = inline && variant !== SelectV2Variant.CONTAINER
+    const height = bare ? undefined : trigger.height[size][variant]
+    const padding = bare
+        ? { top: 0, right: 0, bottom: 0, left: 0 }
+        : trigger.padding[size][variant]
     const borderRadius = trigger.borderRadius[size][variant]
 
     const showSelected = Boolean(selectedLabel)
@@ -97,7 +108,12 @@ function SingleSelectTriggerImpl(
                     flexDirection="row"
                     alignItems="center"
                     gap={4}
-                    width="100%"
+                    width={bare ? undefined : '100%'}
+                    // Web's select column gap (token `gap`) between label and trigger.
+                    style={{
+                        marginBottom:
+                            parseDimension(tokens.gap as string | number) ?? 8,
+                    }}
                     testID={testID ? `${testID}-labels` : undefined}
                 >
                     <Text
@@ -134,11 +150,27 @@ function SingleSelectTriggerImpl(
                             ({subLabel})
                         </Text>
                     ) : null}
+                    {helpIconText ? (
+                        // Web's select labels draw the help icon at 14px in
+                        // the hint colour (the select tokens carry no helpIcon).
+                        <HelpIcon
+                            text={helpIconText}
+                            size={14}
+                            color={String(
+                                (
+                                    tokens.hintText?.color as
+                                        | Record<string, unknown>
+                                        | undefined
+                                )?.[stateKey] ?? '#99A0AE'
+                            )}
+                            testID={testID ? `${testID}-help` : undefined}
+                        />
+                    ) : null}
                 </Block>
             ) : null}
             <Pressable
                 ref={ref}
-                background={backgroundColor}
+                background={bare ? 'transparent' : backgroundColor}
                 border={border ? String(border) : undefined}
                 borderRadius={borderRadius}
                 boxShadow={trigger.boxShadow[variant]}

@@ -1,5 +1,10 @@
 import { Text } from 'react-native'
-import { fireEvent, render, screen } from '@testing-library/react-native'
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+} from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { Sidebar } from '../src/components/Sidebar'
 import type { SidebarSectionData } from '../src/components/Sidebar'
@@ -48,7 +53,12 @@ describe('Sidebar — desktop rail', () => {
             fontScale: 1,
         })
     })
-    afterEach(() => spy.mockRestore())
+    // Unmount before restoring: the spy replaces a hook, so a re-render
+    // after the restore (reduce-motion settles late) changes the hook order.
+    afterEach(() => {
+        cleanup()
+        spy.mockRestore()
+    })
 
     it('renders the nav tree and hides the drawer/backdrop', () => {
         render(
@@ -227,7 +237,12 @@ describe('Sidebar — isSmallScreen override', () => {
             fontScale: 1,
         })
     })
-    afterEach(() => spy.mockRestore())
+    // Unmount before restoring: the spy replaces a hook, so a re-render
+    // after the restore (reduce-motion settles late) changes the hook order.
+    afterEach(() => {
+        cleanup()
+        spy.mockRestore()
+    })
 
     it('forces drawer mode even when the window is wide', () => {
         render(

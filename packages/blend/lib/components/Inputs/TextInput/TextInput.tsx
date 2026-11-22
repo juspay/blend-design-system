@@ -22,6 +22,8 @@ import {
 import styled from 'styled-components'
 import { Eye, EyeOff } from 'lucide-react'
 import { getTextInputBorderRadius } from './utils'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -39,7 +41,7 @@ const TextInput = ({
     helpIconHintText,
     disabled = false,
     label,
-    placeholder = 'Enter',
+    placeholder: placeholderProp,
     sublabel,
     value,
     onChange,
@@ -54,6 +56,8 @@ const TextInput = ({
     textInputGroupPosition,
     ...rest
 }: TextInputProps) => {
+    const { m, pick } = useMessages(INPUT_MESSAGES)
+    const placeholder = pick(placeholderProp, 'input.placeholder.enter')
     const textInputTokens =
         useResponsiveTokens<TextInputTokensType>('TEXT_INPUT')
     const { theme: blendTheme } = useTheme()
@@ -146,8 +150,8 @@ const TextInput = ({
             role="button"
             aria-label={
                 showPassword
-                    ? 'Hide password. Currently showing password as plain text.'
-                    : 'Show password. Currently hiding password.'
+                    ? m('input.a11y.hide-password-verbose')
+                    : m('input.a11y.show-password-verbose')
             }
             aria-pressed={showPassword}
             aria-controls={inputId}
@@ -267,7 +271,9 @@ const TextInput = ({
                 role={passwordToggle ? 'group' : undefined}
                 aria-label={
                     passwordToggle
-                        ? `${label || 'Password'} input with visibility toggle`
+                        ? label
+                            ? m('input.a11y.password-group', { label })
+                            : m('input.a11y.password-group-unnamed')
                         : undefined
                 }
             >

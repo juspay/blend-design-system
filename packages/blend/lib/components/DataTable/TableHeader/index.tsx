@@ -19,6 +19,8 @@ import { Checkbox } from '../../Checkbox'
 import { CheckboxSize } from '../../Checkbox/types'
 import { ColumnManager } from '../ColumnManager'
 import { TableTokenType } from '../dataTable.tokens'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../../i18n/useMessages'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import { useTheme } from '../../../context/ThemeContext'
 import { Tooltip, TooltipSide, TooltipAlign, TooltipSize } from '../../Tooltip'
@@ -247,6 +249,7 @@ const TableHeader = forwardRef<
         },
         ref
     ) => {
+        const { m } = useMessages(DATA_TABLE_MESSAGES)
         const isDisabled = showSkeleton || isLoading
         const [editingField, setEditingField] = useState<string | null>(null)
         const editableRef = useRef<HTMLDivElement>(null)
@@ -637,7 +640,7 @@ const TableHeader = forwardRef<
                         <th
                             role="columnheader"
                             scope="col"
-                            aria-label="Expand row"
+                            aria-label={m('data-table.a11y.expand-row')}
                             tabIndex={-1}
                             style={{
                                 ...tableToken.dataTable.table.header.cell,
@@ -680,7 +683,9 @@ const TableHeader = forwardRef<
                             <th
                                 role="columnheader"
                                 scope="col"
-                                aria-label="Select all rows"
+                                aria-label={m(
+                                    'data-table.a11y.select-all-rows'
+                                )}
                                 tabIndex={0}
                                 onClick={(
                                     e: React.MouseEvent<HTMLDivElement>
@@ -751,7 +756,9 @@ const TableHeader = forwardRef<
                                         onCheckedChange={onSelectAll}
                                         size={CheckboxSize.MEDIUM}
                                         disabled={isDisabled}
-                                        aria-label="Select all rows"
+                                        aria-label={m(
+                                            'data-table.a11y.select-all-rows'
+                                        )}
                                     />
                                 </Block>
                             </th>
@@ -1284,7 +1291,12 @@ const TableHeader = forwardRef<
                                                                 ] = el
                                                             }}
                                                             type="button"
-                                                            aria-label={`Filter ${column.header}`}
+                                                            aria-label={m(
+                                                                'data-table.a11y.filter-column',
+                                                                {
+                                                                    column: column.header,
+                                                                }
+                                                            )}
                                                             tabIndex={0}
                                                             $isActive={hasActiveFilter()}
                                                             $focusOutline={
@@ -1585,7 +1597,12 @@ const TableHeader = forwardRef<
                                                                 ] = el
                                                             }}
                                                             type="button"
-                                                            aria-label={`Filter ${column.header}`}
+                                                            aria-label={m(
+                                                                'data-table.a11y.filter-column',
+                                                                {
+                                                                    column: column.header,
+                                                                }
+                                                            )}
                                                             tabIndex={0}
                                                             $isActive={hasActiveFilter()}
                                                             $focusOutline={
@@ -2002,7 +2019,7 @@ const TableHeader = forwardRef<
                             <th
                                 role="columnheader"
                                 scope="col"
-                                aria-label="Actions"
+                                aria-label={m('data-table.label.actions')}
                                 tabIndex={-1}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
@@ -2081,7 +2098,9 @@ const TableHeader = forwardRef<
                                                         lineHeight: 1.2,
                                                     }}
                                                 >
-                                                    Actions
+                                                    {m(
+                                                        'data-table.label.actions'
+                                                    )}
                                                 </PrimitiveText>
                                             </Block>
                                             {hasAnySubtext && (
@@ -2107,7 +2126,7 @@ const TableHeader = forwardRef<
                             <th
                                 role="columnheader"
                                 scope="col"
-                                aria-label="View more columns"
+                                aria-label={m('data-table.a11y.more-columns')}
                                 tabIndex={-1}
                                 style={{
                                     ...tableToken.dataTable.table.header.cell,
@@ -2135,7 +2154,7 @@ const TableHeader = forwardRef<
                         <th
                             role="columnheader"
                             scope="col"
-                            aria-label="Column manager"
+                            aria-label={m('data-table.a11y.column-manager')}
                             tabIndex={-1}
                             style={{
                                 ...tableToken.dataTable.table.header.cell,

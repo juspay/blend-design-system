@@ -71,7 +71,12 @@ if (collisions.length > 0) {
 // ---------------------------------------------------------------------------
 // Check 2: key root exports must exist and must not type as `any`
 // ---------------------------------------------------------------------------
-const KEY_EXPORTS = ['FOUNDATION_THEME']
+// `createTranslator` is reachable from the root only through
+// `lib/main.ts`'s `export * from './i18n'`, so probing it here turns this
+// into a live gate on that re-export chain. A function value is the right
+// probe: its signature type is unambiguously non-`any` when the chain is
+// intact.
+const KEY_EXPORTS = ['FOUNDATION_THEME', 'createTranslator', 'BLEND_MESSAGES']
 
 const mainDts = resolve(distDir, 'main.d.ts')
 const program = ts.createProgram([mainDts], {

@@ -39,7 +39,6 @@ function MyComponent() {
             files={files}
             onChange={setFiles}
             state={UploadV2State.IDLE}
-            uploadHeaderText="Choose a file or drag & drop it here"
         />
     )
 }
@@ -140,8 +139,67 @@ function MyComponent() {
             { content: 'string', hintText: 'Header text' },
             { content: '' },
         ],
+        [
+            {
+                content: 'browseFilesText',
+                hintText:
+                    'Overrides the Browse Files button label. Wins over the provider translation; omit it to use the localized default.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'replaceFileText',
+                hintText:
+                    'Overrides the Replace File button label. Wins over the provider translation; omit it to use the localized default.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+        ],
     ]}
 />
+
+## Localization
+
+UploadV2 has 19 built-in strings: 16 shown on screen and 3 read only by screen readers. Everything else it renders comes from your props and data.
+
+The full list, with English defaults and placeholders, is in the [message catalog](/docs/internationalization/message-catalog#upload-v2), under [`upload-v2.*`](/docs/internationalization/message-catalog#upload-v2).
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'upload-v2.action.browse-files': 'Parcourir les fichiers',
+    'upload-v2.a11y.file-input': 'Téléversement de fichier',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Changing one string
+
+A prop replaces one string for that instance and always wins over `t`:
+
+| Prop               | Replaces key                    | English default                        |
+| ------------------ | ------------------------------- | -------------------------------------- |
+| `browseFilesText`  | `upload-v2.action.browse-files` | `Browse Files`                         |
+| `replaceFileText`  | `upload-v2.action.replace-file` | `Replace File`                         |
+| `uploadHeaderText` | `upload-v2.label.drop-hint`     | `Choose a file or drag & drop it here` |
+
+Don't pass a prop just to restate the English default: it wins over `t`, so that string would stay English in every locale.
 
 ## Component Tokens
 

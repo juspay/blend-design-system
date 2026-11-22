@@ -6,6 +6,7 @@ patchResizeObserver()
 // Core exports
 // ---------------------------------------------------------------------------
 export * from './context'
+export * from './i18n'
 export * from './tokens'
 export { FOUNDATION_THEME } from './tokens'
 export type { FoundationTokenType } from './tokens/theme.token'

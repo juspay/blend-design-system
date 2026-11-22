@@ -606,6 +606,39 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+Sidebar has 17 built-in strings: 5 shown on screen, 2 placeholders and 10 read only by screen readers. Everything else it renders comes from your props and data.
+
+The full list, with English defaults and placeholders, is in the [message catalog](/docs/internationalization/message-catalog#navigation), under [`navigation.*`](/docs/internationalization/message-catalog#navigation) and [`sidebar.*`](/docs/internationalization/message-catalog#sidebar).
+
+`navigation.*` is shared with SidebarV2, Topbar and TopbarV2, so translating it once covers all of them.
+
+`sidebar.*` is shared with SidebarV2, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'navigation.placeholder.select-merchant': 'Sélectionner un marchand',
+    'navigation.a11y.main-content': 'Contenu principal',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
 ## Component Tokens
 
 You can style the Sidebar component using the following tokens:

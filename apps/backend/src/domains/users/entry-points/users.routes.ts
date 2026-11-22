@@ -77,7 +77,28 @@ router.get(
             return
         }
 
-        res.json({ success: true, data: { user } })
+        // Non-self callers (admins included) get a masked projection, never
+        // the raw row: the raw row carries googleId, the real email and
+        // membership-adjacent fields that no cross-lookup needs (rescan
+        // round-2, CWE-200).
+        if (id === req.user?.id) {
+            res.json({ success: true, data: { user } })
+            return
+        }
+
+        res.json({
+            success: true,
+            data: {
+                user: {
+                    id: user.id,
+                    email: maskEmail(user.email),
+                    displayName: maskDisplayName(user.displayName),
+                    photoUrl: user.photoUrl,
+                    role: user.role,
+                    isActive: user.isActive,
+                },
+            },
+        })
     })
 )
 

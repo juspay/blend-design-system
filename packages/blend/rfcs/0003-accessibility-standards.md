@@ -258,6 +258,39 @@ Use semantic elements:
 </a>
 ```
 
+### Localized Accessible Names
+
+An accessible name is user-facing content, so an English-only one is a defect
+for a non-English consumer in the same way an English-only button label is.
+This RFC originally mandated accessible names without saying anything about
+localizing them; the i18n work in
+[RFC 0008](./0008-internationalization.md) adds the following requirements.
+
+- **Every accessible name resolves through the message catalog**, under the
+  reserved `a11y` key group — for example
+  `'upload-v2.a11y.remove-file': 'Remove {name}'`. Reserving the group is what
+  makes "which accessible names are localized yet" a one-line grep.
+- **Accessible names get a key, not a new prop.** The provider's `t` already
+  gives consumers full override power, and adding a prop per `aria-label` would
+  be substantial API bloat for no added capability. The one exception: where a
+  visible-text prop already exists and the accessible name mirrors it, derive
+  both from the same resolved string, so a consumer setting the visible prop
+  fixes the accessible name automatically.
+- **Never assemble an accessible name by concatenation.** Word order is not
+  portable between languages, so `` `${n} row${n !== 1 ? 's' : ''} selected` ``
+  and `', selected'` / `', today'` / `', disabled'` suffixes must become
+  whole-sentence keys with placeholders. Counts use the catalog's
+  `Intl.PluralRules`-backed plural keys rather than an English ternary.
+- **`role`, `aria-labelledby`, `aria-controls`, `aria-describedby` and `data-*`
+  are identifiers, never localized.** Translating them breaks the
+  element relationships the accessible name depends on.
+
+Note a gap in how these are gated: `pnpm test:a11y` selects suites with
+`--testNamePattern 'accessibility|Accessibility'`, so a test covering a
+localized accessible name is only included if its `describe` or `it` name
+contains that word. The `*.accessibility.test.tsx` filename alone is silently
+excluded.
+
 ## Alternatives Considered
 
 ### Option 1: WCAG 2.2 AAA Compliance
@@ -412,6 +445,7 @@ return <button onClick={onClick} onKeyDown={onKeyDown}>...</button>
 - [RFC 0002](./0002-component-testing-standards.md) - Component Testing Standards
 - [RFC 0004](./0004-typography-system.md) - Typography System
 - [RFC 0005](./0005-token-naming-conventions.md) - Token Naming Conventions
+- [RFC 0008](./0008-internationalization.md) - Internationalization; accessible names must resolve through the message catalog
 
 ## References
 

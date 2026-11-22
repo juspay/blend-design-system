@@ -15,6 +15,8 @@ import type { DatePickerComponentProps } from '../types'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { getMobileToken } from './mobile.tokens'
 import { useTheme } from '../../../context'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../../i18n/catalog/dateRangePicker.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
     selectedRange,
@@ -31,6 +33,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
 }) => {
     const { innerWidth } = useBreakpoints()
     const { foundationTokens, theme } = useTheme()
+    const { m } = useMessages(DATE_RANGE_PICKER_MESSAGES)
     const tokens = getMobileToken(foundationTokens, theme)[
         innerWidth >= 1024 ? 'lg' : 'sm'
     ]
@@ -75,7 +78,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                                 fontWeight={tokens.header.text.fontWeight}
                                 color={tokens.header.text.color}
                             >
-                                Year
+                                {m('date-range-picker.label.year')}
                             </PrimitiveText>
                         </Block>
                         <ScrollablePicker
@@ -121,7 +124,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                                 fontWeight={tokens.header.text.fontWeight}
                                 color={tokens.header.text.color}
                             >
-                                Month
+                                {m('date-range-picker.label.month')}
                             </PrimitiveText>
                         </Block>
                         <ScrollablePicker
@@ -167,7 +170,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                                 fontWeight={tokens.header.text.fontWeight}
                                 color={tokens.header.text.color}
                             >
-                                Date
+                                {m('date-range-picker.label.date')}
                             </PrimitiveText>
                         </Block>
                         <ScrollablePicker
@@ -213,7 +216,7 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                                 fontWeight={tokens.header.text.fontWeight}
                                 color={tokens.header.text.color}
                             >
-                                Time
+                                {m('date-range-picker.label.time')}
                             </PrimitiveText>
                         </Block>
                         <ScrollablePicker
@@ -266,14 +269,14 @@ const DatePickerComponent: React.FC<DatePickerComponentProps> = ({
                         variant={TabsV2Variant.BOXED}
                         size={TabsV2Size.MD}
                     >
-                        Start Date
+                        {m('date-range-picker.label.start-date')}
                     </TabsV2Trigger>
                     <TabsV2Trigger
                         value="end"
                         variant={TabsV2Variant.BOXED}
                         size={TabsV2Size.MD}
                     >
-                        End Date
+                        {m('date-range-picker.label.end-date')}
                     </TabsV2Trigger>
                 </TabsV2List>
 

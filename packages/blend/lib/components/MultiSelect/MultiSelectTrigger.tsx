@@ -12,6 +12,8 @@ import {
     MultiSelectSelectionTagType,
     MultiSelectVariant,
 } from './types'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 export type MultiSelectTriggerProps = {
     selectedValues: string[]
     slot: React.ReactNode
@@ -56,6 +58,7 @@ const MultiSelectTrigger = ({
     maxTriggerWidth,
     minTriggerWidth,
 }: MultiSelectTriggerProps) => {
+    const { m } = useMessages(SELECT_MESSAGES)
     const slotRef = useRef<HTMLDivElement>(null)
     const slotWidth = slotRef.current?.offsetWidth
     const showCancelButton =
@@ -295,8 +298,10 @@ const MultiSelectTrigger = ({
                             onClick={() => onChange('')}
                             aria-label={
                                 label
-                                    ? `Clear selection for ${label}`
-                                    : 'Clear selection'
+                                    ? m('select.a11y.clear-selection-for', {
+                                          label,
+                                      })
+                                    : m('select.a11y.clear-selection')
                             }
                             outline={
                                 multiSelectTokens.trigger.outline[variant][

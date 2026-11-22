@@ -3,6 +3,8 @@ import type { CSSProperties } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { FOUNDATION_THEME } from '../../tokens'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 type SelectSearchStatusProps = {
     isControlled: boolean
@@ -32,13 +34,15 @@ const SelectSearchStatus = ({
     isEmpty,
     emptyStateText,
 }: SelectSearchStatusProps) => {
+    // Above the early return: hooks must run on every render.
+    const { m } = useMessages(SELECT_MESSAGES)
     if (!isControlled && !isLoading) return null
 
     const announcement = isLoading
-        ? 'Searching'
+        ? m('select.a11y.searching')
         : isEmpty
           ? emptyStateText
-          : 'Search results updated'
+          : m('select.a11y.results-updated')
 
     return (
         <>
@@ -64,7 +68,7 @@ const SelectSearchStatus = ({
                         variant="body.md"
                         color={FOUNDATION_THEME.colors.gray[600]}
                     >
-                        Searching…
+                        {m('select.status.searching')}
                     </Text>
                 </Block>
             )}

@@ -40,6 +40,8 @@ import {
     getNextSelectionAfterToggle,
     getNextSelectionForScope,
 } from '../shared/multiSelectSelection'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -60,9 +62,10 @@ const MultiSelectV2 = ({
     hintText,
     placeholder,
     size = MultiSelectV2Size.MD,
-    search = { show: true, placeholder: 'Search options...' },
+    // No placeholder here: the menu resolves it, so a provider `t` reaches it.
+    search = { show: true },
     enableSelectAll = false,
-    selectAllText = 'Select All',
+    selectAllText: selectAllTextProp,
     maxSelections,
     customTrigger,
     usePanelOnMobile = true,
@@ -93,7 +96,7 @@ const MultiSelectV2 = ({
         variant: 'pulse',
     },
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     showClearButton,
     onClearAllClick,
     onOpenChange,
@@ -101,6 +104,14 @@ const MultiSelectV2 = ({
     menuFooter,
     ...rest
 }: MultiSelectV2Props) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    // The menus resolve the display text themselves; they get the raw prop so
+    // their select-all `data-id` can fall back to the English default rather
+    // than inheriting an already-translated string.
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const { disabled, name, ...buttonRest } = rest as {
         disabled?: boolean
         name?: string
@@ -240,7 +251,7 @@ const MultiSelectV2 = ({
         size,
         search,
         enableSelectAll,
-        selectAllText,
+        selectAllText: selectAllTextProp,
         maxSelections,
         customTrigger,
         error,
@@ -342,7 +353,7 @@ const MultiSelectV2 = ({
                         disabled={disabled}
                         search={search}
                         enableSelectAll={enableSelectAll}
-                        selectAllText={selectAllText}
+                        selectAllText={selectAllTextProp}
                         maxSelections={maxSelections}
                         onSelectAll={
                             enableSelectAll ? handleBulkSelection : undefined
@@ -431,8 +442,10 @@ const MultiSelectV2 = ({
                             onKeyDown={handleClearKeyDown}
                             aria-label={
                                 label
-                                    ? `Clear selection for ${label}`
-                                    : 'Clear selection'
+                                    ? m('select.a11y.clear-selection-for', {
+                                          label,
+                                      })
+                                    : m('select.a11y.clear-selection')
                             }
                             tabIndex={disabled ? -1 : 0}
                             outline={clearButtonOutline}

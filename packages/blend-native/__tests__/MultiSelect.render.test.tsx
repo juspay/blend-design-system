@@ -1,4 +1,4 @@
-import { Text } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { render, screen, fireEvent } from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { MultiSelect } from '../src/components/MultiSelect'
@@ -261,6 +261,103 @@ describe('MultiSelect rendering', () => {
         )
         expect(screen.getByText('Apply')).toBeTruthy()
         expect(screen.getByText('Cancel')).toBeTruthy()
+    })
+
+    it('lets the list area shrink so a long list scrolls above the action buttons', () => {
+        const many: MultiSelectV2GroupType[] = [
+            {
+                items: Array.from({ length: 40 }, (_, index) => ({
+                    value: `column${index}`,
+                    label: `Column ${index}`,
+                })),
+            },
+        ]
+        wrap(
+            <MultiSelect
+                placeholder="Manage columns"
+                items={many}
+                selectedValues={[]}
+                onSelectionChange={jest.fn()}
+                open
+                showActionButtons
+                primaryAction={{ text: 'Apply', onClick: jest.fn() }}
+                testID="ms"
+            />
+        )
+        expect(
+            StyleSheet.flatten(screen.getByTestId('ms-list-area').props.style)
+                .flexShrink
+        ).toBe(1)
+        expect(screen.getByText('Apply')).toBeTruthy()
+    })
+
+    it('lays out the menu as web MultiSelectV2: search, then select all, checkboxes after labels', () => {
+        wrap(
+            <MultiSelect
+                placeholder="Pick fruits"
+                items={groups}
+                selectedValues={[]}
+                onSelectionChange={jest.fn()}
+                open
+                enableSelectAll
+                search={{ show: true }}
+                testID="ms"
+            />
+        )
+        // Host elements in document order.
+        const nodes = screen.UNSAFE_root.findAll(
+            (node) => typeof node.type === 'string'
+        )
+        const at = (node: unknown) => nodes.indexOf(node as never)
+        expect(at(screen.getByPlaceholderText('Search...'))).toBeLessThan(
+            at(screen.getByTestId('ms-select-all'))
+        )
+        const label = at(screen.getByText('Apple'))
+        const checkbox = at(
+            screen
+                .getAllByRole('checkbox')
+                .find((node) => node.props.accessibilityLabel === 'Apple')
+        )
+        expect(label).toBeGreaterThanOrEqual(0)
+        expect(checkbox).toBeGreaterThan(label)
+    })
+
+    it('sizes the trigger like web (no fixed width), so it fits a row', () => {
+        wrap(
+            <MultiSelect
+                placeholder="Pick fruits"
+                items={groups}
+                selectedValues={[]}
+                onSelectionChange={jest.fn()}
+                testID="ms"
+            />
+        )
+        expect(
+            StyleSheet.flatten(screen.getByTestId('ms-trigger').props.style)
+                .width
+        ).toBeUndefined()
+    })
+
+    it('applies menuStyle to the menu surface', () => {
+        wrap(
+            <MultiSelect
+                placeholder="Pick fruits"
+                items={groups}
+                selectedValues={[]}
+                onSelectionChange={jest.fn()}
+                open
+                menuStyle={{ borderColor: 'rgb(1, 2, 3)' }}
+                testID="ms"
+            />
+        )
+        expect(
+            StyleSheet.flatten(
+                (
+                    screen.queryByTestId('ms-content') ??
+                    screen.getByTestId('ms-sheet')
+                ).props.style
+            ).borderColor
+        ).toBe('rgb(1, 2, 3)')
     })
 
     it('renders error state', () => {

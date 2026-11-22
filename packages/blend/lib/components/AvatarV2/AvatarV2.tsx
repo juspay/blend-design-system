@@ -29,6 +29,8 @@ import {
     createAvatarKeyboardHandler,
     isInteractive,
 } from './avatarV2.utils'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 const AvatarImage = ({
     src,
@@ -179,6 +181,7 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(DISPLAY_MESSAGES)
         const [imageError, setImageError] = useState(false)
 
         useEffect(() => {
@@ -197,7 +200,17 @@ const AvatarV2 = forwardRef<HTMLDivElement, AvatarV2Props>(
         const accessibleLabel = getAccessibleLabel(
             alt,
             fallbackText,
-            statusType
+            statusType,
+            {
+                fallbackName: m('avatar.label.fallback'),
+                formatStatus: (name, status) =>
+                    status === 'online' ||
+                    status === 'offline' ||
+                    status === 'away' ||
+                    status === 'busy'
+                        ? m(`avatar.a11y.status-${status}`, { name })
+                        : undefined,
+            }
         )
         const ariaLiveValue = getAriaLiveValue(statusType)
         const fallbackContent = renderFallbackContent(fallbackText, alt)

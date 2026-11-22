@@ -12,12 +12,19 @@ const SelectAllItem = ({
     availableValues,
     onSelectAll,
     selectAllText,
+    dataIdText,
     disabled,
 }: {
     selected: string[]
     availableValues: string[]
     onSelectAll: (selectAll: boolean) => void
     selectAllText: string
+    /**
+     * Value for the `data-id` hooks only: the consumer's raw `selectAllText`,
+     * else the catalog's English default. Kept separate from the displayed
+     * (possibly translated) text so selectors stay stable across locales.
+     */
+    dataIdText?: string
     disabled?: boolean
 }) => {
     const multiSelectTokens =
@@ -69,7 +76,9 @@ const SelectAllItem = ({
                 onClick={handleClick}
             >
                 <PrimitiveText
-                    data-id={selectAllText || 'selectAll-checkbox'}
+                    data-id={
+                        (dataIdText ?? selectAllText) || 'selectAll-checkbox'
+                    }
                     fontSize={multiSelectTokens.menu.item.optionsLabel.fontSize}
                     fontWeight={
                         multiSelectTokens.menu.item.optionsLabel.fontWeight
@@ -93,7 +102,7 @@ const SelectAllItem = ({
                 <Checkbox
                     data-status={disabled ? 'disabled' : 'enabled'}
                     data-element="checkbox"
-                    data-id={selectAllText || 'checkbox'}
+                    data-id={(dataIdText ?? selectAllText) || 'checkbox'}
                     data-state={
                         getCheckboxState() ? 'selected' : 'not selected'
                     }

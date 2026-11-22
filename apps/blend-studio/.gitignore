@@ -49,3 +49,7 @@ next-env.d.ts
 
 # Generated route tree
 routeTree.gen.ts
+
+# playwright artifacts
+/test-results/
+/playwright-report/

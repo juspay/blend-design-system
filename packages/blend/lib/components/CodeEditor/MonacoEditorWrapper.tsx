@@ -3,6 +3,8 @@ import Editor, { loader, OnMount } from '@monaco-editor/react'
 import type * as Monaco from 'monaco-editor'
 import Block from '../Primitives/Block/Block'
 import type { CodeBlockTokenType } from '../CodeBlock/codeBlock.token'
+import { useMessages } from '../../i18n/useMessages'
+import { CODE_MESSAGES } from '../../i18n/catalog/code.messages'
 
 // Monaco registers only `javascript`/`typescript` (VS Code's
 // `javascriptreact`/`typescriptreact` IDs are not registered, so they would
@@ -342,6 +344,7 @@ export const MonacoEditorWrapper = ({
     onBlur,
     autoFocus = false,
 }: MonacoEditorWrapperProps) => {
+    const { m } = useMessages(CODE_MESSAGES)
     const editorRef = useRef<Monaco.editor.IStandaloneCodeEditor | null>(null)
     const monacoRef = useRef<typeof import('monaco-editor') | null>(null)
     const shortcutDisposables = useRef<Monaco.IDisposable[]>([])
@@ -646,7 +649,7 @@ export const MonacoEditorWrapper = ({
                             color={tokens.body.syntax.comment}
                             fontSize={tokens.body.code.fontSize}
                         >
-                            Loading editor...
+                            {m('code-editor.status.loading')}
                         </Block>
                     }
                 />
@@ -660,7 +663,7 @@ export const MonacoEditorWrapper = ({
                     color={tokens.body.syntax.comment}
                     fontSize={tokens.body.code.fontSize}
                 >
-                    Loading editor...
+                    {m('code-editor.status.loading')}
                 </Block>
             )}
 

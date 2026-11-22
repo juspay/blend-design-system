@@ -14,6 +14,8 @@ import { filterMenuV2Groups } from './menuV2.utils'
 import MenuV2Content from './MenuV2Content'
 import { MenuV2SelectionProvider } from './MenuV2SelectionContext'
 import { CSSObject } from 'styled-components'
+import { useMessages } from '../../i18n/useMessages'
+import { MENU_MESSAGES } from '../../i18n/catalog/menu.messages'
 
 const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
     (
@@ -23,7 +25,7 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
             items = [] as MenuV2GroupType[],
             dimensions = {} as MenuV2Dimensions,
             enableSearch = false,
-            searchPlaceholder = 'Search',
+            searchPlaceholder: searchPlaceholderProp,
             searchSortFn,
             onEnter,
             enableVirtualScrolling = false,
@@ -42,6 +44,11 @@ const MenuV2 = React.forwardRef<HTMLDivElement, MenuV2Props>(
         },
         ref
     ) => {
+        const { pick } = useMessages(MENU_MESSAGES)
+        const searchPlaceholder = pick(
+            searchPlaceholderProp,
+            'menu.placeholder.search'
+        )
         const [internalOpen, setInternalOpen] = useState(false)
         const [searchText, setSearchText] = useState('')
 

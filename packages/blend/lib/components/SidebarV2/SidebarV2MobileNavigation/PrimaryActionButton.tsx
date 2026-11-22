@@ -1,6 +1,8 @@
 import { forwardRef } from 'react'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import type { PrimaryActionButtonProps } from './types'
+import { useMessages } from '../../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../../i18n/catalog/navigation.messages'
 import { parseUnitValue } from './utils'
 
 const PrimaryActionIcon = ({
@@ -35,6 +37,7 @@ const PrimaryActionButton = forwardRef<
     HTMLButtonElement,
     PrimaryActionButtonProps
 >(({ tokens, buttonProps }, ref) => {
+    const { m } = useMessages(NAVIGATION_MESSAGES)
     const iconSize = parseUnitValue(tokens.primaryAction.icon.width)
     const iconColor = String(tokens.primaryAction.color)
     const strokeWidth = tokens.primaryAction.icon.strokeWidth
@@ -55,7 +58,7 @@ const PrimaryActionButton = forwardRef<
             boxShadow={tokens.primaryAction.boxShadow}
             color={iconColor}
             flexShrink={0}
-            aria-label="Primary action"
+            aria-label={m('sidebar.a11y.primary-action')}
             {...buttonProps}
         >
             <PrimaryActionIcon

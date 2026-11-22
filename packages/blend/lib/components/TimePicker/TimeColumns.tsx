@@ -14,6 +14,8 @@ import {
     to12Hour,
     timeValueToSeconds,
 } from '../shared/datetime/timeCore'
+import { TIME_PICKER_MESSAGES } from '../../i18n/catalog/timePicker.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 export type TimeColumnsSize = 'sm' | 'md' | 'lg'
 
@@ -41,12 +43,14 @@ type ColumnOption = {
     disabled: boolean
 }
 
-const COLUMN_LABELS: Record<ColumnKind, string> = {
-    hour: 'Hours',
-    minute: 'Minutes',
-    second: 'Seconds',
-    period: 'AM/PM',
-}
+/** Column heading to message key. The headings themselves live in the catalog. */
+const COLUMN_LABEL_KEY: Record<ColumnKind, keyof typeof TIME_PICKER_MESSAGES> =
+    {
+        hour: 'time-picker.label.hours',
+        minute: 'time-picker.label.minutes',
+        second: 'time-picker.label.seconds',
+        period: 'time-picker.label.period',
+    }
 
 const pad = (n: number) => n.toString().padStart(2, '0')
 
@@ -73,6 +77,7 @@ const TimeColumns = ({
     disabled = false,
     idPrefix,
 }: TimeColumnsProps) => {
+    const { m } = useMessages(TIME_PICKER_MESSAGES)
     const optionTokens = tokens.dropdown.option
     const columnTokens = tokens.dropdown.column
 
@@ -158,9 +163,16 @@ const TimeColumns = ({
         if (format === '12h') {
             list.push({
                 kind: 'period',
-                options: (['AM', 'PM'] as const).map((label, index) => ({
+                // Only the DISPLAY label is localized. `raw` (0 = AM, 1 = PM)
+                // is what selection, keying and `from12Hour` use, and the
+                // `'AM' | 'PM'` union in shared/datetime/timeCore.ts is a DATA
+                // type, not display text — localizing that union would break
+                // time parsing.
+                options: (
+                    ['time-picker.label.am', 'time-picker.label.pm'] as const
+                ).map((labelKey, index) => ({
                     raw: index,
-                    label,
+                    label: m(labelKey),
                     disabled: !rangeIsSelectable(
                         { hours: index === 0 ? 0 : 12, minutes: 0, seconds: 0 },
                         {
@@ -284,6 +296,7 @@ const TimeColumn = ({
     idPrefix,
     showSeparator,
 }: TimeColumnProps) => {
+    const { m } = useMessages(TIME_PICKER_MESSAGES)
     const listRef = useRef<HTMLDivElement>(null)
     const optionRefs = useRef<Map<number, HTMLDivElement>>(new Map())
 
@@ -418,7 +431,7 @@ const TimeColumn = ({
                 fontWeight={columnTokens.header.fontWeight}
                 style={{ paddingBlock: columnTokens.header.paddingY as string }}
             >
-                {COLUMN_LABELS[kind]}
+                {m(COLUMN_LABEL_KEY[kind])}
             </PrimitiveText>
             <Block
                 ref={listRef}

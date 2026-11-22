@@ -6,6 +6,18 @@ import type { ActionButtonsProps } from '../types'
 import { useBreakpoints } from '../../../hooks/useBreakPoints'
 import { getMobileToken } from './mobile.tokens'
 import { useTheme } from '../../../context'
+import { COMMON_MESSAGES } from '../../../i18n/catalog/common.messages'
+import { DATE_RANGE_PICKER_MESSAGES } from '../../../i18n/catalog/dateRangePicker.messages'
+import { useMessages } from '../../../i18n/useMessages'
+
+// Two fragments because "Cancel" is shared library-wide while "Apply Date" is
+// this component's own copy. Merged at the module level, not inside the
+// component, so the object identity stays stable across renders and
+// `useMessages`' memo does not thrash.
+const ACTION_BUTTON_MESSAGES = {
+    ...COMMON_MESSAGES,
+    ...DATE_RANGE_PICKER_MESSAGES,
+} as const
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
     onCancel,
@@ -14,6 +26,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
     isApplyDisabled = false,
     applyDisabledMessage,
 }) => {
+    const { m } = useMessages(ACTION_BUTTON_MESSAGES)
     const { innerWidth } = useBreakpoints()
     const { foundationTokens, theme } = useTheme()
     const tokens = getMobileToken(foundationTokens, theme)[
@@ -41,7 +54,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
                     width="100%"
                     disabled={isDisabled}
                     onClick={onCancel}
-                    text="Cancel"
+                    text={m('common.action.cancel')}
                 />
             </Block>
             <Block
@@ -58,7 +71,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
                             width="100%"
                             disabled={true}
                             onClick={onApply}
-                            text="Apply Date"
+                            text={m('date-range-picker.action.apply-date')}
                         />
                     </TooltipV2>
                 ) : (
@@ -68,7 +81,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
                         width="100%"
                         disabled={isDisabled}
                         onClick={onApply}
-                        text="Apply Date"
+                        text={m('date-range-picker.action.apply-date')}
                     />
                 )}
             </Block>

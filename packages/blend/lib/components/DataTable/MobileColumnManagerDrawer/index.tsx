@@ -16,6 +16,9 @@ import { MultiSelect } from '../../MultiSelect'
 import { MultiSelectMenuGroupType } from '../../MultiSelect/types'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import type { TableTokenType } from '../dataTable.tokens'
+import { COMMON_MESSAGES } from '../../../i18n/catalog/common.messages'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 export interface MobileColumnManagerDrawerProps<
     T extends Record<string, unknown>,
@@ -31,6 +34,8 @@ const MobileColumnManagerDrawer: React.FC<
     MobileColumnManagerDrawerProps<Record<string, unknown>>
 > = ({ isOpen, onClose, columns, visibleColumns, onColumnChange }) => {
     const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
     const [selectedValues, setSelectedValues] = useState<string[]>(() =>
         visibleColumns.map((col) => String(col.field))
     )
@@ -38,7 +43,7 @@ const MobileColumnManagerDrawer: React.FC<
     const multiSelectItems: MultiSelectMenuGroupType[] = useMemo(() => {
         return [
             {
-                groupLabel: 'Available Columns',
+                groupLabel: m('data-table.label.available-columns'),
                 items: columns.map((column) => ({
                     label: column.header,
                     value: String(column.field),
@@ -47,7 +52,7 @@ const MobileColumnManagerDrawer: React.FC<
                 showSeparator: false,
             },
         ]
-    }, [columns])
+    }, [columns, m])
 
     // Handle MultiSelect change
     const handleMultiSelectChange = (value: string) => {
@@ -109,7 +114,7 @@ const MobileColumnManagerDrawer: React.FC<
                                 fontWeight={FOUNDATION_THEME.font.weight[600]}
                                 color={tableToken.header.title.color}
                             >
-                                Add Columns
+                                {m('data-table.action.add-columns')}
                             </PrimitiveText>
                         </Block>
                     </DrawerTitle>
@@ -126,15 +131,21 @@ const MobileColumnManagerDrawer: React.FC<
                                 style={{ flex: 1 }}
                             >
                                 <MultiSelect
-                                    label="Select Columns"
-                                    placeholder="Choose columns to display"
+                                    label={m('data-table.label.select-columns')}
+                                    placeholder={m(
+                                        'data-table.placeholder.choose-columns'
+                                    )}
                                     selectedValues={selectedValues}
                                     onChange={handleMultiSelectChange}
                                     items={multiSelectItems}
                                     enableSearch={true}
-                                    searchPlaceholder="Search columns..."
+                                    searchPlaceholder={m(
+                                        'data-table.placeholder.search-columns'
+                                    )}
                                     enableSelectAll={true}
-                                    selectAllText="Select All Columns"
+                                    selectAllText={m(
+                                        'data-table.action.select-all-columns'
+                                    )}
                                     useDrawerOnMobile={true}
                                 />
                             </Block>
@@ -154,7 +165,7 @@ const MobileColumnManagerDrawer: React.FC<
                                         buttonType={ButtonType.PRIMARY}
                                         size={ButtonSize.MEDIUM}
                                         onClick={handleApply}
-                                        text="Apply"
+                                        text={mc('common.action.apply')}
                                     />
                                 </Block>
                             </Block>

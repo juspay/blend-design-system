@@ -130,6 +130,38 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+Stepper has 16 built-in strings: 16 read only by screen readers. Everything else it renders comes from your props and data.
+
+The full list, with English defaults and placeholders, is in the [message catalog](/docs/internationalization/message-catalog#stepper), under [`stepper.*`](/docs/internationalization/message-catalog#stepper).
+
+`stepper.*` is shared with StepperV2, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'stepper.a11y.additional-info':
+        'Informations supplémentaires : {description}',
+    'stepper.a11y.collapse-substeps': 'Réduire les sous-étapes de {title}',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
 ## Component Tokens
 
 You can style the Stepper component using the following tokens:

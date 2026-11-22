@@ -34,6 +34,11 @@ export type DropdownItemAdapter<TItem = unknown> = {
      * like the Checkbox in MultiSelect that need their own interactivity.
      */
     leadingAccessory?: ReactNode
+    /**
+     * Renders last in the row, after `trailingSlot` — where web's
+     * SelectItemV2 puts MultiSelect's checkbox.
+     */
+    trailingAccessory?: ReactNode
     disabled?: boolean
     isSelected?: boolean
     hasSubMenu?: boolean

@@ -18,6 +18,8 @@ import {
     toPixels,
 } from './utils'
 import { InputSizeV2 } from '../inputV2.types'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
     (
@@ -25,7 +27,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
             leftSlot,
             rightSlot,
             error = false,
-            placeholder = 'Enter',
+            placeholder: placeholderProp,
             value,
             onChange,
             name,
@@ -39,6 +41,11 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
         },
         ref
     ) => {
+        const { m, pick } = useMessages(INPUT_MESSAGES)
+        const placeholder = pick(placeholderProp, 'input.placeholder.enter')
+        // `data-searchinput` keeps the English default for stable selectors.
+        const dataPlaceholder =
+            placeholderProp === undefined ? 'Enter' : placeholderProp
         const filteredRest = filterBlockedProps(rest)
         const searchInputTokens =
             useResponsiveTokens<SearchInputV2TokensType>('SEARCH_INPUT_V2')
@@ -162,7 +169,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
 
         return (
             <Block
-                data-searchinput={placeholder ?? ''}
+                data-searchinput={dataPlaceholder ?? ''}
                 data-status={disabled ? 'disabled' : 'enabled'}
                 position="relative"
                 width={'100%'}
@@ -195,7 +202,7 @@ const SearchInputV2 = forwardRef<HTMLInputElement, SearchInputV2Props>(
                         tabIndex={showClearButton && !rightSlot ? 0 : undefined}
                         aria-label={
                             showClearButton && !rightSlot
-                                ? 'Clear search'
+                                ? m('input.a11y.clear-search')
                                 : undefined
                         }
                         top={searchInputTokens.inputContainer.slot.right.top}

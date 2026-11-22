@@ -44,6 +44,8 @@ export function useDropdown(options: {
         placement,
         alignment,
         offset,
+        // DropdownContent caps its surface at `position.maxHeight`.
+        capHeightToAvailable: true,
     })
 
     const breakpoint = useNativeBreakpoint()

@@ -13,6 +13,8 @@ import {
     getLayoutStyles,
     getSlotStyles,
 } from './utils'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 /**
  * Orchestrator: composes tokens, layout, and ResponsiveText.
@@ -39,6 +41,7 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
         },
         ref
     ) => {
+        const { m } = useMessages(DISPLAY_MESSAGES)
         const keyValuePairTokens =
             useResponsiveTokens<KeyValuePairV2TokensType>('KEYVALUEPAIRV2')
 
@@ -78,7 +81,7 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
                 fontWeight={keyValuePairTokens.key.fontWeight}
                 textOverflow="truncate"
                 maxLines={maxLines}
-                showTooltipOnTruncate={false}
+                showTooltipOnTruncate={showTooltipOnTruncate}
                 id={keyId}
                 role="term"
                 slotPresent={!!slots.key}
@@ -123,7 +126,10 @@ const KeyValuePairV2 = forwardRef<HTMLDivElement, KeyValuePairV2PropTypes>(
                 valueLeftSlot={slots.value?.left}
                 valueRightSlot={slots.value?.right}
                 dataKeyValuePair={keyString || 'keyvaluepair'}
-                ariaLabel={`${keyString}: ${value || ''}`}
+                ariaLabel={m('key-value-pair.a11y.label', {
+                    key: String(keyString),
+                    value: value || '',
+                })}
                 keyDataId={keyString || 'key'}
                 valueDataId={value || 'value'}
             />

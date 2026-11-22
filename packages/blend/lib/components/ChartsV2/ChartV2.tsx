@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useMemo } from 'react'
 import {
     ChartV2ReactRefObject,
     ChartV2Props,
@@ -15,24 +15,49 @@ import ChartV2Skeleton from './ChartV2Skeleton'
 import ChartV2NoData from './ChartV2NoData'
 import { filterBlockedProps } from '../../utils/prop-helpers'
 import { mergeChartOptions } from './chartV2Options'
-import './chartV2.sankey'
+import { ensureSankeyRegistered } from './chartV2.sankey'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
+import { DEFAULT_LOCALE } from '../../i18n/constants'
 
 const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
     (
-        {
-            highcharts = Highcharts,
-            skeleton,
-            noData = {
-                title: 'No data available',
-                subtitle: 'Data will appear here once available',
-                button: undefined,
-            },
-            ...props
-        },
+        { highcharts = Highcharts, skeleton, noData: noDataProp, ...props },
         ref
     ) => {
+        const { m, locale } = useMessages(CHART_MESSAGES)
+        // Same semantics as the old destructuring default: only an omitted
+        // prop gets the built-in empty state.
+        const noData =
+            noDataProp === undefined
+                ? {
+                      title: m('chart.empty.no-data'),
+                      subtitle: m('chart.empty.no-data-subtitle'),
+                      button: undefined,
+                  }
+                : noDataProp
         const tokens = useResponsiveTokens<ChartV2TokensType>('CHARTSV2')
-        const { options = {}, ...restProps } = props
+        const { options: optionsProp = {}, ...restProps } = props
+        // Highcharts 12 resolves its own locale from `lang.locale`, then the
+        // page's `<html lang>`, then the browser. Only an app that set a
+        // Blend locale gets it forwarded, so charts in apps that rely on
+        // `<html lang>` today render exactly as before; an explicit
+        // `lang.locale` in the consumer's options always wins.
+        const options = useMemo(
+            () =>
+                locale === DEFAULT_LOCALE || optionsProp.lang?.locale
+                    ? optionsProp
+                    : {
+                          ...optionsProp,
+                          lang: { ...optionsProp.lang, locale },
+                      },
+            [optionsProp, locale]
+        )
+
+        const sankeyInstance = useMemo(
+            () => ensureSankeyRegistered(highcharts),
+            [highcharts]
+        )
 
         const hasSeriesData =
             (options.series as ChartV2SeriesOptionsType[] | undefined)?.some(
@@ -81,7 +106,7 @@ const ChartV2 = forwardRef<ChartV2ReactRefObject, ChartV2Props>(
                 </style>
                 <HighchartsReact
                     ref={ref}
-                    highcharts={highcharts}
+                    highcharts={sankeyInstance}
                     {...highchartsProps}
                     containerProps={containerProps}
                     options={mergeChartOptions(options, tokens)}

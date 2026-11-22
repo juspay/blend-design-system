@@ -16,6 +16,8 @@ import { TooltipSide, TooltipSize } from '../Tooltip/types'
 import { Badge, BadgeColor, BadgeSize } from '../Badge'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import type { SidebarTokenType } from './sidebar.tokens'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 
 type TenantPanelProps = {
     items: TenantItem[]
@@ -124,6 +126,7 @@ const TenantItem: React.FC<{
     isSelected: boolean
     onSelect: () => void
 }> = ({ tenant, isSelected, onSelect }) => {
+    const { m } = useMessages(NAVIGATION_MESSAGES)
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
     const tenantButton = (
@@ -146,7 +149,9 @@ const TenantItem: React.FC<{
                     ? tokens.leftPanel.item.border.active
                     : tokens.leftPanel.item.border.default
             }
-            aria-label={`Select tenant: ${tenant.label}`}
+            aria-label={m('navigation.a11y.select-tenant', {
+                name: tenant.label,
+            })}
             aria-pressed={isSelected}
             style={{
                 transition: 'all 75ms ease',
@@ -192,6 +197,7 @@ const TenantOverflowMenu: React.FC<{
     hiddenTenants: TenantItem[]
     onSelect: (label: string) => void
 }> = ({ hiddenTenants, onSelect }) => {
+    const { m } = useMessages(NAVIGATION_MESSAGES)
     const tokens = useResponsiveTokens<SidebarTokenType>('SIDEBAR')
 
     return (
@@ -205,7 +211,7 @@ const TenantOverflowMenu: React.FC<{
                 maxMenuHeight={300}
                 minMenuWidth={200}
                 enableSearch={true}
-                searchPlaceholder="Search tenants..."
+                searchPlaceholder={m('sidebar.placeholder.search-tenants')}
                 items={[
                     {
                         items: hiddenTenants.map((tenant) => ({
@@ -244,8 +250,8 @@ const TenantOverflowMenu: React.FC<{
                         alignItems="center"
                         justifyContent="center"
                         cursor="pointer"
-                        aria-label="More tenants"
-                        title="More tenants"
+                        aria-label={m('sidebar.a11y.more-tenants')}
+                        title={m('sidebar.a11y.more-tenants')}
                         outline={tokens.leftPanel.item.border.default}
                         style={{
                             transition: 'all 75ms ease',

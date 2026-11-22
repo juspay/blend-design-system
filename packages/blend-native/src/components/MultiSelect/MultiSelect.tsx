@@ -63,6 +63,7 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
         {
             label,
             subLabel,
+            helpIconText,
             hintText,
             required = false,
             placeholder,
@@ -95,6 +96,7 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
             menuFooter,
             testID,
             accessibilityLabel,
+            menuStyle,
         },
         ref
     ) {
@@ -143,9 +145,10 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                 flattenMultiSelectGroups(
                     filteredGroups,
                     selectedValues,
+                    // After the label, as web's SelectItemV2 draws it.
                     (adapter) => ({
                         ...adapter,
-                        leadingAccessory: (
+                        trailingAccessory: (
                             <View pointerEvents="none">
                                 <Checkbox
                                     checked={Boolean(adapter.isSelected)}
@@ -244,6 +247,7 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                 ref={dropdown.anchorRef}
                 label={label}
                 subLabel={subLabel}
+                helpIconText={helpIconText}
                 hintText={hintText}
                 required={required}
                 placeholder={placeholder}
@@ -281,7 +285,13 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                         testID={testID}
                     />
                 ) : null}
-                <Block paddingTop={enableSelectAll || enableSearch ? 8 : 0}>
+                {/* Shrinks to the menu's max height so the list scrolls and
+                    the header and action buttons stay in view. */}
+                <Block
+                    paddingTop={enableSelectAll || enableSearch ? 8 : 0}
+                    flexShrink={1}
+                    testID={testID ? `${testID}-list-area` : undefined}
+                >
                     <DropdownList
                         rows={flatRows}
                         itemTokens={itemTokens}
@@ -335,6 +345,7 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                         onClose={() => dropdown.setOpen(false)}
                         backgroundColor={contentTokens.backgroundColor}
                         topRadius={16}
+                        style={menuStyle}
                         accessibilityLabel={
                             accessibilityLabel ?? 'Multi-select'
                         }
@@ -345,6 +356,7 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                             paddingRight={contentTokens.paddingRight}
                             paddingBottom={contentTokens.paddingBottom}
                             paddingLeft={contentTokens.paddingLeft}
+                            flexShrink={1}
                         >
                             {content}
                         </Block>
@@ -362,6 +374,7 @@ const MultiSelect = forwardRef<MultiSelectRef, MultiSelectNativeProps>(
                     position={dropdown.position}
                     onContentLayout={dropdown.onContentLayout}
                     tokens={contentTokens}
+                    style={menuStyle}
                     accessibilityLabel={accessibilityLabel ?? 'Multi-select'}
                     testID={testID ? `${testID}-content` : undefined}
                 >

@@ -222,10 +222,11 @@ export const listUsers = async (
 export const storeRefreshToken = async (
     userId: string,
     tokenHash: string,
-    expiresAt: Date
+    expiresAt: Date,
+    familyId: string
 ) => {
     return prisma.refreshToken.create({
-        data: { userId, tokenHash, expiresAt },
+        data: { userId, tokenHash, expiresAt, familyId },
     })
 }
 
@@ -233,12 +234,29 @@ export const findRefreshToken = async (tokenHash: string) => {
     return prisma.refreshToken.findUnique({ where: { tokenHash } })
 }
 
+// Soft-revokes (tombstones) the token instead of deleting it: a later
+// presentation of the same token is a replay and revokes the family.
 export const revokeRefreshToken = async (tokenHash: string) => {
-    return prisma.refreshToken.deleteMany({ where: { tokenHash } })
+    return prisma.refreshToken.updateMany({
+        where: { tokenHash, revokedAt: null },
+        data: { revokedAt: new Date() },
+    })
 }
 
 export const revokeAllUserRefreshTokens = async (userId: string) => {
-    return prisma.refreshToken.deleteMany({ where: { userId } })
+    return prisma.refreshToken.updateMany({
+        where: { userId, revokedAt: null },
+        data: { revokedAt: new Date() },
+    })
+}
+
+// Revokes every live member of a rotation family. Used when a revoked
+// (already-rotated) token is presented again — proof the token leaked.
+export const revokeRefreshTokenFamily = async (familyId: string) => {
+    return prisma.refreshToken.updateMany({
+        where: { familyId, revokedAt: null },
+        data: { revokedAt: new Date() },
+    })
 }
 
 export const cleanupExpiredTokens = async () => {

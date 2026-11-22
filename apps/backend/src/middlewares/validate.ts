@@ -57,6 +57,11 @@ export function validate(schemas: ValidationSchemas) {
                         message: issue.message,
                     })
                 })
+            } else {
+                // Write the parsed params back so any coercion or
+                // normalization declared in the schema actually reaches
+                // handlers (rescan round-2, CWE-20).
+                req.params = result.data as any
             }
         }
 

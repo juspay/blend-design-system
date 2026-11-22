@@ -29,6 +29,10 @@ const UploadDemo = () => {
     // Simple state for reset buttons
     const [resetKey, setResetKey] = useState(0)
 
+    // Tier 1 of the three-tier string resolution: an explicit prop beats both
+    // the provider's translation and Blend's English default.
+    const [browseFilesOverride, setBrowseFilesOverride] = useState('')
+
     const renderCustomSlot = () => (
         <Block>
             <Text fontSize="16px" fontWeight="bold" color="#6366f1">
@@ -114,9 +118,52 @@ const UploadDemo = () => {
                         </span>
                     </div>
 
+                    <div className="rounded-lg border border-gray-300 bg-white p-4 text-sm text-gray-600">
+                        <p className="font-semibold text-gray-700">
+                            Localization
+                        </p>
+                        <p className="mt-1">
+                            Switch <strong>Locale</strong> in the topbar to see
+                            the <strong>Browse Files</strong> and{' '}
+                            <strong>Replace file</strong> buttons, the drop
+                            hint, and every success and error state change.
+                        </p>
+                        <p className="mt-1">
+                            Upload V1 previously held{' '}
+                            <strong>three parallel copies</strong> of the same
+                            sentences — in <code>utils.ts</code>, in the{' '}
+                            <code>*State.tsx</code> components, and in UploadV2
+                            — so they could drift apart. They now resolve shared
+                            keys: drop a file, then force an error, and the V1
+                            and V2 demos should read identically in every
+                            locale.
+                        </p>
+                        <p className="mt-1">
+                            The{' '}
+                            <em>&ldquo;N file(s) failed to upload&rdquo;</em>{' '}
+                            screen-reader text is now two explicit plural keys,
+                            because &ldquo;(s)&rdquo; is untranslatable in
+                            languages whose plural is not formed with
+                            &ldquo;-s&rdquo;.
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-6">
+                        <Switch
+                            label='browseFilesText="Pick a file"'
+                            checked={!!browseFilesOverride}
+                            onChange={() =>
+                                setBrowseFilesOverride((prev) =>
+                                    prev ? '' : 'Pick a file'
+                                )
+                            }
+                        />
+                    </div>
+
                     <div className="min-h-50 rounded-2xl w-full flex justify-center items-center outline-1 outline-gray-200">
                         <Upload
                             key={`upload-${resetKey}`}
+                            browseFilesText={browseFilesOverride || undefined}
                             label="Upload Files"
                             subLabel="Max 10MB"
                             helpIconHintText={

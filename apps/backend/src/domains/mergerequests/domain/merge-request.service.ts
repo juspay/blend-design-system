@@ -14,6 +14,7 @@ import type {
     BrandConfig,
 } from '@/domains/branches/domain/branch.types.js'
 import { canReadBranch } from '@/domains/branches/domain/branch.service.js'
+import { assertSafeBrandConfig } from '@/domains/branches/domain/inheritance.js'
 import {
     requireOrganizationRole,
     requireOrganizationMember,
@@ -22,6 +23,7 @@ import {
 import {
     canBypassApproval,
     canRoleApprove,
+    countEffectiveApprovals,
     hasReachedApprovalThreshold,
     resolveMergeApprovalPolicy,
     type OrgApprovalSettings,
@@ -79,6 +81,11 @@ function mergeConfigForTargetBranch(
     targetConfig: BrandConfig,
     sourceConfig: BrandConfig
 ): BrandConfig {
+    // Both configs are user-controlled JSON; refuse unsafe keys before any
+    // merge or store happens (audit #16, CWE-1321).
+    assertSafeBrandConfig(targetConfig, 'target branch config')
+    assertSafeBrandConfig(sourceConfig, 'source branch config')
+
     return {
         ...targetConfig,
         colors: {
@@ -253,6 +260,11 @@ export const createMergeRequest = async (
         )
     }
 
+    // Reject polluted configs up front instead of persisting them into the
+    // stored diff (audit #16, CWE-1321).
+    assertSafeBrandConfig(target.tokenConfig, 'target branch config')
+    assertSafeBrandConfig(source.tokenConfig, 'source branch config')
+
     const diff = diffBrandConfigs(target.tokenConfig, source.tokenConfig)
 
     let lockViolations: unknown = null
@@ -408,7 +420,7 @@ export const approveMergeRequest = async (
     if (!latest) throw new NotFoundError('Merge request')
 
     const approved = hasReachedApprovalThreshold(
-        latest.approvals.length,
+        countEffectiveApprovals(latest.approvals, latest.requestedBy),
         policy
     )
     const updated = await mrRepo.updateMergeRequestStatus(id, {
@@ -515,8 +527,14 @@ export const mergeMergeRequest = async (
     }
 
     const bypassAllowed = canBypassApproval(policy, userRole)
+    // The requester's own approval never counts toward the threshold
+    // (rescan hardening, CWE-863).
+    const effectiveApprovalCount = countEffectiveApprovals(
+        mr.approvals,
+        mr.requestedBy
+    )
     const approvalsMet = hasReachedApprovalThreshold(
-        mr.approvals.length,
+        effectiveApprovalCount,
         policy
     )
 
@@ -526,32 +544,40 @@ export const mergeMergeRequest = async (
         )
     }
 
-    if (mr.organizationId) {
-        const lockViolations = await lockService.validateBranchAgainstLocks(
-            mr.organizationId,
-            source.tokenConfig,
-            target.tokenConfig
-        )
-        if (lockViolations.length > 0) {
-            throw new ValidationError(
-                'Cannot merge: lock violations must be resolved first'
-            )
-        }
-    }
-
     const mergedTargetConfig = mergeConfigForTargetBranch(
         target.tokenConfig,
         source.tokenConfig
     )
 
-    await branchRepo.updateBranch(mr.targetBranchId, {
-        tokenConfig: mergedTargetConfig,
-    })
+    if (mr.organizationId) {
+        // Validate the config we are about to write, not just the inputs:
+        // a merge that changes or drops a locked path must be rejected
+        // (audit #16 — lock bypass via omitted locked paths).
+        const lockViolations = await lockService.validateMergedBranchConfig(
+            mr.organizationId,
+            mergedTargetConfig,
+            target.tokenConfig
+        )
+        if (lockViolations.length > 0) {
+            throw new ValidationError(
+                'Cannot merge: locked token paths must keep their current values'
+            )
+        }
+    }
 
-    const updated = await mrRepo.updateMergeRequestStatus(id, {
-        status: 'merged',
-        reviewedBy: userId,
-    })
+    // Claim-then-apply in a single transaction (rescan round-2, CWE-367):
+    // the conditional status flip serializes concurrent merges and loses to
+    // a racing cancel instead of overwriting it.
+    const updated = await mrRepo.applyMerge(
+        id,
+        mr.status,
+        userId,
+        mr.targetBranchId,
+        mergedTargetConfig
+    )
+    if (!updated) {
+        throw new ValidationError('This merge request is no longer mergeable')
+    }
 
     if (mr.organizationId) {
         await auditLogRepo.createAuditLog({
@@ -569,7 +595,7 @@ export const mergeMergeRequest = async (
                 targetBranchId: mr.targetBranchId,
                 usedAdminBypass:
                     policy.requireApproval && !approvalsMet && bypassAllowed,
-                approvalCount: mr.approvals.length,
+                approvalCount: effectiveApprovalCount,
                 minRequired: policy.minApprovals,
             },
         })

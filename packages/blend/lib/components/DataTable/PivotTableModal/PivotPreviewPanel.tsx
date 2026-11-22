@@ -9,6 +9,8 @@ import { NoScrollbar } from './pivotModal.styled'
 import { PivotTableIllustration } from './PivotTableIllustration'
 import type { PivotPreviewPanelProps } from './types'
 import type { ColumnDefinition } from '../types'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
     (
@@ -23,6 +25,7 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(DATA_TABLE_MESSAGES)
         const [previewTableColumns, setPreviewTableColumns] =
             useState<ColumnDefinition<Record<string, unknown>>[]>(
                 initialColumns
@@ -83,7 +86,7 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
                                 fontWeight: 500,
                             }}
                         >
-                            Rows
+                            {m('data-table.label.pivot-rows')}
                         </PrimitiveText>
                     </Block>
                 ) : (
@@ -106,7 +109,7 @@ const PivotPreviewPanel = forwardRef<HTMLDivElement, PivotPreviewPanelProps>(
                                 }}
                             >
                                 <Button
-                                    text="Export CSV"
+                                    text={m('data-table.action.export-csv')}
                                     buttonType={ButtonType.SECONDARY}
                                     size={ButtonSize.SMALL}
                                     onClick={onExport}

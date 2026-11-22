@@ -50,6 +50,8 @@ import {
     haveSameFilterOptions,
     getDataTableBodyState,
     downloadDataTableExport,
+    DataTableExportError,
+    stripNumberFormatting,
 } from './utils'
 import DataTableHeader from './DataTableHeader'
 import TableHeader from './TableHeader'
@@ -74,6 +76,17 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { useTheme } from '../../context/ThemeContext'
 import styled from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
+import { DATA_TABLE_MESSAGES } from '../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../i18n/useMessages'
+
+const EXPORT_ERROR_KEYS = {
+    'no-data': 'data-table.error.export-no-data',
+    'no-selection': 'data-table.error.export-no-selection',
+} as const satisfies Record<
+    DataTableExportError['code'],
+    keyof typeof DATA_TABLE_MESSAGES
+>
+import { useI18n } from '../../i18n/I18nContext'
 
 const ScrollableContainer = styled(Block)`
     overflow-x: auto;
@@ -99,6 +112,7 @@ const DefaultTableState = ({
     tableToken: TableTokenType
     isDarkTheme: boolean
 }) => {
+    const { m } = useMessages(DATA_TABLE_MESSAGES)
     const stateTextColor = tableToken.dataTable.table.body.cell.color
     const iconBackground = isDarkTheme
         ? FOUNDATION_THEME.colors.red[900]
@@ -139,14 +153,14 @@ const DefaultTableState = ({
                     fontWeight: FOUNDATION_THEME.font.weight[500],
                 }}
             >
-                Unable to load data
+                {m('data-table.error.load-failed')}
             </PrimitiveText>
             {onRetry && (
                 <Button
                     buttonType={ButtonType.SECONDARY}
                     size={ButtonSize.SMALL}
                     onClick={onRetry}
-                    text="Retry"
+                    text={m('data-table.action.retry')}
                 />
             )}
         </Block>
@@ -164,7 +178,7 @@ const DataTable = forwardRef(
             descriptionTooltipProps,
             defaultSort,
             enableSearch = false,
-            searchPlaceholder = 'Search...',
+            searchPlaceholder,
             enableFiltering = false,
             enableAdvancedFilter = false,
             advancedFilterComponent,
@@ -243,6 +257,8 @@ const DataTable = forwardRef(
         ref: React.Ref<HTMLDivElement>
     ) => {
         const tableToken = useResponsiveTokens<TableTokenType>('TABLE')
+        const { m } = useMessages(DATA_TABLE_MESSAGES)
+        const { locale } = useI18n()
         const { theme } = useTheme()
         const isDarkTheme = theme === 'dark'
         const mobileConfig = useMobileDataTable(mobileColumnsToShow)
@@ -565,7 +581,7 @@ const DataTable = forwardRef(
             {
                 items: [
                     {
-                        label: 'Format',
+                        label: m('data-table.action.format'),
                         slot3: isFormatEnabled ? <Check size={16} /> : null,
                         onClick: () => setIsFormatEnabled(!isFormatEnabled),
                     },
@@ -574,26 +590,8 @@ const DataTable = forwardRef(
             },
         ]
 
-        const removeNumberFormatting = (value: unknown): string => {
-            if (value == null) return ''
-
-            const stringValue = String(value)
-
-            let cleaned = stringValue.replace(/[$€£¥₹₽₪₩₦₡₵₸₴₺₻₼₽¢]/g, '')
-
-            cleaned = cleaned.replace(/%/g, '')
-
-            cleaned = cleaned.replace(/,/g, '')
-
-            cleaned = cleaned.trim()
-
-            const numericValue = parseFloat(cleaned)
-            if (!isNaN(numericValue)) {
-                return numericValue.toString()
-            }
-
-            return stringValue
-        }
+        const removeNumberFormatting = (value: unknown): string =>
+            stripNumberFormatting(value, locale)
 
         const getDisplayValue = (
             value: unknown,
@@ -792,7 +790,13 @@ const DataTable = forwardRef(
                     { getDisplayValue, dateLabel }
                 )
             } catch (error) {
-                alert(error instanceof Error ? error.message : 'Export failed')
+                alert(
+                    error instanceof DataTableExportError
+                        ? m(EXPORT_ERROR_KEYS[error.code])
+                        : error instanceof Error
+                          ? error.message
+                          : m('data-table.error.export-failed')
+                )
             } finally {
                 setIsExporting(false)
             }
@@ -807,10 +811,12 @@ const DataTable = forwardRef(
                     size={ButtonSize.SMALL}
                     loading={isExporting}
                     disabled={isExporting}
-                    aria-label={`Export ${exportFormats[0].toUpperCase()}`}
+                    aria-label={m('data-table.a11y.export-format', {
+                        format: exportFormats[0].toUpperCase(),
+                    })}
                     onClick={() => void handleTableExport(exportFormats[0])}
                 >
-                    Export
+                    {m('data-table.action.export')}
                 </Button>
             ) : (
                 <Menu
@@ -832,9 +838,9 @@ const DataTable = forwardRef(
                             size={ButtonSize.SMALL}
                             loading={isExporting}
                             disabled={isExporting}
-                            aria-label="Export table"
+                            aria-label={m('data-table.a11y.export-table')}
                         >
-                            Export
+                            {m('data-table.action.export')}
                         </Button>
                     }
                 />
@@ -1121,7 +1127,13 @@ const DataTable = forwardRef(
                     `${title || 'data'}-export-${new Date().toISOString().split('T')[0]}.csv`
                 )
             } catch (error) {
-                alert(error instanceof Error ? error.message : 'Export failed')
+                alert(
+                    error instanceof DataTableExportError
+                        ? m(EXPORT_ERROR_KEYS[error.code])
+                        : error instanceof Error
+                          ? error.message
+                          : m('data-table.error.export-failed')
+                )
             }
         }
 
@@ -1683,7 +1695,7 @@ const DataTable = forwardRef(
                 }}
                 data-table={title || 'table'}
                 role="region"
-                aria-label={title || 'Data table'}
+                aria-label={title || m('data-table.a11y.table')}
                 aria-describedby={
                     [tableLabelId, tableDescriptionId]
                         .filter(Boolean)
@@ -1751,9 +1763,13 @@ const DataTable = forwardRef(
                                                 }
                                                 leadingIcon={<Settings />}
                                                 size={ButtonSize.SMALL}
-                                                aria-label="Table settings"
+                                                aria-label={m(
+                                                    'data-table.a11y.table-settings'
+                                                )}
                                             >
-                                                Settings
+                                                {m(
+                                                    'data-table.action.settings'
+                                                )}
                                             </Button>
                                         }
                                     />
@@ -1804,12 +1820,15 @@ const DataTable = forwardRef(
                         }}
                     >
                         {isTableLoading
-                            ? 'Loading table data'
+                            ? m('data-table.a11y.loading')
                             : error
-                              ? 'Failed to load table data'
+                              ? m('data-table.a11y.load-failed')
                               : currentData.length === 0
-                                ? 'No data available'
-                                : `Showing ${currentData.length} of ${totalRows} rows`}
+                                ? m('data-table.empty.no-data-available')
+                                : m('data-table.a11y.showing-rows', {
+                                      visible: String(currentData.length),
+                                      total: String(totalRows),
+                                  })}
                     </Block>
 
                     <Block
@@ -1849,7 +1868,9 @@ const DataTable = forwardRef(
                                     <table
                                         id={tableId}
                                         role="grid"
-                                        aria-label={title || 'Data table'}
+                                        aria-label={
+                                            title || m('data-table.a11y.table')
+                                        }
                                         aria-rowcount={
                                             totalRows > 0
                                                 ? totalRows
@@ -2285,7 +2306,7 @@ const DataTable = forwardRef(
                                 {bodyState === 'loading' ? (
                                     <Spinner
                                         size="md"
-                                        label="Loading data..."
+                                        label={m('data-table.status.loading')}
                                     />
                                 ) : bodyState === 'error' ? (
                                     renderErrorState ? (
@@ -2300,9 +2321,16 @@ const DataTable = forwardRef(
                                 ) : renderEmptyState ? (
                                     renderEmptyState()
                                 ) : showEmptyState ? (
-                                    <EmptyState title="No data" size="sm" />
+                                    <EmptyState
+                                        title={m('data-table.empty.no-data')}
+                                        size="sm"
+                                    />
                                 ) : (
-                                    <span>No data available</span>
+                                    <span>
+                                        {m(
+                                            'data-table.empty.no-data-available'
+                                        )}
+                                    </span>
                                 )}
                             </Block>
                         )}

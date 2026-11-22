@@ -1091,6 +1091,81 @@ const KeyValuePairDemo = () => {
                 </div>
             </div>
 
+            {/* Key Tooltip on Truncation (#1416) */}
+            <div className="space-y-6">
+                <div className="space-y-2">
+                    <h2 className="text-2xl font-bold">
+                        Key Tooltip on Truncation
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                        Long keys are truncated with an ellipsis. Hover over a
+                        truncated key (or value) to read its full text in a
+                        tooltip — styled after the merchant configs layout that
+                        reported this (#1416).
+                    </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {[
+                        {
+                            key: 'Enable Gateway Reference Id Based Routing',
+                            value: 'FALSE',
+                        },
+                        {
+                            key: 'Gateway Decided By Health Enablement',
+                            value: 'TRUE',
+                        },
+                        {
+                            key: 'Execute Mandate Auto Retry Enablement',
+                            value: 'FALSE',
+                        },
+                        {
+                            key: 'Enable Payment Response Hash Validation',
+                            value: 'TRUE',
+                        },
+                    ].map(({ key, value }) => (
+                        <div
+                            key={key}
+                            className="p-4 border-gray-100 border rounded-lg bg-gray-50"
+                        >
+                            <KeyValuePair
+                                keyString={key}
+                                value={value}
+                                textOverflow="truncate"
+                                maxWidth="180px"
+                            />
+                        </div>
+                    ))}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <h4 className="text-sm font-medium">
+                            Key slot + truncated key
+                        </h4>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="Very Long Configuration Key With An Icon Slot"
+                                value="Configured"
+                                keySlot={<Settings size={16} />}
+                                maxWidth="180px"
+                            />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <h4 className="text-sm font-medium">
+                            Tooltip disabled on both slots
+                        </h4>
+                        <div className="p-4 border-gray-100 border rounded-lg bg-gray-50">
+                            <KeyValuePair
+                                keyString="Very Long Configuration Key Without Any Tooltip"
+                                value="averylongconfigurationvaluewithouttooltip"
+                                showTooltipOnTruncate={false}
+                                maxWidth="180px"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {/* All Combinations */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">All Combinations</h2>

@@ -8,6 +8,7 @@ import path from 'path'
 import matter from 'gray-matter'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import { components } from '@/mdx-components'
+import { resolveContentPath } from './safe-path'
 
 interface MDXContent {
     content: React.ReactElement
@@ -52,8 +53,14 @@ export async function compileMDXFromSlug(
     contentDir: string,
     slug: string
 ): Promise<MDXContent | null> {
-    const filePath = path.join(process.cwd(), contentDir, `${slug}.mdx`)
-    return compileMDXFromFile(filePath)
+    const filePath = resolveContentPath(
+        path.join(process.cwd(), contentDir),
+        slug
+    )
+    if (!filePath) {
+        return null
+    }
+    return compileMDXFromFile(`${filePath}.mdx`)
 }
 
 /**

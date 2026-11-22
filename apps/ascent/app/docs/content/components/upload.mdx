@@ -422,11 +422,71 @@ const handleDrop = async (acceptedFiles: File[]) => {
             { content: '' },
             { content: '' },
         ],
+        [
+            {
+                content: 'browseFilesText',
+                hintText:
+                    'Overrides the Browse Files button label. Wins over the provider translation; omit it to use the localized default.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
+        [
+            {
+                content: 'replaceFileText',
+                hintText:
+                    'Overrides the Replace File button label. Wins over the provider translation; omit it to use the localized default.',
+            },
+            { content: 'string', hintText: 'string' },
+            { content: '' },
+            { content: '' },
+        ],
     ]}
     className="mb-8"
     emptyMessage="No props available"
     loadingMessage="Loading props..."
 />
+
+## Localization
+
+Upload has 24 built-in strings: 20 shown on screen and 4 read only by screen readers. Everything else it renders comes from your props and data.
+
+The full list, with English defaults and placeholders, is in the [message catalog](/docs/internationalization/message-catalog#upload), under [`upload.*`](/docs/internationalization/message-catalog#upload).
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'upload.action.browse-files': 'Parcourir les fichiers',
+    'upload.a11y.file-input': 'Téléversement de fichier',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Changing one string
+
+A prop replaces one string for that instance and always wins over `t`:
+
+| Prop              | Replaces key                 | English default |
+| ----------------- | ---------------------------- | --------------- |
+| `browseFilesText` | `upload.action.browse-files` | `Browse Files`  |
+| `replaceFileText` | `upload.action.replace-file` | `Replace file`  |
+
+Don't pass a prop just to restate the English default: it wins over `t`, so that string would stay English in every locale.
 
 ## Component Tokens
 

@@ -36,6 +36,9 @@ import {
 } from '../Select/selectUtils'
 import { useSelectSearchController } from '../Select/useSelectSearchController'
 import SelectSearchStatus from '../Select/SelectSearchStatus'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 type MobileSingleSelectProps = SingleSelectProps
 
@@ -221,7 +224,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     selected,
     onSelect,
     enableSearch,
-    searchPlaceholder = 'Search options...',
+    searchPlaceholder: searchPlaceholderProp,
     searchText: controlledSearchText,
     onSearchChange,
     isSearchLoading,
@@ -237,9 +240,19 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
     maxTriggerWidth,
     minTriggerWidth,
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     ...rest
 }) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const searchPlaceholder = pick(
+        searchPlaceholderProp,
+        'select.placeholder.search'
+    )
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
     const isSmallScreen = breakPointLabel === 'sm'
     const singleSelectTokens =
@@ -278,9 +291,12 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
             hasMatch,
             allowCustomValue,
             isSearchEnabled && !isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         items,
         searchText,
         allowCustomValue,
@@ -472,7 +488,7 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                     }
                                                     aria-label={
                                                         searchPlaceholder ||
-                                                        'Search options'
+                                                        m('select.a11y.search')
                                                     }
                                                 />
                                             </Block>
@@ -488,8 +504,12 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                             emptyStateText={
                                                 emptyStateText ||
                                                 (!hasSourceItems
-                                                    ? 'No items available'
-                                                    : 'No results found')
+                                                    ? mc(
+                                                          'common.empty.no-items'
+                                                      )
+                                                    : mc(
+                                                          'common.empty.no-results'
+                                                      ))
                                             }
                                         />
 
@@ -515,8 +535,12 @@ const MobileSingleSelect: React.FC<MobileSingleSelectProps> = ({
                                                 >
                                                     {emptyStateText ||
                                                         (!hasSourceItems
-                                                            ? 'No items available'
-                                                            : 'No results found')}
+                                                            ? mc(
+                                                                  'common.empty.no-items'
+                                                              )
+                                                            : mc(
+                                                                  'common.empty.no-results'
+                                                              ))}
                                                 </Text>
                                             </Block>
                                         ) : (

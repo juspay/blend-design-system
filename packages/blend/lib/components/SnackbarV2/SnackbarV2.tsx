@@ -29,6 +29,8 @@ import {
 import { SnackbarV2TokensType } from './snackbarV2.tokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
 import { filterBlockedProps } from '../../utils/prop-helpers'
+import { useMessages } from '../../i18n/useMessages'
+import { FEEDBACK_MESSAGES } from '../../i18n/catalog/feedback.messages'
 
 /**
  * `duration: 0` looks like it should disable auto-dismiss, and the v1 docs used
@@ -263,6 +265,7 @@ const CloseButton = ({
     variant: SnackbarV2Variant
     snackbarTokens: SnackbarV2TokensType
 }) => {
+    const { m } = useMessages(FEEDBACK_MESSAGES)
     const closeButtonColor =
         snackbarTokens.mainContainer.closeButton.color[variant]
     const closeButtonHeight = snackbarTokens.mainContainer.closeButton.height
@@ -278,7 +281,7 @@ const CloseButton = ({
             border="none"
             backgroundColor="transparent"
             color={closeButtonColor}
-            aria-label="Close notification"
+            aria-label={m('snackbar.a11y.close')}
             _focusVisible={{
                 outline: `1px solid ${closeButtonColor}`,
             }}

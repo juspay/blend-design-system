@@ -1,5 +1,10 @@
 import { Text } from 'react-native'
-import { fireEvent, render, screen } from '@testing-library/react-native'
+import {
+    cleanup,
+    fireEvent,
+    render,
+    screen,
+} from '@testing-library/react-native'
 import { BlendNativeProvider } from '../src/theme/BlendNativeProvider'
 import { Sidebar } from '../src/components/Sidebar'
 import type { SidebarSectionData } from '../src/components/Sidebar'
@@ -21,7 +26,13 @@ const renderDesktop = (ui: React.ReactElement) => {
         fontScale: 1,
     })
     const result = render(ui)
-    return { ...result, restore: () => spy.mockRestore() }
+    // Unmount before restoring: the spy replaces a hook, so a re-render
+    // after the restore (reduce-motion settles late) changes the hook order.
+    const restore = () => {
+        cleanup()
+        spy.mockRestore()
+    }
+    return { ...result, restore }
 }
 
 const NESTED_DATA: SidebarSectionData[] = [

@@ -50,6 +50,8 @@ import { generateAccessibilityIds, setExternalRef } from '../utils/utils'
 import NumberInputV2Stepper from './NumberInputV2Stepper'
 import NumberInputV2Unit from './NumberInputV2Unit'
 import { NumberInputV2Direction } from './numberInputV2.types'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
     (
@@ -82,6 +84,7 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(INPUT_MESSAGES)
         const numberInputTokens =
             useResponsiveTokens<NumberInputV2TokensType>('NUMBER_INPUT_V2')
         const inputContainerTokens = numberInputTokens.inputContainer
@@ -112,8 +115,10 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
             value !== null && value !== undefined ? Number(value) : null
         /** Whitespace-only `unit` is treated as empty: show steppers, not an empty strip. */
         const unitText = unit?.trim() ?? ''
-        const unitLengthErrorMessage =
-            getNumberInputV2UnitLengthErrorMessage(unit)
+        const unitLengthErrorMessage = getNumberInputV2UnitLengthErrorMessage(
+            unit,
+            (vars) => m('input.error.unit-too-long', vars)
+        )
         const showUnit = Boolean(unitText) && unitLengthErrorMessage == null
         const steppingBaseValue = useMemo(
             () => getSteppingBaseValue(rawNumericValue, preventNegative),
@@ -154,9 +159,10 @@ const NumberInputV2 = forwardRef<HTMLInputElement, NumberInputV2Props>(
                 getRangeErrorMessageIfOutside(
                     rawNumericValue,
                     numericMin,
-                    numericMax
+                    numericMax,
+                    (code, vars) => m(`input.error.${code}`, vars)
                 ),
-            [rawNumericValue, numericMin, numericMax]
+            [rawNumericValue, numericMin, numericMax, m]
         )
 
         const hasError =

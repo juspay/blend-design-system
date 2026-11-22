@@ -21,12 +21,19 @@ import type {
 export type SingleSelectNativeProps = {
     label?: string
     subLabel?: string
+    /** Text for the help icon after the label (web `helpIconText`). */
+    helpIconText?: string
     hintText?: string
     required?: boolean
 
     placeholder: string
     size?: SelectV2Size
     variant?: SelectV2Variant
+    /**
+     * Drawn inside another field (web `inline`): a non-container trigger
+     * drops its own padding, background and height.
+     */
+    inline?: boolean
 
     items: SingleSelectV2GroupType[]
     selected: string
@@ -59,6 +66,10 @@ export type SingleSelectNativeProps = {
     testID?: string
     accessibilityLabel?: string
     style?: import('react-native').StyleProp<import('react-native').ViewStyle>
+    /** Extra style for the menu surface (the dropdown panel, or the sheet on phones). */
+    menuStyle?: import('react-native').StyleProp<
+        import('react-native').ViewStyle
+    >
 }
 
 export type { SingleSelectV2ItemType }

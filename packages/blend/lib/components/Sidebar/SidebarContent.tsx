@@ -7,6 +7,8 @@ import SidebarHeader from './SidebarHeader'
 import SidebarFooter from './SidebarFooter'
 import type { DirectoryData, DirectoryProps } from '../Directory/types'
 import type { SidebarMerchantInfo, SidebarStateChangeType } from './types'
+import { useMessages } from '../../i18n/useMessages'
+import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 
 const DirectoryContainer = styled(Block)<{
     $showTopBlur?: boolean
@@ -83,6 +85,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
     enableVirtualization = false,
     virtualization,
 }) => {
+    const { m } = useMessages(NAVIGATION_MESSAGES)
     const directoryData = normalizeDirectoryData(data)
 
     return (
@@ -118,7 +121,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({
                 data-directory-container
                 id={sidebarNavId}
                 role="region"
-                aria-label="Navigation menu"
+                aria-label={m('navigation.a11y.navigation-menu')}
                 $showTopBlur={showTopBlur}
                 $showBottomBlur={showBottomBlur}
                 onMouseEnter={() => setIsHovering?.(true)}

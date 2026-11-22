@@ -203,16 +203,11 @@ describe('merge-request.service', () => {
             }
         )
 
-        mockedLockService.validateBranchAgainstLocks.mockResolvedValue([])
-        mockedBranchRepository.updateBranch.mockResolvedValue({
-            id: 'target-1',
+        mockedLockService.validateMergedBranchConfig.mockResolvedValue([])
+        mockedMergeRequestRepository.applyMerge.mockResolvedValue({
+            id: 'mr-1',
+            status: 'merged' as const,
         } as any)
-        mockedMergeRequestRepository.updateMergeRequestStatus.mockResolvedValue(
-            {
-                id: 'mr-1',
-                status: 'merged' as const,
-            } as any
-        )
 
         const merged = await mergeMergeRequest(
             'mr-1',
@@ -220,15 +215,73 @@ describe('merge-request.service', () => {
             'admin@blend.dev'
         )
 
-        expect(mockedBranchRepository.updateBranch).toHaveBeenCalledTimes(1)
-        expect(
-            mockedMergeRequestRepository.updateMergeRequestStatus
-        ).toHaveBeenCalledWith(
+        expect(mockedMergeRequestRepository.applyMerge).toHaveBeenCalledWith(
             'mr-1',
-            expect.objectContaining({ status: 'merged', reviewedBy: 'admin-1' })
+            'pending',
+            'admin-1',
+            'target-1',
+            expect.any(Object)
         )
         expect(mockedAuditLogRepository.createAuditLog).toHaveBeenCalledTimes(1)
         expect(merged).toEqual(expect.objectContaining({ status: 'merged' }))
+    })
+
+    it('aborts the merge when a concurrent transition already claimed the request', async () => {
+        mockedMergeRequestRepository.getMergeRequest.mockResolvedValue({
+            id: 'mr-1',
+            organizationId: 'org-1',
+            sourceBranchId: 'source-1',
+            targetBranchId: 'target-1',
+            requestedBy: 'requester-1',
+            status: 'pending' as const,
+            approvals: [],
+        } as any)
+
+        mockedBranchRepository.getBranchById
+            .mockResolvedValueOnce({
+                id: 'source-1',
+                tokenConfig: { colors: {} },
+            } as any)
+            .mockResolvedValueOnce({
+                id: 'target-1',
+                createdBy: 'owner-1',
+                tokenConfig: { colors: {} },
+                isProtected: true,
+                protectionRequireApproval: null,
+                protectionMinApprovals: null,
+                protectionApproverIds: [],
+            } as any)
+
+        mockedOrganizationRepository.getOrganizationById.mockResolvedValue({
+            id: 'org-1',
+            defaultBranchId: 'target-1',
+            requireApprovalForMerge: true,
+            requireApprovalForPublish: false,
+            allowedApprovers: 'admins',
+            minApprovals: 1,
+            allowAdminBypass: true,
+        } as any)
+
+        mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+            {
+                id: 'member-1',
+                organizationId: 'org-1',
+                userId: 'admin-1',
+                role: 'admin',
+                joinedAt: new Date(),
+            }
+        )
+
+        mockedLockService.validateMergedBranchConfig.mockResolvedValue([])
+        // Conditional claim lost the race (e.g. a cancel landed first).
+        mockedMergeRequestRepository.applyMerge.mockResolvedValue(null)
+
+        await expect(
+            mergeMergeRequest('mr-1', 'admin-1', 'admin@blend.dev')
+        ).rejects.toMatchObject({
+            code: 'VALIDATION_ERROR',
+            message: 'This merge request is no longer mergeable',
+        })
     })
 
     it('prevents merge when approvals are required and bypass disabled', async () => {
@@ -283,5 +336,194 @@ describe('merge-request.service', () => {
             code: 'VALIDATION_ERROR',
             message: 'This merge request requires at least 1 approvals',
         })
+    })
+
+    it('does not count the requester own approval toward the approval threshold', async () => {
+        mockedMergeRequestRepository.getMergeRequest.mockResolvedValue({
+            id: 'mr-1',
+            organizationId: 'org-1',
+            sourceBranchId: 'source-1',
+            targetBranchId: 'target-1',
+            requestedBy: 'requester-1',
+            status: 'approved' as const,
+            // Legacy self-approval plus one genuine approval: only one
+            // counts toward minApprovals=2.
+            approvals: [
+                {
+                    id: 'app-0',
+                    mergeRequestId: 'mr-1',
+                    userId: 'requester-1',
+                    userName: 'Requester',
+                    userRole: 'editor',
+                    approvedAt: new Date(),
+                },
+                {
+                    id: 'app-1',
+                    mergeRequestId: 'mr-1',
+                    userId: 'reviewer-1',
+                    userName: 'Reviewer',
+                    userRole: 'admin',
+                    approvedAt: new Date(),
+                },
+            ],
+        } as any)
+
+        mockedBranchRepository.getBranchById
+            .mockResolvedValueOnce({
+                id: 'source-1',
+                tokenConfig: { colors: {} },
+            } as any)
+            .mockResolvedValueOnce({
+                id: 'target-1',
+                createdBy: 'owner-1',
+                tokenConfig: { colors: {} },
+                isProtected: true,
+                protectionRequireApproval: null,
+                protectionMinApprovals: null,
+                protectionApproverIds: [],
+            } as any)
+
+        mockedOrganizationRepository.getOrganizationById.mockResolvedValue({
+            id: 'org-1',
+            defaultBranchId: 'target-1',
+            requireApprovalForMerge: true,
+            requireApprovalForPublish: false,
+            allowedApprovers: 'admins',
+            minApprovals: 2,
+            allowAdminBypass: false,
+        } as any)
+
+        mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+            {
+                id: 'member-1',
+                organizationId: 'org-1',
+                userId: 'admin-1',
+                role: 'admin',
+                joinedAt: new Date(),
+            }
+        )
+
+        await expect(
+            mergeMergeRequest('mr-1', 'admin-1', 'admin@blend.dev')
+        ).rejects.toMatchObject({
+            code: 'VALIDATION_ERROR',
+            message: 'This merge request requires at least 2 approvals',
+        })
+    })
+})
+
+describe('merge-request.service security hardening', () => {
+    const seedMergeableRequest = () => {
+        mockedMergeRequestRepository.getMergeRequest.mockResolvedValue({
+            id: 'mr-1',
+            organizationId: 'org-1',
+            sourceBranchId: 'source-1',
+            targetBranchId: 'target-1',
+            requestedBy: 'requester-1',
+            status: 'pending' as const,
+            approvals: [],
+        } as any)
+
+        mockedBranchRepository.getBranchById
+            .mockResolvedValueOnce({
+                id: 'source-1',
+                tokenConfig: { colors: {} },
+            } as any)
+            .mockResolvedValueOnce({
+                id: 'target-1',
+                createdBy: 'owner-1',
+                tokenConfig: { colors: {} },
+                isProtected: true,
+                protectionRequireApproval: null,
+                protectionMinApprovals: null,
+                protectionApproverIds: [],
+            } as any)
+
+        mockedOrganizationRepository.getOrganizationById.mockResolvedValue({
+            id: 'org-1',
+            defaultBranchId: 'target-1',
+            requireApprovalForMerge: true,
+            requireApprovalForPublish: false,
+            allowedApprovers: 'admins',
+            minApprovals: 2,
+            allowAdminBypass: true,
+        } as any)
+
+        mockedUserRepository.findUserMembershipInOrganization.mockResolvedValue(
+            {
+                id: 'member-1',
+                organizationId: 'org-1',
+                userId: 'admin-1',
+                role: 'admin',
+                joinedAt: new Date(),
+            }
+        )
+
+        mockedLockService.validateMergedBranchConfig.mockResolvedValue([])
+        mockedBranchRepository.updateBranch.mockResolvedValue({
+            id: 'target-1',
+        } as any)
+        mockedMergeRequestRepository.updateMergeRequestStatus.mockResolvedValue(
+            {
+                id: 'mr-1',
+                status: 'merged' as const,
+            } as any
+        )
+    }
+
+    it('rejects merges whose result changes or removes a locked token path', async () => {
+        seedMergeableRequest()
+        mockedLockService.validateMergedBranchConfig.mockResolvedValue([
+            {
+                path: 'colors.primary.500',
+                parentValue: '#0052cc',
+                childValue: '(removed)',
+            },
+        ])
+
+        await expect(
+            mergeMergeRequest('mr-1', 'admin-1', 'admin@blend.dev')
+        ).rejects.toMatchObject({
+            code: 'VALIDATION_ERROR',
+            message:
+                'Cannot merge: locked token paths must keep their current values',
+        })
+
+        expect(mockedBranchRepository.updateBranch).not.toHaveBeenCalled()
+    })
+
+    it('rejects source configs carrying prototype-pollution keys', async () => {
+        seedMergeableRequest()
+
+        // JSON.parse keeps __proto__ as an own property — exactly how a
+        // hostile payload arrives over the wire.
+        const poisonedSource = JSON.parse(
+            '{"colors": {}, "__proto__": {"polluted": "true"}}'
+        )
+        mockedBranchRepository.getBranchById
+            .mockReset()
+            .mockResolvedValueOnce({
+                id: 'source-1',
+                tokenConfig: poisonedSource,
+            } as any)
+            .mockResolvedValueOnce({
+                id: 'target-1',
+                createdBy: 'owner-1',
+                tokenConfig: { colors: {} },
+                isProtected: true,
+                protectionRequireApproval: null,
+                protectionMinApprovals: null,
+                protectionApproverIds: [],
+            } as any)
+
+        await expect(
+            mergeMergeRequest('mr-1', 'admin-1', 'admin@blend.dev')
+        ).rejects.toMatchObject({
+            code: 'VALIDATION_ERROR',
+            message: expect.stringContaining('forbidden key'),
+        })
+
+        expect(mockedBranchRepository.updateBranch).not.toHaveBeenCalled()
+        expect(({} as any).polluted).toBeUndefined()
     })
 })

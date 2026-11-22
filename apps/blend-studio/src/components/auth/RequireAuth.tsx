@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from '@tanstack/react-router'
 import { useBackendAuth } from '@/contexts/BackendAuthContext'
 import { featureFlags } from '@/lib/feature-flags'
+import { normalizeReturnPath } from '@/lib/safe-redirect'
 
 export function RequireAuth({ children }: { children: React.ReactNode }) {
     const { user, loading } = useBackendAuth()
@@ -23,10 +24,14 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
     }
 
     if (!user) {
-        const from =
+        // Route the post-login return path through the same-origin
+        // normalizer used by the login screen (audit #14, CWE-601).
+        const from = normalizeReturnPath(
             location.pathname && location.pathname !== '/login'
                 ? location.pathname
-                : undefined
+                : undefined,
+            undefined
+        )
         return <Navigate to="/login" search={{ from }} replace />
     }
 

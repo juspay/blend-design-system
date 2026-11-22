@@ -245,6 +245,54 @@ import { TextInputV2 } from '@juspay/blend-design-system'
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+TextInputV2 has 4 built-in strings: 1 placeholder and 3 read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                        | English default | Where it appears |
+| -------------------------- | --------------- | ---------------- |
+| `input.a11y.hide-password` | `Hide password` | Screen reader    |
+| `input.a11y.select-option` | `Select option` | Screen reader    |
+| `input.a11y.show-password` | `Show password` | Screen reader    |
+| `input.placeholder.enter`  | `Enter`         | Placeholder      |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#input), under [`input.*`](/docs/internationalization/message-catalog#input).
+
+`input.*` is shared with 9 other components, so translating it once covers all of them.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'input.placeholder.enter': 'Saisir',
+    'input.a11y.hide-password': 'Masquer le mot de passe',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Changing one string
+
+A prop replaces one string for that instance and always wins over `t`:
+
+| Prop          | Replaces key              | English default |
+| ------------- | ------------------------- | --------------- |
+| `placeholder` | `input.placeholder.enter` | `Enter`         |
+
+Don't pass a prop just to restate the English default: it wins over `t`, so that string would stay English in every locale.
+
 ## Component Tokens
 
 You can style the TextInputV2 component using the following tokens:

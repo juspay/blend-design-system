@@ -7,6 +7,7 @@ import {
     storeRefreshToken,
     findRefreshToken,
     revokeRefreshToken,
+    revokeRefreshTokenFamily,
     revokeAllUserRefreshTokens,
     cleanupExpiredTokens,
 } from '@/domains/users/data-access/user.repository.js'
@@ -20,6 +21,7 @@ export {
     storeRefreshToken,
     findRefreshToken,
     revokeRefreshToken,
+    revokeRefreshTokenFamily,
     revokeAllUserRefreshTokens,
     cleanupExpiredTokens,
 }

@@ -8,12 +8,16 @@ export const NUMBER_INPUT_V2_UNIT_MAX_LENGTH = 7
 
 /** When non-empty `unit` exceeds the max length, returns a footer error message. */
 export const getNumberInputV2UnitLengthErrorMessage = (
-    unit: string | undefined
+    unit: string | undefined,
+    format?: (vars: { max: string }) => string
 ): string | undefined => {
     const t = unit?.trim() ?? ''
     if (t.length === 0) return undefined
     if (t.length > NUMBER_INPUT_V2_UNIT_MAX_LENGTH) {
-        return `Unit must be ${NUMBER_INPUT_V2_UNIT_MAX_LENGTH} characters or fewer.`
+        const max = String(NUMBER_INPUT_V2_UNIT_MAX_LENGTH)
+        return format
+            ? format({ max })
+            : `Unit must be ${max} characters or fewer.`
     }
     return undefined
 }
@@ -164,17 +168,48 @@ export const isValueOutsideRange = (
     return false
 }
 
-export const getRangeErrorMessage = (min?: number, max?: number): string => {
-    if (min !== undefined && max !== undefined) {
-        return `Value must be between ${min} and ${max}`
-    }
-    if (min !== undefined) {
-        return `Value must be at least ${min}`
-    }
-    if (max !== undefined) {
-        return `Value must be at most ${max}`
-    }
-    return 'Invalid value'
+export type RangeErrorCode =
+    | 'range-between'
+    | 'range-min'
+    | 'range-max'
+    | 'invalid-value'
+
+/**
+ * Resolves a range-error code to display text. Components pass one bound to
+ * the active locale; omitted, the English sentences below are used, so
+ * existing direct callers are unchanged.
+ */
+export type RangeErrorFormatter = (
+    code: RangeErrorCode,
+    vars: { min: string; max: string }
+) => string
+
+const ENGLISH_RANGE_ERRORS: Record<
+    RangeErrorCode,
+    (vars: { min: string; max: string }) => string
+> = {
+    'range-between': ({ min, max }) =>
+        `Value must be between ${min} and ${max}`,
+    'range-min': ({ min }) => `Value must be at least ${min}`,
+    'range-max': ({ max }) => `Value must be at most ${max}`,
+    'invalid-value': () => 'Invalid value',
+}
+
+export const getRangeErrorMessage = (
+    min?: number,
+    max?: number,
+    format?: RangeErrorFormatter
+): string => {
+    const code: RangeErrorCode =
+        min !== undefined && max !== undefined
+            ? 'range-between'
+            : min !== undefined
+              ? 'range-min'
+              : max !== undefined
+                ? 'range-max'
+                : 'invalid-value'
+    const vars = { min: String(min), max: String(max) }
+    return format ? format(code, vars) : ENGLISH_RANGE_ERRORS[code](vars)
 }
 
 /** Stepping base: raw controlled number with only `preventNegative` applied (min/max handled in increment/decrement). */
@@ -213,13 +248,14 @@ export const isSmallScreenWithLargeSize = (
 export const getRangeErrorMessageIfOutside = (
     rawNumericValue: number | null,
     numericMin: number | undefined,
-    numericMax: number | undefined
+    numericMax: number | undefined,
+    format?: RangeErrorFormatter
 ): string | undefined => {
     if (rawNumericValue === null || isNaN(rawNumericValue)) {
         return undefined
     }
     if (isValueOutsideRange(rawNumericValue, numericMin, numericMax)) {
-        return getRangeErrorMessage(numericMin, numericMax)
+        return getRangeErrorMessage(numericMin, numericMax, format)
     }
     return undefined
 }

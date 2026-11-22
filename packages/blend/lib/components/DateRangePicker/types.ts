@@ -109,6 +109,13 @@ export type DateFormatConfig = {
     includeTime?: boolean
     includeYear?: boolean
     separator?: string
+    /**
+     * BCP 47 tag for this call only.
+     *
+     * Precedence is: this value, then `ThemeProvider`'s `locale`, then
+     * `'en-US'`. Setting it here pins the format regardless of the provider,
+     * which is why it is the highest tier.
+     */
     locale?: string
     timeFormat?: '12h' | '24h'
 }

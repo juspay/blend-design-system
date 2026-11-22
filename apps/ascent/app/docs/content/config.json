@@ -3,6 +3,7 @@
         "intro",
         "getting-started",
         "contributing",
+        "internationalization",
         "migration",
         "components"
     ]

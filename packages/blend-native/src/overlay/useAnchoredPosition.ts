@@ -68,6 +68,8 @@ export function useAnchoredPosition(options: {
      * lands on the anchor's center. Requires `arrowSize`.
      */
     arrowAligned?: boolean
+    /** The content caps itself at `position.maxHeight` (see `computeAnchoredPosition`). */
+    capHeightToAvailable?: boolean
 }) {
     const {
         open,
@@ -77,6 +79,7 @@ export function useAnchoredPosition(options: {
         viewportPadding,
         arrowSize,
         arrowAligned = false,
+        capHeightToAvailable = false,
     } = options
     const anchorRef = useRef<View>(null)
     const [anchorRect, setAnchorRect] = useState<Rect | null>(null)
@@ -127,6 +130,7 @@ export function useAnchoredPosition(options: {
             alignment,
             offset,
             viewportPadding,
+            capHeightToAvailable,
         }
         if (arrowAligned && arrowSize) {
             const { arrow, ...position } = computeArrowAlignedPosition({
@@ -158,6 +162,7 @@ export function useAnchoredPosition(options: {
         viewportPadding,
         arrowSize,
         arrowAligned,
+        capHeightToAvailable,
     ])
 
     return {

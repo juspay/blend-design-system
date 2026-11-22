@@ -109,6 +109,40 @@ import { TagGroupV2, TagV2 } from '@juspay/blend-design-system'
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+TagGroupV2 has one built-in string, read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                    | English default | Where it appears |
+| ---------------------- | --------------- | ---------------- |
+| `group.a11y.tag-group` | `Tag group`     | Screen reader    |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#group), under [`group.*`](/docs/internationalization/message-catalog#group).
+
+`group.*` is shared with ButtonGroupV2, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'group.a11y.tag-group': 'Groupe d’étiquettes',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
 ## Component Tokens
 
 You can style the TagGroupV2 component using the following tokens:

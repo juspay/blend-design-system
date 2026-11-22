@@ -10,6 +10,8 @@ import {
     getAccessibleLabel,
     getPositionStyles,
 } from './badge.utils'
+import { useMessages } from '../../i18n/useMessages'
+import { DISPLAY_MESSAGES } from '../../i18n/catalog/display.messages'
 
 const BadgeContent = forwardRef<
     HTMLSpanElement,
@@ -28,6 +30,7 @@ const BadgeContent = forwardRef<
         },
         ref
     ) => {
+        const { m } = useMessages(DISPLAY_MESSAGES)
         const tokens = useResponsiveTokens<BadgeTokensType>('BADGE')
         const filteredRest = filterBlockedProps(rest)
 
@@ -53,7 +56,12 @@ const BadgeContent = forwardRef<
             count,
             text,
             maxCount,
-            effectiveShowBadge
+            effectiveShowBadge,
+            {
+                moreThan: (max) =>
+                    m('badge.a11y.more-than', { max: String(max) }),
+                notification: m('badge.a11y.notification'),
+            }
         )
 
         if (!hasContent) {

@@ -3,6 +3,7 @@ import * as lockRepo from '../data-access/lock.repository.js'
 import * as orgRepo from '@/domains/organizations/data-access/organization.repository.js'
 import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 import {
+    diffLockViolations,
     validateAgainstLocks,
     type TokenLockEntry,
 } from '@/domains/branches/domain/inheritance.js'
@@ -101,4 +102,23 @@ export const validateBranchAgainstLocks = async (
     }))
 
     return validateAgainstLocks(parentConfig, tokenConfig, lockedPaths)
+}
+
+/**
+ * Strict lock check for merge writes (audit #16): the config that will be
+ * written must keep every locked path exactly as it is on the target branch
+ * today — changes and removals are both violations.
+ */
+export const validateMergedBranchConfig = async (
+    organizationId: string,
+    mergedConfig: BrandConfig,
+    currentConfig: BrandConfig
+) => {
+    const locks = await lockRepo.listLocks(organizationId)
+    const lockedPaths: TokenLockEntry[] = locks.map((l) => ({
+        path: l.tokenPath,
+        reason: l.reason || undefined,
+    }))
+
+    return diffLockViolations(currentConfig, mergedConfig, lockedPaths)
 }

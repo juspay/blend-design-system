@@ -25,6 +25,8 @@ import { useResizeObserver } from '../../../hooks/useResizeObserver'
 import Tooltip from '../../Tooltip/Tooltip'
 import { TooltipSize } from '../../Tooltip/types'
 import { parseDateLike, formatDateString } from '../utils'
+import { DATA_TABLE_MESSAGES } from '../../../i18n/catalog/dataTable.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 const StyledTableCell = styled.td<{
     width?: React.CSSProperties
@@ -217,6 +219,7 @@ const TableCell = forwardRef<
         ref
     ) => {
         const tableToken = useResponsiveTokens('TABLE') as TableTokenType
+        const { m, locale } = useMessages(DATA_TABLE_MESSAGES)
 
         // Apply formatting if getDisplayValue is provided and we're not editing
         const displayValue =
@@ -273,6 +276,8 @@ const TableCell = forwardRef<
                 if (dateValue) {
                     const parsedDate = parseDateLike(dateValue)
                     if (parsedDate) {
+                        // A DOM identifier consumers select on: stays `en-US`
+                        // whatever the display locale.
                         attrs['data-date'] = parsedDate.toLocaleDateString(
                             'en-US',
                             {
@@ -347,7 +352,8 @@ const TableCell = forwardRef<
                                 <SingleSelect
                                     label=""
                                     placeholder={
-                                        dropdownData.placeholder || 'Select...'
+                                        dropdownData.placeholder ||
+                                        m('data-table.placeholder.select')
                                     }
                                     variant={SelectMenuVariant.NO_CONTAINER}
                                     items={selectItems}
@@ -434,7 +440,8 @@ const TableCell = forwardRef<
                         <SingleSelect
                             label=""
                             placeholder={
-                                dropdownData.placeholder || 'Select...'
+                                dropdownData.placeholder ||
+                                m('data-table.placeholder.select')
                             }
                             variant={SelectMenuVariant.NO_CONTAINER}
                             items={selectItems}
@@ -500,7 +507,11 @@ const TableCell = forwardRef<
 
                 const formatDate = (date: Date): string => {
                     if (isNaN(date.getTime())) return '-'
-                    return formatDateString(date, formatStr)
+                    return formatDateString(date, formatStr, {
+                        locale,
+                        am: m('data-table.label.am'),
+                        pm: m('data-table.label.pm'),
+                    })
                 }
 
                 return (

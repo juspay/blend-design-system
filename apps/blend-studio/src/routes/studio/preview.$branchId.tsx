@@ -15,12 +15,12 @@ import {
     Spinner,
     WarningCircle,
 } from '@phosphor-icons/react'
-import { normalizeReturnPath } from '@/lib/return-path'
+import { normalizeReturnPath } from '@/lib/safe-redirect'
 
 export const Route = createFileRoute('/studio/preview/$branchId')({
     component: PreviewPage,
     validateSearch: (search: Record<string, unknown>) => ({
-        from: normalizeReturnPath(search.from),
+        from: normalizeReturnPath(search.from as string | undefined, undefined),
     }),
 })
 

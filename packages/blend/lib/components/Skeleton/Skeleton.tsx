@@ -4,6 +4,8 @@ import Block from '../Primitives/Block/Block'
 import type { SkeletonProps } from './types'
 import type { SkeletonTokensType } from './skeleton.tokens'
 import { useSkeletonBase } from './hooks/useSkeletonBase'
+import { useMessages } from '../../i18n/useMessages'
+import { FEEDBACK_MESSAGES } from '../../i18n/catalog/feedback.messages'
 
 // Animation keyframes
 const pulseAnimation = keyframes`
@@ -141,6 +143,7 @@ const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(FEEDBACK_MESSAGES)
         const {
             shouldRender,
             tokens: skeletonTokens,
@@ -175,7 +178,7 @@ const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
                         ? 'transparent'
                         : skeletonTokens?.colors.base)
                 }
-                aria-label="Loading content"
+                aria-label={m('skeleton.a11y.loading')}
                 role="progressbar"
                 aria-busy="true"
                 data-testid="skeleton"

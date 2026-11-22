@@ -11,7 +11,9 @@ export const createMenuItems = (
     avatars: AvatarData[],
     selectedIds: (string | number)[],
     onSelect: (id: string | number) => void,
-    AvatarComponent: React.ComponentType<AvatarProps>
+    AvatarComponent: React.ComponentType<AvatarProps>,
+    /** Label for an avatar with no alt or string fallback. Defaults to English. */
+    getFallbackName: (id: string | number) => string = (id) => `Avatar ${id}`
 ): MenuGroupType[] => {
     const items: MenuItemType[] = avatars.map((avatar) => {
         const isSelected = selectedIds.includes(avatar.id)
@@ -21,7 +23,7 @@ export const createMenuItems = (
                 avatar.alt ||
                 (typeof avatar.fallback === 'string'
                     ? avatar.fallback
-                    : `Avatar ${avatar.id}`),
+                    : getFallbackName(avatar.id)),
             slot1: (
                 <AvatarComponent
                     size={AvatarSize.SM} // Always use small size in menu

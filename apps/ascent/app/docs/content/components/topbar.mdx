@@ -125,6 +125,47 @@ function MyComponent() {
     ]}
 />
 
+## Localization
+
+Topbar has 5 built-in strings: 1 placeholder and 4 read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                                      | English default           | Where it appears |
+| ---------------------------------------- | ------------------------- | ---------------- |
+| `navigation.a11y.select-merchant`        | `Select merchant: {name}` | Screen reader    |
+| `navigation.a11y.select-tenant`          | `Select tenant: {name}`   | Screen reader    |
+| `navigation.a11y.select-tenant-unnamed`  | `Select tenant: tenant`   | Screen reader    |
+| `navigation.placeholder.select-merchant` | `Select Merchant`         | Placeholder      |
+| `topbar.a11y.go-back`                    | `Go back`                 | Screen reader    |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#navigation), under [`navigation.*`](/docs/internationalization/message-catalog#navigation) and [`topbar.*`](/docs/internationalization/message-catalog#topbar).
+
+`navigation.*` is shared with Sidebar, SidebarV2 and TopbarV2, so translating it once covers all of them.
+
+`topbar.*` is shared with TopbarV2, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'navigation.placeholder.select-merchant': 'Sélectionner un marchand',
+    'navigation.a11y.select-merchant': 'Sélectionner un marchand : {name}',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
 ## Component Tokens
 
 You can style the Topbar component using the `TOPBAR` component token.

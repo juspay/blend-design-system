@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { UploadFileV2 } from './UploadV2.types'
+import { UPLOAD_V2_MESSAGES } from '../../../i18n/catalog/uploadV2.messages'
+import { resolveMessage } from '../../../i18n/resolve'
+import type { BlendI18nHandle } from '../../../i18n/types'
 
 export const FILE_NAME_TAG_MAX_LEN = 24
 
@@ -148,23 +151,45 @@ export const isKnownUploadErrorReason = (
 export const normalizeUploadErrorReason = (reason: unknown) =>
     isKnownUploadErrorReason(reason) ? reason : undefined
 
+/**
+ * Human-readable validation message for an upload error reason.
+ *
+ * Takes an optional `i18n` handle rather than reading context, because this is
+ * a pure, React-free helper. Callers inside components forward the value from
+ * `useMessages`; a one-argument call still returns English, unchanged.
+ *
+ * The handle is read whole (`i18n?.translate`) rather than destructured:
+ * `tsconfig.json` sets `noUnusedParameters`, so an unused `locale` binding
+ * would not compile.
+ */
 export const getValidationMessage = (
     reason?: unknown,
     maxSize?: number,
-    maxFiles?: number
+    maxFiles?: number,
+    i18n?: BlendI18nHandle
 ) => {
+    const resolve = (key: string, vars?: Record<string, string>) =>
+        resolveMessage(UPLOAD_V2_MESSAGES, key, {
+            vars,
+            translate: i18n?.translate,
+        })
+
     switch (normalizeUploadErrorReason(reason)) {
         case 'oversized':
             return maxSize
-                ? `File is too large. Max size is ${formatFileSize(maxSize)}`
-                : 'File is too large'
+                ? resolve('upload-v2.error.oversized-max', {
+                      maxSize: formatFileSize(maxSize),
+                  })
+                : resolve('upload-v2.error.oversized')
         case 'maxFiles':
             return maxFiles
-                ? `File limit exceeded. Maximum ${maxFiles} files allowed`
-                : 'File limit exceeded'
+                ? resolve('upload-v2.error.max-files-limit', {
+                      maxFiles: String(maxFiles),
+                  })
+                : resolve('upload-v2.error.max-files')
         case 'invalidType':
-            return 'Invalid file type'
+            return resolve('upload-v2.error.invalid-type')
         default:
-            return 'Invalid file'
+            return resolve('upload-v2.error.invalid-file')
     }
 }

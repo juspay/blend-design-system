@@ -15,6 +15,8 @@ import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import { useSectionScroll } from '../../hooks/useSectionScroll'
 import { getItemPathSegment } from './utils'
+import { useMessages } from '../../i18n/useMessages'
+import { DIRECTORY_MESSAGES } from '../../i18n/catalog/directory.messages'
 
 type SectionStateContextValue = {
     sectionStates: Map<number, boolean>
@@ -61,6 +63,7 @@ const Section = ({
     enableParentSelection = false,
     highlightActivePath = false,
 }: SectionProps) => {
+    const { m } = useMessages(DIRECTORY_MESSAGES)
     const tokens = useResponsiveTokens<DirectoryTokenType>('DIRECTORY')
     const sectionStateContext = useSectionState()
     const { scrollIntoView } = useSectionScroll()
@@ -253,7 +256,9 @@ const Section = ({
                     role="list"
                     aria-label={
                         section.label
-                            ? `${section.label} navigation`
+                            ? m('directory.a11y.section', {
+                                  label: String(section.label),
+                              })
                             : undefined
                     }
                 >

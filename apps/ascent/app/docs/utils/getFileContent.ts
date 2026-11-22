@@ -2,6 +2,7 @@ import { useMDXComponents } from '@/mdx-components'
 import fs from 'fs'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import path from 'path'
+import { resolveContentPath } from '@/lib/utils/safe-path'
 
 export interface PageMetadata {
     title?: string
@@ -18,14 +19,12 @@ export interface PageMetadata {
 export async function getFileContent(slugArray: string[]) {
     const basePath = path.join(process.cwd(), 'app', 'docs', 'content')
 
-    let filePath =
-        path.join(
-            basePath,
-            Array.isArray(slugArray) ? slugArray.join('/') : slugArray
-        ) + '.mdx'
-    if (!fs.existsSync(filePath)) {
-        filePath = path.join(basePath, ...slugArray, 'page.mdx')
-        if (!fs.existsSync(filePath)) {
+    let filePath: string | null = resolveContentPath(basePath, slugArray)
+    if (filePath && fs.existsSync(`${filePath}.mdx`)) {
+        filePath = `${filePath}.mdx`
+    } else {
+        filePath = resolveContentPath(basePath, [...slugArray, 'page.mdx'])
+        if (!filePath || !fs.existsSync(filePath)) {
             return null
         }
     }

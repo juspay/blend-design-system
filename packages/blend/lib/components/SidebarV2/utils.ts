@@ -20,7 +20,13 @@ export const getSidebarV2Status = (
         : SidebarV2StateChange.COLLAPSED
 }
 
-export const announceSidebarV2StateChange = (isExpanded: boolean) => {
+/**
+ * `message` is the localized announcement; omitted, the English one is used.
+ */
+export const announceSidebarV2StateChange = (
+    isExpanded: boolean,
+    message = `Sidebar ${isExpanded ? 'expanded' : 'collapsed'}` // i18n-ignore: English default for direct callers
+) => {
     const announcement = document.createElement('div')
     announcement.setAttribute('role', 'status')
     announcement.setAttribute('aria-live', 'polite')
@@ -30,7 +36,7 @@ export const announceSidebarV2StateChange = (isExpanded: boolean) => {
     announcement.style.width = '1px'
     announcement.style.height = '1px'
     announcement.style.overflow = 'hidden'
-    announcement.textContent = `Sidebar ${isExpanded ? 'expanded' : 'collapsed'}`
+    announcement.textContent = message
     document.body.appendChild(announcement)
 
     setTimeout(() => {

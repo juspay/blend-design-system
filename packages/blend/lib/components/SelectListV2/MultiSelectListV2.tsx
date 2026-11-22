@@ -42,6 +42,9 @@ import {
     getSelectListV2FocusTargets,
     warnOnce,
 } from './utils'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 /**
  * Always-visible multi-select list with APG listbox semantics.
@@ -71,15 +74,23 @@ const MultiSelectListV2 = ({
     loadingComponent,
     skeleton,
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     enableSelectAll = false,
-    selectAllText = 'Select All',
+    selectAllText: selectAllTextProp,
     showClearAll = false,
-    clearAllText = 'Clear all',
+    clearAllText: clearAllTextProp,
     onClearAll,
     maxSelections,
     'aria-label': ariaLabel,
 }: MultiSelectListV2Props) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
+    const selectAllText = pick(selectAllTextProp, 'select.action.select-all')
+    const clearAllText = pick(clearAllTextProp, 'select.action.clear-all')
     const tokens =
         useResponsiveTokens<MultiSelectV2TokensType>('MULTI_SELECT_V2')
 
@@ -132,9 +143,12 @@ const MultiSelectListV2 = ({
             hasMatch,
             allowCustomValue,
             isSearchEnabled && !search?.isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         items,
         searchText,
         shouldFilterInternally,
@@ -287,7 +301,9 @@ const MultiSelectListV2 = ({
         : filteredItems.length === 0
     const emptyStateText =
         search?.emptyStateText ||
-        (!hasSourceItems ? 'No items available' : 'No results found')
+        (!hasSourceItems
+            ? mc('common.empty.no-items')
+            : mc('common.empty.no-results'))
 
     const virtualization = shouldVirtualize
         ? {
@@ -324,6 +340,10 @@ const MultiSelectListV2 = ({
                         availableValues={availableValues}
                         onSelectAll={handleSelectAll}
                         selectAllText={selectAllText}
+                        dataIdText={
+                            selectAllTextProp ??
+                            SELECT_MESSAGES['select.action.select-all']
+                        }
                         disabled={selectAllDisabled}
                         asMenuItem={false}
                     />
@@ -364,7 +384,9 @@ const MultiSelectListV2 = ({
                 ariaLabel={label ? undefined : ariaLabel}
                 chrome={chrome}
                 showSearch={isSearchEnabled}
-                searchPlaceholder={search?.placeholder ?? 'Search options...'}
+                searchPlaceholder={
+                    search?.placeholder ?? m('select.placeholder.search')
+                }
                 searchValue={searchText}
                 searchInputRef={searchInputRef}
                 onSearchChange={dispatchUserValue}

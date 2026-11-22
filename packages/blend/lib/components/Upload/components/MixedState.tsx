@@ -4,6 +4,8 @@ import Text from '../../Text/Text'
 import type { UploadedFileWithStatus } from '../types'
 import type { UploadTokenType } from '../upload.tokens'
 import FileListDisplay from './FileListDisplay'
+import { UPLOAD_MESSAGES } from '../../../i18n/catalog/upload.messages'
+import { useMessages } from '../../../i18n/useMessages'
 
 type MixedStateProps = {
     successfulFiles: UploadedFileWithStatus[]
@@ -21,67 +23,78 @@ const MixedState: React.FC<MixedStateProps> = ({
     onFileRemove,
     uploadTokens,
     maxFiles,
-}) => (
-    <Block
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={uploadTokens.container.content.slot.gap}
-    >
-        {children && (
-            <Block
-                width={uploadTokens.container.content.slot.width}
-                height={uploadTokens.container.content.slot.width}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-            >
-                {children}
-            </Block>
-        )}
+}) => {
+    const { m } = useMessages(UPLOAD_MESSAGES)
 
+    return (
         <Block
-            data-element="content"
             display="flex"
             flexDirection="column"
             alignItems="center"
-            gap={uploadTokens.container.content.text.gap}
+            gap={uploadTokens.container.content.slot.gap}
         >
-            <Text
-                as="span"
-                fontSize={uploadTokens.container.content.text.title.fontSize}
-                fontWeight={
-                    uploadTokens.container.content.text.title.fontWeight
-                }
-                color={uploadTokens.container.content.text.title.color}
-                textAlign="center"
-            >
-                Files uploaded
-            </Text>
+            {children && (
+                <Block
+                    width={uploadTokens.container.content.slot.width}
+                    height={uploadTokens.container.content.slot.width}
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    {children}
+                </Block>
+            )}
 
-            <Text
-                as="span"
-                fontSize={uploadTokens.container.content.text.subtitle.fontSize}
-                fontWeight={
-                    uploadTokens.container.content.text.subtitle.fontWeight
-                }
-                color={uploadTokens.container.content.text.subtitle.color}
-                textAlign="center"
+            <Block
+                data-element="content"
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                gap={uploadTokens.container.content.text.gap}
             >
-                {successfulFiles.length} succeeded, {errorFiles.length} failed
-            </Text>
-        </Block>
+                <Text
+                    as="span"
+                    fontSize={
+                        uploadTokens.container.content.text.title.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.title.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.title.color}
+                    textAlign="center"
+                >
+                    {m('upload.label.files-uploaded')}
+                </Text>
 
-        <Block gap={uploadTokens.container.content.actionable.gap}>
-            <FileListDisplay
-                files={[...successfulFiles, ...errorFiles]}
-                onFileRemove={onFileRemove}
-                uploadTokens={uploadTokens}
-                maxFiles={maxFiles}
-            />
+                <Text
+                    as="span"
+                    fontSize={
+                        uploadTokens.container.content.text.subtitle.fontSize
+                    }
+                    fontWeight={
+                        uploadTokens.container.content.text.subtitle.fontWeight
+                    }
+                    color={uploadTokens.container.content.text.subtitle.color}
+                    textAlign="center"
+                >
+                    {m('upload.label.partial-result', {
+                        succeeded: String(successfulFiles.length),
+                        failed: String(errorFiles.length),
+                    })}
+                </Text>
+            </Block>
+
+            <Block gap={uploadTokens.container.content.actionable.gap}>
+                <FileListDisplay
+                    files={[...successfulFiles, ...errorFiles]}
+                    onFileRemove={onFileRemove}
+                    uploadTokens={uploadTokens}
+                    maxFiles={maxFiles}
+                />
+            </Block>
         </Block>
-    </Block>
-)
+    )
+}
 
 MixedState.displayName = 'MixedState'
 

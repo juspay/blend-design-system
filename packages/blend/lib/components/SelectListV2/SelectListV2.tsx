@@ -35,6 +35,9 @@ import {
     getSelectListV2FocusTargets,
     warnOnce,
 } from './utils'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 /**
  * Always-visible single-select list.
@@ -70,9 +73,15 @@ const SelectListV2 = ({
     loadingComponent,
     skeleton,
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     'aria-label': ariaLabel,
 }: SelectListV2Props) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const tokens =
         useResponsiveTokens<SingleSelectV2TokensType>('SINGLE_SELECT_V2')
 
@@ -125,9 +134,12 @@ const SelectListV2 = ({
             hasMatch,
             allowCustomValue,
             isSearchEnabled && !search?.isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         items,
         searchText,
         shouldFilterInternally,
@@ -233,7 +245,9 @@ const SelectListV2 = ({
         : filteredItems.length === 0
     const emptyStateText =
         search?.emptyStateText ||
-        (!hasSourceItems ? 'No items available' : 'No results found')
+        (!hasSourceItems
+            ? mc('common.empty.no-items')
+            : mc('common.empty.no-results'))
 
     const virtualization = shouldVirtualize
         ? {
@@ -269,7 +283,9 @@ const SelectListV2 = ({
                 ariaLabel={label ? undefined : ariaLabel}
                 chrome={chrome}
                 showSearch={isSearchEnabled}
-                searchPlaceholder={search?.placeholder ?? 'Search options...'}
+                searchPlaceholder={
+                    search?.placeholder ?? m('select.placeholder.search')
+                }
                 searchValue={searchText}
                 searchInputRef={searchInputRef}
                 onSearchChange={dispatchUserValue}

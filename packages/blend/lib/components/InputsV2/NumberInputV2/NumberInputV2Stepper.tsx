@@ -3,6 +3,8 @@ import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import type { NumberInputV2TokensType } from './numberInputV2.tokens'
 import { InputSizeV2 } from '../inputV2.types'
 import { StepperArrow } from './StepperArrow'
+import { useMessages } from '../../../i18n/useMessages'
+import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'
 
 type NumberInputV2StepperProps = {
     labelText: string
@@ -25,6 +27,7 @@ const NumberInputV2Stepper = ({
     inputContainerTokens,
     size,
 }: NumberInputV2StepperProps) => {
+    const { m } = useMessages(INPUT_MESSAGES)
     const sb = inputContainerTokens.inputContainer.stepperButton
     const border = inputContainerTokens.inputContainer.border
     const radius = inputContainerTokens.inputContainer.borderRadius[size]
@@ -65,7 +68,9 @@ const NumberInputV2Stepper = ({
             <PrimitiveButton
                 type="button"
                 aria-label={
-                    labelText ? `Increase ${labelText}` : 'Increase value'
+                    labelText
+                        ? m('input.a11y.increase', { label: labelText })
+                        : m('input.a11y.increase-value')
                 }
                 onClick={() => onStep('up')}
                 backgroundColor={sb.backgroundColor.default}
@@ -96,7 +101,9 @@ const NumberInputV2Stepper = ({
             <PrimitiveButton
                 type="button"
                 aria-label={
-                    labelText ? `Decrease ${labelText}` : 'Decrease value'
+                    labelText
+                        ? m('input.a11y.decrease', { label: labelText })
+                        : m('input.a11y.decrease-value')
                 }
                 onClick={() => onStep('down')}
                 backgroundColor={sb.backgroundColor.default}

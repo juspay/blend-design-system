@@ -17,6 +17,8 @@ import type {
     DrawerFooterProps,
     DrawerCloseProps,
 } from '../types'
+import { useMessages } from '../../../i18n/useMessages'
+import { OVERLAY_MESSAGES } from '../../../i18n/catalog/overlay.messages'
 
 const DrawerConfigContext = React.createContext<{ disableDrag: boolean }>({
     disableDrag: false,
@@ -293,6 +295,7 @@ export const Drawer = ({
     disableDrag = false,
     children,
 }: DrawerProps) => {
+    const { m } = useMessages(OVERLAY_MESSAGES)
     const RootComponent = nested ? VaulDrawer.NestedRoot : VaulDrawer.Root
     const [titleId, setTitleId] = React.useState<string | undefined>(undefined)
     const [descriptionId, setDescriptionId] = React.useState<
@@ -328,7 +331,7 @@ export const Drawer = ({
             announcement.style.width = '1px'
             announcement.style.height = '1px'
             announcement.style.overflow = 'hidden'
-            announcement.textContent = 'Drawer opened'
+            announcement.textContent = m('drawer.status.opened')
             document.body.appendChild(announcement)
 
             // Remove announcement after screen reader has time to read it
@@ -345,7 +348,7 @@ export const Drawer = ({
                 }
             }
         }
-    }, [open])
+    }, [open, m])
 
     const vaulProps: Record<string, unknown> = {
         open,

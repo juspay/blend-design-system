@@ -11,6 +11,9 @@ import {
     StatCardV2Variant,
 } from './statcardV2.types'
 import { filterBlockedProps } from '../../utils/prop-helpers'
+import { useMessages } from '../../i18n/useMessages'
+import { CHART_MESSAGES } from '../../i18n/catalog/chart.messages'
+import { getListFormat } from '../../i18n/format/formatterCache'
 import { ChartV2 } from '../ChartsV2'
 import {
     ProgressBar,
@@ -53,6 +56,7 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
         },
         ref
     ) => {
+        const { m, locale } = useMessages(CHART_MESSAGES)
         const tokens = useResponsiveTokens<StatCardV2TokensType>('STATCARDV2')
         const { breakPointLabel } = useBreakpoints(BREAKPOINTS)
         const isSmallScreen = breakPointLabel === 'sm'
@@ -88,8 +92,20 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                     value,
                     subtitle,
                     change,
+                    messages: {
+                        increased: (changeText) =>
+                            m('stat-card.a11y.change-increase-v2', {
+                                value: changeText,
+                            }),
+                        decreased: (changeText) =>
+                            m('stat-card.a11y.change-decrease-v2', {
+                                value: changeText,
+                            }),
+                        // ", " in English, so the English label is unchanged.
+                        join: (parts) => getListFormat(locale).format(parts),
+                    },
                 }),
-            [title, value, subtitle, change]
+            [title, value, subtitle, change, m, locale]
         )
 
         type ChartOptions = {
@@ -273,7 +289,11 @@ const StatCardV2 = forwardRef<HTMLDivElement, StatCardV2Props>(
                                     id={chartId}
                                     role="img"
                                     aria-label={
-                                        title ? `${title} chart` : 'Data chart'
+                                        title
+                                            ? m('stat-card.a11y.chart', {
+                                                  title: String(title),
+                                              })
+                                            : m('stat-card.a11y.chart-unnamed')
                                     }
                                 >
                                     <ChartV2

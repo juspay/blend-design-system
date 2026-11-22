@@ -104,16 +104,19 @@ const ComponentPreview = ({
 
 export const Snippet = (code: string) => {
     const [isClient, setIsClient] = React.useState(false)
-    const [highlighted, setHighlighted] = React.useState<string>('')
+    // null means highlighting is unavailable — the raw code must then be
+    // rendered as text, never injected as HTML (audit #11, CWE-79).
+    const [highlighted, setHighlighted] = React.useState<string | null>(null)
 
     React.useEffect(() => {
         setIsClient(true)
-        // Only run highlighting on client side
+        // Only run highlighting on client side; sugar-high escapes the
+        // source while tokenizing, so only its output may enter HTML.
         try {
-            const result = highlight(code || '') || code || ''
-            setHighlighted(result)
+            const result = highlight(code || '')
+            setHighlighted(result || null)
         } catch {
-            setHighlighted(code || '')
+            setHighlighted(null)
         }
     }, [code])
 
@@ -131,12 +134,26 @@ export const Snippet = (code: string) => {
         )
     }
 
+    // Highlighting unavailable: render the raw code as text children.
+    if (highlighted === null) {
+        return (
+            <div className="overflow-x-auto">
+                <pre
+                    data-code-snippet
+                    className="p-2 block whitespace-pre-wrap wrap-break-words"
+                >
+                    {code || ''}
+                </pre>
+            </div>
+        )
+    }
+
     // Client-side: render with syntax highlighting
     return (
         <div className="overflow-x-auto">
             <pre
                 data-code-snippet
-                dangerouslySetInnerHTML={{ __html: highlighted || code || '' }}
+                dangerouslySetInnerHTML={{ __html: highlighted }}
                 className="p-2 block whitespace-pre-wrap wrap-break-words"
             ></pre>
         </div>

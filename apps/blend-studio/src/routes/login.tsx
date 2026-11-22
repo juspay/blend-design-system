@@ -14,6 +14,7 @@ import {
 } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { featureFlags } from '@/lib/feature-flags'
+import { normalizeReturnPath } from '@/lib/safe-redirect'
 
 export const Route = createFileRoute('/login')({
     component: LoginPage,
@@ -44,11 +45,16 @@ function LoginPage() {
     }
 
     if (!loading && user) {
-        const target =
-            search.from && !search.from.includes('/login')
-                ? search.from
-                : '/studio'
-        return <Navigate to={target} replace />
+        // Only same-origin app paths are honored; anything else —
+        // protocol-relative, backslashed, encoded, absolute — falls back to
+        // /studio (audit #14, CWE-601).
+        const target = normalizeReturnPath(search.from, '/studio')
+        return (
+            <Navigate
+                to={target && !target.includes('/login') ? target : '/studio'}
+                replace
+            />
+        )
     }
 
     if (loading) {

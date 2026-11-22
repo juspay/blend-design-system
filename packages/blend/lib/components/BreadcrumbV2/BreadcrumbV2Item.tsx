@@ -4,6 +4,8 @@ import PrimitiveLink from '../Primitives/PrimitiveLink'
 import { BreadcrumbV2TokensType } from './breadcrumbV2.tokens'
 import type { BreadcrumbCompoundItemProps } from './breadcrumbV2.types'
 import { getPlainTextFromReactNode } from './utils'
+import { useMessages } from '../../i18n/useMessages'
+import { BREADCRUMB_MESSAGES } from '../../i18n/catalog/breadcrumb.messages'
 
 const BreadcrumbV2CompoundItem = ({
     href,
@@ -11,16 +13,22 @@ const BreadcrumbV2CompoundItem = ({
     isActive = false,
     children,
 }: BreadcrumbCompoundItemProps) => {
+    const { m } = useMessages(BREADCRUMB_MESSAGES)
     const breadcrumbTokens =
         useResponsiveTokens<BreadcrumbV2TokensType>('BREADCRUMBV2')
 
     const labelFromChildren = getPlainTextFromReactNode(children).trim()
-    const segment =
-        labelFromChildren.length > 0
-            ? labelFromChildren
-            : isActive
-              ? 'Breadcrumb item'
-              : 'breadcrumb item'
+    const hasLabel = labelFromChildren.length > 0
+    // Whole sentences for the unnamed case rather than a fallback noun
+    // substituted into the named template: the noun's case and article
+    // depend on the sentence around it.
+    const ariaLabel = isActive
+        ? hasLabel
+            ? m('breadcrumb.a11y.current-page', { label: labelFromChildren })
+            : m('breadcrumb.a11y.current-page-unnamed')
+        : hasLabel
+          ? m('breadcrumb.a11y.navigate-to', { label: labelFromChildren })
+          : m('breadcrumb.a11y.navigate-to-unnamed')
 
     const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
         if (onClick) {
@@ -52,9 +60,7 @@ const BreadcrumbV2CompoundItem = ({
                   }
                 : {})}
             textDecoration="none"
-            aria-label={
-                isActive ? `Current page: ${segment}` : `Navigate to ${segment}`
-            }
+            aria-label={ariaLabel}
             aria-current={isActive ? 'page' : undefined}
         >
             {children}

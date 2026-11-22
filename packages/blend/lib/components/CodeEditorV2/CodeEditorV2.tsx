@@ -14,6 +14,8 @@ import {
 import { CodeEditorV2Header } from './CodeEditorV2Header'
 import { MonacoEditorWrapper } from './MonacoEditor/MonacoEditorWrapper'
 import { filterBlockedProps } from '../../utils/prop-helpers'
+import { useMessages } from '../../i18n/useMessages'
+import { CODE_MESSAGES } from '../../i18n/catalog/code.messages'
 
 const DEFAULT_HEADER: NonNullable<CodeEditorV2Props['header']> = {
     showHeader: true,
@@ -54,8 +56,16 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
         },
         ref
     ) => {
+        const { m } = useMessages(CODE_MESSAGES)
         const filteredRest = filterBlockedProps(rest)
-        const header = { ...DEFAULT_HEADER, ...headerProp }
+        // The localized title sits between the defaults and the consumer's
+        // header, so an explicit `title` (even `undefined`) still wins exactly
+        // as it did with the spread alone.
+        const header = {
+            ...DEFAULT_HEADER,
+            title: m('code-editor.label.title'),
+            ...headerProp,
+        }
         const tokens = useResponsiveTokens<CodeEditorV2Tokens>('CODEEDITORV2')
         const [isCopied, setIsCopied] = useState(false)
         const copyFeedbackTimeoutRef = useRef<ReturnType<
@@ -110,7 +120,7 @@ const CodeEditorV2 = forwardRef<HTMLDivElement, CodeEditorV2Props>(
                 backgroundColor={tokens.backgroundColor}
                 boxShadow={tokens.boxShadow}
                 style={containerStyles}
-                data-codeeditor={header.title ?? DEFAULT_HEADER.title}
+                data-codeeditor={headerProp?.title ?? DEFAULT_HEADER.title}
             >
                 {header.showHeader && (
                     <CodeEditorV2Header

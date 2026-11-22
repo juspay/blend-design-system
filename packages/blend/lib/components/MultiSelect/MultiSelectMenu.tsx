@@ -41,6 +41,9 @@ import VirtualList from '../VirtualList/VirtualList'
 import type { VirtualListItem } from '../VirtualList/types'
 import { dropdownContentAnimations } from './multiSelect.animations'
 import MultiSelectSkeleton from './MultiSelectSkeleton'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { COMMON_MESSAGES } from '../../i18n/catalog/common.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const Content = styled(RadixMenu.Content)`
     position: relative;
@@ -149,13 +152,13 @@ const MultiSelectMenu = ({
     maxMenuHeight,
     disabled = false,
     enableSearch = true,
-    searchPlaceholder = 'Search options...',
+    searchPlaceholder: searchPlaceholderProp,
     searchText: controlledSearchText,
     onSearchChange,
     isSearchLoading,
     emptyStateText,
     enableSelectAll = false,
-    selectAllText = 'Select All',
+    selectAllText: selectAllTextProp,
     maxSelections,
     onSelectAll,
     alignment = MultiSelectMenuAlignment.START,
@@ -182,10 +185,21 @@ const MultiSelectMenu = ({
     size = MultiSelectMenuSize.MEDIUM,
     variant = MultiSelectVariant.CONTAINER,
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     menuId,
     menuFooter,
 }: MultiSelectMenuProps) => {
+    const { m, pick } = useMessages(SELECT_MESSAGES)
+    const { m: mc } = useMessages(COMMON_MESSAGES)
+    const searchPlaceholder = pick(
+        searchPlaceholderProp,
+        'select.placeholder.search'
+    )
+    const selectAllText = pick(selectAllTextProp, 'select.action.select-all')
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const multiSelectTokens =
         useResponsiveTokens<MultiSelectTokensType>('MULTI_SELECT')
     const { target: portalContainer } = useShadowRoot()
@@ -243,9 +257,12 @@ const MultiSelectMenu = ({
             hasMatch,
             allowCustomValue,
             isSearchEnabled && !isSearchLoading,
-            customValueLabel
+            customValueLabel,
+            (label, value) =>
+                m('select.label.custom-value-option', { label, value })
         )
     }, [
+        m,
         items,
         searchText,
         allowCustomValue,
@@ -484,7 +501,7 @@ const MultiSelectMenu = ({
                                             autoFocus
                                             aria-label={
                                                 searchPlaceholder ||
-                                                'Search options'
+                                                m('select.a11y.search')
                                             }
                                             onKeyDown={(e) => {
                                                 if (
@@ -530,6 +547,12 @@ const MultiSelectMenu = ({
                                                     )
                                                 }
                                                 selectAllText={selectAllText}
+                                                dataIdText={
+                                                    selectAllTextProp ??
+                                                    SELECT_MESSAGES[
+                                                        'select.action.select-all'
+                                                    ]
+                                                }
                                                 disabled={disabled}
                                             />
                                         </Block>
@@ -552,8 +575,8 @@ const MultiSelectMenu = ({
                                     emptyStateText={
                                         emptyStateText ||
                                         (!hasSourceItems
-                                            ? 'No items available'
-                                            : 'No results found')
+                                            ? mc('common.empty.no-items')
+                                            : mc('common.empty.no-results'))
                                     }
                                 />
                                 {isActiveSearchLoading &&
@@ -576,8 +599,12 @@ const MultiSelectMenu = ({
                                         >
                                             {emptyStateText ||
                                                 (!hasSourceItems
-                                                    ? 'No items available'
-                                                    : 'No results found')}
+                                                    ? mc(
+                                                          'common.empty.no-items'
+                                                      )
+                                                    : mc(
+                                                          'common.empty.no-results'
+                                                      ))}
                                         </Text>
                                     </Block>
                                 ) : enableVirtualization &&

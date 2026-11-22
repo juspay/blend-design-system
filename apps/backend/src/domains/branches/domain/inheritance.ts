@@ -1,4 +1,5 @@
 import type { BrandConfig } from './branch.types.js'
+import { ValidationError } from '@/errors/AppError.js'
 
 export interface TokenLockEntry {
     path: string
@@ -113,6 +114,61 @@ export function validateAgainstLocks(
         }
         return violations
     }, [])
+}
+
+/**
+ * Strict lock check for full-config writes (audit #16, CWE-1321).
+ *
+ * `validateAgainstLocks` treats a missing child value as "inherit from
+ * parent" and skips it — correct for inheritance resolution, but wrong for
+ * merge writes where the stored config is replaced wholesale: dropping a
+ * locked path is a lock violation too. This variant flags any deviation
+ * between the baseline and the next config, including removals.
+ */
+export function diffLockViolations(
+    baselineConfig: unknown,
+    nextConfig: unknown,
+    lockedPaths: TokenLockEntry[]
+): LockViolation[] {
+    return lockedPaths.reduce<LockViolation[]>((violations, lock) => {
+        const baselineValue = getByPath(baselineConfig, lock.path)
+        const nextValue = getByPath(nextConfig, lock.path)
+        if (nextValue !== baselineValue) {
+            violations.push({
+                path: lock.path,
+                parentValue: String(baselineValue ?? '(default)'),
+                childValue: String(nextValue ?? '(removed)'),
+                reason: lock.reason,
+            })
+        }
+        return violations
+    }, [])
+}
+
+/**
+ * Rejects brand configs carrying prototype-pollution keys (`__proto__`,
+ * `prototype`, `constructor`) anywhere in their tree. Brand configs are
+ * user-controlled JSON that gets deep-merged into stored branch state, so
+ * unsafe keys must never reach a merge or a store (audit #16, CWE-1321).
+ */
+export const assertSafeBrandConfig = (config: unknown, label: string): void => {
+    const walk = (value: unknown, path: string): void => {
+        if (!value || typeof value !== 'object' || Array.isArray(value)) {
+            return
+        }
+        for (const key of Object.keys(value as Record<string, unknown>)) {
+            if (isUnsafePathSegment(key)) {
+                throw new ValidationError(
+                    `Invalid ${label}: forbidden key '${key}' at '${path || key}'`
+                )
+            }
+            walk(
+                (value as Record<string, unknown>)[key],
+                path ? `${path}.${key}` : key
+            )
+        }
+    }
+    walk(config, '')
 }
 
 export function resolveWithInheritance(

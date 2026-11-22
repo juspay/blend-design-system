@@ -60,15 +60,30 @@ export const exchangeCodeForTokens = async (
     }
 }
 
+/**
+ * Every token this service issues is HS256 with the single server secret.
+ * Pinning the algorithm at sign and verify time closes alg-confusion attacks
+ * (`alg: none`, RS/HS mixups) — audit #19, CWE-347. Issuer/audience are bound
+ * when configured via JWT_ISSUER / JWT_AUDIENCE.
+ */
+const jwtSignOptions = (expiresIn: string): jwt.SignOptions => ({
+    algorithm: 'HS256',
+    ...(env.JWT_ISSUER ? { issuer: env.JWT_ISSUER } : {}),
+    ...(env.JWT_AUDIENCE ? { audience: env.JWT_AUDIENCE } : {}),
+    expiresIn: expiresIn as jwt.SignOptions['expiresIn'],
+})
+
 export const generateAccessToken = (payload: TokenPayload): string => {
     const tokenPayload: JwtPayload = {
         ...payload,
         type: 'access',
     }
 
-    return jwt.sign(tokenPayload, env.JWT_SECRET, {
-        expiresIn: (env.JWT_EXPIRES_IN || '7d') as jwt.SignOptions['expiresIn'],
-    })
+    return jwt.sign(
+        tokenPayload,
+        env.JWT_SECRET,
+        jwtSignOptions(env.JWT_EXPIRES_IN || '7d')
+    )
 }
 
 export const generateRefreshToken = (payload: TokenPayload): string => {
@@ -77,10 +92,11 @@ export const generateRefreshToken = (payload: TokenPayload): string => {
         type: 'refresh',
     }
 
-    return jwt.sign(tokenPayload, env.JWT_SECRET, {
-        expiresIn: (env.JWT_REFRESH_EXPIRES_IN ||
-            '30d') as jwt.SignOptions['expiresIn'],
-    })
+    return jwt.sign(
+        tokenPayload,
+        env.JWT_SECRET,
+        jwtSignOptions(env.JWT_REFRESH_EXPIRES_IN || '30d')
+    )
 }
 
 /**
@@ -93,18 +109,52 @@ export const generateCliExportToken = (payload: TokenPayload): string => {
         type: 'cli_export',
     }
 
-    return jwt.sign(tokenPayload, env.JWT_SECRET, {
-        expiresIn:
-            env.JWT_CLI_EXPORT_EXPIRES_IN as jwt.SignOptions['expiresIn'],
-    })
+    return jwt.sign(
+        tokenPayload,
+        env.JWT_SECRET,
+        jwtSignOptions(env.JWT_CLI_EXPORT_EXPIRES_IN)
+    )
 }
 
-export const verifyJwtToken = (token: string): JwtPayload => {
+export type AllowedTokenType = NonNullable<JwtPayload['type']>
+
+export interface VerifyJwtTokenOptions {
+    /** Reject tokens whose `type` claim is not this value. */
+    type?: AllowedTokenType
+    /** Reject tokens whose `type` claim is not one of these values. */
+    types?: AllowedTokenType[]
+}
+
+// Token-type checks live here rather than in every caller so no endpoint can
+// forget them (rescan hardening, CWE-347): a refresh or cli_export token can
+// no longer pass as a session credential by relying on callers to check the
+// `type` claim themselves.
+export const verifyJwtToken = (
+    token: string,
+    options?: VerifyJwtTokenOptions
+): JwtPayload => {
+    let decoded: JwtPayload
     try {
-        return jwt.verify(token, env.JWT_SECRET) as JwtPayload
+        decoded = jwt.verify(token, env.JWT_SECRET, {
+            algorithms: ['HS256'],
+            ...(env.JWT_ISSUER ? { issuer: env.JWT_ISSUER } : {}),
+            ...(env.JWT_AUDIENCE ? { audience: env.JWT_AUDIENCE } : {}),
+        }) as JwtPayload
     } catch {
         throw new UnauthorizedError('Invalid or expired token')
     }
+
+    if (options?.type && decoded.type !== options.type) {
+        throw new UnauthorizedError('Invalid token type')
+    }
+    if (
+        options?.types &&
+        (!decoded.type || !options.types.includes(decoded.type))
+    ) {
+        throw new UnauthorizedError('Invalid token type')
+    }
+
+    return decoded
 }
 
 export const generateTokens = (payload: TokenPayload): AuthTokens => {

@@ -108,6 +108,12 @@ export default defineConfig({
                 // `dist/tokens/index.d.ts`, silently typing them as `any` for
                 // every consumer. See issue #1556; scripts/check-dist.mjs
                 // guards this class of collision post-build.
+                //
+                // The same reasoning forbids an entry named `i18n`:
+                // `lib/i18n/` emits `dist/i18n/*.d.ts`, so such an entry would
+                // put `dist/i18n.d.ts` beside that directory and shadow it.
+                // The i18n surface therefore ships through the existing `main`
+                // and `node` entries instead, and no entry is added for it.
                 'token-engine': resolve(__dirname, 'lib/token-engine.ts'),
                 'tokens-server': resolve(
                     __dirname,

@@ -30,6 +30,8 @@ import styled from 'styled-components'
 import { getBorderRadius, setupAccessibility } from './utils'
 import { TruncatedTextWithTooltip } from '../common'
 import { useDropdownInteractionLock } from '../../hooks'
+import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'
+import { useMessages } from '../../i18n/useMessages'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}
@@ -105,12 +107,17 @@ const SingleSelect = ({
     maxTriggerWidth,
     minTriggerWidth,
     allowCustomValue = false,
-    customValueLabel = 'Specify',
+    customValueLabel: customValueLabelProp,
     singleSelectGroupPosition,
     allowDeselect = false,
     menuFooter,
     ...rest
 }: SingleSelectProps) => {
+    const { pick } = useMessages(SELECT_MESSAGES)
+    const customValueLabel = pick(
+        customValueLabelProp,
+        'select.label.custom-value'
+    )
     const { onFocus, onBlur, ...buttonRest } = rest
     const buttonRestWithoutAria = { ...buttonRest } as Record<string, unknown>
     delete buttonRestWithoutAria['aria-describedby']

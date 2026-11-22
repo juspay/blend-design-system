@@ -193,6 +193,48 @@ import { ChartV2Skeleton } from '@juspay/blend-design-system'
 ;<ChartV2Skeleton show={true} variant="rectangular" height={300} />
 ```
 
+## Localization
+
+ChartsV2 has 4 built-in strings: 2 shown on screen and 2 read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                            | English default                        | Where it appears |
+| ------------------------------ | -------------------------------------- | ---------------- |
+| `chart.a11y.container`         | `Chart container`                      | Screen reader    |
+| `chart.a11y.legend`            | `Chart legend`                         | Screen reader    |
+| `chart.empty.no-data`          | `No data available`                    | On screen        |
+| `chart.empty.no-data-subtitle` | `Data will appear here once available` | On screen        |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#chart), under [`chart.*`](/docs/internationalization/message-catalog#chart).
+
+`chart.*` is shared with Charts, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'chart.empty.no-data': 'Aucune donnée disponible',
+    'chart.a11y.container': 'Conteneur de graphique',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Notes
+
+- Numbers and dates follow the provider `locale`. Series and category names are your data.
+
 ## Component Tokens
 
 You can style the ChartsV2 component using the following tokens:

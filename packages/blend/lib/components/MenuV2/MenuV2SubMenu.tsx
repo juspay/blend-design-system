@@ -23,6 +23,8 @@ import {
 import { menuV2SubmenuContentAnimations } from './menuV2.animations'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { addPxToValue } from '../../global-utils/GlobalUtils'
+import { useMessages } from '../../i18n/useMessages'
+import { MENU_MESSAGES } from '../../i18n/catalog/menu.messages'
 
 type SubContentStyledProps = { $zIndex: number | string }
 
@@ -65,6 +67,7 @@ const MenuV2SubMenu = ({
     selectionStyle,
     selectionMode,
 }: MenuV2SubMenuProps) => {
+    const { m, pick } = useMessages(MENU_MESSAGES)
     const menuTokens = useResponsiveTokens<MenuV2TokensType>('MENU_V2')
     const itemTokens = menuTokens.group.item
     const [slot1] = getItemSlots(item)
@@ -273,9 +276,10 @@ const MenuV2SubMenu = ({
                             <SearchInput
                                 ref={searchInputRef}
                                 leftSlot={<Search size={16} aria-hidden />}
-                                placeholder={
-                                    item.subMenuSearchPlaceholder ?? 'Search...'
-                                }
+                                placeholder={pick(
+                                    item.subMenuSearchPlaceholder,
+                                    'menu.placeholder.submenu-search'
+                                )}
                                 value={searchText}
                                 onChange={(e) => setSearchText(e.target.value)}
                                 onKeyDown={(e) => {
@@ -288,7 +292,7 @@ const MenuV2SubMenu = ({
                                         )
                                     }
                                 }}
-                                aria-label="Search submenu"
+                                aria-label={m('menu.a11y.search-submenu')}
                             />
                         </Block>
                     )}

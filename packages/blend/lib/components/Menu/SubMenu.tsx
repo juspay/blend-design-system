@@ -20,6 +20,8 @@ import React, { useState, useRef, useMemo, useCallback } from 'react'
 import { submenuContentAnimations } from './menu.animations'
 import { VirtualList, type VirtualListItem } from '../VirtualList'
 import type { MenuSelectionMode, MenuSelectionStyle } from './selection'
+import { useMessages } from '../../i18n/useMessages'
+import { MENU_MESSAGES } from '../../i18n/catalog/menu.messages'
 
 const MenuSlot = ({ slot }: { slot: React.ReactNode }) => {
     return (
@@ -174,6 +176,7 @@ export const SubMenu = ({
     selectionStyle?: MenuSelectionStyle
     selectionMode?: MenuSelectionMode
 }) => {
+    const { m } = useMessages(MENU_MESSAGES)
     const menuTokens = useResponsiveTokens<MenuTokensType>('MENU')
     const [searchText, setSearchText] = useState<string>('')
     const searchInputRef = useRef<HTMLInputElement>(null)
@@ -404,7 +407,8 @@ export const SubMenu = ({
                                     />
                                 }
                                 placeholder={
-                                    item.subMenuSearchPlaceholder || 'Search...'
+                                    item.subMenuSearchPlaceholder ||
+                                    m('menu.placeholder.submenu-search')
                                 }
                                 value={searchText}
                                 onChange={handleSearchChange}

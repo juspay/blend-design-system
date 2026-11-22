@@ -7,6 +7,8 @@ import { ButtonSize, ButtonType } from '../Button/types'
 import Button from '../Button/Button'
 import { useSkeletonBase } from './hooks/useSkeletonBase'
 import FOUNDATION_THEME from '../../tokens/theme.token'
+import { useMessages } from '../../i18n/useMessages'
+import { FEEDBACK_MESSAGES } from '../../i18n/catalog/feedback.messages'
 
 const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
     (
@@ -19,6 +21,7 @@ const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
         },
         ref
     ) => {
+        const { m } = useMessages(FEEDBACK_MESSAGES)
         const { shouldRender, tokens: skeletonTokens } =
             useSkeletonBase(loading)
 
@@ -97,14 +100,14 @@ const SkeletonCard = forwardRef<HTMLDivElement, SkeletonCardProps>(
                     <Button
                         buttonType={ButtonType.SECONDARY}
                         size={ButtonSize.SMALL}
-                        text="Cancel"
+                        text={m('skeleton.label.cancel')}
                         showSkeleton
                         skeletonVariant={variant}
                     />
                     <Button
                         buttonType={ButtonType.PRIMARY}
                         size={ButtonSize.SMALL}
-                        text="Confirm"
+                        text={m('skeleton.label.confirm')}
                         showSkeleton
                         skeletonVariant={variant}
                     />

@@ -445,6 +445,45 @@ are not shown in this mode.
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+DateRangePicker has 39 built-in strings: 29 shown on screen, 5 placeholders and 5 read only by screen readers. Everything else it renders comes from your props and data.
+
+The full list, with English defaults and placeholders, is in the [message catalog](/docs/internationalization/message-catalog#date-range-picker), under [`common.*`](/docs/internationalization/message-catalog#common) and [`date-range-picker.*`](/docs/internationalization/message-catalog#date-range-picker).
+
+`common.*` is shared with 7 other components, so translating it once covers all of them.
+
+`date-range-picker.*` is shared with SingleDatePicker, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'date-range-picker.action.apply-date': 'Appliquer la date',
+    'date-range-picker.a11y.end-time': 'Heure de fin',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Notes
+
+- A custom preset's `label` replaces that preset's catalog text.
+- Calendar weekday headers come from `Intl` in the provider `locale` (`Mon Tue Wed` in English), not from the catalog.
+- The `DD/MM/YYYY` hint on the typed date inputs stays as it is, because those inputs parse only that format.
+
 ## Component Tokens
 
 You can style the DateRangePicker component using the following tokens:

@@ -18,6 +18,8 @@ import type { CalendarTokenType } from '../DateRangePicker/dateRangePicker.token
 import type { DateRangePickerSize } from '../DateRangePicker/types'
 import type { TimePickerTokensType } from './timePicker.tokens.types'
 import { TimePickerSize, type TimePickerProps } from './timePicker.types'
+import { TIME_PICKER_MESSAGES } from '../../i18n/catalog/timePicker.messages'
+import { useMessages } from '../../i18n/useMessages'
 import {
     type TimeValue,
     clampTimeValue,
@@ -32,6 +34,7 @@ import {
     timeValueToSeconds,
     timeValueToString,
 } from '../shared/datetime/timeCore'
+import { createPeriodFormatter } from '../shared/datetime/dayPeriod'
 
 /**
  * `snapToMinuteStep` rounds to the *nearest* slot, which rolls into the next
@@ -123,6 +126,12 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
         const { foundationTokens } = useTheme()
         const timeToken =
             useResponsiveTokens<TimePickerTokensType>('TIME_PICKER')
+        const { m, pick, translate } = useMessages(TIME_PICKER_MESSAGES)
+        // Display only, and the same strings the period column uses.
+        const formatWithPeriod = useMemo(
+            () => createPeriodFormatter(translate),
+            [translate]
+        )
 
         const baseId = useId()
         const errorId = `${baseId}-error`
@@ -231,8 +240,13 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
               : undefined
 
         const displayText = displayValue
-            ? formatTimeValue(displayValue, { format, showSeconds })
-            : (placeholder ?? getTimePlaceholder({ format, showSeconds }))
+            ? formatTimeValue(displayValue, {
+                  format,
+                  showSeconds,
+                  formatWithPeriod,
+              })
+            : (placeholder ??
+              getTimePlaceholder({ format, showSeconds, formatWithPeriod }))
 
         const handleChange = useCallback(
             (next: TimeValue) => {
@@ -269,7 +283,9 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
             calendarToken,
             foundationTokens,
             onToggle: () => setIsOpen((open) => !open),
-            ariaLabel: ariaLabel ?? `Time picker, ${displayText}`,
+            ariaLabel: pick(ariaLabel, 'time-picker.a11y.trigger', {
+                value: displayText,
+            }),
             dataDatePicker: 'timePicker-Filter',
             defaultIcon: (
                 <Clock size={calendarToken?.trigger?.dateInput?.iconSize} />
@@ -315,7 +331,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
                      */}
                     <Block
                         role="group"
-                        aria-label="Choose time"
+                        aria-label={m('time-picker.a11y.choose-time')}
                         backgroundColor={timeToken.dropdown.backgroundColor}
                         border={timeToken.dropdown.border}
                         borderRadius={timeToken.dropdown.borderRadius}

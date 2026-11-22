@@ -43,6 +43,7 @@ import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { Button, ButtonType } from '../Button'
 import { DEFAULT_COLORS } from './utils'
+import ChartMessage from './ChartMessage'
 
 export const renderChart = ({
     chartName,
@@ -66,6 +67,7 @@ export const renderChart = ({
     lineSeriesKeys,
     onKeyClick,
     chartTokens,
+    locale,
 }: RenderChartProps) => {
     const finalXAxis = {
         label: xAxis?.label,
@@ -102,6 +104,7 @@ export const renderChart = ({
             dateOnly: finalXAxis.dateOnly,
             timeOnly: finalXAxis.timeOnly,
             showYear: finalXAxis.showYear,
+            locale,
             useUTC: finalXAxis.useUTC,
             formatString: finalXAxis.formatString,
         })
@@ -218,15 +221,18 @@ export const renderChart = ({
                             color={FOUNDATION_THEME.colors.gray[800]}
                             fontWeight={600}
                         >
-                            {noData?.title || 'No data available'}
+                            {noData?.title || (
+                                <ChartMessage id="chart.empty.no-data" />
+                            )}
                         </Text>
                         <Text
                             variant="body.md"
                             color={FOUNDATION_THEME.colors.gray[600]}
                             fontWeight={500}
                         >
-                            {noData?.subtitle ||
-                                'Data will appear here once available'}
+                            {noData?.subtitle || (
+                                <ChartMessage id="chart.empty.no-data-subtitle" />
+                            )}
                         </Text>
                     </Block>
                 </Block>
@@ -294,8 +300,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -340,8 +346,8 @@ export const renderChart = ({
                                     : finalYAxis.tickFormatter
                                       ? finalYAxis.tickFormatter
                                       : finalYAxis.type
-                                        ? getAxisFormatter(finalYAxis)
-                                        : (value) => formatNumber(value)
+                                        ? getAxisFormatter(finalYAxis, locale)
+                                        : (value) => formatNumber(value, locale)
                             }
                             tick={
                                 (finalYAxis.customTick
@@ -549,8 +555,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -593,8 +599,8 @@ export const renderChart = ({
                                     : finalYAxis.tickFormatter
                                       ? finalYAxis.tickFormatter
                                       : finalYAxis.type
-                                        ? getAxisFormatter(finalYAxis)
-                                        : (value) => formatNumber(value)
+                                        ? getAxisFormatter(finalYAxis, locale)
+                                        : (value) => formatNumber(value, locale)
                             }
                             tick={
                                 (finalYAxis.customTick
@@ -700,8 +706,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -726,8 +732,8 @@ export const renderChart = ({
                                 : finalYAxis.tickFormatter
                                   ? finalYAxis.tickFormatter
                                   : finalYAxis.type
-                                    ? getAxisFormatter(finalYAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalYAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (finalYAxis.customTick
@@ -1069,8 +1075,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -1119,8 +1125,8 @@ export const renderChart = ({
                                 : finalYAxis.tickFormatter
                                   ? finalYAxis.tickFormatter
                                   : finalYAxis.type
-                                    ? getAxisFormatter(finalYAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalYAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (finalYAxis.customTick
@@ -1212,14 +1218,14 @@ export const renderChart = ({
                             color={FOUNDATION_THEME.colors.gray[800]}
                             fontWeight={600}
                         >
-                            Invalid Sankey data format
+                            <ChartMessage id="chart.error.invalid-sankey" />
                         </Text>
                         <Text
                             variant="body.md"
                             color={FOUNDATION_THEME.colors.gray[600]}
                             fontWeight={500}
                         >
-                            Please provide nodes and links
+                            <ChartMessage id="chart.error.invalid-sankey-hint" />
                         </Text>
                     </Block>
                 )
@@ -1350,8 +1356,8 @@ export const renderChart = ({
                                 : finalXAxis.tickFormatter
                                   ? finalXAxis.tickFormatter
                                   : finalXAxis.type
-                                    ? getAxisFormatter(finalXAxis)
-                                    : (value) => formatNumber(value)
+                                    ? getAxisFormatter(finalXAxis, locale)
+                                    : (value) => formatNumber(value, locale)
                         }
                         tick={
                             (!finalXAxis.show
@@ -1394,8 +1400,8 @@ export const renderChart = ({
                                     : finalYAxis.tickFormatter
                                       ? finalYAxis.tickFormatter
                                       : finalYAxis.type
-                                        ? getAxisFormatter(finalYAxis)
-                                        : (value) => formatNumber(value)
+                                        ? getAxisFormatter(finalYAxis, locale)
+                                        : (value) => formatNumber(value, locale)
                             }
                             tick={
                                 (finalYAxis.customTick
@@ -1466,6 +1472,10 @@ export const renderChart = ({
         }
 
         default:
-            return <div>Unsupported chart type</div>
+            return (
+                <div>
+                    <ChartMessage id="chart.error.unsupported-type" />
+                </div>
+            )
     }
 }

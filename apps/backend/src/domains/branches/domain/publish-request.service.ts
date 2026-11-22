@@ -15,6 +15,7 @@ import {
 import {
     canBypassApproval,
     canRoleApprove,
+    countEffectiveApprovals,
     hasReachedApprovalThreshold,
     resolvePublishApprovalPolicy,
     type OrgApprovalSettings,
@@ -66,9 +67,45 @@ export const listPublishRequests = async (
     },
     requesterUserId: string
 ) => {
+    // Never serve an unscoped listing: without an organization, requester or
+    // branch filter this would return every tenant's publish requests (audit
+    // #2, CWE-639). Branch filters are validated for visibility below.
+    if (!options.organizationId && !options.requestedBy && !options.branchId) {
+        throw new ValidationError(
+            'Listing publish requests requires an organizationId, requestedBy or branchId filter'
+        )
+    }
+
     if (options.organizationId) {
         await requireOrganizationMember(options.organizationId, requesterUserId)
     }
+
+    // Without an organization scope, a requester may only list their own
+    // requests — mirroring what getPublishRequest enforces for personal branches.
+    if (
+        !options.organizationId &&
+        options.requestedBy &&
+        options.requestedBy !== requesterUserId
+    ) {
+        throw new ForbiddenError('Access denied')
+    }
+
+    // A branch filter must not become a side channel around organization scoping.
+    if (options.branchId && !options.organizationId) {
+        const branch = await branchRepo.getBranchById(options.branchId)
+        if (!branch) {
+            throw new NotFoundError('Branch')
+        }
+        if (branch.organizationId) {
+            await requireOrganizationMember(
+                branch.organizationId,
+                requesterUserId
+            )
+        } else if (branch.createdBy !== requesterUserId) {
+            throw new ForbiddenError('Access denied')
+        }
+    }
+
     return publishRequestRepo.listPublishRequests(options)
 }
 
@@ -155,7 +192,7 @@ export const approvePublishRequest = async (
     }
 
     const thresholdReached = hasReachedApprovalThreshold(
-        refreshed.approvals.length,
+        countEffectiveApprovals(refreshed.approvals, refreshed.requestedBy),
         policy
     )
     const updated = await publishRequestRepo.updatePublishRequestStatus(id, {
@@ -265,11 +302,30 @@ export const executePublishRequest = async (
         throw new ForbiddenError('Only admins can execute publish requests')
     }
 
+    // The requester's own approval never counts toward the threshold
+    // (rescan hardening, CWE-863).
+    const effectiveApprovalCount = countEffectiveApprovals(
+        request.approvals,
+        request.requestedBy
+    )
     const approvalsMet = hasReachedApprovalThreshold(
-        request.approvals.length,
+        effectiveApprovalCount,
         policy
     )
     const bypassAllowed = canBypassApproval(policy, userRole)
+
+    // Admin bypass may fast-track a *pending* request; it must never resurrect
+    // a rejected/cancelled one or re-publish an already executed one (audit
+    // #3, CWE-863).
+    if (
+        request.status === 'rejected' ||
+        request.status === 'cancelled' ||
+        request.status === 'published'
+    ) {
+        throw new ValidationError(
+            `Publish requests with status '${request.status}' cannot be executed`
+        )
+    }
 
     if (policy.requireApproval && !approvalsMet && !bypassAllowed) {
         throw new ValidationError(
@@ -285,21 +341,30 @@ export const executePublishRequest = async (
         }
     }
 
-    const version = await branchRepo.createVersion(request.branchId, {
-        version: request.version,
-        tokenConfig: branch.tokenConfig,
-        changelog: request.changelog,
-        isBreaking: request.isBreaking,
-        isPrerelease: request.isPrerelease,
-        publishedBy: userId,
-        publishedByName: userName,
-    })
+    // Claim-then-apply in a single transaction (rescan round-2, CWE-367):
+    // the conditional status flip serializes concurrent executions and
+    // loses to a racing cancel instead of double-publishing.
+    const applied = await publishRequestRepo.applyPublish(
+        id,
+        request.status,
+        request.branchId,
+        {
+            version: request.version,
+            tokenConfig: branch.tokenConfig,
+            changelog: request.changelog,
+            isBreaking: request.isBreaking,
+            isPrerelease: request.isPrerelease,
+            publishedBy: userId,
+            publishedByName: userName,
+        }
+    )
+    if (!applied) {
+        throw new ValidationError(
+            'This publish request is no longer executable'
+        )
+    }
 
-    const updated = await publishRequestRepo.updatePublishRequestStatus(id, {
-        status: 'published',
-        publishedVersionId: version.id,
-        publishedAt: new Date(),
-    })
+    const { publishRequest: updated, version } = applied
 
     if (request.organizationId) {
         await auditLogRepo.createAuditLog({
@@ -319,7 +384,7 @@ export const executePublishRequest = async (
                 version: request.version,
                 usedAdminBypass:
                     policy.requireApproval && !approvalsMet && bypassAllowed,
-                approvalCount: request.approvals.length,
+                approvalCount: effectiveApprovalCount,
                 minRequired: policy.minApprovals,
             },
         })

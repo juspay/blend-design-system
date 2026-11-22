@@ -51,4 +51,8 @@ export type UploadBaseProps = {
     maxFiles?: number
     progressBarValue?: number
     uploadHeaderText?: string
+    /** Overrides the "Browse Files" button label. */
+    browseFilesText?: string
+    /** Overrides the "Replace File" button label. */
+    replaceFileText?: string
 }

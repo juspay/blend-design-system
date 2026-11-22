@@ -14,7 +14,10 @@ export class AppError extends Error {
         this.code = code
         this.isOperational = isOperational
 
-        Object.setPrototypeOf(this, AppError.prototype)
+        // Restore the *subclass* prototype so instanceof works for
+        // ValidationError & friends (the previous AppError.prototype reset
+        // flattened every subclass instance's prototype chain).
+        Object.setPrototypeOf(this, new.target.prototype)
         Error.captureStackTrace(this, this.constructor)
     }
 }

@@ -2,10 +2,11 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
-import { env, isDevelopment } from '@/config/index.js'
+import { env, isDevelopment, isProduction } from '@/config/index.js'
 import { logger } from '@/utils/logger.js'
 import { errorHandler, notFoundHandler } from '@/middlewares/errorHandler.js'
 import { apiLimiter } from '@/middlewares/rateLimit.js'
+import { authenticate, requireRole } from '@/middlewares/auth.js'
 import { createCookieCsrfProtection } from '@/middlewares/csrf.js'
 import { swaggerUiHandler, swaggerUiSetup } from '@/config/swagger.js'
 import { connectDatabaseWithRetry, isDatabaseReady } from '@/config/database.js'
@@ -26,6 +27,12 @@ import type { NextFunction, Request, Response } from 'express'
 const app = express()
 const API_V1_PREFIX = '/api/v1'
 const LEGACY_API_PREFIX = '/api'
+
+// Cloud Run fronts this app with Google's load balancer. Trust exactly one
+// proxy hop so `req.ip` (used by the rate-limit keyGenerator) resolves to the
+// real client IP — the right-most X-Forwarded-For entry — instead of the load
+// balancer address shared by every client (audit #17, CWE-307).
+app.set('trust proxy', 1)
 
 app.use(helmet())
 
@@ -59,7 +66,11 @@ app.use(
             origin: string | undefined,
             callback: (error: Error | null, allow?: boolean) => void
         ) => {
-            if (!origin) return callback(null, true)
+            // Requests without an Origin header (CLI, server-to-server) never
+            // need CORS headers — do not hand out credentialed permissive
+            // responses to them (audit #5, CWE-942). callback(null, false)
+            // lets the request proceed without any CORS headers.
+            if (!origin) return callback(null, false)
 
             if (allowedOrigins.indexOf(origin) !== -1 || isDevelopment) {
                 callback(null, true)
@@ -194,6 +205,11 @@ app.use(
     }
 )
 
+// Swagger UI is operator tooling, not a public API surface: in production it
+// is restricted to authenticated system admins (audit #18, CWE-200). Local
+// development keeps /docs open for convenience.
+const docsGuards = isProduction ? [authenticate, requireRole('admin')] : []
+app.use('/docs', ...docsGuards)
 app.use(
     '/docs',
     helmet({

@@ -54,9 +54,11 @@ vi.mock('@/domains/organizations/domain/org-permissions.service.js', () => ({
 import organizationRouter from './organization.routes.js'
 import * as orgRepo from '../data-access/organization.repository.js'
 import * as orgPermissions from '@/domains/organizations/domain/org-permissions.service.js'
+import * as auditLogRepo from '@/domains/audit/data-access/auditlog.repository.js'
 
 const mockedOrgRepo = vi.mocked(orgRepo)
 const mockedOrgPermissions = vi.mocked(orgPermissions)
+const mockedAuditLogRepo = vi.mocked(auditLogRepo)
 
 describe('organization.routes authorization', () => {
     beforeEach(() => {
@@ -151,5 +153,42 @@ describe('organization.routes authorization', () => {
         expect(
             mockedOrgPermissions.requireOrganizationMember
         ).not.toHaveBeenCalled()
+    })
+
+    it('records system-admin cross-tenant updates in the audit log', async () => {
+        // System admin with no membership in the target organization.
+        currentUser.role = 'admin'
+        mockedOrgPermissions.requireOrganizationRole.mockRejectedValue(
+            new ForbiddenError(
+                'Only organization admins can perform this action'
+            )
+        )
+        mockedOrgRepo.updateOrganization.mockResolvedValue({
+            id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+            name: 'Renamed Org',
+        } as any)
+
+        const app = createHttpTestApp(
+            '/api/v1/organizations',
+            organizationRouter
+        )
+
+        await request(app)
+            .patch('/api/v1/organizations/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')
+            .send({ name: 'Renamed Org' })
+            .expect(200)
+
+        expect(mockedAuditLogRepo.createAuditLog).toHaveBeenCalledWith(
+            expect.objectContaining({
+                organizationId: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+                action: 'system_admin_cross_tenant_action',
+                actorId: currentUser.id,
+                targetType: 'organization',
+                metadata: {
+                    operation: 'organization_updated',
+                    viaSystemAdmin: true,
+                },
+            })
+        )
     })
 })
