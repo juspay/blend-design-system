@@ -155,6 +155,73 @@ figma.connect(
     }
 )
 
+// New Popovers page (Blend Design System) connection — frame 23346:4511
+// Properties: size (sm/md), close, actions, primary, secondary, slot
+// No TEXT props for heading/description (hardcoded in design, inlined in example)
+figma.connect(
+    PopoverV2,
+    'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=23346-4511',
+    {
+        props: {
+            // Size mapping: Figma sm/md → PopoverV2Size.SM/MD (LG is code-only)
+            size: figma.enum('size', {
+                sm: PopoverV2Size.SM,
+                md: PopoverV2Size.MD,
+            }),
+
+            // Renamed mapping: close (Figma) → showCloseButton (Code)
+            showCloseButton: figma.boolean('close'),
+
+            // Action buttons gated by primary/secondary booleans in Figma
+            primaryAction: figma.boolean('primary', {
+                true: { text: 'Accept', buttonType: ButtonType.PRIMARY },
+                false: undefined,
+            }),
+
+            secondaryAction: figma.boolean('secondary', {
+                true: { text: 'Reject', buttonType: ButtonType.SECONDARY },
+                false: undefined,
+            }),
+        },
+
+        example: ({
+            size,
+            showCloseButton,
+            primaryAction,
+            secondaryAction,
+        }) => (
+            <PopoverV2
+                trigger={<Button text="Open Popover" />}
+                size={size}
+                showCloseButton={showCloseButton}
+                heading="Heading"
+                description="This is a popover. It displays additional content or actions when triggered by the user."
+                primaryAction={primaryAction}
+                secondaryAction={secondaryAction}
+            >
+                <div>
+                    <p>Your popover content</p>
+                </div>
+            </PopoverV2>
+        ),
+
+        imports: [
+            "import { PopoverV2, PopoverV2Size, Button, ButtonType } from '@juspay/blend-design-system'",
+        ],
+
+        links: [
+            {
+                name: 'GitHub',
+                url: 'https://github.com/juspay/blend-design-system/tree/main/packages/blend/lib/components/PopoverV2',
+            },
+            {
+                name: 'Storybook',
+                url: 'https://blend.juspay.design/storybook/?path=/docs/components-popoverv2--docs',
+            },
+        ],
+    }
+)
+
 /**
  * Example of PopoverV2 with additional features not in Figma:
  *
