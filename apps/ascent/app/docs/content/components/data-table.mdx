@@ -1656,6 +1656,52 @@ Each column in the `columns` array should have the following structure:
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+DataTable has 119 built-in strings: 58 shown on screen, 12 placeholders and 49 read only by screen readers. Everything else it renders comes from your props and data.
+
+The full list, with English defaults and placeholders, is in the [message catalog](/docs/internationalization/message-catalog#data-table), under [`common.*`](/docs/internationalization/message-catalog#common) and [`data-table.*`](/docs/internationalization/message-catalog#data-table).
+
+`common.*` is shared with 7 other components, so translating it once covers all of them.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'data-table.action.add-columns': 'Ajouter des colonnes',
+    'data-table.a11y.advanced-filters': 'Filtres avancés',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Changing one string
+
+A prop replaces one string for that instance and always wins over `t`:
+
+| Prop                | Replaces key                          | English default |
+| ------------------- | ------------------------------------- | --------------- |
+| `searchPlaceholder` | `data-table.placeholder.search-table` | `Search...`     |
+
+Don't pass a prop just to restate the English default: it wins over `t`, so that string would stay English in every locale.
+
+### Notes
+
+- Column headers and cell values are your data and render as you pass them.
+- `data-date` attributes and the values in CSV and Excel exports stay English, because tests and other tools read them.
+
 ## Component Tokens
 
 You can style the DataTable component using the following tokens:

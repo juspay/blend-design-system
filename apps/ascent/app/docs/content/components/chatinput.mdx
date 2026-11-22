@@ -304,6 +304,48 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+ChatInput has 15 built-in strings: 5 shown on screen, 1 placeholder and 9 read only by screen readers. Everything else it renders comes from your props and data.
+
+The full list, with English defaults and placeholders, is in the [message catalog](/docs/internationalization/message-catalog#chat-input), under [`chat-input.*`](/docs/internationalization/message-catalog#chat-input).
+
+`chat-input.*` is shared with ChatInputV2, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'chat-input.label.more-files.one': '{count} de plus',
+    'chat-input.label.more-files.other': '{count} de plus',
+    'chat-input.a11y.actions': 'Actions de saisie',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Changing one string
+
+A prop replaces one string for that instance and always wins over `t`:
+
+| Prop          | Replaces key                     | English default     |
+| ------------- | -------------------------------- | ------------------- |
+| `placeholder` | `chat-input.placeholder.message` | `Type a message...` |
+
+Don't pass a prop just to restate the English default: it wins over `t`, so that string would stay English in every locale.
+
 ## Component Tokens
 
 You can style the ChatInput component using the following tokens:

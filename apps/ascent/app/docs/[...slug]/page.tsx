@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { compileMDX } from 'next-mdx-remote/rsc'
+import remarkGfm from 'remark-gfm'
 import { useMDXComponents } from '@/mdx-components'
 import { cache } from 'react'
 import React from 'react'
@@ -50,9 +51,11 @@ const getCompiledMDX = cache(async (filePath: string) => {
         options: {
             parseFrontmatter: true,
             mdxOptions: {
+                // remark-gfm adds pipe tables (and autolinks, strikethrough),
+                // which plain MDX does not parse; the blog route uses it too.
                 remarkPlugins: isMigrationDoc
-                    ? [[remarkMigrationCodeDiff, { tokenDiff }]]
-                    : [],
+                    ? [remarkGfm, [remarkMigrationCodeDiff, { tokenDiff }]]
+                    : [remarkGfm],
                 rehypePlugins: [],
             },
         },

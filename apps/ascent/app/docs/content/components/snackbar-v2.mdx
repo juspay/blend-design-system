@@ -331,6 +331,40 @@ visible, and supports a primary and a secondary action.
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+SnackbarV2 has one built-in string, read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                   | English default      | Where it appears |
+| --------------------- | -------------------- | ---------------- |
+| `snackbar.a11y.close` | `Close notification` | Screen reader    |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#snackbar), under [`snackbar.*`](/docs/internationalization/message-catalog#snackbar).
+
+`snackbar.*` is shared with Snackbar, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'snackbar.a11y.close': 'Fermer la notification',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
 ## Component Tokens
 
 You can style the SnackbarV2 component using the following tokens:

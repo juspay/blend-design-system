@@ -479,6 +479,56 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+Tabs has 6 built-in strings: 1 shown on screen, 2 placeholders and 3 read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                            | English default              | Where it appears |
+| ------------------------------ | ---------------------------- | ---------------- |
+| `tabs.a11y.close`              | `Close {label}`              | Screen reader    |
+| `tabs.a11y.close-tab`          | `Close tab`                  | Screen reader    |
+| `tabs.a11y.navigate-to-tab`    | `Navigate to tab`            | Screen reader    |
+| `tabs.label.add-new-tab`       | `Add new tab`                | On screen        |
+| `tabs.placeholder.navigate`    | `Navigate`                   | Placeholder      |
+| `tabs.placeholder.search-tabs` | `Search and navigate to tab` | Placeholder      |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#tabs), under [`tabs.*`](/docs/internationalization/message-catalog#tabs).
+
+`tabs.*` is shared with TabsV2, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'tabs.label.add-new-tab': 'Ajouter un onglet',
+    'tabs.a11y.close': 'Fermer {label}',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Changing one string
+
+A prop replaces one string for that instance and always wins over `t`:
+
+| Prop               | Replaces key             | English default |
+| ------------------ | ------------------------ | --------------- |
+| `addButtonTooltip` | `tabs.label.add-new-tab` | `Add new tab`   |
+
+Don't pass a prop just to restate the English default: it wins over `t`, so that string would stay English in every locale.
+
 ## Component Tokens
 
 You can style the tabs component using the following tokens:

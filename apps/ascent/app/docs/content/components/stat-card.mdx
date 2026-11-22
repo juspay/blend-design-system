@@ -404,6 +404,51 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+StatCard has 7 built-in strings: 7 read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                                                  | English default                                                   | Where it appears |
+| ---------------------------------------------------- | ----------------------------------------------------------------- | ---------------- |
+| `stat-card.a11y.change-decrease`                     | `decreased by {value}%`                                           | Screen reader    |
+| `stat-card.a11y.change-increase`                     | `increased by {value}%`                                           | Screen reader    |
+| `stat-card.a11y.chart`                               | `{title} chart`                                                   | Screen reader    |
+| `stat-card.a11y.chart-trend-decreasing.one / .other` | `{title} chart showing {count} data points with decreasing trend` | Screen reader    |
+| `stat-card.a11y.chart-trend-increasing.one / .other` | `{title} chart showing {count} data points with increasing trend` | Screen reader    |
+| `stat-card.a11y.chart-trend-stable.one / .other`     | `{title} chart showing {count} data points with stable trend`     | Screen reader    |
+| `stat-card.a11y.help`                                | `Help for {title}`                                                | Screen reader    |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#stat-card), under [`stat-card.*`](/docs/internationalization/message-catalog#stat-card).
+
+`stat-card.*` is shared with StatCardV2, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'stat-card.a11y.change-decrease': 'en baisse de {value} %',
+    'stat-card.a11y.change-increase': 'en hausse de {value} %',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
+### Notes
+
+- Values and changes are formatted for the provider `locale`; the `data-numeric` attribute stays English.
+
 ## Component Tokens
 
 You can style the StatCard component using the following tokens:

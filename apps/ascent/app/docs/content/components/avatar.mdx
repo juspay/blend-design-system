@@ -184,6 +184,42 @@ function MyComponent() {
     loadingMessage="Loading props..."
 />
 
+## Localization
+
+Avatar has 2 built-in strings: 1 shown on screen and 1 read only by screen readers. Everything else it renders comes from your props and data.
+
+| Key                         | English default  | Where it appears |
+| --------------------------- | ---------------- | ---------------- |
+| `avatar.a11y.status-online` | `{name}, online` | Screen reader    |
+| `avatar.label.fallback`     | `Avatar`         | On screen        |
+
+All keys are also listed in the [message catalog](/docs/internationalization/message-catalog#avatar), under [`avatar.*`](/docs/internationalization/message-catalog#avatar).
+
+`avatar.*` is shared with AvatarV2, so translating it once covers both.
+
+### Translating
+
+Pass a `locale` and a `t` function to `ThemeProvider`. Any key you don't translate falls back to its English default.
+
+```tsx
+import { ThemeProvider, createTranslator } from '@juspay/blend-design-system'
+
+const t = createTranslator({
+    'avatar.label.fallback': 'Avatar',
+    'avatar.a11y.status-online': '{name}, en ligne',
+})
+
+export function Root() {
+    return (
+        <ThemeProvider locale="fr-FR" t={t}>
+            <App />
+        </ThemeProvider>
+    )
+}
+```
+
+Using i18next, FormatJS or another library? Pass its translate function as `t` instead; see [Internationalization](/docs/internationalization/overview).
+
 ## Component Tokens
 
 You can style the avatar component using the following tokens:
