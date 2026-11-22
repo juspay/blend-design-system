@@ -1,7 +1,7 @@
 {
     "version": "2.0.0",
     "packageName": "@juspay/blend-design-system",
-    "blendPackageVersion": "0.0.38-beta.1",
+    "blendPackageVersion": "0.0.39-beta.4",
     "components": {
         "Accordion": {
             "componentName": "Accordion",
@@ -3386,6 +3386,26 @@
                     "category": "General",
                     "required": false,
                     "llmContext": "Numeric value for maxYearOffset"
+                },
+                {
+                    "propName": "renderDay",
+                    "propType": "(day: RenderDayConfig) => ReactNode",
+                    "typeDefinition": "(day: RenderDayConfig) => ReactNode",
+                    "propDescription": "Renders custom content inside each calendar day cell — e.g. a\nper-day badge (dispute counts). Day granularity only; it is ignored\nwhen `granularity='month'` and on the mobile drawer, whose scroll\nwheel picker has no day cells (the desktop popover renders instead\nonly when `useDrawerOnMobile` is disabled or month granularity is\nactive).\n\nContent is painted inside an absolutely-positioned overlay covering\nthe cell with `pointer-events: none`, so it can never change the\ncalendar's flow layout (month heights are precomputed for the\nvirtualized scroll) and it can never steal the cell's click/keyboard\nsemantics — opt back in per element (tooltips etc.) by setting\n`pointer-events: auto` on it. Position freely within the overlay\n(e.g. `top-right`); note the today-indicator dot already occupies\nbottom-center, so offset badges away from it.\n\nThe cell's `aria-label` is unchanged — day content is decorative\nfrom the grid's a11y tree; attach your own labels/`aria-hidden` to\nwhat you render.\n\nNot called for empty grid slots or hidden dates. Performance: the\nrender window holds roughly 3 months x 42 cells; memoize the\ncallback and keep per-date lookups O(1).",
+                    "propDefault": "undefined",
+                    "category": "General",
+                    "required": false,
+                    "llmContext": "React element to render as renderDay"
+                },
+                {
+                    "propName": "onVisibleMonthsChange",
+                    "propType": "(months: CalendarMonth[]) => void",
+                    "typeDefinition": "(months: CalendarMonth[]) => void",
+                    "propDescription": "Reports which calendar months are visible in the popover's scroll\nviewport, deduped by month set. Fires on mount (the initial\nscroll-to-selected month) and on scroll. Day granularity only; it\nis ignored when `granularity='month'` and never fires on the mobile\ndrawer, which renders wheel pickers instead of the calendar grid.\n\nUse it to lazily fetch per-month data for `renderDay` instead of\ntracking the scrolled-to month yourself.",
+                    "propDefault": "undefined",
+                    "category": "Events",
+                    "required": false,
+                    "llmContext": "Callback function for onVisibleMonthsChange"
                 }
             ],
             "usageExamples": [
@@ -8270,6 +8290,26 @@
                     "category": "Content",
                     "required": false,
                     "llmContext": "Text value for errorText"
+                },
+                {
+                    "propName": "browseFilesText",
+                    "propType": "string",
+                    "typeDefinition": "string",
+                    "propDescription": "Overrides the \"Browse Files\" button label.",
+                    "propDefault": "undefined",
+                    "category": "Content",
+                    "required": false,
+                    "llmContext": "Text value for browseFilesText"
+                },
+                {
+                    "propName": "replaceFileText",
+                    "propType": "string",
+                    "typeDefinition": "string",
+                    "propDescription": "Overrides the \"Replace file\" button label.",
+                    "propDefault": "undefined",
+                    "category": "Content",
+                    "required": false,
+                    "llmContext": "Text value for replaceFileText"
                 },
                 {
                     "propName": "state",
