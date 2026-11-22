@@ -1,10 +1,6 @@
 import React from 'react'
 import { figma } from '@figma/code-connect'
-import {
-    ChatInputV2,
-    type ChatInputV2TopQuery,
-    type ChatInputV2AttachedFile,
-} from '@juspay/blend-design-system'
+import { ChatInputV2 } from '@juspay/blend-design-system'
 
 /**
  * FIGMA CODE CONNECT FOR CHATINPUTV2 COMPONENT
@@ -41,17 +37,6 @@ import {
 const FIGMA_URL =
     'https://www.figma.com/design/fHb0XUhWXZErq97C6N9uG3/Blend-Design-System?node-id=30073-1916'
 
-const sampleQueries: ChatInputV2TopQuery[] = [
-    { id: '1', text: 'Show me the trend of last month success rate' },
-    { id: '2', text: 'What is the success rate for Razorpay?' },
-    { id: '3', text: 'Show recent failed transactions' },
-]
-
-const sampleFiles: ChatInputV2AttachedFile[] = [
-    { id: '1', name: 'report.pdf', type: 'pdf' },
-    { id: '2', name: 'screenshot.png', type: 'image' },
-]
-
 figma.connect(ChatInputV2, FIGMA_URL, {
     props: {
         // Direct rename: content (Figma) → placeholder (Code)
@@ -67,22 +52,35 @@ figma.connect(ChatInputV2, FIGMA_URL, {
             multiLine: false,
         }),
 
-        // Top content slot — gated by hasSlot boolean, content from
-        // slot instance swap
+        // Top content slot — gated by hasSlot boolean. No exposed
+        // INSTANCE_SWAP property on this component, so we render a
+        // placeholder node consumers replace with their own content.
         topContent: figma.boolean('hasSlot', {
-            true: figma.instance('slot'),
+            true: <div>Top content slot</div>,
             false: undefined,
         }),
 
-        // Attached files — shown when hasAttachmentBar is true
+        // Attached files — shown when hasAttachmentBar is true.
+        // Inlined as a literal array so the snippet doesn't reference
+        // an out-of-scope symbol.
         attachedFiles: figma.boolean('hasAttachmentBar', {
-            true: sampleFiles,
+            true: [
+                { id: '1', name: 'report.pdf', type: 'pdf' },
+                { id: '2', name: 'screenshot.png', type: 'image' },
+            ],
             false: [],
         }),
 
         // Top queries list — shown when hasTopQueries is true (active state)
         topQueries: figma.boolean('hasTopQueries', {
-            true: sampleQueries,
+            true: [
+                {
+                    id: '1',
+                    text: 'Show me the trend of last month success rate',
+                },
+                { id: '2', text: 'What is the success rate for Razorpay?' },
+                { id: '3', text: 'Show recent failed transactions' },
+            ],
             false: [],
         }),
         // Attachment callback — present when hasAttachment is true
@@ -113,9 +111,7 @@ figma.connect(ChatInputV2, FIGMA_URL, {
         />
     ),
 
-    imports: [
-        "import { ChatInputV2, type ChatInputV2TopQuery, type ChatInputV2AttachedFile } from '@juspay/blend-design-system'",
-    ],
+    imports: ["import { ChatInputV2 } from '@juspay/blend-design-system'"],
 
     links: [
         {
