@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
+import { useState } from 'react'
 import { fn } from '@storybook/test'
 import {
     Timeline,
@@ -51,6 +52,7 @@ import { Timeline, TimelineNodeStatus } from '@juspay/blend-design-system';
 - **Substep** – Child step under a header (connector + title/description/timestamp)
 - **Node** – Standalone item (e.g. comment) with optional avatar, user, time, body
 - **ShowMore** – "Show more (N+)" to load more items
+- **Interactive states** – Header/Substep/Node accept \`isSelectable\` (hover + focus-visible highlight, pointer cursor, keyboard activation via Enter/Space) and \`isSelected\` (selected background). States are per block: hovering or selecting a block never cascades to nested substeps.
 
 ## Accessibility
 - Semantic HTML structure with proper heading hierarchy
@@ -58,6 +60,7 @@ import { Timeline, TimelineNodeStatus } from '@juspay/blend-design-system';
 - Keyboard navigable interactive elements
 - Screen reader compatible timestamps with datetime attributes
 - Color-coded status indicators with text alternatives
+- Selectable blocks expose \`role="button"\` with Enter/Space activation and visible focus state
 
                 `,
             },
@@ -201,6 +204,65 @@ export const ShowMoreDisabled: Story = {
     },
 }
 
+export const SelectableBlocks: Story = {
+    render: function SelectableBlocksStory() {
+        const [selectedId, setSelectedId] = useState<string | null>(
+            'header-payment'
+        )
+
+        const select = (id: string) => () => setSelectedId(id)
+
+        return (
+            <div className="max-w-110">
+                <Timeline>
+                    <Timeline.Label text="JAN 15, 2025" />
+                    <Timeline.Header
+                        title="Payment Initiated"
+                        timestamp="4:00 PM"
+                        status={TimelineNodeStatus.SUCCESS}
+                        isSelectable
+                        isSelected={selectedId === 'header-payment'}
+                        onClick={select('header-payment')}
+                    >
+                        <Timeline.Substep
+                            title="Transaction Created"
+                            description="Geddit initiated the transaction."
+                            timestamp="4:00:04 PM"
+                            isSelectable
+                            isSelected={selectedId === 'substep-created'}
+                            onClick={select('substep-created')}
+                        />
+                        <Timeline.Substep
+                            title="Gateway Selected"
+                            description="Razorpay."
+                            timestamp="4:00:05 PM"
+                            isSelectable
+                            isSelected={selectedId === 'substep-gateway'}
+                            onClick={select('substep-gateway')}
+                        />
+                    </Timeline.Header>
+                    <Timeline.Node
+                        text="Hover or click any block — each block keeps its own state."
+                        user={{ name: 'Shweta Yadav' }}
+                        time="04:30 PM"
+                        isSelectable
+                        isSelected={selectedId === 'node-comment'}
+                        onClick={select('node-comment')}
+                    />
+                </Timeline>
+            </div>
+        )
+    },
+    parameters: {
+        a11y: getA11yConfig('interactive'),
+        docs: {
+            description: {
+                story: 'Header, Substep and Node with isSelectable/isSelected: hover shows gray 50, selected shows gray 150 (dark theme uses equivalent tokens). Selection is controlled — each block is independent.',
+            },
+        },
+    },
+}
+
 /**
  * Additional Timeline props not covered in other stories:
  *
@@ -219,6 +281,11 @@ export const ShowMoreDisabled: Story = {
  *
  * - **label**: string - Custom button text (defaults to "Show more")
  * - **buttonProps**: Partial<Omit<ButtonV2Props, 'text' | 'onClick'>> - Custom button styling (variant, size, etc.)
+ *
+ * ## Interactive State Props (Header, Substep, Node)
+ *
+ * - **isSelectable**: boolean - Opt-in interactive state: hover/focus-visible highlight, pointer cursor and keyboard activation (Enter/Space fire onClick). The block exposes role="button" and is tabbable.
+ * - **isSelected**: boolean - Renders the selected-state background. Controlled by the consumer (pair with onClick to toggle). Selected wins over hover.
  *
  * ## Timeline.Substep Additional Props
  *

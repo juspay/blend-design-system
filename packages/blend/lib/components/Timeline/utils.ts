@@ -1,4 +1,9 @@
 import type {
+    KeyboardEvent as ReactKeyboardEvent,
+    MouseEventHandler,
+    SyntheticEvent,
+} from 'react'
+import type {
     LineLayout,
     LinePositionOptions,
     TimelineItemData,
@@ -18,11 +23,31 @@ export function parsePx(value: string | number | undefined): number {
     return match ? parseFloat(match[1]) : parseFloat(value) || 0
 }
 
+/**
+ * Invokes a click handler for a keyboard activation key (Enter/Space).
+ * Used by interactive timeline blocks that surface `role="button"` so the
+ * consumer's `onClick` also runs when the block is activated via keyboard.
+ */
+export function triggerClickFromKeyboard(
+    event: ReactKeyboardEvent<HTMLElement>,
+    onClick?: MouseEventHandler<HTMLElement>
+): void {
+    // A consumer's onKeyDown may preventDefault() to opt out of activation.
+    if (event.defaultPrevented) return
+    if (event.key !== 'Enter' && event.key !== ' ') return
+    event.preventDefault()
+    ;(
+        onClick as unknown as
+            | ((e: SyntheticEvent<HTMLElement>) => void)
+            | undefined
+    )?.(event)
+}
+
 function getIndicatorBottomForElement(
     el: HTMLElement,
     options: LinePositionOptions
 ): number {
-    const { indicatorHeightPx, indicatorTopPx } = options
+    const { indicatorHeightPx, indicatorTopPx, blockPaddingYPx = 0 } = options
     if (el.getAttribute(DATA_LABEL) === 'true') {
         return el.offsetTop + el.offsetHeight / 2
     }
@@ -32,17 +57,22 @@ function getIndicatorBottomForElement(
             const headerChildren = Array.from(el.children) as HTMLElement[]
             if (headerChildren.length > 1) {
                 const wrapper = headerChildren[1]
-                return el.offsetTop + wrapper.offsetTop
+                return el.offsetTop + wrapper.offsetTop + blockPaddingYPx
             }
             return el.offsetTop + row.offsetTop + row.offsetHeight / 2
         }
         return el.offsetTop + el.offsetHeight / 2
     }
     if (el.getAttribute(DATA_NODE) === 'true') {
-        return el.offsetTop + indicatorTopPx + indicatorHeightPx / 2
+        return (
+            el.offsetTop +
+            blockPaddingYPx +
+            indicatorTopPx +
+            indicatorHeightPx / 2
+        )
     }
     if (el.getAttribute(DATA_SUBSTEP) === 'true') {
-        return el.offsetTop + indicatorHeightPx / 2
+        return el.offsetTop + blockPaddingYPx + indicatorHeightPx / 2
     }
     return el.offsetTop + el.offsetHeight
 }
@@ -79,10 +109,17 @@ export function getLineTop(
         return first.offsetTop + first.offsetHeight / 2
     }
     if (first.getAttribute(DATA_SUBSTEP) === 'true') {
-        return first.offsetTop + indicatorHeightPx
+        return (
+            first.offsetTop + (options.blockPaddingYPx ?? 0) + indicatorHeightPx
+        )
     }
     if (first.getAttribute(DATA_NODE) === 'true') {
-        return first.offsetTop + indicatorTopPx + indicatorHeightPx
+        return (
+            first.offsetTop +
+            (options.blockPaddingYPx ?? 0) +
+            indicatorTopPx +
+            indicatorHeightPx
+        )
     }
     return 0
 }
@@ -110,17 +147,30 @@ export function getLineBottom(
             const headerChildren = Array.from(last.children) as HTMLElement[]
             if (headerChildren.length > 1) {
                 const wrapper = headerChildren[1]
-                return last.offsetTop + wrapper.offsetTop
+                return (
+                    last.offsetTop +
+                    wrapper.offsetTop +
+                    (options.blockPaddingYPx ?? 0)
+                )
             }
             return last.offsetTop + row.offsetTop + row.offsetHeight / 2
         }
         return last.offsetTop + last.offsetHeight / 2
     }
     if (last.getAttribute(DATA_NODE) === 'true') {
-        return last.offsetTop + indicatorTopPx + indicatorHeightPx / 2
+        return (
+            last.offsetTop +
+            (options.blockPaddingYPx ?? 0) +
+            indicatorTopPx +
+            indicatorHeightPx / 2
+        )
     }
     if (last.getAttribute(DATA_SUBSTEP) === 'true') {
-        return last.offsetTop + indicatorHeightPx / 2
+        return (
+            last.offsetTop +
+            (options.blockPaddingYPx ?? 0) +
+            indicatorHeightPx / 2
+        )
     }
     return last.offsetTop + last.offsetHeight
 }

@@ -1,9 +1,10 @@
-import { forwardRef } from 'react'
+import { forwardRef, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TimelineTokensType } from './timeline.token'
 import { TimelineNodeStatus } from './types'
+import { parsePx, triggerClickFromKeyboard } from './utils'
 import type { TimelineSubstepProps } from './types'
 
 const CONNECTOR_PATH = 'M0.5 0.5V1.5C0.5 7.02285 4.97715 11.5 10.5 11.5H21.5'
@@ -19,15 +20,24 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
             datetimeRightSlot,
             isNestedUnderHeader = false,
             showIndicator = true,
+            isSelectable = false,
+            isSelected = false,
+            onClick,
+            onKeyDown: onKeyDownProp,
             ...rest
         },
         ref
     ) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
-        const { subsection, track, indicator } = tokens
+        const { subsection, track, indicator, states } = tokens
         const { connector } = subsection
         const showDot = !isNestedUnderHeader && showIndicator
         const dotColor = tokens.statusColors[TimelineNodeStatus.NEUTRAL]
+
+        const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+            onKeyDownProp?.(event)
+            if (isSelectable) triggerClickFromKeyboard(event, onClick)
+        }
 
         const hasTitleRow =
             (title != null && title !== '') ||
@@ -42,28 +52,60 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                 position="relative"
                 marginTop={subsection.marginTop}
                 marginBottom={subsection.marginBottom}
+                paddingTop={subsection.paddingY}
+                paddingBottom={subsection.paddingY}
                 data-timeline-substep="true"
+                role={isSelectable ? 'button' : undefined}
+                tabIndex={isSelectable ? 0 : undefined}
+                cursor={isSelectable ? 'pointer' : undefined}
+                borderRadius={
+                    isSelectable || isSelected ? states.borderRadius : undefined
+                }
+                backgroundColor={
+                    isSelected ? states.selected.backgroundColor : undefined
+                }
+                _hover={
+                    isSelectable
+                        ? {
+                              backgroundColor: isSelected
+                                  ? states.selected.backgroundColor
+                                  : states.hover.backgroundColor,
+                          }
+                        : undefined
+                }
+                _focusVisible={
+                    isSelectable
+                        ? {
+                              backgroundColor:
+                                  states.focusVisible.backgroundColor,
+                          }
+                        : undefined
+                }
                 {...rest}
+                onClick={onClick}
+                onKeyDown={handleKeyDown}
             >
                 {showDot && (
                     <Block
                         position="absolute"
                         left={indicator.left}
-                        top={0}
+                        top={parsePx(subsection.paddingY)}
                         width={indicator.width}
                         height={indicator.height}
                         borderRadius="50%"
                         backgroundColor={dotColor}
                         flexShrink={0}
+                        zIndex={2}
                     />
                 )}
 
                 <Block
                     position="absolute"
                     left={track.left}
-                    top={0}
+                    top={parsePx(subsection.paddingY)}
                     width={connector.width}
                     height={connector.height}
+                    zIndex={2}
                     style={{
                         overflow: 'visible',
                     }}

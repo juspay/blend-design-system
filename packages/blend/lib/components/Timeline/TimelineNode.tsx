@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import AvatarV2 from '../AvatarV2/AvatarV2'
@@ -6,6 +6,7 @@ import { AvatarV2Size } from '../AvatarV2/avatarV2.types'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TimelineTokensType } from './timeline.token'
 import { TimelineNodeStatus } from './types'
+import { parsePx, triggerClickFromKeyboard } from './utils'
 import type { TimelineNodeProps } from './types'
 
 const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
@@ -23,17 +24,26 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
             status = TimelineNodeStatus.NEUTRAL,
             avatarProps,
             children,
+            isSelectable = false,
+            isSelected = false,
+            onClick,
+            onKeyDown: onKeyDownProp,
             ...rest
         },
         ref
     ) => {
         const tokens = useResponsiveTokens<TimelineTokensType>('TIMELINE')
-        const { subsection, indicator } = tokens
+        const { subsection, indicator, states } = tokens
         const dotColor = tokens.statusColors[status]
         const body = text ?? (typeof children === 'string' ? children : null)
         const hasBody = Boolean(
             body || (children && typeof children !== 'string')
         )
+
+        const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+            onKeyDownProp?.(event)
+            if (isSelectable) triggerClickFromKeyboard(event, onClick)
+        }
 
         const hasHeaderRow =
             (title != null && title !== '') ||
@@ -47,20 +57,54 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                 ref={ref}
                 position="relative"
                 paddingLeft={subsection.paddingLeft}
+                paddingTop={subsection.paddingY}
+                paddingBottom={subsection.paddingY}
                 marginBottom={subsection.marginBottom}
                 data-timeline-node="true"
                 style={{ minWidth: 0 }}
+                role={isSelectable ? 'button' : undefined}
+                tabIndex={isSelectable ? 0 : undefined}
+                cursor={isSelectable ? 'pointer' : undefined}
+                borderRadius={
+                    isSelectable || isSelected ? states.borderRadius : undefined
+                }
+                backgroundColor={
+                    isSelected ? states.selected.backgroundColor : undefined
+                }
+                _hover={
+                    isSelectable
+                        ? {
+                              backgroundColor: isSelected
+                                  ? states.selected.backgroundColor
+                                  : states.hover.backgroundColor,
+                          }
+                        : undefined
+                }
+                _focusVisible={
+                    isSelectable
+                        ? {
+                              backgroundColor:
+                                  states.focusVisible.backgroundColor,
+                          }
+                        : undefined
+                }
                 {...rest}
+                onClick={onClick}
+                onKeyDown={handleKeyDown}
             >
                 <Block
                     position="absolute"
                     left={indicator.left}
-                    top={subsection.rootIndicator.top}
+                    top={
+                        parsePx(subsection.rootIndicator.top) +
+                        parsePx(subsection.paddingY)
+                    }
                     width={indicator.width}
                     height={indicator.height}
                     borderRadius="50%"
                     backgroundColor={dotColor}
                     flexShrink={0}
+                    zIndex={2}
                 />
 
                 {hasHeaderRow && (
