@@ -1,0 +1,9 @@
+{
+    "figmaFileUrl": "https://www.figma.com/design/HZCDeFFrwEYEYgWiXm0Mbz/Phosphor-Icons",
+    "codeConnect": {
+        "include": ["apps/storybook/stories/icons/**/*.figma.{ts,tsx}"],
+        "exclude": ["**/node_modules/**", "**/dist/**"],
+        "parser": "react",
+        "baseUrl": "."
+    }
+}
