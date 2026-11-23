@@ -57,6 +57,7 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
                 ref={ref}
                 position="relative"
                 paddingLeft={subsection.paddingLeft}
+                paddingRight={subsection.paddingRight}
                 paddingTop={subsection.paddingY}
                 paddingBottom={subsection.paddingY}
                 marginBottom={subsection.marginBottom}

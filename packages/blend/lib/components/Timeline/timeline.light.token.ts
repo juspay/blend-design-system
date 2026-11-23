@@ -64,6 +64,7 @@ const buildTokens = (
     header: {
         row: {
             paddingLeft: foundationToken.unit[28],
+            paddingRight: foundationToken.unit[8],
             paddingY: foundationToken.unit[8],
             marginBottom: foundationToken.unit[20],
             gap: foundationToken.unit[8],
@@ -85,6 +86,7 @@ const buildTokens = (
 
     subsection: {
         paddingLeft: foundationToken.unit[28],
+        paddingRight: foundationToken.unit[8],
         paddingY: foundationToken.unit[8],
         marginTop: foundationToken.unit[0],
         marginBottom: foundationToken.unit[18],

@@ -52,6 +52,7 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                 position="relative"
                 marginTop={subsection.marginTop}
                 marginBottom={subsection.marginBottom}
+                paddingRight={subsection.paddingRight}
                 paddingTop={subsection.paddingY}
                 paddingBottom={subsection.paddingY}
                 data-timeline-substep="true"

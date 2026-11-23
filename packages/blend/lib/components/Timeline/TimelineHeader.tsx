@@ -74,6 +74,7 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                     display="flex"
                     alignItems="center"
                     paddingLeft={header.row.paddingLeft}
+                    paddingRight={header.row.paddingRight}
                     paddingTop={header.row.paddingY}
                     paddingBottom={header.row.paddingY}
                     marginBottom={

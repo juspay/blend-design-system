@@ -951,6 +951,7 @@ describe('Timeline', () => {
                 const css = getElementCss(el)
                 expect(css).toMatch(/padding-top:\s*8px/)
                 expect(css).toMatch(/padding-bottom:\s*8px/)
+                expect(css).toMatch(/padding-right:\s*8px/)
             }
         })
     })
