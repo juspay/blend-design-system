@@ -583,7 +583,7 @@ const ChartLegendsComponent: React.FC<ChartLegendsProps> = ({
                                             itemColor = colorByKey.color
                                         } else {
                                             const fallbackColor =
-                                                colors[index % colors.length]
+                                                colors[(index+cuttOffIndex) % colors.length]
                                             itemColor =
                                                 typeof fallbackColor ===
                                                 'string'
