@@ -58,7 +58,7 @@ export type TimelineTokensType = {
     header: {
         row: {
             paddingLeft: CSSObject['paddingLeft']
-            paddingRight: CSSObject['paddingRight']
+            paddingX: CSSObject['paddingRight']
             paddingY: CSSObject['paddingTop']
             marginBottom: CSSObject['marginBottom']
             gap: CSSObject['gap']
@@ -80,7 +80,7 @@ export type TimelineTokensType = {
 
     subsection: {
         paddingLeft: CSSObject['paddingLeft']
-        paddingRight: CSSObject['paddingRight']
+        paddingX: CSSObject['paddingRight']
         paddingY: CSSObject['paddingTop']
         marginTop: CSSObject['marginTop']
         marginBottom: CSSObject['marginBottom']

@@ -951,7 +951,8 @@ describe('Timeline', () => {
                 const css = getElementCss(el)
                 expect(css).toMatch(/padding-top:\s*8px/)
                 expect(css).toMatch(/padding-bottom:\s*8px/)
-                expect(css).toMatch(/padding-right:\s*8px/)
+                expect(css).toMatch(/padding-left:\s*12px/)
+                expect(css).toMatch(/padding-right:\s*12px/)
             }
         })
 
@@ -974,9 +975,7 @@ describe('Timeline', () => {
             ) as HTMLElement
 
             expect(getElementCss(row)).toMatch(/margin-left:\s*28px/)
-            expect(getElementCss(row)).not.toMatch(/padding-left/)
             expect(getElementCss(node)).toMatch(/margin-left:\s*28px/)
-            expect(getElementCss(node)).not.toMatch(/padding-left/)
             expect(getElementCss(substep)).toMatch(/margin-left:\s*40px/)
 
             const rowDot = row.children[0] as HTMLElement
