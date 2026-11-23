@@ -954,6 +954,39 @@ describe('Timeline', () => {
                 expect(css).toMatch(/padding-right:\s*8px/)
             }
         })
+
+        it('state backgrounds start at the text content and leave the rail un-highlighted', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Header title="Header" isSelectable />
+                    <Timeline.Substep title="Step" isSelectable />
+                    <Timeline.Node text="Node" isSelectable />
+                </Timeline>
+            )
+            const row = container.querySelector(
+                '[data-timeline-header-row="true"]'
+            ) as HTMLElement
+            const substep = container.querySelector(
+                '[data-timeline-substep="true"]'
+            ) as HTMLElement
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+
+            expect(getElementCss(row)).toMatch(/margin-left:\s*28px/)
+            expect(getElementCss(row)).not.toMatch(/padding-left/)
+            expect(getElementCss(node)).toMatch(/margin-left:\s*28px/)
+            expect(getElementCss(node)).not.toMatch(/padding-left/)
+            expect(getElementCss(substep)).toMatch(/margin-left:\s*40px/)
+
+            const rowDot = row.children[0] as HTMLElement
+            const nodeDot = node.children[0] as HTMLElement
+            const substepConnector = substep.children[0] as HTMLElement
+
+            expect(getElementCss(rowDot)).toMatch(/left:\s*-17\.5px/)
+            expect(getElementCss(nodeDot)).toMatch(/left:\s*-17\.5px/)
+            expect(getElementCss(substepConnector)).toMatch(/left:\s*-27px/)
+        })
     })
 
     describe('Line layout math (padding-aware)', () => {

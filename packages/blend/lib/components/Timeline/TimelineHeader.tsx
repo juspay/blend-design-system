@@ -10,7 +10,7 @@ import Text from '../Text/Text'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { TimelineTokensType } from './timeline.token'
 import { TimelineNodeStatus } from './types'
-import { triggerClickFromKeyboard } from './utils'
+import { parsePx, triggerClickFromKeyboard } from './utils'
 import TimelineSubstep from './TimelineSubstep'
 import type { TimelineHeaderProps } from './types'
 
@@ -73,7 +73,7 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                     position="relative"
                     display="flex"
                     alignItems="center"
-                    paddingLeft={header.row.paddingLeft}
+                    marginLeft={header.row.paddingLeft}
                     paddingRight={header.row.paddingRight}
                     paddingTop={header.row.paddingY}
                     paddingBottom={header.row.paddingY}
@@ -112,7 +112,10 @@ const TimelineHeader = forwardRef<HTMLDivElement, TimelineHeaderProps>(
                 >
                     <Block
                         position="absolute"
-                        left={indicator.left}
+                        left={
+                            parsePx(indicator.left) -
+                            parsePx(header.row.paddingLeft)
+                        }
                         top="50%"
                         style={{ transform: 'translateY(-50%)' }}
                         width={indicator.width}

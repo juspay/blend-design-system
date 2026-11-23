@@ -52,6 +52,7 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                 position="relative"
                 marginTop={subsection.marginTop}
                 marginBottom={subsection.marginBottom}
+                marginLeft={subsection.marginLeft}
                 paddingRight={subsection.paddingRight}
                 paddingTop={subsection.paddingY}
                 paddingBottom={subsection.paddingY}
@@ -89,7 +90,10 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                 {showDot && (
                     <Block
                         position="absolute"
-                        left={indicator.left}
+                        left={
+                            parsePx(indicator.left) -
+                            parsePx(subsection.marginLeft)
+                        }
                         top={parsePx(subsection.paddingY)}
                         width={indicator.width}
                         height={indicator.height}
@@ -102,7 +106,7 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
 
                 <Block
                     position="absolute"
-                    left={track.left}
+                    left={parsePx(track.left) - parsePx(subsection.marginLeft)}
                     top={parsePx(subsection.paddingY)}
                     width={connector.width}
                     height={connector.height}
@@ -127,7 +131,7 @@ const TimelineSubstep = forwardRef<HTMLDivElement, TimelineSubstepProps>(
                     </svg>
                 </Block>
 
-                <Block marginLeft={subsection.marginLeft}>
+                <Block>
                     {hasTitleRow && (
                         <Block
                             display="flex"

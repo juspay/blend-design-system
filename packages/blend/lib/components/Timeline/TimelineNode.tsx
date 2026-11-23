@@ -56,7 +56,7 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
             <Block
                 ref={ref}
                 position="relative"
-                paddingLeft={subsection.paddingLeft}
+                marginLeft={subsection.paddingLeft}
                 paddingRight={subsection.paddingRight}
                 paddingTop={subsection.paddingY}
                 paddingBottom={subsection.paddingY}
@@ -95,7 +95,10 @@ const TimelineNode = forwardRef<HTMLDivElement, TimelineNodeProps>(
             >
                 <Block
                     position="absolute"
-                    left={indicator.left}
+                    left={
+                        parsePx(indicator.left) -
+                        parsePx(subsection.paddingLeft)
+                    }
                     top={
                         parsePx(subsection.rootIndicator.top) +
                         parsePx(subsection.paddingY)
