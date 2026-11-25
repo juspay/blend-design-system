@@ -105,6 +105,11 @@ const TimelineDemo = () => {
         TimelineNodeStatus.SUCCESS
     )
 
+    // ---- Interactive states (hover/select) ----
+    const [selectedBlockId, setSelectedBlockId] = useState<string | null>(
+        'sel-header'
+    )
+
     // ---- "Show more" state ----
     const [comments, setComments] = useState<Comment[]>(INITIAL_COMMENTS)
     const [hiddenCount, setHiddenCount] = useState(HIDDEN_COMMENTS.length)
@@ -541,6 +546,82 @@ const TimelineDemo = () => {
                             user={{ name: 'Rahul Gupta' }}
                             time="04:25 PM"
                             status={TimelineNodeStatus.NEUTRAL}
+                        />
+                    </Timeline>
+                </div>
+            </section>
+            {/* ------------------------------------------------------------------ */}
+            {/* Section 5 — Interactive states (hover / select)                     */}
+            {/* ------------------------------------------------------------------ */}
+            <section className="space-y-4">
+                <h2 className="text-xl font-semibold">
+                    Interactive States — Hover / Select
+                </h2>
+                <p
+                    className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}
+                >
+                    Pass <code>isSelectable</code> to a Header, Substep or Node
+                    to enable hover + focus-visible highlight, pointer cursor
+                    and keyboard activation (Enter / Space). Pair it with the
+                    controlled <code>isSelected</code> prop to render the
+                    selected state (gray 150 in light theme). States are
+                    strictly per block — hovering or selecting a header never
+                    cascades to its substeps.
+                </p>
+
+                <div
+                    style={{
+                        background: containerBg,
+                        border: `1px solid ${borderColor}`,
+                        borderRadius: 12,
+                        padding: '24px 32px',
+                        maxWidth: 640,
+                    }}
+                >
+                    <Timeline>
+                        <Timeline.Label text="JAN 15, 2025" />
+
+                        <Timeline.Header
+                            title="Payment Initiated"
+                            status={TimelineNodeStatus.SUCCESS}
+                            timestamp="4:00 PM"
+                            isSelectable
+                            isSelected={selectedBlockId === 'sel-header'}
+                            onClick={() => setSelectedBlockId('sel-header')}
+                        >
+                            <Timeline.Substep
+                                title="Transaction Created"
+                                description="Geddit initiated the transaction."
+                                timestamp="4:00:04 PM"
+                                isSelectable
+                                isSelected={
+                                    selectedBlockId === 'sel-substep-created'
+                                }
+                                onClick={() =>
+                                    setSelectedBlockId('sel-substep-created')
+                                }
+                            />
+                            <Timeline.Substep
+                                title="Gateway Selected"
+                                description="Pinelabs chosen as preferred gateway."
+                                timestamp="4:00:05 PM"
+                                isSelectable
+                                isSelected={
+                                    selectedBlockId === 'sel-substep-gateway'
+                                }
+                                onClick={() =>
+                                    setSelectedBlockId('sel-substep-gateway')
+                                }
+                            />
+                        </Timeline.Header>
+
+                        <Timeline.Node
+                            text="Click any block to select it. Each block keeps its own hover and selected state."
+                            user={{ name: 'Shweta Yadav' }}
+                            time="04:30 PM"
+                            isSelectable
+                            isSelected={selectedBlockId === 'sel-node'}
+                            onClick={() => setSelectedBlockId('sel-node')}
                         />
                     </Timeline>
                 </div>

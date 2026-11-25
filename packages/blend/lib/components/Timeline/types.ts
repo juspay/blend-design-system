@@ -19,6 +19,13 @@ export type LinePositionOptions = {
     indicatorHeightPx: number
     indicatorTopPx: number
     labelCircleHeightPx: number
+    /**
+     * Vertical padding applied inside Node/Substep blocks. Their indicator
+     * dots and substep connectors are offset by the same amount, so the line
+     * endpoints must account for it. Header rows and labels are measured from
+     * their own geometry and do not need this offset.
+     */
+    blockPaddingYPx?: number
 }
 
 export type LineLayout = {
@@ -42,6 +49,14 @@ export type TimelineHeaderProps = HTMLAttributes<HTMLDivElement> & {
     children?: ReactNode
     leftSlot?: ReactNode
     rightSlot?: ReactNode
+    /**
+     * Opt-in interactive state: enables hover/focus-visible highlight,
+     * pointer cursor and keyboard activation (Enter/Space) on the header row.
+     * Selection is controlled via `isSelected`.
+     */
+    isSelectable?: boolean
+    /** Renders the selected-state background on the header row. */
+    isSelected?: boolean
 }
 
 export type TimelineSubstepProps = HTMLAttributes<HTMLDivElement> & {
@@ -53,6 +68,14 @@ export type TimelineSubstepProps = HTMLAttributes<HTMLDivElement> & {
     rightSlot?: ReactNode
     datetimeLeftSlot?: ReactNode
     datetimeRightSlot?: ReactNode
+    /**
+     * Opt-in interactive state: enables hover/focus-visible highlight,
+     * pointer cursor and keyboard activation (Enter/Space).
+     * Selection is controlled via `isSelected`.
+     */
+    isSelectable?: boolean
+    /** Renders the selected-state background. */
+    isSelected?: boolean
 }
 
 export type TimelineNodeProps = HTMLAttributes<HTMLDivElement> & {
@@ -69,6 +92,14 @@ export type TimelineNodeProps = HTMLAttributes<HTMLDivElement> & {
     time?: string
     status?: TimelineNodeStatus
     children?: ReactNode
+    /**
+     * Opt-in interactive state: enables hover/focus-visible highlight,
+     * pointer cursor and keyboard activation (Enter/Space).
+     * Selection is controlled via `isSelected`.
+     */
+    isSelectable?: boolean
+    /** Renders the selected-state background. */
+    isSelected?: boolean
 }
 
 export type TimelineShowMoreProps = {

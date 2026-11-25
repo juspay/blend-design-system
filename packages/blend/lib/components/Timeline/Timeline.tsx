@@ -34,10 +34,12 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineRootProps>(
             const indicatorHeightPx = parsePx(tokens.indicator.height)
             const indicatorTopPx = parsePx(tokens.subsection.rootIndicator.top)
             const labelCircleHeightPx = parsePx(tokens.label.circle.height)
+            const blockPaddingYPx = parsePx(tokens.subsection.paddingY)
             const options = {
                 indicatorHeightPx,
                 indicatorTopPx,
                 labelCircleHeightPx,
+                blockPaddingYPx,
             }
 
             const top = getLineTop(container, options)
@@ -49,6 +51,7 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineRootProps>(
             tokens.indicator.height,
             tokens.subsection.rootIndicator.top,
             tokens.label.circle.height,
+            tokens.subsection.paddingY,
         ])
 
         const setRef = (el: HTMLDivElement | null) => {
@@ -74,6 +77,7 @@ const TimelineRoot = forwardRef<HTMLDivElement, TimelineRootProps>(
                         height={lineLayout.height}
                         width={tokens.track.width}
                         backgroundColor={tokens.track.backgroundColor}
+                        zIndex={1}
                         data-timeline-line="true"
                     />
                 )}

@@ -929,6 +929,8 @@ exports[`Token theme dispatch > no-theme call snapshot remains byte-identical to
         "gap": "8px",
         "marginBottom": "20px",
         "paddingLeft": "28px",
+        "paddingX": "12px",
+        "paddingY": "8px",
       },
       "section": {
         "marginBottom": "20px",
@@ -973,6 +975,18 @@ exports[`Token theme dispatch > no-theme call snapshot remains byte-identical to
       "marginTop": "8px",
       "paddingLeft": "40px",
     },
+    "states": {
+      "borderRadius": "6px",
+      "focusVisible": {
+        "backgroundColor": "#F5F7FA",
+      },
+      "hover": {
+        "backgroundColor": "#F5F7FA",
+      },
+      "selected": {
+        "backgroundColor": "#ECEFF3",
+      },
+    },
     "statusColors": {
       "error": "#FB2C36",
       "neutral": "#99A0AE",
@@ -1013,6 +1027,8 @@ exports[`Token theme dispatch > no-theme call snapshot remains byte-identical to
       "marginLeft": "40px",
       "marginTop": "0px",
       "paddingLeft": "28px",
+      "paddingX": "12px",
+      "paddingY": "8px",
       "rootIndicator": {
         "top": "6px",
       },
@@ -1054,6 +1070,8 @@ exports[`Token theme dispatch > no-theme call snapshot remains byte-identical to
         "gap": "8px",
         "marginBottom": "20px",
         "paddingLeft": "28px",
+        "paddingX": "12px",
+        "paddingY": "8px",
       },
       "section": {
         "marginBottom": "20px",
@@ -1098,6 +1116,18 @@ exports[`Token theme dispatch > no-theme call snapshot remains byte-identical to
       "marginTop": "8px",
       "paddingLeft": "40px",
     },
+    "states": {
+      "borderRadius": "6px",
+      "focusVisible": {
+        "backgroundColor": "#F5F7FA",
+      },
+      "hover": {
+        "backgroundColor": "#F5F7FA",
+      },
+      "selected": {
+        "backgroundColor": "#ECEFF3",
+      },
+    },
     "statusColors": {
       "error": "#FB2C36",
       "neutral": "#99A0AE",
@@ -1138,6 +1168,8 @@ exports[`Token theme dispatch > no-theme call snapshot remains byte-identical to
       "marginLeft": "40px",
       "marginTop": "0px",
       "paddingLeft": "28px",
+      "paddingX": "12px",
+      "paddingY": "8px",
       "rootIndicator": {
         "top": "6px",
       },

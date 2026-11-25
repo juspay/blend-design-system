@@ -27,6 +27,19 @@ const buildTokens = (
         [TimelineNodeStatus.NEUTRAL]: foundationToken.colors.gray[600],
     },
 
+    states: {
+        borderRadius: foundationToken.border.radius[6],
+        hover: {
+            backgroundColor: foundationToken.colors.gray[800],
+        },
+        selected: {
+            backgroundColor: foundationToken.colors.gray[700],
+        },
+        focusVisible: {
+            backgroundColor: foundationToken.colors.gray[800],
+        },
+    },
+
     label: {
         paddingLeft: foundationToken.unit[28],
         marginBottom: foundationToken.unit[12],
@@ -51,6 +64,8 @@ const buildTokens = (
     header: {
         row: {
             paddingLeft: foundationToken.unit[28],
+            paddingX: foundationToken.unit[12],
+            paddingY: foundationToken.unit[8],
             marginBottom: foundationToken.unit[20],
             gap: foundationToken.unit[8],
         },
@@ -71,6 +86,8 @@ const buildTokens = (
 
     subsection: {
         paddingLeft: foundationToken.unit[28],
+        paddingX: foundationToken.unit[12],
+        paddingY: foundationToken.unit[8],
         marginTop: foundationToken.unit[0],
         marginBottom: foundationToken.unit[18],
         marginLeft: foundationToken.unit[40],

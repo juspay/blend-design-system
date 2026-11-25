@@ -30,6 +30,7 @@ const TimelineLabel = forwardRef<HTMLDivElement, TimelineLabelProps>(
                     width={label.circle.width}
                     height={label.mask.height}
                     backgroundColor={label.mask.backgroundColor}
+                    zIndex={2}
                 />
                 <Block
                     position="absolute"
@@ -42,6 +43,7 @@ const TimelineLabel = forwardRef<HTMLDivElement, TimelineLabelProps>(
                     backgroundColor={label.circle.backgroundColor}
                     border={label.circle.border}
                     flexShrink={0}
+                    zIndex={2}
                 />
 
                 <Text

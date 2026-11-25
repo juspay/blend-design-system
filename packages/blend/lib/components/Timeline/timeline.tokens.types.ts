@@ -21,6 +21,19 @@ export type TimelineTokensType = {
 
     statusColors: TimelineStatusColors
 
+    states: {
+        borderRadius: CSSObject['borderRadius']
+        hover: {
+            backgroundColor: CSSObject['backgroundColor']
+        }
+        selected: {
+            backgroundColor: CSSObject['backgroundColor']
+        }
+        focusVisible: {
+            backgroundColor: CSSObject['backgroundColor']
+        }
+    }
+
     label: {
         paddingLeft: CSSObject['paddingLeft']
         marginBottom: CSSObject['marginBottom']
@@ -45,6 +58,8 @@ export type TimelineTokensType = {
     header: {
         row: {
             paddingLeft: CSSObject['paddingLeft']
+            paddingX: CSSObject['paddingRight']
+            paddingY: CSSObject['paddingTop']
             marginBottom: CSSObject['marginBottom']
             gap: CSSObject['gap']
         }
@@ -65,6 +80,8 @@ export type TimelineTokensType = {
 
     subsection: {
         paddingLeft: CSSObject['paddingLeft']
+        paddingX: CSSObject['paddingRight']
+        paddingY: CSSObject['paddingTop']
         marginTop: CSSObject['marginTop']
         marginBottom: CSSObject['marginBottom']
         marginLeft: CSSObject['marginLeft']

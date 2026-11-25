@@ -8,6 +8,35 @@ import {
     TimelineNodeStatus,
     TimelineSubstep,
 } from '../../../lib/components/Timeline'
+import { getTimelineTokens } from '../../../lib/components/Timeline/timeline.token'
+import {
+    getLineTop,
+    getLineBottom,
+} from '../../../lib/components/Timeline/utils'
+import { Theme } from '../../../lib/context/theme.enum'
+import { FOUNDATION_THEME } from '../../../lib/tokens'
+
+/**
+ * Collects every injected stylesheet rule that targets one of the element's
+ * styled-components classes (including pseudo-state rules such as `:hover`).
+ * jsdom cannot apply pseudo-classes via getComputedStyle, so state styles are
+ * asserted against the injected CSS itself (same approach as the Slider
+ * custom foundation tests).
+ */
+const getElementCss = (element: Element): string => {
+    const classes = Array.from(element.classList)
+    const allCss = Array.from(document.head.querySelectorAll('style'))
+        .map((style) => style.textContent ?? '')
+        .join('\n')
+    return classes
+        .flatMap(
+            (cls) =>
+                allCss.match(
+                    new RegExp(`\\.${cls}(?::[a-zA-Z-]+)?\\s*\\{[^{}]*\\}`, 'g')
+                ) ?? []
+        )
+        .join('\n')
+}
 
 describe('Timeline', () => {
     beforeEach(() => {
@@ -554,6 +583,26 @@ describe('Timeline', () => {
             )
             expect(await axe(container)).toHaveNoViolations()
         })
+
+        it('has no axe violations when blocks are selectable with a selected block', async () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Header
+                        title="Payment Initiated"
+                        timestamp="4:00 PM"
+                        isSelectable
+                    >
+                        <Timeline.Substep
+                            title="Transaction Created"
+                            isSelectable
+                            isSelected
+                        />
+                    </Timeline.Header>
+                    <Timeline.Node text="Comment" isSelectable isSelected />
+                </Timeline>
+            )
+            expect(await axe(container)).toHaveNoViolations()
+        })
     })
 
     describe('Edge cases', () => {
@@ -580,6 +629,458 @@ describe('Timeline', () => {
                 </Timeline>
             )
             expect(screen.getByText('Line one')).toBeInTheDocument()
+        })
+    })
+
+    describe('State tokens', () => {
+        it('light theme uses gray 50 for hover and gray 150 for selected', () => {
+            const states = getTimelineTokens(FOUNDATION_THEME).sm.states
+            expect(states.hover.backgroundColor).toBe(
+                FOUNDATION_THEME.colors.gray[50]
+            )
+            expect(states.selected.backgroundColor).toBe(
+                FOUNDATION_THEME.colors.gray[150]
+            )
+        })
+
+        it('dark theme resolves hover and selected state tokens', () => {
+            const states = getTimelineTokens(FOUNDATION_THEME, Theme.DARK).sm
+                .states
+            expect(states.hover.backgroundColor).toBe(
+                FOUNDATION_THEME.colors.gray[800]
+            )
+            expect(states.selected.backgroundColor).toBe(
+                FOUNDATION_THEME.colors.gray[700]
+            )
+        })
+    })
+
+    describe('Interactive states', () => {
+        it('Node is not interactive by default', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Node text="Plain node" />
+                </Timeline>
+            )
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+            expect(node).not.toHaveAttribute('role')
+            expect(node).not.toHaveAttribute('tabindex')
+            const css = getElementCss(node)
+            expect(css).not.toMatch(/:hover/)
+        })
+
+        it('Node exposes button semantics and hover styles when isSelectable', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Node text="Selectable node" isSelectable />
+                </Timeline>
+            )
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+            expect(node).toHaveAttribute('role', 'button')
+            expect(node).toHaveAttribute('tabindex', '0')
+            const css = getElementCss(node)
+            expect(css).toMatch(/:hover[^{]*\{[^}]*#F5F7FA/)
+            expect(css).toMatch(/:focus-visible[^{]*\{[^}]*#F5F7FA/)
+        })
+
+        it('Node renders selected background when isSelected', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Node
+                        text="Selected node"
+                        isSelectable
+                        isSelected
+                    />
+                </Timeline>
+            )
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+            const css = getElementCss(node)
+            expect(css).toMatch(/background-color:\s*#ECEFF3/)
+        })
+
+        it('selected Node keeps selected background on hover (selected wins)', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Node
+                        text="Selected node"
+                        isSelectable
+                        isSelected
+                    />
+                </Timeline>
+            )
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+            const css = getElementCss(node)
+            expect(css).not.toMatch(/:hover[^{]*\{[^}]*#F5F7FA/)
+        })
+
+        it('Node fires onClick for click, Enter and Space when isSelectable', async () => {
+            const user = userEvent.setup()
+            const onClick = vi.fn()
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Node text="Node" isSelectable onClick={onClick} />
+                </Timeline>
+            )
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+
+            await user.click(node)
+            expect(onClick).toHaveBeenCalledTimes(1)
+
+            node.focus()
+            await user.keyboard('{Enter}')
+            expect(onClick).toHaveBeenCalledTimes(2)
+
+            await user.keyboard(' ')
+            expect(onClick).toHaveBeenCalledTimes(3)
+        })
+
+        it('Node does not fire onClick on Enter when not selectable', async () => {
+            const user = userEvent.setup()
+            const onClick = vi.fn()
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Node text="Node" onClick={onClick} />
+                </Timeline>
+            )
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+            node.focus()
+            await user.keyboard('{Enter}')
+            expect(onClick).not.toHaveBeenCalled()
+        })
+
+        it('Node consumer onKeyDown runs and can suppress keyboard activation', async () => {
+            const user = userEvent.setup()
+            const onClick = vi.fn()
+            const onKeyDown = vi.fn(
+                (event: React.KeyboardEvent<HTMLDivElement>) => {
+                    event.preventDefault()
+                }
+            )
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Node
+                        text="Node"
+                        isSelectable
+                        onClick={onClick}
+                        onKeyDown={onKeyDown}
+                    />
+                </Timeline>
+            )
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+            node.focus()
+            await user.keyboard('{Enter}')
+            expect(onKeyDown).toHaveBeenCalledTimes(1)
+            expect(onClick).not.toHaveBeenCalled()
+        })
+
+        it('Substep exposes button semantics, selected background and keyboard activation', async () => {
+            const user = userEvent.setup()
+            const onClick = vi.fn()
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Substep
+                        title="Substep"
+                        isSelectable
+                        isSelected
+                        onClick={onClick}
+                    />
+                </Timeline>
+            )
+            const substep = container.querySelector(
+                '[data-timeline-substep="true"]'
+            ) as HTMLElement
+            expect(substep).toHaveAttribute('role', 'button')
+            expect(substep).toHaveAttribute('tabindex', '0')
+            const css = getElementCss(substep)
+            expect(css).toMatch(/background-color:\s*#ECEFF3/)
+            expect(css).toMatch(/:hover[^{]*\{[^}]*#ECEFF3/)
+
+            substep.focus()
+            await user.keyboard('{Enter}')
+            expect(onClick).toHaveBeenCalledTimes(1)
+        })
+
+        it('Header row (not the root) is the interactive target when isSelectable', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Header title="Header" isSelectable />
+                </Timeline>
+            )
+            const root = container.querySelector(
+                '[data-timeline-header="true"]'
+            ) as HTMLElement
+            const row = container.querySelector(
+                '[data-timeline-header-row="true"]'
+            ) as HTMLElement
+            expect(root).not.toHaveAttribute('role')
+            expect(root).not.toHaveAttribute('tabindex')
+            expect(row).toHaveAttribute('role', 'button')
+            expect(row).toHaveAttribute('tabindex', '0')
+            const css = getElementCss(row)
+            expect(css).toMatch(/:hover[^{]*\{[^}]*#F5F7FA/)
+        })
+
+        it('Header row renders selected background when isSelected', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Header title="Header" isSelected />
+                </Timeline>
+            )
+            const row = container.querySelector(
+                '[data-timeline-header-row="true"]'
+            ) as HTMLElement
+            const css = getElementCss(row)
+            expect(css).toMatch(/background-color:\s*#ECEFF3/)
+        })
+
+        it('clicking a nested Substep does not trigger the Header onClick (individual states)', async () => {
+            const user = userEvent.setup()
+            const onHeaderClick = vi.fn()
+            const onSubstepClick = vi.fn()
+            render(
+                <Timeline>
+                    <Timeline.Header
+                        title="Header"
+                        isSelectable
+                        onClick={onHeaderClick}
+                    >
+                        <Timeline.Substep
+                            title="Nested step"
+                            isSelectable
+                            onClick={onSubstepClick}
+                        />
+                    </Timeline.Header>
+                </Timeline>
+            )
+            await user.click(screen.getByText('Nested step'))
+            expect(onSubstepClick).toHaveBeenCalledTimes(1)
+            expect(onHeaderClick).not.toHaveBeenCalled()
+
+            await user.click(screen.getByText('Header'))
+            expect(onHeaderClick).toHaveBeenCalledTimes(1)
+            expect(onSubstepClick).toHaveBeenCalledTimes(1)
+        })
+
+        it('Header keyboard activation fires onClick on the row', async () => {
+            const user = userEvent.setup()
+            const onClick = vi.fn()
+            render(
+                <Timeline>
+                    <Timeline.Header
+                        title="Header"
+                        isSelectable
+                        onClick={onClick}
+                    />
+                </Timeline>
+            )
+            const row = screen
+                .getByText('Header')
+                .closest('[data-timeline-header-row="true"]') as HTMLElement
+            row.focus()
+            await user.keyboard('{Enter}')
+            expect(onClick).toHaveBeenCalledTimes(1)
+        })
+
+        it('non-selectable Header keeps onClick on the root (legacy behaviour)', async () => {
+            const user = userEvent.setup()
+            const onClick = vi.fn()
+            render(
+                <Timeline>
+                    <Timeline.Header title="Header" onClick={onClick}>
+                        <Timeline.Substep title="Nested step" />
+                    </Timeline.Header>
+                </Timeline>
+            )
+            await user.click(screen.getByText('Header'))
+            expect(onClick).toHaveBeenCalledTimes(1)
+        })
+
+        it('track, indicator dots and label mask stay layered above block backgrounds', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Label text="JAN 15, 2025" />
+                    <Timeline.Header title="Header" isSelectable>
+                        <Timeline.Substep title="Nested" />
+                    </Timeline.Header>
+                </Timeline>
+            )
+            const line = container.querySelector(
+                '[data-timeline-line="true"]'
+            ) as HTMLElement
+            expect(getElementCss(line)).toMatch(/z-index:\s*1/)
+
+            const mask = container.querySelector(
+                '[data-timeline-label="true"] > div'
+            ) as HTMLElement
+            expect(getElementCss(mask)).toMatch(/z-index:\s*2/)
+        })
+
+        it('interactive blocks have vertical padding for nicer state backgrounds', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Header title="Header" isSelectable>
+                        <Timeline.Substep title="Nested" isSelectable />
+                    </Timeline.Header>
+                    <Timeline.Node text="Node" isSelectable />
+                </Timeline>
+            )
+            const row = container.querySelector(
+                '[data-timeline-header-row="true"]'
+            ) as HTMLElement
+            const substep = container.querySelector(
+                '[data-timeline-substep="true"]'
+            ) as HTMLElement
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+            for (const el of [row, substep, node]) {
+                const css = getElementCss(el)
+                expect(css).toMatch(/padding-top:\s*8px/)
+                expect(css).toMatch(/padding-bottom:\s*8px/)
+                expect(css).toMatch(/padding-left:\s*12px/)
+                expect(css).toMatch(/padding-right:\s*12px/)
+            }
+        })
+
+        it('state backgrounds start at the text content and leave the rail un-highlighted', () => {
+            const { container } = render(
+                <Timeline>
+                    <Timeline.Header title="Header" isSelectable />
+                    <Timeline.Substep title="Step" isSelectable />
+                    <Timeline.Node text="Node" isSelectable />
+                </Timeline>
+            )
+            const row = container.querySelector(
+                '[data-timeline-header-row="true"]'
+            ) as HTMLElement
+            const substep = container.querySelector(
+                '[data-timeline-substep="true"]'
+            ) as HTMLElement
+            const node = container.querySelector(
+                '[data-timeline-node="true"]'
+            ) as HTMLElement
+
+            expect(getElementCss(row)).toMatch(/margin-left:\s*28px/)
+            expect(getElementCss(node)).toMatch(/margin-left:\s*28px/)
+            expect(getElementCss(substep)).toMatch(/margin-left:\s*40px/)
+
+            const rowDot = row.children[0] as HTMLElement
+            const nodeDot = node.children[0] as HTMLElement
+            const substepConnector = substep.children[0] as HTMLElement
+
+            expect(getElementCss(rowDot)).toMatch(/left:\s*-17\.5px/)
+            expect(getElementCss(nodeDot)).toMatch(/left:\s*-17\.5px/)
+            expect(getElementCss(substepConnector)).toMatch(/left:\s*-27px/)
+        })
+    })
+
+    describe('Line layout math (padding-aware)', () => {
+        const makeElement = (
+            attributes: Record<string, string>,
+            offsets: { top?: number; height?: number } = {}
+        ): HTMLElement => {
+            const el = document.createElement('div')
+            Object.entries(attributes).forEach(([key, value]) =>
+                el.setAttribute(key, value)
+            )
+            if (offsets.top !== undefined)
+                Object.defineProperty(el, 'offsetTop', { value: offsets.top })
+            if (offsets.height !== undefined)
+                Object.defineProperty(el, 'offsetHeight', {
+                    value: offsets.height,
+                })
+            return el
+        }
+
+        const baseOptions = {
+            indicatorHeightPx: 6,
+            indicatorTopPx: 6,
+            labelCircleHeightPx: 10,
+            blockPaddingYPx: 8,
+        }
+
+        it('node endpoints include block vertical padding', () => {
+            const container = document.createElement('div')
+            const node = makeElement(
+                { 'data-timeline-node': 'true' },
+                { top: 40 }
+            )
+            container.appendChild(node)
+
+            expect(getLineTop(container, baseOptions)).toBe(40 + 8 + 6 + 6)
+            expect(getLineBottom(container, baseOptions)).toBe(40 + 8 + 6 + 3)
+        })
+
+        it('node endpoints stay legacy-compatible without the padding option', () => {
+            const container = document.createElement('div')
+            const legacyOptions = {
+                indicatorHeightPx: 6,
+                indicatorTopPx: 6,
+                labelCircleHeightPx: 10,
+            }
+            const node = makeElement(
+                { 'data-timeline-node': 'true' },
+                { top: 40 }
+            )
+            container.appendChild(node)
+
+            expect(getLineTop(container, legacyOptions)).toBe(40 + 6 + 6)
+            expect(getLineBottom(container, legacyOptions)).toBe(40 + 6 + 3)
+        })
+
+        it('substep endpoints include block vertical padding', () => {
+            const container = document.createElement('div')
+            const substep = makeElement(
+                { 'data-timeline-substep': 'true' },
+                { top: 10 }
+            )
+            container.appendChild(substep)
+
+            expect(getLineTop(container, baseOptions)).toBe(10 + 8 + 6)
+            expect(getLineBottom(container, baseOptions)).toBe(10 + 8 + 3)
+        })
+
+        it('header endpoints use the row center and ignore padding', () => {
+            const container = document.createElement('div')
+            const header = makeElement(
+                { 'data-timeline-header': 'true' },
+                { top: 0 }
+            )
+            const row = makeElement({}, { top: 0, height: 38 })
+            header.appendChild(row)
+            container.appendChild(header)
+
+            expect(getLineTop(container, baseOptions)).toBe(38 / 2 + 3)
+            expect(getLineBottom(container, baseOptions)).toBe(38 / 2)
+        })
+
+        it('header with substeps wrapper bottom follows the connector offset', () => {
+            const container = document.createElement('div')
+            const header = makeElement(
+                { 'data-timeline-header': 'true' },
+                { top: 0 }
+            )
+            const row = makeElement({}, { top: 0, height: 38 })
+            const wrapper = makeElement({}, { top: 58 })
+            header.appendChild(row)
+            header.appendChild(wrapper)
+            container.appendChild(header)
+
+            expect(getLineBottom(container, baseOptions)).toBe(58 + 8)
         })
     })
 })
