@@ -3,7 +3,7 @@ import { RenderResult } from '@testing-library/react'
 import { vi, expect, describe, it } from 'vitest'
 import { render } from './index'
 import { ButtonType, ButtonSize } from '../../lib/components/Button/types'
-import { TEST_BREAKPOINTS, KEYBOARD_KEYS } from './constants'
+import { KEYBOARD_KEYS } from './constants'
 import { assertAccessibility, assertEventHandlerCalled } from './assertions'
 import type { UserEvent } from '@testing-library/user-event'
 
@@ -85,49 +85,6 @@ export function testAllButtonSizes(
     Object.entries(ButtonSize).forEach(([sizeName, size]) => {
         testFn(size, sizeName)
     })
-}
-
-/**
- * Test component across responsive breakpoints
- */
-export async function testResponsiveBreakpoints<
-    T extends Record<string, unknown>,
->(
-    Component: React.ComponentType<T>,
-    props: T,
-    testFn: (
-        breakpoint: keyof typeof TEST_BREAKPOINTS,
-        container: HTMLElement
-    ) => void | Promise<void>
-) {
-    const originalMatchMedia = window.matchMedia
-
-    for (const [breakpointName, breakpoint] of Object.entries(
-        TEST_BREAKPOINTS
-    )) {
-        // Mock matchMedia for this breakpoint
-        window.matchMedia = vi.fn().mockImplementation((query) => ({
-            matches: query === breakpoint.query,
-            media: query,
-            onchange: null,
-            addListener: vi.fn(),
-            removeListener: vi.fn(),
-            addEventListener: vi.fn(),
-            removeEventListener: vi.fn(),
-            dispatchEvent: vi.fn(),
-        }))
-
-        const { container, unmount } = render(
-            React.createElement(Component, props)
-        )
-
-        await testFn(breakpointName as keyof typeof TEST_BREAKPOINTS, container)
-
-        unmount()
-    }
-
-    // Restore original matchMedia
-    window.matchMedia = originalMatchMedia
 }
 
 /**
