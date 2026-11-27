@@ -12,7 +12,11 @@
         "lib",
         "README.md"
     ],
-    "sideEffects": false,
+    "sideEffects": [
+        "./lib/pollyfills/resizeObserverPollyfill.ts",
+        "./lib/main.ts",
+        "./dist/main.js"
+    ],
     "exports": {
         ".": {
             "types": "./dist/main.d.ts",
