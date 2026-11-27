@@ -389,7 +389,6 @@ const AlertCloseButton = ({
             data-element="close-button"
             border={'none'}
             backgroundColor={'transparent'}
-            className="debug"
             color={$color}
             contentCentered
             aria-label={ariaLabel}
