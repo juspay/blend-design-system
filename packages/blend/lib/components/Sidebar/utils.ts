@@ -93,9 +93,7 @@ export const getDefaultMerchantInfo = () => ({
         },
     ],
     selected: 'juspay',
-    onSelect: (value: string) => {
-        console.log('Selected merchant:', value)
-    },
+    onSelect: () => {},
 })
 
 // Custom hook for topbar auto-hide functionality
