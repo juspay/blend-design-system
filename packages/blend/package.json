@@ -15,23 +15,24 @@
     "sideEffects": false,
     "exports": {
         ".": {
-            "import": "./dist/main.js",
-            "types": "./dist/main.d.ts"
+            "types": "./dist/main.d.ts",
+            "import": "./dist/main.js"
         },
         "./node": {
-            "import": "./dist/node.js",
-            "types": "./dist/node.d.ts"
+            "types": "./dist/node.d.ts",
+            "import": "./dist/node.js"
         },
         "./tokens": {
-            "import": "./dist/token-engine.js",
-            "types": "./dist/token-engine.d.ts"
+            "types": "./dist/token-engine.d.ts",
+            "import": "./dist/token-engine.js"
         },
         "./tokens/server": {
-            "import": "./dist/tokens-server.js",
-            "types": "./dist/tokens-server.d.ts"
+            "types": "./dist/tokens-server.d.ts",
+            "import": "./dist/tokens-server.js"
         },
         "./style.css": "./dist/style.css",
-        "./lib/*": "./lib/*"
+        "./lib/*": "./lib/*",
+        "./package.json": "./package.json"
     },
     "scripts": {
         "lint": "eslint .",
