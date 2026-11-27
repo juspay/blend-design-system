@@ -54,23 +54,3 @@ export function getGroupGap(
         ? String(FOUNDATION_THEME.unit[12])
         : String(FOUNDATION_THEME.unit[10])
 }
-
-/**
- * Helper to convert position prop name to match component's expected prop
- * This allows the Group to work with different component APIs
- *
- * @example
- * // For ButtonV2
- * getPositionPropName('buttonGroupPosition') // 'buttonGroupPosition'
- *
- * // For Tag
- * getPositionPropName('splitTagPosition') // 'splitTagPosition'
- *
- * @param propName - Name of the position prop
- * @returns The same prop name (identity function for type safety)
- */
-export function getPositionPropName(
-    propName: string = 'groupPosition'
-): string {
-    return propName
-}

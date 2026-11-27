@@ -487,11 +487,10 @@ const ThemeContext = createContext<ThemeContextType>({
 })
 
 export const useTheme = () => {
-    const context = useContext(ThemeContext)
-    if (!context) {
-        throw new Error('useTheme must be used within a ThemeProvider')
-    }
-    return context
+    // ThemeContext is created with a fully-resolved module-scope default,
+    // so components work without a ThemeProvider and the context value
+    // is never null — no provider guard is needed here.
+    return useContext(ThemeContext)
 }
 
 export default ThemeContext

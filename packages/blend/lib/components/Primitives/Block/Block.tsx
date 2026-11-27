@@ -224,7 +224,6 @@ const blockedProps = [
     'willChange',
     'transformOrigin',
     'backfaceVisibility',
-    'transition',
     'transitionDuration',
     'transitionTimingFunction',
     'transitionDelay',
@@ -357,8 +356,6 @@ const getStyles = (props: StyledBlockProps): CSSObject => {
     if (props.overflowX !== undefined) styles.overflowX = props.overflowX
     if (props.overflowY !== undefined) styles.overflowY = props.overflowY
     if (props.whiteSpace !== undefined) styles.whiteSpace = props.whiteSpace
-    if (props.transition !== undefined) styles.transition = props.transition
-
     if (props.transition !== undefined) styles.transition = props.transition
 
     if (props.cursor !== undefined) styles.cursor = props.cursor
