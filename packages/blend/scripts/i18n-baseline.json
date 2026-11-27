@@ -16,11 +16,6 @@
     "lib/components/DateRangePicker/TimeSelector.tsx | [attribute] placeholder=\"12:00 PM\"": 1,
     "lib/components/DateRangePicker/utils.ts | [intl-constructor] new Intl.DateTimeFormat": 1,
     "lib/components/DateRangePicker/utils.ts | [locale-literal] en-US": 7,
-    "lib/components/Select/Select.tsx | [default] helpIconText=\"Help icon text\"": 1,
-    "lib/components/Select/Select.tsx | [default] hintText=\"Hint text\"": 1,
-    "lib/components/Select/Select.tsx | [default] label=\"Your favorite color\"": 1,
-    "lib/components/Select/Select.tsx | [default] placeholder=\"Select an option\"": 1,
-    "lib/components/Select/Select.tsx | [default] subLabel=\"Select an option\"": 1,
     "lib/components/shared/datetime/PickerTrigger.tsx | [default] label=\"Clear selection\"": 1,
     "lib/components/shared/datetime/timeCore.ts | [intl-constructor] new Intl.DateTimeFormat": 1,
     "lib/components/shared/datetime/timeCore.ts | [locale-literal] en-US": 1
