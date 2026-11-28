@@ -55,15 +55,11 @@ This guide serves as the **single source of truth** for all testing practices in
 ```
 __tests__/
 ├── TESTING_GUIDE.md                    # This file - single source of truth
-├── PERFORMANCE_TESTING_GUIDE.md        # Detailed performance testing guide
-├── PERFORMANCE_SOLUTION_SUMMARY.md     # Performance solution overview
 ├── components/                          # Component tests
-│   ├── README.md                       # Component test overview
 │   └── [Component]/
 │       ├── [Component].test.tsx                 # Main functionality tests
 │       ├── [Component].accessibility.test.tsx  # Accessibility tests
-│       ├── [Component].performance.test.tsx    # Performance tests
-│       └── README.md                           # Component-specific docs
+│       └── [Component].performance.test.tsx    # Performance tests
 ├── hooks/                              # Custom hook tests
 └── test-utils/                         # Shared test utilities
     ├── index.tsx                       # Main exports and custom render
@@ -330,29 +326,17 @@ describe('Component Name', () => {
 
 ## Component Test Coverage
 
-### Completed Components
+### Current Suite Statistics
 
-| Component       | Functional Tests | Accessibility Tests | Performance Tests | Total Tests   | Status      |
-| --------------- | ---------------- | ------------------- | ----------------- | ------------- | ----------- |
-| **Button**      | 46 tests         | 42 tests            | 32 tests          | **120 tests** | ✅ Complete |
-| **Checkbox**    | 48 tests         | 40 tests            | 30 tests          | **118 tests** | ✅ Complete |
-| **Radio**       | 45 tests         | 38 tests            | 28 tests          | **111 tests** | ✅ Complete |
-| **RadioGroup**  | 42 tests         | -                   | -                 | **42 tests**  | ✅ Complete |
-| **Switch**      | 46 tests         | 40 tests            | 30 tests          | **116 tests** | ✅ Complete |
-| **SwitchGroup** | 42 tests         | 35 tests            | 32 tests          | **109 tests** | ✅ Complete |
+As of 28 Nov 2026 (run `pnpm test:blend:coverage` for live numbers):
 
-### **Total Test Coverage: 616 tests with 97% pass rate**
+- **271 test files**, **8,405 test cases** total
+- **7,799 passing**, **606 skipped** (~10% — skipped V1 unit suites, see the skipped-tests issue in the repo)
+- **Coverage** (enforced floors in `vitest.config.ts`): statements 54.9%, branches 75.79%, functions 64.9%, lines 54.9%
 
-### Performance Test Migration Status
+Coverage floors are enforced in CI via vitest `thresholds` — a PR that drops any metric below its floor fails the build. Floors start at the measured status quo and are ratcheted upward toward the long-term target of 80%. Full coverage reports are attached to every CI run as the `coverage-report` artifact.
 
-| Component       | Environment-Aware | Import Fixed | Helper Added | Status      |
-| --------------- | ----------------- | ------------ | ------------ | ----------- |
-| **Button**      | ✅                | ✅           | ✅           | ✅ Complete |
-| **Checkbox**    | ✅                | ✅           | ✅           | ✅ Complete |
-| **Radio**       | ✅                | ✅           | ✅           | ✅ Complete |
-| **RadioGroup**  | ✅                | ✅           | ✅           | ✅ Complete |
-| **Switch**      | ✅                | ✅           | ✅           | ✅ Complete |
-| **SwitchGroup** | 🔄                | ✅           | ✅           | 🔄 Partial  |
+Note: most skipped cases are V1 unit suites (`Button`, `Checkbox`, `Radio/RadioGroup`, `Switch/SwitchGroup`, `Tooltip`, `useResponsiveTokens`); their a11y/perf/controlled-mode siblings remain active.
 
 ## Best Practices
 
@@ -516,16 +500,16 @@ it('debug environment detection', () => {
 
 ### Documentation
 
-- [Performance Testing Guide](./PERFORMANCE_TESTING_GUIDE.md) - Detailed performance testing
-- [Performance Solution Summary](./PERFORMANCE_SOLUTION_SUMMARY.md) - Solution overview
-- [Component Tests Overview](./components/README.md) - Component test documentation
-
-### External Resources
-
 - [Vitest Documentation](https://vitest.dev/)
 - [Testing Library Docs](https://testing-library.com/)
 - [Jest-Axe](https://github.com/nickcolley/jest-axe)
 - [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+
+### Repository References
+
+- `packages/blend/vitest.config.ts` — coverage config and enforced thresholds
+- `packages/blend/__tests__/test-utils/` — shared render, builders, assertions, performance helpers
+- `.github/workflows/ci.yml` — CI pipeline (format, build, tests + coverage, a11y, native)
 
 ### Component-Specific Documentation
 
@@ -558,7 +542,6 @@ test:
         - uses: actions/setup-node@v3
         - run: npm ci
         - run: npm test -- --coverage
-        - uses: codecov/codecov-action@v3
 ```
 
 ### Performance Budgets
@@ -577,12 +560,15 @@ assertPerformanceWithContext(
 
 ### Coverage Requirements
 
-- Minimum 80% code coverage
-- 100% coverage for critical paths
-- Exclude generated files and types
+Coverage floors are enforced by vitest thresholds in `packages/blend/vitest.config.ts` and fail CI on any drop:
+
+- Current floors: 54% statements, 75% branches, 64% functions, 54% lines (measured status quo)
+- Long-term target: 80% across all metrics — floors are ratcheted up as coverage improves
+- New PRs are expected to include tests for new code; the floors catch overall drops
+- Generated files, types, stories, and barrel `index.ts` files are excluded from measurement
 
 ---
 
 **This guide is a living document. Update it as testing practices evolve and new patterns emerge.**
 
-**Last Updated**: Performance testing migration completed with 97% test pass rate and environment-aware testing system.
+**Last Updated**: 28 Nov 2026 — coverage floors enforced via vitest thresholds; suite stats refreshed; dead links removed.
