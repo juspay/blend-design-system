@@ -8,7 +8,7 @@ import {
     useEffect,
     ReactNode,
 } from 'react'
-import styled, { CSSObject } from 'styled-components'
+import { styled, CSSObject } from 'styled-components'
 import { motion } from 'framer-motion'
 import {
     DateRange,

@@ -1,6 +1,6 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import Text from '../Text/Text'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { CSSObject } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import { ChevronRightIcon, Check } from 'lucide-react'

@@ -19,7 +19,7 @@ import {
     getErrorShakeStyle,
     errorShakeAnimation,
 } from '../../common/error.animations'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { Eye, EyeOff } from 'lucide-react'
 import { getTextInputBorderRadius } from './utils'
 import { useMessages } from '../../../i18n/useMessages'

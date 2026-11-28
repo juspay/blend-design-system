@@ -6,7 +6,7 @@ import {
     forwardRef,
     type ReactNode,
 } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../../Primitives/Block/Block'
 import type { SidebarMobileNavigationProps } from '../types'
 import { FOUNDATION_THEME } from '../../../tokens'

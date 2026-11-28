@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 import { MenuItemActionType, type MenuItemType, MenuItemVariant } from './types'
 import Block from '../Primitives/Block/Block'

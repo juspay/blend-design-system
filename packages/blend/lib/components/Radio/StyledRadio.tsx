@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import { RadioSize } from './types'
 import type { RadioTokensType } from './radio.token'
 

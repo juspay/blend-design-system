@@ -16,7 +16,7 @@ import {
     getErrorShakeStyle,
     errorShakeAnimation,
 } from '../../common/error.animations'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'
 import { useMessages } from '../../../i18n/useMessages'
 import { INPUT_MESSAGES } from '../../../i18n/catalog/input.messages'

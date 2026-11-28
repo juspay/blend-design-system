@@ -1,5 +1,5 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import type { CSSProperties } from 'react'

@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { keyframes } from 'styled-components'
+import { styled, keyframes } from 'styled-components'
 import Block from '../../Primitives/Block/Block'
 import type { RippleElement } from '../../../hooks/useRipple'
 

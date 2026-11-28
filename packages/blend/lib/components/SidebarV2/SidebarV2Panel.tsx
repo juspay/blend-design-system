@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Directory from '../Directory/Directory'
 import { normalizeDirectoryData } from '../Directory/utils'

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
 import { CheckboxV2CheckedState } from './checkboxV2.types'
 import {

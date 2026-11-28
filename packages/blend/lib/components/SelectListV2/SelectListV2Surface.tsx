@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import type { KeyboardEvent, ReactNode, RefObject } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import SearchInputV2 from '../InputsV2/SearchInputV2/SearchInputV2'

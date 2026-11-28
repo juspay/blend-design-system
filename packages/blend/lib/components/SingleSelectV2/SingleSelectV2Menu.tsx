@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import {
     SingleSelectV2Alignment,

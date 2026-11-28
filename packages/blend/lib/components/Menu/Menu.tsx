@@ -1,5 +1,5 @@
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import styled, { type CSSObject } from 'styled-components'
+import { styled, type CSSObject } from 'styled-components'
 import { FOUNDATION_THEME } from '../../tokens'
 import {
     type MenuProps,

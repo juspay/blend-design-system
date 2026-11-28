@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled, { CSSObject } from 'styled-components'
+import { styled, CSSObject } from 'styled-components'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'

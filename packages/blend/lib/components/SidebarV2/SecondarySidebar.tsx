@@ -5,7 +5,7 @@ import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'
 import { TooltipV2, TooltipV2Side, TooltipV2Size } from '../TooltipV2'
 import { Badge, BadgeColor, BadgeSize } from '../Badge'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useMessages } from '../../i18n/useMessages'
 import { NAVIGATION_MESSAGES } from '../../i18n/catalog/navigation.messages'
 

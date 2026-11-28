@@ -3,7 +3,7 @@ import './Drawer.css'
 
 import React, { forwardRef, useContext, useId } from 'react'
 import { Drawer as VaulDrawer } from 'vaul'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import Block from '../../Primitives/Block/Block'
 import type { DrawerTokensType } from '../drawer.tokens'

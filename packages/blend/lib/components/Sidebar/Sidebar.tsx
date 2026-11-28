@@ -7,7 +7,7 @@ import {
     useId,
     useRef,
 } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import type { SidebarProps, SidebarStateChangeType } from './types'
 import type { SidebarTokenType } from './sidebar.tokens'

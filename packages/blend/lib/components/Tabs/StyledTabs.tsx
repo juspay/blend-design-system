@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { TabsVariant, TabsSize } from './types'
 import type { TabsTokensType } from './tabs.token'

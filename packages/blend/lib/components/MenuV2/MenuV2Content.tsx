@@ -1,6 +1,6 @@
 import type { FocusEvent, KeyboardEvent } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import styled, { type CSSObject } from 'styled-components'
+import { styled, type CSSObject } from 'styled-components'
 import React, { useRef, useMemo } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { Search } from 'lucide-react'

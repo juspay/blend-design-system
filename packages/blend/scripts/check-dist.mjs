@@ -337,6 +337,43 @@ if (!jsHasMonacoBulk) {
     )
 }
 
+// ---------------------------------------------------------------------------
+// Check 6: peer dependencies must stay externalized, never bundled (issue
+// #1879). Bundling a peer ships a second runtime of it inside dist/ to every
+// consumer — styled-components inlining caused "multiple instances" warnings
+// and split SSR/StyleSheetManager contexts. A peer that rollup inlines
+// produces no import statement for it, so "some dist JS chunk imports the
+// peer" is a sound externalization signal.
+// ---------------------------------------------------------------------------
+const pkgJson = JSON.parse(
+    readFileSync(
+        resolve(dirname(fileURLToPath(import.meta.url)), '../package.json'),
+        'utf8'
+    )
+)
+const peers = Object.keys(pkgJson.peerDependencies ?? {})
+const distJsFiles = readdirSync(distDir).filter((f) => f.endsWith('.js'))
+for (const peer of peers) {
+    const imported = distJsFiles.some((f) => {
+        const source = readFileSync(resolve(distDir, f), 'utf8')
+        return (
+            source.includes(`from "${peer}"`) ||
+            source.includes(`from '${peer}'`) ||
+            source.includes(`from"${peer}"`) ||
+            source.includes(`from'${peer}'`)
+        )
+    })
+    if (!imported) {
+        failed = true
+        console.error(
+            `✖ Peer dependency "${peer}" is not imported by any dist JS chunk — ` +
+                'it has likely been bundled into dist/ (check vite.config.ts ' +
+                '`rollupOptions.external`). A bundled peer ships a duplicate ' +
+                'runtime to every consumer that installs it.'
+        )
+    }
+}
+
 if (failed) {
     process.exit(1)
 }

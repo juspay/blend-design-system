@@ -129,6 +129,13 @@ export default defineConfig({
                 'react-dom',
                 'react-dom/client',
                 'react-dom/server',
+                // Peer dependency — must resolve to the consumer's single
+                // copy, never a bundled duplicate (issue #1879). Bundling it
+                // ships a second styled-components runtime to every consumer
+                // ("multiple instances" warning, split SSR/StyleSheetManager
+                // contexts, double style injection). check-dist.mjs Check 6
+                // asserts every peer stays externalized.
+                'styled-components',
             ],
             output: {
                 assetFileNames: (assetInfo) => {

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useCallback, useMemo } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import { FOUNDATION_THEME } from '../../tokens'
 import {

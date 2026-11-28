@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import Text from '../Text/Text'
 import { TruncatedTextWithTooltipV2 } from '../common/TruncatedTextWithTooltipV2'

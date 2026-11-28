@@ -3,7 +3,7 @@ import * as RadixMenu from '@radix-ui/react-dropdown-menu'
 
 import type { SelectMenuGroupType } from '../Select'
 import { FOUNDATION_THEME } from '../../tokens'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Text from '../Text/Text'
 import Block from '../Primitives/Block/Block'
 import { ChevronRight } from 'lucide-react'
