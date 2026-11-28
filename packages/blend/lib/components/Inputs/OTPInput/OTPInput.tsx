@@ -21,7 +21,7 @@ import {
     getErrorShakeStyle,
     errorShakeAnimation,
 } from '../../common/error.animations'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 const Wrapper = styled(Block)`
     ${errorShakeAnimation}

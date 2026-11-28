@@ -1,5 +1,5 @@
 import { forwardRef, useId, useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { filterBlockedProps } from '../../utils/prop-helpers'
 import Block from '../Primitives/Block/Block'

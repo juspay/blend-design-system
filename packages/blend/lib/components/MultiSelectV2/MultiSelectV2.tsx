@@ -1,6 +1,6 @@
 import React, { useCallback, useId, useMemo, useState } from 'react'
 import { X } from 'lucide-react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { AriaAttributes } from 'react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveButton from '../Primitives/PrimitiveButton/PrimitiveButton'

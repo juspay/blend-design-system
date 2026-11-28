@@ -1,5 +1,5 @@
 import React, { type JSX } from 'react'
-import styled, { css, type CSSObject } from 'styled-components'
+import { styled, css, type CSSObject } from 'styled-components'
 
 // --------------------
 // Types

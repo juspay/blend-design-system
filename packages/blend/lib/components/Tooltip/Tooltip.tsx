@@ -1,5 +1,5 @@
 import * as RadixTooltip from '@radix-ui/react-tooltip'
-import styled, { type CSSObject } from 'styled-components'
+import { styled, type CSSObject } from 'styled-components'
 import { isValidElement } from 'react'
 import {
     type TooltipProps,

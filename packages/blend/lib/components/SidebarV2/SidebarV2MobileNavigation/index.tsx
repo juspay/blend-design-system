@@ -7,7 +7,7 @@ import {
     useState,
     type ReactNode,
 } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../../Primitives/Block/Block'
 import { useResponsiveTokens } from '../../../hooks/useResponsiveTokens'
 import type { SidebarV2MobileNavigationProps } from './types'

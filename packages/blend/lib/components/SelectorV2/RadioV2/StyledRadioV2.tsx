@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import { SelectorV2Size } from '../selectorV2.types'
 import type { RadioV2TokensType } from './radioV2.tokens'
 

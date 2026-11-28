@@ -39,7 +39,7 @@ import {
     getErrorShakeStyle,
     errorShakeAnimation,
 } from '../common/error.animations'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { setupAccessibility } from '../SingleSelect/utils'
 import { useDropdownInteractionLock } from '../../hooks'
 import { SELECT_MESSAGES } from '../../i18n/catalog/select.messages'

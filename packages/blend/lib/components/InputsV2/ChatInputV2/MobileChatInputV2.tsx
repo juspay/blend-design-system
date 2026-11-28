@@ -10,7 +10,7 @@ import {
     type CSSProperties,
     type KeyboardEvent,
 } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../../Primitives/Block/Block'
 import PrimitiveTextarea from '../../Primitives/PrimitiveTextArea'
 import PrimitiveButton from '../../Primitives/PrimitiveButton/PrimitiveButton'

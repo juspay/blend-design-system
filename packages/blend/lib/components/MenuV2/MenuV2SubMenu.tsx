@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as RadixMenu from '@radix-ui/react-dropdown-menu'
-import styled, { CSSObject } from 'styled-components'
+import { styled, CSSObject } from 'styled-components'
 import { ChevronRightIcon, Search } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import PrimitiveText from '../Primitives/PrimitiveText/PrimitiveText'

@@ -6,7 +6,7 @@ import {
     type CSSProperties,
     type ReactNode,
 } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ChevronDown, ChevronUp, MoreHorizontal } from 'lucide-react'
 import Block from '../../Primitives/Block/Block'
 import {

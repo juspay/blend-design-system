@@ -1,5 +1,5 @@
 import { forwardRef, type MouseEvent } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PrimitiveButton, {
     type ButtonProps as PrimitiveButtonProps,
 } from '../Primitives/PrimitiveButton/PrimitiveButton'

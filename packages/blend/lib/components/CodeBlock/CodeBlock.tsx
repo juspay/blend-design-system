@@ -9,7 +9,7 @@ import {
     useCallback,
     useMemo,
 } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { Check, Copy, FileCode } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
 import Button from '../Button/Button'

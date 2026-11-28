@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useId } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import type { ModalProps } from './types'
 import { FOUNDATION_THEME } from '../../tokens'

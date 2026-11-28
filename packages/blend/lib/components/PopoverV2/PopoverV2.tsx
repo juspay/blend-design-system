@@ -1,5 +1,5 @@
 import { useState, useId, forwardRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import * as RadixPopover from '@radix-ui/react-popover'
 import Block from '../Primitives/Block/Block'
 import {

@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import styled, { keyframes, css } from 'styled-components'
+import { styled, keyframes, css } from 'styled-components'
 import Block from '../Primitives/Block/Block'
 import type { SkeletonProps } from './types'
 import type { SkeletonTokensType } from './skeleton.tokens'

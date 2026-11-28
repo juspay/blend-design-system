@@ -26,7 +26,7 @@ import {
     getErrorShakeStyle,
     errorShakeAnimation,
 } from '../common/error.animations'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { getBorderRadius, setupAccessibility } from './utils'
 import { TruncatedTextWithTooltip } from '../common'
 import { useDropdownInteractionLock } from '../../hooks'

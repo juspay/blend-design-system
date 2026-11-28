@@ -10,7 +10,7 @@ import React, {
 import type { DirectoryExpandedItems, NavItemProps, NavbarItem } from './types'
 import { ChevronDown } from 'lucide-react'
 import Block from '../Primitives/Block/Block'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useResponsiveTokens } from '../../hooks/useResponsiveTokens'
 import { DirectoryTokenType } from './directory.tokens'
 import {

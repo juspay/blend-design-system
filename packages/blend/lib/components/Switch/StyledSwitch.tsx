@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import { SwitchSize } from './types'
 import type { SwitchTokensType } from './switch.token'
 
