@@ -1,0 +1,28 @@
+# Issue #1886: coverage enforcement lives in vitest thresholds
+# (packages/blend/vitest.config.ts), which fails the CI test job
+# directly on any metric dropping below its floor. This file keeps
+# Codecov informational for project coverage and adds a patch
+# target so reviewers can see how much of the code a PR actually
+# exercises.
+codecov:
+    require_ci_to_pass: true
+
+coverage:
+    status:
+        project:
+            default:
+                # Project-wide floors are enforced by vitest thresholds;
+                # this status is for visibility only.
+                informational: true
+        patch:
+            default:
+                # New code introduced by a PR should be well covered.
+                # The threshold gives small PRs tolerance so a one-line
+                # fix is not blocked by rounding.
+                target: 70%
+                threshold: 5%
+
+comment:
+    layout: 'reach, diff, flags, files'
+    behavior: default
+    require_changes: false
