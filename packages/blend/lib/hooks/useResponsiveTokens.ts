@@ -15,7 +15,7 @@ const v1TokenReplacementMap: Partial<
     AVATAR: { component: 'Avatar', replacement: 'AvatarV2' },
     BREADCRUMB: { component: 'Breadcrumb', replacement: 'BreadcrumbV2' },
     BUTTON: { component: 'Button', replacement: 'ButtonV2' },
-        BUTTON_GROUP: { component: 'ButtonGroup', replacement: 'ButtonGroupV2' },
+    BUTTON_GROUP: { component: 'ButtonGroup', replacement: 'ButtonGroupV2' },
     CARD: { component: 'Card', replacement: 'CardV2' },
     CHAT_INPUT: { component: 'ChatInput', replacement: 'ChatInputV2' },
     CHECKBOX: { component: 'Checkbox', replacement: 'CheckboxV2' },
@@ -23,7 +23,10 @@ const v1TokenReplacementMap: Partial<
     DRAWER: { component: 'Drawer', replacement: 'DrawerV2' },
     KEYVALUEPAIR: { component: 'KeyValuePair', replacement: 'KeyValuePairV2' },
     MENU: { component: 'Menu', replacement: 'MenuV2' },
-        MOBILE_NAVIGATION: { component: 'SidebarMobileNavigation', replacement: 'SidebarV2MobileNavigation' },
+    MOBILE_NAVIGATION: {
+        component: 'SidebarMobileNavigation',
+        replacement: 'SidebarV2MobileNavigation',
+    },
     MODAL: { component: 'Modal', replacement: 'ModalV2' },
     MULTI_SELECT: { component: 'MultiSelect', replacement: 'MultiSelectV2' },
     MULTI_VALUE_INPUT: {
