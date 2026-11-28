@@ -56,6 +56,17 @@ export default defineConfig({
             ],
             // Generate coverage even if tests fail
             reportOnFailure: true,
+            // Issue #1886: enforce the measured status quo as a floor so
+            // CI fails on coverage drops. Measured on dev, 28 Nov 2026:
+            // statements 54.9%, branches 75.79%, functions 64.9%,
+            // lines 54.9%. Floors are rounded down for run-to-run
+            // headroom; ratchet upward toward 80% as coverage improves.
+            thresholds: {
+                statements: 54,
+                branches: 75,
+                functions: 64,
+                lines: 54,
+            },
         },
     },
     resolve: {
