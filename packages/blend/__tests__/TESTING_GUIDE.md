@@ -334,7 +334,7 @@ As of 28 Nov 2026 (run `pnpm test:blend:coverage` for live numbers):
 - **7,799 passing**, **606 skipped** (~10% — skipped V1 unit suites, see the skipped-tests issue in the repo)
 - **Coverage** (enforced floors in `vitest.config.ts`): statements 54.9%, branches 75.79%, functions 64.9%, lines 54.9%
 
-Coverage floors are enforced in CI via vitest `thresholds` — a PR that drops any metric below its floor fails the build. Floors start at the measured status quo and are ratcheted upward toward the long-term target of 80%. Codecov reports patch coverage per PR (target 70%, informational).
+Coverage floors are enforced in CI via vitest `thresholds` — a PR that drops any metric below its floor fails the build. Floors start at the measured status quo and are ratcheted upward toward the long-term target of 80%. Full coverage reports are attached to every CI run as the `coverage-report` artifact.
 
 Note: most skipped cases are V1 unit suites (`Button`, `Checkbox`, `Radio/RadioGroup`, `Switch/SwitchGroup`, `Tooltip`, `useResponsiveTokens`); their a11y/perf/controlled-mode siblings remain active.
 
@@ -542,7 +542,6 @@ test:
         - uses: actions/setup-node@v3
         - run: npm ci
         - run: npm test -- --coverage
-        - uses: codecov/codecov-action@v3
 ```
 
 ### Performance Budgets
@@ -565,7 +564,7 @@ Coverage floors are enforced by vitest thresholds in `packages/blend/vitest.conf
 
 - Current floors: 54% statements, 75% branches, 64% functions, 54% lines (measured status quo)
 - Long-term target: 80% across all metrics — floors are ratcheted up as coverage improves
-- New PRs should keep patch coverage at or above 70% (Codecov reports this per PR)
+- New PRs are expected to include tests for new code; the floors catch overall drops
 - Generated files, types, stories, and barrel `index.ts` files are excluded from measurement
 
 ---
