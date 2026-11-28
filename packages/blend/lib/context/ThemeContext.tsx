@@ -486,11 +486,9 @@ const ThemeContext = createContext<ThemeContextType>({
     theme: 'light',
 })
 
+// No provider guard is needed: the context is created with a fully-resolved module-scope default and the value is never null.
 export const useTheme = () => {
     const context = useContext(ThemeContext)
-    if (!context) {
-        throw new Error('useTheme must be used within a ThemeProvider')
-    }
     return context
 }
 
